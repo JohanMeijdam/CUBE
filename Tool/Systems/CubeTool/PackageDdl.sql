@@ -460,7 +460,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_itp IS
 			prompt)
 		VALUES (
 			NULL,
-			NULL,
+			l_cube_sequence,
 			p_fk_itp_name,
 			p_fk_ite_sequence,
 			p_code,
@@ -1195,7 +1195,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			directory)
 		VALUES (
 			NULL,
-			NULL,
+			l_cube_sequence,
 			p_name,
 			p_directory);
 	EXCEPTION
@@ -1590,7 +1590,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			transferable)
 		VALUES (
 			NULL,
-			NULL,
+			l_cube_sequence,
 			NULL,
 			p_fk_bot_name,
 			p_fk_typ_name,
@@ -1867,7 +1867,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			xk_itp_name)
 		VALUES (
 			NULL,
-			NULL,
+			l_cube_sequence,
 			p_fk_bot_name,
 			p_fk_typ_name,
 			p_name,
@@ -2393,7 +2393,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			xk_typ_name_1)
 		VALUES (
 			NULL,
-			NULL,
+			l_cube_sequence,
 			p_fk_bot_name,
 			p_fk_typ_name,
 			p_name,
@@ -2946,7 +2946,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			name)
 		VALUES (
 			NULL,
-			NULL,
+			l_cube_sequence,
 			p_fk_bot_name,
 			p_fk_typ_name,
 			p_fk_par_name,
@@ -3211,7 +3211,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			primary_key)
 		VALUES (
 			NULL,
-			NULL,
+			l_cube_sequence,
 			NULL,
 			p_fk_bot_name,
 			p_fk_typ_name,
@@ -3481,7 +3481,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			xk_tsp_code)
 		VALUES (
 			NULL,
-			NULL,
+			l_cube_sequence,
 			p_fk_bot_name,
 			p_fk_typ_name,
 			p_fk_tsg_code,
@@ -3827,7 +3827,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_sys IS
 			xk_bot_name)
 		VALUES (
 			NULL,
-			NULL,
+			l_cube_sequence,
 			p_fk_sys_name,
 			p_xk_bot_name);
 	EXCEPTION
@@ -4043,7 +4043,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_fun IS
 			name)
 		VALUES (
 			NULL,
-			NULL,
+			l_cube_sequence,
 			p_fk_fun_name,
 			p_name);
 	EXCEPTION

@@ -794,7 +794,7 @@
 				=EXPRESSION:NULL;
 			-SET:;
 			+SET:cube_sequence;
-				=EXPRESSION:NULL;
+				=EXPRESSION:REF_NAME|l_cube_sequence;
 			-SET:;
 			+SET:fk_itp_name;
 				=EXPRESSION:REF_NAME|p_fk_itp_name;
@@ -1271,7 +1271,7 @@
 				=EXPRESSION:NULL;
 			-SET:;
 			+SET:cube_sequence;
-				=EXPRESSION:NULL;
+				=EXPRESSION:REF_NAME|l_cube_sequence;
 			-SET:;
 			+SET:name;
 				=EXPRESSION:REF_NAME|p_name;
@@ -2203,7 +2203,7 @@
 				=EXPRESSION:NULL;
 			-SET:;
 			+SET:cube_sequence;
-				=EXPRESSION:NULL;
+				=EXPRESSION:REF_NAME|l_cube_sequence;
 			-SET:;
 			+SET:cube_level;
 				=EXPRESSION:NULL;
@@ -2867,7 +2867,7 @@
 				=EXPRESSION:NULL;
 			-SET:;
 			+SET:cube_sequence;
-				=EXPRESSION:NULL;
+				=EXPRESSION:REF_NAME|l_cube_sequence;
 			-SET:;
 			+SET:fk_bot_name;
 				=EXPRESSION:REF_NAME|p_fk_bot_name;
@@ -4034,7 +4034,7 @@
 				=EXPRESSION:NULL;
 			-SET:;
 			+SET:cube_sequence;
-				=EXPRESSION:NULL;
+				=EXPRESSION:REF_NAME|l_cube_sequence;
 			-SET:;
 			+SET:fk_bot_name;
 				=EXPRESSION:REF_NAME|p_fk_bot_name;
@@ -5282,7 +5282,7 @@
 				=EXPRESSION:NULL;
 			-SET:;
 			+SET:cube_sequence;
-				=EXPRESSION:NULL;
+				=EXPRESSION:REF_NAME|l_cube_sequence;
 			-SET:;
 			+SET:fk_bot_name;
 				=EXPRESSION:REF_NAME|p_fk_bot_name;
@@ -5982,7 +5982,7 @@
 				=EXPRESSION:NULL;
 			-SET:;
 			+SET:cube_sequence;
-				=EXPRESSION:NULL;
+				=EXPRESSION:REF_NAME|l_cube_sequence;
 			-SET:;
 			+SET:cube_level;
 				=EXPRESSION:NULL;
@@ -6729,7 +6729,7 @@
 				=EXPRESSION:NULL;
 			-SET:;
 			+SET:cube_sequence;
-				=EXPRESSION:NULL;
+				=EXPRESSION:REF_NAME|l_cube_sequence;
 			-SET:;
 			+SET:fk_bot_name;
 				=EXPRESSION:REF_NAME|p_fk_bot_name;
@@ -7407,7 +7407,7 @@
 				=EXPRESSION:NULL;
 			-SET:;
 			+SET:cube_sequence;
-				=EXPRESSION:NULL;
+				=EXPRESSION:REF_NAME|l_cube_sequence;
 			-SET:;
 			+SET:fk_sys_name;
 				=EXPRESSION:REF_NAME|p_fk_sys_name;
@@ -7854,7 +7854,7 @@
 				=EXPRESSION:NULL;
 			-SET:;
 			+SET:cube_sequence;
-				=EXPRESSION:NULL;
+				=EXPRESSION:REF_NAME|l_cube_sequence;
 			-SET:;
 			+SET:fk_fun_name;
 				=EXPRESSION:REF_NAME|p_fk_fun_name;
