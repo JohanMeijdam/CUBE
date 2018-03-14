@@ -10,7 +10,7 @@ use URI::Escape;
 # ===== ==== ==========
 #
 print "\n";
-print "CubeGen v2.7  30 Jun 2014\n";
+print "CubeGen v2.`8  14 March 2018\n";
 print "=====================================\n";
 print "Reading Model      : $ModelFile\n";
 ######################################################################################
@@ -740,7 +740,6 @@ sub ProcessTemplateSegment {
 my ($FlagSequence, $NodeIndex, $DfltTag, $TemplateSegment) = @_;
 my ($IndexIf, $IndexLoop, $IndexRepeat, $IndexSequ, $IndexFor, $IndexTempl, $IndexMin, $Index);
 
-print "\nDEBUG:$TemplateSegment\n";
 	if (length($TemplateSegment) > 0 ) {
 		$IndexIf     = index($TemplateSegment, '[[IF');
 		$IndexLoop   = index($TemplateSegment, '[[LOOP');
@@ -816,7 +815,6 @@ my ($Condition, $Tag, $CondNodeIndex, $IStack, $Logical);
 		$IndexColon = index($TemplateSegment, ':');
 		if ($IndexColon > -1 && $IndexColon < $Index2) {
 			$Condition = substr($TemplateSegment, $IndexColon+1, $Index2-$IndexColon-1);
-# AANGEPAST			$Condition =~ s/ //g;
 		} else {
 			print CODE "\n[ERROR: No condition in IF]\n";
 			exit;
@@ -910,7 +908,6 @@ my ($Condition, $Type, $Tag, $Endtag, $Name);
 		$IndexColon = index($Tag, ':');
 		if ($IndexColon > -1) {
 			$Condition = substr($Tag, $IndexColon+1);
-# AANGEPAST			$Condition =~ s/ //g;
 			$Tag = substr($Tag, 0, $IndexColon);
 		} else {
 			$Condition = 'none';

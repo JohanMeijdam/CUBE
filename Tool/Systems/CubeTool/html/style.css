@@ -1,0 +1,102 @@
+body {
+  font-family:  Arial, Helvetica, sans-serif;
+	color : #595959;
+	font-size:  10pt;
+	scrollbar-face-color:'#FFFFFF';
+	scrollbar-arrow-color:'#595959';
+	scrollbar-track-color:'#FFFFFF';
+	scrollbar-shadow-color:'#FFFFFF';
+	scrollbar-highlight-color:'#FFFFFF';
+	scrollbar-3dlight-color:'#595959';
+	scrollbar-darkshadow-Color:'#595959';
+}
+
+.inhoud {
+  font-family:  Arial, Helvetica, sans-serif;
+	color : #595959;
+	font-size:  10pt;
+	background: url(images/esmee_background3.jpg) fixed;
+	scrollbar-face-color:'#FFFFFF';
+	scrollbar-arrow-color:'#595959';
+	scrollbar-track-color:'#FFFFFF';
+	scrollbar-shadow-color:'#FFFFFF';
+	scrollbar-highlight-color:'#FFFFFF';
+	scrollbar-3dlight-color:'#595959';
+	scrollbar-darkshadow-Color:'#595959';
+}
+
+.boxInhoud {
+  font-family:  Arial, Helvetica, sans-serif;
+	color : white;
+	font-size:  10pt;
+	background: #595959;
+}
+
+A:link { font-weight: normal; font-style: none; color: #00867F; text-decoration: none; }
+A:active { font-weight: normal; font-style: italic; color: #595959; text-decoration: none; }
+A:visited { font-weight: normal; font-style: none; color: #00867F; text-decoration: none; }
+A:hover { font-weight: normal; font-style: none; color: #00867F; text-decoration: underline; }
+
+A:link.c { font-weight: bold; font-style: none; color: #595959; text-decoration: none; }
+A:active.c { font-weight: bold; font-style: none; color: #595959; text-decoration: none; }
+A:visited.c { font-weight: bold; font-style: none; color: #595959; text-decoration: none; }
+A:hover.c { font-weight: bold; font-style: none; color: #595959; text-decoration: underline; }
+
+td {
+	font-family:  Arial, Helvetica, sans-serif;
+	color : #595959;
+	font-size:  10pt;
+	vertical-align: top;
+	text-align:     left;
+}
+
+.tablekop {
+	border : 0px solid #064ab7;
+	text-align : left;
+
+}
+.tab_border {
+	color 		: #FFFFFF;
+	border 		: 1px solid #064ab7;
+	text-align	: center;
+	cursor		: default;
+	background-color: #005080;
+}
+
+ul {
+	font-family:  Arial, Helvetica, sans-serif;
+	color : #595959;
+	font-size:  10pt;
+}
+
+h1 {
+	font-size: 18pt;
+	font-weight: bold;
+}
+
+h2 {
+	font-size: 15pt;
+	font-weight: bold;
+}
+
+h3 {
+	font-size: 12pt;
+	font-weight: bold;
+}
+
+.inhoud {
+	font: 8pt;
+	font-weight: bold;
+	font-style: italic;
+}
+
+.kop {
+	font-size: 10pt;
+	text-decoration: underline;
+}
+
+.code {
+	font-family: Courier New,Courier,Lucida Sans Typewriter,Lucida Typewriter,monospace;
+	font-size: 10pt;
+}
+	

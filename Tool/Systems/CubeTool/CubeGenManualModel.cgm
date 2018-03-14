@@ -1,0 +1,14 @@
+! CubeGenManualModel
+!
++CUBE_GEN_DOCUMENTATION:Cube_Gen_Manual;
+	+CUBE_GEN_PARAGRAPH[CGP-000000100020]:Command Line|cubegen.exe <model> <template> <code> <arguments> %0Aperl cubegen.pl <model> <template> <code> <arguments>%0A- <model>: Imported Cube Model textfile%0A- <template>: Importede CubeGen Template Textfile%0A- <code>: Textfile to generate%0A- <argument>: Parameters used in template;
+	-CUBE_GEN_PARAGRAPH:;
+	+CUBE_GEN_EXAMPLE_MODEL[CGM-000000100020]:Case1|;
+		+CUBE_GEN_FUNCTION[CGF-000000100020]:Iteration|Walk through model elements.|List:[[LOOP,BUSINESS_OBJECT_TYPE]]%0A-%09<<BUSINESS_OBJECT_TYPE:C>>[[ENDLOOP,BUSINESS_OBJECT_TYPE]];
+		-CUBE_GEN_FUNCTION:;
+		+BUSINESS_OBJECT_TYPE[BOT-000000100140]:KLANT|Klanten;
+		-BUSINESS_OBJECT_TYPE:;
+		+BUSINESS_OBJECT_TYPE[BOT-000000100141]:PRODUKT|Produkten;
+		-BUSINESS_OBJECT_TYPE:;
+	-CUBE_GEN_EXAMPLE_MODEL:;
+-CUBE_GEN_DOCUMENTATION:;

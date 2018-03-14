@@ -1,0 +1,14 @@
+<html>
+<head><link rel=stylesheet type="text/css" href="style.css"></head><body>
+<p><font class="kop">Command Line</font><br>cubegen.exe &lt;model&gt; &lt;template&gt; &lt;code&gt; &lt;arguments&gt; <br>perl cubegen.pl &lt;model&gt; &lt;template&gt; &lt;code&gt; &lt;arguments&gt;<br>- &lt;model&gt;: Imported Cube Model textfile<br>- &lt;template&gt;: Importede CubeGen Template Textfile<br>- &lt;code&gt;: Textfile to generate<br>- &lt;argument&gt;: Parameters used in template
+<pre><font class="kop">CUBE Model</font><font class="code">
+=BUSINESS_OBJECT_TYPE[BOT-000000100140]:KLANT|Klanten;
+=BUSINESS_OBJECT_TYPE[BOT-000000100141]:PRODUKT|Produkten;</font></pre>
+<pre><font class="kop">Template</font><br><font class="code">List:[[LOOP,BUSINESS_OBJECT_TYPE]]
+-	&lt;&lt;BUSINESS_OBJECT_TYPE:C&gt;&gt;[[ENDLOOP,BUSINESS_OBJECT_TYPE]]</font></pre>
+<pre><font class="kop">Code</font><font class="code">
+List:
+-	Klant
+-	Produkt</font></pre>
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br></body></html>

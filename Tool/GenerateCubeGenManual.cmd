@@ -12,9 +12,9 @@ echo extract model.
 sqlplus.exe %db_schema%/%db_password%@%db_name% @Systems\CubeTool\ModelExport.sql %sysdir%\CubeToolModel.cgm REPLACE >> %logfile% 2>&1
 
 echo Generate Model.
-perl CubeGen.pl %sysdir%\CubeToolModel.cgm Templates\CubeGenManualModelTemplate.cgt %sysdir%\CubeGenManualModel.cgm >> %logfile% 2>&1
+CubeGen.exe %sysdir%\CubeToolModel.cgm Templates\CubeGenManualModelTemplate.cgt %sysdir%\CubeGenManualModel.cgm >> %logfile% 2>&1
 
 echo Generate Manual.
-perl CubeGen.pl %sysdir%\CubeGenManualModel.cgm Templates\CubeGenManualTemplate.cgt %sysdir%\html\CubeGen.htm %sysdir% >> %logfile% 2>&1
+CubeGen.exe %sysdir%\CubeGenManualModel.cgm Templates\CubeGenManualTemplate.cgt %sysdir%\html\CubeGenManual.htm %sysdir% >> %logfile% 2>&1
 
 pause
