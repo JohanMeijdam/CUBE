@@ -1,0 +1,32 @@
+[[LOOP,SYSTEM]][[FILE,Generate<<SYSTEM:C>>.cmd]]@echo off
+set logfile=Gen<<SYSTEM:C>>.log
+echo Start > %logfile%
+::goto :end
+echo Generate Models.
+..\CubeGen.exe CubeToolModel.txt ..\Templates\BoRefModelTemplate.txt <<SYSTEM>>\CubeBoRefModel.txt <<SYSTEM>> >> %logfile% 2>&1
+..\CubeGen.exe <<SYSTEM>>\CubeBoRefModel.txt ..\Templates\BoModelTemplate.txt <<SYSTEM>>\CubeBoModel.txt >> %logfile% 2>&1
+..\CubeGen.exe <<SYSTEM>>\CubeBoModel.txt ..\Templates\DbModelTemplate.txt <<SYSTEM>>\CubeDbModel.txt >> %logfile% 2>&1
+::goto :end
+:Database
+echo Generate Database.
+..\CubeGen.exe <<SYSTEM>>\CubeDbModel.txt ..\Templates\TableTemplate.txt <<SYSTEM>>\TableDdl.sql >> %logfile% 2>&1
+C:\oracle\product\11.1.0\db_1\BIN\sqlplus.exe <<SYSTEM2:L>>/<<SYSTEM3:L>>@<<SYSTEM1:L>> @<<SYSTEM>>\TableDdl.sql >> %logfile% 2>&1
+::goto :end
+:Packages
+echo Generate Packages.
+..\CubeGen.exe <<SYSTEM>>\CubeBoModel.txt ..\Templates\PackageTemplate.txt <<SYSTEM>>\PackageDdl.sql >> %logfile% 2>&1
+C:\oracle\product\11.1.0\db_1\BIN\sqlplus.exe <<SYSTEM2:L>>/<<SYSTEM3:L>>@<<SYSTEM1:L>> @<<SYSTEM>>\PackageDdl.sql >> %logfile% 2>&1
+::goto :end
+:Application
+echo Generate Application.
+set wwwroot=C:\inetpub\wwwroot
+set sysroot=%wwwroot%\<<SYSTEM>>
+del /S/Q %sysroot% >> %logfile% 2>&1
+xcopy /Y/E <<SYSTEM>>\files %sysroot% >> %logfile% 2>&1
+..\CubeGen.exe <<SYSTEM>>\CubeBoModel.txt ..\Templates\CubeTreePhp.txt %sysroot%\CubeTree.php >> %logfile% 2>&1
+..\CubeGen.exe <<SYSTEM>>\CubeBoModel.txt ..\Templates\CubeMainPhp.txt %sysroot%\CubeMain.php >> %logfile% 2>&1
+..\CubeGen.exe <<SYSTEM>>\CubeBoModel.txt ..\Templates\CubeDetailPhp.txt %sysroot%\CubeDetail.php %sysroot%>> %logfile% 2>&1
+..\CubeGen.exe <<SYSTEM>>\CubeBoModel.txt ..\Templates\CubeServerPhp.txt %sysroot%\CubeServer.php >> %logfile% 2>&1
+:end
+pause
+[[ENDLOOP,SYSTEM]]

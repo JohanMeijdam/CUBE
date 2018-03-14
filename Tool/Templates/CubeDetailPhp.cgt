@@ -1,0 +1,445 @@
+Change log:
+10-08-2016 - Foreign Keys to lowest level:
+-	In case of create (N or R) only FK's that are part of the primary key of the parent
+16-08-2016 - Remove relationship scope level
+21-08-2016 - RERERENCE renamed to EXTERNAL_REFERENCE
+16-10-2016 - EXTERNAL_REFERENCE renamed to REFERENCE
+30-11-2016 - TYP_<type> changed to LIST_<type>	
+13-12-2016 - OpenListBox for multiple references	
+13-12-2016 - StartSelect for multiple references, Calling ListRestricted
+20-10-2017 - Getting none key foreign keys
+10-11-2017 - g_option[0] F and L in create not passing g_option[1]
+22-11-2017 - Argument cube_recursive vewijderd.
+27-11-2017 - Reference scope implemented.
+30-11-2017 - ATTRIBUTE_KEY_TYPE used in getting reference list.
+17-12-2017 - Empty option for optional relationscips.
+30-12-2017 - Default value on attribute level.
+20-01-2018 - REFERENCE_TYPE_1 replaced by REFERENCE_TYPE_WITHIN_SCOPE_OF.
+06-02-2018 - Implementation of DESCRIPTION_REFERENCE.
+07-02-2018 - Parameters added in case op REFERENCE_SCOPE_ATTRIBUTE.
+21-02-2018 - Implementation of TYPE_SPECIALISATION_GROUP.
+28-02-2018 - domain NR length + 1. 
+11-03-2018 - Unchangeable Attributes and References not updateable.
+[[TEXT,DETAIL_RECURSIVE_PARMS]]'[[IF,REFERENCE:4=PRA]]U<|>9999[[ELSIF,REFERENCE:4=PR1]]U<|>1[[ELSIF,REFERENCE:4=CHA]]D<|>9999[[ELSIF,REFERENCE:4=CH1]]D<|>1[[ELSE]]X<|>0[[ENDIF]]<|>'+[[ENDTEXT]]
+[[TEXT,DETAIL_GET_LIST_NAME]]Get[[LOOP,REFERENCE_TYPE]]<<REFERENCE_TYPE1:C>>[[ENDLOOP,REFERENCE_TYPE]][[LOOP,REFERENCE_TYPE_WITHIN_SCOPE_OF]]For<<REFERENCE_TYPE_WITHIN_SCOPE_OF1:C>>[[ENDLOOP,REFERENCE_TYPE_WITHIN_SCOPE_OF]]List[[ENDTEXT]]
+[[TEXT,DETAIL_ROOT_NAME]][[LOOP,ATTRIBUTE_ROOT_TYPE]]<<ATTRIBUTE_ROOT_TYPE:C>>[[ENDLOOP,ATTRIBUTE_ROOT_TYPE]].[[LOOP,ATTRIBUTE_ROOT]][[IF:CHILD(ATTRIBUTE_TYPE_SPECIALISATION_GROUP)]][[LOOP,ATTRIBUTE_TYPE_SPECIALISATION_GROUP]]<<ATTRIBUTE_TYPE_SPECIALISATION_GROUP1:C>>[[ENDLOOP,ATTRIBUTE_TYPE_SPECIALISATION_GROUP]][[ELSE]]<<ATTRIBUTE_ROOT:C>>[[ENDIF]][[ENDLOOP,ATTRIBUTE_ROOT]][[ENDTEXT]]
+[[BODY]][[LOOP,SYSTEM:0=<<1>>]][[LOOP,SYSTEM_BO_TYPE]][[LOOP,BUSINESS_OBJECT_TYPE]][[LOOP,TYPE]][[FILE,<<2>>\<<1>>Detail<<TYPE1:U>>.php]]<?php
+session_start();
+$_SESSION['views']=0;
+?><html>
+<head>
+<link rel="stylesheet" href="base_css.php" />
+<script language='javascript' type='text/javascript'>
+<!--
+var g_option;
+g_xmlhttp = new XMLHttpRequest();
+g_xmlhttp.onreadystatechange = function() {
+	if(g_xmlhttp.readyState == 4) {
+		var l_argument = g_xmlhttp.responseText.split("<|||>");
+		switch (l_argument[0]) {
+		case "SELECT_<<TYPE1:U>>":
+			var l_values = l_argument[1].split("<|>");[[LOOP,ATTRIBUTE:1=N[AND]4=N]]
+			document.getElementById("Input<<ATTRIBUTE:C>>").value=l_values[[[EVAL:<<ATTRIBUTE:IX>>-1]]];[[ENDLOOP,ATTRIBUTE]][[IF:CHILD(TYPE_SPECIALISATION_GROUP)]]
+			ProcessTypeSpecialisation();[[ENDIF]]
+			break;
+		case "CREATE_<<TYPE1:U>>":[[LOOP,ATTRIBUTE:(1=Y[OR]3=F[OR]3=R)[AND]4=N]]
+			document.getElementById("Input<<ATTRIBUTE:C>>").readOnly=true;[[ENDLOOP,ATTRIBUTE]][[LOOP,REFERENCE:1=Y]]
+			document.getElementById("RefSelect<<REFERENCE:S>>").disabled=true;[[ENDLOOP,REFERENCE]]
+			document.getElementById("ButtonCreate").disabled=true;[[IF:CHILD(ATTRIBUTE:1=N[AND]!(3=F[OR]3=R)[AND]4=N)]]
+			document.getElementById("ButtonUpdate").disabled=false;[[ENDIF]]
+			document.getElementById("ButtonDelete").disabled=false;
+			l_objNode = parent.TREE.document.getElementById(document._nodeId);
+			document._nodeId = 'TYP_<<TYPE1:U>><||>'+[[LOOP,ATTRIBUTE:1=Y]]document.getElementById("Input<<ATTRIBUTE:C>>").value[[IF:!LAST]]+'<|>'+[[ENDIF]][[ENDLOOP,ATTRIBUTE]];
+			if (l_objNode != null) {
+				if (l_objNode.firstChild._state == 'O') {[[IF:6=K]]
+					if (l_argument[1] == null) {
+						var l_position = 'L';
+						l_objNodePos = null;
+					} else {
+						var l_position = 'B';
+						l_objNodePos = parent.TREE.document.getElementById('TYP_<<TYPE1:U>><||>'+l_argument[1]);
+					}[[ELSIF:6=P]]
+					var l_position = g_option[0];
+					l_objNodePos = parent.TREE.document.getElementById('TYP_<<TYPE1:U>><||>'+g_option[1]);[[ELSE]]
+					var l_position = 'L';
+					l_objNodePos = null;[[ENDIF]]
+					parent.TREE.AddTreeviewNode(
+						l_objNode,
+						'TYP_<<TYPE1:U>>',
+						document._nodeId,
+						'icons/<<TYPE7:L>>.bmp', 
+						[[IF:CHILD(ATTRIBUTE:!2=N)]][[LOOP,ATTRIBUTE:!2=N]][[IF:2=S]][[IF:FIRST]]'('+[[ELSE]]+' ('+[[ENDIF]][[ELSE]][[IF:!FIRST]]+' '+[[ENDIF]][[ENDIF]]document.getElementById("Input<<ATTRIBUTE:C>>").value.toLowerCase()[[IF:2=S]]+')'[[ENDIF]][[ENDLOOP,ATTRIBUTE]][[ELSE]]' '[[ENDIF]],
+						'N',
+						l_position,
+						l_objNodePos);
+				}
+			}
+			break;
+		case "UPDATE_<<TYPE1:U>>":[[IF:CHILD(ATTRIBUTE:1=N[AND]!2=N)]]
+			l_objNode = parent.TREE.document.getElementById(document._nodeId);
+			if (l_objNode != null) {
+				l_objNode.children[1].lastChild.nodeValue = ' '+[[LOOP,ATTRIBUTE:!2=N]][[IF:2=S]][[IF:FIRST]]'('+[[ELSE]]' ('+[[ENDIF]][[ELSE]][[IF:!FIRST]]' '+[[ENDIF]][[ENDIF]]document.getElementById("Input<<ATTRIBUTE:C>>").value.toLowerCase()[[IF:2=S]]+')'[[ENDIF]][[IF:!LAST]]+[[ENDIF]][[ENDLOOP,ATTRIBUTE]];
+			}[[ENDIF]]
+			break;
+		case "DELETE_<<TYPE1:U>>":
+			document.getElementById("ButtonUpdate").disabled=true;
+			document.getElementById("ButtonDelete").disabled=true;
+			l_objNode = parent.TREE.document.getElementById(document._nodeId);
+			if (l_objNode != null) {
+				l_objNode = l_objNode;
+				l_objNode.parentNode.removeChild(l_objNode);
+			}
+			break;[[LOOP,REFERENCE]][[LOOP,REFERENCE_TYPE]]
+		case "LIST_<<REFERENCE_TYPE1:U>>":
+			OpenListBox(l_argument,'<<REFERENCE_TYPE7:L>>','<<REFERENCE_TYPE:C>>',[[IF,REFERENCE:1='Y']]'N'[[ELSE]]'Y'[[ENDIF]]);
+			break;[[ENDLOOP,REFERENCE_TYPE]][[ENDLOOP,REFERENCE]][[IF:CHILD(ATTRIBUTE:3=F[AND]CHILD(ATTRIBUTE_SOURCE:1=N))]]
+		case "SELECT_FKEY_<<TYPE(N-1)1:U>>":
+			var l_values = l_argument[1].split("<|>");[[LOOP,ATTRIBUTE:3=F[AND]CHILD(ATTRIBUTE_SOURCE:1=N)]]
+			document.getElementById("Input<<ATTRIBUTE:C>>").value=l_values[[[EVAL:<<ATTRIBUTE:IX>>-1]]];[[ENDLOOP,ATTRIBUTE]]
+			break;[[ENDIF]][[IF:3=Y[AND]CHILD(ATTRIBUTE:1=N[AND]3=F)]]
+		case "SELECT_FKEY_<<TYPE1:U>>":
+			var l_values = l_argument[1].split("<|>");[[LOOP,ATTRIBUTE:1=N[AND]3=F]]
+			document.getElementById("Input<<ATTRIBUTE:C>>").value=l_values[[[EVAL:<<ATTRIBUTE:IX>>-1]]];[[ENDLOOP,ATTRIBUTE]]
+			break;[[ENDIF]]
+		case "ERROR":
+			alert ('Error: '+l_argument[1]);
+			break;
+		case "SELECT_CUBE_DSC":
+			document.getElementById("CubeDesc").value = l_argument[1];
+			break;
+		default:
+			alert (g_xmlhttp.responseText);	
+		}			
+	}
+}
+
+function performTrans(p_message) {
+	g_xmlhttp.open('POST','<<1>>Server.php',true);
+	g_xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+	g_xmlhttp.send(p_message);
+}
+
+function InitBody() {
+	var l_argument = decodeURIComponent(document.location.href).split("<|||>");
+	document.body._FlagDragging = 0;
+	document.body._DraggingId = ' ';
+	document.body._ListBoxCode="Ref000";
+	document._nodeId = l_argument[2];
+	document._argument = document._nodeId.split("<||>")[1];[[IF:6=P]]
+	g_option = l_argument[3].split("<||>");[[ENDIF]]
+	if (document._argument != null) {
+		var values = document._argument.split("<|>");
+	}
+	switch (l_argument[1]) {
+	case "D":[[LOOP,ATTRIBUTE:1=Y]]
+		document.getElementById("Input<<ATTRIBUTE:C>>").value=values[[[EVAL:<<ATTRIBUTE:IX>>-1]]];[[ENDLOOP,ATTRIBUTE]]
+		document.getElementById("ButtonCreate").disabled=true;[[IF:CHILD(ATTRIBUTE:1=N[AND]4=N)]]
+		performTrans('Get<<TYPE1:C>>'+'<|||>'+document._argument);[[ENDIF]][[IF:!CHILD(ATTRIBUTE:1=N[AND]!(3=F[OR]3=R)[AND]4=N)]]
+		document.getElementById("ButtonUpdate").disabled=true;[[ENDIF]][[LOOP,ATTRIBUTE:1=Y[OR]3=F[OR]3=R[OR]6=Y]]
+		document.getElementById("Input<<ATTRIBUTE:C>>").readOnly=true;[[ENDLOOP,ATTRIBUTE]][[LOOP,REFERENCE:1=Y[OR]5=Y]]
+		document.getElementById("RefSelect<<REFERENCE:S>>").disabled=true;[[ENDLOOP,REFERENCE]]
+		break;
+	case "N":[[LOOP,ATTRIBUTE:3=F[AND]CHILD(ATTRIBUTE_SOURCE:1=Y)]]
+		document.getElementById("Input<<ATTRIBUTE:C>>").value=values[[[EVAL:<<ATTRIBUTE:IX>>-1]]];[[ENDLOOP,ATTRIBUTE]]
+		document.getElementById("ButtonUpdate").disabled=true;
+		document.getElementById("ButtonDelete").disabled=true;[[IF:CHILD(ATTRIBUTE:3=F[AND]CHILD(ATTRIBUTE_SOURCE:1=N))]]
+		performTrans('Get<<TYPE(N-1)1:C>>Fkey'+'<|||>'+document._argument);[[ENDIF]][[LOOP,ATTRIBUTE:(3=F[OR]3=R)[AND]4=N]]
+		document.getElementById("Input<<ATTRIBUTE:C>>").readOnly=true;[[ENDLOOP,ATTRIBUTE]]
+		break;[[IF,TYPE:3=Y]]  
+	case "R":[[IF,TYPE:2=Y]][[LOOP,ATTRIBUTE:3=F[AND]CHILD(ATTRIBUTE_SOURCE:1=Y)[OR]3=R]]
+		document.getElementById("Input<<ATTRIBUTE:C>>").value=values[[[EVAL:<<ATTRIBUTE:IX>>-1]]];[[ENDLOOP,ATTRIBUTE]][[ELSE]][[LOOP,ATTRIBUTE:3=R]]
+		document.getElementById("Input<<ATTRIBUTE:C>>").value=values[[[EVAL:<<ATTRIBUTE:IX>>-1]]];[[ENDLOOP,ATTRIBUTE]][[ENDIF]]
+		document.getElementById("ButtonUpdate").disabled=true;
+		document.getElementById("ButtonDelete").disabled=true;[[IF:CHILD(ATTRIBUTE:1=N[AND]3=F)]]
+		performTrans('Get<<TYPE1:C>>Fkey'+'<|||>'+document._argument);[[ENDIF]][[LOOP,ATTRIBUTE:(3=F[OR]3=R)[AND]4=N]]
+		document.getElementById("Input<<ATTRIBUTE:C>>").readOnly=true;[[ENDLOOP,ATTRIBUTE]]
+		break;[[ENDIF]]
+	default:
+		alert ('Error InitBody: '+l_argument[1]);
+	}[[LOOP,ATTRIBUTE:1=N[AND]3=N[AND]!5=]]
+	document.getElementById("Input<<ATTRIBUTE:C>>").value='<<ATTRIBUTE5>>';[[ENDLOOP,ATTRIBUTE]]
+}
+
+function Create<<TYPE1:C>>() {
+	var l_parameters = [[LOOP,ATTRIBUTE:!CHILD(DERIVATION)]]
+		document.getElementById("Input<<ATTRIBUTE:C>>").value[[IF:!LAST]]+'<|>'+[[ENDIF]][[ENDLOOP,ATTRIBUTE]];[[IF:6=P]]
+	if (g_option[0] == 'F' || g_option[0] == 'L') {
+		performTrans('Create<<TYPE1:C>><|||>'+g_option[0]+'<|>'+l_parameters);
+	} else {
+		performTrans('Create<<TYPE1:C>><|||>'+g_option[0]+'<|>'+l_parameters+'<|>'+g_option[1]);
+	}[[ELSE]]
+	performTrans('Create<<TYPE1:C>><|||>'+l_parameters);[[ENDIF]]
+}[[IF:CHILD(ATTRIBUTE:1=N)]]
+
+function Update<<TYPE1:C>>() {
+	var l_parameters = [[LOOP,ATTRIBUTE:1=Y[OR]!CHILD(DERIVATION)]]
+		document.getElementById("Input<<ATTRIBUTE:C>>").value[[IF:!LAST]]+'<|>'+[[ENDIF]][[ENDLOOP,ATTRIBUTE]];
+	performTrans('Update<<TYPE1:C>><|||>'+l_parameters);
+}[[ENDIF]]
+
+function Delete<<TYPE1:C>>() {
+	var l_parameters = [[LOOP,ATTRIBUTE:1=Y]]
+		document.getElementById("Input<<ATTRIBUTE:C>>").value[[IF:!LAST]]+'<|>'+[[ENDIF]][[ENDLOOP,ATTRIBUTE]];
+	performTrans('Delete<<TYPE1:C>><|||>'+l_parameters);
+}[[IF:CHILD(REFERENCE)]]
+
+function OpenListBox(p_rows,p_icon,p_header,p_optional) {
+	CloseListBox();
+	if (p_rows.length > 1) {
+
+		var l_objDiv = document.createElement('DIV');
+		var l_objTable = document.createElement('TABLE');
+		var l_objImg = document.createElement('IMG');
+		var l_objSpan = document.createElement('SPAN');
+		var l_objImgExit = document.createElement('IMG');
+		var l_objSelect = document.createElement('SELECT');
+
+		document.body.appendChild(l_objDiv);
+
+		l_objDiv.appendChild(l_objTable);
+		l_objRow_0 = l_objTable.insertRow();
+		l_objCell_0_0 = l_objRow_0.insertCell();
+		l_objCell_0_1 = l_objRow_0.insertCell();
+		l_objRow_1 = l_objTable.insertRow();
+		l_objCell_1_0 = l_objRow_1.insertCell();
+		l_objCell_0_0.appendChild(l_objImg);
+		l_objCell_0_0.appendChild(l_objSpan);
+		l_objCell_0_1.appendChild(l_objImgExit);
+		l_objCell_1_0.appendChild(l_objSelect);
+
+		l_objDiv.id = 'ListBox';
+		l_objDiv.style.position = 'absolute';
+		l_objDiv.style.left = document.body._SelectLeft+30;
+		l_objDiv.style.top = document.body._SelectTop+10;
+		l_objDiv.style.border = 'thin solid #7F7F7F';
+		l_objDiv.style.boxShadow = '10px 10px 5px #888888';
+		l_objDiv.draggable = 'true';
+		l_objDiv.ondragstart = function(){StartMove(event)};
+		l_objDiv.ondragend = function(){EndMove(event)};
+
+		l_objImg.src = 'icons/'+p_icon+'.bmp';
+		l_objImg.style.border = '2 solid transparent';
+		l_objSpan.innerHTML = '&nbsp;&nbsp;'+p_header+'&nbsp;&nbsp;';
+		l_objCell_0_1.style.textAlign = 'right';
+		l_objImgExit.style.cursor = 'pointer';
+		l_objImgExit.src = 'icons/exit.bmp';
+		l_objImgExit.style.border = '1 solid transparent';
+		l_objImgExit.onclick = function(){CloseListBox()};
+		l_objCell_1_0.colSpan = '2';
+
+
+		l_objSelect.size = Math.min(p_rows.length-1,16)
+		l_objSelect.onclick = function(){UpdateForeignKey(this)};
+
+		if (p_optional == 'Y') {
+			l_objSelect.size = l_objSelect.size + 1;
+			var l_objOption = document.createElement('OPTION');
+			l_objSelect.appendChild(l_objOption);
+			l_objOption.value = '';
+			l_objOption.innerHTML = '';
+		}
+
+		for (ir in p_rows) {
+			if (ir > 0) {
+				var l_rowpart = p_rows[ir].split("<||>");
+				var l_objOption = document.createElement('OPTION');
+				l_objSelect.appendChild(l_objOption);
+				l_objOption.value = l_rowpart[0];
+				l_objOption.innerHTML = l_rowpart[1].toLowerCase();
+			}
+		}
+	} else {
+		alert ("No Items Found");
+	}
+}
+
+function CloseListBox() {
+	var l_obj = document.getElementById("ListBox");
+	if (l_obj) {l_obj.parentNode.removeChild(l_obj);}
+}
+
+function UpdateForeignKey(p_obj) {
+	var l_obj_option = p_obj.options[p_obj.selectedIndex];
+	var l_values = l_obj_option.value.split("<|>");
+	switch (document.body._ListBoxCode){[[LOOP,REFERENCE]]
+	case "Ref<<REFERENCE:S>>":[[LOOP,FKEY]]
+		if (l_obj_option.value == '') {
+			document.getElementById("Input<<FKEY:C>>").value = '';
+		} else {
+			document.getElementById("Input<<FKEY:C>>").value = l_values[[[EVAL:<<FKEY:IX>>-1]]];
+		}[[ENDLOOP,FKEY]]
+		break;[[ENDLOOP,REFERENCE]]
+	default:
+		alert ('Error Listbox: '+document.body._ListBoxCode);
+	}
+	CloseListBox();
+}[[ENDIF]][[LOOP,REFERENCE]]
+
+function StartSelect<<REFERENCE:S>>(p_event) {
+	document.body._SelectLeft = p_event.clientX;
+	document.body._SelectTop = p_event.clientY;
+	document.body._ListBoxCode = 'Ref<<REFERENCE:S>>';[[EVAL:($myFlag=0)]][[IF:CHILD(REFERENCE_TYPE:3=Y)[AND]!4=ALL]][[LOOP,REFERENCE_TYPE]][[FOR,TYPE:N>1]][[IF:0=<<REFERENCE_TYPE>>]][[EVAL:($myFlag=1)]][[ENDIF]][[ENDFOR]][[ENDLOOP,REFERENCE_TYPE]][[ENDIF]][[IF:EVAL:$myFlag]]
+	var l_parameters = [[LOOP,REFERENCE_TYPE]][[IF,REFERENCE:4=ENC]][[LOOP,ATTRIBUTE:3=F[AND]CHILD(ATTRIBUTE_SOURCE:1=Y)]]
+		document.getElementById("Input<<ATTRIBUTE:C>>").value[[IF:!LAST]]+'<|>'+[[ENDIF]][[ENDLOOP,ATTRIBUTE]][[ELSIF,REFERENCE_TYPE:0=<<TYPE>>]]<<TEXT,DETAIL_RECURSIVE_PARMS>>[[LOOP,ATTRIBUTE:1=Y]]
+		document.getElementById("Input<<ATTRIBUTE:C>>").value[[IF:!LAST]]+'<|>'+[[ENDIF]][[ENDLOOP,ATTRIBUTE]][[ELSE]]<<TEXT,DETAIL_RECURSIVE_PARMS>>[[FOR,TYPE:N>N]][[LOOP,ATTRIBUTE:3=F[AND]CHILD(ATTRIBUTE_KEY_TYPE:0=<<REFERENCE_TYPE>>)]]
+		document.getElementById("Input<<ATTRIBUTE:C>>").value[[IF:!LAST]]+'<|>'+[[ENDIF]][[ENDLOOP,ATTRIBUTE]][[ENDFOR]][[ENDIF]][[ENDLOOP,REFERENCE_TYPE]];
+	performTrans('<<TEXT,DETAIL_GET_LIST_NAME>>[[IF:4=ENC]]Encapsulated[[ELSE]]Recursive[[ENDIF]]<|||>'+l_parameters);[[ELSE]][[IF:4=ALL[AND]CHILD(REFERENCE_SCOPE_ATTRIBUTE)]]
+	var l_parameters = [[IF:CHILD(REFERENCE_TYPE_WITHIN_SCOPE_OF:3=Y)]]'<<REFERENCE6>><|>'+[[ENDIF]][[LOOP,REFERENCE_SCOPE_ATTRIBUTE]]document.getElementById("Input<<REFERENCE_SCOPE_ATTRIBUTE:C>>").value[[IF:!LAST]]+'<|>'+[[ENDIF]][[ENDLOOP,REFERENCE_SCOPE_ATTRIBUTE]][[ENDIF]]
+	performTrans('<<TEXT,DETAIL_GET_LIST_NAME>>[[LOOP,REFERENCE_TYPE:3=Y]]All[[ENDLOOP,REFERENCE_TYPE]][[IF:4=ALL[AND]CHILD(REFERENCE_SCOPE_ATTRIBUTE)]]<|||>'+l_parameters[[ELSE]]'[[ENDIF]]);[[ENDIF]]
+}[[ENDLOOP,REFERENCE]]
+
+function OpenDescBox(p_icon,p_name,p_type,p_attribute_type,p_sequence) {
+
+	CloseDescBox();
+
+	var l_objDiv = document.createElement('DIV');
+	var l_objTable = document.createElement('TABLE');
+	var l_objImg = document.createElement('IMG');
+	var l_objSpan = document.createElement('SPAN');
+	var l_objImgExit = document.createElement('IMG');
+	var l_objTextarea = document.createElement('TEXTAREA');
+
+	document.body.appendChild(l_objDiv);
+
+	l_objDiv.appendChild(l_objTable);
+	l_objRow_0 = l_objTable.insertRow();
+	l_objCell_0_0 = l_objRow_0.insertCell();
+	l_objCell_0_1 = l_objRow_0.insertCell();
+	l_objRow_1 = l_objTable.insertRow();
+	l_objCell_1_0 = l_objRow_1.insertCell();
+	l_objCell_0_0.appendChild(l_objImg);
+	l_objCell_0_0.appendChild(l_objSpan);
+	l_objCell_0_1.appendChild(l_objImgExit);
+	l_objCell_1_0.appendChild(l_objTextarea);
+
+	l_objDiv.id = 'DescBox';
+	l_objDiv.style.position = 'absolute';
+	l_objDiv.style.left = event.clientX+30;
+	l_objDiv.style.top = event.clientY+10;
+	l_objDiv.style.border = 'thin solid #7F7F7F';
+	l_objDiv.style.boxShadow = '10px 10px 5px #888888';
+	l_objDiv.draggable = 'true';
+	l_objDiv.ondragstart = function(){StartMove(event)};
+	l_objDiv.ondragend = function(){EndMove(event)};
+	l_objImg.src = 'icons/' + p_icon + '.bmp';
+	l_objSpan.innerHTML = '&nbsp;&nbsp;' + p_name;
+	l_objCell_0_1.style.textAlign = 'right';
+	l_objImgExit.style.cursor = 'pointer';
+	l_objImgExit.src = 'icons/exit.bmp';
+	l_objImgExit.onclick = function(){CloseDescBox()};
+	l_objCell_1_0.colSpan = '2';
+	l_objTextarea.readOnly = true;
+	l_objTextarea.id = 'CubeDesc';
+	l_objTextarea.rows = '5';
+	l_objTextarea.cols = '80';
+	l_objTextarea.style.whiteSpace = 'normal';
+	l_objTextarea.maxLength = '3999';
+
+	GetDescription(p_type,p_attribute_type,p_sequence);
+}
+
+function CloseDescBox() {
+	l_obj = document.getElementById("DescBox");
+	if (l_obj) { l_obj.parentNode.removeChild(l_obj);}
+}
+
+function GetDescription(p_type,p_attribute_type,p_sequence) {
+	g_xmlhttp.open('POST','CubeSysServer.php',true);
+	g_xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+	g_xmlhttp.send('GetCubeDsc'+'<|||>'+p_type+'<|>'+p_attribute_type+'<|>'+p_sequence);
+}
+
+function ToUpperCase(p_obj) 
+{
+	p_obj.value = p_obj.value.toUpperCase();
+
+}
+
+function ReplaceSpaces(p_obj) 
+{
+	p_obj.value = p_obj.value.replace(/^\s+|\s+$/g, "").replace(/ /g ,"_");
+
+}
+
+function StartMove(p_event) {
+	var l_obj = p_event.target;
+	l_obj._x = p_event.screenX - parseInt(l_obj.style.left);
+	l_obj._y = p_event.screenY - parseInt(l_obj.style.top);
+	document.body._FlagDragging = 1;
+	document.body._DraggingId = l_obj.id;
+}
+
+function EndMove(p_event) {
+ 	document.body._FlagDragging = 0;
+	document.body._DraggingId = ' ';
+}
+
+function allowDrop(p_event) {
+	if (document.body._FlagDragging) {
+		p_event.preventDefault();
+	}
+}
+
+function drop(p_event) {
+	if (document.body._FlagDragging) {
+		var l_obj = document.getElementById(document.body._DraggingId);
+		var l_x = p_event.screenX - l_obj._x;
+		var l_y = p_event.screenY - l_obj._y;	
+		l_obj.style.left = l_x + 'px';
+		l_obj.style.top = l_y + 'px';
+	}
+}[[IF:CHILD(TYPE_SPECIALISATION_GROUP)]]
+
+function ProcessTypeSpecialisation() {
+	if ([[LOOP,ATTRIBUTE:CHILD(ATTRIBUTE_TYPE_SPECIALISATION_GROUP)]]document.getElementById("Input<<ATTRIBUTE:C>>").value != ' '[[IF:!LAST]] && [[ENDIF]][[ENDLOOP,ATTRIBUTE]]) {[[LOOP,ATTRIBUTE:CHILD(ATTRIBUTE_TYPE_SPECIALISATION_GROUP)]]
+		document.getElementById("Input<<ATTRIBUTE:C>>").disabled=true;[[ENDLOOP,ATTRIBUTE]][[LOOP,ATTRIBUTE:CHILD(ATTRIBUTE_TYPE_SPECIALISATION_GROUP)]][[LOOP,ATTRIBUTE_TYPE_SPECIALISATION_GROUP:CHILD(TYPE_SPECIALISATION:CHILD(*RESTRICTION_TYPE_SPEC_ATB)[OR]CHILD(*RESTRICTION_TYPE_SPEC_REF))]]
+		switch (document.getElementById("Input<<ATTRIBUTE:C>>").value) {[[LOOP,TYPE_SPECIALISATION:CHILD(*RESTRICTION_TYPE_SPEC_ATB)[OR]CHILD(*RESTRICTION_TYPE_SPEC_REF)]]
+		case "<<TYPE_SPECIALISATION>>":[[LOOP,*RESTRICTION_TYPE_SPEC_ATB]]
+			document.getElementById("RowAtb[[LOOP,^ATTRIBUTE]]<<^ATTRIBUTE:C>>"[[ENDLOOP,^ATTRIBUTE]]).style.display="none";[[ENDLOOP,*RESTRICTION_TYPE_SPEC_ATB]][[LOOP,*RESTRICTION_TYPE_SPEC_REF]]
+			document.getElementById("RowRef[[LOOP,^REFERENCE]][[LOOP,REFERENCE_TYPE]]<<REFERENCE_TYPE:C>>[[ENDLOOP,REFERENCE_TYPE]]<<^REFERENCE3>>"[[ENDLOOP,^REFERENCE]]).style.display="none";[[ENDLOOP,*RESTRICTION_TYPE_SPEC_REF]]
+			break;[[ENDLOOP,TYPE_SPECIALISATION]]
+		}[[ENDLOOP,ATTRIBUTE_TYPE_SPECIALISATION_GROUP]][[ENDLOOP,ATTRIBUTE]]
+		document.getElementById("TableMain").style.display="inline";
+	}
+}[[ENDIF]][[LOOP,ATTRIBUTE:CHILD(ATTRIBUTE_GROUP)]]
+
+function ResetField<<ATTRIBUTE:C>>(p_field_id) {
+	document.getElementById("Input<<ATTRIBUTE:C>>").value=' ';
+	switch (document.getElementById(p_field_id).value){[[LOOP,ATTRIBUTE_GROUP]][[LOOP,ATTRIBUTE_GROUP_ATTRIBUTE]][[LOOP,INFORMATION_TYPE_ELEMENT]][[LOOP,PERMITTED_VALUE]]
+	case "<<PERMITTED_VALUE>>":[[FOR,ATTRIBUTE:N>N]][[LOOP,INFORMATION_TYPE_ELEMENT]][[LOOP,PERMITTED_VALUE]][[LOOP,PERMITTED_VALUE_GROUP]]
+		document.getElementById("Val<<ATTRIBUTE:C>>-<<PERMITTED_VALUE>>").style.display="[[IF:0=<<PERMITTED_VALUE(N-1)>>]]inline[[ELSE]]none[[ENDIF]]";[[ENDLOOP,PERMITTED_VALUE_GROUP]][[ENDLOOP,PERMITTED_VALUE]][[ENDLOOP,INFORMATION_TYPE_ELEMENT]][[ENDFOR]]
+		break;[[ENDLOOP,PERMITTED_VALUE]][[ENDLOOP,INFORMATION_TYPE_ELEMENT]][[ENDLOOP,ATTRIBUTE_GROUP_ATTRIBUTE]][[ENDLOOP,ATTRIBUTE_GROUP]]
+	}
+}[[ENDLOOP,ATTRIBUTE]]
+-->
+</script>
+</head><body oncontextmenu="return false;" onload="InitBody()" ondrop="drop(event)" ondragover="allowDrop(event)">
+<div><img src="icons/<<TYPE7:L>>_large.bmp" /><span[[IF:CHILD(DESCRIPTION_TYPE)]] style="cursor:help" oncontextmenu="OpenDescBox('<<TYPE7:U>>','<<TYPE:C>>','<<TYPE:U>>','_',-1)"[[ENDIF]]> <<TYPE:U>>[[IF:CHILD(TYPE_SPECIALISATION_GROUP)]][[LOOP,ATTRIBUTE:CHILD(ATTRIBUTE_TYPE_SPECIALISATION_GROUP)]][[IF:CHILD(ATTRIBUTE_GROUP)]] -&gt;[[ELSE]] /[[ENDIF]]
+<select id="Input<<ATTRIBUTE:C>>" type="text" onchange="[[IF:CHILD(*ATTRIBUTE_GROUP)]]ResetField[[LOOP,*ATTRIBUTE_GROUP]][[LOOP,^ATTRIBUTE]]<<^ATTRIBUTE:C>>[[ENDLOOP,^ATTRIBUTE]][[ENDLOOP,*ATTRIBUTE_GROUP]]('Input<<ATTRIBUTE:C>>')[[ELSE]]ProcessTypeSpecialisation()[[ENDIF]]">
+	<option value=" " selected>&lt;[[LOOP,ATTRIBUTE_TYPE_SPECIALISATION_GROUP]]<<ATTRIBUTE_TYPE_SPECIALISATION_GROUP:L>>[[ENDLOOP,ATTRIBUTE_TYPE_SPECIALISATION_GROUP]]&gt;</option>[[LOOP,INFORMATION_TYPE_ELEMENT]][[LOOP,PERMITTED_VALUE]]
+	<option [[IF,ATTRIBUTE:CHILD(ATTRIBUTE_GROUP)]]id="Val<<ATTRIBUTE:C>>-<<PERMITTED_VALUE>>" style="display:none" [[ENDIF]]value="<<PERMITTED_VALUE>>"><<PERMITTED_VALUE1>></option>[[ENDLOOP,PERMITTED_VALUE]][[ENDLOOP,INFORMATION_TYPE_ELEMENT]]
+</select>[[ENDLOOP,ATTRIBUTE]][[ENDIF]]</span></div>
+<hr/>
+<table[[IF:CHILD(TYPE_SPECIALISATION_GROUP)]] id="TableMain" style="display:none"[[ENDIF]]>[[LOOP,ATTRIBUTE:!3=X[AND]4=N[AND]!CHILD(ATTRIBUTE_TYPE_SPECIALISATION_GROUP)]]
+<tr [[IF:CHILD(RESTRICTION_TYPE_SPEC_ATB)]] id="RowAtb<<ATTRIBUTE:C>>"[[ENDIF]]><td[[IF:CHILD(DESCRIPTION_ATTRIBUTE)]] style="cursor:help" oncontextmenu="OpenDescBox('<<TYPE7:U>>','<<TYPE:C>>.<<ATTRIBUTE:C>>','<<TYPE:U>>','<<ATTRIBUTE:U>>',-1)"[[ENDIF]]>[[IF:1=Y]]<u>[[ENDIF]][[IF:3=N]]<<ATTRIBUTE:C>>[[ELSE]]<<TEXT,DETAIL_ROOT_NAME>>[[ENDIF]][[IF:1=Y]]</u>[[ENDIF]]</td>[[LOOP,INFORMATION_TYPE_ELEMENT]][[IF:8=Y]]</tr><tr><td colspan="2">[[ELSE]]<td>[[ENDIF]][[IF,ATTRIBUTE:!3=F[AND]!3=R[AND]CHILD(INFORMATION_TYPE_ELEMENT:CHILD(PERMITTED_VALUE))]]
+<select id="Input<<ATTRIBUTE:C>>" type="text">
+	<option value=" " selected> </option>[[LOOP,PERMITTED_VALUE]]
+	<option value="<<PERMITTED_VALUE>>"><<PERMITTED_VALUE1>></option>[[ENDLOOP,PERMITTED_VALUE]]
+</select>[[ELSE]]
+<[[IF:8=Y]]textarea[[ELSE]]input[[ENDIF]] id="Input<<ATTRIBUTE:C>>" type="text" [[IF,ATTRIBUTE:CHILD(DERIVATION)[OR]CHILD(DENORMALIZATION)[OR]CHILD(AGGREGATION)]]readonly="true" [[ENDIF]][[IF:2=DT]]size="10" maxlength="10"[[ELSIF:2=NR]]size="[[EVAL:<<INFORMATION_TYPE_ELEMENT3>>+1]]" maxlength="[[EVAL:<<INFORMATION_TYPE_ELEMENT3>>+1]]"[[ELSE]][[IF:8=Y]]rows="5" cols="60" style="white-space:normal;"[[ELSE]]size="<<INFORMATION_TYPE_ELEMENT3>>"[[ENDIF]] maxlength="<<INFORMATION_TYPE_ELEMENT3>>"[[ENDIF]][[IF:5=N[OR]7=N]] onchange="[[IF:5=N]]ToUpperCase(this);[[ENDIF]][[IF:7=N]]ReplaceSpaces(this);[[ENDIF]]"[[ENDIF]]></[[IF:8=Y]]textarea[[ELSE]]input[[ENDIF]]>[[ENDIF]][[ENDLOOP,INFORMATION_TYPE_ELEMENT]]</td></tr>[[ENDLOOP,ATTRIBUTE]][[LOOP,REFERENCE]]
+<tr><td height=6></td></tr><tr[[IF:CHILD(RESTRICTION_TYPE_SPEC_REF)]] id="RowRef[[LOOP,REFERENCE_TYPE]]<<REFERENCE_TYPE:C>>[[ENDLOOP,REFERENCE_TYPE]]<<REFERENCE3>>"[[ENDIF]]><td colspan=2><fieldset><legend[[IF:CHILD(DESCRIPTION_REFERENCE)]] style="cursor:help" oncontextmenu="OpenDescBox('<<TYPE7:U>>','<<TYPE:C>>.[[LOOP,REFERENCE_TYPE]]<<REFERENCE_TYPE:C>> (<<REFERENCE:C>>)','<<TYPE:U>>','<<REFERENCE_TYPE>>[[ENDLOOP,REFERENCE_TYPE]]',<<REFERENCE3>>)"[[ENDIF]]>[[LOOP,REFERENCE_TYPE]]<img style="border:1 solid transparent;" src="icons/<<REFERENCE_TYPE7:L>>.bmp"/> <<REFERENCE_TYPE:C>>[[ENDLOOP,REFERENCE_TYPE]] (<<REFERENCE:C>>)</legend>
+<table>[[LOOP,FKEY]]
+<tr><td>[[IF,REFERENCE:1=Y]]<u>[[ENDIF]]<<TEXT,DETAIL_ROOT_NAME>>[[IF,REFERENCE:1=Y]]</u>[[ENDIF]]</td><td>[[LOOP,INFORMATION_TYPE_ELEMENT]]
+<input id="Input<<FKEY:C>>" type="text" [[IF:2=DT]]size="10" maxlength="10"[[ELSIF:2=NR]]size="[[EVAL:<<INFORMATION_TYPE_ELEMENT3>>+1]]" maxlength="[[EVAL:<<INFORMATION_TYPE_ELEMENT3>>+1]]"[[ELSE]]size="<<INFORMATION_TYPE_ELEMENT3>>" maxlength="<<INFORMATION_TYPE_ELEMENT3>>"[[ENDIF]][[IF:5=N[OR]7=N]] onchange="[[IF:5=N]]ToUpperCase(this);[[ENDIF]][[IF:7=N]]ReplaceSpaces(this);[[ENDIF]]"[[ENDIF]] readonly></input>[[ENDLOOP,INFORMATION_TYPE_ELEMENT]]</td>[[IF:FIRST]]
+<td><button id="RefSelect<<REFERENCE:S>>" type="button" onclick="StartSelect<<REFERENCE:S>>(event)">Select</button></td>[[ENDIF]]</tr>[[ENDLOOP,FKEY]]
+</table></fieldset></td></tr>[[ENDLOOP,REFERENCE]]
+<tr><td><br></td></tr>
+<tr><td/><td>
+<button id="ButtonCreate" type="button" onclick="Create<<TYPE1:C>>()">Create</button>&nbsp;&nbsp;&nbsp;
+<button id="ButtonUpdate" type="button" onclick="Update<<TYPE1:C>>()">Update</button>&nbsp;&nbsp;&nbsp;
+<button id="ButtonDelete" type="button" onclick="Delete<<TYPE1:C>>()">Delete</button></td></tr>
+</table>[[LOOP,ATTRIBUTE:4=Y]]
+<input id="Input<<ATTRIBUTE:C>>" type="hidden"></input>[[ENDLOOP,ATTRIBUTE]]
+</body>
+</html>
+[[REPEAT]][[ENDLOOP,TYPE]][[ENDLOOP,BUSINESS_OBJECT_TYPE]][[ENDLOOP,SYSTEM_BO_TYPE]][[ENDLOOP,SYSTEM]][[ENDBODY]]

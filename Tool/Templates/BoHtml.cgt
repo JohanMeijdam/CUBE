@@ -1,0 +1,28 @@
+<html>
+<head><link rel=stylesheet type="text/css" href="style.css"></head>
+<body><p><br><br><h1>Business Object Types</h1><ul style="list-style-type:none">[[LOOP,BUSINESS_OBJECT_TYPE]]
+<a class="BO_link" HREF="#<<BUSINESS_OBJECT_TYPE:I>>"> <<BUSINESS_OBJECT_TYPE:U>></a><br>[[ENDLOOP,BUSINESS_OBJECT_TYPE]]</ul>[[LOOP,BUSINESS_OBJECT_TYPE]]
+<p><h1><a class="BO_link" name="<<BUSINESS_OBJECT_TYPE:I>>"></a>Business Object Type <<BUSINESS_OBJECT_TYPE:U>></h1>
+<p><font class="kop">Structure</font>[[LOOP,TYPE]][[IF:FIRST]]<ul style="list-style-type:none">
+[[ENDIF]]<li><img src="icons/<<TYPE7:L>>.bmp"> <a class="BO_link" HREF="#<<TYPE:I>>"><<TYPE:U>></a></li>[[REPEAT:TAB]][[IF:LAST]] 
+</ul>[[ENDIF]][[ENDLOOP,TYPE]][[LOOP,TYPE]]
+<p><h2><a class="BO_link" name="<<TYPE:I>>"></a>[[IF:ROOT]]Main[[ELSE]]Part[[ENDIF]] type <<TYPE:U>> (<<TYPE1:U>>)</h2>
+<p><img src="icons/<<TYPE7:L>>_large.bmp">
+<p><font class="kop">[[IF:ROOT[OR]2=N]]Key[[ELSE]]Partial key[[ENDIF]]</font><ul>[[LOOP,ATTRIBUTE:1=Y]]
+<li type="square"> Attribute <<ATTRIBUTE:L>></li>[[ENDLOOP,ATTRIBUTE]][[LOOP,REFERENCE:1=Y]]
+<li type="square"> Reference <<REFERENCE:L>> [[LOOP,TYPE]]<<TYPE:L>>[[ENDLOOP,TYPE]]</li>[[ENDLOOP,REFERENCE]]</ul>[[IF:CHILD(REFERENCE)]]
+<p><font class="kop">References</font><ul>[[LOOP,REFERENCE]]
+<li type="square"> <<REFERENCE:L>> [[LOOP,TYPE]]<img src="icons/<<TYPE7:L>>.bmp"> <a class="BO_link" HREF="#<<TYPE:I>>"> <<TYPE:U>></a>[[ENDLOOP,TYPE]]</li>[[ENDLOOP,REFERENCE]]</ul>[[ENDIF]]
+<p><font class="kop">[[IF:!CHILD(DESCRIPTION_TYPE)]]No description!</font>[[ELSE]]Description</font>
+<br>[[LOOP,DESCRIPTION_TYPE]]<<DESCRIPTION_TYPE>>[[ENDLOOP,DESCRIPTION_TYPE]][[ENDIF]][[IF:CHILD(ATTRIBUTE)]]
+<p><font class="kop">Attributes</font>[[LOOP,ATTRIBUTE]]
+<br><a class="BO_link" HREF="#<<ATTRIBUTE:I>>"> <<ATTRIBUTE:U>></a>[[ENDLOOP,ATTRIBUTE]][[ENDIF]][[LOOP,ATTRIBUTE]]
+<p><h3><a class="BO_link" name="<<ATTRIBUTE:I>>"></a>Attribute <<ATTRIBUTE:U>></h3>[[LOOP,INFORMATION_TYPE]]
+<p><font class="kop">Domain</font><lu>[[LOOP,INFORMATION_TYPE_ELEMENT]]
+<li type="square">[[IF:2=NR]]Number(<<INFORMATION_TYPE_ELEMENT3>>,<<INFORMATION_TYPE_ELEMENT4>>)[[ELSIF:2=CH]]Text(<<INFORMATION_TYPE_ELEMENT3>>)[[ELSIF:2=DT]]Date[[ELSIF:2=TI]]Time[[ELSIF:2=TI]]Timestamp[[ENDIF]]</li>[[ENDLOOP,INFORMATION_TYPE_ELEMENT]]</lu>[[ENDLOOP,INFORMATION_TYPE]]
+<p><font class="kop">[[IF:!CHILD(DESCRIPTION_ATTRIBUTE)]]No description!</font>[[ELSE]]Description</font><br>[[LOOP,DESCRIPTION_ATTRIBUTE]]<<DESCRIPTION_ATTRIBUTE>>[[ENDLOOP,DESCRIPTION_ATTRIBUTE]][[ENDIF]][[ENDLOOP,ATTRIBUTE]][[REPEAT]][[ENDLOOP,TYPE]][[ENDLOOP,BUSINESS_OBJECT_TYPE]]
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br></body></html>
+
+
+
