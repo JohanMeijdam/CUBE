@@ -1,10 +1,10 @@
 Start 
 
-SQL*Plus: Release 12.2.0.1.0 Production on Wed Mar 14 10:38:42 2018
+SQL*Plus: Release 12.2.0.1.0 Production on Wed Mar 14 17:12:41 2018
 
 Copyright (c) 1982, 2016, Oracle.  All rights reserved.
 
-Last Successful login time: Wed Mar 14 2018 10:28:56 +01:00
+Last Successful login time: Wed Mar 14 2018 17:10:08 +01:00
 
 Connected to:
 Oracle Database 12c Enterprise Edition Release 12.2.0.1.0 - 64bit Production
@@ -634,7 +634,7 @@ Oracle Database 12c Enterprise Edition Release 12.2.0.1.0 - 64bit Production
 		+CUBE_GEN_EXAMPLE_OBJECT[CGO-000000100021]:;
 			>BUSINESS_OBJECT_TYPE:BOT-000000100141;
 		-CUBE_GEN_EXAMPLE_OBJECT:;
-		=CUBE_GEN_FUNCTION[CGF-000000100020]:Iteration|Walk through model elements.|List:[[LOOP,BUSINESS_OBJECT_TYPE]]%0A-%09<<BUSINESS_OBJECT_TYPE:C>>[[ENDLOOP,BUSINESS_OBJECT_TYPE]];
+		=CUBE_GEN_FUNCTION[CGF-000000100020]:Iteration|Walk through model elements.|List:[[LOOP,BUSINESS_OBJECT_TYPE]]%0A-%09<<BUSINESS_OBJECT_TYPE:U>>[[ENDLOOP,BUSINESS_OBJECT_TYPE]];
 	-CUBE_GEN_EXAMPLE_MODEL:Case1;
 -CUBE_GEN_DOCUMENTATION:Cube_Gen_Manual;
 Disconnected from Oracle Database 12c Enterprise Edition Release 12.2.0.1.0 - 64bit Production
@@ -642,14 +642,14 @@ Disconnected from Oracle Database 12c Enterprise Edition Release 12.2.0.1.0 - 64
 CubeGen v2.`8  14 March 2018
 =====================================
 Reading Model      : Systems\CubeTool\CubeToolModel.cgm
-Preparing Template : Templates\CubeGenManualModelTemplate.cgt
+Preparing Template : Templates\CubeGenManualModel.cgt
 Generating Code    : Systems\CubeTool\CubeGenManualModel.cgm
 Ready
 
 CubeGen v2.`8  14 March 2018
 =====================================
 Reading Model      : Systems\CubeTool\CubeGenManualModel.cgm
-Preparing Template : Templates\CubeGenManualTemplate.cgt
+Preparing Template : Templates\CubeGenManual.cgt
 Generating Code    : Systems\CubeTool\html\CubeGenManual.htm
 Generating Code    : Systems\CubeTool\html\CubeGenManual.htm
 Ready

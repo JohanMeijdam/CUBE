@@ -2,7 +2,7 @@
 01-08-2016 - Foreign Keys to lowest level:
 -	Only primary key fields of parent in foreign key	
 30-12-2017 - Default value on attribute level.
-*]][[INCLUDE,templates\includes\general.txt]][[BODY]]! Cube Database Model
+*]][[INCLUDE,templates\includes\general.cgt]][[BODY]]! Cube Database Model
 !
 ! Structure:
 !	DATABASE: 0=Name 1=DbSchema 2=Password

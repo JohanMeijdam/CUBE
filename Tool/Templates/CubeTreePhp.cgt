@@ -5,7 +5,7 @@
 29-11-2017 - GetDir<typ>Items usage.
 21-02-2017 - Recursive type at the end.
 10-03-2018 - Implementation of tranferable.
-*]][[INCLUDE,templates\includes\general.txt]]
+*]][[INCLUDE,templates\includes\general.cgt]]
 [[BODY]][[LOOP,SYSTEM:0=<<1>>]]<?php
 session_start();
 $_SESSION['views']=0;

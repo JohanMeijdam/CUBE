@@ -5,7 +5,7 @@
 14-01-2017 - Based om server model	
 20-10-2017 - Operation / ResultNameExtension in result name.
 28-02-2018 - TYPE CODE not from BUSINESS_OBJECT_TYPE but from TYPE;
-[[INCLUDE,templates\includes\general.txt]]
+[[INCLUDE,templates\includes\general.cgt]]
 [[TEXT,SERVER_RESULT_NAME]]<<SERVICE1:U>>[[IF:!2=#]]_<<OPERATION2:U>>[[ENDIF]][[LOOP,OPERATION_TYPE]]_<<OPERATION_TYPE1:U>>[[ENDLOOP,OPERATION_TYPE]][[ENDTEXT]]
 [[TEXT,SERVER_ARGUMENT_NAME]]<<ARGUMENT:L>>[[LOOP,ARGUMENT_ATTRIBUTE]]<<ARGUMENT_ATTRIBUTE:L>>[[ENDLOOP,ARGUMENT_ATTRIBUTE]][[ENDTEXT]]
 [[BODY]]<?php

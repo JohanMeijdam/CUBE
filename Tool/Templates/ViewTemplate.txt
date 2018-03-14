@@ -7,8 +7,8 @@ Change log:
 25-10-2017 - Using trigger package
 13-11-2017 - Use of ROWID added / DR triggers added
 10-03-2018 - Unchangeable attributes not updating.
-[[INCLUDE,templates\includes\general.txt]]
-[[INCLUDE,templates\includes\expression.txt]]
+[[INCLUDE,templates\includes\general.cgt]]
+[[INCLUDE,templates\includes\expression.cgt]]
 [[TEXT,VIEW_CHANGEABLE_ATTRIBUTE]]!CHILD(DERIVATION:0=ID)[AND]!1=Y[AND]!6=Y[[ENDTEXT]]
 [[TEXT,VIEW_SELECT_PARENT_FKEYS]]
 		SELECT [[LOOP,ATTRIBUTE:3=F[AND]CHILD(ATTRIBUTE_SOURCE:1=N)]]<<ATTRIBUTE:L>>[[IF:!LAST]], [[ENDIF]][[ENDLOOP,ATTRIBUTE]]

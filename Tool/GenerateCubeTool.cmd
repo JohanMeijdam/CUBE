@@ -55,16 +55,18 @@ echo Generate Packages.
 CubeGen.exe %sysdir%\CubeServerImplModel.cgm Templates\Package.cgt %sysdir%\PackageDdl.sql %sysname% >> %logfile% 2>&1
 sqlplus.exe %db_schema%/%db_password%@%db_name% @%sysdir%\PackageDdl.sql >> %logfile% 2>&1
 ::goto End
-:Application
+:Application 
 echo Generate Application.
+del /S/Q %sysdir%\php >> %logfile% 2>&1
+CubeGen.exe %sysdir%\CubeBoModel.cgm Templates\CubeDbLogonPhp.cgt %sysdir%\php\CubeDbLogon.php %sysname% >> %logfile% 2>&1
+CubeGen.exe %sysdir%\CubeBoModel.cgm Templates\IndexPhp.cgt %sysdir%\php\Index.php %sysname% >> %logfile% 2>&1
+CubeGen.exe %sysdir%\CubeBoModel.cgm Templates\CubeTreePhp.cgt %sysdir%\php\%sysname%Tree.php %sysname% >> %logfile% 2>&1
+CubeGen.exe %sysdir%\CubeBoModel.cgm Templates\CubeMainPhp.cgt %sysdir%\php\%sysname%Main.php %sysname% >> %logfile% 2>&1
+CubeGen.exe %sysdir%\CubeBoModel.cgm Templates\CubeDetailPhp.cgt %sysdir%\php\%sysname%Detail.php %sysname% %sysroot% >> %logfile% 2>&1
+CubeGen.exe %sysdir%\CubeServerSpecModel.cgm Templates\CubeServerPhp.cgt %sysdir%\php\%sysname%Server.php %sysname% >> %logfile% 2>&1
 del /S/Q %sysroot% >> %logfile% 2>&1
 xcopy /Y/E %sysdir%\files %sysroot% >> %logfile% 2>&1
-CubeGen.exe %sysdir%\CubeBoModel.cgm Templates\CubeDbLogonPhp.cgt %sysroot%\CubeDbLogon.php %sysname% >> %logfile% 2>&1
-CubeGen.exe %sysdir%\CubeBoModel.cgm Templates\IndexPhp.cgt %sysroot%\Index.php %sysname% >> %logfile% 2>&1
-CubeGen.exe %sysdir%\CubeBoModel.cgm Templates\CubeTreePhp.cgt %sysroot%\%sysname%Tree.php %sysname% >> %logfile% 2>&1
-CubeGen.exe %sysdir%\CubeBoModel.cgm Templates\CubeMainPhp.cgt %sysroot%\%sysname%Main.php %sysname% >> %logfile% 2>&1
-CubeGen.exe %sysdir%\CubeBoModel.cgm Templates\CubeDetailPhp.cgt %sysroot%\%sysname%Detail.php %sysname% %sysroot% >> %logfile% 2>&1
-CubeGen.exe %sysdir%\CubeServerSpecModel.cgm Templates\CubeServerPhp.cgt %sysroot%\%sysname%Server.php %sysname% >> %logfile% 2>&1
+xcopy /Y/E %sysdir%\php %sysroot% >> %logfile% 2>&1
 ::goto End
 :System
 ::call GenerateCubeSys.cmd
