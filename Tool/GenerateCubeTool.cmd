@@ -12,6 +12,7 @@ set sysroot=%wwwroot%\%sysname%
 echo Start > %logfile%
 ::goto Models
 ::goto ModelImport
+goto ModelExport
 ::goto Packages
 ::goto Application 
 echo Extract Cube Model
@@ -48,7 +49,7 @@ echo Import Model.
 ::goto End
 :ModelExport
 echo Extract Tool Model
-sqlplus.exe %db_schema%/%db_password%@%db_name% %sysdir%\ModelExport.sql %sysdir%\CubeToolModel.cgm REPLACE >> %logfile% 2>&1
+sqlplus.exe %db_schema%/%db_password%@%db_name% @%sysdir%\ModelExport.sql %sysdir%\CubeToolModel.cgm REPLACE >> %logfile% 2>&1
 ::goto End
 :Packages
 echo Generate Packages.
@@ -57,7 +58,7 @@ sqlplus.exe %db_schema%/%db_password%@%db_name% @%sysdir%\PackageDdl.sql >> %log
 ::goto End
 :Application 
 echo Generate Application.
-del /S/Q %sysdir%\php >> %logfile% 2>&1
+del /S/Q %sysdir%\php\*.php >> %logfile% 2>&1
 CubeGen.exe %sysdir%\CubeBoModel.cgm Templates\CubeDbLogonPhp.cgt %sysdir%\php\CubeDbLogon.php %sysname% >> %logfile% 2>&1
 CubeGen.exe %sysdir%\CubeBoModel.cgm Templates\IndexPhp.cgt %sysdir%\php\Index.php %sysname% >> %logfile% 2>&1
 CubeGen.exe %sysdir%\CubeBoModel.cgm Templates\CubeTreePhp.cgt %sysdir%\php\%sysname%Tree.php %sysname% >> %logfile% 2>&1
@@ -76,7 +77,7 @@ sqlplus.exe %db_schema%/%db_password%@%db_name% @%cubesysdir%\TableDdl.sql >> %l
 sqlplus.exe %db_schema%/%db_password%@%db_name% @%cubesysdir%\ViewDdl.sql >> %logfile% 2>&1
 sqlplus.exe %db_schema%/%db_password%@%db_name% @%cubesysdir%\PackageDdl.sql >> %logfile% 2>&1
 xcopy /Y %cubesysdir%\php %sysroot% >> %logfile% 2>&1
-perl CubeGen.pl %sysdir%\CubeBoModel.cgm Templates\SystemImport.cgt %sysdir%\SystemImport.sql %sysname% >> %logfile% 2>&1
+CubeGen.exe %sysdir%\CubeBoModel.cgm Templates\SystemImport.cgt %sysdir%\SystemImport.sql %sysname% >> %logfile% 2>&1
 sqlplus.exe %db_schema%/%db_password%@%db_name% @%sysdir%\SystemImport.sql >> %logfile% 2>&1
 :end
 pause
