@@ -1,715 +1,10 @@
 Start 
-
-SQL*Plus: Release 12.2.0.1.0 Production on Wed Mar 14 19:34:41 2018
-
-Copyright (c) 1982, 2016, Oracle.  All rights reserved.
-
-Last Successful login time: Wed Mar 14 2018 19:27:37 +01:00
-
-Connected to:
-Oracle Database 12c Enterprise Edition Release 12.2.0.1.0 - 64bit Production
-
-! Generated with CubeGen
-+META_MODEL:CUBE;
-	+META_TYPE:INFORMATION_TYPE|;
-		=PROPERTY:0|Name|;
-		+META_TYPE:INFORMATION_TYPE_ELEMENT|;
-			=PROPERTY:0|Sequence|;
-			=PROPERTY:1|Suffix|;
-			=PROPERTY:2|Domain| Values: CH(Text), NR(Number), DT(Date), TI(Time), TS(Timestamp);
-			=PROPERTY:3|Length|;
-			=PROPERTY:4|Decimals|;
-			=PROPERTY:5|CaseSensitive| Values: Y(Yes), N(No);
-			=PROPERTY:6|DefaultValue|;
-			=PROPERTY:7|SpacesAllowed| Values: Y(Yes), N(No);
-			=PROPERTY:8|Descriptive| Values: Y(Yes), N(No);
-			+META_TYPE:PERMITTED_VALUE|;
-				=PROPERTY:0|Code|;
-				=PROPERTY:1|Prompt|;
-			-META_TYPE:PERMITTED_VALUE;
-		-META_TYPE:INFORMATION_TYPE_ELEMENT;
-	-META_TYPE:INFORMATION_TYPE;
-	+META_TYPE:BUSINESS_OBJECT_TYPE|An object type related to the business supported by the system.;
-		=PROPERTY:0|Name|;
-		=PROPERTY:1|Directory|;
-		+META_TYPE:TYPE|An entity type related to the business that is supported by the system.;
-			=PROPERTY:0|Name|;
-			=PROPERTY:1|Code|;
-			=PROPERTY:2|FlagPartialKey| Values: Y(Yes), N(No);
-			=PROPERTY:3|FlagRecursive| Values: Y(Yes), N(No);
-			=PROPERTY:4|RecursiveCardinality| Values: 1(1), 2(2), 3(3), 4(4), 5(5), N(Many);
-			=PROPERTY:5|Cardinality| Values: 1(1), 2(2), 3(3), 4(4), 5(5), N(Many);
-			=PROPERTY:6|SortOrder| Values: N(No sort), K(Key), P(Position);
-			=PROPERTY:7|Icon|;
-			=PROPERTY:8|Transferable|Indication that in case of a recursive type the type may moved to an other parent in the hierarchy. Values: Y(Yes), N(No);
-			+META_TYPE:ATTRIBUTE|;
-				=PROPERTY:0|Name|Unique identifier of the attribute.;
-				=PROPERTY:1|PrimaryKey|Indication that attribute is part of the unique identification of the type. Values: Y(Yes), N(No);
-				=PROPERTY:2|CodeDisplayKey| Values: Y(Yes), S(Sub), N(No);
-				=PROPERTY:3|CodeForeignKey| Values: N(None);
-				=PROPERTY:4|FlagHidden| Values: Y(Yes), N(No);
-				=PROPERTY:5|DefaultValue|Defaut value that overules the default value specified by the information type element.;
-				=PROPERTY:6|Unchangeable|Indication that after the creation of the type the value of the atrribute can not be changed. Values: Y(Yes), N(No);
-				=ASSOCIATION:INFORMATION_TYPE|HasDomain|INFORMATION_TYPE|;
-				+META_TYPE:DERIVATION|;
-					=PROPERTY:0|CubeTsgType| Values: DN(DENORMALIZATION), IN(INTERNAL), AG(AGGREGATION);
-					=PROPERTY:1|AggregateFunction| Values: SUM(Sum), AVG(Average), MIN(Minimum), MAX(Maximum);
-					=ASSOCIATION:DERIVATION_TYPE|ConcernsParent|TYPE|;
-					=ASSOCIATION:DERIVATION_TYPE_CONCERNS_CHILD|ConcernsChild|TYPE|;
-				-META_TYPE:DERIVATION;
-				+META_TYPE:DESCRIPTION_ATTRIBUTE|;
-					=PROPERTY:0|Text|;
-				-META_TYPE:DESCRIPTION_ATTRIBUTE;
-				+META_TYPE:RESTRICTION_TYPE_SPEC_ATB|;
-					=PROPERTY:0|IncludeOrExclude|Indication that the attribute is valid (included) or invalid (excluded) for the concerning type specialisation. Values: IN(Include), EX(Exclude);
-					=ASSOCIATION:TYPE_SPECIALISATION|IsValidFor|TYPE_SPECIALISATION|;
-				-META_TYPE:RESTRICTION_TYPE_SPEC_ATB;
-			-META_TYPE:ATTRIBUTE;
-			+META_TYPE:REFERENCE|;
-				=PROPERTY:0|Name|;
-				=PROPERTY:1|PrimaryKey|Indication that reference is part of the unique identification of the type. Values: Y(Yes), N(No);
-				=PROPERTY:2|CodeDisplayKey| Values: Y(Yes), S(Sub), N(No);
-				=PROPERTY:3|Sequence|;
-				=PROPERTY:4|Scope|In case of a recursive target%2C the definition of the collection of the types to select. Values: ALL(All), ENC(Encapsulated), PRA(Parents all), PR1(Parents first level), CHA(Children all), CH1(Children first level);
-				=PROPERTY:5|Unchangeable|Indication that after the creation of the type the reference can not be changed. So in case of a recursive reference the indication too that the relation is used to select the parents or children in the hierarchy. Values: Y(Yes), N(No);
-				=PROPERTY:6|WithinScopeLevel|In case of recursive %22wihin scope of%22 type the relative level in the hierarchy%2C Positive numbers are the parent levels%2C Negative numbers are the child levels.;
-				=ASSOCIATION:REFERENCE_TYPE|Refer|TYPE|The target entity type of the reference.;
-				=ASSOCIATION:REFERENCE_TYPE_WITHIN_SCOPE_OF|WithinScopeOf|TYPE|In case of non recursive target or a scope all recursive target the common type for the selection.;
-				+META_TYPE:DESCRIPTION_REFERENCE|;
-					=PROPERTY:0|Text|;
-				-META_TYPE:DESCRIPTION_REFERENCE;
-				+META_TYPE:RESTRICTION_TYPE_SPEC_REF|;
-					=PROPERTY:0|IncludeOrExclude|Indication that the reference is valid (included) or invalid (excluded) for the concerning type specialisation. Values: IN(Include), EX(Exclude);
-					=ASSOCIATION:TYPE_SPECIALISATION|IsValidFor|TYPE_SPECIALISATION|;
-				-META_TYPE:RESTRICTION_TYPE_SPEC_REF;
-			-META_TYPE:REFERENCE;
-			+META_TYPE:TYPE_REUSE|;
-				=PROPERTY:0|Cardinality| Values: 1(1), 2(2), 3(3), 4(4), 5(5), N(Many);
-				=ASSOCIATION:TYPE_REUSE_TYPE|Refer|TYPE|;
-			-META_TYPE:TYPE_REUSE;
-			+META_TYPE:PARTITION|;
-				=PROPERTY:0|Name|;
-				+META_TYPE:SUBTYPE|;
-					=PROPERTY:0|Name|;
-				-META_TYPE:SUBTYPE;
-			-META_TYPE:PARTITION;
-			+META_TYPE:TYPE_SPECIALISATION_GROUP|;
-				=PROPERTY:0|Code|;
-				=PROPERTY:1|Name|;
-				=PROPERTY:2|PrimaryKey|Indication that the type specification group is part of the unique identification of the type. Values: Y(Yes), N(No);
-				+META_TYPE:TYPE_SPECIALISATION|;
-					=PROPERTY:0|Code|;
-					=PROPERTY:1|Name|;
-					=ASSOCIATION:TYPE_SPECIALISATION|Specialise|TYPE_SPECIALISATION|;
-				-META_TYPE:TYPE_SPECIALISATION;
-			-META_TYPE:TYPE_SPECIALISATION_GROUP;
-			+META_TYPE:DESCRIPTION_TYPE|Test%0D%0AMet LF en %22 en %27  en %25    %25%0D%0AEInde;
-				=PROPERTY:0|Text|;
-			-META_TYPE:DESCRIPTION_TYPE;
-		-META_TYPE:TYPE;
-	-META_TYPE:BUSINESS_OBJECT_TYPE;
-	+META_TYPE:SYSTEM|;
-		=PROPERTY:0|Name|;
-		=PROPERTY:1|Database|;
-		=PROPERTY:2|Schema|;
-		=PROPERTY:3|Password|;
-		+META_TYPE:SYSTEM_BO_TYPE|;
-			=ASSOCIATION:BUSINESS_OBJECT_TYPE|Has|BUSINESS_OBJECT_TYPE|;
-		-META_TYPE:SYSTEM_BO_TYPE;
-	-META_TYPE:SYSTEM;
-	+META_TYPE:FUNCTION|;
-		=PROPERTY:0|Name|;
-		+META_TYPE:ARGUMENT|;
-			=PROPERTY:0|Name|;
-		-META_TYPE:ARGUMENT;
-	-META_TYPE:FUNCTION;
-	+META_TYPE:CUBE_GEN_DOCUMENTATION|;
-		=PROPERTY:0|Name|;
-		+META_TYPE:CUBE_GEN_PARAGRAPH|;
-			=PROPERTY:0|Header|;
-			=PROPERTY:1|Description|;
-		-META_TYPE:CUBE_GEN_PARAGRAPH;
-		+META_TYPE:CUBE_GEN_EXAMPLE_MODEL|;
-			=PROPERTY:0|Name|;
-			=PROPERTY:1|IncludedObjectNames|;
-			+META_TYPE:CUBE_GEN_EXAMPLE_OBJECT|;
-				=ASSOCIATION:BUSINESS_OBJECT_TYPE|UsesAsExample|BUSINESS_OBJECT_TYPE|;
-			-META_TYPE:CUBE_GEN_EXAMPLE_OBJECT;
-			+META_TYPE:CUBE_GEN_FUNCTION|;
-				=PROPERTY:0|Header|;
-				=PROPERTY:1|Description|;
-				=PROPERTY:2|Template|;
-			-META_TYPE:CUBE_GEN_FUNCTION;
-		-META_TYPE:CUBE_GEN_EXAMPLE_MODEL;
-	-META_TYPE:CUBE_GEN_DOCUMENTATION;
--META_MODEL:CUBE;
-+INFORMATION_TYPE[ITP-000000100500]:AGGREGATION;
-	+INFORMATION_TYPE_ELEMENT[ITE-000000100520]:1|#|CH|3|0|N||N|N;
-		=PERMITTED_VALUE[VAL-000000100600]:SUM|Sum;
-		=PERMITTED_VALUE[VAL-000000100601]:AVG|Average;
-		=PERMITTED_VALUE[VAL-000000100602]:MIN|Minimum;
-		=PERMITTED_VALUE[VAL-000000100603]:MAX|Maximum;
-	-INFORMATION_TYPE_ELEMENT:1;
--INFORMATION_TYPE:AGGREGATION;
-+INFORMATION_TYPE[ITP-000000100501]:BEDRAG;
-	+INFORMATION_TYPE_ELEMENT[ITE-000000100521]:1|#|NR|8|2|N||N|N;
-	-INFORMATION_TYPE_ELEMENT:1;
--INFORMATION_TYPE:BEDRAG;
-+INFORMATION_TYPE[ITP-000000100502]:CARDINALITY;
-	+INFORMATION_TYPE_ELEMENT[ITE-000000100522]:1|#|CH|1|0|N|N|Y|N;
-		=PERMITTED_VALUE[VAL-000000100604]:1|1;
-		=PERMITTED_VALUE[VAL-000000100605]:2|2;
-		=PERMITTED_VALUE[VAL-000000100606]:3|3;
-		=PERMITTED_VALUE[VAL-000000100607]:4|4;
-		=PERMITTED_VALUE[VAL-000000100608]:5|5;
-		=PERMITTED_VALUE[VAL-000000100609]:N|Many;
-	-INFORMATION_TYPE_ELEMENT:1;
--INFORMATION_TYPE:CARDINALITY;
-+INFORMATION_TYPE[ITP-000000100503]:CODE;
-	+INFORMATION_TYPE_ELEMENT[ITE-000000100523]:1|#|CH|8|0|N||N|N;
-	-INFORMATION_TYPE_ELEMENT:1;
--INFORMATION_TYPE:CODE;
-+INFORMATION_TYPE[ITP-000000100504]:CODE1;
-	+INFORMATION_TYPE_ELEMENT[ITE-000000100524]:1|#|CH|1|0|Y||Y|N;
-	-INFORMATION_TYPE_ELEMENT:1;
--INFORMATION_TYPE:CODE1;
-+INFORMATION_TYPE[ITP-000000100505]:CODE_DISPLAY_KEY;
-	+INFORMATION_TYPE_ELEMENT[ITE-000000100525]:1|#|CH|1|0|N|N|N|N;
-		=PERMITTED_VALUE[VAL-000000100610]:Y|Yes;
-		=PERMITTED_VALUE[VAL-000000100611]:S|Sub;
-		=PERMITTED_VALUE[VAL-000000100612]:N|No;
-	-INFORMATION_TYPE_ELEMENT:1;
--INFORMATION_TYPE:CODE_DISPLAY_KEY;
-+INFORMATION_TYPE[ITP-000000100506]:CODE_REFERENCE;
-	+INFORMATION_TYPE_ELEMENT[ITE-000000100526]:1|#|CH|1|0|N|E|N|N;
-		=PERMITTED_VALUE[VAL-000000100613]:E|External;
-		=PERMITTED_VALUE[VAL-000000100614]:I|Internal;
-	-INFORMATION_TYPE_ELEMENT:1;
--INFORMATION_TYPE:CODE_REFERENCE;
-+INFORMATION_TYPE[ITP-000000100507]:DATUM;
-	+INFORMATION_TYPE_ELEMENT[ITE-000000100527]:1|#|DT|0|0|N||N|N;
-	-INFORMATION_TYPE_ELEMENT:1;
--INFORMATION_TYPE:DATUM;
-+INFORMATION_TYPE[ITP-000000100508]:DOMAIN;
-	+INFORMATION_TYPE_ELEMENT[ITE-000000100528]:1|#|CH|2|0|Y|CH|N|N;
-		=PERMITTED_VALUE[VAL-000000100615]:CH|Text;
-		=PERMITTED_VALUE[VAL-000000100616]:NR|Number;
-		=PERMITTED_VALUE[VAL-000000100617]:DT|Date;
-		=PERMITTED_VALUE[VAL-000000100618]:TI|Time;
-		=PERMITTED_VALUE[VAL-000000100619]:TS|Timestamp;
-	-INFORMATION_TYPE_ELEMENT:1;
--INFORMATION_TYPE:DOMAIN;
-+INFORMATION_TYPE[ITP-000000100509]:FLAG;
-	+INFORMATION_TYPE_ELEMENT[ITE-000000100529]:1|#|CH|1|0|Y|N|Y|N;
-		=PERMITTED_VALUE[VAL-000000100620]:Y|Yes;
-		=PERMITTED_VALUE[VAL-000000100621]:N|No;
-	-INFORMATION_TYPE_ELEMENT:1;
--INFORMATION_TYPE:FLAG;
-+INFORMATION_TYPE[ITP-000000100510]:FOREIGN_KEY_TYPE;
-	+INFORMATION_TYPE_ELEMENT[ITE-000000100530]:1|#|CH|1|0|Y|N|Y|N;
-		=PERMITTED_VALUE[VAL-000000100622]:N|None;
-	-INFORMATION_TYPE_ELEMENT:1;
--INFORMATION_TYPE:FOREIGN_KEY_TYPE;
-+INFORMATION_TYPE[ITP-000000100511]:FUNCTION;
-	+INFORMATION_TYPE_ELEMENT[ITE-000000100531]:1|#|CH|8|0|N|EXP|N|N;
-		=PERMITTED_VALUE[VAL-000000100623]:EXPRES|Expression;
-		=PERMITTED_VALUE[VAL-000000100624]:YEARS|Years;
-		=PERMITTED_VALUE[VAL-000000100625]:MULTIPLY|Multiply;
-	-INFORMATION_TYPE_ELEMENT:1;
--INFORMATION_TYPE:FUNCTION;
-+INFORMATION_TYPE[ITP-000000100512]:GETAL;
-	+INFORMATION_TYPE_ELEMENT[ITE-000000100532]:1|#|NR|8|0|N||N|N;
-	-INFORMATION_TYPE_ELEMENT:1;
--INFORMATION_TYPE:GETAL;
-+INFORMATION_TYPE[ITP-000000100513]:ICON;
-	+INFORMATION_TYPE_ELEMENT[ITE-000000100533]:1|#|CH|8|0|N||N|N;
-	-INFORMATION_TYPE_ELEMENT:1;
--INFORMATION_TYPE:ICON;
-+INFORMATION_TYPE[ITP-000000100514]:INTEGER;
-	+INFORMATION_TYPE_ELEMENT[ITE-000000100534]:1|#|NR|8|0||0||N;
-	-INFORMATION_TYPE_ELEMENT:1;
--INFORMATION_TYPE:INTEGER;
-+INFORMATION_TYPE[ITP-000000100515]:LONG_NAME;
-	+INFORMATION_TYPE_ELEMENT[ITE-000000100535]:1|#|CH|80|0|Y||N|N;
-	-INFORMATION_TYPE_ELEMENT:1;
--INFORMATION_TYPE:LONG_NAME;
-+INFORMATION_TYPE[ITP-000000100516]:NAAM;
-	+INFORMATION_TYPE_ELEMENT[ITE-000000100536]:1|#|CH|40|0|Y||Y|N;
-	-INFORMATION_TYPE_ELEMENT:1;
--INFORMATION_TYPE:NAAM;
-+INFORMATION_TYPE[ITP-000000100517]:NAME;
-	+INFORMATION_TYPE_ELEMENT[ITE-000000100537]:1|#|CH|30|0|Y||N|N;
-	-INFORMATION_TYPE_ELEMENT:1;
--INFORMATION_TYPE:NAME;
-+INFORMATION_TYPE[ITP-000000100518]:NUM1;
-	+INFORMATION_TYPE_ELEMENT[ITE-000000100538]:1|#|NR|1|0||0||N;
-	-INFORMATION_TYPE_ELEMENT:1;
--INFORMATION_TYPE:NUM1;
-+INFORMATION_TYPE[ITP-000000100519]:OBJECT_NAME;
-	+INFORMATION_TYPE_ELEMENT[ITE-000000100539]:1|#|CH|30|0|N||N|N;
-	-INFORMATION_TYPE_ELEMENT:1;
--INFORMATION_TYPE:OBJECT_NAME;
-+INFORMATION_TYPE[ITP-000000100520]:OMSCHRIJVING;
-	+INFORMATION_TYPE_ELEMENT[ITE-000000100540]:1|#|CH|120|0|Y||Y|Y;
-	-INFORMATION_TYPE_ELEMENT:1;
--INFORMATION_TYPE:OMSCHRIJVING;
-+INFORMATION_TYPE[ITP-000000100521]:PASSWORD;
-	+INFORMATION_TYPE_ELEMENT[ITE-000000100541]:1|#|CH|20|0|Y||N|N;
-	-INFORMATION_TYPE_ELEMENT:1;
--INFORMATION_TYPE:PASSWORD;
-+INFORMATION_TYPE[ITP-000000100522]:POSTCODE;
-	+INFORMATION_TYPE_ELEMENT[ITE-000000100542]:1|CIJFERS|NR|4|0|N||N|N;
-	-INFORMATION_TYPE_ELEMENT:1;
-	+INFORMATION_TYPE_ELEMENT[ITE-000000100543]:2|LETTERS|CH|2|0|N||N|N;
-	-INFORMATION_TYPE_ELEMENT:2;
--INFORMATION_TYPE:POSTCODE;
-+INFORMATION_TYPE[ITP-000000100523]:REFERENCE;
-	+INFORMATION_TYPE_ELEMENT[ITE-000000100544]:1|#|CH|8|0|N||N|N;
-	-INFORMATION_TYPE_ELEMENT:1;
--INFORMATION_TYPE:REFERENCE;
-+INFORMATION_TYPE[ITP-000000100524]:SCOPE_LEVEL;
-	+INFORMATION_TYPE_ELEMENT[ITE-000000100545]:1|#|NR|1|0|N|0|N|N;
-		=PERMITTED_VALUE[VAL-000000100626]:0|None;
-		=PERMITTED_VALUE[VAL-000000100627]:1|First Parent;
-		=PERMITTED_VALUE[VAL-000000100628]:2|Second parent;
-		=PERMITTED_VALUE[VAL-000000100629]:3|Third parent;
-	-INFORMATION_TYPE_ELEMENT:1;
--INFORMATION_TYPE:SCOPE_LEVEL;
-+INFORMATION_TYPE[ITP-000000100525]:SCOPE_TYPE;
-	+INFORMATION_TYPE_ELEMENT[ITE-000000100546]:0|#|CH|3|0|N|ALL|N|N;
-		=PERMITTED_VALUE[VAL-000000100630]:ALL|All;
-		=PERMITTED_VALUE[VAL-000000100631]:ENC|Encapsulated;
-		=PERMITTED_VALUE[VAL-000000100632]:PRA|Parents all;
-		=PERMITTED_VALUE[VAL-000000100633]:PR1|Parents first level;
-		=PERMITTED_VALUE[VAL-000000100634]:CHA|Children all;
-		=PERMITTED_VALUE[VAL-000000100635]:CH1|Children first level;
-	-INFORMATION_TYPE_ELEMENT:0;
--INFORMATION_TYPE:SCOPE_TYPE;
-+INFORMATION_TYPE[ITP-000000100526]:SHORT_NAME;
-	+INFORMATION_TYPE_ELEMENT[ITE-000000100547]:1|#|CH|8|0|Y||N|N;
-	-INFORMATION_TYPE_ELEMENT:1;
--INFORMATION_TYPE:SHORT_NAME;
-+INFORMATION_TYPE[ITP-000000100527]:SORT_TYPE;
-	+INFORMATION_TYPE_ELEMENT[ITE-000000100548]:1|#|CH|1|0|Y|N|Y|N;
-		=PERMITTED_VALUE[VAL-000000100636]:N|No sort;
-		=PERMITTED_VALUE[VAL-000000100637]:K|Key;
-		=PERMITTED_VALUE[VAL-000000100638]:P|Position;
-	-INFORMATION_TYPE_ELEMENT:1;
--INFORMATION_TYPE:SORT_TYPE;
-+INFORMATION_TYPE[ITP-000000100528]:SUFFIX;
-	+INFORMATION_TYPE_ELEMENT[ITE-000000100549]:1|#|CH|12|0|Y||N|N;
-	-INFORMATION_TYPE_ELEMENT:1;
--INFORMATION_TYPE:SUFFIX;
-+INFORMATION_TYPE[ITP-000000100529]:TEXT32;
-	+INFORMATION_TYPE_ELEMENT[ITE-000000100550]:1|#|CH|32|0|Y||Y|N;
-	-INFORMATION_TYPE_ELEMENT:1;
--INFORMATION_TYPE:TEXT32;
-+BUSINESS_OBJECT_TYPE[BOT-000000100142]:ORDER|Orders;
-	+TYPE[TYP-000000100326]:ORDER|ORD|N|N|N|N|P|ORDER|Y;
-		+ATTRIBUTE[ATB-000000100879]:CODE|Y|Y|N|N||N;
-			>INFORMATION_TYPE:ITP-000000100523;
-		-ATTRIBUTE:CODE;
-		+REFERENCE[REF-000000100284]:IS_BESTELD_DOOR|N|N|0|ALL|N|0;
-			>REFERENCE_TYPE:TYP-000000100320;
-		-REFERENCE:IS_BESTELD_DOOR;
-		+TYPE[TYP-000000100327]:ORDER_REGEL|ORR|Y|N|N|N|K|ORDPROD|Y;
-			+ATTRIBUTE[ATB-000000100880]:PRODUKT_PRIJS|N|N|N|N||N;
-				>INFORMATION_TYPE:ITP-000000100501;
-			-ATTRIBUTE:PRODUKT_PRIJS;
-			+ATTRIBUTE[ATB-000000100881]:AANTAL|N|N|N|N||N;
-				>INFORMATION_TYPE:ITP-000000100501;
-			-ATTRIBUTE:AANTAL;
-			+ATTRIBUTE[ATB-000000100882]:TOTAAL_PRIJS|N|S|N|N||N;
-				>INFORMATION_TYPE:ITP-000000100501;
-			-ATTRIBUTE:TOTAAL_PRIJS;
-			+REFERENCE[REF-000000100285]:BETREFT|N|N|0|ALL|N|0;
-				>REFERENCE_TYPE:TYP-000000100322;
-			-REFERENCE:BETREFT;
-			+REFERENCE[REF-000000100286]:BETREFT_MULTIPLE|N|N|1|ALL|N|0;
-				>REFERENCE_TYPE:TYP-000000100322;
-			-REFERENCE:BETREFT_MULTIPLE;
-			+REFERENCE[REF-000000100287]:BETREFT|N|N|0|ALL|N|0;
-				>REFERENCE_TYPE:TYP-000000100320;
-			-REFERENCE:BETREFT;
-		-TYPE:ORDER_REGEL;
-	-TYPE:ORDER;
--BUSINESS_OBJECT_TYPE:ORDER;
-+BUSINESS_OBJECT_TYPE[BOT-000000100140]:KLANT|Klanten;
-	+TYPE[TYP-000000100320]:KLANT|KLN|N|N|N|N|N|KLANT|Y;
-		+ATTRIBUTE[ATB-000000100860]:NUMMER|Y|Y|N|N||N;
-			>INFORMATION_TYPE:ITP-000000100523;
-		-ATTRIBUTE:NUMMER;
-		+ATTRIBUTE[ATB-000000100861]:ACHTERNAAM|N|S|N|N||N;
-			>INFORMATION_TYPE:ITP-000000100516;
-		-ATTRIBUTE:ACHTERNAAM;
-		+ATTRIBUTE[ATB-000000100862]:GEBOORTE_DATUM|N|N|N|N||N;
-			>INFORMATION_TYPE:ITP-000000100507;
-		-ATTRIBUTE:GEBOORTE_DATUM;
-		+ATTRIBUTE[ATB-000000100863]:LEEFTIJD|N|N|N|N||N;
-			>INFORMATION_TYPE:ITP-000000100512;
-		-ATTRIBUTE:LEEFTIJD;
-		+ATTRIBUTE[ATB-000000100864]:VOORNAAM|N|Y|N|N||N;
-			>INFORMATION_TYPE:ITP-000000100516;
-		-ATTRIBUTE:VOORNAAM;
-		+ATTRIBUTE[ATB-000000100865]:TUSSENVOEGSEL|N|N|N|N||N;
-			>INFORMATION_TYPE:ITP-000000100516;
-		-ATTRIBUTE:TUSSENVOEGSEL;
-		+TYPE[TYP-000000100321]:ADRES|ADR|Y|N|N|N|N|ADRES|Y;
-			+ATTRIBUTE[ATB-000000100866]:POSTCODE|Y|Y|N|N||N;
-				>INFORMATION_TYPE:ITP-000000100522;
-			-ATTRIBUTE:POSTCODE;
-			+ATTRIBUTE[ATB-000000100867]:HUISNUMMER|Y|Y|N|N||N;
-				>INFORMATION_TYPE:ITP-000000100512;
-			-ATTRIBUTE:HUISNUMMER;
-		-TYPE:ADRES;
-	-TYPE:KLANT;
--BUSINESS_OBJECT_TYPE:KLANT;
-+BUSINESS_OBJECT_TYPE[BOT-000000100141]:PRODUKT|Produkten;
-	+TYPE[TYP-000000100322]:PRODUKT|PRD|N|N| |4|K|PRODUKT|Y;
-		+ATTRIBUTE[ATB-000000100868]:CODE|Y|Y|N|N||N;
-			=DESCRIPTION_ATTRIBUTE[DCA-000000100120]:De code voor een produkt;
-			>INFORMATION_TYPE:ITP-000000100523;
-		-ATTRIBUTE:CODE;
-		+ATTRIBUTE[ATB-000000100869]:PRIJS|N|N|N|N||N;
-			>INFORMATION_TYPE:ITP-000000100501;
-		-ATTRIBUTE:PRIJS;
-		+ATTRIBUTE[ATB-000000100870]:MAKELAAR_NAAM|N|N|N|N||N;
-			+RESTRICTION_TYPE_SPEC_ATB[RTA-000000100020]:IN;
-				>TYPE_SPECIALISATION:TSP-000000100163;
-			-RESTRICTION_TYPE_SPEC_ATB:IN;
-			>INFORMATION_TYPE:ITP-000000100516;
-		-ATTRIBUTE:MAKELAAR_NAAM;
-		+ATTRIBUTE[ATB-000000100871]:BEDRAG_BTW|N|N|N|N||N;
-			+RESTRICTION_TYPE_SPEC_ATB[RTA-000000100021]:EX;
-				>TYPE_SPECIALISATION:TSP-000000100160;
-			-RESTRICTION_TYPE_SPEC_ATB:EX;
-			>INFORMATION_TYPE:ITP-000000100501;
-		-ATTRIBUTE:BEDRAG_BTW;
-		+REFERENCE[REF-000000100280]:IS_VOOR|N|N|0|ALL|N|0;
-			+RESTRICTION_TYPE_SPEC_REF[RTR-000000100020]:EX;
-				>TYPE_SPECIALISATION:TSP-000000100161;
-			-RESTRICTION_TYPE_SPEC_REF:EX;
-			>REFERENCE_TYPE:TYP-000000100320;
-		-REFERENCE:IS_VOOR;
-		+TYPE_SPECIALISATION_GROUP[TSG-000000100100]:TYPE|TYPE|Y;
-			+TYPE_SPECIALISATION[TSP-000000100160]:P|PARTICULIER;
-			-TYPE_SPECIALISATION:P;
-			+TYPE_SPECIALISATION[TSP-000000100161]:Z|ZAKELIJK;
-			-TYPE_SPECIALISATION:Z;
-		-TYPE_SPECIALISATION_GROUP:TYPE;
-		+TYPE_SPECIALISATION_GROUP[TSG-000000100101]:SOORT|SOORT|N;
-			+TYPE_SPECIALISATION[TSP-000000100162]:R|ROEREND_GOED;
-			-TYPE_SPECIALISATION:R;
-			+TYPE_SPECIALISATION[TSP-000000100163]:O|ONROEREND_GOED;
-			-TYPE_SPECIALISATION:O;
-			+TYPE_SPECIALISATION_GROUP[TSG-000000100102]:SOORT1|SOORT|N;
-				+TYPE_SPECIALISATION[TSP-000000100164]:GARAGE|GARAGE;
-					>TYPE_SPECIALISATION:TSP-000000100163;
-				-TYPE_SPECIALISATION:GARAGE;
-				+TYPE_SPECIALISATION[TSP-000000100165]:WOON|WOONHUIS;
-					>TYPE_SPECIALISATION:TSP-000000100163;
-				-TYPE_SPECIALISATION:WOON;
-				+TYPE_SPECIALISATION[TSP-000000100166]:VERVOER|VERVOERMIDDEL;
-					>TYPE_SPECIALISATION:TSP-000000100162;
-				-TYPE_SPECIALISATION:VERVOER;
-			-TYPE_SPECIALISATION_GROUP:SOORT1;
-		-TYPE_SPECIALISATION_GROUP:SOORT;
-		=DESCRIPTION_TYPE[DCT-000000100120]:Dit is een produkt;
-		+TYPE[TYP-000000100323]:ONDERDEEL|OND|Y|Y|2|3|P|PART|Y;
-			+ATTRIBUTE[ATB-000000100872]:CODE|Y|Y|N|N||N;
-				>INFORMATION_TYPE:ITP-000000100503;
-			-ATTRIBUTE:CODE;
-			+ATTRIBUTE[ATB-000000100873]:PRIJS|N|N|N|N||N;
-				>INFORMATION_TYPE:ITP-000000100501;
-			-ATTRIBUTE:PRIJS;
-			+ATTRIBUTE[ATB-000000100874]:OMSCHRIJVING|N|N|N|N||N;
-				>INFORMATION_TYPE:ITP-000000100520;
-			-ATTRIBUTE:OMSCHRIJVING;
-			+REFERENCE[REF-000000100281]:LIJKT_OP|N|N|0|ALL|N|0;
-				>REFERENCE_TYPE:TYP-000000100323;
-			-REFERENCE:LIJKT_OP;
-			+TYPE_REUSE[TYR-000000100120]:N;
-				>TYPE_REUSE_TYPE:TYP-000000100323;
-			-TYPE_REUSE:N;
-			=DESCRIPTION_TYPE[DCT-000000100121]:Onderdeel van een produkt;
-			+TYPE[TYP-000000100324]:ONDERDEEL_DEEL|ODD|N|N| |2|P|TYPE|Y;
-				+ATTRIBUTE[ATB-000000100875]:CODE|Y|Y|N|N||N;
-					>INFORMATION_TYPE:ITP-000000100503;
-				-ATTRIBUTE:CODE;
-				+ATTRIBUTE[ATB-000000100876]:NAAM|N|N|N|N||N;
-					>INFORMATION_TYPE:ITP-000000100516;
-				-ATTRIBUTE:NAAM;
-				+REFERENCE[REF-000000100282]:IS_VAN|N|N|0|PRA|N|0;
-					>REFERENCE_TYPE:TYP-000000100323;
-				-REFERENCE:IS_VAN;
-				+TYPE[TYP-000000100325]:ONDERDEEL_DEEL_DEEL|DDD|N|N| |N|P|ATTRIB|Y;
-					+ATTRIBUTE[ATB-000000100877]:CODE|Y|Y|N|N||N;
-						>INFORMATION_TYPE:ITP-000000100503;
-					-ATTRIBUTE:CODE;
-					+ATTRIBUTE[ATB-000000100878]:NAAM|N|N|N|N||N;
-						>INFORMATION_TYPE:ITP-000000100516;
-					-ATTRIBUTE:NAAM;
-					+REFERENCE[REF-000000100283]:IS_VAN|N|N|0|PR1|N|0;
-						>REFERENCE_TYPE:TYP-000000100323;
-					-REFERENCE:IS_VAN;
-				-TYPE:ONDERDEEL_DEEL_DEEL;
-			-TYPE:ONDERDEEL_DEEL;
-		-TYPE:ONDERDEEL;
-	-TYPE:PRODUKT;
--BUSINESS_OBJECT_TYPE:PRODUKT;
-+BUSINESS_OBJECT_TYPE[BOT-000000100143]:TEST_A|Test_A;
-	+TYPE[TYP-000000100328]:TEST_A|AAA|N|Y|N|N|P|TYPE|Y;
-		+ATTRIBUTE[ATB-000000100883]:CODE|Y|Y|N|N||N;
-			>INFORMATION_TYPE:ITP-000000100503;
-		-ATTRIBUTE:CODE;
-		+ATTRIBUTE[ATB-000000100884]:NAAM|Y|N|N|N||N;
-			>INFORMATION_TYPE:ITP-000000100516;
-		-ATTRIBUTE:NAAM;
-		+ATTRIBUTE[ATB-000000100885]:NUMMER|Y|Y|N|N||N;
-			>INFORMATION_TYPE:ITP-000000100514;
-		-ATTRIBUTE:NUMMER;
-		+ATTRIBUTE[ATB-000000100886]:OMSCHRIJVING|N|N|N|N||N;
-			>INFORMATION_TYPE:ITP-000000100520;
-		-ATTRIBUTE:OMSCHRIJVING;
-		+TYPE[TYP-000000100329]:TEST_B_R|BBR|N|Y|N|N|P|TYPE|Y;
-			+ATTRIBUTE[ATB-000000100887]:CODE|Y|Y|N|N||N;
-				>INFORMATION_TYPE:ITP-000000100503;
-			-ATTRIBUTE:CODE;
-			+ATTRIBUTE[ATB-000000100888]:NAAM|Y|Y|N|N||N;
-				>INFORMATION_TYPE:ITP-000000100516;
-			-ATTRIBUTE:NAAM;
-			+ATTRIBUTE[ATB-000000100889]:NUMMER|Y|Y|N|N||N;
-				>INFORMATION_TYPE:ITP-000000100514;
-			-ATTRIBUTE:NUMMER;
-			+ATTRIBUTE[ATB-000000100890]:OMSCHRIJVING|N|N|N|N||N;
-				>INFORMATION_TYPE:ITP-000000100520;
-			-ATTRIBUTE:OMSCHRIJVING;
-		-TYPE:TEST_B_R;
-		+TYPE[TYP-000000100330]:TEST_B|BBB|N|N|N|N|P|TYPE|Y;
-			+ATTRIBUTE[ATB-000000100891]:CODE|Y|Y|N|N||N;
-				>INFORMATION_TYPE:ITP-000000100503;
-			-ATTRIBUTE:CODE;
-			+ATTRIBUTE[ATB-000000100892]:NAAM|Y|Y|N|N||N;
-				>INFORMATION_TYPE:ITP-000000100516;
-			-ATTRIBUTE:NAAM;
-			+ATTRIBUTE[ATB-000000100893]:NUMMER|Y|Y|N|N||N;
-				>INFORMATION_TYPE:ITP-000000100514;
-			-ATTRIBUTE:NUMMER;
-			+ATTRIBUTE[ATB-000000100894]:OMSCHRIJVING|N|N|N|N||N;
-				>INFORMATION_TYPE:ITP-000000100520;
-			-ATTRIBUTE:OMSCHRIJVING;
-			+TYPE[TYP-000000100331]:TEST_C|CCC|N|N|N|N|N|TYPE|Y;
-				+ATTRIBUTE[ATB-000000100895]:CODE|Y|Y|N|N||N;
-					>INFORMATION_TYPE:ITP-000000100503;
-				-ATTRIBUTE:CODE;
-				+ATTRIBUTE[ATB-000000100896]:NAAM|Y|Y|N|N||N;
-					>INFORMATION_TYPE:ITP-000000100516;
-				-ATTRIBUTE:NAAM;
-				+ATTRIBUTE[ATB-000000100897]:NUMMER|Y|Y|N|N||N;
-					>INFORMATION_TYPE:ITP-000000100514;
-				-ATTRIBUTE:NUMMER;
-				+ATTRIBUTE[ATB-000000100898]:OMSCHRIJVING|N|N|N|N||N;
-					>INFORMATION_TYPE:ITP-000000100520;
-				-ATTRIBUTE:OMSCHRIJVING;
-				+TYPE[TYP-000000100332]:TEST_D|TDD|N|N|N|N|N|TYPE|Y;
-					+ATTRIBUTE[ATB-000000100899]:CODE|Y|Y|N|N||N;
-						>INFORMATION_TYPE:ITP-000000100503;
-					-ATTRIBUTE:CODE;
-					+ATTRIBUTE[ATB-000000100900]:NAAM|Y|Y|N|N||N;
-						>INFORMATION_TYPE:ITP-000000100516;
-					-ATTRIBUTE:NAAM;
-					+ATTRIBUTE[ATB-000000100901]:NUMMER|Y|Y|N|N||N;
-						>INFORMATION_TYPE:ITP-000000100514;
-					-ATTRIBUTE:NUMMER;
-					+ATTRIBUTE[ATB-000000100902]:OMSCHRIJVING|N|N|N|N||N;
-						>INFORMATION_TYPE:ITP-000000100520;
-					-ATTRIBUTE:OMSCHRIJVING;
-				-TYPE:TEST_D;
-			-TYPE:TEST_C;
-		-TYPE:TEST_B;
-		+TYPE[TYP-000000100333]:TEST_B_K|BBK|Y|Y|N|N|P|TYPE|Y;
-			+ATTRIBUTE[ATB-000000100903]:CODE|Y|Y|N|N||N;
-				>INFORMATION_TYPE:ITP-000000100503;
-			-ATTRIBUTE:CODE;
-			+ATTRIBUTE[ATB-000000100904]:NAAM|Y|Y|N|N||N;
-				>INFORMATION_TYPE:ITP-000000100516;
-			-ATTRIBUTE:NAAM;
-			+ATTRIBUTE[ATB-000000100905]:NUMMER|Y|Y|N|N||N;
-				>INFORMATION_TYPE:ITP-000000100514;
-			-ATTRIBUTE:NUMMER;
-			+ATTRIBUTE[ATB-000000100906]:OMSCHRIJVING|N|N|N|N||N;
-				>INFORMATION_TYPE:ITP-000000100520;
-			-ATTRIBUTE:OMSCHRIJVING;
-		-TYPE:TEST_B_K;
-	-TYPE:TEST_A;
--BUSINESS_OBJECT_TYPE:TEST_A;
-+BUSINESS_OBJECT_TYPE[BOT-000000100144]:TESTB|TestB;
-	+TYPE[TYP-000000100334]:TESTB|TSB|N|N| |N|N|TYPE|Y;
-		+ATTRIBUTE[ATB-000000100907]:TEST|N|N|N|N||N;
-			>INFORMATION_TYPE:ITP-000000100503;
-		-ATTRIBUTE:TEST;
-		+ATTRIBUTE[ATB-000000100908]:CODE|Y|Y|N|N||N;
-			>INFORMATION_TYPE:ITP-000000100503;
-		-ATTRIBUTE:CODE;
-		+ATTRIBUTE[ATB-000000100909]:NAAM|N|N|N|N||N;
-			>INFORMATION_TYPE:ITP-000000100516;
-		-ATTRIBUTE:NAAM;
-		+TYPE[TYP-000000100335]:TESTB1|TB1|Y|N| |N|P|TYPE|Y;
-			+ATTRIBUTE[ATB-000000100910]:CODE|Y|Y|N|N||N;
-				>INFORMATION_TYPE:ITP-000000100503;
-			-ATTRIBUTE:CODE;
-			+ATTRIBUTE[ATB-000000100911]:NAAM|N|N|N|N||N;
-				>INFORMATION_TYPE:ITP-000000100516;
-			-ATTRIBUTE:NAAM;
-			+REFERENCE[REF-000000100288]:|N|N|0|ALL|N|0;
-				>REFERENCE_TYPE:TYP-000000100335;
-			-REFERENCE:;
-		-TYPE:TESTB1;
-		+TYPE[TYP-000000100336]:TESTB2|TB2|N|Y|N|N|N|TYPE|Y;
-			+ATTRIBUTE[ATB-000000100912]:CODE|Y|Y|N|N||N;
-				>INFORMATION_TYPE:ITP-000000100503;
-			-ATTRIBUTE:CODE;
-		-TYPE:TESTB2;
-		+TYPE[TYP-000000100337]:TESTB3|TB3|N|Y|N|N|P|TYPE|N;
-			+ATTRIBUTE[ATB-000000100913]:CODE|Y|Y|N|N||N;
-				>INFORMATION_TYPE:ITP-000000100503;
-			-ATTRIBUTE:CODE;
-			+ATTRIBUTE[ATB-000000100914]:NAAM_WIJZIGBAAR|N|N|N|N||N;
-				>INFORMATION_TYPE:ITP-000000100516;
-			-ATTRIBUTE:NAAM_WIJZIGBAAR;
-			+ATTRIBUTE[ATB-000000100915]:NAAM_VAST|N|N|N|N||Y;
-				>INFORMATION_TYPE:ITP-000000100516;
-			-ATTRIBUTE:NAAM_VAST;
-			+REFERENCE[REF-000000100289]:REF_VAST|N|N|1|ALL|Y|0;
-				>REFERENCE_TYPE:TYP-000000100336;
-			-REFERENCE:REF_VAST;
-			+REFERENCE[REF-000000100290]:REF_WIJZIGBAAR|N|N|0|ALL|N|0;
-				>REFERENCE_TYPE:TYP-000000100336;
-			-REFERENCE:REF_WIJZIGBAAR;
-		-TYPE:TESTB3;
-	-TYPE:TESTB;
--BUSINESS_OBJECT_TYPE:TESTB;
-+BUSINESS_OBJECT_TYPE[BOT-000000100145]:CUSTOMER|Customers;
-	+TYPE[TYP-000000100338]:CUSTOMER|CUS|N|N|N|N|K|KLANT|Y;
-		+ATTRIBUTE[ATB-000000100919]:A|N|N|N|N||N;
-		-ATTRIBUTE:A;
-		+ATTRIBUTE[ATB-000000100922]:D|N|N|N|N||N;
-		-ATTRIBUTE:D;
-		+ATTRIBUTE[ATB-000000100921]:C|N|N|N|N||N;
-		-ATTRIBUTE:C;
-		+ATTRIBUTE[ATB-000000100920]:B|N|N|N|N||N;
-		-ATTRIBUTE:B;
-	-TYPE:CUSTOMER;
--BUSINESS_OBJECT_TYPE:CUSTOMER;
-+BUSINESS_OBJECT_TYPE[BOT-000000100146]:PRODUCT|Products;
--BUSINESS_OBJECT_TYPE:PRODUCT;
-+SYSTEM[SYS-000000100120]:CubeTest|composys|cubetest|composys;
-	+SYSTEM_BO_TYPE[SBT-000000100180]:;
-		>BUSINESS_OBJECT_TYPE:BOT-000000100144;
-	-SYSTEM_BO_TYPE:;
-	+SYSTEM_BO_TYPE[SBT-000000100181]:;
-		>BUSINESS_OBJECT_TYPE:BOT-000000100141;
-	-SYSTEM_BO_TYPE:;
--SYSTEM:CubeTest;
-+SYSTEM[SYS-000000100121]:Voorbeeld|composys|voorbeeld|composys;
-	+SYSTEM_BO_TYPE[SBT-000000100182]:;
-		>BUSINESS_OBJECT_TYPE:BOT-000000100140;
-	-SYSTEM_BO_TYPE:;
-	+SYSTEM_BO_TYPE[SBT-000000100183]:;
-		>BUSINESS_OBJECT_TYPE:BOT-000000100141;
-	-SYSTEM_BO_TYPE:;
-	+SYSTEM_BO_TYPE[SBT-000000100184]:;
-		>BUSINESS_OBJECT_TYPE:BOT-000000100142;
-	-SYSTEM_BO_TYPE:;
-	+SYSTEM_BO_TYPE[SBT-000000100185]:;
-		>BUSINESS_OBJECT_TYPE:BOT-000000100143;
-	-SYSTEM_BO_TYPE:;
--SYSTEM:Voorbeeld;
-+CUBE_GEN_DOCUMENTATION[CUB-000000100020]:Cube_Gen_Manual;
-	=CUBE_GEN_PARAGRAPH[CGP-000000100020]:Command Line|cubegen.exe <model> <template> <code> <arguments> %0Aperl cubegen.pl <model> <template> <code> <arguments>%0A- <model>: Imported Cube Model textfile%0A- <template>: Importede CubeGen Template Textfile%0A- <code>: Textfile to generate%0A- <argument>: Parameters used in template;
-	+CUBE_GEN_EXAMPLE_MODEL[CGM-000000100020]:Case1|;
-		+CUBE_GEN_EXAMPLE_OBJECT[CGO-000000100020]:;
-			>BUSINESS_OBJECT_TYPE:BOT-000000100140;
-		-CUBE_GEN_EXAMPLE_OBJECT:;
-		+CUBE_GEN_EXAMPLE_OBJECT[CGO-000000100021]:;
-			>BUSINESS_OBJECT_TYPE:BOT-000000100141;
-		-CUBE_GEN_EXAMPLE_OBJECT:;
-		=CUBE_GEN_FUNCTION[CGF-000000100020]:Iteration|Walk through model elements.|List:[[LOOP,BUSINESS_OBJECT_TYPE]]%0A-%09<<BUSINESS_OBJECT_TYPE:U>>[[ENDLOOP,BUSINESS_OBJECT_TYPE]];
-	-CUBE_GEN_EXAMPLE_MODEL:Case1;
--CUBE_GEN_DOCUMENTATION:Cube_Gen_Manual;
-Disconnected from Oracle Database 12c Enterprise Edition Release 12.2.0.1.0 - 64bit Production
-
-CubeGen v2.`8  14 March 2018
-=====================================
-Reading Model      : Systems\CubeTool\CubeServerImplModel.cgm
-Preparing Template : Templates\Package.cgt
-Generating Code    : Systems\CubeTool\PackageDdl.sql
-Ready
-
-SQL*Plus: Release 12.2.0.1.0 Production on Wed Mar 14 19:34:49 2018
-
-Copyright (c) 1982, 2016, Oracle.  All rights reserved.
-
-Last Successful login time: Wed Mar 14 2018 19:34:41 +01:00
-
-Connected to:
-Oracle Database 12c Enterprise Edition Release 12.2.0.1.0 - 64bit Production
-
-
-PL/SQL procedure successfully completed.
-
-
-Package created.
-
-
-Package body created.
-
-
-Package created.
-
-No errors.
-
-Package body created.
-
-No errors.
-
-Package created.
-
-No errors.
-
-Package body created.
-
-No errors.
-
-Package created.
-
-No errors.
-
-Package body created.
-
-No errors.
-
-Package created.
-
-No errors.
-
-Package body created.
-
-No errors.
-
-Package created.
-
-No errors.
-
-Package body created.
-
-No errors.
-Disconnected from Oracle Database 12c Enterprise Edition Release 12.2.0.1.0 - 64bit Production
 Deleted file - D:\GitHub\CUBE\Tool\Systems\CubeTool\php\CubeDbLogon.php
 Deleted file - D:\GitHub\CUBE\Tool\Systems\CubeTool\php\CubeToolDetail.php
 Deleted file - D:\GitHub\CUBE\Tool\Systems\CubeTool\php\CubeToolMain.php
 Deleted file - D:\GitHub\CUBE\Tool\Systems\CubeTool\php\CubeToolServer.php
 Deleted file - D:\GitHub\CUBE\Tool\Systems\CubeTool\php\CubeToolTree.php
+Deleted file - D:\GitHub\CUBE\Tool\Systems\CubeTool\php\Index.php
 
 CubeGen v2.`8  14 March 2018
 =====================================
@@ -717,12 +12,13 @@ Reading Model      : Systems\CubeTool\CubeBoModel.cgm
 Preparing Template : Templates\CubeDbLogonPhp.cgt
 Generating Code    : Systems\CubeTool\php\CubeDbLogon.php
 Ready
-Cannot open Templates\IndexPhp.cgt:No such file or directory at C:\Cube\CubeGen.exe line 334, <MODEL> chunk 1862.
 
 CubeGen v2.`8  14 March 2018
 =====================================
 Reading Model      : Systems\CubeTool\CubeBoModel.cgm
 Preparing Template : Templates\IndexPhp.cgt
+Generating Code    : Systems\CubeTool\php\Index.php
+Ready
 
 CubeGen v2.`8  14 March 2018
 =====================================
@@ -743,33 +39,33 @@ CubeGen v2.`8  14 March 2018
 Reading Model      : Systems\CubeTool\CubeBoModel.cgm
 Preparing Template : Templates\CubeDetailPhp.cgt
 Generating Code    : Systems\CubeTool\php\CubeToolDetail.php
-Generating Code    : C:\inetpub\wwwroot\CubeTool\CubeToolDetailITP.php
-Generating Code    : C:\inetpub\wwwroot\CubeTool\CubeToolDetailITE.php
-Generating Code    : C:\inetpub\wwwroot\CubeTool\CubeToolDetailVAL.php
-Generating Code    : C:\inetpub\wwwroot\CubeTool\CubeToolDetailBOT.php
-Generating Code    : C:\inetpub\wwwroot\CubeTool\CubeToolDetailTYP.php
-Generating Code    : C:\inetpub\wwwroot\CubeTool\CubeToolDetailATB.php
-Generating Code    : C:\inetpub\wwwroot\CubeTool\CubeToolDetailDER.php
-Generating Code    : C:\inetpub\wwwroot\CubeTool\CubeToolDetailDCA.php
-Generating Code    : C:\inetpub\wwwroot\CubeTool\CubeToolDetailRTA.php
-Generating Code    : C:\inetpub\wwwroot\CubeTool\CubeToolDetailREF.php
-Generating Code    : C:\inetpub\wwwroot\CubeTool\CubeToolDetailDCR.php
-Generating Code    : C:\inetpub\wwwroot\CubeTool\CubeToolDetailRTR.php
-Generating Code    : C:\inetpub\wwwroot\CubeTool\CubeToolDetailTYR.php
-Generating Code    : C:\inetpub\wwwroot\CubeTool\CubeToolDetailPAR.php
-Generating Code    : C:\inetpub\wwwroot\CubeTool\CubeToolDetailSTP.php
-Generating Code    : C:\inetpub\wwwroot\CubeTool\CubeToolDetailTSG.php
-Generating Code    : C:\inetpub\wwwroot\CubeTool\CubeToolDetailTSP.php
-Generating Code    : C:\inetpub\wwwroot\CubeTool\CubeToolDetailDCT.php
-Generating Code    : C:\inetpub\wwwroot\CubeTool\CubeToolDetailSYS.php
-Generating Code    : C:\inetpub\wwwroot\CubeTool\CubeToolDetailSBT.php
-Generating Code    : C:\inetpub\wwwroot\CubeTool\CubeToolDetailFUN.php
-Generating Code    : C:\inetpub\wwwroot\CubeTool\CubeToolDetailARG.php
-Generating Code    : C:\inetpub\wwwroot\CubeTool\CubeToolDetailCUB.php
-Generating Code    : C:\inetpub\wwwroot\CubeTool\CubeToolDetailCGP.php
-Generating Code    : C:\inetpub\wwwroot\CubeTool\CubeToolDetailCGM.php
-Generating Code    : C:\inetpub\wwwroot\CubeTool\CubeToolDetailCGO.php
-Generating Code    : C:\inetpub\wwwroot\CubeTool\CubeToolDetailCGF.php
+Generating Code    : Systems\CubeTool\php\CubeToolDetailITP.php
+Generating Code    : Systems\CubeTool\php\CubeToolDetailITE.php
+Generating Code    : Systems\CubeTool\php\CubeToolDetailVAL.php
+Generating Code    : Systems\CubeTool\php\CubeToolDetailBOT.php
+Generating Code    : Systems\CubeTool\php\CubeToolDetailTYP.php
+Generating Code    : Systems\CubeTool\php\CubeToolDetailATB.php
+Generating Code    : Systems\CubeTool\php\CubeToolDetailDER.php
+Generating Code    : Systems\CubeTool\php\CubeToolDetailDCA.php
+Generating Code    : Systems\CubeTool\php\CubeToolDetailRTA.php
+Generating Code    : Systems\CubeTool\php\CubeToolDetailREF.php
+Generating Code    : Systems\CubeTool\php\CubeToolDetailDCR.php
+Generating Code    : Systems\CubeTool\php\CubeToolDetailRTR.php
+Generating Code    : Systems\CubeTool\php\CubeToolDetailTYR.php
+Generating Code    : Systems\CubeTool\php\CubeToolDetailPAR.php
+Generating Code    : Systems\CubeTool\php\CubeToolDetailSTP.php
+Generating Code    : Systems\CubeTool\php\CubeToolDetailTSG.php
+Generating Code    : Systems\CubeTool\php\CubeToolDetailTSP.php
+Generating Code    : Systems\CubeTool\php\CubeToolDetailDCT.php
+Generating Code    : Systems\CubeTool\php\CubeToolDetailSYS.php
+Generating Code    : Systems\CubeTool\php\CubeToolDetailSBT.php
+Generating Code    : Systems\CubeTool\php\CubeToolDetailFUN.php
+Generating Code    : Systems\CubeTool\php\CubeToolDetailARG.php
+Generating Code    : Systems\CubeTool\php\CubeToolDetailCUB.php
+Generating Code    : Systems\CubeTool\php\CubeToolDetailCGP.php
+Generating Code    : Systems\CubeTool\php\CubeToolDetailCGM.php
+Generating Code    : Systems\CubeTool\php\CubeToolDetailCGO.php
+Generating Code    : Systems\CubeTool\php\CubeToolDetailCGF.php
 Ready
 
 CubeGen v2.`8  14 March 2018
@@ -778,58 +74,228 @@ Reading Model      : Systems\CubeTool\CubeServerSpecModel.cgm
 Preparing Template : Templates\CubeServerPhp.cgt
 Generating Code    : Systems\CubeTool\php\CubeToolServer.php
 Ready
+Deleted file - C:\inetpub\wwwroot\CubeTool\base_css.php
 Deleted file - C:\inetpub\wwwroot\CubeTool\CubeDbLogon.php
 Deleted file - C:\inetpub\wwwroot\CubeTool\CubeSysDetail.php
 Deleted file - C:\inetpub\wwwroot\CubeTool\CubeSysDetailCUBE_DSC.php
 Deleted file - C:\inetpub\wwwroot\CubeTool\CubeSysServer.php
 Deleted file - C:\inetpub\wwwroot\CubeTool\CubeSysTree.php
 Deleted file - C:\inetpub\wwwroot\CubeTool\CubeToolDetail.php
-Deleted file - C:\inetpub\wwwroot\CubeTool\CubeToolDetailARG.php
-Deleted file - C:\inetpub\wwwroot\CubeTool\CubeToolDetailATB.php
-Deleted file - C:\inetpub\wwwroot\CubeTool\CubeToolDetailBOT.php
-Deleted file - C:\inetpub\wwwroot\CubeTool\CubeToolDetailCGF.php
-Deleted file - C:\inetpub\wwwroot\CubeTool\CubeToolDetailCGM.php
-Deleted file - C:\inetpub\wwwroot\CubeTool\CubeToolDetailCGO.php
-Deleted file - C:\inetpub\wwwroot\CubeTool\CubeToolDetailCGP.php
-Deleted file - C:\inetpub\wwwroot\CubeTool\CubeToolDetailCUB.php
-Deleted file - C:\inetpub\wwwroot\CubeTool\CubeToolDetailDCA.php
-Deleted file - C:\inetpub\wwwroot\CubeTool\CubeToolDetailDCR.php
-Deleted file - C:\inetpub\wwwroot\CubeTool\CubeToolDetailDCT.php
-Deleted file - C:\inetpub\wwwroot\CubeTool\CubeToolDetailDER.php
-Deleted file - C:\inetpub\wwwroot\CubeTool\CubeToolDetailFUN.php
-Deleted file - C:\inetpub\wwwroot\CubeTool\CubeToolDetailITE.php
-Deleted file - C:\inetpub\wwwroot\CubeTool\CubeToolDetailITP.php
-Deleted file - C:\inetpub\wwwroot\CubeTool\CubeToolDetailPAR.php
-Deleted file - C:\inetpub\wwwroot\CubeTool\CubeToolDetailREF.php
-Deleted file - C:\inetpub\wwwroot\CubeTool\CubeToolDetailRTA.php
-Deleted file - C:\inetpub\wwwroot\CubeTool\CubeToolDetailRTR.php
-Deleted file - C:\inetpub\wwwroot\CubeTool\CubeToolDetailSBT.php
-Deleted file - C:\inetpub\wwwroot\CubeTool\CubeToolDetailSTP.php
-Deleted file - C:\inetpub\wwwroot\CubeTool\CubeToolDetailSYS.php
-Deleted file - C:\inetpub\wwwroot\CubeTool\CubeToolDetailTSG.php
-Deleted file - C:\inetpub\wwwroot\CubeTool\CubeToolDetailTSP.php
-Deleted file - C:\inetpub\wwwroot\CubeTool\CubeToolDetailTYP.php
-Deleted file - C:\inetpub\wwwroot\CubeTool\CubeToolDetailTYR.php
-Deleted file - C:\inetpub\wwwroot\CubeTool\CubeToolDetailVAL.php
 Deleted file - C:\inetpub\wwwroot\CubeTool\CubeToolMain.php
 Deleted file - C:\inetpub\wwwroot\CubeTool\CubeToolServer.php
 Deleted file - C:\inetpub\wwwroot\CubeTool\CubeToolTree.php
+Deleted file - C:\inetpub\wwwroot\CubeTool\Index.php
 Deleted file - C:\inetpub\wwwroot\CubeTool\README.md
-File not found - files
-0 File(s) copied
+Deleted file - C:\inetpub\wwwroot\CubeTool\icons\add.bmp
+Deleted file - C:\inetpub\wwwroot\CubeTool\icons\adres.bmp
+Deleted file - C:\inetpub\wwwroot\CubeTool\icons\adres_large.bmp
+Deleted file - C:\inetpub\wwwroot\CubeTool\icons\attrib.bmp
+Deleted file - C:\inetpub\wwwroot\CubeTool\icons\attrib_add.bmp
+Deleted file - C:\inetpub\wwwroot\CubeTool\icons\attrib_large.bmp
+Deleted file - C:\inetpub\wwwroot\CubeTool\icons\botype.bmp
+Deleted file - C:\inetpub\wwwroot\CubeTool\icons\botype_add.bmp
+Deleted file - C:\inetpub\wwwroot\CubeTool\icons\botype_large.bmp
+Deleted file - C:\inetpub\wwwroot\CubeTool\icons\close.bmp
+Deleted file - C:\inetpub\wwwroot\CubeTool\icons\close_h.bmp
+Deleted file - C:\inetpub\wwwroot\CubeTool\icons\cubegen.bmp
+Deleted file - C:\inetpub\wwwroot\CubeTool\icons\cubegen_large.bmp
+Deleted file - C:\inetpub\wwwroot\CubeTool\icons\cube_change_par.bmp
+Deleted file - C:\inetpub\wwwroot\CubeTool\icons\cube_move.bmp
+Deleted file - C:\inetpub\wwwroot\CubeTool\icons\deriv.bmp
+Deleted file - C:\inetpub\wwwroot\CubeTool\icons\deriv_large.bmp
+Deleted file - C:\inetpub\wwwroot\CubeTool\icons\desc.bmp
+Deleted file - C:\inetpub\wwwroot\CubeTool\icons\desc_large.bmp
+Deleted file - C:\inetpub\wwwroot\CubeTool\icons\dot.bmp
+Deleted file - C:\inetpub\wwwroot\CubeTool\icons\dot_large.bmp
+Deleted file - C:\inetpub\wwwroot\CubeTool\icons\exit.bmp
+Deleted file - C:\inetpub\wwwroot\CubeTool\icons\expres.bmp
+Deleted file - C:\inetpub\wwwroot\CubeTool\icons\expres_large.bmp
+Deleted file - C:\inetpub\wwwroot\CubeTool\icons\Folder.bmp
+Deleted file - C:\inetpub\wwwroot\CubeTool\icons\Folder_large.bmp
+Deleted file - C:\inetpub\wwwroot\CubeTool\icons\funcatb.bmp
+Deleted file - C:\inetpub\wwwroot\CubeTool\icons\funcatb_large.bmp
+Deleted file - C:\inetpub\wwwroot\CubeTool\icons\function.bmp
+Deleted file - C:\inetpub\wwwroot\CubeTool\icons\function_large.bmp
+Deleted file - C:\inetpub\wwwroot\CubeTool\icons\infelem.bmp
+Deleted file - C:\inetpub\wwwroot\CubeTool\icons\infelem_add.bmp
+Deleted file - C:\inetpub\wwwroot\CubeTool\icons\infelem_large.bmp
+Deleted file - C:\inetpub\wwwroot\CubeTool\icons\inftype.bmp
+Deleted file - C:\inetpub\wwwroot\CubeTool\icons\inftype_large.bmp
+Deleted file - C:\inetpub\wwwroot\CubeTool\icons\irf.bmp
+Deleted file - C:\inetpub\wwwroot\CubeTool\icons\irf_large.bmp
+Deleted file - C:\inetpub\wwwroot\CubeTool\icons\klant.bmp
+Deleted file - C:\inetpub\wwwroot\CubeTool\icons\klant_large.bmp
+Deleted file - C:\inetpub\wwwroot\CubeTool\icons\model.bmp
+Deleted file - C:\inetpub\wwwroot\CubeTool\icons\model_large.bmp
+Deleted file - C:\inetpub\wwwroot\CubeTool\icons\open.bmp
+Deleted file - C:\inetpub\wwwroot\CubeTool\icons\open_h.bmp
+Deleted file - C:\inetpub\wwwroot\CubeTool\icons\order.bmp
+Deleted file - C:\inetpub\wwwroot\CubeTool\icons\order_large.bmp
+Deleted file - C:\inetpub\wwwroot\CubeTool\icons\ordprod.bmp
+Deleted file - C:\inetpub\wwwroot\CubeTool\icons\ordprod_large.bmp
+Deleted file - C:\inetpub\wwwroot\CubeTool\icons\part.bmp
+Deleted file - C:\inetpub\wwwroot\CubeTool\icons\partit.bmp
+Deleted file - C:\inetpub\wwwroot\CubeTool\icons\partit_large.bmp
+Deleted file - C:\inetpub\wwwroot\CubeTool\icons\part_large.bmp
+Deleted file - C:\inetpub\wwwroot\CubeTool\icons\pointer-par-nok.cur
+Deleted file - C:\inetpub\wwwroot\CubeTool\icons\pointer-par.cur
+Deleted file - C:\inetpub\wwwroot\CubeTool\icons\pointer-pos-nok.cur
+Deleted file - C:\inetpub\wwwroot\CubeTool\icons\pointer-pos.cur
+Deleted file - C:\inetpub\wwwroot\CubeTool\icons\pointer_move.cur
+Deleted file - C:\inetpub\wwwroot\CubeTool\icons\produkt.bmp
+Deleted file - C:\inetpub\wwwroot\CubeTool\icons\produkt_large.bmp
+Deleted file - C:\inetpub\wwwroot\CubeTool\icons\README.md
+Deleted file - C:\inetpub\wwwroot\CubeTool\icons\ref.bmp
+Deleted file - C:\inetpub\wwwroot\CubeTool\icons\ref_large.bmp
+Deleted file - C:\inetpub\wwwroot\CubeTool\icons\restrict.bmp
+Deleted file - C:\inetpub\wwwroot\CubeTool\icons\restrict_large.bmp
+Deleted file - C:\inetpub\wwwroot\CubeTool\icons\reuse.bmp
+Deleted file - C:\inetpub\wwwroot\CubeTool\icons\reuse_large.bmp
+Deleted file - C:\inetpub\wwwroot\CubeTool\icons\subtype.bmp
+Deleted file - C:\inetpub\wwwroot\CubeTool\icons\subtype_large.bmp
+Deleted file - C:\inetpub\wwwroot\CubeTool\icons\sysbot.bmp
+Deleted file - C:\inetpub\wwwroot\CubeTool\icons\sysbot_large.bmp
+Deleted file - C:\inetpub\wwwroot\CubeTool\icons\system.bmp
+Deleted file - C:\inetpub\wwwroot\CubeTool\icons\system_large.bmp
+Deleted file - C:\inetpub\wwwroot\CubeTool\icons\template.bmp
+Deleted file - C:\inetpub\wwwroot\CubeTool\icons\template_large.bmp
+Deleted file - C:\inetpub\wwwroot\CubeTool\icons\tspgroup.bmp
+Deleted file - C:\inetpub\wwwroot\CubeTool\icons\tspgroup_large.bmp
+Deleted file - C:\inetpub\wwwroot\CubeTool\icons\type.bmp
+Deleted file - C:\inetpub\wwwroot\CubeTool\icons\typespec.bmp
+Deleted file - C:\inetpub\wwwroot\CubeTool\icons\typespec_large.bmp
+Deleted file - C:\inetpub\wwwroot\CubeTool\icons\type_add.bmp
+Deleted file - C:\inetpub\wwwroot\CubeTool\icons\type_large.bmp
+Deleted file - C:\inetpub\wwwroot\CubeTool\icons\value.bmp
+Deleted file - C:\inetpub\wwwroot\CubeTool\icons\value_add.bmp
+Deleted file - C:\inetpub\wwwroot\CubeTool\icons\value_large.bmp
+Systems\CubeTool\files\base_css.php
+Systems\CubeTool\files\README.md
+Systems\CubeTool\files\icons\add.bmp
+Systems\CubeTool\files\icons\adres.bmp
+Systems\CubeTool\files\icons\adres_large.bmp
+Systems\CubeTool\files\icons\attrib.bmp
+Systems\CubeTool\files\icons\attrib_add.bmp
+Systems\CubeTool\files\icons\attrib_large.bmp
+Systems\CubeTool\files\icons\botype.bmp
+Systems\CubeTool\files\icons\botype_add.bmp
+Systems\CubeTool\files\icons\botype_large.bmp
+Systems\CubeTool\files\icons\close.bmp
+Systems\CubeTool\files\icons\close_h.bmp
+Systems\CubeTool\files\icons\cubegen.bmp
+Systems\CubeTool\files\icons\cubegen_large.bmp
+Systems\CubeTool\files\icons\cube_change_par.bmp
+Systems\CubeTool\files\icons\cube_move.bmp
+Systems\CubeTool\files\icons\deriv.bmp
+Systems\CubeTool\files\icons\deriv_large.bmp
+Systems\CubeTool\files\icons\desc.bmp
+Systems\CubeTool\files\icons\desc_large.bmp
+Systems\CubeTool\files\icons\dot.bmp
+Systems\CubeTool\files\icons\dot_large.bmp
+Systems\CubeTool\files\icons\exit.bmp
+Systems\CubeTool\files\icons\expres.bmp
+Systems\CubeTool\files\icons\expres_large.bmp
+Systems\CubeTool\files\icons\Folder.bmp
+Systems\CubeTool\files\icons\Folder_large.bmp
+Systems\CubeTool\files\icons\funcatb.bmp
+Systems\CubeTool\files\icons\funcatb_large.bmp
+Systems\CubeTool\files\icons\function.bmp
+Systems\CubeTool\files\icons\function_large.bmp
+Systems\CubeTool\files\icons\infelem.bmp
+Systems\CubeTool\files\icons\infelem_add.bmp
+Systems\CubeTool\files\icons\infelem_large.bmp
+Systems\CubeTool\files\icons\inftype.bmp
+Systems\CubeTool\files\icons\inftype_large.bmp
+Systems\CubeTool\files\icons\irf.bmp
+Systems\CubeTool\files\icons\irf_large.bmp
+Systems\CubeTool\files\icons\klant.bmp
+Systems\CubeTool\files\icons\klant_large.bmp
+Systems\CubeTool\files\icons\model.bmp
+Systems\CubeTool\files\icons\model_large.bmp
+Systems\CubeTool\files\icons\open.bmp
+Systems\CubeTool\files\icons\open_h.bmp
+Systems\CubeTool\files\icons\order.bmp
+Systems\CubeTool\files\icons\order_large.bmp
+Systems\CubeTool\files\icons\ordprod.bmp
+Systems\CubeTool\files\icons\ordprod_large.bmp
+Systems\CubeTool\files\icons\part.bmp
+Systems\CubeTool\files\icons\partit.bmp
+Systems\CubeTool\files\icons\partit_large.bmp
+Systems\CubeTool\files\icons\part_large.bmp
+Systems\CubeTool\files\icons\pointer-par-nok.cur
+Systems\CubeTool\files\icons\pointer-par.cur
+Systems\CubeTool\files\icons\pointer-pos-nok.cur
+Systems\CubeTool\files\icons\pointer-pos.cur
+Systems\CubeTool\files\icons\pointer_move.cur
+Systems\CubeTool\files\icons\produkt.bmp
+Systems\CubeTool\files\icons\produkt_large.bmp
+Systems\CubeTool\files\icons\README.md
+Systems\CubeTool\files\icons\ref.bmp
+Systems\CubeTool\files\icons\ref_large.bmp
+Systems\CubeTool\files\icons\restrict.bmp
+Systems\CubeTool\files\icons\restrict_large.bmp
+Systems\CubeTool\files\icons\reuse.bmp
+Systems\CubeTool\files\icons\reuse_large.bmp
+Systems\CubeTool\files\icons\subtype.bmp
+Systems\CubeTool\files\icons\subtype_large.bmp
+Systems\CubeTool\files\icons\sysbot.bmp
+Systems\CubeTool\files\icons\sysbot_large.bmp
+Systems\CubeTool\files\icons\system.bmp
+Systems\CubeTool\files\icons\system_large.bmp
+Systems\CubeTool\files\icons\template.bmp
+Systems\CubeTool\files\icons\template_large.bmp
+Systems\CubeTool\files\icons\tspgroup.bmp
+Systems\CubeTool\files\icons\tspgroup_large.bmp
+Systems\CubeTool\files\icons\type.bmp
+Systems\CubeTool\files\icons\typespec.bmp
+Systems\CubeTool\files\icons\typespec_large.bmp
+Systems\CubeTool\files\icons\type_add.bmp
+Systems\CubeTool\files\icons\type_large.bmp
+Systems\CubeTool\files\icons\value.bmp
+Systems\CubeTool\files\icons\value_add.bmp
+Systems\CubeTool\files\icons\value_large.bmp
+85 File(s) copied
 Systems\CubeTool\php\CubeDbLogon.php
 Systems\CubeTool\php\CubeToolDetail.php
+Systems\CubeTool\php\CubeToolDetailARG.php
+Systems\CubeTool\php\CubeToolDetailATB.php
+Systems\CubeTool\php\CubeToolDetailBOT.php
+Systems\CubeTool\php\CubeToolDetailCGF.php
+Systems\CubeTool\php\CubeToolDetailCGM.php
+Systems\CubeTool\php\CubeToolDetailCGO.php
+Systems\CubeTool\php\CubeToolDetailCGP.php
+Systems\CubeTool\php\CubeToolDetailCUB.php
+Systems\CubeTool\php\CubeToolDetailDCA.php
+Systems\CubeTool\php\CubeToolDetailDCR.php
+Systems\CubeTool\php\CubeToolDetailDCT.php
+Systems\CubeTool\php\CubeToolDetailDER.php
+Systems\CubeTool\php\CubeToolDetailFUN.php
+Systems\CubeTool\php\CubeToolDetailITE.php
+Systems\CubeTool\php\CubeToolDetailITP.php
+Systems\CubeTool\php\CubeToolDetailPAR.php
+Systems\CubeTool\php\CubeToolDetailREF.php
+Systems\CubeTool\php\CubeToolDetailRTA.php
+Systems\CubeTool\php\CubeToolDetailRTR.php
+Systems\CubeTool\php\CubeToolDetailSBT.php
+Systems\CubeTool\php\CubeToolDetailSTP.php
+Systems\CubeTool\php\CubeToolDetailSYS.php
+Systems\CubeTool\php\CubeToolDetailTSG.php
+Systems\CubeTool\php\CubeToolDetailTSP.php
+Systems\CubeTool\php\CubeToolDetailTYP.php
+Systems\CubeTool\php\CubeToolDetailTYR.php
+Systems\CubeTool\php\CubeToolDetailVAL.php
 Systems\CubeTool\php\CubeToolMain.php
 Systems\CubeTool\php\CubeToolServer.php
 Systems\CubeTool\php\CubeToolTree.php
+Systems\CubeTool\php\Index.php
 Systems\CubeTool\php\README.md
-6 File(s) copied
+34 File(s) copied
 
-SQL*Plus: Release 12.2.0.1.0 Production on Wed Mar 14 19:35:11 2018
+SQL*Plus: Release 12.2.0.1.0 Production on Wed Mar 14 20:01:29 2018
 
 Copyright (c) 1982, 2016, Oracle.  All rights reserved.
 
-Last Successful login time: Wed Mar 14 2018 19:34:49 +01:00
+Last Successful login time: Wed Mar 14 2018 19:55:36 +01:00
 
 Connected to:
 Oracle Database 12c Enterprise Edition Release 12.2.0.1.0 - 64bit Production
@@ -848,11 +314,11 @@ Table created.
 
 Disconnected from Oracle Database 12c Enterprise Edition Release 12.2.0.1.0 - 64bit Production
 
-SQL*Plus: Release 12.2.0.1.0 Production on Wed Mar 14 19:35:11 2018
+SQL*Plus: Release 12.2.0.1.0 Production on Wed Mar 14 20:01:29 2018
 
 Copyright (c) 1982, 2016, Oracle.  All rights reserved.
 
-Last Successful login time: Wed Mar 14 2018 19:35:11 +01:00
+Last Successful login time: Wed Mar 14 2018 20:01:29 +01:00
 
 Connected to:
 Oracle Database 12c Enterprise Edition Release 12.2.0.1.0 - 64bit Production
@@ -874,11 +340,11 @@ Trigger created.
 No errors.
 Disconnected from Oracle Database 12c Enterprise Edition Release 12.2.0.1.0 - 64bit Production
 
-SQL*Plus: Release 12.2.0.1.0 Production on Wed Mar 14 19:35:11 2018
+SQL*Plus: Release 12.2.0.1.0 Production on Wed Mar 14 20:01:30 2018
 
 Copyright (c) 1982, 2016, Oracle.  All rights reserved.
 
-Last Successful login time: Wed Mar 14 2018 19:35:11 +01:00
+Last Successful login time: Wed Mar 14 2018 20:01:30 +01:00
 
 Connected to:
 Oracle Database 12c Enterprise Edition Release 12.2.0.1.0 - 64bit Production
@@ -915,11 +381,11 @@ Preparing Template : Templates\SystemImport.cgt
 Generating Code    : Systems\CubeTool\SystemImport.sql
 Ready
 
-SQL*Plus: Release 12.2.0.1.0 Production on Wed Mar 14 19:35:13 2018
+SQL*Plus: Release 12.2.0.1.0 Production on Wed Mar 14 20:01:32 2018
 
 Copyright (c) 1982, 2016, Oracle.  All rights reserved.
 
-Last Successful login time: Wed Mar 14 2018 19:35:11 +01:00
+Last Successful login time: Wed Mar 14 2018 20:01:30 +01:00
 
 Connected to:
 Oracle Database 12c Enterprise Edition Release 12.2.0.1.0 - 64bit Production
