@@ -1,6 +1,6 @@
 @echo off
 set sysname=CubeTool
-set logfile=GenerateCubeGenManual.log
+set logfile=ImportCubeTool.log
 set sysdir=Systems\%sysname%
 set db_name=composys
 set db_schema=cubetool
