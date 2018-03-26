@@ -403,28 +403,28 @@ function drop(p_event) {
 <div><img src="icons/ref_large.bmp" /><span> REFERENCE</span></div>
 <hr/>
 <table>
-<tr ><td>BusinessObjectType.Name</td><td>
-<input id="InputFkBotName" type="text" size="30" maxlength="30" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></td></tr>
-<tr ><td><u>Type.Name</u></td><td>
-<input id="InputFkTypName" type="text" size="30" maxlength="30" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></td></tr>
-<tr ><td>Name</td><td>
-<input id="InputName" type="text" size="30" maxlength="30" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></td></tr>
-<tr ><td style="cursor:help" oncontextmenu="OpenDescBox('REF','Reference.PrimaryKey','REFERENCE','PRIMARY_KEY',-1)">PrimaryKey</td><td>
+<tr><td>BusinessObjectType.Name</td><td><div style="max-width:30em;">
+<input id="InputFkBotName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr><td><u>Type.Name</u></td><td><div style="max-width:30em;">
+<input id="InputFkTypName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr><td>Name</td><td><div style="max-width:30em;">
+<input id="InputName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr><td style="cursor:help;" oncontextmenu="OpenDescBox('REF','Reference.PrimaryKey','REFERENCE','PRIMARY_KEY',-1)">PrimaryKey</td><td><div>
 <select id="InputPrimaryKey" type="text">
 	<option value=" " selected> </option>
 	<option value="Y">Yes</option>
 	<option value="N">No</option>
-</select></td></tr>
-<tr ><td>CodeDisplayKey</td><td>
+</select></div></td></tr>
+<tr><td>CodeDisplayKey</td><td><div>
 <select id="InputCodeDisplayKey" type="text">
 	<option value=" " selected> </option>
 	<option value="Y">Yes</option>
 	<option value="S">Sub</option>
 	<option value="N">No</option>
-</select></td></tr>
-<tr ><td><u>Sequence</u></td><td>
-<input id="InputSequence" type="text" size="2" maxlength="2"></input></td></tr>
-<tr ><td style="cursor:help" oncontextmenu="OpenDescBox('REF','Reference.Scope','REFERENCE','SCOPE',-1)">Scope</td><td>
+</select></div></td></tr>
+<tr><td><u>Sequence</u></td><td><div style="max-width:2em;">
+<input id="InputSequence" type="text" maxlength="2" style="width:100%;"></input></div></td></tr>
+<tr><td style="cursor:help;" oncontextmenu="OpenDescBox('REF','Reference.Scope','REFERENCE','SCOPE',-1)">Scope</td><td><div>
 <select id="InputScope" type="text">
 	<option value=" " selected> </option>
 	<option value="ALL">All</option>
@@ -433,28 +433,28 @@ function drop(p_event) {
 	<option value="PR1">Parents first level</option>
 	<option value="CHA">Children all</option>
 	<option value="CH1">Children first level</option>
-</select></td></tr>
-<tr ><td style="cursor:help" oncontextmenu="OpenDescBox('REF','Reference.Unchangeable','REFERENCE','UNCHANGEABLE',-1)">Unchangeable</td><td>
+</select></div></td></tr>
+<tr><td style="cursor:help;" oncontextmenu="OpenDescBox('REF','Reference.Unchangeable','REFERENCE','UNCHANGEABLE',-1)">Unchangeable</td><td><div>
 <select id="InputUnchangeable" type="text">
 	<option value=" " selected> </option>
 	<option value="Y">Yes</option>
 	<option value="N">No</option>
-</select></td></tr>
-<tr ><td style="cursor:help" oncontextmenu="OpenDescBox('REF','Reference.WithinScopeLevel','REFERENCE','WITHIN_SCOPE_LEVEL',-1)">WithinScopeLevel</td><td>
-<input id="InputWithinScopeLevel" type="text" size="2" maxlength="2" onchange="ToUpperCase(this);"></input></td></tr>
+</select></div></td></tr>
+<tr><td style="cursor:help;" oncontextmenu="OpenDescBox('REF','Reference.WithinScopeLevel','REFERENCE','WITHIN_SCOPE_LEVEL',-1)">WithinScopeLevel</td><td><div style="max-width:2em;">
+<input id="InputWithinScopeLevel" type="text" maxlength="2" style="width:100%;" onchange="ToUpperCase(this);"></input></div></td></tr>
 <tr><td height=6></td></tr><tr><td colspan=2><fieldset><legend style="cursor:help" oncontextmenu="OpenDescBox('REF','Reference.Type (Refer)','REFERENCE','TYPE',0)"><img style="border:1 solid transparent;" src="icons/type.bmp"/> Type (Refer)</legend>
-<table>
-<tr><td><u>Type.Name</u></td><td>
-<input id="InputXkTypName" type="text" size="30" maxlength="30" onchange="ToUpperCase(this);ReplaceSpaces(this);" readonly></input></td>
+<table style="width:100%;">
+<tr><td><u>Type.Name</u></td><td style="width:100%;"><div style="max-width:30em;">
+<input id="InputXkTypName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" readonly></input></div></td>
 <td><button id="RefSelect001" type="button" onclick="StartSelect001(event)">Select</button></td></tr>
 </table></fieldset></td></tr>
 <tr><td height=6></td></tr><tr><td colspan=2><fieldset><legend style="cursor:help" oncontextmenu="OpenDescBox('REF','Reference.Type (WithinScopeOf)','REFERENCE','TYPE',1)"><img style="border:1 solid transparent;" src="icons/type.bmp"/> Type (WithinScopeOf)</legend>
-<table>
-<tr><td>Type.Name</td><td>
-<input id="InputXkTypName1" type="text" size="30" maxlength="30" onchange="ToUpperCase(this);ReplaceSpaces(this);" readonly></input></td>
+<table style="width:100%;">
+<tr><td>Type.Name</td><td style="width:100%;"><div style="max-width:30em;">
+<input id="InputXkTypName1" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" readonly></input></div></td>
 <td><button id="RefSelect002" type="button" onclick="StartSelect002(event)">Select</button></td></tr>
 </table></fieldset></td></tr>
-<tr><td><br></td></tr>
+<tr><td><br></td><td style="width:100%;"></td></tr>
 <tr><td/><td>
 <button id="ButtonCreate" type="button" onclick="CreateRef()">Create</button>&nbsp;&nbsp;&nbsp;
 <button id="ButtonUpdate" type="button" onclick="UpdateRef()">Update</button>&nbsp;&nbsp;&nbsp;

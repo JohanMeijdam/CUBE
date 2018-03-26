@@ -20,9 +20,13 @@ Change log:
 21-02-2018 - Implementation of TYPE_SPECIALISATION_GROUP.
 28-02-2018 - domain NR length + 1. 
 11-03-2018 - Unchangeable Attributes and References not updateable.
+26-03-2018 - Lay-out improvements (better auto sizing).
 [[TEXT,DETAIL_RECURSIVE_PARMS]]'[[IF,REFERENCE:4=PRA]]U<|>9999[[ELSIF,REFERENCE:4=PR1]]U<|>1[[ELSIF,REFERENCE:4=CHA]]D<|>9999[[ELSIF,REFERENCE:4=CH1]]D<|>1[[ELSE]]X<|>0[[ENDIF]]<|>'+[[ENDTEXT]]
 [[TEXT,DETAIL_GET_LIST_NAME]]Get[[LOOP,REFERENCE_TYPE]]<<REFERENCE_TYPE1:C>>[[ENDLOOP,REFERENCE_TYPE]][[LOOP,REFERENCE_TYPE_WITHIN_SCOPE_OF]]For<<REFERENCE_TYPE_WITHIN_SCOPE_OF1:C>>[[ENDLOOP,REFERENCE_TYPE_WITHIN_SCOPE_OF]]List[[ENDTEXT]]
 [[TEXT,DETAIL_ROOT_NAME]][[LOOP,ATTRIBUTE_ROOT_TYPE]]<<ATTRIBUTE_ROOT_TYPE:C>>[[ENDLOOP,ATTRIBUTE_ROOT_TYPE]].[[LOOP,ATTRIBUTE_ROOT]][[IF:CHILD(ATTRIBUTE_TYPE_SPECIALISATION_GROUP)]][[LOOP,ATTRIBUTE_TYPE_SPECIALISATION_GROUP]]<<ATTRIBUTE_TYPE_SPECIALISATION_GROUP1:C>>[[ENDLOOP,ATTRIBUTE_TYPE_SPECIALISATION_GROUP]][[ELSE]]<<ATTRIBUTE_ROOT:C>>[[ENDIF]][[ENDLOOP,ATTRIBUTE_ROOT]][[ENDTEXT]]
+[[TEXT,DETAIL_MAXLENGTH]] maxlength="[[IF:2=DT]]10[[ELSIF:2=NR]][[EVAL:<<INFORMATION_TYPE_ELEMENT3>>+1]][[ELSE]]<<INFORMATION_TYPE_ELEMENT3>>[[ENDIF]]"[[ENDTEXT]]
+[[TEXT,DETAIL_STYLE_MAX-WIDTH]] style="max-width:[[IF:2=DT]]12ch[[ELSIF:2=NR]][[EVAL:<<INFORMATION_TYPE_ELEMENT3>>+1]]em[[ELSE]]<<INFORMATION_TYPE_ELEMENT3>>em[[ENDIF]];"[[ENDTEXT]]
+[[TEXT,DETAIL_ONCHANGE]][[IF:5=N[OR]7=N]] onchange="[[IF:5=N]]ToUpperCase(this);[[ENDIF]][[IF:7=N]]ReplaceSpaces(this);[[ENDIF]]"[[ENDIF]][[ENDTEXT]]
 [[BODY]][[LOOP,SYSTEM:0=<<1>>]][[LOOP,SYSTEM_BO_TYPE]][[LOOP,BUSINESS_OBJECT_TYPE]][[LOOP,TYPE]][[FILE,<<2>>\<<1>>Detail<<TYPE1:U>>.php]]<?php
 session_start();
 $_SESSION['views']=0;
@@ -421,19 +425,19 @@ function ResetField<<ATTRIBUTE:C>>(p_field_id) {
 </select>[[ENDLOOP,ATTRIBUTE]][[ENDIF]]</span></div>
 <hr/>
 <table[[IF:CHILD(TYPE_SPECIALISATION_GROUP)]] id="TableMain" style="display:none"[[ENDIF]]>[[LOOP,ATTRIBUTE:!3=X[AND]4=N[AND]!CHILD(ATTRIBUTE_TYPE_SPECIALISATION_GROUP)]]
-<tr [[IF:CHILD(RESTRICTION_TYPE_SPEC_ATB)]] id="RowAtb<<ATTRIBUTE:C>>"[[ENDIF]]><td[[IF:CHILD(DESCRIPTION_ATTRIBUTE)]] style="cursor:help" oncontextmenu="OpenDescBox('<<TYPE7:U>>','<<TYPE:C>>.<<ATTRIBUTE:C>>','<<TYPE:U>>','<<ATTRIBUTE:U>>',-1)"[[ENDIF]]>[[IF:1=Y]]<u>[[ENDIF]][[IF:3=N]]<<ATTRIBUTE:C>>[[ELSE]]<<TEXT,DETAIL_ROOT_NAME>>[[ENDIF]][[IF:1=Y]]</u>[[ENDIF]]</td>[[LOOP,INFORMATION_TYPE_ELEMENT]][[IF:8=Y]]</tr><tr><td colspan="2">[[ELSE]]<td>[[ENDIF]][[IF,ATTRIBUTE:!3=F[AND]!3=R[AND]CHILD(INFORMATION_TYPE_ELEMENT:CHILD(PERMITTED_VALUE))]]
+<tr[[IF:CHILD(RESTRICTION_TYPE_SPEC_ATB)]] id="RowAtb<<ATTRIBUTE:C>>"[[ENDIF]]><td[[IF:CHILD(INFORMATION_TYPE_ELEMENT:2=CH[AND]8=Y)[OR]CHILD(DESCRIPTION_ATTRIBUTE)]] style="[[IF:CHILD(INFORMATION_TYPE_ELEMENT:2=CH[AND]8=Y)]]padding-top:10px;[[ENDIF]][[IF:CHILD(DESCRIPTION_ATTRIBUTE)]]cursor:help;[[ENDIF]]"[[ENDIF]][[IF:CHILD(DESCRIPTION_ATTRIBUTE)]] oncontextmenu="OpenDescBox('<<TYPE7:U>>','<<TYPE:C>>.<<ATTRIBUTE:C>>','<<TYPE:U>>','<<ATTRIBUTE:U>>',-1)"[[ENDIF]]>[[IF:1=Y]]<u>[[ENDIF]][[IF:3=N]]<<ATTRIBUTE:C>>[[ELSE]]<<TEXT,DETAIL_ROOT_NAME>>[[ENDIF]][[IF:1=Y]]</u>[[ENDIF]]</td>[[LOOP,INFORMATION_TYPE_ELEMENT]][[IF:2=CH[AND]8=Y]]</tr><tr><td colspan="2">[[ELSE]]<td>[[ENDIF]][[IF,ATTRIBUTE:!3=F[AND]!3=R[AND]CHILD(INFORMATION_TYPE_ELEMENT:CHILD(PERMITTED_VALUE))]]<div>
 <select id="Input<<ATTRIBUTE:C>>" type="text">
 	<option value=" " selected> </option>[[LOOP,PERMITTED_VALUE]]
 	<option value="<<PERMITTED_VALUE>>"><<PERMITTED_VALUE1>></option>[[ENDLOOP,PERMITTED_VALUE]]
-</select>[[ELSE]]
-<[[IF:8=Y]]textarea[[ELSE]]input[[ENDIF]] id="Input<<ATTRIBUTE:C>>" type="text" [[IF,ATTRIBUTE:CHILD(DERIVATION)[OR]CHILD(DENORMALIZATION)[OR]CHILD(AGGREGATION)]]readonly="true" [[ENDIF]][[IF:2=DT]]size="10" maxlength="10"[[ELSIF:2=NR]]size="[[EVAL:<<INFORMATION_TYPE_ELEMENT3>>+1]]" maxlength="[[EVAL:<<INFORMATION_TYPE_ELEMENT3>>+1]]"[[ELSE]][[IF:8=Y]]rows="5" cols="60" style="white-space:normal;"[[ELSE]]size="<<INFORMATION_TYPE_ELEMENT3>>"[[ENDIF]] maxlength="<<INFORMATION_TYPE_ELEMENT3>>"[[ENDIF]][[IF:5=N[OR]7=N]] onchange="[[IF:5=N]]ToUpperCase(this);[[ENDIF]][[IF:7=N]]ReplaceSpaces(this);[[ENDIF]]"[[ENDIF]]></[[IF:8=Y]]textarea[[ELSE]]input[[ENDIF]]>[[ENDIF]][[ENDLOOP,INFORMATION_TYPE_ELEMENT]]</td></tr>[[ENDLOOP,ATTRIBUTE]][[LOOP,REFERENCE]]
+</select>[[ELSE]]<div[[IF:!(2=CH[AND]8=Y)]]<<TEXT,DETAIL_STYLE_MAX-WIDTH>>[[ENDIF]]>
+<[[IF:2=CH[AND]8=Y]]textarea[[ELSE]]input[[ENDIF]] id="Input<<ATTRIBUTE:C>>" type="text"<<TEXT,DETAIL_MAXLENGTH>>[[IF:2=CH[AND]8=Y]] rows="5"[[ENDIF]] style="[[IF:2=CH[AND]8=Y]]white-space:normal;[[ENDIF]]width:100%;"<<TEXT,DETAIL_ONCHANGE>>[[IF,ATTRIBUTE:CHILD(DERIVATION)[OR]CHILD(DENORMALIZATION)[OR]CHILD(AGGREGATION)]] readonly[[ENDIF]]></[[IF:2=CH[AND]8=Y]]textarea[[ELSE]]input[[ENDIF]]>[[ENDIF]]</div></td>[[ENDLOOP,INFORMATION_TYPE_ELEMENT]]</tr>[[ENDLOOP,ATTRIBUTE]][[LOOP,REFERENCE]]
 <tr><td height=6></td></tr><tr[[IF:CHILD(RESTRICTION_TYPE_SPEC_REF)]] id="RowRef[[LOOP,REFERENCE_TYPE]]<<REFERENCE_TYPE:C>>[[ENDLOOP,REFERENCE_TYPE]]<<REFERENCE3>>"[[ENDIF]]><td colspan=2><fieldset><legend[[IF:CHILD(DESCRIPTION_REFERENCE)]] style="cursor:help" oncontextmenu="OpenDescBox('<<TYPE7:U>>','<<TYPE:C>>.[[LOOP,REFERENCE_TYPE]]<<REFERENCE_TYPE:C>> (<<REFERENCE:C>>)','<<TYPE:U>>','<<REFERENCE_TYPE>>[[ENDLOOP,REFERENCE_TYPE]]',<<REFERENCE3>>)"[[ENDIF]]>[[LOOP,REFERENCE_TYPE]]<img style="border:1 solid transparent;" src="icons/<<REFERENCE_TYPE7:L>>.bmp"/> <<REFERENCE_TYPE:C>>[[ENDLOOP,REFERENCE_TYPE]] (<<REFERENCE:C>>)</legend>
-<table>[[LOOP,FKEY]]
-<tr><td>[[IF,REFERENCE:1=Y]]<u>[[ENDIF]]<<TEXT,DETAIL_ROOT_NAME>>[[IF,REFERENCE:1=Y]]</u>[[ENDIF]]</td><td>[[LOOP,INFORMATION_TYPE_ELEMENT]]
-<input id="Input<<FKEY:C>>" type="text" [[IF:2=DT]]size="10" maxlength="10"[[ELSIF:2=NR]]size="[[EVAL:<<INFORMATION_TYPE_ELEMENT3>>+1]]" maxlength="[[EVAL:<<INFORMATION_TYPE_ELEMENT3>>+1]]"[[ELSE]]size="<<INFORMATION_TYPE_ELEMENT3>>" maxlength="<<INFORMATION_TYPE_ELEMENT3>>"[[ENDIF]][[IF:5=N[OR]7=N]] onchange="[[IF:5=N]]ToUpperCase(this);[[ENDIF]][[IF:7=N]]ReplaceSpaces(this);[[ENDIF]]"[[ENDIF]] readonly></input>[[ENDLOOP,INFORMATION_TYPE_ELEMENT]]</td>[[IF:FIRST]]
+<table style="width:100%;">[[LOOP,FKEY]]
+<tr><td>[[IF,REFERENCE:1=Y]]<u>[[ENDIF]]<<TEXT,DETAIL_ROOT_NAME>>[[IF,REFERENCE:1=Y]]</u>[[ENDIF]]</td><td style="width:100%;">[[LOOP,INFORMATION_TYPE_ELEMENT]]<div<<TEXT,DETAIL_STYLE_MAX-WIDTH>>>
+<input id="Input<<FKEY:C>>" type="text"<<TEXT,DETAIL_MAXLENGTH>> style="width:100%;"<<TEXT,DETAIL_ONCHANGE>> readonly></input></div>[[ENDLOOP,INFORMATION_TYPE_ELEMENT]]</td>[[IF:FIRST]]
 <td><button id="RefSelect<<REFERENCE:S>>" type="button" onclick="StartSelect<<REFERENCE:S>>(event)">Select</button></td>[[ENDIF]]</tr>[[ENDLOOP,FKEY]]
 </table></fieldset></td></tr>[[ENDLOOP,REFERENCE]]
-<tr><td><br></td></tr>
+<tr><td><br></td><td style="width:100%;"></td></tr>
 <tr><td/><td>
 <button id="ButtonCreate" type="button" onclick="Create<<TYPE1:C>>()">Create</button>&nbsp;&nbsp;&nbsp;
 <button id="ButtonUpdate" type="button" onclick="Update<<TYPE1:C>>()">Update</button>&nbsp;&nbsp;&nbsp;

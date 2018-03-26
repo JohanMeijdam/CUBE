@@ -379,27 +379,27 @@ function drop(p_event) {
 <div><img src="icons/typespec_large.bmp" /><span> TYPE_SPECIALISATION</span></div>
 <hr/>
 <table>
-<tr ><td>BusinessObjectType.Name</td><td>
-<input id="InputFkBotName" type="text" size="30" maxlength="30" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></td></tr>
-<tr ><td><u>Type.Name</u></td><td>
-<input id="InputFkTypName" type="text" size="30" maxlength="30" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></td></tr>
-<tr ><td><u>TypeSpecialisationGroup.Code</u></td><td>
-<input id="InputFkTsgCode" type="text" size="8" maxlength="8" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></td></tr>
-<tr ><td><u>Code</u></td><td>
-<input id="InputCode" type="text" size="8" maxlength="8" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></td></tr>
-<tr ><td>Name</td><td>
-<input id="InputName" type="text" size="30" maxlength="30" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></td></tr>
+<tr><td>BusinessObjectType.Name</td><td><div style="max-width:30em;">
+<input id="InputFkBotName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr><td><u>Type.Name</u></td><td><div style="max-width:30em;">
+<input id="InputFkTypName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr><td><u>TypeSpecialisationGroup.Code</u></td><td><div style="max-width:8em;">
+<input id="InputFkTsgCode" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr><td><u>Code</u></td><td><div style="max-width:8em;">
+<input id="InputCode" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr><td>Name</td><td><div style="max-width:30em;">
+<input id="InputName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
 <tr><td height=6></td></tr><tr><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/typespec.bmp"/> TypeSpecialisation (Specialise)</legend>
-<table>
-<tr><td>Type.Name</td><td>
-<input id="InputXfTspTypName" type="text" size="30" maxlength="30" onchange="ToUpperCase(this);ReplaceSpaces(this);" readonly></input></td>
+<table style="width:100%;">
+<tr><td>Type.Name</td><td style="width:100%;"><div style="max-width:30em;">
+<input id="InputXfTspTypName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" readonly></input></div></td>
 <td><button id="RefSelect001" type="button" onclick="StartSelect001(event)">Select</button></td></tr>
-<tr><td>TypeSpecialisationGroup.Code</td><td>
-<input id="InputXfTspTsgCode" type="text" size="8" maxlength="8" onchange="ToUpperCase(this);ReplaceSpaces(this);" readonly></input></td></tr>
-<tr><td>TypeSpecialisation.Code</td><td>
-<input id="InputXkTspCode" type="text" size="8" maxlength="8" onchange="ToUpperCase(this);ReplaceSpaces(this);" readonly></input></td></tr>
+<tr><td>TypeSpecialisationGroup.Code</td><td style="width:100%;"><div style="max-width:8em;">
+<input id="InputXfTspTsgCode" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" readonly></input></div></td></tr>
+<tr><td>TypeSpecialisation.Code</td><td style="width:100%;"><div style="max-width:8em;">
+<input id="InputXkTspCode" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" readonly></input></div></td></tr>
 </table></fieldset></td></tr>
-<tr><td><br></td></tr>
+<tr><td><br></td><td style="width:100%;"></td></tr>
 <tr><td/><td>
 <button id="ButtonCreate" type="button" onclick="CreateTsp()">Create</button>&nbsp;&nbsp;&nbsp;
 <button id="ButtonUpdate" type="button" onclick="UpdateTsp()">Update</button>&nbsp;&nbsp;&nbsp;

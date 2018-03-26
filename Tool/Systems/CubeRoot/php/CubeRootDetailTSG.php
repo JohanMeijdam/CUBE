@@ -274,23 +274,23 @@ function drop(p_event) {
 <div><img src="icons/tspgroup_large.bmp" /><span> TYPE_SPECIALISATION_GROUP</span></div>
 <hr/>
 <table>
-<tr ><td>BusinessObjectType.Name</td><td>
-<input id="InputFkBotName" type="text" size="30" maxlength="30" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></td></tr>
-<tr ><td><u>Type.Name</u></td><td>
-<input id="InputFkTypName" type="text" size="30" maxlength="30" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></td></tr>
-<tr ><td>TypeSpecialisationGroup.Code</td><td>
-<input id="InputFkTsgCode" type="text" size="8" maxlength="8" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></td></tr>
-<tr ><td><u>Code</u></td><td>
-<input id="InputCode" type="text" size="8" maxlength="8" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></td></tr>
-<tr ><td>Name</td><td>
-<input id="InputName" type="text" size="30" maxlength="30" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></td></tr>
-<tr ><td style="cursor:help" oncontextmenu="OpenDescBox('TSPGROUP','TypeSpecialisationGroup.PrimaryKey','TYPE_SPECIALISATION_GROUP','PRIMARY_KEY',-1)">PrimaryKey</td><td>
+<tr><td>BusinessObjectType.Name</td><td><div style="max-width:30em;">
+<input id="InputFkBotName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr><td><u>Type.Name</u></td><td><div style="max-width:30em;">
+<input id="InputFkTypName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr><td>TypeSpecialisationGroup.Code</td><td><div style="max-width:8em;">
+<input id="InputFkTsgCode" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr><td><u>Code</u></td><td><div style="max-width:8em;">
+<input id="InputCode" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr><td>Name</td><td><div style="max-width:30em;">
+<input id="InputName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr><td style="cursor:help;" oncontextmenu="OpenDescBox('TSPGROUP','TypeSpecialisationGroup.PrimaryKey','TYPE_SPECIALISATION_GROUP','PRIMARY_KEY',-1)">PrimaryKey</td><td><div>
 <select id="InputPrimaryKey" type="text">
 	<option value=" " selected> </option>
 	<option value="Y">Yes</option>
 	<option value="N">No</option>
-</select></td></tr>
-<tr><td><br></td></tr>
+</select></div></td></tr>
+<tr><td><br></td><td style="width:100%;"></td></tr>
 <tr><td/><td>
 <button id="ButtonCreate" type="button" onclick="CreateTsg()">Create</button>&nbsp;&nbsp;&nbsp;
 <button id="ButtonUpdate" type="button" onclick="UpdateTsg()">Update</button>&nbsp;&nbsp;&nbsp;

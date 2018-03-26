@@ -398,33 +398,33 @@ function ProcessTypeSpecialisation() {
 </select></span></div>
 <hr/>
 <table id="TableMain" style="display:none">
-<tr ><td>BusinessObjectType.Name</td><td>
-<input id="InputFkBotName" type="text" size="30" maxlength="30" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></td></tr>
-<tr ><td><u>Type.Name</u></td><td>
-<input id="InputFkTypName" type="text" size="30" maxlength="30" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></td></tr>
-<tr ><td><u>Attribute.Name</u></td><td>
-<input id="InputFkAtbName" type="text" size="30" maxlength="30" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></td></tr>
-<tr  id="RowAtbAggregateFunction"><td>AggregateFunction</td><td>
+<tr><td>BusinessObjectType.Name</td><td><div style="max-width:30em;">
+<input id="InputFkBotName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr><td><u>Type.Name</u></td><td><div style="max-width:30em;">
+<input id="InputFkTypName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr><td><u>Attribute.Name</u></td><td><div style="max-width:30em;">
+<input id="InputFkAtbName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr id="RowAtbAggregateFunction"><td>AggregateFunction</td><td><div>
 <select id="InputAggregateFunction" type="text">
 	<option value=" " selected> </option>
 	<option value="SUM">Sum</option>
 	<option value="AVG">Average</option>
 	<option value="MIN">Minimum</option>
 	<option value="MAX">Maximum</option>
-</select></td></tr>
+</select></div></td></tr>
 <tr><td height=6></td></tr><tr><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/type.bmp"/> Type (ConcernsParent)</legend>
-<table>
-<tr><td>Type.Name</td><td>
-<input id="InputXkTypName" type="text" size="30" maxlength="30" onchange="ToUpperCase(this);ReplaceSpaces(this);" readonly></input></td>
+<table style="width:100%;">
+<tr><td>Type.Name</td><td style="width:100%;"><div style="max-width:30em;">
+<input id="InputXkTypName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" readonly></input></div></td>
 <td><button id="RefSelect001" type="button" onclick="StartSelect001(event)">Select</button></td></tr>
 </table></fieldset></td></tr>
 <tr><td height=6></td></tr><tr><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/type.bmp"/> Type (ConcernsChild)</legend>
-<table>
-<tr><td>Type.Name</td><td>
-<input id="InputXkTypName1" type="text" size="30" maxlength="30" onchange="ToUpperCase(this);ReplaceSpaces(this);" readonly></input></td>
+<table style="width:100%;">
+<tr><td>Type.Name</td><td style="width:100%;"><div style="max-width:30em;">
+<input id="InputXkTypName1" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" readonly></input></div></td>
 <td><button id="RefSelect002" type="button" onclick="StartSelect002(event)">Select</button></td></tr>
 </table></fieldset></td></tr>
-<tr><td><br></td></tr>
+<tr><td><br></td><td style="width:100%;"></td></tr>
 <tr><td/><td>
 <button id="ButtonCreate" type="button" onclick="CreateDer()">Create</button>&nbsp;&nbsp;&nbsp;
 <button id="ButtonUpdate" type="button" onclick="UpdateDer()">Update</button>&nbsp;&nbsp;&nbsp;

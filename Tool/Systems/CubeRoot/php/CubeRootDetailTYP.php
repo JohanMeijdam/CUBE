@@ -283,27 +283,27 @@ function drop(p_event) {
 <div><img src="icons/type_large.bmp" /><span style="cursor:help" oncontextmenu="OpenDescBox('TYPE','Type','TYPE','_',-1)"> TYPE</span></div>
 <hr/>
 <table>
-<tr ><td>BusinessObjectType.Name</td><td>
-<input id="InputFkBotName" type="text" size="30" maxlength="30" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></td></tr>
-<tr ><td>Type.Name</td><td>
-<input id="InputFkTypName" type="text" size="30" maxlength="30" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></td></tr>
-<tr ><td><u>Name</u></td><td>
-<input id="InputName" type="text" size="30" maxlength="30" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></td></tr>
-<tr ><td>Code</td><td>
-<input id="InputCode" type="text" size="3" maxlength="3" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></td></tr>
-<tr ><td>FlagPartialKey</td><td>
+<tr><td>BusinessObjectType.Name</td><td><div style="max-width:30em;">
+<input id="InputFkBotName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr><td>Type.Name</td><td><div style="max-width:30em;">
+<input id="InputFkTypName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr><td><u>Name</u></td><td><div style="max-width:30em;">
+<input id="InputName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr><td>Code</td><td><div style="max-width:3em;">
+<input id="InputCode" type="text" maxlength="3" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr><td>FlagPartialKey</td><td><div>
 <select id="InputFlagPartialKey" type="text">
 	<option value=" " selected> </option>
 	<option value="Y">Yes</option>
 	<option value="N">No</option>
-</select></td></tr>
-<tr ><td>FlagRecursive</td><td>
+</select></div></td></tr>
+<tr><td>FlagRecursive</td><td><div>
 <select id="InputFlagRecursive" type="text">
 	<option value=" " selected> </option>
 	<option value="Y">Yes</option>
 	<option value="N">No</option>
-</select></td></tr>
-<tr ><td>RecursiveCardinality</td><td>
+</select></div></td></tr>
+<tr><td>RecursiveCardinality</td><td><div>
 <select id="InputRecursiveCardinality" type="text">
 	<option value=" " selected> </option>
 	<option value="1">1</option>
@@ -312,8 +312,8 @@ function drop(p_event) {
 	<option value="4">4</option>
 	<option value="5">5</option>
 	<option value="N">Many</option>
-</select></td></tr>
-<tr ><td>Cardinality</td><td>
+</select></div></td></tr>
+<tr><td>Cardinality</td><td><div>
 <select id="InputCardinality" type="text">
 	<option value=" " selected> </option>
 	<option value="1">1</option>
@@ -322,23 +322,23 @@ function drop(p_event) {
 	<option value="4">4</option>
 	<option value="5">5</option>
 	<option value="N">Many</option>
-</select></td></tr>
-<tr ><td>SortOrder</td><td>
+</select></div></td></tr>
+<tr><td>SortOrder</td><td><div>
 <select id="InputSortOrder" type="text">
 	<option value=" " selected> </option>
 	<option value="N">No sort</option>
 	<option value="K">Key</option>
 	<option value="P">Position</option>
-</select></td></tr>
-<tr ><td>Icon</td><td>
-<input id="InputIcon" type="text" size="8" maxlength="8" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></td></tr>
-<tr ><td style="cursor:help" oncontextmenu="OpenDescBox('TYPE','Type.Transferable','TYPE','TRANSFERABLE',-1)">Transferable</td><td>
+</select></div></td></tr>
+<tr><td>Icon</td><td><div style="max-width:8em;">
+<input id="InputIcon" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr><td style="cursor:help;" oncontextmenu="OpenDescBox('TYPE','Type.Transferable','TYPE','TRANSFERABLE',-1)">Transferable</td><td><div>
 <select id="InputTransferable" type="text">
 	<option value=" " selected> </option>
 	<option value="Y">Yes</option>
 	<option value="N">No</option>
-</select></td></tr>
-<tr><td><br></td></tr>
+</select></div></td></tr>
+<tr><td><br></td><td style="width:100%;"></td></tr>
 <tr><td/><td>
 <button id="ButtonCreate" type="button" onclick="CreateTyp()">Create</button>&nbsp;&nbsp;&nbsp;
 <button id="ButtonUpdate" type="button" onclick="UpdateTyp()">Update</button>&nbsp;&nbsp;&nbsp;

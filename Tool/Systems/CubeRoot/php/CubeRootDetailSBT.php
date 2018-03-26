@@ -334,15 +334,15 @@ function drop(p_event) {
 <div><img src="icons/sysbot_large.bmp" /><span> SYSTEM_BO_TYPE</span></div>
 <hr/>
 <table>
-<tr ><td><u>System.Name</u></td><td>
-<input id="InputFkSysName" type="text" size="30" maxlength="30" onchange="ReplaceSpaces(this);"></input></td></tr>
+<tr><td><u>System.Name</u></td><td><div style="max-width:30em;">
+<input id="InputFkSysName" type="text" maxlength="30" style="width:100%;" onchange="ReplaceSpaces(this);"></input></div></td></tr>
 <tr><td height=6></td></tr><tr><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/botype.bmp"/> BusinessObjectType (Has)</legend>
-<table>
-<tr><td><u>BusinessObjectType.Name</u></td><td>
-<input id="InputXkBotName" type="text" size="30" maxlength="30" onchange="ToUpperCase(this);ReplaceSpaces(this);" readonly></input></td>
+<table style="width:100%;">
+<tr><td><u>BusinessObjectType.Name</u></td><td style="width:100%;"><div style="max-width:30em;">
+<input id="InputXkBotName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" readonly></input></div></td>
 <td><button id="RefSelect001" type="button" onclick="StartSelect001(event)">Select</button></td></tr>
 </table></fieldset></td></tr>
-<tr><td><br></td></tr>
+<tr><td><br></td><td style="width:100%;"></td></tr>
 <tr><td/><td>
 <button id="ButtonCreate" type="button" onclick="CreateSbt()">Create</button>&nbsp;&nbsp;&nbsp;
 <button id="ButtonUpdate" type="button" onclick="UpdateSbt()">Update</button>&nbsp;&nbsp;&nbsp;

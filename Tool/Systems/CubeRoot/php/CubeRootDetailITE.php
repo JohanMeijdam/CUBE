@@ -265,13 +265,13 @@ function drop(p_event) {
 <div><img src="icons/infelem_large.bmp" /><span> INFORMATION_TYPE_ELEMENT</span></div>
 <hr/>
 <table>
-<tr ><td><u>InformationType.Name</u></td><td>
-<input id="InputFkItpName" type="text" size="30" maxlength="30" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></td></tr>
-<tr ><td><u>Sequence</u></td><td>
-<input id="InputSequence" type="text" size="9" maxlength="9"></input></td></tr>
-<tr ><td>Suffix</td><td>
-<input id="InputSuffix" type="text" size="12" maxlength="12" onchange="ReplaceSpaces(this);"></input></td></tr>
-<tr ><td>Domain</td><td>
+<tr><td><u>InformationType.Name</u></td><td><div style="max-width:30em;">
+<input id="InputFkItpName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr><td><u>Sequence</u></td><td><div style="max-width:9em;">
+<input id="InputSequence" type="text" maxlength="9" style="width:100%;"></input></div></td></tr>
+<tr><td>Suffix</td><td><div style="max-width:12em;">
+<input id="InputSuffix" type="text" maxlength="12" style="width:100%;" onchange="ReplaceSpaces(this);"></input></div></td></tr>
+<tr><td>Domain</td><td><div>
 <select id="InputDomain" type="text">
 	<option value=" " selected> </option>
 	<option value="CH">Text</option>
@@ -279,32 +279,32 @@ function drop(p_event) {
 	<option value="DT">Date</option>
 	<option value="TI">Time</option>
 	<option value="TS">Timestamp</option>
-</select></td></tr>
-<tr ><td>Length</td><td>
-<input id="InputLength" type="text" size="9" maxlength="9"></input></td></tr>
-<tr ><td>Decimals</td><td>
-<input id="InputDecimals" type="text" size="9" maxlength="9"></input></td></tr>
-<tr ><td>CaseSensitive</td><td>
+</select></div></td></tr>
+<tr><td>Length</td><td><div style="max-width:9em;">
+<input id="InputLength" type="text" maxlength="9" style="width:100%;"></input></div></td></tr>
+<tr><td>Decimals</td><td><div style="max-width:9em;">
+<input id="InputDecimals" type="text" maxlength="9" style="width:100%;"></input></div></td></tr>
+<tr><td>CaseSensitive</td><td><div>
 <select id="InputCaseSensitive" type="text">
 	<option value=" " selected> </option>
 	<option value="Y">Yes</option>
 	<option value="N">No</option>
-</select></td></tr>
-<tr ><td>DefaultValue</td><td>
-<input id="InputDefaultValue" type="text" size="32" maxlength="32"></input></td></tr>
-<tr ><td>SpacesAllowed</td><td>
+</select></div></td></tr>
+<tr><td>DefaultValue</td><td><div style="max-width:32em;">
+<input id="InputDefaultValue" type="text" maxlength="32" style="width:100%;"></input></div></td></tr>
+<tr><td>SpacesAllowed</td><td><div>
 <select id="InputSpacesAllowed" type="text">
 	<option value=" " selected> </option>
 	<option value="Y">Yes</option>
 	<option value="N">No</option>
-</select></td></tr>
-<tr ><td>Descriptive</td><td>
+</select></div></td></tr>
+<tr><td>Descriptive</td><td><div>
 <select id="InputDescriptive" type="text">
 	<option value=" " selected> </option>
 	<option value="Y">Yes</option>
 	<option value="N">No</option>
-</select></td></tr>
-<tr><td><br></td></tr>
+</select></div></td></tr>
+<tr><td><br></td><td style="width:100%;"></td></tr>
 <tr><td/><td>
 <button id="ButtonCreate" type="button" onclick="CreateIte()">Create</button>&nbsp;&nbsp;&nbsp;
 <button id="ButtonUpdate" type="button" onclick="UpdateIte()">Update</button>&nbsp;&nbsp;&nbsp;

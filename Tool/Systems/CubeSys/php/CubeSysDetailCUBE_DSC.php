@@ -233,15 +233,15 @@ function drop(p_event) {
 <div><img src="icons/desc_large.bmp" /><span> CUBE_DESCRIPTION</span></div>
 <hr/>
 <table>
-<tr ><td><u>TypeName</u></td><td>
-<input id="InputTypeName" type="text" size="30" maxlength="30" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></td></tr>
-<tr ><td><u>AttributeTypeName</u></td><td>
-<input id="InputAttributeTypeName" type="text" size="30" maxlength="30" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></td></tr>
-<tr ><td><u>Sequence</u></td><td>
-<input id="InputSequence" type="text" size="2" maxlength="2"></input></td></tr>
-<tr ><td>Value</td></tr><tr><td colspan="2">
-<textarea id="InputValue" type="text" rows="5" cols="60" style="white-space:normal;" maxlength="3999"></textarea></td></tr>
-<tr><td><br></td></tr>
+<tr><td><u>TypeName</u></td><td><div style="max-width:30em;">
+<input id="InputTypeName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr><td><u>AttributeTypeName</u></td><td><div style="max-width:30em;">
+<input id="InputAttributeTypeName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr><td><u>Sequence</u></td><td><div style="max-width:2em;">
+<input id="InputSequence" type="text" maxlength="2" style="width:100%;"></input></div></td></tr>
+<tr><td style="padding-top:10px;">Value</td></tr><tr><td colspan="2"><div>
+<textarea id="InputValue" type="text" maxlength="3999" rows="5" style="white-space:normal;width:100%;"></textarea></div></td></tr>
+<tr><td><br></td><td style="width:100%;"></td></tr>
 <tr><td/><td>
 <button id="ButtonCreate" type="button" onclick="CreateCubeDsc()">Create</button>&nbsp;&nbsp;&nbsp;
 <button id="ButtonUpdate" type="button" onclick="UpdateCubeDsc()">Update</button>&nbsp;&nbsp;&nbsp;

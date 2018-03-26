@@ -226,11 +226,11 @@ function drop(p_event) {
 <div><img src="icons/botype_large.bmp" /><span style="cursor:help" oncontextmenu="OpenDescBox('BOTYPE','BusinessObjectType','BUSINESS_OBJECT_TYPE','_',-1)"> BUSINESS_OBJECT_TYPE</span></div>
 <hr/>
 <table>
-<tr ><td><u>Name</u></td><td>
-<input id="InputName" type="text" size="30" maxlength="30" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></td></tr>
-<tr ><td>Directory</td><td>
-<input id="InputDirectory" type="text" size="80" maxlength="80" onchange="ReplaceSpaces(this);"></input></td></tr>
-<tr><td><br></td></tr>
+<tr><td><u>Name</u></td><td><div style="max-width:30em;">
+<input id="InputName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr><td>Directory</td><td><div style="max-width:80em;">
+<input id="InputDirectory" type="text" maxlength="80" style="width:100%;" onchange="ReplaceSpaces(this);"></input></div></td></tr>
+<tr><td><br></td><td style="width:100%;"></td></tr>
 <tr><td/><td>
 <button id="ButtonCreate" type="button" onclick="CreateBot()">Create</button>&nbsp;&nbsp;&nbsp;
 <button id="ButtonUpdate" type="button" onclick="UpdateBot()">Update</button>&nbsp;&nbsp;&nbsp;

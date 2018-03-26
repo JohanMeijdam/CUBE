@@ -10,18 +10,12 @@ white-space:nowrap;
 text-align:left
 }
 
-td
- {
-
+td {
 padding-left:5px;
-
 }
 
-
-input {
-
-padding-left:5px;
-
+input, textarea {
+padding-left:2px;
 }
 
 img {
@@ -31,4 +25,5 @@ vertical-align:middle;
 button {
 text-align:center;
 width:80px;
-background-color:#F0F0F0}
+background-color:#F0F0F0
+}

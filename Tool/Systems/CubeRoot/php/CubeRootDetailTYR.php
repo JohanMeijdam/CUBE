@@ -350,11 +350,11 @@ function drop(p_event) {
 <div><img src="icons/reuse_large.bmp" /><span> TYPE_REUSE</span></div>
 <hr/>
 <table>
-<tr ><td>BusinessObjectType.Name</td><td>
-<input id="InputFkBotName" type="text" size="30" maxlength="30" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></td></tr>
-<tr ><td><u>Type.Name</u></td><td>
-<input id="InputFkTypName" type="text" size="30" maxlength="30" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></td></tr>
-<tr ><td>Cardinality</td><td>
+<tr><td>BusinessObjectType.Name</td><td><div style="max-width:30em;">
+<input id="InputFkBotName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr><td><u>Type.Name</u></td><td><div style="max-width:30em;">
+<input id="InputFkTypName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr><td>Cardinality</td><td><div>
 <select id="InputCardinality" type="text">
 	<option value=" " selected> </option>
 	<option value="1">1</option>
@@ -363,14 +363,14 @@ function drop(p_event) {
 	<option value="4">4</option>
 	<option value="5">5</option>
 	<option value="N">Many</option>
-</select></td></tr>
+</select></div></td></tr>
 <tr><td height=6></td></tr><tr><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/type.bmp"/> Type (Refer)</legend>
-<table>
-<tr><td><u>Type.Name</u></td><td>
-<input id="InputXkTypName" type="text" size="30" maxlength="30" onchange="ToUpperCase(this);ReplaceSpaces(this);" readonly></input></td>
+<table style="width:100%;">
+<tr><td><u>Type.Name</u></td><td style="width:100%;"><div style="max-width:30em;">
+<input id="InputXkTypName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" readonly></input></div></td>
 <td><button id="RefSelect001" type="button" onclick="StartSelect001(event)">Select</button></td></tr>
 </table></fieldset></td></tr>
-<tr><td><br></td></tr>
+<tr><td><br></td><td style="width:100%;"></td></tr>
 <tr><td/><td>
 <button id="ButtonCreate" type="button" onclick="CreateTyr()">Create</button>&nbsp;&nbsp;&nbsp;
 <button id="ButtonUpdate" type="button" onclick="UpdateTyr()">Update</button>&nbsp;&nbsp;&nbsp;
