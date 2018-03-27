@@ -214,10 +214,10 @@ function drop(p_event) {
 -->
 </script>
 </head><body oncontextmenu="return false;" onload="InitBody()" ondrop="drop(event)" ondragover="allowDrop(event)">
-<div><img src="icons/cubegen_large.bmp" /><span> CUBE_GEN_DOCUMENTATION</span></div>
+<div><img src="icons/cubegen_large.bmp" /><span style="cursor:help" oncontextmenu="OpenDescBox('CUBEGEN','CubeGenDocumentation','CUBE_GEN_DOCUMENTATION','_',-1)"> CUBE_GEN_DOCUMENTATION</span></div>
 <hr/>
 <table>
-<tr><td><u>Name</u></td><td><div style="max-width:30em;">
+<tr><td style="cursor:help;" oncontextmenu="OpenDescBox('CUBEGEN','CubeGenDocumentation.Name','CUBE_GEN_DOCUMENTATION','NAME',-1)"><u>Name</u></td><td><div style="max-width:30em;">
 <input id="InputName" type="text" maxlength="30" style="width:100%;" onchange="ReplaceSpaces(this);"></input></div></td></tr>
 <tr><td><br></td><td style="width:100%;"></td></tr>
 <tr><td/><td>

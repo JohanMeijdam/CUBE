@@ -26,8 +26,8 @@ g_xmlhttp.onreadystatechange = function() {
 			document._nodeId = 'TYP_CGP<||>'+document.getElementById("InputFkCubName").value+'<|>'+document.getElementById("InputHeader").value;
 			if (l_objNode != null) {
 				if (l_objNode.firstChild._state == 'O') {
-					var l_position = 'L';
-					l_objNodePos = null;
+					var l_position = g_option[0];
+					l_objNodePos = parent.TREE.document.getElementById('TYP_CGP<||>'+g_option[1]);
 					parent.TREE.AddTreeviewNode(
 						l_objNode,
 						'TYP_CGP',
@@ -76,6 +76,7 @@ function InitBody() {
 	document.body._ListBoxCode="Ref000";
 	document._nodeId = l_argument[2];
 	document._argument = document._nodeId.split("<||>")[1];
+	g_option = l_argument[3].split("<||>");
 	if (document._argument != null) {
 		var values = document._argument.split("<|>");
 	}
@@ -104,7 +105,11 @@ function CreateCgp() {
 		document.getElementById("InputFkCubName").value+'<|>'+
 		document.getElementById("InputHeader").value+'<|>'+
 		document.getElementById("InputDescription").value;
-	performTrans('CreateCgp<|||>'+l_parameters);
+	if (g_option[0] == 'F' || g_option[0] == 'L') {
+		performTrans('CreateCgp<|||>'+g_option[0]+'<|>'+l_parameters);
+	} else {
+		performTrans('CreateCgp<|||>'+g_option[0]+'<|>'+l_parameters+'<|>'+g_option[1]);
+	}
 }
 
 function UpdateCgp() {
@@ -242,5 +247,6 @@ function drop(p_event) {
 <button id="ButtonDelete" type="button" onclick="DeleteCgp()">Delete</button></td></tr>
 </table>
 <input id="InputCubeId" type="hidden"></input>
+<input id="InputCubeSequence" type="hidden"></input>
 </body>
 </html>

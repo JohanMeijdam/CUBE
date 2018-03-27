@@ -537,6 +537,7 @@ CREATE TABLE t_cube_gen_documentation (
 /
 CREATE TABLE t_cube_gen_paragraph (
 	cube_id VARCHAR2(16),
+	cube_sequence NUMBER(8),
 	fk_cub_name VARCHAR2(30),
 	header VARCHAR2(120),
 	description VARCHAR2(3999),
@@ -549,6 +550,7 @@ CREATE TABLE t_cube_gen_paragraph (
 /
 CREATE TABLE t_cube_gen_example_model (
 	cube_id VARCHAR2(16),
+	cube_sequence NUMBER(8),
 	fk_cub_name VARCHAR2(30),
 	name VARCHAR2(30),
 	included_object_names VARCHAR2(120),
@@ -561,6 +563,7 @@ CREATE TABLE t_cube_gen_example_model (
 /
 CREATE TABLE t_cube_gen_example_object (
 	cube_id VARCHAR2(16),
+	cube_sequence NUMBER(8),
 	fk_cub_name VARCHAR2(30),
 	fk_cgm_name VARCHAR2(30),
 	xk_bot_name VARCHAR2(30),
@@ -573,6 +576,7 @@ CREATE TABLE t_cube_gen_example_object (
 /
 CREATE TABLE t_cube_gen_function (
 	cube_id VARCHAR2(16),
+	cube_sequence NUMBER(8),
 	fk_cub_name VARCHAR2(30),
 	fk_cgm_name VARCHAR2(30),
 	header VARCHAR2(120),

@@ -562,7 +562,7 @@ DECLARE
 			SELECT *				
 			FROM t_cube_gen_paragraph
 			WHERE fk_cub_name = p_cub.name
-			ORDER BY cube_id )
+			ORDER BY cube_sequence )
 		LOOP
 			DBMS_OUTPUT.PUT_LINE (ftabs || '=CUBE_GEN_PARAGRAPH[' || r_cgp.cube_id || ']:' || fenperc(r_cgp.header) || '|' || fenperc(r_cgp.description) || ';');
 				l_level := l_level + 1;
@@ -578,7 +578,7 @@ DECLARE
 			FROM t_cube_gen_example_object
 			WHERE fk_cub_name = p_cgm.fk_cub_name
 			  AND fk_cgm_name = p_cgm.name
-			ORDER BY cube_id )
+			ORDER BY cube_sequence )
 		LOOP
 			DBMS_OUTPUT.PUT_LINE (ftabs || '+CUBE_GEN_EXAMPLE_OBJECT[' || r_cgo.cube_id || ']:' || ';');
 				l_level := l_level + 1;
@@ -604,7 +604,7 @@ DECLARE
 			FROM t_cube_gen_function
 			WHERE fk_cub_name = p_cgm.fk_cub_name
 			  AND fk_cgm_name = p_cgm.name
-			ORDER BY cube_id )
+			ORDER BY cube_sequence )
 		LOOP
 			DBMS_OUTPUT.PUT_LINE (ftabs || '=CUBE_GEN_FUNCTION[' || r_cgf.cube_id || ']:' || fenperc(r_cgf.header) || '|' || fenperc(r_cgf.description) || '|' || fenperc(r_cgf.template) || ';');
 				l_level := l_level + 1;
@@ -619,7 +619,7 @@ DECLARE
 			SELECT *				
 			FROM t_cube_gen_example_model
 			WHERE fk_cub_name = p_cub.name
-			ORDER BY cube_id )
+			ORDER BY cube_sequence )
 		LOOP
 			DBMS_OUTPUT.PUT_LINE (ftabs || '+CUBE_GEN_EXAMPLE_MODEL[' || r_cgm.cube_id || ']:' || fenperc(r_cgm.name) || '|' || fenperc(r_cgm.included_object_names) || ';');
 				l_level := l_level + 1;
@@ -762,19 +762,19 @@ BEGIN
 	DBMS_OUTPUT.PUT_LINE ('			=PROPERTY:0|Name|;');
 	DBMS_OUTPUT.PUT_LINE ('		-META_TYPE:ARGUMENT;');
 	DBMS_OUTPUT.PUT_LINE ('	-META_TYPE:FUNCTION;');
-	DBMS_OUTPUT.PUT_LINE ('	+META_TYPE:CUBE_GEN_DOCUMENTATION|;');
-	DBMS_OUTPUT.PUT_LINE ('		=PROPERTY:0|Name|;');
+	DBMS_OUTPUT.PUT_LINE ('	+META_TYPE:CUBE_GEN_DOCUMENTATION|'||REPLACE('A%20document%20to%20give%20an%20explanation%20of%20CubeGen%20based%20on%20examples.','%20',' ')||';');
+	DBMS_OUTPUT.PUT_LINE ('		=PROPERTY:0|Name|'||REPLACE('The%20name%20of%20the%20document.','%20',' ')||';');
 	DBMS_OUTPUT.PUT_LINE ('		+META_TYPE:CUBE_GEN_PARAGRAPH|;');
 	DBMS_OUTPUT.PUT_LINE ('			=PROPERTY:0|Header|;');
 	DBMS_OUTPUT.PUT_LINE ('			=PROPERTY:1|Description|;');
 	DBMS_OUTPUT.PUT_LINE ('		-META_TYPE:CUBE_GEN_PARAGRAPH;');
-	DBMS_OUTPUT.PUT_LINE ('		+META_TYPE:CUBE_GEN_EXAMPLE_MODEL|;');
+	DBMS_OUTPUT.PUT_LINE ('		+META_TYPE:CUBE_GEN_EXAMPLE_MODEL|'||REPLACE('A%20view%20on%20the%20business%20object%20model%20with%20examples%20of%20functions%20based%20on%20the%20business%20object%20model.','%20',' ')||';');
 	DBMS_OUTPUT.PUT_LINE ('			=PROPERTY:0|Name|;');
-	DBMS_OUTPUT.PUT_LINE ('			=PROPERTY:1|IncludedObjectNames|;');
-	DBMS_OUTPUT.PUT_LINE ('			+META_TYPE:CUBE_GEN_EXAMPLE_OBJECT|;');
+	DBMS_OUTPUT.PUT_LINE ('			=PROPERTY:1|IncludedObjectNames|'||REPLACE('The%20names%20of%20types%20that%20are%20included%20in%20the%20view%20of%20the%20business%20object%20model.','%20',' ')||';');
+	DBMS_OUTPUT.PUT_LINE ('			+META_TYPE:CUBE_GEN_EXAMPLE_OBJECT|'||REPLACE('A%20reference%20to%20a%20business%20object%20that%20is%20used%20in%20de%20example.','%20',' ')||';');
 	DBMS_OUTPUT.PUT_LINE ('				=ASSOCIATION:BUSINESS_OBJECT_TYPE|UsesAsExample|BUSINESS_OBJECT_TYPE|;');
 	DBMS_OUTPUT.PUT_LINE ('			-META_TYPE:CUBE_GEN_EXAMPLE_OBJECT;');
-	DBMS_OUTPUT.PUT_LINE ('			+META_TYPE:CUBE_GEN_FUNCTION|;');
+	DBMS_OUTPUT.PUT_LINE ('			+META_TYPE:CUBE_GEN_FUNCTION|'||REPLACE('A%20CubeGen%20function%20that%20has%20been%20explained%20with%20a%20template.','%20',' ')||';');
 	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:0|Header|;');
 	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:1|Description|;');
 	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:2|Template|;');

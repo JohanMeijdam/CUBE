@@ -26,8 +26,8 @@ g_xmlhttp.onreadystatechange = function() {
 			document._nodeId = 'TYP_CGO<||>'+document.getElementById("InputFkCubName").value+'<|>'+document.getElementById("InputFkCgmName").value+'<|>'+document.getElementById("InputXkBotName").value;
 			if (l_objNode != null) {
 				if (l_objNode.firstChild._state == 'O') {
-					var l_position = 'L';
-					l_objNodePos = null;
+					var l_position = g_option[0];
+					l_objNodePos = parent.TREE.document.getElementById('TYP_CGO<||>'+g_option[1]);
 					parent.TREE.AddTreeviewNode(
 						l_objNode,
 						'TYP_CGO',
@@ -79,6 +79,7 @@ function InitBody() {
 	document.body._ListBoxCode="Ref000";
 	document._nodeId = l_argument[2];
 	document._argument = document._nodeId.split("<||>")[1];
+	g_option = l_argument[3].split("<||>");
 	if (document._argument != null) {
 		var values = document._argument.split("<|>");
 	}
@@ -112,7 +113,11 @@ function CreateCgo() {
 		document.getElementById("InputFkCubName").value+'<|>'+
 		document.getElementById("InputFkCgmName").value+'<|>'+
 		document.getElementById("InputXkBotName").value;
-	performTrans('CreateCgo<|||>'+l_parameters);
+	if (g_option[0] == 'F' || g_option[0] == 'L') {
+		performTrans('CreateCgo<|||>'+g_option[0]+'<|>'+l_parameters);
+	} else {
+		performTrans('CreateCgo<|||>'+g_option[0]+'<|>'+l_parameters+'<|>'+g_option[1]);
+	}
 }
 
 function UpdateCgo() {
@@ -334,7 +339,7 @@ function drop(p_event) {
 -->
 </script>
 </head><body oncontextmenu="return false;" onload="InitBody()" ondrop="drop(event)" ondragover="allowDrop(event)">
-<div><img src="icons/botype_large.bmp" /><span> CUBE_GEN_EXAMPLE_OBJECT</span></div>
+<div><img src="icons/botype_large.bmp" /><span style="cursor:help" oncontextmenu="OpenDescBox('BOTYPE','CubeGenExampleObject','CUBE_GEN_EXAMPLE_OBJECT','_',-1)"> CUBE_GEN_EXAMPLE_OBJECT</span></div>
 <hr/>
 <table>
 <tr><td><u>CubeGenDocumentation.Name</u></td><td><div style="max-width:30em;">
@@ -354,5 +359,6 @@ function drop(p_event) {
 <button id="ButtonDelete" type="button" onclick="DeleteCgo()">Delete</button></td></tr>
 </table>
 <input id="InputCubeId" type="hidden"></input>
+<input id="InputCubeSequence" type="hidden"></input>
 </body>
 </html>

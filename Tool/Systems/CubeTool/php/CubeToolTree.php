@@ -60,9 +60,13 @@ g_xmlhttp.onreadystatechange = function(){
 			case 'MOVE_ARG': MoveNode (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.body._moveAction); break;
 			case 'LIST_CUB': AddTreeviewChildren(l_rows,'TYP_CUB','icons/cubegen.bmp'); break;
 			case 'LIST_CGP': AddTreeviewChildren(l_rows,'TYP_CGP','icons/desc.bmp'); break;
+			case 'MOVE_CGP': MoveNode (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.body._moveAction); break;
 			case 'LIST_CGM': AddTreeviewChildren(l_rows,'TYP_CGM','icons/model.bmp'); break;
+			case 'MOVE_CGM': MoveNode (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.body._moveAction); break;
 			case 'LIST_CGO': AddTreeviewChildren(l_rows,'TYP_CGO','icons/botype.bmp'); break;
+			case 'MOVE_CGO': MoveNode (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.body._moveAction); break;
 			case 'LIST_CGF': AddTreeviewChildren(l_rows,'TYP_CGF','icons/template.bmp'); break;
+			case 'MOVE_CGF': MoveNode (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.body._moveAction); break;
 			case "ERROR": alert ('Error: '+l_rows[1]); break;
 			default: alert ('Unknown reply: '+l_rows[0]);
 			}
@@ -472,6 +476,18 @@ function OpenDetail(p_obj) {
 			case 'TYP_ARG':
 				PerformTrans('MoveArg'+'<|||>'+document.body._moveAction+'<|>'+g_currentObjId.split("<||>")[1]+'<|>'+document.body._objNodePosId.split("<||>")[1]);
 				break;
+			case 'TYP_CGP':
+				PerformTrans('MoveCgp'+'<|||>'+document.body._moveAction+'<|>'+g_currentObjId.split("<||>")[1]+'<|>'+document.body._objNodePosId.split("<||>")[1]);
+				break;
+			case 'TYP_CGM':
+				PerformTrans('MoveCgm'+'<|||>'+document.body._moveAction+'<|>'+g_currentObjId.split("<||>")[1]+'<|>'+document.body._objNodePosId.split("<||>")[1]);
+				break;
+			case 'TYP_CGO':
+				PerformTrans('MoveCgo'+'<|||>'+document.body._moveAction+'<|>'+g_currentObjId.split("<||>")[1]+'<|>'+document.body._objNodePosId.split("<||>")[1]);
+				break;
+			case 'TYP_CGF':
+				PerformTrans('MoveCgf'+'<|||>'+document.body._moveAction+'<|>'+g_currentObjId.split("<||>")[1]+'<|>'+document.body._objNodePosId.split("<||>")[1]);
+				break;
 			}
 		}
 		break;
@@ -678,12 +694,30 @@ function OpenMenu(p_obj) {
 		AddMenuItem(g_objMenuList, 'add cube_gen_documentation', 'icons/cubegen.bmp','DetailCUB','N','TYP_CUB',0,'N',2);
 		break;
  	case 'TYP_CUB':
-		AddMenuItem(g_objMenuList, 'add cube_gen_paragraph', 'icons/desc.bmp','DetailCGP','N','TYP_CGP',0,'N',2);
-		AddMenuItem(g_objMenuList, 'add cube_gen_example_model', 'icons/model.bmp','DetailCGM','N','TYP_CGM',0,'N',3);
+		AddMenuItem(g_objMenuList, 'add cube_gen_paragraph', 'icons/desc.bmp','CubeAdd','N','TYP_CGP',0,'N',2);
+		AddMenuItem(g_objMenuList, 'add cube_gen_example_model', 'icons/model.bmp','CubeAdd','N','TYP_CGM',0,'N',3);
+		break;
+ 	case 'TYP_CGP':
+		if (l_childCount > 1) {
+			AddMenuItem(g_objMenuList, 'move', 'icons/cube_move.bmp','CubeMove','','CUBE_M_CGP',0,'N',0);
+		}
 		break;
  	case 'TYP_CGM':
-		AddMenuItem(g_objMenuList, 'add cube_gen_example_object', 'icons/botype.bmp','DetailCGO','N','TYP_CGO',0,'N',2);
-		AddMenuItem(g_objMenuList, 'add cube_gen_function', 'icons/template.bmp','DetailCGF','N','TYP_CGF',0,'N',3);
+		if (l_childCount > 1) {
+			AddMenuItem(g_objMenuList, 'move', 'icons/cube_move.bmp','CubeMove','','CUBE_M_CGM',0,'N',0);
+		}
+		AddMenuItem(g_objMenuList, 'add cube_gen_example_object', 'icons/botype.bmp','CubeAdd','N','TYP_CGO',0,'N',2);
+		AddMenuItem(g_objMenuList, 'add cube_gen_function', 'icons/template.bmp','CubeAdd','N','TYP_CGF',0,'N',3);
+		break;
+ 	case 'TYP_CGO':
+		if (l_childCount > 1) {
+			AddMenuItem(g_objMenuList, 'move', 'icons/cube_move.bmp','CubeMove','','CUBE_M_CGO',0,'N',0);
+		}
+		break;
+ 	case 'TYP_CGF':
+		if (l_childCount > 1) {
+			AddMenuItem(g_objMenuList, 'move', 'icons/cube_move.bmp','CubeMove','','CUBE_M_CGF',0,'N',0);
+		}
 		break;
 	}
 }

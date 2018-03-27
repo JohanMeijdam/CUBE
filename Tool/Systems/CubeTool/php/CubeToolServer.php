@@ -3076,18 +3076,49 @@ case 'GetCgp':
 	}
 	break;
 
-case 'CreateCgp':
+case 'MoveCgp':
 
-	list($p_fk_cub_name, $p_header, $p_description) = explode("<|>", $import[1]);
+	list($p_cube_pos_action, $p_fk_cub_name, $p_header, $x_fk_cub_name, $x_header) = explode("<|>", $import[1]);
 
-	$stid = oci_parse($conn, "BEGIN pkg_cub.insert_cgp (
+	$stid = oci_parse($conn, "BEGIN pkg_cub.move_cgp (
+		:p_cube_pos_action,
 		:p_fk_cub_name,
 		:p_header,
-		:p_description);
+		:x_fk_cub_name,
+		:x_header);
 	END;");
+	oci_bind_by_name($stid,":p_cube_pos_action",$p_cube_pos_action);
+	oci_bind_by_name($stid,":p_fk_cub_name",$p_fk_cub_name);
+	oci_bind_by_name($stid,":p_header",$p_header);
+	oci_bind_by_name($stid,":x_fk_cub_name",$x_fk_cub_name);
+	oci_bind_by_name($stid,":x_header",$x_header);
+
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		return;
+	}
+	echo "MOVE_CGP";
+	break;
+
+case 'CreateCgp':
+
+	list($p_cube_pos_action, $p_fk_cub_name, $p_header, $p_description, $x_fk_cub_name, $x_header) = explode("<|>", $import[1]."<|><|>");
+
+	$stid = oci_parse($conn, "BEGIN pkg_cub.insert_cgp (
+		:p_cube_pos_action,
+		:p_fk_cub_name,
+		:p_header,
+		:p_description,
+		:x_fk_cub_name,
+		:x_header);
+	END;");
+	oci_bind_by_name($stid,":p_cube_pos_action",$p_cube_pos_action);
 	oci_bind_by_name($stid,":p_fk_cub_name",$p_fk_cub_name);
 	oci_bind_by_name($stid,":p_header",$p_header);
 	oci_bind_by_name($stid,":p_description",$p_description);
+	oci_bind_by_name($stid,":x_fk_cub_name",$x_fk_cub_name);
+	oci_bind_by_name($stid,":x_header",$x_header);
 
 	$r = oci_execute($stid);
 	if (!$r) {
@@ -3197,18 +3228,49 @@ case 'GetCgmItems':
 	}
 	break;
 
-case 'CreateCgm':
+case 'MoveCgm':
 
-	list($p_fk_cub_name, $p_name, $p_included_object_names) = explode("<|>", $import[1]);
+	list($p_cube_pos_action, $p_fk_cub_name, $p_name, $x_fk_cub_name, $x_name) = explode("<|>", $import[1]);
 
-	$stid = oci_parse($conn, "BEGIN pkg_cub.insert_cgm (
+	$stid = oci_parse($conn, "BEGIN pkg_cub.move_cgm (
+		:p_cube_pos_action,
 		:p_fk_cub_name,
 		:p_name,
-		:p_included_object_names);
+		:x_fk_cub_name,
+		:x_name);
 	END;");
+	oci_bind_by_name($stid,":p_cube_pos_action",$p_cube_pos_action);
+	oci_bind_by_name($stid,":p_fk_cub_name",$p_fk_cub_name);
+	oci_bind_by_name($stid,":p_name",$p_name);
+	oci_bind_by_name($stid,":x_fk_cub_name",$x_fk_cub_name);
+	oci_bind_by_name($stid,":x_name",$x_name);
+
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		return;
+	}
+	echo "MOVE_CGM";
+	break;
+
+case 'CreateCgm':
+
+	list($p_cube_pos_action, $p_fk_cub_name, $p_name, $p_included_object_names, $x_fk_cub_name, $x_name) = explode("<|>", $import[1]."<|><|>");
+
+	$stid = oci_parse($conn, "BEGIN pkg_cub.insert_cgm (
+		:p_cube_pos_action,
+		:p_fk_cub_name,
+		:p_name,
+		:p_included_object_names,
+		:x_fk_cub_name,
+		:x_name);
+	END;");
+	oci_bind_by_name($stid,":p_cube_pos_action",$p_cube_pos_action);
 	oci_bind_by_name($stid,":p_fk_cub_name",$p_fk_cub_name);
 	oci_bind_by_name($stid,":p_name",$p_name);
 	oci_bind_by_name($stid,":p_included_object_names",$p_included_object_names);
+	oci_bind_by_name($stid,":x_fk_cub_name",$x_fk_cub_name);
+	oci_bind_by_name($stid,":x_name",$x_name);
 
 	$r = oci_execute($stid);
 	if (!$r) {
@@ -3258,18 +3320,55 @@ case 'DeleteCgm':
 	echo "DELETE_CGM";
 	break;
 
-case 'CreateCgo':
+case 'MoveCgo':
 
-	list($p_fk_cub_name, $p_fk_cgm_name, $p_xk_bot_name) = explode("<|>", $import[1]);
+	list($p_cube_pos_action, $p_fk_cub_name, $p_fk_cgm_name, $p_xk_bot_name, $x_fk_cub_name, $x_fk_cgm_name, $x_xk_bot_name) = explode("<|>", $import[1]);
 
-	$stid = oci_parse($conn, "BEGIN pkg_cub.insert_cgo (
+	$stid = oci_parse($conn, "BEGIN pkg_cub.move_cgo (
+		:p_cube_pos_action,
 		:p_fk_cub_name,
 		:p_fk_cgm_name,
-		:p_xk_bot_name);
+		:p_xk_bot_name,
+		:x_fk_cub_name,
+		:x_fk_cgm_name,
+		:x_xk_bot_name);
 	END;");
+	oci_bind_by_name($stid,":p_cube_pos_action",$p_cube_pos_action);
 	oci_bind_by_name($stid,":p_fk_cub_name",$p_fk_cub_name);
 	oci_bind_by_name($stid,":p_fk_cgm_name",$p_fk_cgm_name);
 	oci_bind_by_name($stid,":p_xk_bot_name",$p_xk_bot_name);
+	oci_bind_by_name($stid,":x_fk_cub_name",$x_fk_cub_name);
+	oci_bind_by_name($stid,":x_fk_cgm_name",$x_fk_cgm_name);
+	oci_bind_by_name($stid,":x_xk_bot_name",$x_xk_bot_name);
+
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		return;
+	}
+	echo "MOVE_CGO";
+	break;
+
+case 'CreateCgo':
+
+	list($p_cube_pos_action, $p_fk_cub_name, $p_fk_cgm_name, $p_xk_bot_name, $x_fk_cub_name, $x_fk_cgm_name, $x_xk_bot_name) = explode("<|>", $import[1]."<|><|><|>");
+
+	$stid = oci_parse($conn, "BEGIN pkg_cub.insert_cgo (
+		:p_cube_pos_action,
+		:p_fk_cub_name,
+		:p_fk_cgm_name,
+		:p_xk_bot_name,
+		:x_fk_cub_name,
+		:x_fk_cgm_name,
+		:x_xk_bot_name);
+	END;");
+	oci_bind_by_name($stid,":p_cube_pos_action",$p_cube_pos_action);
+	oci_bind_by_name($stid,":p_fk_cub_name",$p_fk_cub_name);
+	oci_bind_by_name($stid,":p_fk_cgm_name",$p_fk_cgm_name);
+	oci_bind_by_name($stid,":p_xk_bot_name",$p_xk_bot_name);
+	oci_bind_by_name($stid,":x_fk_cub_name",$x_fk_cub_name);
+	oci_bind_by_name($stid,":x_fk_cgm_name",$x_fk_cgm_name);
+	oci_bind_by_name($stid,":x_xk_bot_name",$x_xk_bot_name);
 
 	$r = oci_execute($stid);
 	if (!$r) {
@@ -3318,22 +3417,47 @@ case 'GetCgf':
 	}
 	break;
 
+case 'MoveCgf':
+
+	list($p_cube_pos_action, $p_header, $x_header) = explode("<|>", $import[1]);
+
+	$stid = oci_parse($conn, "BEGIN pkg_cub.move_cgf (
+		:p_cube_pos_action,
+		:p_header,
+		:x_header);
+	END;");
+	oci_bind_by_name($stid,":p_cube_pos_action",$p_cube_pos_action);
+	oci_bind_by_name($stid,":p_header",$p_header);
+	oci_bind_by_name($stid,":x_header",$x_header);
+
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		return;
+	}
+	echo "MOVE_CGF";
+	break;
+
 case 'CreateCgf':
 
-	list($p_fk_cub_name, $p_fk_cgm_name, $p_header, $p_description, $p_template) = explode("<|>", $import[1]);
+	list($p_cube_pos_action, $p_fk_cub_name, $p_fk_cgm_name, $p_header, $p_description, $p_template, $x_header) = explode("<|>", $import[1]."<|>");
 
 	$stid = oci_parse($conn, "BEGIN pkg_cub.insert_cgf (
+		:p_cube_pos_action,
 		:p_fk_cub_name,
 		:p_fk_cgm_name,
 		:p_header,
 		:p_description,
-		:p_template);
+		:p_template,
+		:x_header);
 	END;");
+	oci_bind_by_name($stid,":p_cube_pos_action",$p_cube_pos_action);
 	oci_bind_by_name($stid,":p_fk_cub_name",$p_fk_cub_name);
 	oci_bind_by_name($stid,":p_fk_cgm_name",$p_fk_cgm_name);
 	oci_bind_by_name($stid,":p_header",$p_header);
 	oci_bind_by_name($stid,":p_description",$p_description);
 	oci_bind_by_name($stid,":p_template",$p_template);
+	oci_bind_by_name($stid,":x_header",$x_header);
 
 	$r = oci_execute($stid);
 	if (!$r) {

@@ -26,8 +26,8 @@ g_xmlhttp.onreadystatechange = function() {
 			document._nodeId = 'TYP_CGM<||>'+document.getElementById("InputFkCubName").value+'<|>'+document.getElementById("InputName").value;
 			if (l_objNode != null) {
 				if (l_objNode.firstChild._state == 'O') {
-					var l_position = 'L';
-					l_objNodePos = null;
+					var l_position = g_option[0];
+					l_objNodePos = parent.TREE.document.getElementById('TYP_CGM<||>'+g_option[1]);
 					parent.TREE.AddTreeviewNode(
 						l_objNode,
 						'TYP_CGM',
@@ -76,6 +76,7 @@ function InitBody() {
 	document.body._ListBoxCode="Ref000";
 	document._nodeId = l_argument[2];
 	document._argument = document._nodeId.split("<||>")[1];
+	g_option = l_argument[3].split("<||>");
 	if (document._argument != null) {
 		var values = document._argument.split("<|>");
 	}
@@ -104,7 +105,11 @@ function CreateCgm() {
 		document.getElementById("InputFkCubName").value+'<|>'+
 		document.getElementById("InputName").value+'<|>'+
 		document.getElementById("InputIncludedObjectNames").value;
-	performTrans('CreateCgm<|||>'+l_parameters);
+	if (g_option[0] == 'F' || g_option[0] == 'L') {
+		performTrans('CreateCgm<|||>'+g_option[0]+'<|>'+l_parameters);
+	} else {
+		performTrans('CreateCgm<|||>'+g_option[0]+'<|>'+l_parameters+'<|>'+g_option[1]);
+	}
 }
 
 function UpdateCgm() {
@@ -226,14 +231,14 @@ function drop(p_event) {
 -->
 </script>
 </head><body oncontextmenu="return false;" onload="InitBody()" ondrop="drop(event)" ondragover="allowDrop(event)">
-<div><img src="icons/model_large.bmp" /><span> CUBE_GEN_EXAMPLE_MODEL</span></div>
+<div><img src="icons/model_large.bmp" /><span style="cursor:help" oncontextmenu="OpenDescBox('MODEL','CubeGenExampleModel','CUBE_GEN_EXAMPLE_MODEL','_',-1)"> CUBE_GEN_EXAMPLE_MODEL</span></div>
 <hr/>
 <table>
 <tr><td><u>CubeGenDocumentation.Name</u></td><td><div style="max-width:30em;">
 <input id="InputFkCubName" type="text" maxlength="30" style="width:100%;" onchange="ReplaceSpaces(this);"></input></div></td></tr>
 <tr><td><u>Name</u></td><td><div style="max-width:30em;">
 <input id="InputName" type="text" maxlength="30" style="width:100%;" onchange="ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td>IncludedObjectNames</td><td><div style="max-width:120em;">
+<tr><td style="cursor:help;" oncontextmenu="OpenDescBox('MODEL','CubeGenExampleModel.IncludedObjectNames','CUBE_GEN_EXAMPLE_MODEL','INCLUDED_OBJECT_NAMES',-1)">IncludedObjectNames</td><td><div style="max-width:120em;">
 <input id="InputIncludedObjectNames" type="text" maxlength="120" style="width:100%;" onchange="ToUpperCase(this);"></input></div></td></tr>
 <tr><td><br></td><td style="width:100%;"></td></tr>
 <tr><td/><td>
@@ -242,5 +247,6 @@ function drop(p_event) {
 <button id="ButtonDelete" type="button" onclick="DeleteCgm()">Delete</button></td></tr>
 </table>
 <input id="InputCubeId" type="hidden"></input>
+<input id="InputCubeSequence" type="hidden"></input>
 </body>
 </html>

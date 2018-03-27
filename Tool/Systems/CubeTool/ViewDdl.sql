@@ -2204,6 +2204,7 @@ CREATE OR REPLACE VIEW v_cube_gen_documentation AS
 CREATE OR REPLACE VIEW v_cube_gen_paragraph AS 
 	SELECT
 		cube_id,
+		cube_sequence,
 		fk_cub_name,
 		header,
 		description
@@ -2212,6 +2213,7 @@ CREATE OR REPLACE VIEW v_cube_gen_paragraph AS
 CREATE OR REPLACE VIEW v_cube_gen_example_model AS 
 	SELECT
 		cube_id,
+		cube_sequence,
 		fk_cub_name,
 		name,
 		included_object_names
@@ -2220,6 +2222,7 @@ CREATE OR REPLACE VIEW v_cube_gen_example_model AS
 CREATE OR REPLACE VIEW v_cube_gen_example_object AS 
 	SELECT
 		cube_id,
+		cube_sequence,
 		fk_cub_name,
 		fk_cgm_name,
 		xk_bot_name
@@ -2228,6 +2231,7 @@ CREATE OR REPLACE VIEW v_cube_gen_example_object AS
 CREATE OR REPLACE VIEW v_cube_gen_function AS 
 	SELECT
 		cube_id,
+		cube_sequence,
 		fk_cub_name,
 		fk_cgm_name,
 		header,
@@ -2285,11 +2289,13 @@ CREATE OR REPLACE PACKAGE BODY pkg_cub_trg IS
 		p_cgp.cube_id := 'CGP-' || TO_CHAR(cgp_seq.NEXTVAL,'FM000000000000');
 		INSERT INTO t_cube_gen_paragraph (
 			cube_id,
+			cube_sequence,
 			fk_cub_name,
 			header,
 			description)
 		VALUES (
 			p_cgp.cube_id,
+			p_cgp.cube_sequence,
 			p_cgp.fk_cub_name,
 			p_cgp.header,
 			p_cgp.description);
@@ -2298,6 +2304,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_cub_trg IS
 	PROCEDURE update_cgp (p_cube_rowid UROWID, p_cgp_old IN OUT NOCOPY v_cube_gen_paragraph%ROWTYPE, p_cgp_new IN OUT NOCOPY v_cube_gen_paragraph%ROWTYPE) IS
 	BEGIN
 		UPDATE t_cube_gen_paragraph SET 
+			cube_sequence = p_cgp_new.cube_sequence,
 			description = p_cgp_new.description
 		WHERE rowid = p_cube_rowid;
 	END;
@@ -2313,11 +2320,13 @@ CREATE OR REPLACE PACKAGE BODY pkg_cub_trg IS
 		p_cgm.cube_id := 'CGM-' || TO_CHAR(cgm_seq.NEXTVAL,'FM000000000000');
 		INSERT INTO t_cube_gen_example_model (
 			cube_id,
+			cube_sequence,
 			fk_cub_name,
 			name,
 			included_object_names)
 		VALUES (
 			p_cgm.cube_id,
+			p_cgm.cube_sequence,
 			p_cgm.fk_cub_name,
 			p_cgm.name,
 			p_cgm.included_object_names);
@@ -2326,6 +2335,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_cub_trg IS
 	PROCEDURE update_cgm (p_cube_rowid UROWID, p_cgm_old IN OUT NOCOPY v_cube_gen_example_model%ROWTYPE, p_cgm_new IN OUT NOCOPY v_cube_gen_example_model%ROWTYPE) IS
 	BEGIN
 		UPDATE t_cube_gen_example_model SET 
+			cube_sequence = p_cgm_new.cube_sequence,
 			included_object_names = p_cgm_new.included_object_names
 		WHERE rowid = p_cube_rowid;
 	END;
@@ -2341,11 +2351,13 @@ CREATE OR REPLACE PACKAGE BODY pkg_cub_trg IS
 		p_cgo.cube_id := 'CGO-' || TO_CHAR(cgo_seq.NEXTVAL,'FM000000000000');
 		INSERT INTO t_cube_gen_example_object (
 			cube_id,
+			cube_sequence,
 			fk_cub_name,
 			fk_cgm_name,
 			xk_bot_name)
 		VALUES (
 			p_cgo.cube_id,
+			p_cgo.cube_sequence,
 			p_cgo.fk_cub_name,
 			p_cgo.fk_cgm_name,
 			p_cgo.xk_bot_name);
@@ -2353,7 +2365,9 @@ CREATE OR REPLACE PACKAGE BODY pkg_cub_trg IS
 
 	PROCEDURE update_cgo (p_cube_rowid UROWID, p_cgo_old IN OUT NOCOPY v_cube_gen_example_object%ROWTYPE, p_cgo_new IN OUT NOCOPY v_cube_gen_example_object%ROWTYPE) IS
 	BEGIN
-		NULL;
+		UPDATE t_cube_gen_example_object SET 
+			cube_sequence = p_cgo_new.cube_sequence
+		WHERE rowid = p_cube_rowid;
 	END;
 
 	PROCEDURE delete_cgo (p_cube_rowid UROWID, p_cgo IN OUT NOCOPY v_cube_gen_example_object%ROWTYPE) IS
@@ -2367,6 +2381,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_cub_trg IS
 		p_cgf.cube_id := 'CGF-' || TO_CHAR(cgf_seq.NEXTVAL,'FM000000000000');
 		INSERT INTO t_cube_gen_function (
 			cube_id,
+			cube_sequence,
 			fk_cub_name,
 			fk_cgm_name,
 			header,
@@ -2374,6 +2389,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_cub_trg IS
 			template)
 		VALUES (
 			p_cgf.cube_id,
+			p_cgf.cube_sequence,
 			p_cgf.fk_cub_name,
 			p_cgf.fk_cgm_name,
 			p_cgf.header,
@@ -2384,6 +2400,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_cub_trg IS
 	PROCEDURE update_cgf (p_cube_rowid UROWID, p_cgf_old IN OUT NOCOPY v_cube_gen_function%ROWTYPE, p_cgf_new IN OUT NOCOPY v_cube_gen_function%ROWTYPE) IS
 	BEGIN
 		UPDATE t_cube_gen_function SET 
+			cube_sequence = p_cgf_new.cube_sequence,
 			description = p_cgf_new.description,
 			template = p_cgf_new.template
 		WHERE rowid = p_cube_rowid;
@@ -2438,6 +2455,7 @@ DECLARE
 	r_cgp_old v_cube_gen_paragraph%ROWTYPE;
 BEGIN
 	IF INSERTING OR UPDATING THEN
+		r_cgp_new.cube_sequence := :NEW.cube_sequence;
 		r_cgp_new.fk_cub_name := REPLACE(:NEW.fk_cub_name,' ','_');
 		r_cgp_new.header := :NEW.header;
 		r_cgp_new.description := :NEW.description;
@@ -2449,6 +2467,7 @@ BEGIN
 		SELECT rowid INTO l_cube_rowid FROM t_cube_gen_paragraph
 		WHERE fk_cub_name = :OLD.fk_cub_name
 		  AND header = :OLD.header;
+		r_cgp_old.cube_sequence := :OLD.cube_sequence;
 		r_cgp_old.fk_cub_name := :OLD.fk_cub_name;
 		r_cgp_old.header := :OLD.header;
 		r_cgp_old.description := :OLD.description;
@@ -2474,6 +2493,7 @@ DECLARE
 	r_cgm_old v_cube_gen_example_model%ROWTYPE;
 BEGIN
 	IF INSERTING OR UPDATING THEN
+		r_cgm_new.cube_sequence := :NEW.cube_sequence;
 		r_cgm_new.fk_cub_name := REPLACE(:NEW.fk_cub_name,' ','_');
 		r_cgm_new.name := REPLACE(:NEW.name,' ','_');
 		r_cgm_new.included_object_names := :NEW.included_object_names;
@@ -2485,6 +2505,7 @@ BEGIN
 		SELECT rowid INTO l_cube_rowid FROM t_cube_gen_example_model
 		WHERE fk_cub_name = :OLD.fk_cub_name
 		  AND name = :OLD.name;
+		r_cgm_old.cube_sequence := :OLD.cube_sequence;
 		r_cgm_old.fk_cub_name := :OLD.fk_cub_name;
 		r_cgm_old.name := :OLD.name;
 		r_cgm_old.included_object_names := :OLD.included_object_names;
@@ -2510,6 +2531,7 @@ DECLARE
 	r_cgo_old v_cube_gen_example_object%ROWTYPE;
 BEGIN
 	IF INSERTING OR UPDATING THEN
+		r_cgo_new.cube_sequence := :NEW.cube_sequence;
 		r_cgo_new.fk_cub_name := REPLACE(:NEW.fk_cub_name,' ','_');
 		r_cgo_new.fk_cgm_name := REPLACE(:NEW.fk_cgm_name,' ','_');
 		r_cgo_new.xk_bot_name := REPLACE(:NEW.xk_bot_name,' ','_');
@@ -2522,6 +2544,7 @@ BEGIN
 		WHERE fk_cub_name = :OLD.fk_cub_name
 		  AND fk_cgm_name = :OLD.fk_cgm_name
 		  AND xk_bot_name = :OLD.xk_bot_name;
+		r_cgo_old.cube_sequence := :OLD.cube_sequence;
 		r_cgo_old.fk_cub_name := :OLD.fk_cub_name;
 		r_cgo_old.fk_cgm_name := :OLD.fk_cgm_name;
 		r_cgo_old.xk_bot_name := :OLD.xk_bot_name;
@@ -2547,6 +2570,7 @@ DECLARE
 	r_cgf_old v_cube_gen_function%ROWTYPE;
 BEGIN
 	IF INSERTING OR UPDATING THEN
+		r_cgf_new.cube_sequence := :NEW.cube_sequence;
 		r_cgf_new.fk_cub_name := REPLACE(:NEW.fk_cub_name,' ','_');
 		r_cgf_new.fk_cgm_name := REPLACE(:NEW.fk_cgm_name,' ','_');
 		r_cgf_new.header := :NEW.header;
@@ -2559,6 +2583,7 @@ BEGIN
 	IF UPDATING OR DELETING THEN
 		SELECT rowid INTO l_cube_rowid FROM t_cube_gen_function
 		WHERE header = :OLD.header;
+		r_cgf_old.cube_sequence := :OLD.cube_sequence;
 		r_cgf_old.fk_cub_name := :OLD.fk_cub_name;
 		r_cgf_old.fk_cgm_name := :OLD.fk_cgm_name;
 		r_cgf_old.header := :OLD.header;

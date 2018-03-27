@@ -1,0 +1,629 @@
+<html>
+<head><link rel=stylesheet type="text/css" href="style.css"></head>
+<body style="margin-left:80px;"><p><br><br><h1>Business Object Types</h1><ul style="list-style-type:none">
+<a class="BO_link" HREF="#CUBE-BOT-0100000"> INFORMATION_TYPE</a><br>
+<a class="BO_link" HREF="#CUBE-BOT-0100001"> BUSINESS_OBJECT_TYPE</a><br>
+<a class="BO_link" HREF="#CUBE-BOT-0100002"> SYSTEM</a><br>
+<a class="BO_link" HREF="#CUBE-BOT-0100003"> FUNCTION</a><br>
+<a class="BO_link" HREF="#CUBE-BOT-0100004"> DESCRIPTION</a><br>
+<a class="BO_link" HREF="#CUBE-BOT-0100005"> CUBE_GEN_DOCUMENTATION</a><br></ul>
+<p><h1><a id="CUBE-BOT-0100000"></a>Business Object Type INFORMATION_TYPE</h1>
+<p><font class="kop">Structure</font><ul style="list-style-type:none">
+<li><img src="icons/inftype.bmp"> <a class="BO_link" HREF="#CUBE-TYP-0100000">INFORMATION_TYPE</a></li><ul style="list-style-type:none">
+	<li><img src="icons/infelem.bmp"> <a class="BO_link" HREF="#CUBE-TYP-0100001">INFORMATION_TYPE_ELEMENT</a></li><ul style="list-style-type:none">
+		<li><img src="icons/value.bmp"> <a class="BO_link" HREF="#CUBE-TYP-0100002">PERMITTED_VALUE</a></li> 
+		</ul> 
+	</ul> 
+</ul>
+<p><h2><a id="CUBE-TYP-0100000"></a>Main type INFORMATION_TYPE (ITP)</h2>
+<p><img src="icons/inftype_large.bmp">
+<br>The InformationType is unique identified within the <<TYPE(N-1):C>>. 
+<p><font class="kop">Key</font><ul>
+<li type="square"> Attribute name</li></ul>
+<p><font class="kop">No description!</font>
+<p><font class="kop">Attributes</font>
+<br><a class="BO_link" HREF="#CUBE-ATB-0100000"> NAME</a>
+<p><h3><a id="CUBE-ATB-0100000"></a>Attribute NAME</h3>
+<p><font class="kop">Domain</font><lu>
+<li type="square">Text(30)</li></lu>
+<p><font class="kop">No description!</font>
+<p><h2><a id="CUBE-TYP-0100001"></a>Part type INFORMATION_TYPE_ELEMENT (ITE)</h2>
+<p><img src="icons/infelem_large.bmp">
+<br>The InformationTypeElement is unique identified within the InformationType. 
+<p><font class="kop">Partial key</font><ul>
+<li type="square"> Attribute sequence</li></ul>
+<p><font class="kop">No description!</font>
+<p><font class="kop">Attributes</font>
+<br><a class="BO_link" HREF="#CUBE-ATB-0100001"> SEQUENCE</a>
+<br><a class="BO_link" HREF="#CUBE-ATB-0100002"> SUFFIX</a>
+<br><a class="BO_link" HREF="#CUBE-ATB-0100003"> DOMAIN</a>
+<br><a class="BO_link" HREF="#CUBE-ATB-0100004"> LENGTH</a>
+<br><a class="BO_link" HREF="#CUBE-ATB-0100005"> DECIMALS</a>
+<br><a class="BO_link" HREF="#CUBE-ATB-0100006"> CASE_SENSITIVE</a>
+<br><a class="BO_link" HREF="#CUBE-ATB-0100007"> DEFAULT_VALUE</a>
+<br><a class="BO_link" HREF="#CUBE-ATB-0100008"> SPACES_ALLOWED</a>
+<br><a class="BO_link" HREF="#CUBE-ATB-0100009"> PRESENTATION</a>
+<p><h3><a id="CUBE-ATB-0100001"></a>Attribute SEQUENCE</h3>
+<p><font class="kop">Domain</font><lu>
+<li type="square">Number(8,0)</li></lu>
+<p><font class="kop">No description!</font>
+<p><h3><a id="CUBE-ATB-0100002"></a>Attribute SUFFIX</h3>
+<p><font class="kop">Domain</font><lu>
+<li type="square">Text(12)</li></lu>
+<p><font class="kop">No description!</font>
+<p><h3><a id="CUBE-ATB-0100003"></a>Attribute DOMAIN</h3>
+<p><font class="kop">Domain</font><lu>
+<li type="square">Text(2)</li></lu>
+<p><font class="kop">No description!</font>
+<p><h3><a id="CUBE-ATB-0100004"></a>Attribute LENGTH</h3>
+<p><font class="kop">Domain</font><lu>
+<li type="square">Number(8,0)</li></lu>
+<p><font class="kop">No description!</font>
+<p><h3><a id="CUBE-ATB-0100005"></a>Attribute DECIMALS</h3>
+<p><font class="kop">Domain</font><lu>
+<li type="square">Number(8,0)</li></lu>
+<p><font class="kop">No description!</font>
+<p><h3><a id="CUBE-ATB-0100006"></a>Attribute CASE_SENSITIVE</h3>
+<p><font class="kop">Domain</font><lu>
+<li type="square">Text(1)</li></lu>
+<p><font class="kop">No description!</font>
+<p><h3><a id="CUBE-ATB-0100007"></a>Attribute DEFAULT_VALUE</h3>
+<p><font class="kop">Domain</font><lu>
+<li type="square">Text(32)</li></lu>
+<p><font class="kop">No description!</font>
+<p><h3><a id="CUBE-ATB-0100008"></a>Attribute SPACES_ALLOWED</h3>
+<p><font class="kop">Domain</font><lu>
+<li type="square">Text(1)</li></lu>
+<p><font class="kop">No description!</font>
+<p><h3><a id="CUBE-ATB-0100009"></a>Attribute PRESENTATION</h3>
+<p><font class="kop">Domain</font><lu>
+<li type="square">Text(3)</li></lu>
+<p><font class="kop">Description</font><br>Indication how the string is presented in the user dialog.
+<p><h2><a id="CUBE-TYP-0100002"></a>Part type PERMITTED_VALUE (VAL)</h2>
+<p><img src="icons/value_large.bmp">
+<br>The PermittedValue is unique identified within the InformationTypeElement. 
+<p><font class="kop">Partial key</font><ul>
+<li type="square"> Attribute code</li></ul>
+<p><font class="kop">No description!</font>
+<p><font class="kop">Attributes</font>
+<br><a class="BO_link" HREF="#CUBE-ATB-0100010"> CODE</a>
+<br><a class="BO_link" HREF="#CUBE-ATB-0100011"> PROMPT</a>
+<p><h3><a id="CUBE-ATB-0100010"></a>Attribute CODE</h3>
+<p><font class="kop">Domain</font><lu>
+<li type="square">Text(8)</li></lu>
+<p><font class="kop">No description!</font>
+<p><h3><a id="CUBE-ATB-0100011"></a>Attribute PROMPT</h3>
+<p><font class="kop">Domain</font><lu>
+<li type="square">Text(32)</li></lu>
+<p><font class="kop">No description!</font>
+<p><h1><a id="CUBE-BOT-0100001"></a>Business Object Type BUSINESS_OBJECT_TYPE</h1>
+<p><font class="kop">Structure</font><ul style="list-style-type:none">
+<li><img src="icons/botype.bmp"> <a class="BO_link" HREF="#CUBE-TYP-0100003">BUSINESS_OBJECT_TYPE</a></li><ul style="list-style-type:none">
+	<li><img src="icons/type.bmp"> <a class="BO_link" HREF="#CUBE-TYP-0100004">TYPE</a></li><ul style="list-style-type:none">
+		<li><img src="icons/attrib.bmp"> <a class="BO_link" HREF="#CUBE-TYP-0100005">ATTRIBUTE</a></li><ul style="list-style-type:none">
+			<li><img src="icons/deriv.bmp"> <a class="BO_link" HREF="#CUBE-TYP-0100006">DERIVATION</a></li><li><img src="icons/desc.bmp"> <a class="BO_link" HREF="#CUBE-TYP-0100007">DESCRIPTION_ATTRIBUTE</a></li><li><img src="icons/restrict.bmp"> <a class="BO_link" HREF="#CUBE-TYP-0100008">RESTRICTION_TYPE_SPEC_ATB</a></li> 
+			</ul><li><img src="icons/ref.bmp"> <a class="BO_link" HREF="#CUBE-TYP-0100009">REFERENCE</a></li><ul style="list-style-type:none">
+			<li><img src="icons/desc.bmp"> <a class="BO_link" HREF="#CUBE-TYP-0100010">DESCRIPTION_REFERENCE</a></li><li><img src="icons/restrict.bmp"> <a class="BO_link" HREF="#CUBE-TYP-0100011">RESTRICTION_TYPE_SPEC_REF</a></li> 
+			</ul><li><img src="icons/reuse.bmp"> <a class="BO_link" HREF="#CUBE-TYP-0100012">TYPE_REUSE</a></li><li><img src="icons/partit.bmp"> <a class="BO_link" HREF="#CUBE-TYP-0100013">PARTITION</a></li><ul style="list-style-type:none">
+			<li><img src="icons/subtype.bmp"> <a class="BO_link" HREF="#CUBE-TYP-0100014">SUBTYPE</a></li> 
+			</ul><li><img src="icons/tspgroup.bmp"> <a class="BO_link" HREF="#CUBE-TYP-0100015">TYPE_SPECIALISATION_GROUP</a></li><ul style="list-style-type:none">
+			<li><img src="icons/typespec.bmp"> <a class="BO_link" HREF="#CUBE-TYP-0100016">TYPE_SPECIALISATION</a></li> 
+			</ul><li><img src="icons/desc.bmp"> <a class="BO_link" HREF="#CUBE-TYP-0100017">DESCRIPTION_TYPE</a></li> 
+		</ul> 
+	</ul> 
+</ul>
+<p><h2><a id="CUBE-TYP-0100003"></a>Main type BUSINESS_OBJECT_TYPE (BOT)</h2>
+<p><img src="icons/botype_large.bmp">
+<br>The BusinessObjectType is unique identified within the <<TYPE(N-1):C>>. 
+<p><font class="kop">Key</font><ul>
+<li type="square"> Attribute name</li></ul>
+<p><font class="kop">Description</font>
+<br>An object type related to the business supported by the system.
+<p><font class="kop">Attributes</font>
+<br><a class="BO_link" HREF="#CUBE-ATB-0100012"> NAME</a>
+<br><a class="BO_link" HREF="#CUBE-ATB-0100013"> DIRECTORY</a>
+<p><h3><a id="CUBE-ATB-0100012"></a>Attribute NAME</h3>
+<p><font class="kop">Domain</font><lu>
+<li type="square">Text(30)</li></lu>
+<p><font class="kop">No description!</font>
+<p><h3><a id="CUBE-ATB-0100013"></a>Attribute DIRECTORY</h3>
+<p><font class="kop">Domain</font><lu>
+<li type="square">Text(80)</li></lu>
+<p><font class="kop">No description!</font>
+<p><h2><a id="CUBE-TYP-0100004"></a>Part type TYPE (TYP)</h2>
+<p><img src="icons/type_large.bmp">
+<br>The Type is unique identified. 
+<p><font class="kop">Key</font><ul>
+<li type="square"> Attribute name</li></ul>
+<p><font class="kop">Description</font>
+<br>An entity type related to the business that is supported by the system.
+<p><font class="kop">Attributes</font>
+<br><a class="BO_link" HREF="#CUBE-ATB-0100014"> NAME</a>
+<br><a class="BO_link" HREF="#CUBE-ATB-0100015"> CODE</a>
+<br><a class="BO_link" HREF="#CUBE-ATB-0100016"> FLAG_PARTIAL_KEY</a>
+<br><a class="BO_link" HREF="#CUBE-ATB-0100017"> FLAG_RECURSIVE</a>
+<br><a class="BO_link" HREF="#CUBE-ATB-0100018"> RECURSIVE_CARDINALITY</a>
+<br><a class="BO_link" HREF="#CUBE-ATB-0100019"> CARDINALITY</a>
+<br><a class="BO_link" HREF="#CUBE-ATB-0100020"> SORT_ORDER</a>
+<br><a class="BO_link" HREF="#CUBE-ATB-0100021"> ICON</a>
+<br><a class="BO_link" HREF="#CUBE-ATB-0100022"> TRANSFERABLE</a>
+<p><h3><a id="CUBE-ATB-0100014"></a>Attribute NAME</h3>
+<p><font class="kop">Domain</font><lu>
+<li type="square">Text(30)</li></lu>
+<p><font class="kop">No description!</font>
+<p><h3><a id="CUBE-ATB-0100015"></a>Attribute CODE</h3>
+<p><font class="kop">Domain</font><lu>
+<li type="square">Text(3)</li></lu>
+<p><font class="kop">No description!</font>
+<p><h3><a id="CUBE-ATB-0100016"></a>Attribute FLAG_PARTIAL_KEY</h3>
+<p><font class="kop">Domain</font><lu>
+<li type="square">Text(1)</li></lu>
+<p><font class="kop">No description!</font>
+<p><h3><a id="CUBE-ATB-0100017"></a>Attribute FLAG_RECURSIVE</h3>
+<p><font class="kop">Domain</font><lu>
+<li type="square">Text(1)</li></lu>
+<p><font class="kop">No description!</font>
+<p><h3><a id="CUBE-ATB-0100018"></a>Attribute RECURSIVE_CARDINALITY</h3>
+<p><font class="kop">Domain</font><lu>
+<li type="square">Text(1)</li></lu>
+<p><font class="kop">No description!</font>
+<p><h3><a id="CUBE-ATB-0100019"></a>Attribute CARDINALITY</h3>
+<p><font class="kop">Domain</font><lu>
+<li type="square">Text(1)</li></lu>
+<p><font class="kop">No description!</font>
+<p><h3><a id="CUBE-ATB-0100020"></a>Attribute SORT_ORDER</h3>
+<p><font class="kop">Domain</font><lu>
+<li type="square">Text(1)</li></lu>
+<p><font class="kop">No description!</font>
+<p><h3><a id="CUBE-ATB-0100021"></a>Attribute ICON</h3>
+<p><font class="kop">Domain</font><lu>
+<li type="square">Text(8)</li></lu>
+<p><font class="kop">No description!</font>
+<p><h3><a id="CUBE-ATB-0100022"></a>Attribute TRANSFERABLE</h3>
+<p><font class="kop">Domain</font><lu>
+<li type="square">Text(1)</li></lu>
+<p><font class="kop">Description</font><br>Indication that in case of a recursive type the type may moved to an other parent in the hierarchy.
+<p><h2><a id="CUBE-TYP-0100005"></a>Part type ATTRIBUTE (ATB)</h2>
+<p><img src="icons/attrib_large.bmp">
+<br>The Attribute is unique identified within the Type. 
+<p><font class="kop">Partial key</font><ul>
+<li type="square"> Attribute name</li></ul>
+<p><font class="kop">References</font><ul>
+<li type="square"> has_domain </li></ul>
+<p><font class="kop">No description!</font>
+<p><font class="kop">Attributes</font>
+<br><a class="BO_link" HREF="#CUBE-ATB-0100023"> NAME</a>
+<br><a class="BO_link" HREF="#CUBE-ATB-0100024"> PRIMARY_KEY</a>
+<br><a class="BO_link" HREF="#CUBE-ATB-0100025"> CODE_DISPLAY_KEY</a>
+<br><a class="BO_link" HREF="#CUBE-ATB-0100026"> CODE_FOREIGN_KEY</a>
+<br><a class="BO_link" HREF="#CUBE-ATB-0100027"> FLAG_HIDDEN</a>
+<br><a class="BO_link" HREF="#CUBE-ATB-0100028"> DEFAULT_VALUE</a>
+<br><a class="BO_link" HREF="#CUBE-ATB-0100029"> UNCHANGEABLE</a>
+<p><h3><a id="CUBE-ATB-0100023"></a>Attribute NAME</h3>
+<p><font class="kop">Domain</font><lu>
+<li type="square">Text(30)</li></lu>
+<p><font class="kop">Description</font><br>Unique identifier of the attribute.
+<p><h3><a id="CUBE-ATB-0100024"></a>Attribute PRIMARY_KEY</h3>
+<p><font class="kop">Domain</font><lu>
+<li type="square">Text(1)</li></lu>
+<p><font class="kop">Description</font><br>Indication that attribute is part of the unique identification of the type.
+<p><h3><a id="CUBE-ATB-0100025"></a>Attribute CODE_DISPLAY_KEY</h3>
+<p><font class="kop">Domain</font><lu>
+<li type="square">Text(1)</li></lu>
+<p><font class="kop">No description!</font>
+<p><h3><a id="CUBE-ATB-0100026"></a>Attribute CODE_FOREIGN_KEY</h3>
+<p><font class="kop">Domain</font><lu>
+<li type="square">Text(1)</li></lu>
+<p><font class="kop">No description!</font>
+<p><h3><a id="CUBE-ATB-0100027"></a>Attribute FLAG_HIDDEN</h3>
+<p><font class="kop">Domain</font><lu>
+<li type="square">Text(1)</li></lu>
+<p><font class="kop">No description!</font>
+<p><h3><a id="CUBE-ATB-0100028"></a>Attribute DEFAULT_VALUE</h3>
+<p><font class="kop">Domain</font><lu>
+<li type="square">Text(40)</li></lu>
+<p><font class="kop">Description</font><br>Defaut value that overules the default value specified by the information type element.
+<p><h3><a id="CUBE-ATB-0100029"></a>Attribute UNCHANGEABLE</h3>
+<p><font class="kop">Domain</font><lu>
+<li type="square">Text(1)</li></lu>
+<p><font class="kop">Description</font><br>Indication that after the creation of the type the value of the atrribute can not be changed.
+<p><h2><a id="CUBE-TYP-0100006"></a>Part type DERIVATION (DER)</h2>
+<p><img src="icons/deriv_large.bmp">
+<br>The Derivation is unique identified within the Attribute. 
+<p><font class="kop">Partial key</font><ul></ul>
+<p><font class="kop">References</font><ul>
+<li type="square"> concerns_parent </li>
+<li type="square"> concerns_child </li></ul>
+<p><font class="kop">No description!</font>
+<p><font class="kop">Attributes</font>
+<br><a class="BO_link" HREF="#CUBE-ATB-0100030"> AGGREGATE_FUNCTION</a>
+<p><h3><a id="CUBE-ATB-0100030"></a>Attribute AGGREGATE_FUNCTION</h3>
+<p><font class="kop">Domain</font><lu>
+<li type="square">Text(3)</li></lu>
+<p><font class="kop">No description!</font>
+<p><h2><a id="CUBE-TYP-0100007"></a>Part type DESCRIPTION_ATTRIBUTE (DCA)</h2>
+<p><img src="icons/desc_large.bmp">
+<br>The DescriptionAttribute is unique identified within the Attribute. 
+<p><font class="kop">Partial key</font><ul></ul>
+<p><font class="kop">No description!</font>
+<p><font class="kop">Attributes</font>
+<br><a class="BO_link" HREF="#CUBE-ATB-0100031"> TEXT</a>
+<p><h3><a id="CUBE-ATB-0100031"></a>Attribute TEXT</h3>
+<p><font class="kop">Domain</font><lu>
+<li type="square">Text(3999)</li></lu>
+<p><font class="kop">No description!</font>
+<p><h2><a id="CUBE-TYP-0100008"></a>Part type RESTRICTION_TYPE_SPEC_ATB (RTA)</h2>
+<p><img src="icons/restrict_large.bmp">
+<br>The RestrictionTypeSpecAtb is unique identified within the Attribute. 
+<p><font class="kop">Partial key</font><ul>
+<li type="square"> Reference is_valid_for </li></ul>
+<p><font class="kop">References</font><ul>
+<li type="square"> is_valid_for </li></ul>
+<p><font class="kop">No description!</font>
+<p><font class="kop">Attributes</font>
+<br><a class="BO_link" HREF="#CUBE-ATB-0100032"> INCLUDE_OR_EXCLUDE</a>
+<p><h3><a id="CUBE-ATB-0100032"></a>Attribute INCLUDE_OR_EXCLUDE</h3>
+<p><font class="kop">Domain</font><lu>
+<li type="square">Text(2)</li></lu>
+<p><font class="kop">Description</font><br>Indication that the attribute is valid (included) or invalid (excluded) for the concerning type specialisation.
+<p><h2><a id="CUBE-TYP-0100009"></a>Part type REFERENCE (REF)</h2>
+<p><img src="icons/ref_large.bmp">
+<br>The Reference is unique identified within the Type. 
+<p><font class="kop">Partial key</font><ul>
+<li type="square"> Attribute sequence</li>
+<li type="square"> Reference refer </li></ul>
+<p><font class="kop">References</font><ul>
+<li type="square"> refer </li>
+<li type="square"> within_scope_of </li></ul>
+<p><font class="kop">No description!</font>
+<p><font class="kop">Attributes</font>
+<br><a class="BO_link" HREF="#CUBE-ATB-0100033"> NAME</a>
+<br><a class="BO_link" HREF="#CUBE-ATB-0100034"> PRIMARY_KEY</a>
+<br><a class="BO_link" HREF="#CUBE-ATB-0100035"> CODE_DISPLAY_KEY</a>
+<br><a class="BO_link" HREF="#CUBE-ATB-0100036"> SEQUENCE</a>
+<br><a class="BO_link" HREF="#CUBE-ATB-0100037"> SCOPE</a>
+<br><a class="BO_link" HREF="#CUBE-ATB-0100038"> UNCHANGEABLE</a>
+<br><a class="BO_link" HREF="#CUBE-ATB-0100039"> WITHIN_SCOPE_LEVEL</a>
+<p><h3><a id="CUBE-ATB-0100033"></a>Attribute NAME</h3>
+<p><font class="kop">Domain</font><lu>
+<li type="square">Text(30)</li></lu>
+<p><font class="kop">No description!</font>
+<p><h3><a id="CUBE-ATB-0100034"></a>Attribute PRIMARY_KEY</h3>
+<p><font class="kop">Domain</font><lu>
+<li type="square">Text(1)</li></lu>
+<p><font class="kop">Description</font><br>Indication that reference is part of the unique identification of the type.
+<p><h3><a id="CUBE-ATB-0100035"></a>Attribute CODE_DISPLAY_KEY</h3>
+<p><font class="kop">Domain</font><lu>
+<li type="square">Text(1)</li></lu>
+<p><font class="kop">No description!</font>
+<p><h3><a id="CUBE-ATB-0100036"></a>Attribute SEQUENCE</h3>
+<p><font class="kop">Domain</font><lu>
+<li type="square">Number(1,0)</li></lu>
+<p><font class="kop">No description!</font>
+<p><h3><a id="CUBE-ATB-0100037"></a>Attribute SCOPE</h3>
+<p><font class="kop">Domain</font><lu>
+<li type="square">Text(3)</li></lu>
+<p><font class="kop">Description</font><br>In case of a recursive target, the definition of the collection of the types to select.
+<p><h3><a id="CUBE-ATB-0100038"></a>Attribute UNCHANGEABLE</h3>
+<p><font class="kop">Domain</font><lu>
+<li type="square">Text(1)</li></lu>
+<p><font class="kop">Description</font><br>Indication that after the creation of the type the reference can not be changed. So in case of a recursive reference the indication too that the relation is used to select the parents or children in the hierarchy.
+<p><h3><a id="CUBE-ATB-0100039"></a>Attribute WITHIN_SCOPE_LEVEL</h3>
+<p><font class="kop">Domain</font><lu>
+<li type="square">Number(1,0)</li></lu>
+<p><font class="kop">Description</font><br>In case of recursive "wihin scope of" type the relative level in the hierarchy, Positive numbers are the parent levels, Negative numbers are the child levels.
+<p><h2><a id="CUBE-TYP-0100010"></a>Part type DESCRIPTION_REFERENCE (DCR)</h2>
+<p><img src="icons/desc_large.bmp">
+<br>The DescriptionReference is unique identified within the Reference. 
+<p><font class="kop">Partial key</font><ul></ul>
+<p><font class="kop">No description!</font>
+<p><font class="kop">Attributes</font>
+<br><a class="BO_link" HREF="#CUBE-ATB-0100040"> TEXT</a>
+<p><h3><a id="CUBE-ATB-0100040"></a>Attribute TEXT</h3>
+<p><font class="kop">Domain</font><lu>
+<li type="square">Text(3999)</li></lu>
+<p><font class="kop">No description!</font>
+<p><h2><a id="CUBE-TYP-0100011"></a>Part type RESTRICTION_TYPE_SPEC_REF (RTR)</h2>
+<p><img src="icons/restrict_large.bmp">
+<br>The RestrictionTypeSpecRef is unique identified within the Reference. 
+<p><font class="kop">Partial key</font><ul>
+<li type="square"> Reference is_valid_for </li></ul>
+<p><font class="kop">References</font><ul>
+<li type="square"> is_valid_for </li></ul>
+<p><font class="kop">No description!</font>
+<p><font class="kop">Attributes</font>
+<br><a class="BO_link" HREF="#CUBE-ATB-0100041"> INCLUDE_OR_EXCLUDE</a>
+<p><h3><a id="CUBE-ATB-0100041"></a>Attribute INCLUDE_OR_EXCLUDE</h3>
+<p><font class="kop">Domain</font><lu>
+<li type="square">Text(2)</li></lu>
+<p><font class="kop">Description</font><br>Indication that the reference is valid (included) or invalid (excluded) for the concerning type specialisation.
+<p><h2><a id="CUBE-TYP-0100012"></a>Part type TYPE_REUSE (TYR)</h2>
+<p><img src="icons/reuse_large.bmp">
+<br>The TypeReuse is unique identified within the Type. 
+<p><font class="kop">Partial key</font><ul>
+<li type="square"> Reference refer </li></ul>
+<p><font class="kop">References</font><ul>
+<li type="square"> refer </li></ul>
+<p><font class="kop">No description!</font>
+<p><font class="kop">Attributes</font>
+<br><a class="BO_link" HREF="#CUBE-ATB-0100042"> CARDINALITY</a>
+<p><h3><a id="CUBE-ATB-0100042"></a>Attribute CARDINALITY</h3>
+<p><font class="kop">Domain</font><lu>
+<li type="square">Text(1)</li></lu>
+<p><font class="kop">No description!</font>
+<p><h2><a id="CUBE-TYP-0100013"></a>Part type PARTITION (PAR)</h2>
+<p><img src="icons/partit_large.bmp">
+<br>The Partition is unique identified within the Type. 
+<p><font class="kop">Partial key</font><ul>
+<li type="square"> Attribute name</li></ul>
+<p><font class="kop">No description!</font>
+<p><font class="kop">Attributes</font>
+<br><a class="BO_link" HREF="#CUBE-ATB-0100043"> NAME</a>
+<p><h3><a id="CUBE-ATB-0100043"></a>Attribute NAME</h3>
+<p><font class="kop">Domain</font><lu>
+<li type="square">Text(30)</li></lu>
+<p><font class="kop">No description!</font>
+<p><h2><a id="CUBE-TYP-0100014"></a>Part type SUBTYPE (STP)</h2>
+<p><img src="icons/subtype_large.bmp">
+<br>The Subtype is unique identified within the Partition. 
+<p><font class="kop">Partial key</font><ul>
+<li type="square"> Attribute name</li></ul>
+<p><font class="kop">No description!</font>
+<p><font class="kop">Attributes</font>
+<br><a class="BO_link" HREF="#CUBE-ATB-0100044"> NAME</a>
+<p><h3><a id="CUBE-ATB-0100044"></a>Attribute NAME</h3>
+<p><font class="kop">Domain</font><lu>
+<li type="square">Text(30)</li></lu>
+<p><font class="kop">No description!</font>
+<p><h2><a id="CUBE-TYP-0100015"></a>Part type TYPE_SPECIALISATION_GROUP (TSG)</h2>
+<p><img src="icons/tspgroup_large.bmp">
+<br>The TypeSpecialisationGroup is unique identified within the Type. 
+<p><font class="kop">Partial key</font><ul>
+<li type="square"> Attribute code</li></ul>
+<p><font class="kop">No description!</font>
+<p><font class="kop">Attributes</font>
+<br><a class="BO_link" HREF="#CUBE-ATB-0100045"> CODE</a>
+<br><a class="BO_link" HREF="#CUBE-ATB-0100046"> NAME</a>
+<br><a class="BO_link" HREF="#CUBE-ATB-0100047"> PRIMARY_KEY</a>
+<p><h3><a id="CUBE-ATB-0100045"></a>Attribute CODE</h3>
+<p><font class="kop">Domain</font><lu>
+<li type="square">Text(8)</li></lu>
+<p><font class="kop">No description!</font>
+<p><h3><a id="CUBE-ATB-0100046"></a>Attribute NAME</h3>
+<p><font class="kop">Domain</font><lu>
+<li type="square">Text(30)</li></lu>
+<p><font class="kop">No description!</font>
+<p><h3><a id="CUBE-ATB-0100047"></a>Attribute PRIMARY_KEY</h3>
+<p><font class="kop">Domain</font><lu>
+<li type="square">Text(1)</li></lu>
+<p><font class="kop">Description</font><br>Indication that the type specification group is part of the unique identification of the type.
+<p><h2><a id="CUBE-TYP-0100016"></a>Part type TYPE_SPECIALISATION (TSP)</h2>
+<p><img src="icons/typespec_large.bmp">
+<br>The TypeSpecialisation is unique identified within the TypeSpecialisationGroup. 
+<p><font class="kop">Partial key</font><ul>
+<li type="square"> Attribute code</li></ul>
+<p><font class="kop">References</font><ul>
+<li type="square"> specialise </li></ul>
+<p><font class="kop">No description!</font>
+<p><font class="kop">Attributes</font>
+<br><a class="BO_link" HREF="#CUBE-ATB-0100048"> CODE</a>
+<br><a class="BO_link" HREF="#CUBE-ATB-0100049"> NAME</a>
+<p><h3><a id="CUBE-ATB-0100048"></a>Attribute CODE</h3>
+<p><font class="kop">Domain</font><lu>
+<li type="square">Text(8)</li></lu>
+<p><font class="kop">No description!</font>
+<p><h3><a id="CUBE-ATB-0100049"></a>Attribute NAME</h3>
+<p><font class="kop">Domain</font><lu>
+<li type="square">Text(30)</li></lu>
+<p><font class="kop">No description!</font>
+<p><h2><a id="CUBE-TYP-0100017"></a>Part type DESCRIPTION_TYPE (DCT)</h2>
+<p><img src="icons/desc_large.bmp">
+<br>The DescriptionType is unique identified within the Type. 
+<p><font class="kop">Partial key</font><ul></ul>
+<p><font class="kop">Description</font>
+<br>Test
+Met LF en " en '  en %    %
+EInde
+<p><font class="kop">Attributes</font>
+<br><a class="BO_link" HREF="#CUBE-ATB-0100050"> TEXT</a>
+<p><h3><a id="CUBE-ATB-0100050"></a>Attribute TEXT</h3>
+<p><font class="kop">Domain</font><lu>
+<li type="square">Text(3999)</li></lu>
+<p><font class="kop">No description!</font>
+<p><h1><a id="CUBE-BOT-0100002"></a>Business Object Type SYSTEM</h1>
+<p><font class="kop">Structure</font><ul style="list-style-type:none">
+<li><img src="icons/system.bmp"> <a class="BO_link" HREF="#CUBE-TYP-0100018">SYSTEM</a></li><ul style="list-style-type:none">
+	<li><img src="icons/sysbot.bmp"> <a class="BO_link" HREF="#CUBE-TYP-0100019">SYSTEM_BO_TYPE</a></li> 
+	</ul> 
+</ul>
+<p><h2><a id="CUBE-TYP-0100018"></a>Main type SYSTEM (SYS)</h2>
+<p><img src="icons/system_large.bmp">
+<br>The System is unique identified within the <<TYPE(N-1):C>>. 
+<p><font class="kop">Key</font><ul>
+<li type="square"> Attribute name</li></ul>
+<p><font class="kop">No description!</font>
+<p><font class="kop">Attributes</font>
+<br><a class="BO_link" HREF="#CUBE-ATB-0100051"> NAME</a>
+<br><a class="BO_link" HREF="#CUBE-ATB-0100052"> DATABASE</a>
+<br><a class="BO_link" HREF="#CUBE-ATB-0100053"> SCHEMA</a>
+<br><a class="BO_link" HREF="#CUBE-ATB-0100054"> PASSWORD</a>
+<p><h3><a id="CUBE-ATB-0100051"></a>Attribute NAME</h3>
+<p><font class="kop">Domain</font><lu>
+<li type="square">Text(30)</li></lu>
+<p><font class="kop">No description!</font>
+<p><h3><a id="CUBE-ATB-0100052"></a>Attribute DATABASE</h3>
+<p><font class="kop">Domain</font><lu>
+<li type="square">Text(30)</li></lu>
+<p><font class="kop">No description!</font>
+<p><h3><a id="CUBE-ATB-0100053"></a>Attribute SCHEMA</h3>
+<p><font class="kop">Domain</font><lu>
+<li type="square">Text(30)</li></lu>
+<p><font class="kop">No description!</font>
+<p><h3><a id="CUBE-ATB-0100054"></a>Attribute PASSWORD</h3>
+<p><font class="kop">Domain</font><lu>
+<li type="square">Text(20)</li></lu>
+<p><font class="kop">No description!</font>
+<p><h2><a id="CUBE-TYP-0100019"></a>Part type SYSTEM_BO_TYPE (SBT)</h2>
+<p><img src="icons/sysbot_large.bmp">
+<br>The SystemBoType is unique identified within the System. 
+<p><font class="kop">Partial key</font><ul>
+<li type="square"> Reference has </li></ul>
+<p><font class="kop">References</font><ul>
+<li type="square"> has </li></ul>
+<p><font class="kop">No description!</font>
+<p><h1><a id="CUBE-BOT-0100003"></a>Business Object Type FUNCTION</h1>
+<p><font class="kop">Structure</font><ul style="list-style-type:none">
+<li><img src="icons/function.bmp"> <a class="BO_link" HREF="#CUBE-TYP-0100020">FUNCTION</a></li><ul style="list-style-type:none">
+	<li><img src="icons/funcatb.bmp"> <a class="BO_link" HREF="#CUBE-TYP-0100021">ARGUMENT</a></li> 
+	</ul> 
+</ul>
+<p><h2><a id="CUBE-TYP-0100020"></a>Main type FUNCTION (FUN)</h2>
+<p><img src="icons/function_large.bmp">
+<br>The Function is unique identified within the <<TYPE(N-1):C>>. 
+<p><font class="kop">Key</font><ul>
+<li type="square"> Attribute name</li></ul>
+<p><font class="kop">No description!</font>
+<p><font class="kop">Attributes</font>
+<br><a class="BO_link" HREF="#CUBE-ATB-0100055"> NAME</a>
+<p><h3><a id="CUBE-ATB-0100055"></a>Attribute NAME</h3>
+<p><font class="kop">Domain</font><lu>
+<li type="square">Text(30)</li></lu>
+<p><font class="kop">No description!</font>
+<p><h2><a id="CUBE-TYP-0100021"></a>Part type ARGUMENT (ARG)</h2>
+<p><img src="icons/funcatb_large.bmp">
+<br>The Argument is unique identified within the Function. 
+<p><font class="kop">Partial key</font><ul>
+<li type="square"> Attribute name</li></ul>
+<p><font class="kop">No description!</font>
+<p><font class="kop">Attributes</font>
+<br><a class="BO_link" HREF="#CUBE-ATB-0100056"> NAME</a>
+<p><h3><a id="CUBE-ATB-0100056"></a>Attribute NAME</h3>
+<p><font class="kop">Domain</font><lu>
+<li type="square">Text(30)</li></lu>
+<p><font class="kop">No description!</font>
+<p><h1><a id="CUBE-BOT-0100004"></a>Business Object Type DESCRIPTION</h1>
+<p><font class="kop">Structure</font><ul style="list-style-type:none">
+<li><img src="icons/desc.bmp"> <a class="BO_link" HREF="#CUBE-TYP-0100022">DESCRIPTION</a></li> 
+</ul>
+<p><h2><a id="CUBE-TYP-0100022"></a>Main type DESCRIPTION (DSC)</h2>
+<p><img src="icons/desc_large.bmp">
+<br>The Description is unique identified within the <<TYPE(N-1):C>>. 
+<p><font class="kop">Key</font><ul>
+<li type="square"> Attribute type_name</li>
+<li type="square"> Attribute attribute_type_name</li>
+<li type="square"> Attribute sequence</li></ul>
+<p><font class="kop">No description!</font>
+<p><font class="kop">Attributes</font>
+<br><a class="BO_link" HREF="#CUBE-ATB-0100057"> TYPE_NAME</a>
+<br><a class="BO_link" HREF="#CUBE-ATB-0100058"> ATTRIBUTE_TYPE_NAME</a>
+<br><a class="BO_link" HREF="#CUBE-ATB-0100059"> SEQUENCE</a>
+<br><a class="BO_link" HREF="#CUBE-ATB-0100060"> VALUE</a>
+<p><h3><a id="CUBE-ATB-0100057"></a>Attribute TYPE_NAME</h3>
+<p><font class="kop">Domain</font><lu>
+<li type="square">Text(30)</li></lu>
+<p><font class="kop">No description!</font>
+<p><h3><a id="CUBE-ATB-0100058"></a>Attribute ATTRIBUTE_TYPE_NAME</h3>
+<p><font class="kop">Domain</font><lu>
+<li type="square">Text(30)</li></lu>
+<p><font class="kop">No description!</font>
+<p><h3><a id="CUBE-ATB-0100059"></a>Attribute SEQUENCE</h3>
+<p><font class="kop">Domain</font><lu>
+<li type="square">Number(1,0)</li></lu>
+<p><font class="kop">No description!</font>
+<p><h3><a id="CUBE-ATB-0100060"></a>Attribute VALUE</h3>
+<p><font class="kop">Domain</font><lu>
+<li type="square">Text(3999)</li></lu>
+<p><font class="kop">No description!</font>
+<p><h1><a id="CUBE-BOT-0100005"></a>Business Object Type CUBE_GEN_DOCUMENTATION</h1>
+<p><font class="kop">Structure</font><ul style="list-style-type:none">
+<li><img src="icons/cubegen.bmp"> <a class="BO_link" HREF="#CUBE-TYP-0100023">CUBE_GEN_DOCUMENTATION</a></li><ul style="list-style-type:none">
+	<li><img src="icons/desc.bmp"> <a class="BO_link" HREF="#CUBE-TYP-0100024">CUBE_GEN_PARAGRAPH</a></li><li><img src="icons/model.bmp"> <a class="BO_link" HREF="#CUBE-TYP-0100025">CUBE_GEN_EXAMPLE_MODEL</a></li><ul style="list-style-type:none">
+		<li><img src="icons/botype.bmp"> <a class="BO_link" HREF="#CUBE-TYP-0100026">CUBE_GEN_EXAMPLE_OBJECT</a></li><li><img src="icons/template.bmp"> <a class="BO_link" HREF="#CUBE-TYP-0100027">CUBE_GEN_FUNCTION</a></li> 
+		</ul> 
+	</ul> 
+</ul>
+<p><h2><a id="CUBE-TYP-0100023"></a>Main type CUBE_GEN_DOCUMENTATION (CUB)</h2>
+<p><img src="icons/cubegen_large.bmp">
+<br>The CubeGenDocumentation is unique identified within the <<TYPE(N-1):C>>. 
+<p><font class="kop">Key</font><ul>
+<li type="square"> Attribute name</li></ul>
+<p><font class="kop">Description</font>
+<br>A document to give an explanation of CubeGen based on examples.
+<p><font class="kop">Attributes</font>
+<br><a class="BO_link" HREF="#CUBE-ATB-0100061"> NAME</a>
+<p><h3><a id="CUBE-ATB-0100061"></a>Attribute NAME</h3>
+<p><font class="kop">Domain</font><lu>
+<li type="square">Text(30)</li></lu>
+<p><font class="kop">Description</font><br>The name of the document.
+<p><h2><a id="CUBE-TYP-0100024"></a>Part type CUBE_GEN_PARAGRAPH (CGP)</h2>
+<p><img src="icons/desc_large.bmp">
+<br>The CubeGenParagraph is unique identified within the CubeGenDocumentation. 
+<p><font class="kop">Partial key</font><ul>
+<li type="square"> Attribute header</li></ul>
+<p><font class="kop">No description!</font>
+<p><font class="kop">Attributes</font>
+<br><a class="BO_link" HREF="#CUBE-ATB-0100062"> HEADER</a>
+<br><a class="BO_link" HREF="#CUBE-ATB-0100063"> DESCRIPTION</a>
+<p><h3><a id="CUBE-ATB-0100062"></a>Attribute HEADER</h3>
+<p><font class="kop">Domain</font><lu>
+<li type="square">Text(120)</li></lu>
+<p><font class="kop">No description!</font>
+<p><h3><a id="CUBE-ATB-0100063"></a>Attribute DESCRIPTION</h3>
+<p><font class="kop">Domain</font><lu>
+<li type="square">Text(3999)</li></lu>
+<p><font class="kop">No description!</font>
+<p><h2><a id="CUBE-TYP-0100025"></a>Part type CUBE_GEN_EXAMPLE_MODEL (CGM)</h2>
+<p><img src="icons/model_large.bmp">
+<br>The CubeGenExampleModel is unique identified within the CubeGenDocumentation. 
+<p><font class="kop">Partial key</font><ul>
+<li type="square"> Attribute name</li></ul>
+<p><font class="kop">Description</font>
+<br>A view on the business object model with examples of functions based on the business object model.
+<p><font class="kop">Attributes</font>
+<br><a class="BO_link" HREF="#CUBE-ATB-0100064"> NAME</a>
+<br><a class="BO_link" HREF="#CUBE-ATB-0100065"> INCLUDED_OBJECT_NAMES</a>
+<p><h3><a id="CUBE-ATB-0100064"></a>Attribute NAME</h3>
+<p><font class="kop">Domain</font><lu>
+<li type="square">Text(30)</li></lu>
+<p><font class="kop">No description!</font>
+<p><h3><a id="CUBE-ATB-0100065"></a>Attribute INCLUDED_OBJECT_NAMES</h3>
+<p><font class="kop">Domain</font><lu>
+<li type="square">Text(120)</li></lu>
+<p><font class="kop">Description</font><br>The names of types that are included in the view of the business object model.
+<p><h2><a id="CUBE-TYP-0100026"></a>Part type CUBE_GEN_EXAMPLE_OBJECT (CGO)</h2>
+<p><img src="icons/botype_large.bmp">
+<br>The CubeGenExampleObject is unique identified within the CubeGenExampleModel. 
+<p><font class="kop">Partial key</font><ul>
+<li type="square"> Reference uses_as_example </li></ul>
+<p><font class="kop">References</font><ul>
+<li type="square"> uses_as_example </li></ul>
+<p><font class="kop">Description</font>
+<br>A reference to a business object that is used in the examples.
+<p><h2><a id="CUBE-TYP-0100027"></a>Part type CUBE_GEN_FUNCTION (CGF)</h2>
+<p><img src="icons/template_large.bmp">
+<br>The CubeGenFunction is unique identified. 
+<p><font class="kop">Key</font><ul>
+<li type="square"> Attribute header</li></ul>
+<p><font class="kop">Description</font>
+<br>A CubeGen function that has been explained with a template.
+<p><font class="kop">Attributes</font>
+<br><a class="BO_link" HREF="#CUBE-ATB-0100066"> HEADER</a>
+<br><a class="BO_link" HREF="#CUBE-ATB-0100067"> DESCRIPTION</a>
+<br><a class="BO_link" HREF="#CUBE-ATB-0100068"> TEMPLATE</a>
+<p><h3><a id="CUBE-ATB-0100066"></a>Attribute HEADER</h3>
+<p><font class="kop">Domain</font><lu>
+<li type="square">Text(120)</li></lu>
+<p><font class="kop">No description!</font>
+<p><h3><a id="CUBE-ATB-0100067"></a>Attribute DESCRIPTION</h3>
+<p><font class="kop">Domain</font><lu>
+<li type="square">Text(3999)</li></lu>
+<p><font class="kop">No description!</font>
+<p><h3><a id="CUBE-ATB-0100068"></a>Attribute TEMPLATE</h3>
+<p><font class="kop">Domain</font><lu>
+<li type="square">Text(3999)</li></lu>
+<p><font class="kop">No description!</font>
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br></body></html>
+
+
+

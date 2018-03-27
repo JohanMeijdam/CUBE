@@ -2182,6 +2182,7 @@ BEGIN
 		EXECUTE IMMEDIATE
 		'CREATE TABLE t_cube_gen_paragraph (
 			cube_id VARCHAR2(16),
+			cube_sequence NUMBER(8),
 			fk_cub_name VARCHAR2(30),
 			header VARCHAR2(120),
 			description VARCHAR2(3999))';
@@ -2193,6 +2194,13 @@ BEGIN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_cube_gen_paragraph ADD cube_id VARCHAR2(16)';
 			DBMS_OUTPUT.PUT_LINE('Column T_CUBE_GEN_PARAGRAPH.CUBE_ID created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_CUBE_GEN_PARAGRAPH' AND column_name = 'CUBE_SEQUENCE';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_cube_gen_paragraph ADD cube_sequence NUMBER(8)';
+			DBMS_OUTPUT.PUT_LINE('Column T_CUBE_GEN_PARAGRAPH.CUBE_SEQUENCE created');
 		END IF;
 
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_CUBE_GEN_PARAGRAPH' AND column_name = 'FK_CUB_NAME';
@@ -2240,6 +2248,7 @@ BEGIN
 		EXECUTE IMMEDIATE
 		'CREATE TABLE t_cube_gen_example_model (
 			cube_id VARCHAR2(16),
+			cube_sequence NUMBER(8),
 			fk_cub_name VARCHAR2(30),
 			name VARCHAR2(30),
 			included_object_names VARCHAR2(120))';
@@ -2251,6 +2260,13 @@ BEGIN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_cube_gen_example_model ADD cube_id VARCHAR2(16)';
 			DBMS_OUTPUT.PUT_LINE('Column T_CUBE_GEN_EXAMPLE_MODEL.CUBE_ID created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_CUBE_GEN_EXAMPLE_MODEL' AND column_name = 'CUBE_SEQUENCE';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_cube_gen_example_model ADD cube_sequence NUMBER(8)';
+			DBMS_OUTPUT.PUT_LINE('Column T_CUBE_GEN_EXAMPLE_MODEL.CUBE_SEQUENCE created');
 		END IF;
 
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_CUBE_GEN_EXAMPLE_MODEL' AND column_name = 'FK_CUB_NAME';
@@ -2298,6 +2314,7 @@ BEGIN
 		EXECUTE IMMEDIATE
 		'CREATE TABLE t_cube_gen_example_object (
 			cube_id VARCHAR2(16),
+			cube_sequence NUMBER(8),
 			fk_cub_name VARCHAR2(30),
 			fk_cgm_name VARCHAR2(30),
 			xk_bot_name VARCHAR2(30))';
@@ -2309,6 +2326,13 @@ BEGIN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_cube_gen_example_object ADD cube_id VARCHAR2(16)';
 			DBMS_OUTPUT.PUT_LINE('Column T_CUBE_GEN_EXAMPLE_OBJECT.CUBE_ID created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_CUBE_GEN_EXAMPLE_OBJECT' AND column_name = 'CUBE_SEQUENCE';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_cube_gen_example_object ADD cube_sequence NUMBER(8)';
+			DBMS_OUTPUT.PUT_LINE('Column T_CUBE_GEN_EXAMPLE_OBJECT.CUBE_SEQUENCE created');
 		END IF;
 
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_CUBE_GEN_EXAMPLE_OBJECT' AND column_name = 'FK_CUB_NAME';
@@ -2356,6 +2380,7 @@ BEGIN
 		EXECUTE IMMEDIATE
 		'CREATE TABLE t_cube_gen_function (
 			cube_id VARCHAR2(16),
+			cube_sequence NUMBER(8),
 			fk_cub_name VARCHAR2(30),
 			fk_cgm_name VARCHAR2(30),
 			header VARCHAR2(120),
@@ -2369,6 +2394,13 @@ BEGIN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_cube_gen_function ADD cube_id VARCHAR2(16)';
 			DBMS_OUTPUT.PUT_LINE('Column T_CUBE_GEN_FUNCTION.CUBE_ID created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_CUBE_GEN_FUNCTION' AND column_name = 'CUBE_SEQUENCE';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_cube_gen_function ADD cube_sequence NUMBER(8)';
+			DBMS_OUTPUT.PUT_LINE('Column T_CUBE_GEN_FUNCTION.CUBE_SEQUENCE created');
 		END IF;
 
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_CUBE_GEN_FUNCTION' AND column_name = 'FK_CUB_NAME';
@@ -4044,11 +4076,13 @@ BEGIN
 		data_default old_default_value,
   		DECODE(column_name,
 			'CUBE_ID','VARCHAR2(16)',
+			'CUBE_SEQUENCE','NUMBER(8)',
 			'FK_CUB_NAME','VARCHAR2(30)',
 			'HEADER','VARCHAR2(120)',
 			'DESCRIPTION','VARCHAR2(3999)',NULL) new_domain,
 		DECODE(column_name,
 			'CUBE_ID',NULL,
+			'CUBE_SEQUENCE',NULL,
 			'FK_CUB_NAME',NULL,
 			'HEADER',NULL,
 			'DESCRIPTION',NULL,NULL) new_default_value
@@ -4089,6 +4123,7 @@ BEGIN
 		ON DELETE CASCADE';
 	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_CUBE_GEN_PARAGRAPH' AND column_name NOT IN (
 							'CUBE_ID',
+							'CUBE_SEQUENCE',
 							'FK_CUB_NAME',
 							'HEADER',
 							'DESCRIPTION'))
@@ -4105,11 +4140,13 @@ BEGIN
 		data_default old_default_value,
   		DECODE(column_name,
 			'CUBE_ID','VARCHAR2(16)',
+			'CUBE_SEQUENCE','NUMBER(8)',
 			'FK_CUB_NAME','VARCHAR2(30)',
 			'NAME','VARCHAR2(30)',
 			'INCLUDED_OBJECT_NAMES','VARCHAR2(120)',NULL) new_domain,
 		DECODE(column_name,
 			'CUBE_ID',NULL,
+			'CUBE_SEQUENCE',NULL,
 			'FK_CUB_NAME',NULL,
 			'NAME',NULL,
 			'INCLUDED_OBJECT_NAMES',NULL,NULL) new_default_value
@@ -4150,6 +4187,7 @@ BEGIN
 		ON DELETE CASCADE';
 	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_CUBE_GEN_EXAMPLE_MODEL' AND column_name NOT IN (
 							'CUBE_ID',
+							'CUBE_SEQUENCE',
 							'FK_CUB_NAME',
 							'NAME',
 							'INCLUDED_OBJECT_NAMES'))
@@ -4166,11 +4204,13 @@ BEGIN
 		data_default old_default_value,
   		DECODE(column_name,
 			'CUBE_ID','VARCHAR2(16)',
+			'CUBE_SEQUENCE','NUMBER(8)',
 			'FK_CUB_NAME','VARCHAR2(30)',
 			'FK_CGM_NAME','VARCHAR2(30)',
 			'XK_BOT_NAME','VARCHAR2(30)',NULL) new_domain,
 		DECODE(column_name,
 			'CUBE_ID',NULL,
+			'CUBE_SEQUENCE',NULL,
 			'FK_CUB_NAME',NULL,
 			'FK_CGM_NAME',NULL,
 			'XK_BOT_NAME',NULL,NULL) new_default_value
@@ -4212,6 +4252,7 @@ BEGIN
 		ON DELETE CASCADE';
 	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_CUBE_GEN_EXAMPLE_OBJECT' AND column_name NOT IN (
 							'CUBE_ID',
+							'CUBE_SEQUENCE',
 							'FK_CUB_NAME',
 							'FK_CGM_NAME',
 							'XK_BOT_NAME'))
@@ -4228,6 +4269,7 @@ BEGIN
 		data_default old_default_value,
   		DECODE(column_name,
 			'CUBE_ID','VARCHAR2(16)',
+			'CUBE_SEQUENCE','NUMBER(8)',
 			'FK_CUB_NAME','VARCHAR2(30)',
 			'FK_CGM_NAME','VARCHAR2(30)',
 			'HEADER','VARCHAR2(120)',
@@ -4235,6 +4277,7 @@ BEGIN
 			'TEMPLATE','VARCHAR2(3999)',NULL) new_domain,
 		DECODE(column_name,
 			'CUBE_ID',NULL,
+			'CUBE_SEQUENCE',NULL,
 			'FK_CUB_NAME',NULL,
 			'FK_CGM_NAME',NULL,
 			'HEADER',NULL,
@@ -4276,6 +4319,7 @@ BEGIN
 		ON DELETE CASCADE';
 	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_CUBE_GEN_FUNCTION' AND column_name NOT IN (
 							'CUBE_ID',
+							'CUBE_SEQUENCE',
 							'FK_CUB_NAME',
 							'FK_CGM_NAME',
 							'HEADER',

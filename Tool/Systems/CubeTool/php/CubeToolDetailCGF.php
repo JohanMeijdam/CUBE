@@ -30,8 +30,8 @@ g_xmlhttp.onreadystatechange = function() {
 			document._nodeId = 'TYP_CGF<||>'+document.getElementById("InputHeader").value;
 			if (l_objNode != null) {
 				if (l_objNode.firstChild._state == 'O') {
-					var l_position = 'L';
-					l_objNodePos = null;
+					var l_position = g_option[0];
+					l_objNodePos = parent.TREE.document.getElementById('TYP_CGF<||>'+g_option[1]);
 					parent.TREE.AddTreeviewNode(
 						l_objNode,
 						'TYP_CGF',
@@ -80,6 +80,7 @@ function InitBody() {
 	document.body._ListBoxCode="Ref000";
 	document._nodeId = l_argument[2];
 	document._argument = document._nodeId.split("<||>")[1];
+	g_option = l_argument[3].split("<||>");
 	if (document._argument != null) {
 		var values = document._argument.split("<|>");
 	}
@@ -112,7 +113,11 @@ function CreateCgf() {
 		document.getElementById("InputHeader").value+'<|>'+
 		document.getElementById("InputDescription").value+'<|>'+
 		document.getElementById("InputTemplate").value;
-	performTrans('CreateCgf<|||>'+l_parameters);
+	if (g_option[0] == 'F' || g_option[0] == 'L') {
+		performTrans('CreateCgf<|||>'+g_option[0]+'<|>'+l_parameters);
+	} else {
+		performTrans('CreateCgf<|||>'+g_option[0]+'<|>'+l_parameters+'<|>'+g_option[1]);
+	}
 }
 
 function UpdateCgf() {
@@ -235,7 +240,7 @@ function drop(p_event) {
 -->
 </script>
 </head><body oncontextmenu="return false;" onload="InitBody()" ondrop="drop(event)" ondragover="allowDrop(event)">
-<div><img src="icons/template_large.bmp" /><span> CUBE_GEN_FUNCTION</span></div>
+<div><img src="icons/template_large.bmp" /><span style="cursor:help" oncontextmenu="OpenDescBox('TEMPLATE','CubeGenFunction','CUBE_GEN_FUNCTION','_',-1)"> CUBE_GEN_FUNCTION</span></div>
 <hr/>
 <table>
 <tr><td>CubeGenDocumentation.Name</td><td><div style="max-width:30em;">
@@ -255,5 +260,6 @@ function drop(p_event) {
 <button id="ButtonDelete" type="button" onclick="DeleteCgf()">Delete</button></td></tr>
 </table>
 <input id="InputCubeId" type="hidden"></input>
+<input id="InputCubeSequence" type="hidden"></input>
 </body>
 </html>
