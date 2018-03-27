@@ -238,17 +238,17 @@ function drop(p_event) {
 <div><img src="icons/template_large.bmp" /><span> CUBE_GEN_FUNCTION</span></div>
 <hr/>
 <table>
-<tr ><td>CubeGenDocumentation.Name</td><td>
-<input id="InputFkCubName" type="text" size="30" maxlength="30" onchange="ReplaceSpaces(this);"></input></td></tr>
-<tr ><td>CubeGenExampleModel.Name</td><td>
-<input id="InputFkCgmName" type="text" size="30" maxlength="30" onchange="ReplaceSpaces(this);"></input></td></tr>
-<tr ><td><u>Header</u></td><td>
-<input id="InputHeader" type="text" size="120" maxlength="120"></input></td></tr>
-<tr ><td>Description</td></tr><tr><td colspan="2">
-<textarea id="InputDescription" type="text" rows="5" cols="60" style="white-space:normal;" maxlength="3999"></textarea></td></tr>
-<tr ><td>Template</td></tr><tr><td colspan="2">
-<textarea id="InputTemplate" type="text" rows="5" cols="60" style="white-space:normal;" maxlength="3999"></textarea></td></tr>
-<tr><td><br></td></tr>
+<tr><td>CubeGenDocumentation.Name</td><td><div style="max-width:30em;">
+<input id="InputFkCubName" type="text" maxlength="30" style="width:100%;" onchange="ReplaceSpaces(this);"></input></div></td></tr>
+<tr><td>CubeGenExampleModel.Name</td><td><div style="max-width:30em;">
+<input id="InputFkCgmName" type="text" maxlength="30" style="width:100%;" onchange="ReplaceSpaces(this);"></input></div></td></tr>
+<tr><td><u>Header</u></td><td><div style="max-width:120em;">
+<input id="InputHeader" type="text" maxlength="120" style="width:100%;"></input></div></td></tr>
+<tr><td style="padding-top:10px;">Description</td></tr><tr><td colspan="2"><div>
+<textarea id="InputDescription" type="text" maxlength="3999" rows="5" style="white-space:normal;width:100%;"></textarea></div></td></tr>
+<tr><td style="padding-top:10px;">Template</td></tr><tr><td colspan="2"><div>
+<textarea id="InputTemplate" type="text" maxlength="3999" rows="11" style="font-family:courier new;font-size:12px;white-space:normal;width:100%;"></textarea></div></td></tr>
+<tr><td><br></td><td style="width:100%;"></td></tr>
 <tr><td/><td>
 <button id="ButtonCreate" type="button" onclick="CreateCgf()">Create</button>&nbsp;&nbsp;&nbsp;
 <button id="ButtonUpdate" type="button" onclick="UpdateCgf()">Update</button>&nbsp;&nbsp;&nbsp;

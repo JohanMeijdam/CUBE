@@ -217,9 +217,9 @@ function drop(p_event) {
 <div><img src="icons/cubegen_large.bmp" /><span> CUBE_GEN_DOCUMENTATION</span></div>
 <hr/>
 <table>
-<tr ><td><u>Name</u></td><td>
-<input id="InputName" type="text" size="30" maxlength="30" onchange="ReplaceSpaces(this);"></input></td></tr>
-<tr><td><br></td></tr>
+<tr><td><u>Name</u></td><td><div style="max-width:30em;">
+<input id="InputName" type="text" maxlength="30" style="width:100%;" onchange="ReplaceSpaces(this);"></input></div></td></tr>
+<tr><td><br></td><td style="width:100%;"></td></tr>
 <tr><td/><td>
 <button id="ButtonCreate" type="button" onclick="CreateCub()">Create</button>&nbsp;&nbsp;&nbsp;
 <button id="ButtonUpdate" type="button" onclick="UpdateCub()">Update</button>&nbsp;&nbsp;&nbsp;

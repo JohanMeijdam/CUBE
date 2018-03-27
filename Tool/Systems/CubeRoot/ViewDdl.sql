@@ -18,7 +18,7 @@ CREATE OR REPLACE VIEW v_information_type_element AS
 		case_sensitive,
 		default_value,
 		spaces_allowed,
-		descriptive
+		presentation
 	FROM t_information_type_element
 /
 CREATE OR REPLACE VIEW v_permitted_value AS 
@@ -84,7 +84,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_itp_trg IS
 			case_sensitive,
 			default_value,
 			spaces_allowed,
-			descriptive)
+			presentation)
 		VALUES (
 			p_ite.cube_id,
 			p_ite.fk_itp_name,
@@ -96,7 +96,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_itp_trg IS
 			p_ite.case_sensitive,
 			p_ite.default_value,
 			p_ite.spaces_allowed,
-			p_ite.descriptive);
+			p_ite.presentation);
 	END;
 
 	PROCEDURE update_ite (p_cube_rowid UROWID, p_ite_old IN OUT NOCOPY v_information_type_element%ROWTYPE, p_ite_new IN OUT NOCOPY v_information_type_element%ROWTYPE) IS
@@ -109,7 +109,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_itp_trg IS
 			case_sensitive = p_ite_new.case_sensitive,
 			default_value = p_ite_new.default_value,
 			spaces_allowed = p_ite_new.spaces_allowed,
-			descriptive = p_ite_new.descriptive
+			presentation = p_ite_new.presentation
 		WHERE rowid = p_cube_rowid;
 	END;
 
@@ -204,7 +204,7 @@ BEGIN
 		r_ite_new.case_sensitive := :NEW.case_sensitive;
 		r_ite_new.default_value := :NEW.default_value;
 		r_ite_new.spaces_allowed := :NEW.spaces_allowed;
-		r_ite_new.descriptive := :NEW.descriptive;
+		r_ite_new.presentation := REPLACE(:NEW.presentation,' ','_');
 	END IF;
 	IF UPDATING THEN
 		r_ite_new.cube_id := :OLD.cube_id;
@@ -222,7 +222,7 @@ BEGIN
 		r_ite_old.case_sensitive := :OLD.case_sensitive;
 		r_ite_old.default_value := :OLD.default_value;
 		r_ite_old.spaces_allowed := :OLD.spaces_allowed;
-		r_ite_old.descriptive := :OLD.descriptive;
+		r_ite_old.presentation := :OLD.presentation;
 	END IF;
 
 	IF INSERTING THEN 

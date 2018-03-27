@@ -179,8 +179,8 @@ function OpenListBox(p_rows,p_icon,p_header,p_optional) {
 
 		l_objDiv.id = 'ListBox';
 		l_objDiv.style.position = 'absolute';
-		l_objDiv.style.left = document.body._SelectLeft+30;
-		l_objDiv.style.top = document.body._SelectTop+10;
+		l_objDiv.style.left = document.body._SelectLeft-260;
+		l_objDiv.style.top = document.body._SelectTop-80;
 		l_objDiv.style.border = 'thin solid #7F7F7F';
 		l_objDiv.style.boxShadow = '10px 10px 5px #888888';
 		l_objDiv.draggable = 'true';
@@ -404,7 +404,7 @@ function ProcessTypeSpecialisation() {
 <input id="InputFkTypName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
 <tr><td><u>Attribute.Name</u></td><td><div style="max-width:30em;">
 <input id="InputFkAtbName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr id="RowAtbAggregateFunction"><td>AggregateFunction</td><td><div>
+<tr id="RowAtbAggregateFunction"><td style="padding-top:10px;">AggregateFunction</td></tr><tr><td colspan="2"><div>
 <select id="InputAggregateFunction" type="text">
 	<option value=" " selected> </option>
 	<option value="SUM">Sum</option>

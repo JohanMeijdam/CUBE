@@ -189,7 +189,7 @@
 				=EXPRESSION:REF_NAME|spaces_allowed;
 			-GET:;
 			+GET:;
-				=EXPRESSION:REF_NAME|descriptive;
+				=EXPRESSION:REF_NAME|presentation;
 			-GET:;
 			+SELECTION:;
 				+EXPRESSION:LOGICAL|AND;
@@ -293,7 +293,7 @@
 		=ARGUMENT:p_case_sensitive|IN|CHAR;
 		=ARGUMENT:p_default_value|IN|VARCHAR2;
 		=ARGUMENT:p_spaces_allowed|IN|CHAR;
-		=ARGUMENT:p_descriptive|IN|CHAR;
+		=ARGUMENT:p_presentation|IN|VARCHAR2;
 		=ARGUMENT:p_cube_row|IN OUT|c_cube_row;
 		+STATEMENT:CREATE|v_information_type_element;
 			+SET:cube_id;
@@ -326,8 +326,8 @@
 			+SET:spaces_allowed;
 				=EXPRESSION:REF_NAME|p_spaces_allowed;
 			-SET:;
-			+SET:descriptive;
-				=EXPRESSION:REF_NAME|p_descriptive;
+			+SET:presentation;
+				=EXPRESSION:REF_NAME|p_presentation;
 			-SET:;
 		-STATEMENT:;
 		=STATEMENT:SPACE|;
@@ -357,7 +357,7 @@
 		=ARGUMENT:p_case_sensitive|IN|CHAR;
 		=ARGUMENT:p_default_value|IN|VARCHAR2;
 		=ARGUMENT:p_spaces_allowed|IN|CHAR;
-		=ARGUMENT:p_descriptive|IN|CHAR;
+		=ARGUMENT:p_presentation|IN|VARCHAR2;
 		+STATEMENT:UPDATE|v_information_type_element;
 			+SET:suffix;
 				=EXPRESSION:REF_NAME|p_suffix;
@@ -380,8 +380,8 @@
 			+SET:spaces_allowed;
 				=EXPRESSION:REF_NAME|p_spaces_allowed;
 			-SET:;
-			+SET:descriptive;
-				=EXPRESSION:REF_NAME|p_descriptive;
+			+SET:presentation;
+				=EXPRESSION:REF_NAME|p_presentation;
 			-SET:;
 			+SELECTION:;
 				+EXPRESSION:LOGICAL|AND;

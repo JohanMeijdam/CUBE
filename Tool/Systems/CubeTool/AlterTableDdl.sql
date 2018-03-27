@@ -411,7 +411,7 @@ BEGIN
 			case_sensitive CHAR(1) DEFAULT ''N'',
 			default_value VARCHAR2(32),
 			spaces_allowed CHAR(1) DEFAULT ''N'',
-			descriptive CHAR(1) DEFAULT ''N'')';
+			presentation VARCHAR2(3) DEFAULT ''LIN'')';
 		DBMS_OUTPUT.PUT_LINE('Table T_INFORMATION_TYPE_ELEMENT created');
 	ELSE
 
@@ -485,11 +485,11 @@ BEGIN
 			DBMS_OUTPUT.PUT_LINE('Column T_INFORMATION_TYPE_ELEMENT.SPACES_ALLOWED created');
 		END IF;
 
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_INFORMATION_TYPE_ELEMENT' AND column_name = 'DESCRIPTIVE';
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_INFORMATION_TYPE_ELEMENT' AND column_name = 'PRESENTATION';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
-			'ALTER TABLE t_information_type_element ADD descriptive CHAR(1) DEFAULT ''N''';
-			DBMS_OUTPUT.PUT_LINE('Column T_INFORMATION_TYPE_ELEMENT.DESCRIPTIVE created');
+			'ALTER TABLE t_information_type_element ADD presentation VARCHAR2(3) DEFAULT ''LIN''';
+			DBMS_OUTPUT.PUT_LINE('Column T_INFORMATION_TYPE_ELEMENT.PRESENTATION created');
 		END IF;
 
 		FOR r_key IN (SELECT constraint_name FROM all_constraints WHERE owner = 'CUBETOOL' AND table_name = 'T_INFORMATION_TYPE_ELEMENT' AND constraint_type IN ('P','U','R') ORDER BY constraint_type DESC)
@@ -2526,7 +2526,7 @@ BEGIN
 			'CASE_SENSITIVE','CHAR(1)',
 			'DEFAULT_VALUE','VARCHAR2(32)',
 			'SPACES_ALLOWED','CHAR(1)',
-			'DESCRIPTIVE','CHAR(1)',NULL) new_domain,
+			'PRESENTATION','VARCHAR2(3)',NULL) new_domain,
 		DECODE(column_name,
 			'CUBE_ID',NULL,
 			'FK_ITP_NAME',NULL,
@@ -2538,7 +2538,7 @@ BEGIN
 			'CASE_SENSITIVE','''N''',
 			'DEFAULT_VALUE',NULL,
 			'SPACES_ALLOWED','''N''',
-			'DESCRIPTIVE','''N''',NULL) new_default_value
+			'PRESENTATION','''LIN''',NULL) new_default_value
   		FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_INFORMATION_TYPE_ELEMENT')
 	LOOP
 		IF r_field.old_domain <> r_field.new_domain THEN
@@ -2585,7 +2585,7 @@ BEGIN
 							'CASE_SENSITIVE',
 							'DEFAULT_VALUE',
 							'SPACES_ALLOWED',
-							'DESCRIPTIVE'))
+							'PRESENTATION'))
 	LOOP
 		EXECUTE IMMEDIATE
 		'ALTER TABLE t_information_type_element DROP COLUMN ' || r_field.column_name;

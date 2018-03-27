@@ -21,7 +21,7 @@ g_xmlhttp.onreadystatechange = function() {
 			document.getElementById("InputCaseSensitive").value=l_values[4];
 			document.getElementById("InputDefaultValue").value=l_values[5];
 			document.getElementById("InputSpacesAllowed").value=l_values[6];
-			document.getElementById("InputDescriptive").value=l_values[7];
+			document.getElementById("InputPresentation").value=l_values[7];
 			break;
 		case "CREATE_ITE":
 			document.getElementById("InputFkItpName").readOnly=true;
@@ -118,7 +118,7 @@ function InitBody() {
 	document.getElementById("InputDecimals").value='0';
 	document.getElementById("InputCaseSensitive").value='N';
 	document.getElementById("InputSpacesAllowed").value='N';
-	document.getElementById("InputDescriptive").value='N';
+	document.getElementById("InputPresentation").value='LIN';
 }
 
 function CreateIte() {
@@ -132,7 +132,7 @@ function CreateIte() {
 		document.getElementById("InputCaseSensitive").value+'<|>'+
 		document.getElementById("InputDefaultValue").value+'<|>'+
 		document.getElementById("InputSpacesAllowed").value+'<|>'+
-		document.getElementById("InputDescriptive").value;
+		document.getElementById("InputPresentation").value;
 	performTrans('CreateIte<|||>'+l_parameters);
 }
 
@@ -147,7 +147,7 @@ function UpdateIte() {
 		document.getElementById("InputCaseSensitive").value+'<|>'+
 		document.getElementById("InputDefaultValue").value+'<|>'+
 		document.getElementById("InputSpacesAllowed").value+'<|>'+
-		document.getElementById("InputDescriptive").value;
+		document.getElementById("InputPresentation").value;
 	performTrans('UpdateIte<|||>'+l_parameters);
 }
 
@@ -298,11 +298,12 @@ function drop(p_event) {
 	<option value="Y">Yes</option>
 	<option value="N">No</option>
 </select></div></td></tr>
-<tr><td>Descriptive</td><td><div>
-<select id="InputDescriptive" type="text">
+<tr><td style="cursor:help;" oncontextmenu="OpenDescBox('INFELEM','InformationTypeElement.Presentation','INFORMATION_TYPE_ELEMENT','PRESENTATION',-1)">Presentation</td><td><div>
+<select id="InputPresentation" type="text">
 	<option value=" " selected> </option>
-	<option value="Y">Yes</option>
-	<option value="N">No</option>
+	<option value="LIN">Line</option>
+	<option value="DES">Description</option>
+	<option value="COD">Code</option>
 </select></div></td></tr>
 <tr><td><br></td><td style="width:100%;"></td></tr>
 <tr><td/><td>

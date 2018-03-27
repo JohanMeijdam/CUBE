@@ -230,11 +230,11 @@ function drop(p_event) {
 <div><img src="icons/funcatb_large.bmp" /><span> ARGUMENT</span></div>
 <hr/>
 <table>
-<tr ><td><u>Function.Name</u></td><td>
-<input id="InputFkFunName" type="text" size="30" maxlength="30" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></td></tr>
-<tr ><td><u>Name</u></td><td>
-<input id="InputName" type="text" size="30" maxlength="30" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></td></tr>
-<tr><td><br></td></tr>
+<tr><td><u>Function.Name</u></td><td><div style="max-width:30em;">
+<input id="InputFkFunName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr><td><u>Name</u></td><td><div style="max-width:30em;">
+<input id="InputName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr><td><br></td><td style="width:100%;"></td></tr>
 <tr><td/><td>
 <button id="ButtonCreate" type="button" onclick="CreateArg()">Create</button>&nbsp;&nbsp;&nbsp;
 <button id="ButtonUpdate" type="button" onclick="UpdateArg()">Update</button>&nbsp;&nbsp;&nbsp;

@@ -419,7 +419,7 @@ my (@FkeyValues);
 						if ($j == -1) {
 							last;
 						}
-						print IMPORT "INSERT INTO v_information_type_element (FK_ITP_NAME, SEQUENCE, SUFFIX, DOMAIN, LENGTH, DECIMALS, CASE_SENSITIVE, DEFAULT_VALUE, SPACES_ALLOWED, DESCRIPTIVE)\n"; 
+						print IMPORT "INSERT INTO v_information_type_element (FK_ITP_NAME, SEQUENCE, SUFFIX, DOMAIN, LENGTH, DECIMALS, CASE_SENSITIVE, DEFAULT_VALUE, SPACES_ALLOWED, PRESENTATION)\n"; 
 						print IMPORT "	VALUES ('$_[1]', ".ReplX($NodeString[$j]).", '".ReplX($NodeValue[$NodeValuePntr[$j]])."', '".ReplX($NodeValue[$NodeValuePntr[$j]+1])."', ".ReplX($NodeValue[$NodeValuePntr[$j]+2]).", ".ReplX($NodeValue[$NodeValuePntr[$j]+3]).", '".ReplX($NodeValue[$NodeValuePntr[$j]+4])."', '".ReplX($NodeValue[$NodeValuePntr[$j]+5])."', '".ReplX($NodeValue[$NodeValuePntr[$j]+6])."', '".ReplX($NodeValue[$NodeValuePntr[$j]+7])."');\n";
 						print IMPORT "\n";
 						$FkeyValues[0] = $_[1];

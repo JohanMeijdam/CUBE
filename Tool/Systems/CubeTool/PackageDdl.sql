@@ -71,7 +71,7 @@ CREATE OR REPLACE PACKAGE pkg_itp IS
 			p_case_sensitive IN CHAR,
 			p_default_value IN VARCHAR2,
 			p_spaces_allowed IN CHAR,
-			p_descriptive IN CHAR,
+			p_presentation IN VARCHAR2,
 			p_cube_row IN OUT c_cube_row);
 	PROCEDURE update_ite (
 			p_fk_itp_name IN VARCHAR2,
@@ -83,7 +83,7 @@ CREATE OR REPLACE PACKAGE pkg_itp IS
 			p_case_sensitive IN CHAR,
 			p_default_value IN VARCHAR2,
 			p_spaces_allowed IN CHAR,
-			p_descriptive IN CHAR);
+			p_presentation IN VARCHAR2);
 	PROCEDURE delete_ite (
 			p_fk_itp_name IN VARCHAR2,
 			p_sequence IN NUMBER);
@@ -213,7 +213,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_itp IS
 			  case_sensitive,
 			  default_value,
 			  spaces_allowed,
-			  descriptive
+			  presentation
 			FROM v_information_type_element
 			WHERE fk_itp_name = p_fk_itp_name
 			  AND sequence = p_sequence;
@@ -263,7 +263,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_itp IS
 			p_case_sensitive IN CHAR,
 			p_default_value IN VARCHAR2,
 			p_spaces_allowed IN CHAR,
-			p_descriptive IN CHAR,
+			p_presentation IN VARCHAR2,
 			p_cube_row IN OUT c_cube_row) IS
 	BEGIN
 		INSERT INTO v_information_type_element (
@@ -277,7 +277,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_itp IS
 			case_sensitive,
 			default_value,
 			spaces_allowed,
-			descriptive)
+			presentation)
 		VALUES (
 			NULL,
 			p_fk_itp_name,
@@ -289,7 +289,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_itp IS
 			p_case_sensitive,
 			p_default_value,
 			p_spaces_allowed,
-			p_descriptive);
+			p_presentation);
 
 		get_next_ite (p_cube_row, p_fk_itp_name, p_sequence);
 	EXCEPTION
@@ -307,7 +307,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_itp IS
 			p_case_sensitive IN CHAR,
 			p_default_value IN VARCHAR2,
 			p_spaces_allowed IN CHAR,
-			p_descriptive IN CHAR) IS
+			p_presentation IN VARCHAR2) IS
 	BEGIN
 		UPDATE v_information_type_element SET
 			suffix = p_suffix,
@@ -317,7 +317,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_itp IS
 			case_sensitive = p_case_sensitive,
 			default_value = p_default_value,
 			spaces_allowed = p_spaces_allowed,
-			descriptive = p_descriptive
+			presentation = p_presentation
 		WHERE fk_itp_name = p_fk_itp_name
 		  AND sequence = p_sequence;
 	END;

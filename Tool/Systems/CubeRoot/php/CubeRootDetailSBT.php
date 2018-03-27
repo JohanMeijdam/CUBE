@@ -154,8 +154,8 @@ function OpenListBox(p_rows,p_icon,p_header,p_optional) {
 
 		l_objDiv.id = 'ListBox';
 		l_objDiv.style.position = 'absolute';
-		l_objDiv.style.left = document.body._SelectLeft+30;
-		l_objDiv.style.top = document.body._SelectTop+10;
+		l_objDiv.style.left = document.body._SelectLeft-260;
+		l_objDiv.style.top = document.body._SelectTop-80;
 		l_objDiv.style.border = 'thin solid #7F7F7F';
 		l_objDiv.style.boxShadow = '10px 10px 5px #888888';
 		l_objDiv.draggable = 'true';

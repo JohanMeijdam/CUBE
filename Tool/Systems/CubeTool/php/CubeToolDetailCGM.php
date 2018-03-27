@@ -229,13 +229,13 @@ function drop(p_event) {
 <div><img src="icons/model_large.bmp" /><span> CUBE_GEN_EXAMPLE_MODEL</span></div>
 <hr/>
 <table>
-<tr ><td><u>CubeGenDocumentation.Name</u></td><td>
-<input id="InputFkCubName" type="text" size="30" maxlength="30" onchange="ReplaceSpaces(this);"></input></td></tr>
-<tr ><td><u>Name</u></td><td>
-<input id="InputName" type="text" size="30" maxlength="30" onchange="ReplaceSpaces(this);"></input></td></tr>
-<tr ><td>IncludedObjectNames</td><td>
-<input id="InputIncludedObjectNames" type="text" size="120" maxlength="120" onchange="ToUpperCase(this);"></input></td></tr>
-<tr><td><br></td></tr>
+<tr><td><u>CubeGenDocumentation.Name</u></td><td><div style="max-width:30em;">
+<input id="InputFkCubName" type="text" maxlength="30" style="width:100%;" onchange="ReplaceSpaces(this);"></input></div></td></tr>
+<tr><td><u>Name</u></td><td><div style="max-width:30em;">
+<input id="InputName" type="text" maxlength="30" style="width:100%;" onchange="ReplaceSpaces(this);"></input></div></td></tr>
+<tr><td>IncludedObjectNames</td><td><div style="max-width:120em;">
+<input id="InputIncludedObjectNames" type="text" maxlength="120" style="width:100%;" onchange="ToUpperCase(this);"></input></div></td></tr>
+<tr><td><br></td><td style="width:100%;"></td></tr>
 <tr><td/><td>
 <button id="ButtonCreate" type="button" onclick="CreateCgm()">Create</button>&nbsp;&nbsp;&nbsp;
 <button id="ButtonUpdate" type="button" onclick="UpdateCgm()">Update</button>&nbsp;&nbsp;&nbsp;

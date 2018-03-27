@@ -175,7 +175,7 @@ CREATE TABLE t_information_type_element (
 	case_sensitive CHAR(1) DEFAULT 'N',
 	default_value VARCHAR2(32),
 	spaces_allowed CHAR(1) DEFAULT 'N',
-	descriptive CHAR(1) DEFAULT 'N',
+	presentation VARCHAR2(3) DEFAULT 'LIN',
 	CONSTRAINT ite_pk
 		PRIMARY KEY (fk_itp_name, sequence),
 	CONSTRAINT ite_itp_fk

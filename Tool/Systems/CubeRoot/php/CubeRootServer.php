@@ -102,7 +102,7 @@ case 'GetIte':
 	if (!$r) { return; }
 	echo "SELECT_ITE";
 	if ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["SUFFIX"]."<|>".$row["DOMAIN"]."<|>".$row["LENGTH"]."<|>".$row["DECIMALS"]."<|>".$row["CASE_SENSITIVE"]."<|>".$row["DEFAULT_VALUE"]."<|>".$row["SPACES_ALLOWED"]."<|>".$row["DESCRIPTIVE"];
+		echo "<|||>".$row["SUFFIX"]."<|>".$row["DOMAIN"]."<|>".$row["LENGTH"]."<|>".$row["DECIMALS"]."<|>".$row["CASE_SENSITIVE"]."<|>".$row["DEFAULT_VALUE"]."<|>".$row["SPACES_ALLOWED"]."<|>".$row["PRESENTATION"];
 	}
 	break;
 
@@ -130,7 +130,7 @@ case 'GetIteItems':
 
 case 'CreateIte':
 
-	list($p_fk_itp_name, $p_sequence, $p_suffix, $p_domain, $p_length, $p_decimals, $p_case_sensitive, $p_default_value, $p_spaces_allowed, $p_descriptive) = explode("<|>", $import[1]);
+	list($p_fk_itp_name, $p_sequence, $p_suffix, $p_domain, $p_length, $p_decimals, $p_case_sensitive, $p_default_value, $p_spaces_allowed, $p_presentation) = explode("<|>", $import[1]);
 
 	$stid = oci_parse($conn, "BEGIN pkg_itp.insert_ite (
 		:p_fk_itp_name,
@@ -142,7 +142,7 @@ case 'CreateIte':
 		:p_case_sensitive,
 		:p_default_value,
 		:p_spaces_allowed,
-		:p_descriptive,
+		:p_presentation,
 		:p_cube_row);
 	END;");
 	oci_bind_by_name($stid,":p_fk_itp_name",$p_fk_itp_name);
@@ -154,7 +154,7 @@ case 'CreateIte':
 	oci_bind_by_name($stid,":p_case_sensitive",$p_case_sensitive);
 	oci_bind_by_name($stid,":p_default_value",$p_default_value);
 	oci_bind_by_name($stid,":p_spaces_allowed",$p_spaces_allowed);
-	oci_bind_by_name($stid,":p_descriptive",$p_descriptive);
+	oci_bind_by_name($stid,":p_presentation",$p_presentation);
 
 	$r = perform_db_request();
 	if (!$r) { return; }
@@ -166,7 +166,7 @@ case 'CreateIte':
 
 case 'UpdateIte':
 
-	list($p_fk_itp_name, $p_sequence, $p_suffix, $p_domain, $p_length, $p_decimals, $p_case_sensitive, $p_default_value, $p_spaces_allowed, $p_descriptive) = explode("<|>", $import[1]);
+	list($p_fk_itp_name, $p_sequence, $p_suffix, $p_domain, $p_length, $p_decimals, $p_case_sensitive, $p_default_value, $p_spaces_allowed, $p_presentation) = explode("<|>", $import[1]);
 
 	$stid = oci_parse($conn, "BEGIN pkg_itp.update_ite (
 		:p_fk_itp_name,
@@ -178,7 +178,7 @@ case 'UpdateIte':
 		:p_case_sensitive,
 		:p_default_value,
 		:p_spaces_allowed,
-		:p_descriptive);
+		:p_presentation);
 	END;");
 	oci_bind_by_name($stid,":p_fk_itp_name",$p_fk_itp_name);
 	oci_bind_by_name($stid,":p_sequence",$p_sequence);
@@ -189,7 +189,7 @@ case 'UpdateIte':
 	oci_bind_by_name($stid,":p_case_sensitive",$p_case_sensitive);
 	oci_bind_by_name($stid,":p_default_value",$p_default_value);
 	oci_bind_by_name($stid,":p_spaces_allowed",$p_spaces_allowed);
-	oci_bind_by_name($stid,":p_descriptive",$p_descriptive);
+	oci_bind_by_name($stid,":p_presentation",$p_presentation);
 
 	$r = oci_execute($stid);
 	if (!$r) {

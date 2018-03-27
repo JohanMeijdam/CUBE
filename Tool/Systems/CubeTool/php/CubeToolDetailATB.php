@@ -190,8 +190,8 @@ function OpenListBox(p_rows,p_icon,p_header,p_optional) {
 
 		l_objDiv.id = 'ListBox';
 		l_objDiv.style.position = 'absolute';
-		l_objDiv.style.left = document.body._SelectLeft+30;
-		l_objDiv.style.top = document.body._SelectTop+10;
+		l_objDiv.style.left = document.body._SelectLeft-260;
+		l_objDiv.style.top = document.body._SelectTop-80;
 		l_objDiv.style.border = 'thin solid #7F7F7F';
 		l_objDiv.style.boxShadow = '10px 10px 5px #888888';
 		l_objDiv.draggable = 'true';
@@ -370,51 +370,51 @@ function drop(p_event) {
 <div><img src="icons/attrib_large.bmp" /><span> ATTRIBUTE</span></div>
 <hr/>
 <table>
-<tr ><td>BusinessObjectType.Name</td><td>
-<input id="InputFkBotName" type="text" size="30" maxlength="30" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></td></tr>
-<tr ><td><u>Type.Name</u></td><td>
-<input id="InputFkTypName" type="text" size="30" maxlength="30" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></td></tr>
-<tr ><td style="cursor:help" oncontextmenu="OpenDescBox('ATTRIB','Attribute.Name','ATTRIBUTE','NAME',-1)"><u>Name</u></td><td>
-<input id="InputName" type="text" size="30" maxlength="30" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></td></tr>
-<tr ><td style="cursor:help" oncontextmenu="OpenDescBox('ATTRIB','Attribute.PrimaryKey','ATTRIBUTE','PRIMARY_KEY',-1)">PrimaryKey</td><td>
+<tr><td>BusinessObjectType.Name</td><td><div style="max-width:30em;">
+<input id="InputFkBotName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr><td><u>Type.Name</u></td><td><div style="max-width:30em;">
+<input id="InputFkTypName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr><td style="cursor:help;" oncontextmenu="OpenDescBox('ATTRIB','Attribute.Name','ATTRIBUTE','NAME',-1)"><u>Name</u></td><td><div style="max-width:30em;">
+<input id="InputName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr><td style="cursor:help;" oncontextmenu="OpenDescBox('ATTRIB','Attribute.PrimaryKey','ATTRIBUTE','PRIMARY_KEY',-1)">PrimaryKey</td><td><div>
 <select id="InputPrimaryKey" type="text">
 	<option value=" " selected> </option>
 	<option value="Y">Yes</option>
 	<option value="N">No</option>
-</select></td></tr>
-<tr ><td>CodeDisplayKey</td><td>
+</select></div></td></tr>
+<tr><td>CodeDisplayKey</td><td><div>
 <select id="InputCodeDisplayKey" type="text">
 	<option value=" " selected> </option>
 	<option value="Y">Yes</option>
 	<option value="S">Sub</option>
 	<option value="N">No</option>
-</select></td></tr>
-<tr ><td>CodeForeignKey</td><td>
+</select></div></td></tr>
+<tr><td>CodeForeignKey</td><td><div>
 <select id="InputCodeForeignKey" type="text">
 	<option value=" " selected> </option>
 	<option value="N">None</option>
-</select></td></tr>
-<tr ><td>FlagHidden</td><td>
+</select></div></td></tr>
+<tr><td>FlagHidden</td><td><div>
 <select id="InputFlagHidden" type="text">
 	<option value=" " selected> </option>
 	<option value="Y">Yes</option>
 	<option value="N">No</option>
-</select></td></tr>
-<tr ><td style="cursor:help" oncontextmenu="OpenDescBox('ATTRIB','Attribute.DefaultValue','ATTRIBUTE','DEFAULT_VALUE',-1)">DefaultValue</td><td>
-<input id="InputDefaultValue" type="text" size="40" maxlength="40"></input></td></tr>
-<tr ><td style="cursor:help" oncontextmenu="OpenDescBox('ATTRIB','Attribute.Unchangeable','ATTRIBUTE','UNCHANGEABLE',-1)">Unchangeable</td><td>
+</select></div></td></tr>
+<tr><td style="cursor:help;" oncontextmenu="OpenDescBox('ATTRIB','Attribute.DefaultValue','ATTRIBUTE','DEFAULT_VALUE',-1)">DefaultValue</td><td><div style="max-width:40em;">
+<input id="InputDefaultValue" type="text" maxlength="40" style="width:100%;"></input></div></td></tr>
+<tr><td style="cursor:help;" oncontextmenu="OpenDescBox('ATTRIB','Attribute.Unchangeable','ATTRIBUTE','UNCHANGEABLE',-1)">Unchangeable</td><td><div>
 <select id="InputUnchangeable" type="text">
 	<option value=" " selected> </option>
 	<option value="Y">Yes</option>
 	<option value="N">No</option>
-</select></td></tr>
+</select></div></td></tr>
 <tr><td height=6></td></tr><tr><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/inftype.bmp"/> InformationType (HasDomain)</legend>
-<table>
-<tr><td>InformationType.Name</td><td>
-<input id="InputXkItpName" type="text" size="30" maxlength="30" onchange="ToUpperCase(this);ReplaceSpaces(this);" readonly></input></td>
+<table style="width:100%;">
+<tr><td>InformationType.Name</td><td style="width:100%;"><div style="max-width:30em;">
+<input id="InputXkItpName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" readonly></input></div></td>
 <td><button id="RefSelect001" type="button" onclick="StartSelect001(event)">Select</button></td></tr>
 </table></fieldset></td></tr>
-<tr><td><br></td></tr>
+<tr><td><br></td><td style="width:100%;"></td></tr>
 <tr><td/><td>
 <button id="ButtonCreate" type="button" onclick="CreateAtb()">Create</button>&nbsp;&nbsp;&nbsp;
 <button id="ButtonUpdate" type="button" onclick="UpdateAtb()">Update</button>&nbsp;&nbsp;&nbsp;

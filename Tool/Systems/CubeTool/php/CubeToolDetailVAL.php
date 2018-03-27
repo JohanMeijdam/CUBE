@@ -246,15 +246,15 @@ function drop(p_event) {
 <div><img src="icons/value_large.bmp" /><span> PERMITTED_VALUE</span></div>
 <hr/>
 <table>
-<tr ><td><u>InformationType.Name</u></td><td>
-<input id="InputFkItpName" type="text" size="30" maxlength="30" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></td></tr>
-<tr ><td><u>InformationTypeElement.Sequence</u></td><td>
-<input id="InputFkIteSequence" type="text" size="9" maxlength="9"></input></td></tr>
-<tr ><td><u>Code</u></td><td>
-<input id="InputCode" type="text" size="8" maxlength="8" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></td></tr>
-<tr ><td>Prompt</td><td>
-<input id="InputPrompt" type="text" size="32" maxlength="32"></input></td></tr>
-<tr><td><br></td></tr>
+<tr><td><u>InformationType.Name</u></td><td><div style="max-width:30em;">
+<input id="InputFkItpName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr><td><u>InformationTypeElement.Sequence</u></td><td><div style="max-width:9em;">
+<input id="InputFkIteSequence" type="text" maxlength="9" style="width:100%;"></input></div></td></tr>
+<tr><td><u>Code</u></td><td><div style="max-width:8em;">
+<input id="InputCode" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr><td>Prompt</td><td><div style="max-width:32em;">
+<input id="InputPrompt" type="text" maxlength="32" style="width:100%;"></input></div></td></tr>
+<tr><td><br></td><td style="width:100%;"></td></tr>
 <tr><td/><td>
 <button id="ButtonCreate" type="button" onclick="CreateVal()">Create</button>&nbsp;&nbsp;&nbsp;
 <button id="ButtonUpdate" type="button" onclick="UpdateVal()">Update</button>&nbsp;&nbsp;&nbsp;

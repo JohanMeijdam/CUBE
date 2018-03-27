@@ -53,7 +53,7 @@ DECLARE
 			WHERE fk_itp_name = p_itp.name
 			ORDER BY fk_itp_name, sequence )
 		LOOP
-			DBMS_OUTPUT.PUT_LINE (ftabs || '+INFORMATION_TYPE_ELEMENT[' || r_ite.cube_id || ']:' || fenperc(r_ite.sequence) || '|' || fenperc(r_ite.suffix) || '|' || fenperc(r_ite.domain) || '|' || fenperc(r_ite.length) || '|' || fenperc(r_ite.decimals) || '|' || fenperc(r_ite.case_sensitive) || '|' || fenperc(r_ite.default_value) || '|' || fenperc(r_ite.spaces_allowed) || '|' || fenperc(r_ite.descriptive) || ';');
+			DBMS_OUTPUT.PUT_LINE (ftabs || '+INFORMATION_TYPE_ELEMENT[' || r_ite.cube_id || ']:' || fenperc(r_ite.sequence) || '|' || fenperc(r_ite.suffix) || '|' || fenperc(r_ite.domain) || '|' || fenperc(r_ite.length) || '|' || fenperc(r_ite.decimals) || '|' || fenperc(r_ite.case_sensitive) || '|' || fenperc(r_ite.default_value) || '|' || fenperc(r_ite.spaces_allowed) || '|' || fenperc(r_ite.presentation) || ';');
 				l_level := l_level + 1;
 				report_val (r_ite);
 				l_level := l_level - 1;
@@ -661,7 +661,7 @@ BEGIN
 	DBMS_OUTPUT.PUT_LINE ('			=PROPERTY:5|CaseSensitive| Values: Y(Yes), N(No);');
 	DBMS_OUTPUT.PUT_LINE ('			=PROPERTY:6|DefaultValue|;');
 	DBMS_OUTPUT.PUT_LINE ('			=PROPERTY:7|SpacesAllowed| Values: Y(Yes), N(No);');
-	DBMS_OUTPUT.PUT_LINE ('			=PROPERTY:8|Descriptive| Values: Y(Yes), N(No);');
+	DBMS_OUTPUT.PUT_LINE ('			=PROPERTY:8|Presentation|'||REPLACE('Indication%20how%20the%20string%20is%20presented%20in%20the%20user%20dialog.','%20',' ')||' Values: LIN(Line), DES(Description), COD(Code);');
 	DBMS_OUTPUT.PUT_LINE ('			+META_TYPE:PERMITTED_VALUE|;');
 	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:0|Code|;');
 	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:1|Prompt|;');
