@@ -2,13 +2,15 @@
 <head><link rel=stylesheet type="text/css" href="style.css"></head><body>
 <p><font class="kop">Command Line</font><br>cubegen.exe &lt;model&gt; &lt;template&gt; &lt;code&gt; &lt;arguments&gt; <br>perl cubegen.pl &lt;model&gt; &lt;template&gt; &lt;code&gt; &lt;arguments&gt;<br>- &lt;model&gt;: Imported Cube Model textfile<br>- &lt;template&gt;: Importede CubeGen Template Textfile<br>- &lt;code&gt;: Textfile to generate<br>- &lt;argument&gt;: Parameters used in template
 <pre><font class="kop">CUBE Model</font><font class="code">
-=BUSINESS_OBJECT_TYPE[BOT-000000100181]:KLANT|Klanten;
-=BUSINESS_OBJECT_TYPE[BOT-000000100186]:PRODUCT|Products;</font></pre>
+=BUSINESS_OBJECT_TYPE[BOT-000000100000]:CUSTOMERS|customer_files;
+=BUSINESS_OBJECT_TYPE[BOT-000000100001]:ORDER|order_directory;
+=BUSINESS_OBJECT_TYPE[BOT-000000100002]:PRODUCT|product_definitions;</font></pre>
 <pre><font class="kop">Template</font><br><font class="code">List:[[LOOP,BUSINESS_OBJECT_TYPE]]
 -	&lt;&lt;BUSINESS_OBJECT_TYPE:U&gt;&gt;[[ENDLOOP,BUSINESS_OBJECT_TYPE]]</font></pre>
 <pre><font class="kop">Code</font><font class="code">
 List:
--	KLANT
+-	CUSTOMERS
+-	ORDER
 -	PRODUCT</font></pre>
 <pre><font class="kop">Template</font><br><font class="code">[[LOOP,BUSINESS_OBJECT_TYPE]]
 Uppercase: &lt;&lt;BUSINESS_OBJECT_TYPE:U&gt;&gt;
@@ -20,19 +22,26 @@ ID: &lt;&lt;BUSINESS_OBJECT_TYPE:I&gt;&gt;
 [[ENDLOOP,BUSINESS_OBJECT_TYPE]]</font></pre>
 <pre><font class="kop">Code</font><font class="code">
 
-Uppercase: KLANT
-Lowercase: klant
+Uppercase: CUSTOMERS
+Lowercase: customers
 Number: 00006
 Subnumber: 001
-CamelCase: Klant
-ID: BOT-000000100181
+CamelCase: Customers
+ID: BOT-000000100000
+
+Uppercase: ORDER
+Lowercase: order
+Number: 00007
+Subnumber: 002
+CamelCase: Order
+ID: BOT-000000100001
 
 Uppercase: PRODUCT
 Lowercase: product
-Number: 00007
-Subnumber: 002
+Number: 00008
+Subnumber: 003
 CamelCase: Product
-ID: BOT-000000100186
+ID: BOT-000000100002
 </font></pre>
 <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
 <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br></body></html>

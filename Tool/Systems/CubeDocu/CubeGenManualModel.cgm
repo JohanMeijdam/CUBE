@@ -1,0 +1,18 @@
+! CubeGenManualModel
+!
++CUBE_GEN_DOCUMENTATION:CubeGen_Manual;
+	+CUBE_GEN_PARAGRAPH[CGP-000000100001]:Command Line|cubegen.exe <model> <template> <code> <arguments> %0Aperl cubegen.pl <model> <template> <code> <arguments>%0A- <model>: Imported Cube Model textfile%0A- <template>: Importede CubeGen Template Textfile%0A- <code>: Textfile to generate%0A- <argument>: Parameters used in template;
+	-CUBE_GEN_PARAGRAPH:;
+	+CUBE_GEN_EXAMPLE_MODEL[CGM-000000100000]:Case1|;
+		+CUBE_GEN_FUNCTION[CGF-000000100000]:Iteration|Walk through model elements.|List:[[LOOP,BUSINESS_OBJECT_TYPE]]%0A-%09<<BUSINESS_OBJECT_TYPE:U>>[[ENDLOOP,BUSINESS_OBJECT_TYPE]];
+		-CUBE_GEN_FUNCTION:;
+		+CUBE_GEN_FUNCTION[CGF-000000100001]:replacement|Replace|[[LOOP,BUSINESS_OBJECT_TYPE]]%0AUppercase: <<BUSINESS_OBJECT_TYPE:U>>%0ALowercase: <<BUSINESS_OBJECT_TYPE:L>>%0ANumber: <<BUSINESS_OBJECT_TYPE:N>>%0ASubnumber: <<BUSINESS_OBJECT_TYPE:S>>%0ACamelCase: <<BUSINESS_OBJECT_TYPE:C>>%0AID: <<BUSINESS_OBJECT_TYPE:I>>%0A[[ENDLOOP,BUSINESS_OBJECT_TYPE]];
+		-CUBE_GEN_FUNCTION:;
+		+BUSINESS_OBJECT_TYPE[BOT-000000100000]:CUSTOMERS|customer_files;
+		-BUSINESS_OBJECT_TYPE:;
+		+BUSINESS_OBJECT_TYPE[BOT-000000100001]:ORDER|order_directory;
+		-BUSINESS_OBJECT_TYPE:;
+		+BUSINESS_OBJECT_TYPE[BOT-000000100002]:PRODUCT|product_definitions;
+		-BUSINESS_OBJECT_TYPE:;
+	-CUBE_GEN_EXAMPLE_MODEL:;
+-CUBE_GEN_DOCUMENTATION:;
