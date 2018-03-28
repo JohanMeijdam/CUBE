@@ -43,6 +43,10 @@ h3 {
 	font-weight: bold;
 }
 
+h4 {
+	font-size: 11pt;
+	font-weight: bold;
+}
 div {
 	font-size: 10pt;
 	padding-left: 15px;
@@ -56,20 +60,25 @@ div.scrollable {
     overflow: auto;
 }
 
-div.text {
-	background-color:lightyellow;
+.text {
+	background-color: lightyellow;
 }
 
-div.model {
-	background-color:lightcoral;
+.model {
+	background-color: lightcoral;
 }
 
-div.template {
-	background-color:lightblue;
+.template {
+	background-color: lightblue;
 }
 
-div.code {
-	background-color:lightgray;
+.result {
+	background-color: lightgray;
+}
+
+.code {
+	font-family: courier new;
+	font-size: 12px;
 }
 
 

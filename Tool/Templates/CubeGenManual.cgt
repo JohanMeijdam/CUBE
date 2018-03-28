@@ -1,16 +1,43 @@
 Change log:
-12-03-2018 Initial version
+28-03-2018 Initial version
 [[BODY]][[LOOP,CUBE_GEN_DOCUMENTATION]][[FILE,<<1>>\html\<<CUBE_GEN_DOCUMENTATION:C>>.htm]]<html>
-<head><link rel=stylesheet type="text/css" href="style.css"></head><body>[[LOOP,CUBE_GEN_PARAGRAPH]]
-<p><font class="kop"><<CUBE_GEN_PARAGRAPH:H>></font><br><<CUBE_GEN_PARAGRAPH1:H>>[[ENDLOOP,CUBE_GEN_PARAGRAPH]][[LOOP,CUBE_GEN_EXAMPLE_MODEL]]
-<pre><font class="kop">CUBE Model</font><font class="code">[[LOOP,*]][[IF:!TAG(CUBE_GEN_FUNCTION)]][[IF:CHILD(*)]]
-+<<*TAG>>[[IF:EVAL:'<<*:I>>'ne'']][<<*:I>>][[ENDIF]]:[[VALUE,*:0>N:|]];[[REPEAT:TAB]][[LOOP,>*]]
+<head>
+<title>CubeGen</title>
+<link rel=stylesheet type="text/css" href="style.css">
+</head>
+<body>
+<table style="height:100%;border:0;border-spacing:0;"><tr><td><div style="background-color:silver;" class="scrollable">
+<div>Index</div>
+<div class="text">Introduction</div>[[LOOP,CUBE_GEN_PARAGRAPH]]
+<div class="text"><<CUBE_GEN_PARAGRAPH:C>></div>[[ENDLOOP,CUBE_GEN_PARAGRAPH]][[LOOP,CUBE_GEN_EXAMPLE_MODEL]]
+<div><<CUBE_GEN_EXAMPLE_MODEL:C>></div>
+<div class="model">CubeModel</div>[[LOOP,CUBE_GEN_FUNCTION]]
+<div><<CUBE_GEN_FUNCTION:C>></div>[[ENDLOOP,CUBE_GEN_FUNCTION]][[ENDLOOP,CUBE_GEN_EXAMPLE_MODEL]]
+</div></td><td style="width:100%;"><div class="scrollable">
+<div style="margin-top:60px;font-size:16pt;" align="center">Transform a CubeGen Model into Code according to your own Template.</div>
+<div align="center"><img src="icons/CubeGenLogoDoc.png"/></div>
+<div class="text"><h2 class="text">Introduction</h2>[[LOOP,CUBE_GEN_PARAGRAPH]]
+<h3 class="text"><<CUBE_GEN_PARAGRAPH:C>></h3>
+<<CUBE_GEN_PARAGRAPH1:H>></div>[[ENDLOOP,CUBE_GEN_PARAGRAPH]][[LOOP,CUBE_GEN_EXAMPLE_MODEL]]
+<div><h2><<CUBE_GEN_EXAMPLE_MODEL:C>></h2></div>
+<div class="model"><h3>CubeModel</h3>
+<pre class="code">[[LOOP,*]][[IF:!TAG(CUBE_GEN_FUNCTION)]][[IF:CHILD(*)]]+<<*TAG>>[[IF:EVAL:'<<*:I>>'ne'']][<<*:I>>][[ENDIF]]:[[VALUE,*:0>N:|]];[[REPEAT:TAB]][[LOOP,>*]]
 	&gt;<<*TAG>>:<<*:I>>;[[ENDLOOP,>*]]
--<<*TAG>>:;[[ELSE]]
-=<<*TAG>>[[IF:EVAL:'<<*:I>>'ne'']][<<*:I>>][[ENDIF]]:[[VALUE,*:0>N:|]];[[ENDIF]][[ENDIF]][[ENDLOOP,*]]</font></pre>[[LOOP,CUBE_GEN_FUNCTION]]
-<pre><font class="kop">Template</font><br><font class="code"><<CUBE_GEN_FUNCTION2:HE>></font></pre>
-<pre><font class="kop">Code</font><font class="code">
-[[FOR,CUBE_GEN_EXAMPLE_MODEL:N>N]][[TEMPLATE:CUBE_GEN_FUNCTION2]][[ENDFOR]]</font></pre>[[ENDLOOP,CUBE_GEN_FUNCTION]][[ENDLOOP,CUBE_GEN_EXAMPLE_MODEL]]
-<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br></body></html>
+-<<*TAG>>:;
+[[ELSE]]=<<*TAG>>[[IF:EVAL:'<<*:I>>'ne'']][<<*:I>>][[ENDIF]]:[[VALUE,*:0>N:|]];
+[[ENDIF]][[ENDIF]][[ENDLOOP,*]]</pre></div>[[LOOP,CUBE_GEN_FUNCTION]]
+<div><h3><<CUBE_GEN_FUNCTION:C>></h3></div>
+<div class="template"><h4>Template</h4>
+<pre class="code"><<CUBE_GEN_FUNCTION2:HE>></pre></div>
+<div class="result"><h4>Code</h4>
+<pre class="code">[[FOR,CUBE_GEN_EXAMPLE_MODEL:N>N]][[TEMPLATE:CUBE_GEN_FUNCTION2]][[ENDFOR]]</pre></div>[[ENDLOOP,CUBE_GEN_FUNCTION]][[ENDLOOP,CUBE_GEN_EXAMPLE_MODEL]]
+<div>
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+</div>
+<div class=model><br><br>MODEL<br><br></div>
+<div class=template><br><br>TEMPLATE<br><br></div>
+<div class=result><br><br>CODE<br><br></div>
+</div></td></tr></table>
+</body></html>
 [[ENDLOOP,CUBE_GEN_DOCUMENTATION]][[ENDBODY]]

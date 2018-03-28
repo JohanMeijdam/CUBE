@@ -1,27 +1,50 @@
 <html>
-<head><link rel=stylesheet type="text/css" href="style.css"></head><body>
-<p><font class="kop">Command Line</font><br>cubegen.exe &lt;model&gt; &lt;template&gt; &lt;code&gt; &lt;arguments&gt; <br>perl cubegen.pl &lt;model&gt; &lt;template&gt; &lt;code&gt; &lt;arguments&gt;<br>- &lt;model&gt;: Imported Cube Model textfile<br>- &lt;template&gt;: Importede CubeGen Template Textfile<br>- &lt;code&gt;: Textfile to generate<br>- &lt;argument&gt;: Parameters used in template
-<pre><font class="kop">CUBE Model</font><font class="code">
-=BUSINESS_OBJECT_TYPE[BOT-000000100000]:CUSTOMERS|customer_files;
+<head>
+<title>CubeGen</title>
+<link rel=stylesheet type="text/css" href="style.css">
+</head>
+<body>
+<table style="height:100%;border:0;border-spacing:0;"><tr><td><div style="background-color:silver;" class="scrollable">
+<div>Index</div>
+<div class="text">Introduction</div>
+<div class="text">Command line</div>
+<div>Case1</div>
+<div class="model">CubeModel</div>
+<div>Iteration</div>
+<div>Replacement</div>
+</div></td><td style="width:100%;"><div class="scrollable">
+<div style="margin-top:60px;font-size:16pt;" align="center">Transform a CubeGen Model into Code according to your own Template.</div>
+<div align="center"><img src="icons/CubeGenLogoDoc.png"/></div>
+<div class="text"><h2 class="text">Introduction</h2>
+<h3 class="text">Command line</h3>
+cubegen.exe &lt;model&gt; &lt;template&gt; &lt;code&gt; &lt;arguments&gt; <br>perl cubegen.pl &lt;model&gt; &lt;template&gt; &lt;code&gt; &lt;arguments&gt;<br>- &lt;model&gt;: Imported Cube Model textfile<br>- &lt;template&gt;: Importede CubeGen Template Textfile<br>- &lt;code&gt;: Textfile to generate<br>- &lt;argument&gt;: Parameters used in template</div>
+<div><h2>Case1</h2></div>
+<div class="model"><h3>CubeModel</h3>
+<pre class="code">=BUSINESS_OBJECT_TYPE[BOT-000000100000]:CUSTOMERS|customer_files;
 =BUSINESS_OBJECT_TYPE[BOT-000000100001]:ORDER|order_directory;
-=BUSINESS_OBJECT_TYPE[BOT-000000100002]:PRODUCT|product_definitions;</font></pre>
-<pre><font class="kop">Template</font><br><font class="code">List:[[LOOP,BUSINESS_OBJECT_TYPE]]
--	&lt;&lt;BUSINESS_OBJECT_TYPE:U&gt;&gt;[[ENDLOOP,BUSINESS_OBJECT_TYPE]]</font></pre>
-<pre><font class="kop">Code</font><font class="code">
-List:
+=BUSINESS_OBJECT_TYPE[BOT-000000100002]:PRODUCT|product_definitions;
+</pre></div>
+<div><h3>Iteration</h3></div>
+<div class="template"><h4>Template</h4>
+<pre class="code">List:[[LOOP,BUSINESS_OBJECT_TYPE]]
+-	&lt;&lt;BUSINESS_OBJECT_TYPE:U&gt;&gt;[[ENDLOOP,BUSINESS_OBJECT_TYPE]]</pre></div>
+<div class="result"><h4>Code</h4>
+<pre class="code">List:
 -	CUSTOMERS
 -	ORDER
--	PRODUCT</font></pre>
-<pre><font class="kop">Template</font><br><font class="code">[[LOOP,BUSINESS_OBJECT_TYPE]]
+-	PRODUCT</pre></div>
+<div><h3>Replacement</h3></div>
+<div class="template"><h4>Template</h4>
+<pre class="code">[[LOOP,BUSINESS_OBJECT_TYPE]]
 Uppercase: &lt;&lt;BUSINESS_OBJECT_TYPE:U&gt;&gt;
 Lowercase: &lt;&lt;BUSINESS_OBJECT_TYPE:L&gt;&gt;
 Number: &lt;&lt;BUSINESS_OBJECT_TYPE:N&gt;&gt;
 Subnumber: &lt;&lt;BUSINESS_OBJECT_TYPE:S&gt;&gt;
 CamelCase: &lt;&lt;BUSINESS_OBJECT_TYPE:C&gt;&gt;
 ID: &lt;&lt;BUSINESS_OBJECT_TYPE:I&gt;&gt;
-[[ENDLOOP,BUSINESS_OBJECT_TYPE]]</font></pre>
-<pre><font class="kop">Code</font><font class="code">
-
+[[ENDLOOP,BUSINESS_OBJECT_TYPE]]</pre></div>
+<div class="result"><h4>Code</h4>
+<pre class="code">
 Uppercase: CUSTOMERS
 Lowercase: customers
 Number: 00006
@@ -42,6 +65,13 @@ Number: 00008
 Subnumber: 003
 CamelCase: Product
 ID: BOT-000000100002
-</font></pre>
-<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br></body></html>
+</pre></div>
+<div>
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+</div>
+<div class=model><br><br>MODEL<br><br></div>
+<div class=template><br><br>TEMPLATE<br><br></div>
+<div class=result><br><br>CODE<br><br></div>
+</div></td></tr></table>
+</body></html>
