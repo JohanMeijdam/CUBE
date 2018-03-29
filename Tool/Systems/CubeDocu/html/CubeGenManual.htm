@@ -4,47 +4,56 @@
 <link rel=stylesheet type="text/css" href="style.css">
 </head>
 <body>
-<table style="height:100%;border:0;border-spacing:0;"><tr><td><div style="background-color:silver;" class="scrollable">
-<div>Index</div>
-<div class="text">Introduction</div>
-<div class="text">Command line</div>
-<div>Case1</div>
-<div class="model">CubeModel</div>
-<div>Iteration</div>
-<div>Replacement</div>
+<table style="height:100%;border:0;border-spacing:0;">
+<tr><td colspan=2 style="background-color:whitesmoke"><div style="padding:15px;line-height:110%;"><b><span style="font-size:32pt;"><i><span style="font-family:Times New Roman,Times,serif">Compo</span></i>SYS</span>.nl</b>
+<hr size="6px" style="border-width:0;background-color:black">
+CONSULTANCY AUTOMATION SPECIALIZED IN INFORMATION ARCHITECTURE<br></div></td></tr>
+<tr style="height:100%;"><td style="background-color:whitesmoke"><div class="scrollable">
+<div style="padding-top:5pt;padding-bottom:5pt;font-weight: bold;">INDEX</div>
+<div><a href="#INTRO"><span class="indent1">Introduction</span></a></div>
+<div><a href="#CGP-000000100001"><span class="indent2">Command line</span></a></div>
+<div><a href="#CGM-000000100000"><span class="indent1">Case1</span></a></div>
+<div><a href="#CGM-000000100000M"><span style="display:block;" class="model indent3">CubeModel</span></a></div>
+<div><a href="#CGF-000000100000"><span class="indent2">Iteration</span></a></div>
+<div><a href="#CGF-000000100000T"><span style="display:block;" class="template indent3">Template</span></div>
+<div><a href="#CGF-000000100000C"><span style="display:block;" class="result indent3">Code</span></div>
+<div><a href="#CGF-000000100001"><span class="indent2">Replacement</span></a></div>
+<div><a href="#CGF-000000100001T"><span style="display:block;" class="template indent3">Template</span></div>
+<div><a href="#CGF-000000100001C"><span style="display:block;" class="result indent3">Code</span></div>
 </div></td><td style="width:100%;"><div class="scrollable">
 <div style="margin-top:60px;font-size:16pt;" align="center">Transform a CubeGen Model into Code according to your own Template.</div>
 <div align="center"><img src="icons/CubeGenLogoDoc.png"/></div>
-<div class="text"><h2 class="text">Introduction</h2>
-<h3 class="text">Command line</h3>
-cubegen.exe &lt;model&gt; &lt;template&gt; &lt;code&gt; &lt;arguments&gt; <br>perl cubegen.pl &lt;model&gt; &lt;template&gt; &lt;code&gt; &lt;arguments&gt;<br>- &lt;model&gt;: Imported Cube Model textfile<br>- &lt;template&gt;: Importede CubeGen Template Textfile<br>- &lt;code&gt;: Textfile to generate<br>- &lt;argument&gt;: Parameters used in template</div>
-<div><h2>Case1</h2></div>
-<div class="model"><h3>CubeModel</h3>
-<pre class="code">=BUSINESS_OBJECT_TYPE[BOT-000000100000]:CUSTOMERS|customer_files;
+<pre>
+<div id="INTRO" class="header1">Introduction</div><!
+><div id="CGP-000000100001" class="header2">Command line</div><!
+><div >cubegen.exe &lt;model&gt; &lt;template&gt; &lt;code&gt; &lt;arguments&gt; <br>perl cubegen.pl &lt;model&gt; &lt;template&gt; &lt;code&gt; &lt;arguments&gt;<br>- &lt;model&gt;: Imported Cube Model textfile<br>- &lt;template&gt;: Importede CubeGen Template Textfile<br>- &lt;code&gt;: Textfile to generate<br>- &lt;argument&gt;: Parameters used in template</div><!
+><div id="CGM-000000100000" class="header1">Case1</div><!
+><div id="CGM-000000100000M" class="header3">CubeModel</div><!
+><div><span style="display:block;" class="model code">=BUSINESS_OBJECT_TYPE[BOT-000000100000]:CUSTOMERS|customer_files;
 =BUSINESS_OBJECT_TYPE[BOT-000000100001]:ORDER|order_directory;
 =BUSINESS_OBJECT_TYPE[BOT-000000100002]:PRODUCT|product_definitions;
-</pre></div>
-<div><h3>Iteration</h3></div>
-<div class="template"><h4>Template</h4>
-<pre class="code">List:[[LOOP,BUSINESS_OBJECT_TYPE]]
--	&lt;&lt;BUSINESS_OBJECT_TYPE:U&gt;&gt;[[ENDLOOP,BUSINESS_OBJECT_TYPE]]</pre></div>
-<div class="result"><h4>Code</h4>
-<pre class="code">List:
+</span></div><!
+><div id="CGF-000000100000" class="header2">Iteration</div><!
+><div id="CGF-000000100000T" class="header3">Template</div><!
+><div><span style="display:block;" class="template code">List:[[LOOP,BUSINESS_OBJECT_TYPE]]
+-	&lt;&lt;BUSINESS_OBJECT_TYPE:U&gt;&gt;[[ENDLOOP,BUSINESS_OBJECT_TYPE]]</span></div><!
+><div id="CGF-000000100000C" class="header3">Code</div><!
+><div><span style="display:block;" class="result code">List:
 -	CUSTOMERS
 -	ORDER
--	PRODUCT</pre></div>
-<div><h3>Replacement</h3></div>
-<div class="template"><h4>Template</h4>
-<pre class="code">[[LOOP,BUSINESS_OBJECT_TYPE]]
+-	PRODUCT</span></div><!
+><div id="CGF-000000100001" class="header2">Replacement</div><!
+><div id="CGF-000000100001T" class="header3">Template</div><!
+><div><span style="display:block;" class="template code">[[LOOP,BUSINESS_OBJECT_TYPE]]
 Uppercase: &lt;&lt;BUSINESS_OBJECT_TYPE:U&gt;&gt;
 Lowercase: &lt;&lt;BUSINESS_OBJECT_TYPE:L&gt;&gt;
 Number: &lt;&lt;BUSINESS_OBJECT_TYPE:N&gt;&gt;
 Subnumber: &lt;&lt;BUSINESS_OBJECT_TYPE:S&gt;&gt;
 CamelCase: &lt;&lt;BUSINESS_OBJECT_TYPE:C&gt;&gt;
 ID: &lt;&lt;BUSINESS_OBJECT_TYPE:I&gt;&gt;
-[[ENDLOOP,BUSINESS_OBJECT_TYPE]]</pre></div>
-<div class="result"><h4>Code</h4>
-<pre class="code">
+[[ENDLOOP,BUSINESS_OBJECT_TYPE]]</span></div><!
+><div id="CGF-000000100001C" class="header3">Code</div><!
+><div><span style="display:block;" class="result code">
 Uppercase: CUSTOMERS
 Lowercase: customers
 Number: 00006
@@ -65,13 +74,14 @@ Number: 00008
 Subnumber: 003
 CamelCase: Product
 ID: BOT-000000100002
-</pre></div>
+</span></div><!
+></pre>
 <div>
 <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
 <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
 </div>
-<div class=model><br><br>MODEL<br><br></div>
-<div class=template><br><br>TEMPLATE<br><br></div>
-<div class=result><br><br>CODE<br><br></div>
+<div class="model"><br><br>MODEL<br><br></div>
+<div class="template"><br><br>TEMPLATE<br><br></div>
+<div class="result"><br><br>CODE<br><br></div>
 </div></td></tr></table>
 </body></html>

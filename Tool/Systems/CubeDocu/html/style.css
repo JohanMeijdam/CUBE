@@ -50,6 +50,7 @@ h4 {
 div {
 	font-size: 10pt;
 	padding-left: 15px;
+	padding-right: 15pt;
 }
 
 div.scrollable {
@@ -60,12 +61,12 @@ div.scrollable {
     overflow: auto;
 }
 
-.text {
-	background-color: lightyellow;
+pre {
+	font-family: Arial, Helvetica, sans-serif;
 }
 
 .model {
-	background-color: lightcoral;
+	background-color: lightpink;
 }
 
 .template {
@@ -73,12 +74,51 @@ div.scrollable {
 }
 
 .result {
-	background-color: lightgray;
+	background-color: lightyellow;
 }
 
 .code {
 	font-family: courier new;
 	font-size: 12px;
+}
+
+.header1 {
+	padding-top: 15pt;
+	font-size: 18pt;
+	font-weight: bold;
+}
+
+.header2 {
+	padding-top: 12pt;
+	font-size: 15pt;
+	font-weight: bold;
+}
+
+.header3 {
+	padding-top: 10pt;
+	font-size: 12pt;
+	font-weight: bold;
+}
+
+.indent1 {
+	padding-top: 5pt;
+	padding-bottom: 5pt;
+	font-weight: bold;
+	padding-right: 4pt;
+}
+
+.indent2 {
+	padding-top: 3pt;
+	padding-bottom: 3pt;
+	padding-left: 15pt;
+	padding-right: 4pt;
+}
+
+.indent3 {
+	padding-top: 1pt;
+	padding-bottom: 1pt;
+	padding-left: 30pt;
+	padding-right: 4pt;
 }
 
 
