@@ -15,13 +15,14 @@ g_xmlhttp.onreadystatechange = function() {
 		case "SELECT_CGF":
 			var l_values = l_argument[1].split("<|>");
 			document.getElementById("InputFkCubName").value=l_values[0];
-			document.getElementById("InputFkCgmName").value=l_values[1];
-			document.getElementById("InputDescription").value=l_values[2];
-			document.getElementById("InputTemplate").value=l_values[3];
+			document.getElementById("InputFkCgmId").value=l_values[1];
+			document.getElementById("InputId").value=l_values[2];
+			document.getElementById("InputDescription").value=l_values[3];
+			document.getElementById("InputTemplate").value=l_values[4];
 			break;
 		case "CREATE_CGF":
 			document.getElementById("InputFkCubName").readOnly=true;
-			document.getElementById("InputFkCgmName").readOnly=true;
+			document.getElementById("InputFkCgmId").readOnly=true;
 			document.getElementById("InputHeader").readOnly=true;
 			document.getElementById("ButtonCreate").disabled=true;
 			document.getElementById("ButtonUpdate").disabled=false;
@@ -90,16 +91,16 @@ function InitBody() {
 		document.getElementById("ButtonCreate").disabled=true;
 		performTrans('GetCgf'+'<|||>'+document._argument);
 		document.getElementById("InputFkCubName").readOnly=true;
-		document.getElementById("InputFkCgmName").readOnly=true;
+		document.getElementById("InputFkCgmId").readOnly=true;
 		document.getElementById("InputHeader").readOnly=true;
 		break;
 	case "N":
 		document.getElementById("InputFkCubName").value=values[0];
-		document.getElementById("InputFkCgmName").value=values[1];
+		document.getElementById("InputFkCgmId").value=values[1];
 		document.getElementById("ButtonUpdate").disabled=true;
 		document.getElementById("ButtonDelete").disabled=true;
 		document.getElementById("InputFkCubName").readOnly=true;
-		document.getElementById("InputFkCgmName").readOnly=true;
+		document.getElementById("InputFkCgmId").readOnly=true;
 		break;
 	default:
 		alert ('Error InitBody: '+l_argument[1]);
@@ -109,7 +110,8 @@ function InitBody() {
 function CreateCgf() {
 	var l_parameters = 
 		document.getElementById("InputFkCubName").value+'<|>'+
-		document.getElementById("InputFkCgmName").value+'<|>'+
+		document.getElementById("InputFkCgmId").value+'<|>'+
+		document.getElementById("InputId").value+'<|>'+
 		document.getElementById("InputHeader").value+'<|>'+
 		document.getElementById("InputDescription").value+'<|>'+
 		document.getElementById("InputTemplate").value;
@@ -123,7 +125,8 @@ function CreateCgf() {
 function UpdateCgf() {
 	var l_parameters = 
 		document.getElementById("InputFkCubName").value+'<|>'+
-		document.getElementById("InputFkCgmName").value+'<|>'+
+		document.getElementById("InputFkCgmId").value+'<|>'+
+		document.getElementById("InputId").value+'<|>'+
 		document.getElementById("InputHeader").value+'<|>'+
 		document.getElementById("InputDescription").value+'<|>'+
 		document.getElementById("InputTemplate").value;
@@ -245,13 +248,15 @@ function drop(p_event) {
 <table>
 <tr><td>CubeGenDocumentation.Name</td><td><div style="max-width:30em;">
 <input id="InputFkCubName" type="text" maxlength="30" style="width:100%;" onchange="ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td>CubeGenExampleModel.Name</td><td><div style="max-width:30em;">
-<input id="InputFkCgmName" type="text" maxlength="30" style="width:100%;" onchange="ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td><u>Header</u></td><td><div style="max-width:120em;">
-<input id="InputHeader" type="text" maxlength="120" style="width:100%;"></input></div></td></tr>
+<tr><td>CubeGenExampleModel.Id</td><td><div style="max-width:8em;">
+<input id="InputFkCgmId" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr><td style="cursor:help;" oncontextmenu="OpenDescBox('TEMPLATE','CubeGenFunction.Id','CUBE_GEN_FUNCTION','ID',-1)">Id</td><td><div style="max-width:8em;">
+<input id="InputId" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr><td style="cursor:help;" oncontextmenu="OpenDescBox('TEMPLATE','CubeGenFunction.Header','CUBE_GEN_FUNCTION','HEADER',-1)"><u>Header</u></td><td><div style="max-width:40em;">
+<input id="InputHeader" type="text" maxlength="40" style="width:100%;"></input></div></td></tr>
 <tr><td style="padding-top:10px;">Description</td></tr><tr><td colspan="2"><div>
 <textarea id="InputDescription" type="text" maxlength="3999" rows="5" style="white-space:normal;width:100%;"></textarea></div></td></tr>
-<tr><td style="padding-top:10px;">Template</td></tr><tr><td colspan="2"><div>
+<tr><td style="padding-top:10px;cursor:help;" oncontextmenu="OpenDescBox('TEMPLATE','CubeGenFunction.Template','CUBE_GEN_FUNCTION','TEMPLATE',-1)">Template</td></tr><tr><td colspan="2"><div>
 <textarea id="InputTemplate" type="text" maxlength="3999" rows="11" style="font-family:courier new;font-size:12px;white-space:normal;width:100%;"></textarea></div></td></tr>
 <tr><td><br></td><td style="width:100%;"></td></tr>
 <tr><td/><td>

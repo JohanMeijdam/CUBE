@@ -2050,7 +2050,8 @@ SHOW ERRORS
 CREATE OR REPLACE VIEW v_cube_gen_documentation AS 
 	SELECT
 		cube_id,
-		name
+		name,
+		description
 	FROM t_cube_gen_documentation
 /
 CREATE OR REPLACE VIEW v_cube_gen_paragraph AS 
@@ -2058,6 +2059,7 @@ CREATE OR REPLACE VIEW v_cube_gen_paragraph AS
 		cube_id,
 		cube_sequence,
 		fk_cub_name,
+		id,
 		header,
 		description
 	FROM t_cube_gen_paragraph
@@ -2067,8 +2069,10 @@ CREATE OR REPLACE VIEW v_cube_gen_example_model AS
 		cube_id,
 		cube_sequence,
 		fk_cub_name,
-		name,
-		included_object_names
+		id,
+		header,
+		included_object_names,
+		description
 	FROM t_cube_gen_example_model
 /
 CREATE OR REPLACE VIEW v_cube_gen_example_object AS 
@@ -2076,7 +2080,7 @@ CREATE OR REPLACE VIEW v_cube_gen_example_object AS
 		cube_id,
 		cube_sequence,
 		fk_cub_name,
-		fk_cgm_name,
+		fk_cgm_id,
 		xk_bot_name
 	FROM t_cube_gen_example_object
 /
@@ -2085,7 +2089,8 @@ CREATE OR REPLACE VIEW v_cube_gen_function AS
 		cube_id,
 		cube_sequence,
 		fk_cub_name,
-		fk_cgm_name,
+		fk_cgm_id,
+		id,
 		header,
 		description,
 		template
@@ -2119,15 +2124,19 @@ CREATE OR REPLACE PACKAGE BODY pkg_cub_trg IS
 		p_cub.cube_id := 'CUB-' || TO_CHAR(cub_seq.NEXTVAL,'FM000000000000');
 		INSERT INTO t_cube_gen_documentation (
 			cube_id,
-			name)
+			name,
+			description)
 		VALUES (
 			p_cub.cube_id,
-			p_cub.name);
+			p_cub.name,
+			p_cub.description);
 	END;
 
 	PROCEDURE update_cub (p_cube_rowid UROWID, p_cub_old IN OUT NOCOPY v_cube_gen_documentation%ROWTYPE, p_cub_new IN OUT NOCOPY v_cube_gen_documentation%ROWTYPE) IS
 	BEGIN
-		NULL;
+		UPDATE t_cube_gen_documentation SET 
+			description = p_cub_new.description
+		WHERE rowid = p_cube_rowid;
 	END;
 
 	PROCEDURE delete_cub (p_cube_rowid UROWID, p_cub IN OUT NOCOPY v_cube_gen_documentation%ROWTYPE) IS
@@ -2143,12 +2152,14 @@ CREATE OR REPLACE PACKAGE BODY pkg_cub_trg IS
 			cube_id,
 			cube_sequence,
 			fk_cub_name,
+			id,
 			header,
 			description)
 		VALUES (
 			p_cgp.cube_id,
 			p_cgp.cube_sequence,
 			p_cgp.fk_cub_name,
+			p_cgp.id,
 			p_cgp.header,
 			p_cgp.description);
 	END;
@@ -2157,6 +2168,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_cub_trg IS
 	BEGIN
 		UPDATE t_cube_gen_paragraph SET 
 			cube_sequence = p_cgp_new.cube_sequence,
+			header = p_cgp_new.header,
 			description = p_cgp_new.description
 		WHERE rowid = p_cube_rowid;
 	END;
@@ -2174,21 +2186,27 @@ CREATE OR REPLACE PACKAGE BODY pkg_cub_trg IS
 			cube_id,
 			cube_sequence,
 			fk_cub_name,
-			name,
-			included_object_names)
+			id,
+			header,
+			included_object_names,
+			description)
 		VALUES (
 			p_cgm.cube_id,
 			p_cgm.cube_sequence,
 			p_cgm.fk_cub_name,
-			p_cgm.name,
-			p_cgm.included_object_names);
+			p_cgm.id,
+			p_cgm.header,
+			p_cgm.included_object_names,
+			p_cgm.description);
 	END;
 
 	PROCEDURE update_cgm (p_cube_rowid UROWID, p_cgm_old IN OUT NOCOPY v_cube_gen_example_model%ROWTYPE, p_cgm_new IN OUT NOCOPY v_cube_gen_example_model%ROWTYPE) IS
 	BEGIN
 		UPDATE t_cube_gen_example_model SET 
 			cube_sequence = p_cgm_new.cube_sequence,
-			included_object_names = p_cgm_new.included_object_names
+			header = p_cgm_new.header,
+			included_object_names = p_cgm_new.included_object_names,
+			description = p_cgm_new.description
 		WHERE rowid = p_cube_rowid;
 	END;
 
@@ -2205,13 +2223,13 @@ CREATE OR REPLACE PACKAGE BODY pkg_cub_trg IS
 			cube_id,
 			cube_sequence,
 			fk_cub_name,
-			fk_cgm_name,
+			fk_cgm_id,
 			xk_bot_name)
 		VALUES (
 			p_cgo.cube_id,
 			p_cgo.cube_sequence,
 			p_cgo.fk_cub_name,
-			p_cgo.fk_cgm_name,
+			p_cgo.fk_cgm_id,
 			p_cgo.xk_bot_name);
 	END;
 
@@ -2235,7 +2253,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_cub_trg IS
 			cube_id,
 			cube_sequence,
 			fk_cub_name,
-			fk_cgm_name,
+			fk_cgm_id,
+			id,
 			header,
 			description,
 			template)
@@ -2243,7 +2262,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_cub_trg IS
 			p_cgf.cube_id,
 			p_cgf.cube_sequence,
 			p_cgf.fk_cub_name,
-			p_cgf.fk_cgm_name,
+			p_cgf.fk_cgm_id,
+			p_cgf.id,
 			p_cgf.header,
 			p_cgf.description,
 			p_cgf.template);
@@ -2253,6 +2273,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_cub_trg IS
 	BEGIN
 		UPDATE t_cube_gen_function SET 
 			cube_sequence = p_cgf_new.cube_sequence,
+			id = p_cgf_new.id,
 			description = p_cgf_new.description,
 			template = p_cgf_new.template
 		WHERE rowid = p_cube_rowid;
@@ -2277,6 +2298,7 @@ DECLARE
 BEGIN
 	IF INSERTING OR UPDATING THEN
 		r_cub_new.name := REPLACE(:NEW.name,' ','_');
+		r_cub_new.description := :NEW.description;
 	END IF;
 	IF UPDATING THEN
 		r_cub_new.cube_id := :OLD.cube_id;
@@ -2285,6 +2307,7 @@ BEGIN
 		SELECT rowid INTO l_cube_rowid FROM t_cube_gen_documentation
 		WHERE name = :OLD.name;
 		r_cub_old.name := :OLD.name;
+		r_cub_old.description := :OLD.description;
 	END IF;
 
 	IF INSERTING THEN 
@@ -2309,6 +2332,7 @@ BEGIN
 	IF INSERTING OR UPDATING THEN
 		r_cgp_new.cube_sequence := :NEW.cube_sequence;
 		r_cgp_new.fk_cub_name := REPLACE(:NEW.fk_cub_name,' ','_');
+		r_cgp_new.id := REPLACE(:NEW.id,' ','_');
 		r_cgp_new.header := :NEW.header;
 		r_cgp_new.description := :NEW.description;
 	END IF;
@@ -2318,9 +2342,10 @@ BEGIN
 	IF UPDATING OR DELETING THEN
 		SELECT rowid INTO l_cube_rowid FROM t_cube_gen_paragraph
 		WHERE fk_cub_name = :OLD.fk_cub_name
-		  AND header = :OLD.header;
+		  AND id = :OLD.id;
 		r_cgp_old.cube_sequence := :OLD.cube_sequence;
 		r_cgp_old.fk_cub_name := :OLD.fk_cub_name;
+		r_cgp_old.id := :OLD.id;
 		r_cgp_old.header := :OLD.header;
 		r_cgp_old.description := :OLD.description;
 	END IF;
@@ -2347,8 +2372,10 @@ BEGIN
 	IF INSERTING OR UPDATING THEN
 		r_cgm_new.cube_sequence := :NEW.cube_sequence;
 		r_cgm_new.fk_cub_name := REPLACE(:NEW.fk_cub_name,' ','_');
-		r_cgm_new.name := REPLACE(:NEW.name,' ','_');
+		r_cgm_new.id := REPLACE(:NEW.id,' ','_');
+		r_cgm_new.header := :NEW.header;
 		r_cgm_new.included_object_names := :NEW.included_object_names;
+		r_cgm_new.description := :NEW.description;
 	END IF;
 	IF UPDATING THEN
 		r_cgm_new.cube_id := :OLD.cube_id;
@@ -2356,11 +2383,13 @@ BEGIN
 	IF UPDATING OR DELETING THEN
 		SELECT rowid INTO l_cube_rowid FROM t_cube_gen_example_model
 		WHERE fk_cub_name = :OLD.fk_cub_name
-		  AND name = :OLD.name;
+		  AND id = :OLD.id;
 		r_cgm_old.cube_sequence := :OLD.cube_sequence;
 		r_cgm_old.fk_cub_name := :OLD.fk_cub_name;
-		r_cgm_old.name := :OLD.name;
+		r_cgm_old.id := :OLD.id;
+		r_cgm_old.header := :OLD.header;
 		r_cgm_old.included_object_names := :OLD.included_object_names;
+		r_cgm_old.description := :OLD.description;
 	END IF;
 
 	IF INSERTING THEN 
@@ -2385,7 +2414,7 @@ BEGIN
 	IF INSERTING OR UPDATING THEN
 		r_cgo_new.cube_sequence := :NEW.cube_sequence;
 		r_cgo_new.fk_cub_name := REPLACE(:NEW.fk_cub_name,' ','_');
-		r_cgo_new.fk_cgm_name := REPLACE(:NEW.fk_cgm_name,' ','_');
+		r_cgo_new.fk_cgm_id := REPLACE(:NEW.fk_cgm_id,' ','_');
 		r_cgo_new.xk_bot_name := REPLACE(:NEW.xk_bot_name,' ','_');
 	END IF;
 	IF UPDATING THEN
@@ -2394,11 +2423,11 @@ BEGIN
 	IF UPDATING OR DELETING THEN
 		SELECT rowid INTO l_cube_rowid FROM t_cube_gen_example_object
 		WHERE fk_cub_name = :OLD.fk_cub_name
-		  AND fk_cgm_name = :OLD.fk_cgm_name
+		  AND fk_cgm_id = :OLD.fk_cgm_id
 		  AND xk_bot_name = :OLD.xk_bot_name;
 		r_cgo_old.cube_sequence := :OLD.cube_sequence;
 		r_cgo_old.fk_cub_name := :OLD.fk_cub_name;
-		r_cgo_old.fk_cgm_name := :OLD.fk_cgm_name;
+		r_cgo_old.fk_cgm_id := :OLD.fk_cgm_id;
 		r_cgo_old.xk_bot_name := :OLD.xk_bot_name;
 	END IF;
 
@@ -2424,7 +2453,8 @@ BEGIN
 	IF INSERTING OR UPDATING THEN
 		r_cgf_new.cube_sequence := :NEW.cube_sequence;
 		r_cgf_new.fk_cub_name := REPLACE(:NEW.fk_cub_name,' ','_');
-		r_cgf_new.fk_cgm_name := REPLACE(:NEW.fk_cgm_name,' ','_');
+		r_cgf_new.fk_cgm_id := REPLACE(:NEW.fk_cgm_id,' ','_');
+		r_cgf_new.id := REPLACE(:NEW.id,' ','_');
 		r_cgf_new.header := :NEW.header;
 		r_cgf_new.description := :NEW.description;
 		r_cgf_new.template := :NEW.template;
@@ -2437,7 +2467,8 @@ BEGIN
 		WHERE header = :OLD.header;
 		r_cgf_old.cube_sequence := :OLD.cube_sequence;
 		r_cgf_old.fk_cub_name := :OLD.fk_cub_name;
-		r_cgf_old.fk_cgm_name := :OLD.fk_cgm_name;
+		r_cgf_old.fk_cgm_id := :OLD.fk_cgm_id;
+		r_cgf_old.id := :OLD.id;
 		r_cgf_old.header := :OLD.header;
 		r_cgf_old.description := :OLD.description;
 		r_cgf_old.template := :OLD.template;

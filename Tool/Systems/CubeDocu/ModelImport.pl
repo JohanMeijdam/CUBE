@@ -764,8 +764,8 @@ my (@FkeyValues);
 						if ($j == -1) {
 							last;
 						}
-						print IMPORT "INSERT INTO v_cube_gen_documentation (NAME)\n"; 
-						print IMPORT "	VALUES ('".ReplX($NodeString[$j])."');\n";
+						print IMPORT "INSERT INTO v_cube_gen_documentation (NAME, DESCRIPTION)\n"; 
+						print IMPORT "	VALUES ('".ReplX($NodeString[$j])."', '".ReplX($NodeValue[$NodeValuePntr[$j]])."');\n";
 						print IMPORT "\n";
 						$FkeyValues[0] = ReplX($NodeString[$j]);
 						$i = $NodeFirst[$j];
@@ -781,8 +781,8 @@ my (@FkeyValues);
 							last;
 						}
 						$Sequence++;
-						print IMPORT "INSERT INTO v_cube_gen_paragraph (CUBE_SEQUENCE, FK_CUB_NAME, HEADER, DESCRIPTION)\n"; 
-						print IMPORT "	VALUES ($Sequence, '$_[1]', '".ReplX($NodeString[$j])."', '".ReplX($NodeValue[$NodeValuePntr[$j]])."');\n";
+						print IMPORT "INSERT INTO v_cube_gen_paragraph (CUBE_SEQUENCE, FK_CUB_NAME, ID, HEADER, DESCRIPTION)\n"; 
+						print IMPORT "	VALUES ($Sequence, '$_[1]', '".ReplX($NodeString[$j])."', '".ReplX($NodeValue[$NodeValuePntr[$j]])."', '".ReplX($NodeValue[$NodeValuePntr[$j]+1])."');\n";
 						print IMPORT "\n";
 						$j = $NodeNext[$j];
 					}
@@ -795,8 +795,8 @@ my (@FkeyValues);
 							last;
 						}
 						$Sequence++;
-						print IMPORT "INSERT INTO v_cube_gen_example_model (CUBE_SEQUENCE, FK_CUB_NAME, NAME, INCLUDED_OBJECT_NAMES)\n"; 
-						print IMPORT "	VALUES ($Sequence, '$_[1]', '".ReplX($NodeString[$j])."', '".ReplX($NodeValue[$NodeValuePntr[$j]])."');\n";
+						print IMPORT "INSERT INTO v_cube_gen_example_model (CUBE_SEQUENCE, FK_CUB_NAME, ID, HEADER, INCLUDED_OBJECT_NAMES, DESCRIPTION)\n"; 
+						print IMPORT "	VALUES ($Sequence, '$_[1]', '".ReplX($NodeString[$j])."', '".ReplX($NodeValue[$NodeValuePntr[$j]])."', '".ReplX($NodeValue[$NodeValuePntr[$j]+1])."', '".ReplX($NodeValue[$NodeValuePntr[$j]+2])."');\n";
 						print IMPORT "\n";
 						$FkeyValues[0] = $_[1];
 						$FkeyValues[1] = ReplX($NodeString[$j]);
@@ -813,7 +813,7 @@ my (@FkeyValues);
 							last;
 						}
 						$Sequence++;
-						print IMPORT "INSERT INTO v_cube_gen_example_object (CUBE_SEQUENCE, FK_CUB_NAME, FK_CGM_NAME, XK_BOT_NAME)\n"; 
+						print IMPORT "INSERT INTO v_cube_gen_example_object (CUBE_SEQUENCE, FK_CUB_NAME, FK_CGM_ID, XK_BOT_NAME)\n"; 
 						print IMPORT "	VALUES ($Sequence, '$_[1]', '$_[2]', '".ReplX(GetXkey($j,'BUSINESS_OBJECT_TYPE','BUSINESS_OBJECT_TYPE',001))."');\n";
 						print IMPORT "\n";
 						$j = $NodeNext[$j];
@@ -827,8 +827,8 @@ my (@FkeyValues);
 							last;
 						}
 						$Sequence++;
-						print IMPORT "INSERT INTO v_cube_gen_function (CUBE_SEQUENCE, FK_CUB_NAME, FK_CGM_NAME, HEADER, DESCRIPTION, TEMPLATE)\n"; 
-						print IMPORT "	VALUES ($Sequence, '$_[1]', '$_[2]', '".ReplX($NodeString[$j])."', '".ReplX($NodeValue[$NodeValuePntr[$j]])."', '".ReplX($NodeValue[$NodeValuePntr[$j]+1])."');\n";
+						print IMPORT "INSERT INTO v_cube_gen_function (CUBE_SEQUENCE, FK_CUB_NAME, FK_CGM_ID, ID, HEADER, DESCRIPTION, TEMPLATE)\n"; 
+						print IMPORT "	VALUES ($Sequence, '$_[1]', '$_[2]', '".ReplX($NodeString[$j])."', '".ReplX($NodeValue[$NodeValuePntr[$j]])."', '".ReplX($NodeValue[$NodeValuePntr[$j]+1])."', '".ReplX($NodeValue[$NodeValuePntr[$j]+2])."');\n";
 						print IMPORT "\n";
 						$j = $NodeNext[$j];
 					}

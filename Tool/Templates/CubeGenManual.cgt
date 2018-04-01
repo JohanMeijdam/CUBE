@@ -11,33 +11,35 @@ Change log:
 <hr size="6px" style="border-width:0;background-color:black">
 CONSULTANCY AUTOMATION SPECIALIZED IN INFORMATION ARCHITECTURE<br></div></td></tr>
 <tr style="height:100%;"><td style="background-color:whitesmoke"><div class="scrollable">
-<div style="padding-top:5pt;padding-bottom:5pt;font-weight: bold;">INDEX</div>
-<div><a href="#INTRO"><span class="indent1">Introduction</span></a></div>[[LOOP,CUBE_GEN_PARAGRAPH]]
-<div><a href="#<<CUBE_GEN_PARAGRAPH:I>>"><span class="indent2"><<CUBE_GEN_PARAGRAPH:C>></span></a></div>[[ENDLOOP,CUBE_GEN_PARAGRAPH]][[LOOP,CUBE_GEN_EXAMPLE_MODEL]]
-<div><a href="#<<CUBE_GEN_EXAMPLE_MODEL:I>>"><span class="indent1"><<CUBE_GEN_EXAMPLE_MODEL:C>></span></a></div>
-<div><a href="#<<CUBE_GEN_EXAMPLE_MODEL:I>>M"><span style="display:block;" class="model indent3">CubeModel</span></a></div>[[LOOP,CUBE_GEN_FUNCTION]]
-<div><a href="#<<CUBE_GEN_FUNCTION:I>>"><span class="indent2"><<CUBE_GEN_FUNCTION:C>></span></a></div>
-<div><a href="#<<CUBE_GEN_FUNCTION:I>>T"><span style="display:block;" class="template indent3">Template</span></div>
-<div><a href="#<<CUBE_GEN_FUNCTION:I>>C"><span style="display:block;" class="result indent3">Code</span></div>[[ENDLOOP,CUBE_GEN_FUNCTION]][[ENDLOOP,CUBE_GEN_EXAMPLE_MODEL]]
+<div  align="center" style="padding-top:5pt;padding-bottom:5pt;font-weight:bold;color:White;background-color:DarkSlateGray;">INDEX</div>
+<div><a href="#INTRO" class="indent1">Introduction</a></div>[[LOOP,CUBE_GEN_PARAGRAPH]]
+<div><a href="#<<CUBE_GEN_PARAGRAPH:I>>" class="indent2"><<CUBE_GEN_PARAGRAPH1:C>></a></div>[[ENDLOOP,CUBE_GEN_PARAGRAPH]][[LOOP,CUBE_GEN_EXAMPLE_MODEL]]
+<div><a href="#<<CUBE_GEN_EXAMPLE_MODEL:I>>" class="indent1"><<CUBE_GEN_EXAMPLE_MODEL1:C>></a></div>
+<div><a href="#<<CUBE_GEN_EXAMPLE_MODEL:I>>M" class="model indent3">CubeModel</a></div>[[LOOP,CUBE_GEN_FUNCTION]]
+<div><a href="#<<CUBE_GEN_FUNCTION:I>>" class="indent2"><<CUBE_GEN_FUNCTION1:C>></a></div>
+<div><a href="#<<CUBE_GEN_FUNCTION:I>>T" class="template indent3">Template</a></div>
+<div><a href="#<<CUBE_GEN_FUNCTION:I>>C" class="result indent3">Code</a></div>[[ENDLOOP,CUBE_GEN_FUNCTION]][[ENDLOOP,CUBE_GEN_EXAMPLE_MODEL]]
 </div></td><td style="width:100%;"><div class="scrollable">
 <div style="margin-top:60px;font-size:16pt;" align="center">Transform a CubeGen Model into Code according to your own Template.</div>
 <div align="center"><img src="icons/CubeGenLogoDoc.png"/></div>
 <pre>
-<div id="INTRO" class="header1">Introduction</div><![[LOOP,CUBE_GEN_PARAGRAPH]]
-><div id="<<CUBE_GEN_PARAGRAPH:I>>" class="header2"><<CUBE_GEN_PARAGRAPH:C>></div><!
-><div ><<CUBE_GEN_PARAGRAPH1:H>></div><![[ENDLOOP,CUBE_GEN_PARAGRAPH]][[LOOP,CUBE_GEN_EXAMPLE_MODEL]]
-><div id="<<CUBE_GEN_EXAMPLE_MODEL:I>>" class="header1"><<CUBE_GEN_EXAMPLE_MODEL:C>></div><!
+<div id="INTRO" class="header1">Introduction</div><!
+><div ><<CUBE_GEN_DOCUMENTATION1:HE>></div><![[LOOP,CUBE_GEN_PARAGRAPH]]
+><div id="<<CUBE_GEN_PARAGRAPH:I>>" class="header2"><<CUBE_GEN_PARAGRAPH1:C>></div><!
+><div ><<CUBE_GEN_PARAGRAPH2:HE>></div><![[ENDLOOP,CUBE_GEN_PARAGRAPH]][[LOOP,CUBE_GEN_EXAMPLE_MODEL]]
+><div id="<<CUBE_GEN_EXAMPLE_MODEL:I>>" class="header1"><<CUBE_GEN_EXAMPLE_MODEL1:C>></div><!
+><div ><<CUBE_GEN_EXAMPLE_MODEL3:HE>></div><!
 ><div id="<<CUBE_GEN_EXAMPLE_MODEL:I>>M" class="header3">CubeModel</div><!
 ><div><span style="display:block;" class="model code">[[LOOP,*]][[IF:!TAG(CUBE_GEN_FUNCTION)]][[IF:CHILD(*)]]+<<*TAG>>[[IF:EVAL:'<<*:I>>'ne'']][<<*:I>>][[ENDIF]]:[[VALUE,*:0>N:|]];[[REPEAT:TAB]][[LOOP,>*]]
 	&gt;<<*TAG>>:<<*:I>>;[[ENDLOOP,>*]]
 -<<*TAG>>:;
 [[ELSE]]=<<*TAG>>[[IF:EVAL:'<<*:I>>'ne'']][<<*:I>>][[ENDIF]]:[[VALUE,*:0>N:|]];
 [[ENDIF]][[ENDIF]][[ENDLOOP,*]]</span></div><![[LOOP,CUBE_GEN_FUNCTION]]
-><div id="<<CUBE_GEN_FUNCTION:I>>" class="header2"><<CUBE_GEN_FUNCTION:C>></div><!
+><div id="<<CUBE_GEN_FUNCTION:I>>" class="header2"><<CUBE_GEN_FUNCTION1:C>></div><!
 ><div id="<<CUBE_GEN_FUNCTION:I>>T" class="header3">Template</div><!
-><div><span style="display:block;" class="template code"><<CUBE_GEN_FUNCTION2:HE>></span></div><!
+><div><span style="display:block;" class="template code"><<CUBE_GEN_FUNCTION3:HE>></span></div><!
 ><div id="<<CUBE_GEN_FUNCTION:I>>C" class="header3">Code</div><!
-><div><span style="display:block;" class="result code">[[FOR,CUBE_GEN_EXAMPLE_MODEL:N>N]][[TEMPLATE:CUBE_GEN_FUNCTION2]][[ENDFOR]]</span></div><![[ENDLOOP,CUBE_GEN_FUNCTION]][[ENDLOOP,CUBE_GEN_EXAMPLE_MODEL]]
+><div><span style="display:block;" class="result code">[[FOR,CUBE_GEN_EXAMPLE_MODEL:N>N]][[TEMPLATE:CUBE_GEN_FUNCTION3]][[ENDFOR]]</span></div><![[ENDLOOP,CUBE_GEN_FUNCTION]][[ENDLOOP,CUBE_GEN_EXAMPLE_MODEL]]
 ></pre>
 <div>
 <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>

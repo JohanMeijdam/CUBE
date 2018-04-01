@@ -17,13 +17,13 @@ g_xmlhttp.onreadystatechange = function() {
 			break;
 		case "CREATE_CGO":
 			document.getElementById("InputFkCubName").readOnly=true;
-			document.getElementById("InputFkCgmName").readOnly=true;
+			document.getElementById("InputFkCgmId").readOnly=true;
 			document.getElementById("InputXkBotName").readOnly=true;
 			document.getElementById("RefSelect001").disabled=true;
 			document.getElementById("ButtonCreate").disabled=true;
 			document.getElementById("ButtonDelete").disabled=false;
 			l_objNode = parent.TREE.document.getElementById(document._nodeId);
-			document._nodeId = 'TYP_CGO<||>'+document.getElementById("InputFkCubName").value+'<|>'+document.getElementById("InputFkCgmName").value+'<|>'+document.getElementById("InputXkBotName").value;
+			document._nodeId = 'TYP_CGO<||>'+document.getElementById("InputFkCubName").value+'<|>'+document.getElementById("InputFkCgmId").value+'<|>'+document.getElementById("InputXkBotName").value;
 			if (l_objNode != null) {
 				if (l_objNode.firstChild._state == 'O') {
 					var l_position = g_option[0];
@@ -86,22 +86,22 @@ function InitBody() {
 	switch (l_argument[1]) {
 	case "D":
 		document.getElementById("InputFkCubName").value=values[0];
-		document.getElementById("InputFkCgmName").value=values[1];
+		document.getElementById("InputFkCgmId").value=values[1];
 		document.getElementById("InputXkBotName").value=values[2];
 		document.getElementById("ButtonCreate").disabled=true;
 		document.getElementById("ButtonUpdate").disabled=true;
 		document.getElementById("InputFkCubName").readOnly=true;
-		document.getElementById("InputFkCgmName").readOnly=true;
+		document.getElementById("InputFkCgmId").readOnly=true;
 		document.getElementById("InputXkBotName").readOnly=true;
 		document.getElementById("RefSelect001").disabled=true;
 		break;
 	case "N":
 		document.getElementById("InputFkCubName").value=values[0];
-		document.getElementById("InputFkCgmName").value=values[1];
+		document.getElementById("InputFkCgmId").value=values[1];
 		document.getElementById("ButtonUpdate").disabled=true;
 		document.getElementById("ButtonDelete").disabled=true;
 		document.getElementById("InputFkCubName").readOnly=true;
-		document.getElementById("InputFkCgmName").readOnly=true;
+		document.getElementById("InputFkCgmId").readOnly=true;
 		break;
 	default:
 		alert ('Error InitBody: '+l_argument[1]);
@@ -111,7 +111,7 @@ function InitBody() {
 function CreateCgo() {
 	var l_parameters = 
 		document.getElementById("InputFkCubName").value+'<|>'+
-		document.getElementById("InputFkCgmName").value+'<|>'+
+		document.getElementById("InputFkCgmId").value+'<|>'+
 		document.getElementById("InputXkBotName").value;
 	if (g_option[0] == 'F' || g_option[0] == 'L') {
 		performTrans('CreateCgo<|||>'+g_option[0]+'<|>'+l_parameters);
@@ -123,7 +123,7 @@ function CreateCgo() {
 function UpdateCgo() {
 	var l_parameters = 
 		document.getElementById("InputFkCubName").value+'<|>'+
-		document.getElementById("InputFkCgmName").value+'<|>'+
+		document.getElementById("InputFkCgmId").value+'<|>'+
 		document.getElementById("InputXkBotName").value;
 	performTrans('UpdateCgo<|||>'+l_parameters);
 }
@@ -131,7 +131,7 @@ function UpdateCgo() {
 function DeleteCgo() {
 	var l_parameters = 
 		document.getElementById("InputFkCubName").value+'<|>'+
-		document.getElementById("InputFkCgmName").value+'<|>'+
+		document.getElementById("InputFkCgmId").value+'<|>'+
 		document.getElementById("InputXkBotName").value;
 	performTrans('DeleteCgo<|||>'+l_parameters);
 }
@@ -344,8 +344,8 @@ function drop(p_event) {
 <table>
 <tr><td><u>CubeGenDocumentation.Name</u></td><td><div style="max-width:30em;">
 <input id="InputFkCubName" type="text" maxlength="30" style="width:100%;" onchange="ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td><u>CubeGenExampleModel.Name</u></td><td><div style="max-width:30em;">
-<input id="InputFkCgmName" type="text" maxlength="30" style="width:100%;" onchange="ReplaceSpaces(this);"></input></div></td></tr>
+<tr><td><u>CubeGenExampleModel.Id</u></td><td><div style="max-width:8em;">
+<input id="InputFkCgmId" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
 <tr><td height=6></td></tr><tr><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/botype.bmp"/> BusinessObjectType (UsesAsExample)</legend>
 <table style="width:100%;">
 <tr><td><u>BusinessObjectType.Name</u></td><td style="width:100%;"><div style="max-width:30em;">

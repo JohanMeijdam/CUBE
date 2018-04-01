@@ -14,16 +14,18 @@ g_xmlhttp.onreadystatechange = function() {
 		switch (l_argument[0]) {
 		case "SELECT_CGM":
 			var l_values = l_argument[1].split("<|>");
-			document.getElementById("InputIncludedObjectNames").value=l_values[0];
+			document.getElementById("InputHeader").value=l_values[0];
+			document.getElementById("InputIncludedObjectNames").value=l_values[1];
+			document.getElementById("InputDescription").value=l_values[2];
 			break;
 		case "CREATE_CGM":
 			document.getElementById("InputFkCubName").readOnly=true;
-			document.getElementById("InputName").readOnly=true;
+			document.getElementById("InputId").readOnly=true;
 			document.getElementById("ButtonCreate").disabled=true;
 			document.getElementById("ButtonUpdate").disabled=false;
 			document.getElementById("ButtonDelete").disabled=false;
 			l_objNode = parent.TREE.document.getElementById(document._nodeId);
-			document._nodeId = 'TYP_CGM<||>'+document.getElementById("InputFkCubName").value+'<|>'+document.getElementById("InputName").value;
+			document._nodeId = 'TYP_CGM<||>'+document.getElementById("InputFkCubName").value+'<|>'+document.getElementById("InputId").value;
 			if (l_objNode != null) {
 				if (l_objNode.firstChild._state == 'O') {
 					var l_position = g_option[0];
@@ -33,7 +35,7 @@ g_xmlhttp.onreadystatechange = function() {
 						'TYP_CGM',
 						document._nodeId,
 						'icons/model.bmp', 
-						document.getElementById("InputName").value.toLowerCase(),
+						document.getElementById("InputHeader").value.toLowerCase(),
 						'N',
 						l_position,
 						l_objNodePos);
@@ -41,6 +43,10 @@ g_xmlhttp.onreadystatechange = function() {
 			}
 			break;
 		case "UPDATE_CGM":
+			l_objNode = parent.TREE.document.getElementById(document._nodeId);
+			if (l_objNode != null) {
+				l_objNode.children[1].lastChild.nodeValue = ' '+document.getElementById("InputHeader").value.toLowerCase();
+			}
 			break;
 		case "DELETE_CGM":
 			document.getElementById("ButtonUpdate").disabled=true;
@@ -83,11 +89,11 @@ function InitBody() {
 	switch (l_argument[1]) {
 	case "D":
 		document.getElementById("InputFkCubName").value=values[0];
-		document.getElementById("InputName").value=values[1];
+		document.getElementById("InputId").value=values[1];
 		document.getElementById("ButtonCreate").disabled=true;
 		performTrans('GetCgm'+'<|||>'+document._argument);
 		document.getElementById("InputFkCubName").readOnly=true;
-		document.getElementById("InputName").readOnly=true;
+		document.getElementById("InputId").readOnly=true;
 		break;
 	case "N":
 		document.getElementById("InputFkCubName").value=values[0];
@@ -103,8 +109,10 @@ function InitBody() {
 function CreateCgm() {
 	var l_parameters = 
 		document.getElementById("InputFkCubName").value+'<|>'+
-		document.getElementById("InputName").value+'<|>'+
-		document.getElementById("InputIncludedObjectNames").value;
+		document.getElementById("InputId").value+'<|>'+
+		document.getElementById("InputHeader").value+'<|>'+
+		document.getElementById("InputIncludedObjectNames").value+'<|>'+
+		document.getElementById("InputDescription").value;
 	if (g_option[0] == 'F' || g_option[0] == 'L') {
 		performTrans('CreateCgm<|||>'+g_option[0]+'<|>'+l_parameters);
 	} else {
@@ -115,15 +123,17 @@ function CreateCgm() {
 function UpdateCgm() {
 	var l_parameters = 
 		document.getElementById("InputFkCubName").value+'<|>'+
-		document.getElementById("InputName").value+'<|>'+
-		document.getElementById("InputIncludedObjectNames").value;
+		document.getElementById("InputId").value+'<|>'+
+		document.getElementById("InputHeader").value+'<|>'+
+		document.getElementById("InputIncludedObjectNames").value+'<|>'+
+		document.getElementById("InputDescription").value;
 	performTrans('UpdateCgm<|||>'+l_parameters);
 }
 
 function DeleteCgm() {
 	var l_parameters = 
 		document.getElementById("InputFkCubName").value+'<|>'+
-		document.getElementById("InputName").value;
+		document.getElementById("InputId").value;
 	performTrans('DeleteCgm<|||>'+l_parameters);
 }
 
@@ -236,10 +246,14 @@ function drop(p_event) {
 <table>
 <tr><td><u>CubeGenDocumentation.Name</u></td><td><div style="max-width:30em;">
 <input id="InputFkCubName" type="text" maxlength="30" style="width:100%;" onchange="ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td><u>Name</u></td><td><div style="max-width:30em;">
-<input id="InputName" type="text" maxlength="30" style="width:100%;" onchange="ReplaceSpaces(this);"></input></div></td></tr>
+<tr><td style="cursor:help;" oncontextmenu="OpenDescBox('MODEL','CubeGenExampleModel.Id','CUBE_GEN_EXAMPLE_MODEL','ID',-1)"><u>Id</u></td><td><div style="max-width:8em;">
+<input id="InputId" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr><td style="cursor:help;" oncontextmenu="OpenDescBox('MODEL','CubeGenExampleModel.Header','CUBE_GEN_EXAMPLE_MODEL','HEADER',-1)">Header</td><td><div style="max-width:40em;">
+<input id="InputHeader" type="text" maxlength="40" style="width:100%;"></input></div></td></tr>
 <tr><td style="cursor:help;" oncontextmenu="OpenDescBox('MODEL','CubeGenExampleModel.IncludedObjectNames','CUBE_GEN_EXAMPLE_MODEL','INCLUDED_OBJECT_NAMES',-1)">IncludedObjectNames</td><td><div style="max-width:120em;">
 <input id="InputIncludedObjectNames" type="text" maxlength="120" style="width:100%;" onchange="ToUpperCase(this);"></input></div></td></tr>
+<tr><td style="padding-top:10px;">Description</td></tr><tr><td colspan="2"><div>
+<textarea id="InputDescription" type="text" maxlength="3999" rows="5" style="white-space:normal;width:100%;"></textarea></div></td></tr>
 <tr><td><br></td><td style="width:100%;"></td></tr>
 <tr><td/><td>
 <button id="ButtonCreate" type="button" onclick="CreateCgm()">Create</button>&nbsp;&nbsp;&nbsp;

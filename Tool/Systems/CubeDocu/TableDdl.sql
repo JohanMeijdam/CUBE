@@ -500,6 +500,7 @@ CREATE TABLE t_system_bo_type (
 CREATE TABLE t_cube_gen_documentation (
 	cube_id VARCHAR2(16),
 	name VARCHAR2(30),
+	description VARCHAR2(3999),
 	CONSTRAINT cub_pk
 		PRIMARY KEY (name) )
 /
@@ -507,10 +508,11 @@ CREATE TABLE t_cube_gen_paragraph (
 	cube_id VARCHAR2(16),
 	cube_sequence NUMBER(8),
 	fk_cub_name VARCHAR2(30),
-	header VARCHAR2(120),
+	id VARCHAR2(8),
+	header VARCHAR2(40),
 	description VARCHAR2(3999),
 	CONSTRAINT cgp_pk
-		PRIMARY KEY (fk_cub_name, header),
+		PRIMARY KEY (fk_cub_name, id),
 	CONSTRAINT cgp_cub_fk
 		FOREIGN KEY (fk_cub_name)
 		REFERENCES t_cube_gen_documentation (name)
@@ -520,10 +522,12 @@ CREATE TABLE t_cube_gen_example_model (
 	cube_id VARCHAR2(16),
 	cube_sequence NUMBER(8),
 	fk_cub_name VARCHAR2(30),
-	name VARCHAR2(30),
+	id VARCHAR2(8),
+	header VARCHAR2(40),
 	included_object_names VARCHAR2(120),
+	description VARCHAR2(3999),
 	CONSTRAINT cgm_pk
-		PRIMARY KEY (fk_cub_name, name),
+		PRIMARY KEY (fk_cub_name, id),
 	CONSTRAINT cgm_cub_fk
 		FOREIGN KEY (fk_cub_name)
 		REFERENCES t_cube_gen_documentation (name)
@@ -533,28 +537,29 @@ CREATE TABLE t_cube_gen_example_object (
 	cube_id VARCHAR2(16),
 	cube_sequence NUMBER(8),
 	fk_cub_name VARCHAR2(30),
-	fk_cgm_name VARCHAR2(30),
+	fk_cgm_id VARCHAR2(8),
 	xk_bot_name VARCHAR2(30),
 	CONSTRAINT cgo_pk
-		PRIMARY KEY (fk_cub_name, fk_cgm_name, xk_bot_name),
+		PRIMARY KEY (fk_cub_name, fk_cgm_id, xk_bot_name),
 	CONSTRAINT cgo_cgm_fk
-		FOREIGN KEY (fk_cub_name, fk_cgm_name)
-		REFERENCES t_cube_gen_example_model (fk_cub_name, name)
+		FOREIGN KEY (fk_cub_name, fk_cgm_id)
+		REFERENCES t_cube_gen_example_model (fk_cub_name, id)
 		ON DELETE CASCADE )
 /
 CREATE TABLE t_cube_gen_function (
 	cube_id VARCHAR2(16),
 	cube_sequence NUMBER(8),
 	fk_cub_name VARCHAR2(30),
-	fk_cgm_name VARCHAR2(30),
-	header VARCHAR2(120),
+	fk_cgm_id VARCHAR2(8),
+	id VARCHAR2(8),
+	header VARCHAR2(40),
 	description VARCHAR2(3999),
 	template VARCHAR2(3999),
 	CONSTRAINT cgf_pk
 		PRIMARY KEY (header),
 	CONSTRAINT cgf_cgm_fk
-		FOREIGN KEY (fk_cub_name, fk_cgm_name)
-		REFERENCES t_cube_gen_example_model (fk_cub_name, name)
+		FOREIGN KEY (fk_cub_name, fk_cgm_id)
+		REFERENCES t_cube_gen_example_model (fk_cub_name, id)
 		ON DELETE CASCADE )
 /
 EXIT;

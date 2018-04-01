@@ -2014,7 +2014,8 @@ BEGIN
 		EXECUTE IMMEDIATE
 		'CREATE TABLE t_cube_gen_documentation (
 			cube_id VARCHAR2(16),
-			name VARCHAR2(30))';
+			name VARCHAR2(30),
+			description VARCHAR2(3999))';
 		DBMS_OUTPUT.PUT_LINE('Table T_CUBE_GEN_DOCUMENTATION created');
 	ELSE
 
@@ -2030,6 +2031,13 @@ BEGIN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_cube_gen_documentation ADD name VARCHAR2(30)';
 			DBMS_OUTPUT.PUT_LINE('Column T_CUBE_GEN_DOCUMENTATION.NAME created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_CUBE_GEN_DOCUMENTATION' AND column_name = 'DESCRIPTION';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_cube_gen_documentation ADD description VARCHAR2(3999)';
+			DBMS_OUTPUT.PUT_LINE('Column T_CUBE_GEN_DOCUMENTATION.DESCRIPTION created');
 		END IF;
 
 		FOR r_key IN (SELECT constraint_name FROM all_constraints WHERE owner = 'CUBEDOCU' AND table_name = 'T_CUBE_GEN_DOCUMENTATION' AND constraint_type IN ('P','U','R') ORDER BY constraint_type DESC)
@@ -2058,7 +2066,8 @@ BEGIN
 			cube_id VARCHAR2(16),
 			cube_sequence NUMBER(8),
 			fk_cub_name VARCHAR2(30),
-			header VARCHAR2(120),
+			id VARCHAR2(8),
+			header VARCHAR2(40),
 			description VARCHAR2(3999))';
 		DBMS_OUTPUT.PUT_LINE('Table T_CUBE_GEN_PARAGRAPH created');
 	ELSE
@@ -2084,10 +2093,17 @@ BEGIN
 			DBMS_OUTPUT.PUT_LINE('Column T_CUBE_GEN_PARAGRAPH.FK_CUB_NAME created');
 		END IF;
 
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_CUBE_GEN_PARAGRAPH' AND column_name = 'ID';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_cube_gen_paragraph ADD id VARCHAR2(8)';
+			DBMS_OUTPUT.PUT_LINE('Column T_CUBE_GEN_PARAGRAPH.ID created');
+		END IF;
+
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_CUBE_GEN_PARAGRAPH' AND column_name = 'HEADER';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
-			'ALTER TABLE t_cube_gen_paragraph ADD header VARCHAR2(120)';
+			'ALTER TABLE t_cube_gen_paragraph ADD header VARCHAR2(40)';
 			DBMS_OUTPUT.PUT_LINE('Column T_CUBE_GEN_PARAGRAPH.HEADER created');
 		END IF;
 
@@ -2124,8 +2140,10 @@ BEGIN
 			cube_id VARCHAR2(16),
 			cube_sequence NUMBER(8),
 			fk_cub_name VARCHAR2(30),
-			name VARCHAR2(30),
-			included_object_names VARCHAR2(120))';
+			id VARCHAR2(8),
+			header VARCHAR2(40),
+			included_object_names VARCHAR2(120),
+			description VARCHAR2(3999))';
 		DBMS_OUTPUT.PUT_LINE('Table T_CUBE_GEN_EXAMPLE_MODEL created');
 	ELSE
 
@@ -2150,11 +2168,18 @@ BEGIN
 			DBMS_OUTPUT.PUT_LINE('Column T_CUBE_GEN_EXAMPLE_MODEL.FK_CUB_NAME created');
 		END IF;
 
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_CUBE_GEN_EXAMPLE_MODEL' AND column_name = 'NAME';
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_CUBE_GEN_EXAMPLE_MODEL' AND column_name = 'ID';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
-			'ALTER TABLE t_cube_gen_example_model ADD name VARCHAR2(30)';
-			DBMS_OUTPUT.PUT_LINE('Column T_CUBE_GEN_EXAMPLE_MODEL.NAME created');
+			'ALTER TABLE t_cube_gen_example_model ADD id VARCHAR2(8)';
+			DBMS_OUTPUT.PUT_LINE('Column T_CUBE_GEN_EXAMPLE_MODEL.ID created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_CUBE_GEN_EXAMPLE_MODEL' AND column_name = 'HEADER';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_cube_gen_example_model ADD header VARCHAR2(40)';
+			DBMS_OUTPUT.PUT_LINE('Column T_CUBE_GEN_EXAMPLE_MODEL.HEADER created');
 		END IF;
 
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_CUBE_GEN_EXAMPLE_MODEL' AND column_name = 'INCLUDED_OBJECT_NAMES';
@@ -2162,6 +2187,13 @@ BEGIN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_cube_gen_example_model ADD included_object_names VARCHAR2(120)';
 			DBMS_OUTPUT.PUT_LINE('Column T_CUBE_GEN_EXAMPLE_MODEL.INCLUDED_OBJECT_NAMES created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_CUBE_GEN_EXAMPLE_MODEL' AND column_name = 'DESCRIPTION';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_cube_gen_example_model ADD description VARCHAR2(3999)';
+			DBMS_OUTPUT.PUT_LINE('Column T_CUBE_GEN_EXAMPLE_MODEL.DESCRIPTION created');
 		END IF;
 
 		FOR r_key IN (SELECT constraint_name FROM all_constraints WHERE owner = 'CUBEDOCU' AND table_name = 'T_CUBE_GEN_EXAMPLE_MODEL' AND constraint_type IN ('P','U','R') ORDER BY constraint_type DESC)
@@ -2190,7 +2222,7 @@ BEGIN
 			cube_id VARCHAR2(16),
 			cube_sequence NUMBER(8),
 			fk_cub_name VARCHAR2(30),
-			fk_cgm_name VARCHAR2(30),
+			fk_cgm_id VARCHAR2(8),
 			xk_bot_name VARCHAR2(30))';
 		DBMS_OUTPUT.PUT_LINE('Table T_CUBE_GEN_EXAMPLE_OBJECT created');
 	ELSE
@@ -2216,11 +2248,11 @@ BEGIN
 			DBMS_OUTPUT.PUT_LINE('Column T_CUBE_GEN_EXAMPLE_OBJECT.FK_CUB_NAME created');
 		END IF;
 
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_CUBE_GEN_EXAMPLE_OBJECT' AND column_name = 'FK_CGM_NAME';
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_CUBE_GEN_EXAMPLE_OBJECT' AND column_name = 'FK_CGM_ID';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
-			'ALTER TABLE t_cube_gen_example_object ADD fk_cgm_name VARCHAR2(30)';
-			DBMS_OUTPUT.PUT_LINE('Column T_CUBE_GEN_EXAMPLE_OBJECT.FK_CGM_NAME created');
+			'ALTER TABLE t_cube_gen_example_object ADD fk_cgm_id VARCHAR2(8)';
+			DBMS_OUTPUT.PUT_LINE('Column T_CUBE_GEN_EXAMPLE_OBJECT.FK_CGM_ID created');
 		END IF;
 
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_CUBE_GEN_EXAMPLE_OBJECT' AND column_name = 'XK_BOT_NAME';
@@ -2256,8 +2288,9 @@ BEGIN
 			cube_id VARCHAR2(16),
 			cube_sequence NUMBER(8),
 			fk_cub_name VARCHAR2(30),
-			fk_cgm_name VARCHAR2(30),
-			header VARCHAR2(120),
+			fk_cgm_id VARCHAR2(8),
+			id VARCHAR2(8),
+			header VARCHAR2(40),
 			description VARCHAR2(3999),
 			template VARCHAR2(3999))';
 		DBMS_OUTPUT.PUT_LINE('Table T_CUBE_GEN_FUNCTION created');
@@ -2284,17 +2317,24 @@ BEGIN
 			DBMS_OUTPUT.PUT_LINE('Column T_CUBE_GEN_FUNCTION.FK_CUB_NAME created');
 		END IF;
 
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_CUBE_GEN_FUNCTION' AND column_name = 'FK_CGM_NAME';
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_CUBE_GEN_FUNCTION' AND column_name = 'FK_CGM_ID';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
-			'ALTER TABLE t_cube_gen_function ADD fk_cgm_name VARCHAR2(30)';
-			DBMS_OUTPUT.PUT_LINE('Column T_CUBE_GEN_FUNCTION.FK_CGM_NAME created');
+			'ALTER TABLE t_cube_gen_function ADD fk_cgm_id VARCHAR2(8)';
+			DBMS_OUTPUT.PUT_LINE('Column T_CUBE_GEN_FUNCTION.FK_CGM_ID created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_CUBE_GEN_FUNCTION' AND column_name = 'ID';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_cube_gen_function ADD id VARCHAR2(8)';
+			DBMS_OUTPUT.PUT_LINE('Column T_CUBE_GEN_FUNCTION.ID created');
 		END IF;
 
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_CUBE_GEN_FUNCTION' AND column_name = 'HEADER';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
-			'ALTER TABLE t_cube_gen_function ADD header VARCHAR2(120)';
+			'ALTER TABLE t_cube_gen_function ADD header VARCHAR2(40)';
 			DBMS_OUTPUT.PUT_LINE('Column T_CUBE_GEN_FUNCTION.HEADER created');
 		END IF;
 
@@ -3789,10 +3829,12 @@ BEGIN
 		data_default old_default_value,
   		DECODE(column_name,
 			'CUBE_ID','VARCHAR2(16)',
-			'NAME','VARCHAR2(30)',NULL) new_domain,
+			'NAME','VARCHAR2(30)',
+			'DESCRIPTION','VARCHAR2(3999)',NULL) new_domain,
 		DECODE(column_name,
 			'CUBE_ID',NULL,
-			'NAME',NULL,NULL) new_default_value
+			'NAME',NULL,
+			'DESCRIPTION',NULL,NULL) new_default_value
   		FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_CUBE_GEN_DOCUMENTATION')
 	LOOP
 		IF r_field.old_domain <> r_field.new_domain THEN
@@ -3824,7 +3866,8 @@ BEGIN
 	DBMS_OUTPUT.PUT_LINE('Primary Key T_CUBE_GEN_DOCUMENTATION.CUB_PK created');
 	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_CUBE_GEN_DOCUMENTATION' AND column_name NOT IN (
 							'CUBE_ID',
-							'NAME'))
+							'NAME',
+							'DESCRIPTION'))
 	LOOP
 		EXECUTE IMMEDIATE
 		'ALTER TABLE t_cube_gen_documentation DROP COLUMN ' || r_field.column_name;
@@ -3840,12 +3883,14 @@ BEGIN
 			'CUBE_ID','VARCHAR2(16)',
 			'CUBE_SEQUENCE','NUMBER(8)',
 			'FK_CUB_NAME','VARCHAR2(30)',
-			'HEADER','VARCHAR2(120)',
+			'ID','VARCHAR2(8)',
+			'HEADER','VARCHAR2(40)',
 			'DESCRIPTION','VARCHAR2(3999)',NULL) new_domain,
 		DECODE(column_name,
 			'CUBE_ID',NULL,
 			'CUBE_SEQUENCE',NULL,
 			'FK_CUB_NAME',NULL,
+			'ID',NULL,
 			'HEADER',NULL,
 			'DESCRIPTION',NULL,NULL) new_default_value
   		FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_CUBE_GEN_PARAGRAPH')
@@ -3876,7 +3921,7 @@ BEGIN
 	'ALTER TABLE t_cube_gen_paragraph ADD CONSTRAINT cgp_pk
 		PRIMARY KEY (
 			fk_cub_name,
-			header )';
+			id )';
 	DBMS_OUTPUT.PUT_LINE('Primary Key T_CUBE_GEN_PARAGRAPH.CGP_PK created');
 	EXECUTE IMMEDIATE
 	'ALTER TABLE t_cube_gen_paragraph ADD CONSTRAINT cgp_cub_fk
@@ -3887,6 +3932,7 @@ BEGIN
 							'CUBE_ID',
 							'CUBE_SEQUENCE',
 							'FK_CUB_NAME',
+							'ID',
 							'HEADER',
 							'DESCRIPTION'))
 	LOOP
@@ -3904,14 +3950,18 @@ BEGIN
 			'CUBE_ID','VARCHAR2(16)',
 			'CUBE_SEQUENCE','NUMBER(8)',
 			'FK_CUB_NAME','VARCHAR2(30)',
-			'NAME','VARCHAR2(30)',
-			'INCLUDED_OBJECT_NAMES','VARCHAR2(120)',NULL) new_domain,
+			'ID','VARCHAR2(8)',
+			'HEADER','VARCHAR2(40)',
+			'INCLUDED_OBJECT_NAMES','VARCHAR2(120)',
+			'DESCRIPTION','VARCHAR2(3999)',NULL) new_domain,
 		DECODE(column_name,
 			'CUBE_ID',NULL,
 			'CUBE_SEQUENCE',NULL,
 			'FK_CUB_NAME',NULL,
-			'NAME',NULL,
-			'INCLUDED_OBJECT_NAMES',NULL,NULL) new_default_value
+			'ID',NULL,
+			'HEADER',NULL,
+			'INCLUDED_OBJECT_NAMES',NULL,
+			'DESCRIPTION',NULL,NULL) new_default_value
   		FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_CUBE_GEN_EXAMPLE_MODEL')
 	LOOP
 		IF r_field.old_domain <> r_field.new_domain THEN
@@ -3940,7 +3990,7 @@ BEGIN
 	'ALTER TABLE t_cube_gen_example_model ADD CONSTRAINT cgm_pk
 		PRIMARY KEY (
 			fk_cub_name,
-			name )';
+			id )';
 	DBMS_OUTPUT.PUT_LINE('Primary Key T_CUBE_GEN_EXAMPLE_MODEL.CGM_PK created');
 	EXECUTE IMMEDIATE
 	'ALTER TABLE t_cube_gen_example_model ADD CONSTRAINT cgm_cub_fk
@@ -3951,8 +4001,10 @@ BEGIN
 							'CUBE_ID',
 							'CUBE_SEQUENCE',
 							'FK_CUB_NAME',
-							'NAME',
-							'INCLUDED_OBJECT_NAMES'))
+							'ID',
+							'HEADER',
+							'INCLUDED_OBJECT_NAMES',
+							'DESCRIPTION'))
 	LOOP
 		EXECUTE IMMEDIATE
 		'ALTER TABLE t_cube_gen_example_model DROP COLUMN ' || r_field.column_name;
@@ -3968,13 +4020,13 @@ BEGIN
 			'CUBE_ID','VARCHAR2(16)',
 			'CUBE_SEQUENCE','NUMBER(8)',
 			'FK_CUB_NAME','VARCHAR2(30)',
-			'FK_CGM_NAME','VARCHAR2(30)',
+			'FK_CGM_ID','VARCHAR2(8)',
 			'XK_BOT_NAME','VARCHAR2(30)',NULL) new_domain,
 		DECODE(column_name,
 			'CUBE_ID',NULL,
 			'CUBE_SEQUENCE',NULL,
 			'FK_CUB_NAME',NULL,
-			'FK_CGM_NAME',NULL,
+			'FK_CGM_ID',NULL,
 			'XK_BOT_NAME',NULL,NULL) new_default_value
   		FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_CUBE_GEN_EXAMPLE_OBJECT')
 	LOOP
@@ -4004,19 +4056,19 @@ BEGIN
 	'ALTER TABLE t_cube_gen_example_object ADD CONSTRAINT cgo_pk
 		PRIMARY KEY (
 			fk_cub_name,
-			fk_cgm_name,
+			fk_cgm_id,
 			xk_bot_name )';
 	DBMS_OUTPUT.PUT_LINE('Primary Key T_CUBE_GEN_EXAMPLE_OBJECT.CGO_PK created');
 	EXECUTE IMMEDIATE
 	'ALTER TABLE t_cube_gen_example_object ADD CONSTRAINT cgo_cgm_fk
-		FOREIGN KEY (fk_cub_name, fk_cgm_name)
-		REFERENCES t_cube_gen_example_model (fk_cub_name, name)
+		FOREIGN KEY (fk_cub_name, fk_cgm_id)
+		REFERENCES t_cube_gen_example_model (fk_cub_name, id)
 		ON DELETE CASCADE';
 	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_CUBE_GEN_EXAMPLE_OBJECT' AND column_name NOT IN (
 							'CUBE_ID',
 							'CUBE_SEQUENCE',
 							'FK_CUB_NAME',
-							'FK_CGM_NAME',
+							'FK_CGM_ID',
 							'XK_BOT_NAME'))
 	LOOP
 		EXECUTE IMMEDIATE
@@ -4033,15 +4085,17 @@ BEGIN
 			'CUBE_ID','VARCHAR2(16)',
 			'CUBE_SEQUENCE','NUMBER(8)',
 			'FK_CUB_NAME','VARCHAR2(30)',
-			'FK_CGM_NAME','VARCHAR2(30)',
-			'HEADER','VARCHAR2(120)',
+			'FK_CGM_ID','VARCHAR2(8)',
+			'ID','VARCHAR2(8)',
+			'HEADER','VARCHAR2(40)',
 			'DESCRIPTION','VARCHAR2(3999)',
 			'TEMPLATE','VARCHAR2(3999)',NULL) new_domain,
 		DECODE(column_name,
 			'CUBE_ID',NULL,
 			'CUBE_SEQUENCE',NULL,
 			'FK_CUB_NAME',NULL,
-			'FK_CGM_NAME',NULL,
+			'FK_CGM_ID',NULL,
+			'ID',NULL,
 			'HEADER',NULL,
 			'DESCRIPTION',NULL,
 			'TEMPLATE',NULL,NULL) new_default_value
@@ -4076,14 +4130,15 @@ BEGIN
 	DBMS_OUTPUT.PUT_LINE('Primary Key T_CUBE_GEN_FUNCTION.CGF_PK created');
 	EXECUTE IMMEDIATE
 	'ALTER TABLE t_cube_gen_function ADD CONSTRAINT cgf_cgm_fk
-		FOREIGN KEY (fk_cub_name, fk_cgm_name)
-		REFERENCES t_cube_gen_example_model (fk_cub_name, name)
+		FOREIGN KEY (fk_cub_name, fk_cgm_id)
+		REFERENCES t_cube_gen_example_model (fk_cub_name, id)
 		ON DELETE CASCADE';
 	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_CUBE_GEN_FUNCTION' AND column_name NOT IN (
 							'CUBE_ID',
 							'CUBE_SEQUENCE',
 							'FK_CUB_NAME',
-							'FK_CGM_NAME',
+							'FK_CGM_ID',
+							'ID',
 							'HEADER',
 							'DESCRIPTION',
 							'TEMPLATE'))

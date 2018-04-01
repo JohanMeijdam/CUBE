@@ -14,10 +14,12 @@ g_xmlhttp.onreadystatechange = function() {
 		switch (l_argument[0]) {
 		case "SELECT_CUB":
 			var l_values = l_argument[1].split("<|>");
+			document.getElementById("InputDescription").value=l_values[0];
 			break;
 		case "CREATE_CUB":
 			document.getElementById("InputName").readOnly=true;
 			document.getElementById("ButtonCreate").disabled=true;
+			document.getElementById("ButtonUpdate").disabled=false;
 			document.getElementById("ButtonDelete").disabled=false;
 			l_objNode = parent.TREE.document.getElementById(document._nodeId);
 			document._nodeId = 'TYP_CUB<||>'+document.getElementById("InputName").value;
@@ -80,7 +82,7 @@ function InitBody() {
 	case "D":
 		document.getElementById("InputName").value=values[0];
 		document.getElementById("ButtonCreate").disabled=true;
-		document.getElementById("ButtonUpdate").disabled=true;
+		performTrans('GetCub'+'<|||>'+document._argument);
 		document.getElementById("InputName").readOnly=true;
 		break;
 	case "N":
@@ -94,13 +96,15 @@ function InitBody() {
 
 function CreateCub() {
 	var l_parameters = 
-		document.getElementById("InputName").value;
+		document.getElementById("InputName").value+'<|>'+
+		document.getElementById("InputDescription").value;
 	performTrans('CreateCub<|||>'+l_parameters);
 }
 
 function UpdateCub() {
 	var l_parameters = 
-		document.getElementById("InputName").value;
+		document.getElementById("InputName").value+'<|>'+
+		document.getElementById("InputDescription").value;
 	performTrans('UpdateCub<|||>'+l_parameters);
 }
 
@@ -219,6 +223,8 @@ function drop(p_event) {
 <table>
 <tr><td style="cursor:help;" oncontextmenu="OpenDescBox('CUBEGEN','CubeGenDocumentation.Name','CUBE_GEN_DOCUMENTATION','NAME',-1)"><u>Name</u></td><td><div style="max-width:30em;">
 <input id="InputName" type="text" maxlength="30" style="width:100%;" onchange="ReplaceSpaces(this);"></input></div></td></tr>
+<tr><td style="padding-top:10px;">Description</td></tr><tr><td colspan="2"><div>
+<textarea id="InputDescription" type="text" maxlength="3999" rows="5" style="white-space:normal;width:100%;"></textarea></div></td></tr>
 <tr><td><br></td><td style="width:100%;"></td></tr>
 <tr><td/><td>
 <button id="ButtonCreate" type="button" onclick="CreateCub()">Create</button>&nbsp;&nbsp;&nbsp;

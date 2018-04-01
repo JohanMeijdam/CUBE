@@ -3853,6 +3853,9 @@ CREATE OR REPLACE PACKAGE pkg_cub IS
 	FUNCTION cube_package RETURN VARCHAR2;
 	PROCEDURE get_cub_root_items (
 			p_cube_row IN OUT c_cube_row);
+	PROCEDURE get_cub (
+			p_cube_row IN OUT c_cube_row,
+			p_name IN VARCHAR2);
 	PROCEDURE get_cub_cgp_items (
 			p_cube_row IN OUT c_cube_row,
 			p_name IN VARCHAR2);
@@ -3860,84 +3863,94 @@ CREATE OR REPLACE PACKAGE pkg_cub IS
 			p_cube_row IN OUT c_cube_row,
 			p_name IN VARCHAR2);
 	PROCEDURE insert_cub (
-			p_name IN VARCHAR2);
+			p_name IN VARCHAR2,
+			p_description IN VARCHAR2);
+	PROCEDURE update_cub (
+			p_name IN VARCHAR2,
+			p_description IN VARCHAR2);
 	PROCEDURE delete_cub (
 			p_name IN VARCHAR2);
 	PROCEDURE get_cgp (
 			p_cube_row IN OUT c_cube_row,
 			p_fk_cub_name IN VARCHAR2,
-			p_header IN VARCHAR2);
+			p_id IN VARCHAR2);
 	PROCEDURE move_cgp (
 			p_cube_pos_action IN VARCHAR2,
 			p_fk_cub_name IN VARCHAR2,
-			p_header IN VARCHAR2,
+			p_id IN VARCHAR2,
 			x_fk_cub_name IN VARCHAR2,
-			x_header IN VARCHAR2);
+			x_id IN VARCHAR2);
 	PROCEDURE insert_cgp (
 			p_cube_pos_action IN VARCHAR2,
 			p_fk_cub_name IN VARCHAR2,
+			p_id IN VARCHAR2,
 			p_header IN VARCHAR2,
 			p_description IN VARCHAR2,
 			x_fk_cub_name IN VARCHAR2,
-			x_header IN VARCHAR2);
+			x_id IN VARCHAR2);
 	PROCEDURE update_cgp (
 			p_fk_cub_name IN VARCHAR2,
+			p_id IN VARCHAR2,
 			p_header IN VARCHAR2,
 			p_description IN VARCHAR2);
 	PROCEDURE delete_cgp (
 			p_fk_cub_name IN VARCHAR2,
-			p_header IN VARCHAR2);
+			p_id IN VARCHAR2);
 	PROCEDURE get_cgm (
 			p_cube_row IN OUT c_cube_row,
 			p_fk_cub_name IN VARCHAR2,
-			p_name IN VARCHAR2);
+			p_id IN VARCHAR2);
 	PROCEDURE get_cgm_cgo_items (
 			p_cube_row IN OUT c_cube_row,
 			p_fk_cub_name IN VARCHAR2,
-			p_name IN VARCHAR2);
+			p_id IN VARCHAR2);
 	PROCEDURE get_cgm_cgf_items (
 			p_cube_row IN OUT c_cube_row,
 			p_fk_cub_name IN VARCHAR2,
-			p_name IN VARCHAR2);
+			p_id IN VARCHAR2);
 	PROCEDURE move_cgm (
 			p_cube_pos_action IN VARCHAR2,
 			p_fk_cub_name IN VARCHAR2,
-			p_name IN VARCHAR2,
+			p_id IN VARCHAR2,
 			x_fk_cub_name IN VARCHAR2,
-			x_name IN VARCHAR2);
+			x_id IN VARCHAR2);
 	PROCEDURE insert_cgm (
 			p_cube_pos_action IN VARCHAR2,
 			p_fk_cub_name IN VARCHAR2,
-			p_name IN VARCHAR2,
+			p_id IN VARCHAR2,
+			p_header IN VARCHAR2,
 			p_included_object_names IN VARCHAR2,
+			p_description IN VARCHAR2,
 			x_fk_cub_name IN VARCHAR2,
-			x_name IN VARCHAR2);
+			x_id IN VARCHAR2);
 	PROCEDURE update_cgm (
 			p_fk_cub_name IN VARCHAR2,
-			p_name IN VARCHAR2,
-			p_included_object_names IN VARCHAR2);
+			p_id IN VARCHAR2,
+			p_header IN VARCHAR2,
+			p_included_object_names IN VARCHAR2,
+			p_description IN VARCHAR2);
 	PROCEDURE delete_cgm (
 			p_fk_cub_name IN VARCHAR2,
-			p_name IN VARCHAR2);
+			p_id IN VARCHAR2);
 	PROCEDURE move_cgo (
 			p_cube_pos_action IN VARCHAR2,
 			p_fk_cub_name IN VARCHAR2,
-			p_fk_cgm_name IN VARCHAR2,
+			p_fk_cgm_id IN VARCHAR2,
 			p_xk_bot_name IN VARCHAR2,
 			x_fk_cub_name IN VARCHAR2,
-			x_fk_cgm_name IN VARCHAR2,
+			x_fk_cgm_id IN VARCHAR2,
 			x_xk_bot_name IN VARCHAR2);
 	PROCEDURE insert_cgo (
 			p_cube_pos_action IN VARCHAR2,
 			p_fk_cub_name IN VARCHAR2,
-			p_fk_cgm_name IN VARCHAR2,
+			p_fk_cgm_id IN VARCHAR2,
 			p_xk_bot_name IN VARCHAR2,
 			x_fk_cub_name IN VARCHAR2,
-			x_fk_cgm_name IN VARCHAR2,
+			x_fk_cgm_id IN VARCHAR2,
 			x_xk_bot_name IN VARCHAR2);
 	PROCEDURE delete_cgo (
 			p_fk_cub_name IN VARCHAR2,
-			p_fk_cgm_name IN VARCHAR2,
+			p_fk_cgm_id IN VARCHAR2,
 			p_xk_bot_name IN VARCHAR2);
 	PROCEDURE get_cgf (
 			p_cube_row IN OUT c_cube_row,
@@ -3949,14 +3962,16 @@ CREATE OR REPLACE PACKAGE pkg_cub IS
 	PROCEDURE insert_cgf (
 			p_cube_pos_action IN VARCHAR2,
 			p_fk_cub_name IN VARCHAR2,
-			p_fk_cgm_name IN VARCHAR2,
+			p_fk_cgm_id IN VARCHAR2,
+			p_id IN VARCHAR2,
 			p_header IN VARCHAR2,
 			p_description IN VARCHAR2,
 			p_template IN VARCHAR2,
 			x_header IN VARCHAR2);
 	PROCEDURE update_cgf (
 			p_fk_cub_name IN VARCHAR2,
-			p_fk_cgm_name IN VARCHAR2,
+			p_fk_cgm_id IN VARCHAR2,
+			p_id IN VARCHAR2,
 			p_header IN VARCHAR2,
 			p_description IN VARCHAR2,
 			p_template IN VARCHAR2);
@@ -3982,6 +3997,17 @@ CREATE OR REPLACE PACKAGE BODY pkg_cub IS
 			ORDER BY name;
 	END;
 
+	PROCEDURE get_cub (
+			p_cube_row IN OUT c_cube_row,
+			p_name IN VARCHAR2) IS
+	BEGIN
+		OPEN p_cube_row FOR
+			SELECT
+			  description
+			FROM v_cube_gen_documentation
+			WHERE name = p_name;
+	END;
+
 	PROCEDURE get_cub_cgp_items (
 			p_cube_row IN OUT c_cube_row,
 			p_name IN VARCHAR2) IS
@@ -3990,6 +4016,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_cub IS
 			SELECT
 			  cube_sequence,
 			  fk_cub_name,
+			  id,
 			  header
 			FROM v_cube_gen_paragraph
 			WHERE fk_cub_name = p_name
@@ -4004,24 +4031,37 @@ CREATE OR REPLACE PACKAGE BODY pkg_cub IS
 			SELECT
 			  cube_sequence,
 			  fk_cub_name,
-			  name
+			  id,
+			  header
 			FROM v_cube_gen_example_model
 			WHERE fk_cub_name = p_name
 			ORDER BY fk_cub_name, cube_sequence;
 	END;
 
 	PROCEDURE insert_cub (
-			p_name IN VARCHAR2) IS
+			p_name IN VARCHAR2,
+			p_description IN VARCHAR2) IS
 	BEGIN
 		INSERT INTO v_cube_gen_documentation (
 			cube_id,
-			name)
+			name,
+			description)
 		VALUES (
 			NULL,
-			p_name);
+			p_name,
+			p_description);
 	EXCEPTION
 		WHEN DUP_VAL_ON_INDEX THEN
 			RAISE_APPLICATION_ERROR (-20001, 'Type cube_gen_documentation already exists');
+	END;
+
+	PROCEDURE update_cub (
+			p_name IN VARCHAR2,
+			p_description IN VARCHAR2) IS
+	BEGIN
+		UPDATE v_cube_gen_documentation SET
+			description = p_description
+		WHERE name = p_name;
 	END;
 
 	PROCEDURE delete_cub (
@@ -4034,21 +4074,22 @@ CREATE OR REPLACE PACKAGE BODY pkg_cub IS
 	PROCEDURE get_cgp (
 			p_cube_row IN OUT c_cube_row,
 			p_fk_cub_name IN VARCHAR2,
-			p_header IN VARCHAR2) IS
+			p_id IN VARCHAR2) IS
 	BEGIN
 		OPEN p_cube_row FOR
 			SELECT
+			  header,
 			  description
 			FROM v_cube_gen_paragraph
 			WHERE fk_cub_name = p_fk_cub_name
-			  AND header = p_header;
+			  AND id = p_id;
 	END;
 
 	PROCEDURE determine_position_cgp (
 			p_cube_sequence OUT NUMBER,
 			p_cube_pos_action IN VARCHAR2,
 			p_fk_cub_name IN VARCHAR2,
-			p_header IN VARCHAR2) IS
+			p_id IN VARCHAR2) IS
 		l_cube_pos_action VARCHAR2(1);
 		l_cube_position_sequ NUMBER(8);
 		l_cube_near_sequ NUMBER(8);
@@ -4072,7 +4113,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_cub IS
 				INTO l_cube_position_sequ
 				FROM v_cube_gen_paragraph
 				WHERE fk_cub_name = p_fk_cub_name
-				  AND header = p_header;
+				  AND id = p_id;
 			END IF;
 			-- read sequence number near the target.
 			SELECT DECODE (l_cube_pos_action, 'B', NVL (MAX (cube_sequence), 0), NVL (MIN (cube_sequence), 99999999))
@@ -4107,20 +4148,20 @@ CREATE OR REPLACE PACKAGE BODY pkg_cub IS
 	PROCEDURE move_cgp (
 			p_cube_pos_action IN VARCHAR2,
 			p_fk_cub_name IN VARCHAR2,
-			p_header IN VARCHAR2,
+			p_id IN VARCHAR2,
 			x_fk_cub_name IN VARCHAR2,
-			x_header IN VARCHAR2) IS
+			x_id IN VARCHAR2) IS
 		l_cube_sequence NUMBER(8);
 	BEGIN
 		-- A=After B=Before F=First L=Last
 		IF p_cube_pos_action NOT IN ('A', 'B', 'F', 'L') THEN
 			RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
 		END IF;
-		determine_position_cgp (l_cube_sequence, p_cube_pos_action, x_fk_cub_name, x_header);
+		determine_position_cgp (l_cube_sequence, p_cube_pos_action, x_fk_cub_name, x_id);
 		UPDATE v_cube_gen_paragraph SET
 			cube_sequence = l_cube_sequence
 		WHERE fk_cub_name = p_fk_cub_name
-		  AND header = p_header;
+		  AND id = p_id;
 		IF SQL%NOTFOUND THEN
 			RAISE_APPLICATION_ERROR (-20002, 'Type cube_gen_paragraph not found');
 		END IF;
@@ -4129,27 +4170,30 @@ CREATE OR REPLACE PACKAGE BODY pkg_cub IS
 	PROCEDURE insert_cgp (
 			p_cube_pos_action IN VARCHAR2,
 			p_fk_cub_name IN VARCHAR2,
+			p_id IN VARCHAR2,
 			p_header IN VARCHAR2,
 			p_description IN VARCHAR2,
 			x_fk_cub_name IN VARCHAR2,
-			x_header IN VARCHAR2) IS
+			x_id IN VARCHAR2) IS
 		l_cube_sequence NUMBER(8);
 	BEGIN
 		-- A=After B=Before F=First L=Last
 		IF p_cube_pos_action NOT IN ('A', 'B', 'F', 'L') THEN
 			RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
 		END IF;
-		determine_position_cgp (l_cube_sequence, p_cube_pos_action, x_fk_cub_name, x_header);
+		determine_position_cgp (l_cube_sequence, p_cube_pos_action, x_fk_cub_name, x_id);
 		INSERT INTO v_cube_gen_paragraph (
 			cube_id,
 			cube_sequence,
 			fk_cub_name,
+			id,
 			header,
 			description)
 		VALUES (
 			NULL,
 			l_cube_sequence,
 			p_fk_cub_name,
+			p_id,
 			p_header,
 			p_description);
 	EXCEPTION
@@ -4159,58 +4203,62 @@ CREATE OR REPLACE PACKAGE BODY pkg_cub IS
 
 	PROCEDURE update_cgp (
 			p_fk_cub_name IN VARCHAR2,
+			p_id IN VARCHAR2,
 			p_header IN VARCHAR2,
 			p_description IN VARCHAR2) IS
 	BEGIN
 		UPDATE v_cube_gen_paragraph SET
+			header = p_header,
 			description = p_description
 		WHERE fk_cub_name = p_fk_cub_name
-		  AND header = p_header;
+		  AND id = p_id;
 	END;
 
 	PROCEDURE delete_cgp (
 			p_fk_cub_name IN VARCHAR2,
-			p_header IN VARCHAR2) IS
+			p_id IN VARCHAR2) IS
 	BEGIN
 		DELETE v_cube_gen_paragraph
 		WHERE fk_cub_name = p_fk_cub_name
-		  AND header = p_header;
+		  AND id = p_id;
 	END;
 
 	PROCEDURE get_cgm (
 			p_cube_row IN OUT c_cube_row,
 			p_fk_cub_name IN VARCHAR2,
-			p_name IN VARCHAR2) IS
+			p_id IN VARCHAR2) IS
 	BEGIN
 		OPEN p_cube_row FOR
 			SELECT
-			  included_object_names
+			  header,
+			  included_object_names,
+			  description
 			FROM v_cube_gen_example_model
 			WHERE fk_cub_name = p_fk_cub_name
-			  AND name = p_name;
+			  AND id = p_id;
 	END;
 
 	PROCEDURE get_cgm_cgo_items (
 			p_cube_row IN OUT c_cube_row,
 			p_fk_cub_name IN VARCHAR2,
-			p_name IN VARCHAR2) IS
+			p_id IN VARCHAR2) IS
 	BEGIN
 		OPEN p_cube_row FOR
 			SELECT
 			  cube_sequence,
 			  fk_cub_name,
-			  fk_cgm_name,
+			  fk_cgm_id,
 			  xk_bot_name
 			FROM v_cube_gen_example_object
 			WHERE fk_cub_name = p_fk_cub_name
-			  AND fk_cgm_name = p_name
-			ORDER BY fk_cub_name, fk_cgm_name, cube_sequence;
+			  AND fk_cgm_id = p_id
+			ORDER BY fk_cub_name, fk_cgm_id, cube_sequence;
 	END;
 
 	PROCEDURE get_cgm_cgf_items (
 			p_cube_row IN OUT c_cube_row,
 			p_fk_cub_name IN VARCHAR2,
-			p_name IN VARCHAR2) IS
+			p_id IN VARCHAR2) IS
 	BEGIN
 		OPEN p_cube_row FOR
 			SELECT
@@ -4218,7 +4266,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_cub IS
 			  header
 			FROM v_cube_gen_function
 			WHERE fk_cub_name = p_fk_cub_name
-			  AND fk_cgm_name = p_name
+			  AND fk_cgm_id = p_id
 			ORDER BY cube_sequence;
 	END;
 
@@ -4226,7 +4274,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_cub IS
 			p_cube_sequence OUT NUMBER,
 			p_cube_pos_action IN VARCHAR2,
 			p_fk_cub_name IN VARCHAR2,
-			p_name IN VARCHAR2) IS
+			p_id IN VARCHAR2) IS
 		l_cube_pos_action VARCHAR2(1);
 		l_cube_position_sequ NUMBER(8);
 		l_cube_near_sequ NUMBER(8);
@@ -4250,7 +4298,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_cub IS
 				INTO l_cube_position_sequ
 				FROM v_cube_gen_example_model
 				WHERE fk_cub_name = p_fk_cub_name
-				  AND name = p_name;
+				  AND id = p_id;
 			END IF;
 			-- read sequence number near the target.
 			SELECT DECODE (l_cube_pos_action, 'B', NVL (MAX (cube_sequence), 0), NVL (MIN (cube_sequence), 99999999))
@@ -4285,20 +4333,20 @@ CREATE OR REPLACE PACKAGE BODY pkg_cub IS
 	PROCEDURE move_cgm (
 			p_cube_pos_action IN VARCHAR2,
 			p_fk_cub_name IN VARCHAR2,
-			p_name IN VARCHAR2,
+			p_id IN VARCHAR2,
 			x_fk_cub_name IN VARCHAR2,
-			x_name IN VARCHAR2) IS
+			x_id IN VARCHAR2) IS
 		l_cube_sequence NUMBER(8);
 	BEGIN
 		-- A=After B=Before F=First L=Last
 		IF p_cube_pos_action NOT IN ('A', 'B', 'F', 'L') THEN
 			RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
 		END IF;
-		determine_position_cgm (l_cube_sequence, p_cube_pos_action, x_fk_cub_name, x_name);
+		determine_position_cgm (l_cube_sequence, p_cube_pos_action, x_fk_cub_name, x_id);
 		UPDATE v_cube_gen_example_model SET
 			cube_sequence = l_cube_sequence
 		WHERE fk_cub_name = p_fk_cub_name
-		  AND name = p_name;
+		  AND id = p_id;
 		IF SQL%NOTFOUND THEN
 			RAISE_APPLICATION_ERROR (-20002, 'Type cube_gen_example_model not found');
 		END IF;
@@ -4307,29 +4355,35 @@ CREATE OR REPLACE PACKAGE BODY pkg_cub IS
 	PROCEDURE insert_cgm (
 			p_cube_pos_action IN VARCHAR2,
 			p_fk_cub_name IN VARCHAR2,
-			p_name IN VARCHAR2,
+			p_id IN VARCHAR2,
+			p_header IN VARCHAR2,
 			p_included_object_names IN VARCHAR2,
+			p_description IN VARCHAR2,
 			x_fk_cub_name IN VARCHAR2,
-			x_name IN VARCHAR2) IS
+			x_id IN VARCHAR2) IS
 		l_cube_sequence NUMBER(8);
 	BEGIN
 		-- A=After B=Before F=First L=Last
 		IF p_cube_pos_action NOT IN ('A', 'B', 'F', 'L') THEN
 			RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
 		END IF;
-		determine_position_cgm (l_cube_sequence, p_cube_pos_action, x_fk_cub_name, x_name);
+		determine_position_cgm (l_cube_sequence, p_cube_pos_action, x_fk_cub_name, x_id);
 		INSERT INTO v_cube_gen_example_model (
 			cube_id,
 			cube_sequence,
 			fk_cub_name,
-			name,
-			included_object_names)
+			id,
+			header,
+			included_object_names,
+			description)
 		VALUES (
 			NULL,
 			l_cube_sequence,
 			p_fk_cub_name,
-			p_name,
-			p_included_object_names);
+			p_id,
+			p_header,
+			p_included_object_names,
+			p_description);
 	EXCEPTION
 		WHEN DUP_VAL_ON_INDEX THEN
 			RAISE_APPLICATION_ERROR (-20001, 'Type cube_gen_example_model already exists');
@@ -4337,29 +4391,33 @@ CREATE OR REPLACE PACKAGE BODY pkg_cub IS
 
 	PROCEDURE update_cgm (
 			p_fk_cub_name IN VARCHAR2,
-			p_name IN VARCHAR2,
-			p_included_object_names IN VARCHAR2) IS
+			p_id IN VARCHAR2,
+			p_header IN VARCHAR2,
+			p_included_object_names IN VARCHAR2,
+			p_description IN VARCHAR2) IS
 	BEGIN
 		UPDATE v_cube_gen_example_model SET
-			included_object_names = p_included_object_names
+			header = p_header,
+			included_object_names = p_included_object_names,
+			description = p_description
 		WHERE fk_cub_name = p_fk_cub_name
-		  AND name = p_name;
+		  AND id = p_id;
 	END;
 
 	PROCEDURE delete_cgm (
 			p_fk_cub_name IN VARCHAR2,
-			p_name IN VARCHAR2) IS
+			p_id IN VARCHAR2) IS
 	BEGIN
 		DELETE v_cube_gen_example_model
 		WHERE fk_cub_name = p_fk_cub_name
-		  AND name = p_name;
+		  AND id = p_id;
 	END;
 
 	PROCEDURE determine_position_cgo (
 			p_cube_sequence OUT NUMBER,
 			p_cube_pos_action IN VARCHAR2,
 			p_fk_cub_name IN VARCHAR2,
-			p_fk_cgm_name IN VARCHAR2,
+			p_fk_cgm_id IN VARCHAR2,
 			p_xk_bot_name IN VARCHAR2) IS
 		l_cube_pos_action VARCHAR2(1);
 		l_cube_position_sequ NUMBER(8);
@@ -4384,7 +4442,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_cub IS
 				INTO l_cube_position_sequ
 				FROM v_cube_gen_example_object
 				WHERE fk_cub_name = p_fk_cub_name
-				  AND fk_cgm_name = p_fk_cgm_name
+				  AND fk_cgm_id = p_fk_cgm_id
 				  AND xk_bot_name = p_xk_bot_name;
 			END IF;
 			-- read sequence number near the target.
@@ -4392,7 +4450,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_cub IS
 			INTO l_cube_near_sequ
 			FROM v_cube_gen_example_object
 			WHERE fk_cub_name = p_fk_cub_name
-			  AND fk_cgm_name = p_fk_cgm_name
+			  AND fk_cgm_id = p_fk_cgm_id
 			  AND 	    ( 	    ( l_cube_pos_action = 'B'
 					  AND cube_sequence < l_cube_position_sequ )
 				   OR 	    ( l_cube_pos_action = 'A'
@@ -4407,7 +4465,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_cub IS
 					  rowid row_id
 					FROM v_cube_gen_example_object
 					WHERE fk_cub_name = p_fk_cub_name
-					  AND fk_cgm_name = p_fk_cgm_name
+					  AND fk_cgm_id = p_fk_cgm_id
 					ORDER BY cube_sequence)
 				LOOP
 					UPDATE v_cube_gen_example_object SET
@@ -4422,10 +4480,10 @@ CREATE OR REPLACE PACKAGE BODY pkg_cub IS
 	PROCEDURE move_cgo (
 			p_cube_pos_action IN VARCHAR2,
 			p_fk_cub_name IN VARCHAR2,
-			p_fk_cgm_name IN VARCHAR2,
+			p_fk_cgm_id IN VARCHAR2,
 			p_xk_bot_name IN VARCHAR2,
 			x_fk_cub_name IN VARCHAR2,
-			x_fk_cgm_name IN VARCHAR2,
+			x_fk_cgm_id IN VARCHAR2,
 			x_xk_bot_name IN VARCHAR2) IS
 		l_cube_sequence NUMBER(8);
 	BEGIN
@@ -4433,11 +4491,11 @@ CREATE OR REPLACE PACKAGE BODY pkg_cub IS
 		IF p_cube_pos_action NOT IN ('A', 'B', 'F', 'L') THEN
 			RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
 		END IF;
-		determine_position_cgo (l_cube_sequence, p_cube_pos_action, x_fk_cub_name, x_fk_cgm_name, x_xk_bot_name);
+		determine_position_cgo (l_cube_sequence, p_cube_pos_action, x_fk_cub_name, x_fk_cgm_id, x_xk_bot_name);
 		UPDATE v_cube_gen_example_object SET
 			cube_sequence = l_cube_sequence
 		WHERE fk_cub_name = p_fk_cub_name
-		  AND fk_cgm_name = p_fk_cgm_name
+		  AND fk_cgm_id = p_fk_cgm_id
 		  AND xk_bot_name = p_xk_bot_name;
 		IF SQL%NOTFOUND THEN
 			RAISE_APPLICATION_ERROR (-20002, 'Type cube_gen_example_object not found');
@@ -4447,10 +4505,10 @@ CREATE OR REPLACE PACKAGE BODY pkg_cub IS
 	PROCEDURE insert_cgo (
 			p_cube_pos_action IN VARCHAR2,
 			p_fk_cub_name IN VARCHAR2,
-			p_fk_cgm_name IN VARCHAR2,
+			p_fk_cgm_id IN VARCHAR2,
 			p_xk_bot_name IN VARCHAR2,
 			x_fk_cub_name IN VARCHAR2,
-			x_fk_cgm_name IN VARCHAR2,
+			x_fk_cgm_id IN VARCHAR2,
 			x_xk_bot_name IN VARCHAR2) IS
 		l_cube_sequence NUMBER(8);
 	BEGIN
@@ -4458,18 +4516,18 @@ CREATE OR REPLACE PACKAGE BODY pkg_cub IS
 		IF p_cube_pos_action NOT IN ('A', 'B', 'F', 'L') THEN
 			RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
 		END IF;
-		determine_position_cgo (l_cube_sequence, p_cube_pos_action, x_fk_cub_name, x_fk_cgm_name, x_xk_bot_name);
+		determine_position_cgo (l_cube_sequence, p_cube_pos_action, x_fk_cub_name, x_fk_cgm_id, x_xk_bot_name);
 		INSERT INTO v_cube_gen_example_object (
 			cube_id,
 			cube_sequence,
 			fk_cub_name,
-			fk_cgm_name,
+			fk_cgm_id,
 			xk_bot_name)
 		VALUES (
 			NULL,
 			l_cube_sequence,
 			p_fk_cub_name,
-			p_fk_cgm_name,
+			p_fk_cgm_id,
 			p_xk_bot_name);
 	EXCEPTION
 		WHEN DUP_VAL_ON_INDEX THEN
@@ -4478,12 +4536,12 @@ CREATE OR REPLACE PACKAGE BODY pkg_cub IS
 
 	PROCEDURE delete_cgo (
 			p_fk_cub_name IN VARCHAR2,
-			p_fk_cgm_name IN VARCHAR2,
+			p_fk_cgm_id IN VARCHAR2,
 			p_xk_bot_name IN VARCHAR2) IS
 	BEGIN
 		DELETE v_cube_gen_example_object
 		WHERE fk_cub_name = p_fk_cub_name
-		  AND fk_cgm_name = p_fk_cgm_name
+		  AND fk_cgm_id = p_fk_cgm_id
 		  AND xk_bot_name = p_xk_bot_name;
 	END;
 
@@ -4494,7 +4552,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_cub IS
 		OPEN p_cube_row FOR
 			SELECT
 			  fk_cub_name,
-			  fk_cgm_name,
+			  fk_cgm_id,
+			  id,
 			  description,
 			  template
 			FROM v_cube_gen_function
@@ -4505,7 +4564,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_cub IS
 			p_cube_sequence OUT NUMBER,
 			p_cube_pos_action IN VARCHAR2,
 			p_fk_cub_name IN VARCHAR2,
-			p_fk_cgm_name IN VARCHAR2,
+			p_fk_cgm_id IN VARCHAR2,
 			p_header IN VARCHAR2) IS
 		l_cube_pos_action VARCHAR2(1);
 		l_cube_position_sequ NUMBER(8);
@@ -4536,7 +4595,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_cub IS
 			INTO l_cube_near_sequ
 			FROM v_cube_gen_function
 			WHERE fk_cub_name = p_fk_cub_name
-			  AND fk_cgm_name = p_fk_cgm_name
+			  AND fk_cgm_id = p_fk_cgm_id
 			  AND 	    ( 	    ( l_cube_pos_action = 'B'
 					  AND cube_sequence < l_cube_position_sequ )
 				   OR 	    ( l_cube_pos_action = 'A'
@@ -4551,7 +4610,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_cub IS
 					  rowid row_id
 					FROM v_cube_gen_function
 					WHERE fk_cub_name = p_fk_cub_name
-					  AND fk_cgm_name = p_fk_cgm_name
+					  AND fk_cgm_id = p_fk_cgm_id
 					ORDER BY cube_sequence)
 				LOOP
 					UPDATE v_cube_gen_function SET
@@ -4569,7 +4628,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_cub IS
 			x_header IN VARCHAR2) IS
 		l_cube_sequence NUMBER(8);
 		l_fk_cub_name v_cube_gen_function.fk_cub_name%TYPE;
-		l_fk_cgm_name v_cube_gen_function.fk_cgm_name%TYPE;
+		l_fk_cgm_id v_cube_gen_function.fk_cgm_id%TYPE;
 	BEGIN
 		-- A=After B=Before F=First L=Last
 		IF p_cube_pos_action NOT IN ('A', 'B', 'F', 'L') THEN
@@ -4577,20 +4636,20 @@ CREATE OR REPLACE PACKAGE BODY pkg_cub IS
 		END IF;
 		-- Get parent id of the target.
 		IF p_cube_pos_action IN ('B', 'A') THEN
-			SELECT fk_cub_name, fk_cgm_name
-			INTO l_fk_cub_name, l_fk_cgm_name
+			SELECT fk_cub_name, fk_cgm_id
+			INTO l_fk_cub_name, l_fk_cgm_id
 			FROM v_cube_gen_function
 			WHERE header = x_header;
 		ELSE
-			SELECT fk_cub_name, fk_cgm_name
-			INTO l_fk_cub_name, l_fk_cgm_name
+			SELECT fk_cub_name, fk_cgm_id
+			INTO l_fk_cub_name, l_fk_cgm_id
 			FROM v_cube_gen_function
 			WHERE header = x_header;
 		END IF;
-		determine_position_cgf (l_cube_sequence, p_cube_pos_action, l_fk_cub_name, l_fk_cgm_name, x_header);
+		determine_position_cgf (l_cube_sequence, p_cube_pos_action, l_fk_cub_name, l_fk_cgm_id, x_header);
 		UPDATE v_cube_gen_function SET
 			fk_cub_name = l_fk_cub_name,
-			fk_cgm_name = l_fk_cgm_name,
+			fk_cgm_id = l_fk_cgm_id,
 			cube_sequence = l_cube_sequence
 		WHERE header = p_header;
 		IF SQL%NOTFOUND THEN
@@ -4601,7 +4660,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_cub IS
 	PROCEDURE insert_cgf (
 			p_cube_pos_action IN VARCHAR2,
 			p_fk_cub_name IN VARCHAR2,
-			p_fk_cgm_name IN VARCHAR2,
+			p_fk_cgm_id IN VARCHAR2,
+			p_id IN VARCHAR2,
 			p_header IN VARCHAR2,
 			p_description IN VARCHAR2,
 			p_template IN VARCHAR2,
@@ -4612,12 +4672,13 @@ CREATE OR REPLACE PACKAGE BODY pkg_cub IS
 		IF p_cube_pos_action NOT IN ('A', 'B', 'F', 'L') THEN
 			RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
 		END IF;
-		determine_position_cgf (l_cube_sequence, p_cube_pos_action, p_fk_cub_name, p_fk_cgm_name, x_header);
+		determine_position_cgf (l_cube_sequence, p_cube_pos_action, p_fk_cub_name, p_fk_cgm_id, x_header);
 		INSERT INTO v_cube_gen_function (
 			cube_id,
 			cube_sequence,
 			fk_cub_name,
-			fk_cgm_name,
+			fk_cgm_id,
+			id,
 			header,
 			description,
 			template)
@@ -4625,7 +4686,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_cub IS
 			NULL,
 			l_cube_sequence,
 			p_fk_cub_name,
-			p_fk_cgm_name,
+			p_fk_cgm_id,
+			p_id,
 			p_header,
 			p_description,
 			p_template);
@@ -4636,14 +4698,16 @@ CREATE OR REPLACE PACKAGE BODY pkg_cub IS
 
 	PROCEDURE update_cgf (
 			p_fk_cub_name IN VARCHAR2,
-			p_fk_cgm_name IN VARCHAR2,
+			p_fk_cgm_id IN VARCHAR2,
+			p_id IN VARCHAR2,
 			p_header IN VARCHAR2,
 			p_description IN VARCHAR2,
 			p_template IN VARCHAR2) IS
 	BEGIN
 		UPDATE v_cube_gen_function SET
 			fk_cub_name = p_fk_cub_name,
-			fk_cgm_name = p_fk_cgm_name,
+			fk_cgm_id = p_fk_cgm_id,
+			id = p_id,
 			description = p_description,
 			template = p_template
 		WHERE header = p_header;

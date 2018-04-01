@@ -14,16 +14,17 @@ g_xmlhttp.onreadystatechange = function() {
 		switch (l_argument[0]) {
 		case "SELECT_CGP":
 			var l_values = l_argument[1].split("<|>");
-			document.getElementById("InputDescription").value=l_values[0];
+			document.getElementById("InputHeader").value=l_values[0];
+			document.getElementById("InputDescription").value=l_values[1];
 			break;
 		case "CREATE_CGP":
 			document.getElementById("InputFkCubName").readOnly=true;
-			document.getElementById("InputHeader").readOnly=true;
+			document.getElementById("InputId").readOnly=true;
 			document.getElementById("ButtonCreate").disabled=true;
 			document.getElementById("ButtonUpdate").disabled=false;
 			document.getElementById("ButtonDelete").disabled=false;
 			l_objNode = parent.TREE.document.getElementById(document._nodeId);
-			document._nodeId = 'TYP_CGP<||>'+document.getElementById("InputFkCubName").value+'<|>'+document.getElementById("InputHeader").value;
+			document._nodeId = 'TYP_CGP<||>'+document.getElementById("InputFkCubName").value+'<|>'+document.getElementById("InputId").value;
 			if (l_objNode != null) {
 				if (l_objNode.firstChild._state == 'O') {
 					var l_position = g_option[0];
@@ -41,6 +42,10 @@ g_xmlhttp.onreadystatechange = function() {
 			}
 			break;
 		case "UPDATE_CGP":
+			l_objNode = parent.TREE.document.getElementById(document._nodeId);
+			if (l_objNode != null) {
+				l_objNode.children[1].lastChild.nodeValue = ' '+document.getElementById("InputHeader").value.toLowerCase();
+			}
 			break;
 		case "DELETE_CGP":
 			document.getElementById("ButtonUpdate").disabled=true;
@@ -83,11 +88,11 @@ function InitBody() {
 	switch (l_argument[1]) {
 	case "D":
 		document.getElementById("InputFkCubName").value=values[0];
-		document.getElementById("InputHeader").value=values[1];
+		document.getElementById("InputId").value=values[1];
 		document.getElementById("ButtonCreate").disabled=true;
 		performTrans('GetCgp'+'<|||>'+document._argument);
 		document.getElementById("InputFkCubName").readOnly=true;
-		document.getElementById("InputHeader").readOnly=true;
+		document.getElementById("InputId").readOnly=true;
 		break;
 	case "N":
 		document.getElementById("InputFkCubName").value=values[0];
@@ -103,6 +108,7 @@ function InitBody() {
 function CreateCgp() {
 	var l_parameters = 
 		document.getElementById("InputFkCubName").value+'<|>'+
+		document.getElementById("InputId").value+'<|>'+
 		document.getElementById("InputHeader").value+'<|>'+
 		document.getElementById("InputDescription").value;
 	if (g_option[0] == 'F' || g_option[0] == 'L') {
@@ -115,6 +121,7 @@ function CreateCgp() {
 function UpdateCgp() {
 	var l_parameters = 
 		document.getElementById("InputFkCubName").value+'<|>'+
+		document.getElementById("InputId").value+'<|>'+
 		document.getElementById("InputHeader").value+'<|>'+
 		document.getElementById("InputDescription").value;
 	performTrans('UpdateCgp<|||>'+l_parameters);
@@ -123,7 +130,7 @@ function UpdateCgp() {
 function DeleteCgp() {
 	var l_parameters = 
 		document.getElementById("InputFkCubName").value+'<|>'+
-		document.getElementById("InputHeader").value;
+		document.getElementById("InputId").value;
 	performTrans('DeleteCgp<|||>'+l_parameters);
 }
 
@@ -236,8 +243,10 @@ function drop(p_event) {
 <table>
 <tr><td><u>CubeGenDocumentation.Name</u></td><td><div style="max-width:30em;">
 <input id="InputFkCubName" type="text" maxlength="30" style="width:100%;" onchange="ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td><u>Header</u></td><td><div style="max-width:120em;">
-<input id="InputHeader" type="text" maxlength="120" style="width:100%;"></input></div></td></tr>
+<tr><td style="cursor:help;" oncontextmenu="OpenDescBox('DESC','CubeGenParagraph.Id','CUBE_GEN_PARAGRAPH','ID',-1)"><u>Id</u></td><td><div style="max-width:8em;">
+<input id="InputId" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr><td style="cursor:help;" oncontextmenu="OpenDescBox('DESC','CubeGenParagraph.Header','CUBE_GEN_PARAGRAPH','HEADER',-1)">Header</td><td><div style="max-width:40em;">
+<input id="InputHeader" type="text" maxlength="40" style="width:100%;"></input></div></td></tr>
 <tr><td style="padding-top:10px;">Description</td></tr><tr><td colspan="2"><div>
 <textarea id="InputDescription" type="text" maxlength="3999" rows="5" style="white-space:normal;width:100%;"></textarea></div></td></tr>
 <tr><td><br></td><td style="width:100%;"></td></tr>

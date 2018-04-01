@@ -9,71 +9,77 @@
 <hr size="6px" style="border-width:0;background-color:black">
 CONSULTANCY AUTOMATION SPECIALIZED IN INFORMATION ARCHITECTURE<br></div></td></tr>
 <tr style="height:100%;"><td style="background-color:whitesmoke"><div class="scrollable">
-<div style="padding-top:5pt;padding-bottom:5pt;font-weight: bold;">INDEX</div>
-<div><a href="#INTRO"><span class="indent1">Introduction</span></a></div>
-<div><a href="#CGP-000000100001"><span class="indent2">Command line</span></a></div>
-<div><a href="#CGM-000000100000"><span class="indent1">Case1</span></a></div>
-<div><a href="#CGM-000000100000M"><span style="display:block;" class="model indent3">CubeModel</span></a></div>
-<div><a href="#CGF-000000100000"><span class="indent2">Iteration</span></a></div>
-<div><a href="#CGF-000000100000T"><span style="display:block;" class="template indent3">Template</span></div>
-<div><a href="#CGF-000000100000C"><span style="display:block;" class="result indent3">Code</span></div>
-<div><a href="#CGF-000000100001"><span class="indent2">Replacement</span></a></div>
-<div><a href="#CGF-000000100001T"><span style="display:block;" class="template indent3">Template</span></div>
-<div><a href="#CGF-000000100001C"><span style="display:block;" class="result indent3">Code</span></div>
+<div  align="center" style="padding-top:5pt;padding-bottom:5pt;font-weight:bold;color:White;background-color:DarkSlateGray;">INDEX</div>
+<div><a href="#INTRO" class="indent1">Introduction</a></div>
+<div><a href="#CGP-000000100022" class="indent2">Command line</a></div>
+<div><a href="#CGP-000000100041" class="indent2">Cube model structure</a></div>
+<div><a href="#CGM-000000100022" class="indent1">First impression</a></div>
+<div><a href="#CGM-000000100022M" class="model indent3">CubeModel</a></div>
+<div><a href="#CGF-000000100024" class="indent2">Iteration</a></div>
+<div><a href="#CGF-000000100024T" class="template indent3">Template</a></div>
+<div><a href="#CGF-000000100024C" class="result indent3">Code</a></div>
+<div><a href="#CGF-000000100025" class="indent2">Replace</a></div>
+<div><a href="#CGF-000000100025T" class="template indent3">Template</a></div>
+<div><a href="#CGF-000000100025C" class="result indent3">Code</a></div>
 </div></td><td style="width:100%;"><div class="scrollable">
 <div style="margin-top:60px;font-size:16pt;" align="center">Transform a CubeGen Model into Code according to your own Template.</div>
 <div align="center"><img src="icons/CubeGenLogoDoc.png"/></div>
 <pre>
 <div id="INTRO" class="header1">Introduction</div><!
-><div id="CGP-000000100001" class="header2">Command line</div><!
-><div >cubegen.exe &lt;model&gt; &lt;template&gt; &lt;code&gt; &lt;arguments&gt; <br>perl cubegen.pl &lt;model&gt; &lt;template&gt; &lt;code&gt; &lt;arguments&gt;<br>- &lt;model&gt;: Imported Cube Model textfile<br>- &lt;template&gt;: Importede CubeGen Template Textfile<br>- &lt;code&gt;: Textfile to generate<br>- &lt;argument&gt;: Parameters used in template</div><!
-><div id="CGM-000000100000" class="header1">Case1</div><!
-><div id="CGM-000000100000M" class="header3">CubeModel</div><!
-><div><span style="display:block;" class="model code">=BUSINESS_OBJECT_TYPE[BOT-000000100000]:CUSTOMERS|customer_files;
-=BUSINESS_OBJECT_TYPE[BOT-000000100001]:ORDER|order_directory;
-=BUSINESS_OBJECT_TYPE[BOT-000000100002]:PRODUCT|product_definitions;
+><div >CubeGen is essentially a copy and replace program. The input is on the one hand the source text recorded in the template and on the other hand the model file in which the parameters for replacing the labels are defined.
+The special thing about CubeGen is that the parameters form a hierarchical structure where you can easily walk through recursively.</div><!
+><div id="CGP-000000100022" class="header2">Command line</div><!
+><div >cubegen.exe &lt;model&gt; &lt;template&gt; &lt;code&gt; &lt;arguments&gt; 
+perl cubegen.pl &lt;model&gt; &lt;template&gt; &lt;code&gt; &lt;arguments&gt;
+-	&lt;model&gt;: Imported Cube Model textfile
+-	&lt;template&gt;: Importede CubeGen Template Textfile
+-	&lt;code&gt;: Textfile to generate
+- &lt;argument&gt;: Parameters used in template</div><!
+><div id="CGP-000000100041" class="header2">Cube model structure</div><!
+><div >A CUBE model, like XML, is a hierachical structure of groups and elements. Both a group and an element have properties.
+The structure can best be explained on the basis of an example:
++&lt;tagA&gt;:&lt;prop0&gt;|&lt;prop1&gt;|...|propN;
+	=&lt;tagB&gt;:&lt;prop0&gt;|&lt;prop1&gt;|...|propN;
+	+&lt;tagC&gt;:&lt;prop0&gt;|&lt;prop1&gt;|...|propN;
+		=&lt;tagD&gt;:&lt;prop0&gt;|&lt;prop1&gt;|..|propN;
+	-&lt;tagC&gt;:;
+-&lt;tagA&gt;:;</div><!
+><div id="CGM-000000100022" class="header1">First impression</div><!
+><div >A simple example is used to give a first impression of the functionality of CubeGen.</div><!
+><div id="CGM-000000100022M" class="header3">CubeModel</div><!
+><div><span style="display:block;" class="model code">=BUSINESS_OBJECT_TYPE[BOT-000000100023]:CUSTOMERS|customer_files;
+=BUSINESS_OBJECT_TYPE[BOT-000000100024]:ORDER|order_directory;
+=BUSINESS_OBJECT_TYPE[BOT-000000100025]:PRODUCT|product_definitions;
 </span></div><!
-><div id="CGF-000000100000" class="header2">Iteration</div><!
-><div id="CGF-000000100000T" class="header3">Template</div><!
-><div><span style="display:block;" class="template code">List:[[LOOP,BUSINESS_OBJECT_TYPE]]
+><div id="CGF-000000100024" class="header2">Iteration</div><!
+><div id="CGF-000000100024T" class="header3">Template</div><!
+><div><span style="display:block;" class="template code">This is a list of the Busines Object Types:[[LOOP,BUSINESS_OBJECT_TYPE]]
 -	&lt;&lt;BUSINESS_OBJECT_TYPE:U&gt;&gt;[[ENDLOOP,BUSINESS_OBJECT_TYPE]]</span></div><!
-><div id="CGF-000000100000C" class="header3">Code</div><!
-><div><span style="display:block;" class="result code">List:
+><div id="CGF-000000100024C" class="header3">Code</div><!
+><div><span style="display:block;" class="result code">This is a list of the Busines Object Types:
 -	CUSTOMERS
 -	ORDER
 -	PRODUCT</span></div><!
-><div id="CGF-000000100001" class="header2">Replacement</div><!
-><div id="CGF-000000100001T" class="header3">Template</div><!
-><div><span style="display:block;" class="template code">[[LOOP,BUSINESS_OBJECT_TYPE]]
-Uppercase: &lt;&lt;BUSINESS_OBJECT_TYPE:U&gt;&gt;
-Lowercase: &lt;&lt;BUSINESS_OBJECT_TYPE:L&gt;&gt;
-Number: &lt;&lt;BUSINESS_OBJECT_TYPE:N&gt;&gt;
-Subnumber: &lt;&lt;BUSINESS_OBJECT_TYPE:S&gt;&gt;
-CamelCase: &lt;&lt;BUSINESS_OBJECT_TYPE:C&gt;&gt;
-ID: &lt;&lt;BUSINESS_OBJECT_TYPE:I&gt;&gt;
+><div id="CGF-000000100025" class="header2">Replace</div><!
+><div id="CGF-000000100025T" class="header3">Template</div><!
+><div><span style="display:block;" class="template code">[[LOOP,BUSINESS_OBJECT_TYPE]]Uppercase: &lt;&lt;BUSINESS_OBJECT_TYPE:U&gt;&gt;, &lt;&lt;BUSINESS_OBJECT_TYPE1:U&gt;&gt;
+Lowercase: &lt;&lt;BUSINESS_OBJECT_TYPE:L&gt;&gt;, &lt;&lt;BUSINESS_OBJECT_TYPE1:L&gt;&gt;
+Camelcase: &lt;&lt;BUSINESS_OBJECT_TYPE:L&gt;&gt;, &lt;&lt;BUSINESS_OBJECT_TYPE1:C&gt;&gt;
+
 [[ENDLOOP,BUSINESS_OBJECT_TYPE]]</span></div><!
-><div id="CGF-000000100001C" class="header3">Code</div><!
-><div><span style="display:block;" class="result code">
-Uppercase: CUSTOMERS
-Lowercase: customers
-Number: 00006
-Subnumber: 001
-CamelCase: Customers
-ID: BOT-000000100000
+><div id="CGF-000000100025C" class="header3">Code</div><!
+><div><span style="display:block;" class="result code">Uppercase: CUSTOMERS, CUSTOMER_FILES
+Lowercase: customers, customer_files
+Camelcase: customers, CustomerFiles
 
-Uppercase: ORDER
-Lowercase: order
-Number: 00007
-Subnumber: 002
-CamelCase: Order
-ID: BOT-000000100001
+Uppercase: ORDER, ORDER_DIRECTORY
+Lowercase: order, order_directory
+Camelcase: order, OrderDirectory
 
-Uppercase: PRODUCT
-Lowercase: product
-Number: 00008
-Subnumber: 003
-CamelCase: Product
-ID: BOT-000000100002
+Uppercase: PRODUCT, PRODUCT_DEFINITIONS
+Lowercase: product, product_definitions
+Camelcase: product, ProductDefinitions
+
 </span></div><!
 ></pre>
 <div>
