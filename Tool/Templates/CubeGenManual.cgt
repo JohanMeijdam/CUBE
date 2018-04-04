@@ -1,17 +1,15 @@
 Change log:
 28-03-2018 Initial version
-[[BODY]][[LOOP,CUBE_GEN_DOCUMENTATION]][[FILE,<<1>>\html\<<CUBE_GEN_DOCUMENTATION:C>>.htm]]<html>
+04-04-2018 Also for Edge and Explorer
+[[BODY]][[LOOP,CUBE_GEN_DOCUMENTATION]][[FILE,<<1>>\<<CUBE_GEN_DOCUMENTATION:C>>.htm]]<html>
 <head>
 <title>CubeGen</title>
 <link rel=stylesheet type="text/css" href="style.css">
 </head>
-<body>
-<table style="height:100%;border:0;border-spacing:0;">
-<tr><td colspan=2 style="background-color:whitesmoke"><div style="padding:15px;line-height:110%;"><b><span style="font-size:32pt;"><i><span style="font-family:Times New Roman,Times,serif">Compo</span></i>SYS</span>.nl</b>
-<hr size="6px" style="border-width:0;background-color:black">
-CONSULTANCY AUTOMATION SPECIALIZED IN INFORMATION ARCHITECTURE<br></div></td></tr>
-<tr style="height:100%;"><td style="background-color:whitesmoke"><div class="scrollable">
-<div  align="center" style="padding-top:5pt;padding-bottom:5pt;font-weight:bold;color:White;background-color:DarkSlateGray;">INDEX</div>
+<body><div style="position:fixed;top:8px;left:8px;right:8px;bottom:8px;">
+<iframe src="ComposysHeader.htm" style="height:76px;width:100%;"></iframe>
+<div  align="center" style="position:absolute;top:76px;left:0px;width:240px;height:30px;padding-top:5pt;font-weight:bold;color:White;background-color:DarkSlateGray;">INDEX</div>
+<div style="overflow:auto;position:absolute;top:106px;left:0px;width:240px;bottom:0;background-color:whitesmoke;">
 <div><a href="#INTRO" class="indent1">Introduction</a></div>[[LOOP,CUBE_GEN_PARAGRAPH]]
 <div><a href="#<<CUBE_GEN_PARAGRAPH:I>>" class="indent2"><<CUBE_GEN_PARAGRAPH1:C>></a></div>[[ENDLOOP,CUBE_GEN_PARAGRAPH]][[LOOP,CUBE_GEN_EXAMPLE_MODEL]]
 <div><a href="#<<CUBE_GEN_EXAMPLE_MODEL:I>>" class="indent1"><<CUBE_GEN_EXAMPLE_MODEL1:C>></a></div>
@@ -19,9 +17,10 @@ CONSULTANCY AUTOMATION SPECIALIZED IN INFORMATION ARCHITECTURE<br></div></td></t
 <div><a href="#<<CUBE_GEN_FUNCTION:I>>" class="indent2"><<CUBE_GEN_FUNCTION1:C>></a></div>
 <div><a href="#<<CUBE_GEN_FUNCTION:I>>T" class="template indent3">Template</a></div>
 <div><a href="#<<CUBE_GEN_FUNCTION:I>>C" class="result indent3">Code</a></div>[[ENDLOOP,CUBE_GEN_FUNCTION]][[ENDLOOP,CUBE_GEN_EXAMPLE_MODEL]]
-</div></td><td style="width:100%;"><div class="scrollable">
+</div>
+<div style="overflow:auto;position:absolute;top:76px;left:240px;right:0;bottom:0;">
 <div style="margin-top:60px;font-size:16pt;" align="center">Transform a CubeGen Model into Code according to your own Template.</div>
-<div align="center"><img src="icons/CubeGenLogoDoc.png"/></div>
+<div align="center"><img src="pictures/CubeGenLogoDoc.png"/></div>
 <pre>
 <div id="INTRO" class="header1">Introduction</div><!
 ><div ><<CUBE_GEN_DOCUMENTATION1:HE>></div><![[LOOP,CUBE_GEN_PARAGRAPH]]
@@ -48,6 +47,6 @@ CONSULTANCY AUTOMATION SPECIALIZED IN INFORMATION ARCHITECTURE<br></div></td></t
 <div class="model"><br><br>MODEL<br><br></div>
 <div class="template"><br><br>TEMPLATE<br><br></div>
 <div class="result"><br><br>CODE<br><br></div>
-</div></td></tr></table>
-</body></html>
+</div>
+</div></body></html>
 [[ENDLOOP,CUBE_GEN_DOCUMENTATION]][[ENDBODY]]

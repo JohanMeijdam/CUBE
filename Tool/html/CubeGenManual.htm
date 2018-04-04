@@ -3,13 +3,10 @@
 <title>CubeGen</title>
 <link rel=stylesheet type="text/css" href="style.css">
 </head>
-<body>
-<table style="height:100%;border:0;border-spacing:0;">
-<tr><td colspan=2 style="background-color:whitesmoke"><div style="padding:15px;line-height:110%;"><b><span style="font-size:32pt;"><i><span style="font-family:Times New Roman,Times,serif">Compo</span></i>SYS</span>.nl</b>
-<hr size="6px" style="border-width:0;background-color:black">
-CONSULTANCY AUTOMATION SPECIALIZED IN INFORMATION ARCHITECTURE<br></div></td></tr>
-<tr style="height:100%;"><td style="background-color:whitesmoke"><div class="scrollable">
-<div  align="center" style="padding-top:5pt;padding-bottom:5pt;font-weight:bold;color:White;background-color:DarkSlateGray;">INDEX</div>
+<body><div style="position:fixed;top:8px;left:8px;right:8px;bottom:8px;">
+<iframe src="ComposysHeader.htm" style="height:76px;width:100%;"></iframe>
+<div  align="center" style="position:absolute;top:76px;left:0px;width:240px;height:30px;padding-top:5pt;font-weight:bold;color:White;background-color:DarkSlateGray;">INDEX</div>
+<div style="overflow:auto;position:absolute;top:106px;left:0px;width:240px;bottom:0;background-color:whitesmoke;">
 <div><a href="#INTRO" class="indent1">Introduction</a></div>
 <div><a href="#CGP-000000100022" class="indent2">Command line</a></div>
 <div><a href="#CGP-000000100041" class="indent2">Cube model structure</a></div>
@@ -21,9 +18,10 @@ CONSULTANCY AUTOMATION SPECIALIZED IN INFORMATION ARCHITECTURE<br></div></td></t
 <div><a href="#CGF-000000100025" class="indent2">Replace</a></div>
 <div><a href="#CGF-000000100025T" class="template indent3">Template</a></div>
 <div><a href="#CGF-000000100025C" class="result indent3">Code</a></div>
-</div></td><td style="width:100%;"><div class="scrollable">
+</div>
+<div style="overflow:auto;position:absolute;top:76px;left:240px;right:0;bottom:0;">
 <div style="margin-top:60px;font-size:16pt;" align="center">Transform a CubeGen Model into Code according to your own Template.</div>
-<div align="center"><img src="icons/CubeGenLogoDoc.png"/></div>
+<div align="center"><img src="pictures/CubeGenLogoDoc.png"/></div>
 <pre>
 <div id="INTRO" class="header1">Introduction</div><!
 ><div >CubeGen is essentially a copy and replace program. The input is on the one hand the source text recorded in the template and on the other hand the model file in which the parameters for replacing the labels are defined.
@@ -32,9 +30,9 @@ The special thing about CubeGen is that the parameters form a hierarchical struc
 ><div >cubegen.exe &lt;model&gt; &lt;template&gt; &lt;code&gt; &lt;arguments&gt; 
 perl cubegen.pl &lt;model&gt; &lt;template&gt; &lt;code&gt; &lt;arguments&gt;
 -	&lt;model&gt;: Imported Cube Model textfile
--	&lt;template&gt;: Importede CubeGen Template Textfile
+-	&lt;template&gt;: Imported CubeGen Template Textfile
 -	&lt;code&gt;: Textfile to generate
-- &lt;argument&gt;: Parameters used in template</div><!
+-	&lt;arguments&gt;: Parameters used in template</div><!
 ><div id="CGP-000000100041" class="header2">Cube model structure</div><!
 ><div >A CUBE model, like XML, is a hierachical structure of groups and elements. Both a group and an element have properties.
 The structure can best be explained on the basis of an example:
@@ -89,5 +87,5 @@ Camelcase: product, ProductDefinitions
 <div class="model"><br><br>MODEL<br><br></div>
 <div class="template"><br><br>TEMPLATE<br><br></div>
 <div class="result"><br><br>CODE<br><br></div>
-</div></td></tr></table>
-</body></html>
+</div>
+</div></body></html>
