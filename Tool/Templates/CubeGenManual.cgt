@@ -1,13 +1,13 @@
 Change log:
 28-03-2018 Initial version
 04-04-2018 Also for Edge and Explorer
-[[BODY]][[LOOP,CUBE_GEN_DOCUMENTATION]][[FILE,<<1>>\<<CUBE_GEN_DOCUMENTATION:C>>.htm]]<html>
+[[BODY]][[LOOP,CUBE_GEN_DOCUMENTATION]]<html>
 <head>
 <title>CubeGen</title>
-<link rel=stylesheet type="text/css" href="style.css">
+<link rel=stylesheet type="text/css" href="../style.css">
 </head>
 <body><div style="position:fixed;top:8px;left:8px;right:8px;bottom:8px;">
-<iframe src="ComposysHeader.htm" style="height:76px;width:100%;"></iframe>
+<iframe src="../composys_header.html" style="height:76px;width:100%;"></iframe>
 <div  align="center" style="position:absolute;top:76px;left:0px;width:240px;height:30px;padding-top:5pt;font-weight:bold;color:White;background-color:DarkSlateGray;">INDEX</div>
 <div style="overflow:auto;position:absolute;top:106px;left:0px;width:240px;bottom:0;background-color:whitesmoke;">
 <div><a href="#INTRO" class="indent1">Introduction</a></div>[[LOOP,CUBE_GEN_PARAGRAPH]]
@@ -20,7 +20,7 @@ Change log:
 </div>
 <div style="overflow:auto;position:absolute;top:76px;left:240px;right:0;bottom:0;">
 <div style="margin-top:60px;font-size:16pt;" align="center">Transform a CubeGen Model into Code according to your own Template.</div>
-<div align="center"><img src="pictures/CubeGenLogoDoc.png"/></div>
+<div align="center"><img src="../images/cubegen_logo_doc.png"/></div>
 <pre>
 <div id="INTRO" class="header1">Introduction</div><!
 ><div ><<CUBE_GEN_DOCUMENTATION1:HE>></div><![[LOOP,CUBE_GEN_PARAGRAPH]]

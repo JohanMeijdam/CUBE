@@ -1,0 +1,6 @@
+RewriteEngine on
+Options FollowSymLinks
+
+RewriteCond "%{REQUEST_URI}" "[A-Z]"
+RewriteRule "^cubegen(.*)" "cubegen$1" [NC]
+RewriteRule "^cube(.*)" "cube$1" [NC]

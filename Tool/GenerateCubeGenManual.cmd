@@ -15,6 +15,6 @@ echo Generate Model.
 CubeGen.exe %sysdir%\CubeToolModel.cgm Templates\CubeGenManualModel.cgt %sysdir%\CubeGenManualModel.cgm >> %logfile% 2>&1
 
 echo Generate Manual.
-CubeGen.exe %sysdir%\CubeGenManualModel.cgm Templates\CubeGenManual.cgt html\CubeGenManual.htm html >> %logfile% 2>&1
+CubeGen.exe %sysdir%\CubeGenManualModel.cgm Templates\CubeGenManual.cgt html\CubeGen\index.html >> %logfile% 2>&1
 
 pause

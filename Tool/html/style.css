@@ -93,6 +93,7 @@ pre {
 	font-family: courier new;
 	font-size: 12px;
 	white-space:pre;
+	overflow:auto;
 }
 
 .header1 {
