@@ -3886,13 +3886,15 @@ CREATE OR REPLACE PACKAGE pkg_cub IS
 			p_id IN VARCHAR2,
 			p_header IN VARCHAR2,
 			p_description IN VARCHAR2,
+			p_example IN VARCHAR2,
 			x_fk_cub_name IN VARCHAR2,
 			x_id IN VARCHAR2);
 	PROCEDURE update_cgp (
 			p_fk_cub_name IN VARCHAR2,
 			p_id IN VARCHAR2,
 			p_header IN VARCHAR2,
-			p_description IN VARCHAR2);
+			p_description IN VARCHAR2,
+			p_example IN VARCHAR2);
 	PROCEDURE delete_cgp (
 			p_fk_cub_name IN VARCHAR2,
 			p_id IN VARCHAR2);
@@ -4079,7 +4081,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_cub IS
 		OPEN p_cube_row FOR
 			SELECT
 			  header,
-			  description
+			  description,
+			  example
 			FROM v_cube_gen_paragraph
 			WHERE fk_cub_name = p_fk_cub_name
 			  AND id = p_id;
@@ -4173,6 +4176,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_cub IS
 			p_id IN VARCHAR2,
 			p_header IN VARCHAR2,
 			p_description IN VARCHAR2,
+			p_example IN VARCHAR2,
 			x_fk_cub_name IN VARCHAR2,
 			x_id IN VARCHAR2) IS
 		l_cube_sequence NUMBER(8);
@@ -4188,14 +4192,16 @@ CREATE OR REPLACE PACKAGE BODY pkg_cub IS
 			fk_cub_name,
 			id,
 			header,
-			description)
+			description,
+			example)
 		VALUES (
 			NULL,
 			l_cube_sequence,
 			p_fk_cub_name,
 			p_id,
 			p_header,
-			p_description);
+			p_description,
+			p_example);
 	EXCEPTION
 		WHEN DUP_VAL_ON_INDEX THEN
 			RAISE_APPLICATION_ERROR (-20001, 'Type cube_gen_paragraph already exists');
@@ -4205,11 +4211,13 @@ CREATE OR REPLACE PACKAGE BODY pkg_cub IS
 			p_fk_cub_name IN VARCHAR2,
 			p_id IN VARCHAR2,
 			p_header IN VARCHAR2,
-			p_description IN VARCHAR2) IS
+			p_description IN VARCHAR2,
+			p_example IN VARCHAR2) IS
 	BEGIN
 		UPDATE v_cube_gen_paragraph SET
 			header = p_header,
-			description = p_description
+			description = p_description,
+			example = p_example
 		WHERE fk_cub_name = p_fk_cub_name
 		  AND id = p_id;
 	END;

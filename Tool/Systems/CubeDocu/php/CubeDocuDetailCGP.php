@@ -16,6 +16,7 @@ g_xmlhttp.onreadystatechange = function() {
 			var l_values = l_argument[1].split("<|>");
 			document.getElementById("InputHeader").value=l_values[0];
 			document.getElementById("InputDescription").value=l_values[1];
+			document.getElementById("InputExample").value=l_values[2];
 			break;
 		case "CREATE_CGP":
 			document.getElementById("InputFkCubName").readOnly=true;
@@ -103,6 +104,7 @@ function InitBody() {
 	default:
 		alert ('Error InitBody: '+l_argument[1]);
 	}
+	document.getElementById("InputExample").value='#';
 }
 
 function CreateCgp() {
@@ -110,7 +112,8 @@ function CreateCgp() {
 		document.getElementById("InputFkCubName").value+'<|>'+
 		document.getElementById("InputId").value+'<|>'+
 		document.getElementById("InputHeader").value+'<|>'+
-		document.getElementById("InputDescription").value;
+		document.getElementById("InputDescription").value+'<|>'+
+		document.getElementById("InputExample").value;
 	if (g_option[0] == 'F' || g_option[0] == 'L') {
 		performTrans('CreateCgp<|||>'+g_option[0]+'<|>'+l_parameters);
 	} else {
@@ -123,7 +126,8 @@ function UpdateCgp() {
 		document.getElementById("InputFkCubName").value+'<|>'+
 		document.getElementById("InputId").value+'<|>'+
 		document.getElementById("InputHeader").value+'<|>'+
-		document.getElementById("InputDescription").value;
+		document.getElementById("InputDescription").value+'<|>'+
+		document.getElementById("InputExample").value;
 	performTrans('UpdateCgp<|||>'+l_parameters);
 }
 
@@ -249,6 +253,8 @@ function drop(p_event) {
 <input id="InputHeader" type="text" maxlength="40" style="width:100%;"></input></div></td></tr>
 <tr><td style="padding-top:10px;">Description</td></tr><tr><td colspan="2"><div>
 <textarea id="InputDescription" type="text" maxlength="3999" rows="5" style="white-space:normal;width:100%;"></textarea></div></td></tr>
+<tr><td style="padding-top:10px;cursor:help;" oncontextmenu="OpenDescBox('DESC','CubeGenParagraph.Example','CUBE_GEN_PARAGRAPH','EXAMPLE',-1)">Example</td></tr><tr><td colspan="2"><div>
+<textarea id="InputExample" type="text" maxlength="3999" rows="11" style="font-family:courier new;font-size:12px;white-space:normal;width:100%;"></textarea></div></td></tr>
 <tr><td><br></td><td style="width:100%;"></td></tr>
 <tr><td/><td>
 <button id="ButtonCreate" type="button" onclick="CreateCgp()">Create</button>&nbsp;&nbsp;&nbsp;

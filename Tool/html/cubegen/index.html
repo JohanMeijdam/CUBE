@@ -3,89 +3,34 @@
 <title>CubeGen</title>
 <link rel=stylesheet type="text/css" href="../style.css">
 </head>
-<body><div style="position:fixed;top:8px;left:8px;right:8px;bottom:8px;">
+<body lang="en"><div style="position:fixed;top:8px;left:8px;right:8px;bottom:8px;">
 <iframe src="../composys_header.html" style="height:76px;width:100%;"></iframe>
-<div  align="center" style="position:absolute;top:76px;left:0px;width:240px;height:30px;padding-top:5pt;font-weight:bold;color:White;background-color:DarkSlateGray;">INDEX</div>
+<div align="center" class="header0" style="position:absolute;top:76px;left:0px;width:240px;height:30px;">INDEX</div>
 <div style="overflow:auto;position:absolute;top:106px;left:0px;width:240px;bottom:0;background-color:whitesmoke;">
-<div><a href="#INTRO" class="indent1">Introduction</a></div>
-<div><a href="#CGP-000000100022" class="indent2">Command line</a></div>
-<div><a href="#CGP-000000100041" class="indent2">Cube model structure</a></div>
-<div><a href="#CGM-000000100022" class="indent1">First impression</a></div>
-<div><a href="#CGM-000000100022M" class="model indent3">CubeModel</a></div>
-<div><a href="#CGF-000000100024" class="indent2">Iteration</a></div>
-<div><a href="#CGF-000000100024T" class="template indent3">Template</a></div>
-<div><a href="#CGF-000000100024C" class="result indent3">Code</a></div>
-<div><a href="#CGF-000000100025" class="indent2">Replace</a></div>
-<div><a href="#CGF-000000100025T" class="template indent3">Template</a></div>
-<div><a href="#CGF-000000100025C" class="result indent3">Code</a></div>
+<div><a href="#DESC" class="indent1">Description</a></div>
+<div><a href="#MANUAL" class="indent1">Manual</a></div>
+<div><a href="#DOWNLOAD" class="indent1">Download</a></div>
+<div><a href="#DEV" class="indent1">Development</a></div>
 </div>
-<div style="overflow:auto;position:absolute;top:76px;left:240px;right:0;bottom:0;">
-<div style="margin-top:60px;font-size:16pt;" align="center">Transform a CubeGen Model into Code according to your own Template.</div>
+<div align="center" class="header0" style="overflow:hidden;position:absolute;top:76px;left:240px;right:0;height:30px;">
+CUBEGEN
+</div>
+<div style="overflow:auto;position:absolute;top:106px;left:240px;right:0;bottom:0;background-color:white;">
+<div align="center" style="padding:15px;font-size:16pt;">Transform a CubeGen Model into Code according to your own Template.</div>
 <div align="center"><img src="../images/cubegen_logo_doc.png"/></div>
 <pre>
-<div id="INTRO" class="header1">Introduction</div><!
-><div >CubeGen is essentially a copy and replace program. The input is on the one hand the source text stored in the template and on the other hand the model file in which the parameters for replacing the labels are defined.
-The special thing about CubeGen is that the parameters form a hierarchical structure where you can easily walk through recursively.</div><!
-><div id="CGP-000000100022" class="header2">Command line</div><!
-><div >cubegen.exe &lt;model&gt; &lt;template&gt; &lt;code&gt; &lt;arguments&gt; 
-perl cubegen.pl &lt;model&gt; &lt;template&gt; &lt;code&gt; &lt;arguments&gt;
--	&lt;model&gt;: Imported Cube Model textfile
--	&lt;template&gt;: Imported CubeGen Template Textfile
--	&lt;code&gt;: Textfile to generate
--	&lt;arguments&gt;: Parameters used in template</div><!
-><div id="CGP-000000100041" class="header2">Cube model structure</div><!
-><div >A CUBE model, like XML, is a hierachical structure of groups and elements. Both a group and an element have properties.
-The structure can best be explained on the basis of an example:
-+&lt;tagA&gt;:&lt;prop0&gt;|&lt;prop1&gt;|...|propN;
-	=&lt;tagB&gt;:&lt;prop0&gt;|&lt;prop1&gt;|...|propN;
-	+&lt;tagC&gt;:&lt;prop0&gt;|&lt;prop1&gt;|...|propN;
-		=&lt;tagD&gt;:&lt;prop0&gt;|&lt;prop1&gt;|..|propN;
-	-&lt;tagC&gt;:;
--&lt;tagA&gt;:;</div><!
-><div id="CGM-000000100022" class="header1">First impression</div><!
-><div >A simple example is used to give a first impression of the functionality of CubeGen.</div><!
-><div id="CGM-000000100022M" class="header3">CubeModel</div><!
-><div><span style="display:block;" class="model code">=BUSINESS_OBJECT_TYPE[BOT-000000100023]:CUSTOMERS|customer_files;
-=BUSINESS_OBJECT_TYPE[BOT-000000100024]:ORDER|order_directory;
-=BUSINESS_OBJECT_TYPE[BOT-000000100025]:PRODUCT|product_definitions;
-</span></div><!
-><div id="CGF-000000100024" class="header2">Iteration</div><!
-><div id="CGF-000000100024T" class="header3">Template</div><!
-><div><span style="display:block;" class="template code">This is a list of the Busines Object Types:[[LOOP,BUSINESS_OBJECT_TYPE]]
--	&lt;&lt;BUSINESS_OBJECT_TYPE:U&gt;&gt;[[ENDLOOP,BUSINESS_OBJECT_TYPE]]</span></div><!
-><div id="CGF-000000100024C" class="header3">Code</div><!
-><div><span style="display:block;" class="result code">This is a list of the Busines Object Types:
--	CUSTOMERS
--	ORDER
--	PRODUCT</span></div><!
-><div id="CGF-000000100025" class="header2">Replace</div><!
-><div id="CGF-000000100025T" class="header3">Template</div><!
-><div><span style="display:block;" class="template code">[[LOOP,BUSINESS_OBJECT_TYPE]]Uppercase: &lt;&lt;BUSINESS_OBJECT_TYPE:U&gt;&gt;, &lt;&lt;BUSINESS_OBJECT_TYPE1:U&gt;&gt;
-Lowercase: &lt;&lt;BUSINESS_OBJECT_TYPE:L&gt;&gt;, &lt;&lt;BUSINESS_OBJECT_TYPE1:L&gt;&gt;
-Camelcase: &lt;&lt;BUSINESS_OBJECT_TYPE:L&gt;&gt;, &lt;&lt;BUSINESS_OBJECT_TYPE1:C&gt;&gt;
-
-[[ENDLOOP,BUSINESS_OBJECT_TYPE]]</span></div><!
-><div id="CGF-000000100025C" class="header3">Code</div><!
-><div><span style="display:block;" class="result code">Uppercase: CUSTOMERS, CUSTOMER_FILES
-Lowercase: customers, customer_files
-Camelcase: customers, CustomerFiles
-
-Uppercase: ORDER, ORDER_DIRECTORY
-Lowercase: order, order_directory
-Camelcase: order, OrderDirectory
-
-Uppercase: PRODUCT, PRODUCT_DEFINITIONS
-Lowercase: product, product_definitions
-Camelcase: product, ProductDefinitions
-
-</span></div><!
+<div id="DESC" class="header2">Description</div><!
+><div>Software is made up of and uses hierarchical structures. CubeGen is a program to generate code based on hierachical models and self-developed templates. The templates describe the output to be generated with a scripting language, with which you can easily navigate through the hierachical models. The result is easy to trace to the source, which makes maintenance easy.</div><!
+><div id="MANUAL" class="header2">Manual</div><!
+><div>The <u><a href="cubegen_manual.html">CubeGen Manual</a></u> is online available. </div><!
+><div id="DOWNLOAD" class="header2">Download</div><!
+><div>The latest release of the CubeGen excutable is available on GitHub. You can download it from <u><a href="https://github.com/JohanMeijdam/CubeGen/releases" target="_blank">here</a></u>.</div><!
+><div id="DEV" class="header2">Development</div><!
+><div>The computer program is written in Perl. The version management is carried out with GitHub. The source code is available in the <u><a href="https://github.com/JohanMeijdam/CubeGen" target="_blank">CubeGen repository</a></u>.</div><!
 ></pre>
 <div>
 <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
 <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
 </div>
-<div class="model"><br><br>MODEL<br><br></div>
-<div class="template"><br><br>TEMPLATE<br><br></div>
-<div class="result"><br><br>CODE<br><br></div>
 </div>
 </div></body></html>

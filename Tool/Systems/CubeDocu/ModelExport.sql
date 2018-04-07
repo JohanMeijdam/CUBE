@@ -533,7 +533,7 @@ DECLARE
 			WHERE fk_cub_name = p_cub.name
 			ORDER BY cube_sequence )
 		LOOP
-			DBMS_OUTPUT.PUT_LINE (ftabs || '=CUBE_GEN_PARAGRAPH[' || r_cgp.cube_id || ']:' || fenperc(r_cgp.id) || '|' || fenperc(r_cgp.header) || '|' || fenperc(r_cgp.description) || ';');
+			DBMS_OUTPUT.PUT_LINE (ftabs || '=CUBE_GEN_PARAGRAPH[' || r_cgp.cube_id || ']:' || fenperc(r_cgp.id) || '|' || fenperc(r_cgp.header) || '|' || fenperc(r_cgp.description) || '|' || fenperc(r_cgp.example) || ';');
 				l_level := l_level + 1;
 				l_level := l_level - 1;
 		END LOOP;
@@ -732,6 +732,7 @@ BEGIN
 	DBMS_OUTPUT.PUT_LINE ('			=PROPERTY:0|Id|'||REPLACE('Technical%20identifier.','%20',' ')||';');
 	DBMS_OUTPUT.PUT_LINE ('			=PROPERTY:1|Header|'||REPLACE('Text%20used%20as%20header%20and%20used%20in%20the%20index.','%20',' ')||';');
 	DBMS_OUTPUT.PUT_LINE ('			=PROPERTY:2|Description|;');
+	DBMS_OUTPUT.PUT_LINE ('			=PROPERTY:3|Example|'||REPLACE('An%20example%20to%20explain%20the%20paragraph.%20No%20example%20is%20indicated%20by%20a%20%27%23%27.','%20',' ')||';');
 	DBMS_OUTPUT.PUT_LINE ('		-META_TYPE:CUBE_GEN_PARAGRAPH;');
 	DBMS_OUTPUT.PUT_LINE ('		+META_TYPE:CUBE_GEN_EXAMPLE_MODEL|'||REPLACE('A%20view%20on%20the%20business%20object%20model%20with%20examples%20of%20functions%20based%20on%20the%20business%20object%20model.','%20',' ')||';');
 	DBMS_OUTPUT.PUT_LINE ('			=PROPERTY:0|Id|'||REPLACE('Technical%20identifier.','%20',' ')||';');

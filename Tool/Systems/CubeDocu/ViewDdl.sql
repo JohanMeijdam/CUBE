@@ -2061,7 +2061,8 @@ CREATE OR REPLACE VIEW v_cube_gen_paragraph AS
 		fk_cub_name,
 		id,
 		header,
-		description
+		description,
+		example
 	FROM t_cube_gen_paragraph
 /
 CREATE OR REPLACE VIEW v_cube_gen_example_model AS 
@@ -2154,14 +2155,16 @@ CREATE OR REPLACE PACKAGE BODY pkg_cub_trg IS
 			fk_cub_name,
 			id,
 			header,
-			description)
+			description,
+			example)
 		VALUES (
 			p_cgp.cube_id,
 			p_cgp.cube_sequence,
 			p_cgp.fk_cub_name,
 			p_cgp.id,
 			p_cgp.header,
-			p_cgp.description);
+			p_cgp.description,
+			p_cgp.example);
 	END;
 
 	PROCEDURE update_cgp (p_cube_rowid UROWID, p_cgp_old IN OUT NOCOPY v_cube_gen_paragraph%ROWTYPE, p_cgp_new IN OUT NOCOPY v_cube_gen_paragraph%ROWTYPE) IS
@@ -2169,7 +2172,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_cub_trg IS
 		UPDATE t_cube_gen_paragraph SET 
 			cube_sequence = p_cgp_new.cube_sequence,
 			header = p_cgp_new.header,
-			description = p_cgp_new.description
+			description = p_cgp_new.description,
+			example = p_cgp_new.example
 		WHERE rowid = p_cube_rowid;
 	END;
 
@@ -2335,6 +2339,7 @@ BEGIN
 		r_cgp_new.id := REPLACE(:NEW.id,' ','_');
 		r_cgp_new.header := :NEW.header;
 		r_cgp_new.description := :NEW.description;
+		r_cgp_new.example := :NEW.example;
 	END IF;
 	IF UPDATING THEN
 		r_cgp_new.cube_id := :OLD.cube_id;
@@ -2348,6 +2353,7 @@ BEGIN
 		r_cgp_old.id := :OLD.id;
 		r_cgp_old.header := :OLD.header;
 		r_cgp_old.description := :OLD.description;
+		r_cgp_old.example := :OLD.example;
 	END IF;
 
 	IF INSERTING THEN 

@@ -511,6 +511,7 @@ CREATE TABLE t_cube_gen_paragraph (
 	id VARCHAR2(8),
 	header VARCHAR2(40),
 	description VARCHAR2(3999),
+	example VARCHAR2(3999) DEFAULT '#',
 	CONSTRAINT cgp_pk
 		PRIMARY KEY (fk_cub_name, id),
 	CONSTRAINT cgp_cub_fk

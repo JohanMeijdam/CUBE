@@ -2965,7 +2965,7 @@ case 'GetCgp':
 	if (!$r) { return; }
 	echo "SELECT_CGP";
 	if ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["HEADER"]."<|>".$row["DESCRIPTION"];
+		echo "<|||>".$row["HEADER"]."<|>".$row["DESCRIPTION"]."<|>".$row["EXAMPLE"];
 	}
 	break;
 
@@ -2996,7 +2996,7 @@ case 'MoveCgp':
 
 case 'CreateCgp':
 
-	list($p_cube_pos_action, $p_fk_cub_name, $p_id, $p_header, $p_description, $x_fk_cub_name, $x_id) = explode("<|>", $import[1]."<|><|>");
+	list($p_cube_pos_action, $p_fk_cub_name, $p_id, $p_header, $p_description, $p_example, $x_fk_cub_name, $x_id) = explode("<|>", $import[1]."<|><|>");
 
 	$stid = oci_parse($conn, "BEGIN pkg_cub.insert_cgp (
 		:p_cube_pos_action,
@@ -3004,6 +3004,7 @@ case 'CreateCgp':
 		:p_id,
 		:p_header,
 		:p_description,
+		:p_example,
 		:x_fk_cub_name,
 		:x_id);
 	END;");
@@ -3012,6 +3013,7 @@ case 'CreateCgp':
 	oci_bind_by_name($stid,":p_id",$p_id);
 	oci_bind_by_name($stid,":p_header",$p_header);
 	oci_bind_by_name($stid,":p_description",$p_description);
+	oci_bind_by_name($stid,":p_example",$p_example);
 	oci_bind_by_name($stid,":x_fk_cub_name",$x_fk_cub_name);
 	oci_bind_by_name($stid,":x_id",$x_id);
 
@@ -3025,18 +3027,20 @@ case 'CreateCgp':
 
 case 'UpdateCgp':
 
-	list($p_fk_cub_name, $p_id, $p_header, $p_description) = explode("<|>", $import[1]);
+	list($p_fk_cub_name, $p_id, $p_header, $p_description, $p_example) = explode("<|>", $import[1]);
 
 	$stid = oci_parse($conn, "BEGIN pkg_cub.update_cgp (
 		:p_fk_cub_name,
 		:p_id,
 		:p_header,
-		:p_description);
+		:p_description,
+		:p_example);
 	END;");
 	oci_bind_by_name($stid,":p_fk_cub_name",$p_fk_cub_name);
 	oci_bind_by_name($stid,":p_id",$p_id);
 	oci_bind_by_name($stid,":p_header",$p_header);
 	oci_bind_by_name($stid,":p_description",$p_description);
+	oci_bind_by_name($stid,":p_example",$p_example);
 
 	$r = oci_execute($stid);
 	if (!$r) {

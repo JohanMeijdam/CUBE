@@ -2068,7 +2068,8 @@ BEGIN
 			fk_cub_name VARCHAR2(30),
 			id VARCHAR2(8),
 			header VARCHAR2(40),
-			description VARCHAR2(3999))';
+			description VARCHAR2(3999),
+			example VARCHAR2(3999) DEFAULT ''#'')';
 		DBMS_OUTPUT.PUT_LINE('Table T_CUBE_GEN_PARAGRAPH created');
 	ELSE
 
@@ -2112,6 +2113,13 @@ BEGIN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_cube_gen_paragraph ADD description VARCHAR2(3999)';
 			DBMS_OUTPUT.PUT_LINE('Column T_CUBE_GEN_PARAGRAPH.DESCRIPTION created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_CUBE_GEN_PARAGRAPH' AND column_name = 'EXAMPLE';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_cube_gen_paragraph ADD example VARCHAR2(3999) DEFAULT ''#''';
+			DBMS_OUTPUT.PUT_LINE('Column T_CUBE_GEN_PARAGRAPH.EXAMPLE created');
 		END IF;
 
 		FOR r_key IN (SELECT constraint_name FROM all_constraints WHERE owner = 'CUBEDOCU' AND table_name = 'T_CUBE_GEN_PARAGRAPH' AND constraint_type IN ('P','U','R') ORDER BY constraint_type DESC)
@@ -3885,14 +3893,16 @@ BEGIN
 			'FK_CUB_NAME','VARCHAR2(30)',
 			'ID','VARCHAR2(8)',
 			'HEADER','VARCHAR2(40)',
-			'DESCRIPTION','VARCHAR2(3999)',NULL) new_domain,
+			'DESCRIPTION','VARCHAR2(3999)',
+			'EXAMPLE','VARCHAR2(3999)',NULL) new_domain,
 		DECODE(column_name,
 			'CUBE_ID',NULL,
 			'CUBE_SEQUENCE',NULL,
 			'FK_CUB_NAME',NULL,
 			'ID',NULL,
 			'HEADER',NULL,
-			'DESCRIPTION',NULL,NULL) new_default_value
+			'DESCRIPTION',NULL,
+			'EXAMPLE','''#''',NULL) new_default_value
   		FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_CUBE_GEN_PARAGRAPH')
 	LOOP
 		IF r_field.old_domain <> r_field.new_domain THEN
@@ -3934,7 +3944,8 @@ BEGIN
 							'FK_CUB_NAME',
 							'ID',
 							'HEADER',
-							'DESCRIPTION'))
+							'DESCRIPTION',
+							'EXAMPLE'))
 	LOOP
 		EXECUTE IMMEDIATE
 		'ALTER TABLE t_cube_gen_paragraph DROP COLUMN ' || r_field.column_name;

@@ -1,0 +1,126 @@
+<html>
+<head>
+<title>CubeGen Manual</title>
+<link rel=stylesheet type="text/css" href="../style.css">
+</head>
+<body><div style="position:fixed;top:8px;left:8px;right:8px;bottom:8px;">
+<iframe src="../composys_header.html" style="height:76px;width:100%;"></iframe>
+<div align="center" class="header0" style="position:absolute;top:76px;left:0px;width:240px;height:30px;">INDEX</div>
+<div style="overflow:auto;position:absolute;top:106px;left:0px;width:240px;bottom:0;background-color:whitesmoke;">
+<div><a href="#INTRO" class="indent1">Introduction</a></div>
+<div><a href="#CGP-000000100022" class="indent2">Command Line</a></div>
+<div><a href="#CGP-000000100041" class="indent2">Cube Model Structure</a></div>
+<div><a href="#CGM-000000100022" class="indent1">First Impression</a></div>
+<div><a href="#CGM-000000100022M" class="model indent3">Cube Model</a></div>
+<div><a href="#CGF-000000100024" class="indent2">Iteration</a></div>
+<div><a href="#CGF-000000100024T" class="template indent3">Template</a></div>
+<div><a href="#CGF-000000100024C" class="result indent3">Code</a></div>
+<div><a href="#CGF-000000100025" class="indent2">Replace</a></div>
+<div><a href="#CGF-000000100025T" class="template indent3">Template</a></div>
+<div><a href="#CGF-000000100025C" class="result indent3">Code</a></div>
+<div><a href="#CGM-000000100040" class="indent1">Introduction Recursivity</a></div>
+<div><a href="#CGM-000000100040M" class="model indent3">Cube Model</a></div>
+<div><a href="#CGF-000000100040" class="indent2">Repeating Iteration</a></div>
+<div><a href="#CGF-000000100040T" class="template indent3">Template</a></div>
+<div><a href="#CGF-000000100040C" class="result indent3">Code</a></div>
+</div>
+<div align="center" class="header0" style="overflow:hidden;position:absolute;top:76px;left:240px;right:0;height:30px;">
+CUBEGEN MANUAL
+</div>
+<div style="overflow:auto;position:absolute;top:106px;left:240px;right:0;bottom:0;background-color:white;">
+<div align="center" style="padding:15px;font-size:16pt;">Transform a CubeGen Model into Code according to your own Template.</div>
+<div align="center"><img src="../images/cubegen_logo_doc.png"/></div>
+<pre>
+<div id="INTRO" class="header1">Introduction</div><!
+><div>CubeGen is essentially the copying of text files with a replacement function. The input consists of two text files: the model file and the template file. The model file contains the parameters for replacing the labels that have been applied in the template file. The template file contains the source code provided with labels.
+The special thing about CubeGen is that the parameters have a hierarchical structure, which you can easily run through recursively.</div><!
+><div id="CGP-000000100022" class="header2">Command Line</div><!
+><div>The program can be run from the command line as a executable or as a Perl script.</div><!
+><div><span style="display:block;" class="code">
+cubegen.exe &lt;model&gt; &lt;template&gt; &lt;code&gt; &lt;arguments&gt; 
+perl cubegen.pl &lt;model&gt; &lt;template&gt; &lt;code&gt; &lt;arguments&gt;
+-	&lt;model&gt;: Imported Cube Model textfile
+-	&lt;template&gt;: Imported CubeGen Template Textfile
+-	&lt;code&gt;: Textfile to generate
+-	&lt;arguments&gt;: Parameters used in template</span></div><!
+><div id="CGP-000000100041" class="header2">Cube Model Structure</div><!
+><div>A Cube model, like XML, is a hierachical structure of groups and elements. Both a group and an element have properties.
+The structure can best be explained on the basis of an example:</div><!
+><div><span style="display:block;" class="code">+&lt;tagA&gt;:&lt;prop0&gt;|&lt;prop1&gt;|...|propN;
+	=&lt;tagB&gt;:&lt;prop0&gt;|&lt;prop1&gt;|...|propN;
+	+&lt;tagC&gt;:&lt;prop0&gt;|&lt;prop1&gt;|...|propN;
+		=&lt;tagD&gt;:&lt;prop0&gt;|&lt;prop1&gt;|..|propN;
+	-&lt;tagC&gt;:;
+-&lt;tagA&gt;:;</span></div><!
+><div id="CGM-000000100022" class="header1">First Impression</div><!
+><div>A simple example is used to give a first impression of the functionality of CubeGen.</div><!
+><div id="CGM-000000100022M" class="header3">Cube Model</div><!
+><div><span style="display:block;" class="model code">=BUSINESS_OBJECT_TYPE[CASE1-BOT-000000100023]:CUSTOMERS|customer_files;
+=BUSINESS_OBJECT_TYPE[CASE1-BOT-000000100024]:ORDER|order_directory;
+=BUSINESS_OBJECT_TYPE[CASE1-BOT-000000100025]:PRODUCT|product_definitions;</span></div><!
+><div id="CGF-000000100024" class="header2">Iteration</div><!
+><div>The LOOP statement walks through the model elements for the specified element type.</div><!
+><div id="CGF-000000100024T" class="header3">Template</div><!
+><div><span style="display:block;" class="template code">This is a list of the Busines Object Types:[[LOOP,BUSINESS_OBJECT_TYPE]]
+-	&lt;&lt;BUSINESS_OBJECT_TYPE:U&gt;&gt;[[ENDLOOP,BUSINESS_OBJECT_TYPE]]</span></div><!
+><div id="CGF-000000100024C" class="header3">Code</div><!
+><div><span style="display:block;" class="result code">This is a list of the Busines Object Types:
+-	CUSTOMERS
+-	ORDER
+-	PRODUCT</span></div><!
+><div id="CGF-000000100025" class="header2">Replace</div><!
+><div>Replace a label with the model value.</div><!
+><div id="CGF-000000100025T" class="header3">Template</div><!
+><div><span style="display:block;" class="template code">[[LOOP,BUSINESS_OBJECT_TYPE]]Uppercase: &lt;&lt;BUSINESS_OBJECT_TYPE:U&gt;&gt;, &lt;&lt;BUSINESS_OBJECT_TYPE1:U&gt;&gt;
+Lowercase: &lt;&lt;BUSINESS_OBJECT_TYPE:L&gt;&gt;, &lt;&lt;BUSINESS_OBJECT_TYPE1:L&gt;&gt;
+Camelcase: &lt;&lt;BUSINESS_OBJECT_TYPE:L&gt;&gt;, &lt;&lt;BUSINESS_OBJECT_TYPE1:C&gt;&gt;
+
+[[ENDLOOP,BUSINESS_OBJECT_TYPE]]</span></div><!
+><div id="CGF-000000100025C" class="header3">Code</div><!
+><div><span style="display:block;" class="result code">Uppercase: CUSTOMERS, CUSTOMER_FILES
+Lowercase: customers, customer_files
+Camelcase: customers, CustomerFiles
+
+Uppercase: ORDER, ORDER_DIRECTORY
+Lowercase: order, order_directory
+Camelcase: order, OrderDirectory
+
+Uppercase: PRODUCT, PRODUCT_DEFINITIONS
+Lowercase: product, product_definitions
+Camelcase: product, ProductDefinitions
+
+</span></div><!
+><div id="CGM-000000100040" class="header1">Introduction Recursivity</div><!
+><div>A first impression of going through a hierarchy in a recursive way.</div><!
+><div id="CGM-000000100040M" class="header3">Cube Model</div><!
+><div><span style="display:block;" class="model code">+BUSINESS_OBJECT_TYPE[CASE2-BOT-000000100025]:PRODUCT|product_definitions;
+	+TYPE[TYP-000000100000]:PRODUCT|PRD|Y;
+		=TYPE[TYP-000000100004]:PRODUCT_PART_APPLICATION|PPA|Y;
+		+TYPE[TYP-000000100002]:PRODUCTION_PROCES|PPR|N;
+			=TYPE[TYP-000000100003]:PRODUCTION_PROCES_STEP|PPS|N;
+		-TYPE:;
+	-TYPE:;
+-BUSINESS_OBJECT_TYPE:;</span></div><!
+><div id="CGF-000000100040" class="header2">Repeating Iteration</div><!
+><div>On the location of the REPEAT statement the loop has been repeated for all underlying elements of the same type.</div><!
+><div id="CGF-000000100040T" class="header3">Template</div><!
+><div><span style="display:block;" class="template code">[[LOOP,BUSINESS_OBJECT_TYPE]]Structure of &lt;&lt;BUSINESS_OBJECT_TYPE:C&gt;&gt;:[[LOOP,TYPE]]
+-	&lt;&lt;TYPE:C&gt;&gt;[[REPEAT:TAB]][[ENDLOOP,TYPE]]
+[[ENDLOOP,BUSINESS_OBJECT_TYPE]]</span></div><!
+><div id="CGF-000000100040C" class="header3">Code</div><!
+><div><span style="display:block;" class="result code">Structure of Product:
+-	Product
+	-	ProductPartApplication
+	-	ProductionProces
+		-	ProductionProcesStep
+</span></div><!
+></pre>
+<div>
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+</div>
+<div class="model"><br><br>MODEL<br><br></div>
+<div class="template"><br><br>TEMPLATE<br><br></div>
+<div class="result"><br><br>CODE<br><br></div>
+</div>
+</div></body></html>
