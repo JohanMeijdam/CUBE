@@ -4137,7 +4137,7 @@ BEGIN
 	EXECUTE IMMEDIATE
 	'ALTER TABLE t_cube_gen_function ADD CONSTRAINT cgf_pk
 		PRIMARY KEY (
-			header )';
+			id )';
 	DBMS_OUTPUT.PUT_LINE('Primary Key T_CUBE_GEN_FUNCTION.CGF_PK created');
 	EXECUTE IMMEDIATE
 	'ALTER TABLE t_cube_gen_function ADD CONSTRAINT cgf_cgm_fk

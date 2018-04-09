@@ -557,7 +557,7 @@ CREATE TABLE t_cube_gen_function (
 	description VARCHAR2(3999),
 	template VARCHAR2(3999),
 	CONSTRAINT cgf_pk
-		PRIMARY KEY (header),
+		PRIMARY KEY (id),
 	CONSTRAINT cgf_cgm_fk
 		FOREIGN KEY (fk_cub_name, fk_cgm_id)
 		REFERENCES t_cube_gen_example_model (fk_cub_name, id)

@@ -16,19 +16,19 @@ g_xmlhttp.onreadystatechange = function() {
 			var l_values = l_argument[1].split("<|>");
 			document.getElementById("InputFkCubName").value=l_values[0];
 			document.getElementById("InputFkCgmId").value=l_values[1];
-			document.getElementById("InputId").value=l_values[2];
+			document.getElementById("InputHeader").value=l_values[2];
 			document.getElementById("InputDescription").value=l_values[3];
 			document.getElementById("InputTemplate").value=l_values[4];
 			break;
 		case "CREATE_CGF":
 			document.getElementById("InputFkCubName").readOnly=true;
 			document.getElementById("InputFkCgmId").readOnly=true;
-			document.getElementById("InputHeader").readOnly=true;
+			document.getElementById("InputId").readOnly=true;
 			document.getElementById("ButtonCreate").disabled=true;
 			document.getElementById("ButtonUpdate").disabled=false;
 			document.getElementById("ButtonDelete").disabled=false;
 			l_objNode = parent.TREE.document.getElementById(document._nodeId);
-			document._nodeId = 'TYP_CGF<||>'+document.getElementById("InputHeader").value;
+			document._nodeId = 'TYP_CGF<||>'+document.getElementById("InputId").value;
 			if (l_objNode != null) {
 				if (l_objNode.firstChild._state == 'O') {
 					var l_position = g_option[0];
@@ -46,6 +46,10 @@ g_xmlhttp.onreadystatechange = function() {
 			}
 			break;
 		case "UPDATE_CGF":
+			l_objNode = parent.TREE.document.getElementById(document._nodeId);
+			if (l_objNode != null) {
+				l_objNode.children[1].lastChild.nodeValue = ' '+document.getElementById("InputHeader").value.toLowerCase();
+			}
 			break;
 		case "DELETE_CGF":
 			document.getElementById("ButtonUpdate").disabled=true;
@@ -87,12 +91,12 @@ function InitBody() {
 	}
 	switch (l_argument[1]) {
 	case "D":
-		document.getElementById("InputHeader").value=values[0];
+		document.getElementById("InputId").value=values[0];
 		document.getElementById("ButtonCreate").disabled=true;
 		performTrans('GetCgf'+'<|||>'+document._argument);
 		document.getElementById("InputFkCubName").readOnly=true;
 		document.getElementById("InputFkCgmId").readOnly=true;
-		document.getElementById("InputHeader").readOnly=true;
+		document.getElementById("InputId").readOnly=true;
 		break;
 	case "N":
 		document.getElementById("InputFkCubName").value=values[0];
@@ -135,7 +139,7 @@ function UpdateCgf() {
 
 function DeleteCgf() {
 	var l_parameters = 
-		document.getElementById("InputHeader").value;
+		document.getElementById("InputId").value;
 	performTrans('DeleteCgf<|||>'+l_parameters);
 }
 
@@ -250,9 +254,9 @@ function drop(p_event) {
 <input id="InputFkCubName" type="text" maxlength="30" style="width:100%;" onchange="ReplaceSpaces(this);"></input></div></td></tr>
 <tr><td>CubeGenExampleModel.Id</td><td><div style="max-width:8em;">
 <input id="InputFkCgmId" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td style="cursor:help;" oncontextmenu="OpenDescBox('TEMPLATE','CubeGenFunction.Id','CUBE_GEN_FUNCTION','ID',-1)">Id</td><td><div style="max-width:8em;">
+<tr><td style="cursor:help;" oncontextmenu="OpenDescBox('TEMPLATE','CubeGenFunction.Id','CUBE_GEN_FUNCTION','ID',-1)"><u>Id</u></td><td><div style="max-width:8em;">
 <input id="InputId" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td style="cursor:help;" oncontextmenu="OpenDescBox('TEMPLATE','CubeGenFunction.Header','CUBE_GEN_FUNCTION','HEADER',-1)"><u>Header</u></td><td><div style="max-width:40em;">
+<tr><td style="cursor:help;" oncontextmenu="OpenDescBox('TEMPLATE','CubeGenFunction.Header','CUBE_GEN_FUNCTION','HEADER',-1)">Header</td><td><div style="max-width:40em;">
 <input id="InputHeader" type="text" maxlength="40" style="width:100%;"></input></div></td></tr>
 <tr><td style="padding-top:10px;">Description</td></tr><tr><td colspan="2"><div>
 <textarea id="InputDescription" type="text" maxlength="3999" rows="5" style="white-space:normal;width:100%;"></textarea></div></td></tr>

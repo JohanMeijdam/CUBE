@@ -2277,7 +2277,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_cub_trg IS
 	BEGIN
 		UPDATE t_cube_gen_function SET 
 			cube_sequence = p_cgf_new.cube_sequence,
-			id = p_cgf_new.id,
+			header = p_cgf_new.header,
 			description = p_cgf_new.description,
 			template = p_cgf_new.template
 		WHERE rowid = p_cube_rowid;
@@ -2470,7 +2470,7 @@ BEGIN
 	END IF;
 	IF UPDATING OR DELETING THEN
 		SELECT rowid INTO l_cube_rowid FROM t_cube_gen_function
-		WHERE header = :OLD.header;
+		WHERE id = :OLD.id;
 		r_cgf_old.cube_sequence := :OLD.cube_sequence;
 		r_cgf_old.fk_cub_name := :OLD.fk_cub_name;
 		r_cgf_old.fk_cgm_id := :OLD.fk_cgm_id;

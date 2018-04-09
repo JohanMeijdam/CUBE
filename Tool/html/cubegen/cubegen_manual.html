@@ -1,11 +1,13 @@
 <html>
 <head>
 <title>CubeGen Manual</title>
-<link rel=stylesheet type="text/css" href="../style.css">
+<link rel="icon" href="../images/composys_icon.png">
+<link rel="stylesheet" type="text/css" href="../style.css">
 </head>
-<body><div style="position:fixed;top:8px;left:8px;right:8px;bottom:8px;">
+<body lang="en"><div style="position:fixed;top:8px;left:8px;right:8px;bottom:8px;">
 <iframe src="../composys_header.html" style="height:76px;width:100%;"></iframe>
-<div align="center" class="header0" style="position:absolute;top:76px;left:0px;width:240px;height:30px;">INDEX</div>
+<div align="center" class="header0" style="position:absolute;top:76px;left:0px;width:240px;height:30px;">
+INDEX</div>
 <div style="overflow:auto;position:absolute;top:106px;left:0px;width:240px;bottom:0;background-color:whitesmoke;">
 <div><a href="#INTRO" class="indent1">Introduction</a></div>
 <div><a href="#CGP-000000100022" class="indent2">Command Line</a></div>
@@ -15,6 +17,9 @@
 <div><a href="#CGF-000000100024" class="indent2">Iteration</a></div>
 <div><a href="#CGF-000000100024T" class="template indent3">Template</a></div>
 <div><a href="#CGF-000000100024C" class="result indent3">Code</a></div>
+<div><a href="#CGF-000000100060" class="indent2">Selection</a></div>
+<div><a href="#CGF-000000100060T" class="template indent3">Template</a></div>
+<div><a href="#CGF-000000100060C" class="result indent3">Code</a></div>
 <div><a href="#CGF-000000100025" class="indent2">Replace</a></div>
 <div><a href="#CGF-000000100025T" class="template indent3">Template</a></div>
 <div><a href="#CGF-000000100025C" class="result indent3">Code</a></div>
@@ -25,8 +30,7 @@
 <div><a href="#CGF-000000100040C" class="result indent3">Code</a></div>
 </div>
 <div align="center" class="header0" style="overflow:hidden;position:absolute;top:76px;left:240px;right:0;height:30px;">
-CUBEGEN MANUAL
-</div>
+CUBEGEN MANUAL</div>
 <div style="overflow:auto;position:absolute;top:106px;left:240px;right:0;bottom:0;background-color:white;">
 <div align="center" style="padding:15px;font-size:16pt;">Transform a CubeGen Model into Code according to your own Template.</div>
 <div align="center"><img src="../images/cubegen_logo_doc.png"/></div>
@@ -45,7 +49,7 @@ perl cubegen.pl &lt;model&gt; &lt;template&gt; &lt;code&gt; &lt;arguments&gt;
 -	&lt;arguments&gt;: Parameters used in template</span></div><!
 ><div id="CGP-000000100041" class="header2">Cube Model Structure</div><!
 ><div>A Cube model, like XML, is a hierachical structure of groups and elements. Both a group and an element have properties.
-The structure can best be explained on the basis of an example:</div><!
+The structure can best be explained by an example:</div><!
 ><div><span style="display:block;" class="code">+&lt;tagA&gt;:&lt;prop0&gt;|&lt;prop1&gt;|...|propN;
 	=&lt;tagB&gt;:&lt;prop0&gt;|&lt;prop1&gt;|...|propN;
 	+&lt;tagC&gt;:&lt;prop0&gt;|&lt;prop1&gt;|...|propN;
@@ -55,7 +59,7 @@ The structure can best be explained on the basis of an example:</div><!
 ><div id="CGM-000000100022" class="header1">First Impression</div><!
 ><div>A simple example is used to give a first impression of the functionality of CubeGen.</div><!
 ><div id="CGM-000000100022M" class="header3">Cube Model</div><!
-><div><span style="display:block;" class="model code">=BUSINESS_OBJECT_TYPE[CASE1-BOT-000000100023]:CUSTOMERS|customer_files;
+><div><span style="display:block;" class="model code">=BUSINESS_OBJECT_TYPE[CASE1-BOT-000000100040]:CUSTOMER|customer_files;
 =BUSINESS_OBJECT_TYPE[CASE1-BOT-000000100024]:ORDER|order_directory;
 =BUSINESS_OBJECT_TYPE[CASE1-BOT-000000100025]:PRODUCT|product_definitions;</span></div><!
 ><div id="CGF-000000100024" class="header2">Iteration</div><!
@@ -65,9 +69,21 @@ The structure can best be explained on the basis of an example:</div><!
 -	&lt;&lt;BUSINESS_OBJECT_TYPE:U&gt;&gt;[[ENDLOOP,BUSINESS_OBJECT_TYPE]]</span></div><!
 ><div id="CGF-000000100024C" class="header3">Code</div><!
 ><div><span style="display:block;" class="result code">This is a list of the Busines Object Types:
--	CUSTOMERS
+-	CUSTOMER
 -	ORDER
 -	PRODUCT</span></div><!
+><div id="CGF-000000100060" class="header2">Selection</div><!
+><div>The IF, ELSIF, ELSE structure makes a choice between texts based on conditions.</div><!
+><div id="CGF-000000100060T" class="header3">Template</div><!
+><div><span style="display:block;" class="template code">Explain selection:[[LOOP,BUSINESS_OBJECT_TYPE]][[IF:0=CUSTOMER]]
+&lt;&lt;BUSINESS_OBJECT_TYPE&gt;&gt; concerns customers.[[ELSIF:0=ORDER]]
+&lt;&lt;BUSINESS_OBJECT_TYPE&gt;&gt; concerns no customers but orders.[[ELSE]]
+&lt;&lt;BUSINESS_OBJECT_TYPE&gt;&gt; concerns something else.[[ENDIF]][[ENDLOOP,BUSINESS_OBJECT_TYPE]]</span></div><!
+><div id="CGF-000000100060C" class="header3">Code</div><!
+><div><span style="display:block;" class="result code">Explain selection:
+CUSTOMER concerns customers.
+ORDER concerns no customers but orders.
+PRODUCT concerns something else.</span></div><!
 ><div id="CGF-000000100025" class="header2">Replace</div><!
 ><div>Replace a label with the model value.</div><!
 ><div id="CGF-000000100025T" class="header3">Template</div><!
@@ -77,9 +93,9 @@ Camelcase: &lt;&lt;BUSINESS_OBJECT_TYPE:L&gt;&gt;, &lt;&lt;BUSINESS_OBJECT_TYPE1
 
 [[ENDLOOP,BUSINESS_OBJECT_TYPE]]</span></div><!
 ><div id="CGF-000000100025C" class="header3">Code</div><!
-><div><span style="display:block;" class="result code">Uppercase: CUSTOMERS, CUSTOMER_FILES
-Lowercase: customers, customer_files
-Camelcase: customers, CustomerFiles
+><div><span style="display:block;" class="result code">Uppercase: CUSTOMER, CUSTOMER_FILES
+Lowercase: customer, customer_files
+Camelcase: customer, CustomerFiles
 
 Uppercase: ORDER, ORDER_DIRECTORY
 Lowercase: order, order_directory

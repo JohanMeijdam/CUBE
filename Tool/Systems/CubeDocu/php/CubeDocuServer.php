@@ -3124,7 +3124,7 @@ case 'GetCgmItems':
 	$first = True;
 	while ($row = oci_fetch_assoc($curs)) {
 		if ($first) { $first = False; echo "LIST_CGF";}
-		echo "<|||>".$row["HEADER"];
+		echo "<|||>".$row["ID"];
 		echo "<||>".$row["HEADER"];
 	}
 	break;
@@ -3310,34 +3310,34 @@ case 'DeleteCgo':
 
 case 'GetCgf':
 
-	list($p_header) = explode("<|>", $import[1]);
+	list($p_id) = explode("<|>", $import[1]);
 
 	$stid = oci_parse($conn, "BEGIN pkg_cub.get_cgf (
 		:p_cube_row,
-		:p_header);
+		:p_id);
 	END;");
-	oci_bind_by_name($stid,":p_header",$p_header);
+	oci_bind_by_name($stid,":p_id",$p_id);
 
 	$r = perform_db_request();
 	if (!$r) { return; }
 	echo "SELECT_CGF";
 	if ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["FK_CUB_NAME"]."<|>".$row["FK_CGM_ID"]."<|>".$row["ID"]."<|>".$row["DESCRIPTION"]."<|>".$row["TEMPLATE"];
+		echo "<|||>".$row["FK_CUB_NAME"]."<|>".$row["FK_CGM_ID"]."<|>".$row["HEADER"]."<|>".$row["DESCRIPTION"]."<|>".$row["TEMPLATE"];
 	}
 	break;
 
 case 'MoveCgf':
 
-	list($p_cube_pos_action, $p_header, $x_header) = explode("<|>", $import[1]);
+	list($p_cube_pos_action, $p_id, $x_id) = explode("<|>", $import[1]);
 
 	$stid = oci_parse($conn, "BEGIN pkg_cub.move_cgf (
 		:p_cube_pos_action,
-		:p_header,
-		:x_header);
+		:p_id,
+		:x_id);
 	END;");
 	oci_bind_by_name($stid,":p_cube_pos_action",$p_cube_pos_action);
-	oci_bind_by_name($stid,":p_header",$p_header);
-	oci_bind_by_name($stid,":x_header",$x_header);
+	oci_bind_by_name($stid,":p_id",$p_id);
+	oci_bind_by_name($stid,":x_id",$x_id);
 
 	$r = oci_execute($stid);
 	if (!$r) {
@@ -3349,7 +3349,7 @@ case 'MoveCgf':
 
 case 'CreateCgf':
 
-	list($p_cube_pos_action, $p_fk_cub_name, $p_fk_cgm_id, $p_id, $p_header, $p_description, $p_template, $x_header) = explode("<|>", $import[1]."<|>");
+	list($p_cube_pos_action, $p_fk_cub_name, $p_fk_cgm_id, $p_id, $p_header, $p_description, $p_template, $x_id) = explode("<|>", $import[1]."<|>");
 
 	$stid = oci_parse($conn, "BEGIN pkg_cub.insert_cgf (
 		:p_cube_pos_action,
@@ -3359,7 +3359,7 @@ case 'CreateCgf':
 		:p_header,
 		:p_description,
 		:p_template,
-		:x_header);
+		:x_id);
 	END;");
 	oci_bind_by_name($stid,":p_cube_pos_action",$p_cube_pos_action);
 	oci_bind_by_name($stid,":p_fk_cub_name",$p_fk_cub_name);
@@ -3368,7 +3368,7 @@ case 'CreateCgf':
 	oci_bind_by_name($stid,":p_header",$p_header);
 	oci_bind_by_name($stid,":p_description",$p_description);
 	oci_bind_by_name($stid,":p_template",$p_template);
-	oci_bind_by_name($stid,":x_header",$x_header);
+	oci_bind_by_name($stid,":x_id",$x_id);
 
 	$r = oci_execute($stid);
 	if (!$r) {
@@ -3407,12 +3407,12 @@ case 'UpdateCgf':
 
 case 'DeleteCgf':
 
-	list($p_header) = explode("<|>", $import[1]);
+	list($p_id) = explode("<|>", $import[1]);
 
 	$stid = oci_parse($conn, "BEGIN pkg_cub.delete_cgf (
-		:p_header);
+		:p_id);
 	END;");
-	oci_bind_by_name($stid,":p_header",$p_header);
+	oci_bind_by_name($stid,":p_id",$p_id);
 
 	$r = oci_execute($stid);
 	if (!$r) {
