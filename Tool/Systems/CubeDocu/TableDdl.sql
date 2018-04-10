@@ -100,6 +100,10 @@ DROP SEQUENCE cgf_seq
 /
 CREATE SEQUENCE cgf_seq START WITH 100000
 /
+DROP SEQUENCE ctf_seq
+/
+CREATE SEQUENCE ctf_seq START WITH 100000
+/
 ALTER TABLE t_information_type_element DROP CONSTRAINT ite_itp_fk
 /
 ALTER TABLE t_permitted_value DROP CONSTRAINT val_ite_fk
@@ -145,6 +149,8 @@ ALTER TABLE t_cube_gen_example_model DROP CONSTRAINT cgm_cub_fk
 ALTER TABLE t_cube_gen_example_object DROP CONSTRAINT cgo_cgm_fk
 /
 ALTER TABLE t_cube_gen_function DROP CONSTRAINT cgf_cgm_fk
+/
+ALTER TABLE t_cube_gen_template_function DROP CONSTRAINT ctf_cub_fk
 /
 DROP TABLE t_information_type
 /
@@ -195,6 +201,8 @@ DROP TABLE t_cube_gen_example_model
 DROP TABLE t_cube_gen_example_object
 /
 DROP TABLE t_cube_gen_function
+/
+DROP TABLE t_cube_gen_template_function
 /
 CREATE TABLE t_information_type (
 	cube_id VARCHAR2(16),
@@ -561,6 +569,18 @@ CREATE TABLE t_cube_gen_function (
 	CONSTRAINT cgf_cgm_fk
 		FOREIGN KEY (fk_cub_name, fk_cgm_id)
 		REFERENCES t_cube_gen_example_model (fk_cub_name, id)
+		ON DELETE CASCADE )
+/
+CREATE TABLE t_cube_gen_template_function (
+	cube_id VARCHAR2(16),
+	fk_cub_name VARCHAR2(30),
+	name VARCHAR2(30),
+	syntax VARCHAR2(3999),
+	CONSTRAINT ctf_pk
+		PRIMARY KEY (fk_cub_name, name),
+	CONSTRAINT ctf_cub_fk
+		FOREIGN KEY (fk_cub_name)
+		REFERENCES t_cube_gen_documentation (name)
 		ON DELETE CASCADE )
 /
 EXIT;

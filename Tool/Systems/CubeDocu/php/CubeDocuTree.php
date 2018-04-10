@@ -63,6 +63,7 @@ g_xmlhttp.onreadystatechange = function(){
 			case 'MOVE_CGO': MoveNode (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.body._moveAction); break;
 			case 'LIST_CGF': AddTreeviewChildren(l_rows,'TYP_CGF','icons/template.bmp'); break;
 			case 'MOVE_CGF': MoveNode (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.body._moveAction); break;
+			case 'LIST_CTF': AddTreeviewChildren(l_rows,'TYP_CTF','icons/function.bmp'); break;
 			case "ERROR": alert ('Error: '+l_rows[1]); break;
 			default: alert ('Unknown reply: '+l_rows[0]);
 			}
@@ -153,8 +154,8 @@ function DefineTypePosition (p_parentType, p_type, p_switch) {
 		switch (p_type) { case 'TYP_SBT': l_index = 2; break;}
 		var l_count = 1; break;
 	case 'TYP_CUB':
-		switch (p_type) { case 'TYP_CGP': l_index = 2; break; case 'TYP_CGM': l_index = 3; break;}
-		var l_count = 2; break;
+		switch (p_type) { case 'TYP_CGP': l_index = 2; break; case 'TYP_CGM': l_index = 3; break; case 'TYP_CTF': l_index = 4; break;}
+		var l_count = 3; break;
 	case 'TYP_CGM':
 		switch (p_type) { case 'TYP_CGO': l_index = 2; break; case 'TYP_CGF': l_index = 3; break;}
 		var l_count = 2; break;
@@ -667,6 +668,7 @@ function OpenMenu(p_obj) {
  	case 'TYP_CUB':
 		AddMenuItem(g_objMenuList, 'add cube_gen_paragraph', 'icons/desc.bmp','CubeAdd','N','TYP_CGP',0,'N',2);
 		AddMenuItem(g_objMenuList, 'add cube_gen_example_model', 'icons/model.bmp','CubeAdd','N','TYP_CGM',0,'N',3);
+		AddMenuItem(g_objMenuList, 'add cube_gen_template_function', 'icons/function.bmp','DetailCTF','N','TYP_CTF',0,'N',4);
 		break;
  	case 'TYP_CGP':
 		if (l_childCount > 1) {

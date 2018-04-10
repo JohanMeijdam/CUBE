@@ -2892,6 +2892,22 @@ case 'GetCubItems':
 		echo "<|||>".$row["FK_CUB_NAME"]."<|>".$row["ID"];
 		echo "<||>".$row["HEADER"];
 	}
+	echo "<||||>";
+
+	$stid = oci_parse($conn, "BEGIN pkg_cub.get_cub_ctf_items (
+		:p_cube_row,
+		:p_name);
+	END;");
+	oci_bind_by_name($stid,":p_name",$p_name);
+
+	$r = perform_db_request();
+	if (!$r) { return; }
+	$first = True;
+	while ($row = oci_fetch_assoc($curs)) {
+		if ($first) { $first = False; echo "LIST_CTF";}
+		echo "<|||>".$row["FK_CUB_NAME"]."<|>".$row["NAME"];
+		echo "<||>".$row["NAME"];
+	}
 	break;
 
 case 'CreateCub':
@@ -3420,6 +3436,87 @@ case 'DeleteCgf':
 		return;
 	}
 	echo "DELETE_CGF";
+	break;
+
+case 'GetCtf':
+
+	list($p_fk_cub_name, $p_name) = explode("<|>", $import[1]);
+
+	$stid = oci_parse($conn, "BEGIN pkg_cub.get_ctf (
+		:p_cube_row,
+		:p_fk_cub_name,
+		:p_name);
+	END;");
+	oci_bind_by_name($stid,":p_fk_cub_name",$p_fk_cub_name);
+	oci_bind_by_name($stid,":p_name",$p_name);
+
+	$r = perform_db_request();
+	if (!$r) { return; }
+	echo "SELECT_CTF";
+	if ($row = oci_fetch_assoc($curs)) {
+		echo "<|||>".$row["SYNTAX"];
+	}
+	break;
+
+case 'CreateCtf':
+
+	list($p_fk_cub_name, $p_name, $p_syntax) = explode("<|>", $import[1]);
+
+	$stid = oci_parse($conn, "BEGIN pkg_cub.insert_ctf (
+		:p_fk_cub_name,
+		:p_name,
+		:p_syntax);
+	END;");
+	oci_bind_by_name($stid,":p_fk_cub_name",$p_fk_cub_name);
+	oci_bind_by_name($stid,":p_name",$p_name);
+	oci_bind_by_name($stid,":p_syntax",$p_syntax);
+
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		return;
+	}
+	echo "CREATE_CTF";
+	break;
+
+case 'UpdateCtf':
+
+	list($p_fk_cub_name, $p_name, $p_syntax) = explode("<|>", $import[1]);
+
+	$stid = oci_parse($conn, "BEGIN pkg_cub.update_ctf (
+		:p_fk_cub_name,
+		:p_name,
+		:p_syntax);
+	END;");
+	oci_bind_by_name($stid,":p_fk_cub_name",$p_fk_cub_name);
+	oci_bind_by_name($stid,":p_name",$p_name);
+	oci_bind_by_name($stid,":p_syntax",$p_syntax);
+
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		return;
+	}
+	echo "UPDATE_CTF";
+	break;
+
+case 'DeleteCtf':
+
+	list($p_fk_cub_name, $p_name) = explode("<|>", $import[1]);
+
+	$stid = oci_parse($conn, "BEGIN pkg_cub.delete_ctf (
+		:p_fk_cub_name,
+		:p_name);
+	END;");
+	oci_bind_by_name($stid,":p_fk_cub_name",$p_fk_cub_name);
+	oci_bind_by_name($stid,":p_name",$p_name);
+
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		return;
+	}
+	echo "DELETE_CTF";
 	break;
 
 default:

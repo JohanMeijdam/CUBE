@@ -3862,6 +3862,9 @@ CREATE OR REPLACE PACKAGE pkg_cub IS
 	PROCEDURE get_cub_cgm_items (
 			p_cube_row IN OUT c_cube_row,
 			p_name IN VARCHAR2);
+	PROCEDURE get_cub_ctf_items (
+			p_cube_row IN OUT c_cube_row,
+			p_name IN VARCHAR2);
 	PROCEDURE insert_cub (
 			p_name IN VARCHAR2,
 			p_description IN VARCHAR2);
@@ -3979,6 +3982,21 @@ CREATE OR REPLACE PACKAGE pkg_cub IS
 			p_template IN VARCHAR2);
 	PROCEDURE delete_cgf (
 			p_id IN VARCHAR2);
+	PROCEDURE get_ctf (
+			p_cube_row IN OUT c_cube_row,
+			p_fk_cub_name IN VARCHAR2,
+			p_name IN VARCHAR2);
+	PROCEDURE insert_ctf (
+			p_fk_cub_name IN VARCHAR2,
+			p_name IN VARCHAR2,
+			p_syntax IN VARCHAR2);
+	PROCEDURE update_ctf (
+			p_fk_cub_name IN VARCHAR2,
+			p_name IN VARCHAR2,
+			p_syntax IN VARCHAR2);
+	PROCEDURE delete_ctf (
+			p_fk_cub_name IN VARCHAR2,
+			p_name IN VARCHAR2);
 END;
 /
 SHOW ERRORS;
@@ -4038,6 +4056,19 @@ CREATE OR REPLACE PACKAGE BODY pkg_cub IS
 			FROM v_cube_gen_example_model
 			WHERE fk_cub_name = p_name
 			ORDER BY fk_cub_name, cube_sequence;
+	END;
+
+	PROCEDURE get_cub_ctf_items (
+			p_cube_row IN OUT c_cube_row,
+			p_name IN VARCHAR2) IS
+	BEGIN
+		OPEN p_cube_row FOR
+			SELECT
+			  fk_cub_name,
+			  name
+			FROM v_cube_gen_template_function
+			WHERE fk_cub_name = p_name
+			ORDER BY fk_cub_name, name;
 	END;
 
 	PROCEDURE insert_cub (
@@ -4727,6 +4758,59 @@ CREATE OR REPLACE PACKAGE BODY pkg_cub IS
 	BEGIN
 		DELETE v_cube_gen_function
 		WHERE id = p_id;
+	END;
+
+	PROCEDURE get_ctf (
+			p_cube_row IN OUT c_cube_row,
+			p_fk_cub_name IN VARCHAR2,
+			p_name IN VARCHAR2) IS
+	BEGIN
+		OPEN p_cube_row FOR
+			SELECT
+			  syntax
+			FROM v_cube_gen_template_function
+			WHERE fk_cub_name = p_fk_cub_name
+			  AND name = p_name;
+	END;
+
+	PROCEDURE insert_ctf (
+			p_fk_cub_name IN VARCHAR2,
+			p_name IN VARCHAR2,
+			p_syntax IN VARCHAR2) IS
+	BEGIN
+		INSERT INTO v_cube_gen_template_function (
+			cube_id,
+			fk_cub_name,
+			name,
+			syntax)
+		VALUES (
+			NULL,
+			p_fk_cub_name,
+			p_name,
+			p_syntax);
+	EXCEPTION
+		WHEN DUP_VAL_ON_INDEX THEN
+			RAISE_APPLICATION_ERROR (-20001, 'Type cube_gen_template_function already exists');
+	END;
+
+	PROCEDURE update_ctf (
+			p_fk_cub_name IN VARCHAR2,
+			p_name IN VARCHAR2,
+			p_syntax IN VARCHAR2) IS
+	BEGIN
+		UPDATE v_cube_gen_template_function SET
+			syntax = p_syntax
+		WHERE fk_cub_name = p_fk_cub_name
+		  AND name = p_name;
+	END;
+
+	PROCEDURE delete_ctf (
+			p_fk_cub_name IN VARCHAR2,
+			p_name IN VARCHAR2) IS
+	BEGIN
+		DELETE v_cube_gen_template_function
+		WHERE fk_cub_name = p_fk_cub_name
+		  AND name = p_name;
 	END;
 END;
 /

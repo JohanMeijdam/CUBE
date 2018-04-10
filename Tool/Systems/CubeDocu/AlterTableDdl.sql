@@ -329,6 +329,19 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
+	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBEDOCU' AND sequence_name = 'CTF_SEQ';
+	IF l_count = 0 THEN
+
+		EXECUTE IMMEDIATE 
+		'CREATE SEQUENCE ctf_seq START WITH 100000';
+		DBMS_OUTPUT.PUT_LINE('Sequence CTF_SEQ created');
+
+	END IF;
+END;
+/
+DECLARE
+	l_count NUMBER(4);
+BEGIN
 	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = 'CUBEDOCU' AND table_name = 'T_INFORMATION_TYPE';
 	IF l_count = 0 THEN
 		EXECUTE IMMEDIATE
@@ -2376,6 +2389,64 @@ BEGIN
 	END IF;
 END;
 /
+DECLARE
+	l_count NUMBER(4);
+BEGIN
+	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = 'CUBEDOCU' AND table_name = 'T_CUBE_GEN_TEMPLATE_FUNCTION';
+	IF l_count = 0 THEN
+		EXECUTE IMMEDIATE
+		'CREATE TABLE t_cube_gen_template_function (
+			cube_id VARCHAR2(16),
+			fk_cub_name VARCHAR2(30),
+			name VARCHAR2(30),
+			syntax VARCHAR2(3999))';
+		DBMS_OUTPUT.PUT_LINE('Table T_CUBE_GEN_TEMPLATE_FUNCTION created');
+	ELSE
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_CUBE_GEN_TEMPLATE_FUNCTION' AND column_name = 'CUBE_ID';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_cube_gen_template_function ADD cube_id VARCHAR2(16)';
+			DBMS_OUTPUT.PUT_LINE('Column T_CUBE_GEN_TEMPLATE_FUNCTION.CUBE_ID created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_CUBE_GEN_TEMPLATE_FUNCTION' AND column_name = 'FK_CUB_NAME';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_cube_gen_template_function ADD fk_cub_name VARCHAR2(30)';
+			DBMS_OUTPUT.PUT_LINE('Column T_CUBE_GEN_TEMPLATE_FUNCTION.FK_CUB_NAME created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_CUBE_GEN_TEMPLATE_FUNCTION' AND column_name = 'NAME';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_cube_gen_template_function ADD name VARCHAR2(30)';
+			DBMS_OUTPUT.PUT_LINE('Column T_CUBE_GEN_TEMPLATE_FUNCTION.NAME created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_CUBE_GEN_TEMPLATE_FUNCTION' AND column_name = 'SYNTAX';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_cube_gen_template_function ADD syntax VARCHAR2(3999)';
+			DBMS_OUTPUT.PUT_LINE('Column T_CUBE_GEN_TEMPLATE_FUNCTION.SYNTAX created');
+		END IF;
+
+		FOR r_key IN (SELECT constraint_name FROM all_constraints WHERE owner = 'CUBEDOCU' AND table_name = 'T_CUBE_GEN_TEMPLATE_FUNCTION' AND constraint_type IN ('P','U','R') ORDER BY constraint_type DESC)
+		LOOP
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_cube_gen_template_function DROP CONSTRAINT ' || r_key.constraint_name || ' CASCADE';
+			DBMS_OUTPUT.PUT_LINE('Primary Key T_CUBE_GEN_TEMPLATE_FUNCTION.' || UPPER(r_key.constraint_name) || ' dropped');
+		END LOOP;
+
+		FOR r_index IN (SELECT index_name FROM all_indexes WHERE owner = 'CUBEDOCU' AND table_name = 'T_CUBE_GEN_TEMPLATE_FUNCTION')
+		LOOP
+			EXECUTE IMMEDIATE
+			'DROP INDEX ' || r_index.index_name;
+			DBMS_OUTPUT.PUT_LINE('Index T_CUBE_GEN_TEMPLATE_FUNCTION.' || UPPER(r_index.index_name) || ' dropped');
+		END LOOP;
+	END IF;
+END;
+/
 BEGIN
 	FOR r_table IN (SELECT t.table_name FROM all_tables t, all_tab_comments c
 				WHERE t.table_name = c.table_name
@@ -2405,7 +2476,8 @@ BEGIN
 							'T_CUBE_GEN_PARAGRAPH',
 							'T_CUBE_GEN_EXAMPLE_MODEL',
 							'T_CUBE_GEN_EXAMPLE_OBJECT',
-							'T_CUBE_GEN_FUNCTION')
+							'T_CUBE_GEN_FUNCTION',
+							'T_CUBE_GEN_TEMPLATE_FUNCTION')
 				  AND SUBSTR(t.table_name,1,7) <> 'T_CUBE_')
 	LOOP
 		EXECUTE IMMEDIATE
@@ -4157,6 +4229,67 @@ BEGIN
 		EXECUTE IMMEDIATE
 		'ALTER TABLE t_cube_gen_function DROP COLUMN ' || r_field.column_name;
 		DBMS_OUTPUT.PUT_LINE('Field T_CUBE_GEN_FUNCTION.' || UPPER(r_field.column_name) || ' dropped');
+	END LOOP;
+END;
+/
+BEGIN
+	FOR r_field IN (SELECT column_name,
+		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
+		data_default old_default_value,
+  		DECODE(column_name,
+			'CUBE_ID','VARCHAR2(16)',
+			'FK_CUB_NAME','VARCHAR2(30)',
+			'NAME','VARCHAR2(30)',
+			'SYNTAX','VARCHAR2(3999)',NULL) new_domain,
+		DECODE(column_name,
+			'CUBE_ID',NULL,
+			'FK_CUB_NAME',NULL,
+			'NAME',NULL,
+			'SYNTAX',NULL,NULL) new_default_value
+  		FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_CUBE_GEN_TEMPLATE_FUNCTION')
+	LOOP
+		IF r_field.old_domain <> r_field.new_domain THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_cube_gen_template_function RENAME COLUMN ' || r_field.column_name || ' TO old#domain#field';
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_cube_gen_template_function ADD ' || r_field.column_name || ' ' || r_field.new_domain;
+ 			IF r_field.new_domain = 'VARCHAR2' THEN  
+				EXECUTE IMMEDIATE
+				'UPDATE t_cube_gen_template_function SET ' || r_field.column_name || '= TRIM(old#domain#field)';
+			ELSE
+				EXECUTE IMMEDIATE
+				'UPDATE t_cube_gen_template_function SET ' || r_field.column_name || '= old#domain#field';
+			END IF;
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_cube_gen_template_function DROP COLUMN old#domain#field';
+			DBMS_OUTPUT.PUT_LINE('Field T_CUBE_GEN_TEMPLATE_FUNCTION.' || UPPER(r_field.column_name) || ' converted from ' || r_field.old_domain || ' to ' || r_field.new_domain);
+		END IF;
+		IF NOT((r_field.old_default_value IS NULL AND r_field.new_default_value IS NULL) OR r_field.old_default_value = r_field.new_default_value) THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_cube_gen_template_function MODIFY (' || r_field.column_name || ' DEFAULT ' || NVL(r_field.new_default_value,'NULL') || ')';
+			DBMS_OUTPUT.PUT_LINE('Field T_CUBE_GEN_TEMPLATE_FUNCTION.' || UPPER(r_field.column_name) || ' default value set to ' || NVL(r_field.new_default_value,'NULL'));
+		END IF;
+	END LOOP;
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_cube_gen_template_function ADD CONSTRAINT ctf_pk
+		PRIMARY KEY (
+			fk_cub_name,
+			name )';
+	DBMS_OUTPUT.PUT_LINE('Primary Key T_CUBE_GEN_TEMPLATE_FUNCTION.CTF_PK created');
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_cube_gen_template_function ADD CONSTRAINT ctf_cub_fk
+		FOREIGN KEY (fk_cub_name)
+		REFERENCES t_cube_gen_documentation (name)
+		ON DELETE CASCADE';
+	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_CUBE_GEN_TEMPLATE_FUNCTION' AND column_name NOT IN (
+							'CUBE_ID',
+							'FK_CUB_NAME',
+							'NAME',
+							'SYNTAX'))
+	LOOP
+		EXECUTE IMMEDIATE
+		'ALTER TABLE t_cube_gen_template_function DROP COLUMN ' || r_field.column_name;
+		DBMS_OUTPUT.PUT_LINE('Field T_CUBE_GEN_TEMPLATE_FUNCTION.' || UPPER(r_field.column_name) || ' dropped');
 	END LOOP;
 END;
 /

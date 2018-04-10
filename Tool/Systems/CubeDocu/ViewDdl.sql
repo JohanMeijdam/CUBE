@@ -2097,6 +2097,14 @@ CREATE OR REPLACE VIEW v_cube_gen_function AS
 		template
 	FROM t_cube_gen_function
 /
+CREATE OR REPLACE VIEW v_cube_gen_template_function AS 
+	SELECT
+		cube_id,
+		fk_cub_name,
+		name,
+		syntax
+	FROM t_cube_gen_template_function
+/
 
 CREATE OR REPLACE PACKAGE pkg_cub_trg IS
 	PROCEDURE insert_cub (p_cub IN OUT NOCOPY v_cube_gen_documentation%ROWTYPE);
@@ -2114,6 +2122,9 @@ CREATE OR REPLACE PACKAGE pkg_cub_trg IS
 	PROCEDURE insert_cgf (p_cgf IN OUT NOCOPY v_cube_gen_function%ROWTYPE);
 	PROCEDURE update_cgf (p_cube_rowid IN UROWID, p_cgf_old IN OUT NOCOPY v_cube_gen_function%ROWTYPE, p_cgf_new IN OUT NOCOPY v_cube_gen_function%ROWTYPE);
 	PROCEDURE delete_cgf (p_cube_rowid IN UROWID, p_cgf IN OUT NOCOPY v_cube_gen_function%ROWTYPE);
+	PROCEDURE insert_ctf (p_ctf IN OUT NOCOPY v_cube_gen_template_function%ROWTYPE);
+	PROCEDURE update_ctf (p_cube_rowid IN UROWID, p_ctf_old IN OUT NOCOPY v_cube_gen_template_function%ROWTYPE, p_ctf_new IN OUT NOCOPY v_cube_gen_template_function%ROWTYPE);
+	PROCEDURE delete_ctf (p_cube_rowid IN UROWID, p_ctf IN OUT NOCOPY v_cube_gen_template_function%ROWTYPE);
 END;
 /
 SHOW ERRORS;
@@ -2286,6 +2297,34 @@ CREATE OR REPLACE PACKAGE BODY pkg_cub_trg IS
 	PROCEDURE delete_cgf (p_cube_rowid UROWID, p_cgf IN OUT NOCOPY v_cube_gen_function%ROWTYPE) IS
 	BEGIN
 		DELETE t_cube_gen_function 
+		WHERE rowid = p_cube_rowid;
+	END;
+
+	PROCEDURE insert_ctf (p_ctf IN OUT NOCOPY v_cube_gen_template_function%ROWTYPE) IS
+	BEGIN
+		p_ctf.cube_id := 'CTF-' || TO_CHAR(ctf_seq.NEXTVAL,'FM000000000000');
+		INSERT INTO t_cube_gen_template_function (
+			cube_id,
+			fk_cub_name,
+			name,
+			syntax)
+		VALUES (
+			p_ctf.cube_id,
+			p_ctf.fk_cub_name,
+			p_ctf.name,
+			p_ctf.syntax);
+	END;
+
+	PROCEDURE update_ctf (p_cube_rowid UROWID, p_ctf_old IN OUT NOCOPY v_cube_gen_template_function%ROWTYPE, p_ctf_new IN OUT NOCOPY v_cube_gen_template_function%ROWTYPE) IS
+	BEGIN
+		UPDATE t_cube_gen_template_function SET 
+			syntax = p_ctf_new.syntax
+		WHERE rowid = p_cube_rowid;
+	END;
+
+	PROCEDURE delete_ctf (p_cube_rowid UROWID, p_ctf IN OUT NOCOPY v_cube_gen_template_function%ROWTYPE) IS
+	BEGIN
+		DELETE t_cube_gen_template_function 
 		WHERE rowid = p_cube_rowid;
 	END;
 END;
@@ -2486,6 +2525,42 @@ BEGIN
 		pkg_cub_trg.update_cgf (l_cube_rowid, r_cgf_old, r_cgf_new);
 	ELSIF DELETING THEN
 		pkg_cub_trg.delete_cgf (l_cube_rowid, r_cgf_old);
+	END IF;
+END;
+/
+SHOW ERRORS
+
+CREATE OR REPLACE TRIGGER trg_ctf
+INSTEAD OF INSERT OR DELETE OR UPDATE ON v_cube_gen_template_function
+FOR EACH ROW
+DECLARE
+	l_cube_rowid UROWID;
+	r_ctf_new v_cube_gen_template_function%ROWTYPE;
+	r_ctf_old v_cube_gen_template_function%ROWTYPE;
+BEGIN
+	IF INSERTING OR UPDATING THEN
+		r_ctf_new.fk_cub_name := REPLACE(:NEW.fk_cub_name,' ','_');
+		r_ctf_new.name := REPLACE(:NEW.name,' ','_');
+		r_ctf_new.syntax := :NEW.syntax;
+	END IF;
+	IF UPDATING THEN
+		r_ctf_new.cube_id := :OLD.cube_id;
+	END IF;
+	IF UPDATING OR DELETING THEN
+		SELECT rowid INTO l_cube_rowid FROM t_cube_gen_template_function
+		WHERE fk_cub_name = :OLD.fk_cub_name
+		  AND name = :OLD.name;
+		r_ctf_old.fk_cub_name := :OLD.fk_cub_name;
+		r_ctf_old.name := :OLD.name;
+		r_ctf_old.syntax := :OLD.syntax;
+	END IF;
+
+	IF INSERTING THEN 
+		pkg_cub_trg.insert_ctf (r_ctf_new);
+	ELSIF UPDATING THEN
+		pkg_cub_trg.update_ctf (l_cube_rowid, r_ctf_old, r_ctf_new);
+	ELSIF DELETING THEN
+		pkg_cub_trg.delete_ctf (l_cube_rowid, r_ctf_old);
 	END IF;
 END;
 /

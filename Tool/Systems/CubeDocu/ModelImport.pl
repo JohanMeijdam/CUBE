@@ -377,6 +377,7 @@ print IMPORT "DELETE v_cube_gen_paragraph;\n";
 print IMPORT "DELETE v_cube_gen_example_model;\n";
 print IMPORT "DELETE v_cube_gen_example_object;\n";
 print IMPORT "DELETE v_cube_gen_function;\n";
+print IMPORT "DELETE v_cube_gen_template_function;\n";
 
 $i = $NodeFirst[0];
 CreateInsertStmnts ($i,'');
@@ -829,6 +830,18 @@ my (@FkeyValues);
 						$Sequence++;
 						print IMPORT "INSERT INTO v_cube_gen_function (CUBE_SEQUENCE, FK_CUB_NAME, FK_CGM_ID, ID, HEADER, DESCRIPTION, TEMPLATE)\n"; 
 						print IMPORT "	VALUES ($Sequence, '$_[1]', '$_[2]', '".ReplX($NodeString[$j])."', '".ReplX($NodeValue[$NodeValuePntr[$j]])."', '".ReplX($NodeValue[$NodeValuePntr[$j]+1])."', '".ReplX($NodeValue[$NodeValuePntr[$j]+2])."');\n";
+						print IMPORT "\n";
+						$j = $NodeNext[$j];
+					}
+				}
+				case "CUBE_GEN_TEMPLATE_FUNCTION" {
+					$j = $NodeFirst[$_[0]];
+					while (1) {
+						if ($j == -1) {
+							last;
+						}
+						print IMPORT "INSERT INTO v_cube_gen_template_function (FK_CUB_NAME, NAME, SYNTAX)\n"; 
+						print IMPORT "	VALUES ('$_[1]', '".ReplX($NodeString[$j])."', '".ReplX($NodeValue[$NodeValuePntr[$j]])."');\n";
 						print IMPORT "\n";
 						$j = $NodeNext[$j];
 					}

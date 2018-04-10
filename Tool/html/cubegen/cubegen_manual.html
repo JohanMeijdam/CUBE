@@ -28,6 +28,19 @@ INDEX</div>
 <div><a href="#CGF-000000100040" class="indent2">Repeating Iteration</a></div>
 <div><a href="#CGF-000000100040T" class="template indent3">Template</a></div>
 <div><a href="#CGF-000000100040C" class="result indent3">Code</a></div>
+<div><a href="#CGM-000000100061" class="indent1">Model Enhancement</a></div>
+<div><a href="#CGM-000000100061M" class="model indent3">Cube Model</a></div>
+<div><a href="#CGF-000000100081" class="indent2">Wildcard</a></div>
+<div><a href="#CGF-000000100081T" class="template indent3">Template</a></div>
+<div><a href="#CGF-000000100081C" class="result indent3">Code</a></div>
+<div><a href="#CGF-000000100082" class="indent2">Enhance Model</a></div>
+<div><a href="#CGF-000000100082T" class="template indent3">Template</a></div>
+<div><a href="#CGF-000000100082C" class="result indent3">Code</a></div>
+<div><a href="#FUNCTIONS" class="indent1">Template Functions</a></div>
+<div><a href="#F_IF" class="indent3">IF</a></div>
+<div><a href="#F_LOOP" class="indent3">LOOP</a></div>
+<div><a href="#F_REPEAT" class="indent3">REPEAT</a></div>
+<div><a href="#F_VALUE" class="indent3">VALUE</a></div>
 </div>
 <div align="center" class="header0" style="overflow:hidden;position:absolute;top:76px;left:240px;right:0;height:30px;">
 CUBEGEN MANUAL</div>
@@ -36,19 +49,18 @@ CUBEGEN MANUAL</div>
 <div align="center"><img src="../images/cubegen_logo_doc.png"/></div>
 <pre>
 <div id="INTRO" class="header1">Introduction</div><!
-><div>CubeGen is essentially the copying of text files with a replacement function. The input consists of two text files: the model file and the template file. The model file contains the parameters for replacing the labels that have been applied in the template file. The template file contains the source code provided with labels.
+><div>CubeGen is essentially a copy with replace function. The input consists of two text files: the model file and the template file. The model file contains the parameters for replacing the labels that have been applied in the template file. The template file contains the source code provided with labels.
 The special thing about CubeGen is that the parameters have a hierarchical structure, which you can easily run through recursively.</div><!
 ><div id="CGP-000000100022" class="header2">Command Line</div><!
 ><div>The program can be run from the command line as a executable or as a Perl script.</div><!
-><div><span style="display:block;" class="code">
-cubegen.exe &lt;model&gt; &lt;template&gt; &lt;code&gt; &lt;arguments&gt; 
+><div><span style="display:block;" class="code">cubegen.exe &lt;model&gt; &lt;template&gt; &lt;code&gt; &lt;arguments&gt; 
 perl cubegen.pl &lt;model&gt; &lt;template&gt; &lt;code&gt; &lt;arguments&gt;
 -	&lt;model&gt;: Imported Cube Model textfile
 -	&lt;template&gt;: Imported CubeGen Template Textfile
 -	&lt;code&gt;: Textfile to generate
 -	&lt;arguments&gt;: Parameters used in template</span></div><!
 ><div id="CGP-000000100041" class="header2">Cube Model Structure</div><!
-><div>A Cube model, like XML, is a hierachical structure of groups and elements. Both a group and an element have properties.
+><div>A Cube model is a hierachical structure of model elements.  An element can be a group of other elements. A group starts with a &quot;+&quot; followed by a tag and ends with &quot;-&quot; followed by the tag. In the case of a separate element the two lines can be merged into one line starting with a &quot;=&quot;.
 The structure can best be explained by an example:</div><!
 ><div><span style="display:block;" class="code">+&lt;tagA&gt;:&lt;prop0&gt;|&lt;prop1&gt;|...|propN;
 	=&lt;tagB&gt;:&lt;prop0&gt;|&lt;prop1&gt;|...|propN;
@@ -65,8 +77,8 @@ The structure can best be explained by an example:</div><!
 ><div id="CGF-000000100024" class="header2">Iteration</div><!
 ><div>The LOOP statement walks through the model elements for the specified element type.</div><!
 ><div id="CGF-000000100024T" class="header3">Template</div><!
-><div><span style="display:block;" class="template code">This is a list of the Busines Object Types:[[LOOP,BUSINESS_OBJECT_TYPE]]
--	&lt;&lt;BUSINESS_OBJECT_TYPE:U&gt;&gt;[[ENDLOOP,BUSINESS_OBJECT_TYPE]]</span></div><!
+><div><span style="display:block;" class="template code">This is a list of the Busines Object Types:&#91;&#91;LOOP,BUSINESS_OBJECT_TYPE&#93;&#93;
+-	&lt;&lt;BUSINESS_OBJECT_TYPE:U&gt;&gt;&#91;&#91;ENDLOOP,BUSINESS_OBJECT_TYPE&#93;&#93;</span></div><!
 ><div id="CGF-000000100024C" class="header3">Code</div><!
 ><div><span style="display:block;" class="result code">This is a list of the Busines Object Types:
 -	CUSTOMER
@@ -75,10 +87,10 @@ The structure can best be explained by an example:</div><!
 ><div id="CGF-000000100060" class="header2">Selection</div><!
 ><div>The IF, ELSIF, ELSE structure makes a choice between texts based on conditions.</div><!
 ><div id="CGF-000000100060T" class="header3">Template</div><!
-><div><span style="display:block;" class="template code">Explain selection:[[LOOP,BUSINESS_OBJECT_TYPE]][[IF:0=CUSTOMER]]
-&lt;&lt;BUSINESS_OBJECT_TYPE&gt;&gt; concerns customers.[[ELSIF:0=ORDER]]
-&lt;&lt;BUSINESS_OBJECT_TYPE&gt;&gt; concerns no customers but orders.[[ELSE]]
-&lt;&lt;BUSINESS_OBJECT_TYPE&gt;&gt; concerns something else.[[ENDIF]][[ENDLOOP,BUSINESS_OBJECT_TYPE]]</span></div><!
+><div><span style="display:block;" class="template code">Explain selection:&#91;&#91;LOOP,BUSINESS_OBJECT_TYPE&#93;&#93;&#91;&#91;IF:0=CUSTOMER&#93;&#93;
+&lt;&lt;BUSINESS_OBJECT_TYPE&gt;&gt; concerns customers.&#91;&#91;ELSIF:0=ORDER&#93;&#93;
+&lt;&lt;BUSINESS_OBJECT_TYPE&gt;&gt; concerns no customers but orders.&#91;&#91;ELSE&#93;&#93;
+&lt;&lt;BUSINESS_OBJECT_TYPE&gt;&gt; concerns something else.&#91;&#91;ENDIF&#93;&#93;&#91;&#91;ENDLOOP,BUSINESS_OBJECT_TYPE&#93;&#93;</span></div><!
 ><div id="CGF-000000100060C" class="header3">Code</div><!
 ><div><span style="display:block;" class="result code">Explain selection:
 CUSTOMER concerns customers.
@@ -87,11 +99,11 @@ PRODUCT concerns something else.</span></div><!
 ><div id="CGF-000000100025" class="header2">Replace</div><!
 ><div>Replace a label with the model value.</div><!
 ><div id="CGF-000000100025T" class="header3">Template</div><!
-><div><span style="display:block;" class="template code">[[LOOP,BUSINESS_OBJECT_TYPE]]Uppercase: &lt;&lt;BUSINESS_OBJECT_TYPE:U&gt;&gt;, &lt;&lt;BUSINESS_OBJECT_TYPE1:U&gt;&gt;
+><div><span style="display:block;" class="template code">&#91;&#91;LOOP,BUSINESS_OBJECT_TYPE&#93;&#93;Uppercase: &lt;&lt;BUSINESS_OBJECT_TYPE:U&gt;&gt;, &lt;&lt;BUSINESS_OBJECT_TYPE1:U&gt;&gt;
 Lowercase: &lt;&lt;BUSINESS_OBJECT_TYPE:L&gt;&gt;, &lt;&lt;BUSINESS_OBJECT_TYPE1:L&gt;&gt;
 Camelcase: &lt;&lt;BUSINESS_OBJECT_TYPE:L&gt;&gt;, &lt;&lt;BUSINESS_OBJECT_TYPE1:C&gt;&gt;
 
-[[ENDLOOP,BUSINESS_OBJECT_TYPE]]</span></div><!
+&#91;&#91;ENDLOOP,BUSINESS_OBJECT_TYPE&#93;&#93;</span></div><!
 ><div id="CGF-000000100025C" class="header3">Code</div><!
 ><div><span style="display:block;" class="result code">Uppercase: CUSTOMER, CUSTOMER_FILES
 Lowercase: customer, customer_files
@@ -106,23 +118,24 @@ Lowercase: product, product_definitions
 Camelcase: product, ProductDefinitions
 
 </span></div><!
+><div id="FUNCTIONS" class="header1">Template Functions</a></div><!
 ><div id="CGM-000000100040" class="header1">Introduction Recursivity</div><!
 ><div>A first impression of going through a hierarchy in a recursive way.</div><!
 ><div id="CGM-000000100040M" class="header3">Cube Model</div><!
 ><div><span style="display:block;" class="model code">+BUSINESS_OBJECT_TYPE[CASE2-BOT-000000100025]:PRODUCT|product_definitions;
-	+TYPE[TYP-000000100000]:PRODUCT|PRD|Y;
-		=TYPE[TYP-000000100004]:PRODUCT_PART_APPLICATION|PPA|Y;
-		+TYPE[TYP-000000100002]:PRODUCTION_PROCES|PPR|N;
-			=TYPE[TYP-000000100003]:PRODUCTION_PROCES_STEP|PPS|N;
+	+TYPE[CASE2-TYP-000000100000]:PRODUCT|PRD|Y;
+		=TYPE[CASE2-TYP-000000100004]:PRODUCT_PART_APPLICATION|PPA|Y;
+		+TYPE[CASE2-TYP-000000100002]:PRODUCTION_PROCES|PPR|N;
+			=TYPE[CASE2-TYP-000000100003]:PRODUCTION_PROCES_STEP|PPS|N;
 		-TYPE:;
 	-TYPE:;
 -BUSINESS_OBJECT_TYPE:;</span></div><!
 ><div id="CGF-000000100040" class="header2">Repeating Iteration</div><!
 ><div>On the location of the REPEAT statement the loop has been repeated for all underlying elements of the same type.</div><!
 ><div id="CGF-000000100040T" class="header3">Template</div><!
-><div><span style="display:block;" class="template code">[[LOOP,BUSINESS_OBJECT_TYPE]]Structure of &lt;&lt;BUSINESS_OBJECT_TYPE:C&gt;&gt;:[[LOOP,TYPE]]
--	&lt;&lt;TYPE:C&gt;&gt;[[REPEAT:TAB]][[ENDLOOP,TYPE]]
-[[ENDLOOP,BUSINESS_OBJECT_TYPE]]</span></div><!
+><div><span style="display:block;" class="template code">&#91;&#91;LOOP,BUSINESS_OBJECT_TYPE&#93;&#93;Structure of &lt;&lt;BUSINESS_OBJECT_TYPE:C&gt;&gt;:&#91;&#91;LOOP,TYPE&#93;&#93;
+-	&lt;&lt;TYPE:C&gt;&gt;&#91;&#91;REPEAT:TAB&#93;&#93;&#91;&#91;ENDLOOP,TYPE&#93;&#93;
+&#91;&#91;ENDLOOP,BUSINESS_OBJECT_TYPE&#93;&#93;</span></div><!
 ><div id="CGF-000000100040C" class="header3">Code</div><!
 ><div><span style="display:block;" class="result code">Structure of Product:
 -	Product
@@ -130,6 +143,177 @@ Camelcase: product, ProductDefinitions
 	-	ProductionProces
 		-	ProductionProcesStep
 </span></div><!
+><div id="FUNCTIONS" class="header1">Template Functions</a></div><!
+><div id="CGM-000000100061" class="header1">Model Enhancement</div><!
+><div>The CUBE development framework has steps in which a cube model is copied with a number of enhancements. CubeGen has functions especially for supporting these steps.</div><!
+><div id="CGM-000000100061M" class="header3">Cube Model</div><!
+><div><span style="display:block;" class="model code">+BUSINESS_OBJECT_TYPE[CASE90-BOT-000000100040]:CUSTOMER|customer_files;
+	+TYPE[CASE90-TYP-000000100021]:CUSTOMER|CUS|N;
+		=ATTRIBUTE[CASE90-ATB-000000100004]:RELATION_NUMBER|Y;
+		=ATTRIBUTE[CASE90-ATB-000000100001]:NAME|N;
+	-TYPE:;
+-BUSINESS_OBJECT_TYPE:;
++BUSINESS_OBJECT_TYPE[CASE90-BOT-000000100024]:ORDER|order_directory;
+	+TYPE[CASE90-TYP-000000100020]:ORDER|ORD|N;
+		=ATTRIBUTE[CASE90-ATB-000000100005]:NUMBER|N;
+		=ATTRIBUTE[CASE90-ATB-000000100006]:DELIVERY_DATE|N;
+		=ATTRIBUTE[CASE90-ATB-000000100003]:DESCRIPTION|N;
+		+REFERENCE[CASE90-REF-000000100000]:IS_PLACED_BY|N;
+			&gt;REFERENCE_TYPE:CASE90-TYP-000000100021;
+		-REFERENCE:;
+		+TYPE[CASE90-TYP-000000100022]:ORDER_LINE|ORL|Y;
+			+REFERENCE[CASE90-REF-000000100001]:CONCERNS|Y;
+				&gt;REFERENCE_TYPE:CASE90-TYP-000000100000;
+			-REFERENCE:;
+		-TYPE:;
+	-TYPE:;
+-BUSINESS_OBJECT_TYPE:;
++BUSINESS_OBJECT_TYPE[CASE90-BOT-000000100025]:PRODUCT|product_definitions;
+	+TYPE[CASE90-TYP-000000100000]:PRODUCT|PRD|Y;
+		=ATTRIBUTE[CASE90-ATB-000000100007]:CODE|Y;
+		+TYPE[CASE90-TYP-000000100004]:PRODUCT_PART_APPLICATION|PPA|Y;
+			=ATTRIBUTE[CASE90-ATB-000000100008]:CODE|Y;
+			=ATTRIBUTE[CASE90-ATB-000000100010]:COUNT|N;
+		-TYPE:;
+		+TYPE[CASE90-TYP-000000100002]:PRODUCTION_PROCES|PPR|N;
+			=ATTRIBUTE[CASE90-ATB-000000100012]:PROCES_ID|Y;
+			+TYPE[CASE90-TYP-000000100003]:PRODUCTION_PROCES_STEP|PPS|N;
+				=ATTRIBUTE[CASE90-ATB-000000100013]:PROCES_STEP_ID|Y;
+				=ATTRIBUTE[CASE90-ATB-000000100014]:DESCRIPTION|N;
+			-TYPE:;
+		-TYPE:;
+	-TYPE:;
+-BUSINESS_OBJECT_TYPE:;</span></div><!
+><div id="CGF-000000100081" class="header2">Wildcard</div><!
+><div>Instead of a tag, an &quot;*&quot; can be used to apply a template function for all model elements.
+The VALUE function is used to copy a specified number of model element values.</div><!
+><div id="CGF-000000100081T" class="header3">Template</div><!
+><div><span style="display:block;" class="template code">! Copied model&#91;&#91;LOOP,*&#93;&#93;
++&lt;&lt;*TAG&gt;&gt;&#91;&#91;IF:EVAL:&#39;&lt;&lt;*:I&gt;&gt;&#39;ne&#39;&#39;&#93;&#93;&#91;&lt;&lt;*:I&gt;&gt;&#93;&#91;&#91;ENDIF&#93;&#93;:&#91;&#91;VALUE,*:0&gt;N:|&#93;&#93;;&#91;&#91;REPEAT:TAB&#93;&#93;&#91;&#91;LOOP,&gt;*&#93;&#93;
+	&gt;&lt;&lt;*TAG&gt;&gt;:&lt;&lt;*:I&gt;&gt;;&#91;&#91;ENDLOOP,&gt;*&#93;&#93;
+-&lt;&lt;*TAG&gt;&gt;:;&#91;&#91;ENDLOOP,*&#93;&#93;</span></div><!
+><div id="CGF-000000100081C" class="header3">Code</div><!
+><div><span style="display:block;" class="result code">! Copied model
++BUSINESS_OBJECT_TYPE[CASE90-BOT-000000100040]:CUSTOMER|customer_files;
+	+TYPE[CASE90-TYP-000000100021]:CUSTOMER|CUS|N;
+		+ATTRIBUTE[CASE90-ATB-000000100004]:RELATION_NUMBER|Y;
+		-ATTRIBUTE:;
+		+ATTRIBUTE[CASE90-ATB-000000100001]:NAME|N;
+		-ATTRIBUTE:;
+	-TYPE:;
+-BUSINESS_OBJECT_TYPE:;
++BUSINESS_OBJECT_TYPE[CASE90-BOT-000000100024]:ORDER|order_directory;
+	+TYPE[CASE90-TYP-000000100020]:ORDER|ORD|N;
+		+ATTRIBUTE[CASE90-ATB-000000100005]:NUMBER|N;
+		-ATTRIBUTE:;
+		+ATTRIBUTE[CASE90-ATB-000000100006]:DELIVERY_DATE|N;
+		-ATTRIBUTE:;
+		+ATTRIBUTE[CASE90-ATB-000000100003]:DESCRIPTION|N;
+		-ATTRIBUTE:;
+		+REFERENCE[CASE90-REF-000000100000]:IS_PLACED_BY|N;
+			>REFERENCE_TYPE:CASE90-TYP-000000100021;
+		-REFERENCE:;
+		+TYPE[CASE90-TYP-000000100022]:ORDER_LINE|ORL|Y;
+			+REFERENCE[CASE90-REF-000000100001]:CONCERNS|Y;
+				>REFERENCE_TYPE:CASE90-TYP-000000100000;
+			-REFERENCE:;
+		-TYPE:;
+	-TYPE:;
+-BUSINESS_OBJECT_TYPE:;
++BUSINESS_OBJECT_TYPE[CASE90-BOT-000000100025]:PRODUCT|product_definitions;
+	+TYPE[CASE90-TYP-000000100000]:PRODUCT|PRD|Y;
+		+ATTRIBUTE[CASE90-ATB-000000100007]:CODE|Y;
+		-ATTRIBUTE:;
+		+TYPE[CASE90-TYP-000000100004]:PRODUCT_PART_APPLICATION|PPA|Y;
+			+ATTRIBUTE[CASE90-ATB-000000100008]:CODE|Y;
+			-ATTRIBUTE:;
+			+ATTRIBUTE[CASE90-ATB-000000100010]:COUNT|N;
+			-ATTRIBUTE:;
+		-TYPE:;
+		+TYPE[CASE90-TYP-000000100002]:PRODUCTION_PROCES|PPR|N;
+			+ATTRIBUTE[CASE90-ATB-000000100012]:PROCES_ID|Y;
+			-ATTRIBUTE:;
+			+TYPE[CASE90-TYP-000000100003]:PRODUCTION_PROCES_STEP|PPS|N;
+				+ATTRIBUTE[CASE90-ATB-000000100013]:PROCES_STEP_ID|Y;
+				-ATTRIBUTE:;
+				+ATTRIBUTE[CASE90-ATB-000000100014]:DESCRIPTION|N;
+				-ATTRIBUTE:;
+			-TYPE:;
+		-TYPE:;
+	-TYPE:;
+-BUSINESS_OBJECT_TYPE:;</span></div><!
+><div id="CGF-000000100082" class="header2">Enhance Model</div><!
+><div>In the generic model copy function texts can be added as specific enhancements. The TAG condition has been added to select the concerning model elements.</div><!
+><div id="CGF-000000100082T" class="header3">Template</div><!
+><div><span style="display:block;" class="template code">! Model enhanced with foreign keys&#91;&#91;LOOP,*&#93;&#93;
++&lt;&lt;*TAG&gt;&gt;&#91;&#91;IF:EVAL:&#39;&lt;&lt;*:I&gt;&gt;&#39;ne&#39;&#39;&#93;&#93;&#91;&lt;&lt;*:I&gt;&gt;&#93;&#91;&#91;ENDIF&#93;&#93;:&#91;&#91;VALUE,*:0&gt;N:|&#93;&#93;;&#91;&#91;IF:TAG(TYPE)&#93;&#93;&#91;&#91;LOOP,REFERENCE&#93;&#93;&#91;&#91;LOOP,REFERENCE_TYPE&#93;&#93;&#91;&#91;LOOP,ATTRIBUTE:1=Y&#93;&#93;
+	=FOREIGN_KEY:FK_&lt;&lt;REFERENCE_TYPE1&gt;&gt;_&lt;&lt;ATTRIBUTE&gt;&gt;|&lt;&lt;REFERENCE1&gt;&gt;;&#91;&#91;ENDLOOP,ATTRIBUTE&#93;&#93;&#91;&#91;ENDLOOP,REFERENCE_TYPE&#93;&#93;&#91;&#91;ENDLOOP,REFERENCE&#93;&#93;&#91;&#91;ENDIF&#93;&#93;&#91;&#91;REPEAT:TAB&#93;&#93;&#91;&#91;LOOP,&gt;*&#93;&#93;
+	&gt;&lt;&lt;*TAG&gt;&gt;:&lt;&lt;*:I&gt;&gt;;&#91;&#91;ENDLOOP,&gt;*&#93;&#93;
+-&lt;&lt;*TAG&gt;&gt;:;&#91;&#91;ENDLOOP,*&#93;&#93;</span></div><!
+><div id="CGF-000000100082C" class="header3">Code</div><!
+><div><span style="display:block;" class="result code">! Model enhanced with foreign keys
++BUSINESS_OBJECT_TYPE[CASE90-BOT-000000100040]:CUSTOMER|customer_files;
+	+TYPE[CASE90-TYP-000000100021]:CUSTOMER|CUS|N;
+		+ATTRIBUTE[CASE90-ATB-000000100004]:RELATION_NUMBER|Y;
+		-ATTRIBUTE:;
+		+ATTRIBUTE[CASE90-ATB-000000100001]:NAME|N;
+		-ATTRIBUTE:;
+	-TYPE:;
+-BUSINESS_OBJECT_TYPE:;
++BUSINESS_OBJECT_TYPE[CASE90-BOT-000000100024]:ORDER|order_directory;
+	+TYPE[CASE90-TYP-000000100020]:ORDER|ORD|N;
+		=FOREIGN_KEY:FK_CUS_RELATION_NUMBER|N;
+		+ATTRIBUTE[CASE90-ATB-000000100005]:NUMBER|N;
+		-ATTRIBUTE:;
+		+ATTRIBUTE[CASE90-ATB-000000100006]:DELIVERY_DATE|N;
+		-ATTRIBUTE:;
+		+ATTRIBUTE[CASE90-ATB-000000100003]:DESCRIPTION|N;
+		-ATTRIBUTE:;
+		+REFERENCE[CASE90-REF-000000100000]:IS_PLACED_BY|N;
+			>REFERENCE_TYPE:CASE90-TYP-000000100021;
+		-REFERENCE:;
+		+TYPE[CASE90-TYP-000000100022]:ORDER_LINE|ORL|Y;
+			=FOREIGN_KEY:FK_PRD_CODE|Y;
+			+REFERENCE[CASE90-REF-000000100001]:CONCERNS|Y;
+				>REFERENCE_TYPE:CASE90-TYP-000000100000;
+			-REFERENCE:;
+		-TYPE:;
+	-TYPE:;
+-BUSINESS_OBJECT_TYPE:;
++BUSINESS_OBJECT_TYPE[CASE90-BOT-000000100025]:PRODUCT|product_definitions;
+	+TYPE[CASE90-TYP-000000100000]:PRODUCT|PRD|Y;
+		+ATTRIBUTE[CASE90-ATB-000000100007]:CODE|Y;
+		-ATTRIBUTE:;
+		+TYPE[CASE90-TYP-000000100004]:PRODUCT_PART_APPLICATION|PPA|Y;
+			+ATTRIBUTE[CASE90-ATB-000000100008]:CODE|Y;
+			-ATTRIBUTE:;
+			+ATTRIBUTE[CASE90-ATB-000000100010]:COUNT|N;
+			-ATTRIBUTE:;
+		-TYPE:;
+		+TYPE[CASE90-TYP-000000100002]:PRODUCTION_PROCES|PPR|N;
+			+ATTRIBUTE[CASE90-ATB-000000100012]:PROCES_ID|Y;
+			-ATTRIBUTE:;
+			+TYPE[CASE90-TYP-000000100003]:PRODUCTION_PROCES_STEP|PPS|N;
+				+ATTRIBUTE[CASE90-ATB-000000100013]:PROCES_STEP_ID|Y;
+				-ATTRIBUTE:;
+				+ATTRIBUTE[CASE90-ATB-000000100014]:DESCRIPTION|N;
+				-ATTRIBUTE:;
+			-TYPE:;
+		-TYPE:;
+	-TYPE:;
+-BUSINESS_OBJECT_TYPE:;</span></div><!
+><div id="FUNCTIONS" class="header1">Template Functions</a></div><!
+><div id="F_IF" class="header3">IF</a></div><!
+><div><span style="display:block;" class="template code">&#91;&#91;IF:&lt;condition&gt;&#93;&#93; ... &#91;&#91;ENDIF&#93;&#93;
+&#91;&#91;IF,&lt;tag&gt;:&lt;condition&gt;&#93;&#93; ... &#91;&#91;ELSIF,&lt;tag&gt;:&lt;condition&gt;&#93;&#93; ... &#91;&#91;ELSE&#93;&#93; ... &#91;&#91;ENDIF&#93;&#93;</span></div><!
+><div id="F_LOOP" class="header3">LOOP</a></div><!
+><div><span style="display:block;" class="template code">&#91;&#91;LOOP,&lt;tag&gt;&#93;&#93; ... &#91;&#91;ENDLOOP,&lt;tag&gt;&#93;&#93;
+&#91;&#91;LOOP,&lt;tag&gt;:&lt;condition&gt;&#93;&#93; ... &#91;&#91;ENDLOOP,&lt;tag&gt;&#93;&#93;</span></div><!
+><div id="F_REPEAT" class="header3">REPEAT</a></div><!
+><div><span style="display:block;" class="template code">&#91;&#91;LOOP,&lt;tag&gt;&#93;&#93; ... &#91;&#91;REPEAT&#93;&#93; ... &#91;&#91;ENDLOOP,&lt;tag&gt;&#93;&#93;
+&#91;&#91;LOOP,&lt;tag&gt;&#93;&#93; ... &#91;&#91;LOOP...&#93;&#93; ... &#91;&#91;REPEAT,&lt;tag&gt;:TAB&#93;&#93; ... &#91;&#91;ENDLOOP...&#93;&#93; ... &#91;&#91;ENDLOOP,&lt;tag&gt;&#93;&#93;</span></div><!
+><div id="F_VALUE" class="header3">VALUE</a></div><!
+><div><span style="display:block;" class="template code">&#91;&#91;VALUE,&lt;tag&gt;:&lt;loop_spec&gt;:&lt;separator&gt;&#93;&#93;</span></div><!
 ></pre>
 <div>
 <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>

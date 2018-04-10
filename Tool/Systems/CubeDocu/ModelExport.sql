@@ -600,6 +600,21 @@ DECLARE
 	END;
 
 
+	PROCEDURE report_ctf (p_cub IN t_cube_gen_documentation%ROWTYPE) IS
+	BEGIN
+		FOR r_ctf IN (
+			SELECT *				
+			FROM t_cube_gen_template_function
+			WHERE fk_cub_name = p_cub.name
+			ORDER BY cube_id )
+		LOOP
+			DBMS_OUTPUT.PUT_LINE (ftabs || '=CUBE_GEN_TEMPLATE_FUNCTION[' || r_ctf.cube_id || ']:' || fenperc(r_ctf.name) || '|' || fenperc(r_ctf.syntax) || ';');
+				l_level := l_level + 1;
+				l_level := l_level - 1;
+		END LOOP;
+	END;
+
+
 	PROCEDURE report_cub IS
 	BEGIN
 		FOR r_cub IN (
@@ -611,6 +626,7 @@ DECLARE
 				l_level := l_level + 1;
 				report_cgp (r_cub);
 				report_cgm (r_cub);
+				report_ctf (r_cub);
 				l_level := l_level - 1;
 			DBMS_OUTPUT.PUT_LINE (ftabs || '-CUBE_GEN_DOCUMENTATION:' || r_cub.name || ';');
 		END LOOP;
@@ -749,6 +765,10 @@ BEGIN
 	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:3|Template|'||REPLACE('CubeGen%20template%20used%20as%20example.','%20',' ')||';');
 	DBMS_OUTPUT.PUT_LINE ('			-META_TYPE:CUBE_GEN_FUNCTION;');
 	DBMS_OUTPUT.PUT_LINE ('		-META_TYPE:CUBE_GEN_EXAMPLE_MODEL;');
+	DBMS_OUTPUT.PUT_LINE ('		+META_TYPE:CUBE_GEN_TEMPLATE_FUNCTION|;');
+	DBMS_OUTPUT.PUT_LINE ('			=PROPERTY:0|Name|;');
+	DBMS_OUTPUT.PUT_LINE ('			=PROPERTY:1|Syntax|;');
+	DBMS_OUTPUT.PUT_LINE ('		-META_TYPE:CUBE_GEN_TEMPLATE_FUNCTION;');
 	DBMS_OUTPUT.PUT_LINE ('	-META_TYPE:CUBE_GEN_DOCUMENTATION;');
 	DBMS_OUTPUT.PUT_LINE ('-META_MODEL:CUBE;');
 
