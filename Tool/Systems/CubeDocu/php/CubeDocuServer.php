@@ -2854,7 +2854,7 @@ case 'GetCub':
 	if (!$r) { return; }
 	echo "SELECT_CUB";
 	if ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["DESCRIPTION"];
+		echo "<|||>".$row["DESCRIPTION"]."<|>".$row["DESCRIPTION_FUNCTIONS"];
 	}
 	break;
 
@@ -2912,14 +2912,16 @@ case 'GetCubItems':
 
 case 'CreateCub':
 
-	list($p_name, $p_description) = explode("<|>", $import[1]);
+	list($p_name, $p_description, $p_description_functions) = explode("<|>", $import[1]);
 
 	$stid = oci_parse($conn, "BEGIN pkg_cub.insert_cub (
 		:p_name,
-		:p_description);
+		:p_description,
+		:p_description_functions);
 	END;");
 	oci_bind_by_name($stid,":p_name",$p_name);
 	oci_bind_by_name($stid,":p_description",$p_description);
+	oci_bind_by_name($stid,":p_description_functions",$p_description_functions);
 
 	$r = oci_execute($stid);
 	if (!$r) {
@@ -2931,14 +2933,16 @@ case 'CreateCub':
 
 case 'UpdateCub':
 
-	list($p_name, $p_description) = explode("<|>", $import[1]);
+	list($p_name, $p_description, $p_description_functions) = explode("<|>", $import[1]);
 
 	$stid = oci_parse($conn, "BEGIN pkg_cub.update_cub (
 		:p_name,
-		:p_description);
+		:p_description,
+		:p_description_functions);
 	END;");
 	oci_bind_by_name($stid,":p_name",$p_name);
 	oci_bind_by_name($stid,":p_description",$p_description);
+	oci_bind_by_name($stid,":p_description_functions",$p_description_functions);
 
 	$r = oci_execute($stid);
 	if (!$r) {
@@ -3454,21 +3458,25 @@ case 'GetCtf':
 	if (!$r) { return; }
 	echo "SELECT_CTF";
 	if ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["SYNTAX"];
+		echo "<|||>".$row["INDICATION_LOGICAL"]."<|>".$row["DESCRIPTION"]."<|>".$row["SYNTAX"];
 	}
 	break;
 
 case 'CreateCtf':
 
-	list($p_fk_cub_name, $p_name, $p_syntax) = explode("<|>", $import[1]);
+	list($p_fk_cub_name, $p_name, $p_indication_logical, $p_description, $p_syntax) = explode("<|>", $import[1]);
 
 	$stid = oci_parse($conn, "BEGIN pkg_cub.insert_ctf (
 		:p_fk_cub_name,
 		:p_name,
+		:p_indication_logical,
+		:p_description,
 		:p_syntax);
 	END;");
 	oci_bind_by_name($stid,":p_fk_cub_name",$p_fk_cub_name);
 	oci_bind_by_name($stid,":p_name",$p_name);
+	oci_bind_by_name($stid,":p_indication_logical",$p_indication_logical);
+	oci_bind_by_name($stid,":p_description",$p_description);
 	oci_bind_by_name($stid,":p_syntax",$p_syntax);
 
 	$r = oci_execute($stid);
@@ -3481,15 +3489,19 @@ case 'CreateCtf':
 
 case 'UpdateCtf':
 
-	list($p_fk_cub_name, $p_name, $p_syntax) = explode("<|>", $import[1]);
+	list($p_fk_cub_name, $p_name, $p_indication_logical, $p_description, $p_syntax) = explode("<|>", $import[1]);
 
 	$stid = oci_parse($conn, "BEGIN pkg_cub.update_ctf (
 		:p_fk_cub_name,
 		:p_name,
+		:p_indication_logical,
+		:p_description,
 		:p_syntax);
 	END;");
 	oci_bind_by_name($stid,":p_fk_cub_name",$p_fk_cub_name);
 	oci_bind_by_name($stid,":p_name",$p_name);
+	oci_bind_by_name($stid,":p_indication_logical",$p_indication_logical);
+	oci_bind_by_name($stid,":p_description",$p_description);
 	oci_bind_by_name($stid,":p_syntax",$p_syntax);
 
 	$r = oci_execute($stid);

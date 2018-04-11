@@ -2028,7 +2028,8 @@ BEGIN
 		'CREATE TABLE t_cube_gen_documentation (
 			cube_id VARCHAR2(16),
 			name VARCHAR2(30),
-			description VARCHAR2(3999))';
+			description VARCHAR2(3999),
+			description_functions VARCHAR2(3999))';
 		DBMS_OUTPUT.PUT_LINE('Table T_CUBE_GEN_DOCUMENTATION created');
 	ELSE
 
@@ -2051,6 +2052,13 @@ BEGIN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_cube_gen_documentation ADD description VARCHAR2(3999)';
 			DBMS_OUTPUT.PUT_LINE('Column T_CUBE_GEN_DOCUMENTATION.DESCRIPTION created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_CUBE_GEN_DOCUMENTATION' AND column_name = 'DESCRIPTION_FUNCTIONS';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_cube_gen_documentation ADD description_functions VARCHAR2(3999)';
+			DBMS_OUTPUT.PUT_LINE('Column T_CUBE_GEN_DOCUMENTATION.DESCRIPTION_FUNCTIONS created');
 		END IF;
 
 		FOR r_key IN (SELECT constraint_name FROM all_constraints WHERE owner = 'CUBEDOCU' AND table_name = 'T_CUBE_GEN_DOCUMENTATION' AND constraint_type IN ('P','U','R') ORDER BY constraint_type DESC)
@@ -2399,6 +2407,8 @@ BEGIN
 			cube_id VARCHAR2(16),
 			fk_cub_name VARCHAR2(30),
 			name VARCHAR2(30),
+			indication_logical CHAR(1) DEFAULT ''N'',
+			description VARCHAR2(3999),
 			syntax VARCHAR2(3999))';
 		DBMS_OUTPUT.PUT_LINE('Table T_CUBE_GEN_TEMPLATE_FUNCTION created');
 	ELSE
@@ -2422,6 +2432,20 @@ BEGIN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_cube_gen_template_function ADD name VARCHAR2(30)';
 			DBMS_OUTPUT.PUT_LINE('Column T_CUBE_GEN_TEMPLATE_FUNCTION.NAME created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_CUBE_GEN_TEMPLATE_FUNCTION' AND column_name = 'INDICATION_LOGICAL';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_cube_gen_template_function ADD indication_logical CHAR(1) DEFAULT ''N''';
+			DBMS_OUTPUT.PUT_LINE('Column T_CUBE_GEN_TEMPLATE_FUNCTION.INDICATION_LOGICAL created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_CUBE_GEN_TEMPLATE_FUNCTION' AND column_name = 'DESCRIPTION';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_cube_gen_template_function ADD description VARCHAR2(3999)';
+			DBMS_OUTPUT.PUT_LINE('Column T_CUBE_GEN_TEMPLATE_FUNCTION.DESCRIPTION created');
 		END IF;
 
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_CUBE_GEN_TEMPLATE_FUNCTION' AND column_name = 'SYNTAX';
@@ -3910,11 +3934,13 @@ BEGIN
   		DECODE(column_name,
 			'CUBE_ID','VARCHAR2(16)',
 			'NAME','VARCHAR2(30)',
-			'DESCRIPTION','VARCHAR2(3999)',NULL) new_domain,
+			'DESCRIPTION','VARCHAR2(3999)',
+			'DESCRIPTION_FUNCTIONS','VARCHAR2(3999)',NULL) new_domain,
 		DECODE(column_name,
 			'CUBE_ID',NULL,
 			'NAME',NULL,
-			'DESCRIPTION',NULL,NULL) new_default_value
+			'DESCRIPTION',NULL,
+			'DESCRIPTION_FUNCTIONS',NULL,NULL) new_default_value
   		FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_CUBE_GEN_DOCUMENTATION')
 	LOOP
 		IF r_field.old_domain <> r_field.new_domain THEN
@@ -3947,7 +3973,8 @@ BEGIN
 	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_CUBE_GEN_DOCUMENTATION' AND column_name NOT IN (
 							'CUBE_ID',
 							'NAME',
-							'DESCRIPTION'))
+							'DESCRIPTION',
+							'DESCRIPTION_FUNCTIONS'))
 	LOOP
 		EXECUTE IMMEDIATE
 		'ALTER TABLE t_cube_gen_documentation DROP COLUMN ' || r_field.column_name;
@@ -4240,11 +4267,15 @@ BEGIN
 			'CUBE_ID','VARCHAR2(16)',
 			'FK_CUB_NAME','VARCHAR2(30)',
 			'NAME','VARCHAR2(30)',
+			'INDICATION_LOGICAL','CHAR(1)',
+			'DESCRIPTION','VARCHAR2(3999)',
 			'SYNTAX','VARCHAR2(3999)',NULL) new_domain,
 		DECODE(column_name,
 			'CUBE_ID',NULL,
 			'FK_CUB_NAME',NULL,
 			'NAME',NULL,
+			'INDICATION_LOGICAL','''N''',
+			'DESCRIPTION',NULL,
 			'SYNTAX',NULL,NULL) new_default_value
   		FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_CUBE_GEN_TEMPLATE_FUNCTION')
 	LOOP
@@ -4285,6 +4316,8 @@ BEGIN
 							'CUBE_ID',
 							'FK_CUB_NAME',
 							'NAME',
+							'INDICATION_LOGICAL',
+							'DESCRIPTION',
 							'SYNTAX'))
 	LOOP
 		EXECUTE IMMEDIATE

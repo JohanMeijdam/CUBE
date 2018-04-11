@@ -765,8 +765,8 @@ my (@FkeyValues);
 						if ($j == -1) {
 							last;
 						}
-						print IMPORT "INSERT INTO v_cube_gen_documentation (NAME, DESCRIPTION)\n"; 
-						print IMPORT "	VALUES ('".ReplX($NodeString[$j])."', '".ReplX($NodeValue[$NodeValuePntr[$j]])."');\n";
+						print IMPORT "INSERT INTO v_cube_gen_documentation (NAME, DESCRIPTION, DESCRIPTION_FUNCTIONS)\n"; 
+						print IMPORT "	VALUES ('".ReplX($NodeString[$j])."', '".ReplX($NodeValue[$NodeValuePntr[$j]])."', '".ReplX($NodeValue[$NodeValuePntr[$j]+1])."');\n";
 						print IMPORT "\n";
 						$FkeyValues[0] = ReplX($NodeString[$j]);
 						$i = $NodeFirst[$j];
@@ -840,8 +840,8 @@ my (@FkeyValues);
 						if ($j == -1) {
 							last;
 						}
-						print IMPORT "INSERT INTO v_cube_gen_template_function (FK_CUB_NAME, NAME, SYNTAX)\n"; 
-						print IMPORT "	VALUES ('$_[1]', '".ReplX($NodeString[$j])."', '".ReplX($NodeValue[$NodeValuePntr[$j]])."');\n";
+						print IMPORT "INSERT INTO v_cube_gen_template_function (FK_CUB_NAME, NAME, INDICATION_LOGICAL, DESCRIPTION, SYNTAX)\n"; 
+						print IMPORT "	VALUES ('$_[1]', '".ReplX($NodeString[$j])."', '".ReplX($NodeValue[$NodeValuePntr[$j]])."', '".ReplX($NodeValue[$NodeValuePntr[$j]+1])."', '".ReplX($NodeValue[$NodeValuePntr[$j]+2])."');\n";
 						print IMPORT "\n";
 						$j = $NodeNext[$j];
 					}

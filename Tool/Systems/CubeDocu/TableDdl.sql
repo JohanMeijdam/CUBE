@@ -509,6 +509,7 @@ CREATE TABLE t_cube_gen_documentation (
 	cube_id VARCHAR2(16),
 	name VARCHAR2(30),
 	description VARCHAR2(3999),
+	description_functions VARCHAR2(3999),
 	CONSTRAINT cub_pk
 		PRIMARY KEY (name) )
 /
@@ -575,6 +576,8 @@ CREATE TABLE t_cube_gen_template_function (
 	cube_id VARCHAR2(16),
 	fk_cub_name VARCHAR2(30),
 	name VARCHAR2(30),
+	indication_logical CHAR(1) DEFAULT 'N',
+	description VARCHAR2(3999),
 	syntax VARCHAR2(3999),
 	CONSTRAINT ctf_pk
 		PRIMARY KEY (fk_cub_name, name),

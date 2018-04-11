@@ -3867,10 +3867,12 @@ CREATE OR REPLACE PACKAGE pkg_cub IS
 			p_name IN VARCHAR2);
 	PROCEDURE insert_cub (
 			p_name IN VARCHAR2,
-			p_description IN VARCHAR2);
+			p_description IN VARCHAR2,
+			p_description_functions IN VARCHAR2);
 	PROCEDURE update_cub (
 			p_name IN VARCHAR2,
-			p_description IN VARCHAR2);
+			p_description IN VARCHAR2,
+			p_description_functions IN VARCHAR2);
 	PROCEDURE delete_cub (
 			p_name IN VARCHAR2);
 	PROCEDURE get_cgp (
@@ -3989,10 +3991,14 @@ CREATE OR REPLACE PACKAGE pkg_cub IS
 	PROCEDURE insert_ctf (
 			p_fk_cub_name IN VARCHAR2,
 			p_name IN VARCHAR2,
+			p_indication_logical IN CHAR,
+			p_description IN VARCHAR2,
 			p_syntax IN VARCHAR2);
 	PROCEDURE update_ctf (
 			p_fk_cub_name IN VARCHAR2,
 			p_name IN VARCHAR2,
+			p_indication_logical IN CHAR,
+			p_description IN VARCHAR2,
 			p_syntax IN VARCHAR2);
 	PROCEDURE delete_ctf (
 			p_fk_cub_name IN VARCHAR2,
@@ -4023,7 +4029,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_cub IS
 	BEGIN
 		OPEN p_cube_row FOR
 			SELECT
-			  description
+			  description,
+			  description_functions
 			FROM v_cube_gen_documentation
 			WHERE name = p_name;
 	END;
@@ -4073,16 +4080,19 @@ CREATE OR REPLACE PACKAGE BODY pkg_cub IS
 
 	PROCEDURE insert_cub (
 			p_name IN VARCHAR2,
-			p_description IN VARCHAR2) IS
+			p_description IN VARCHAR2,
+			p_description_functions IN VARCHAR2) IS
 	BEGIN
 		INSERT INTO v_cube_gen_documentation (
 			cube_id,
 			name,
-			description)
+			description,
+			description_functions)
 		VALUES (
 			NULL,
 			p_name,
-			p_description);
+			p_description,
+			p_description_functions);
 	EXCEPTION
 		WHEN DUP_VAL_ON_INDEX THEN
 			RAISE_APPLICATION_ERROR (-20001, 'Type cube_gen_documentation already exists');
@@ -4090,10 +4100,12 @@ CREATE OR REPLACE PACKAGE BODY pkg_cub IS
 
 	PROCEDURE update_cub (
 			p_name IN VARCHAR2,
-			p_description IN VARCHAR2) IS
+			p_description IN VARCHAR2,
+			p_description_functions IN VARCHAR2) IS
 	BEGIN
 		UPDATE v_cube_gen_documentation SET
-			description = p_description
+			description = p_description,
+			description_functions = p_description_functions
 		WHERE name = p_name;
 	END;
 
@@ -4767,6 +4779,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_cub IS
 	BEGIN
 		OPEN p_cube_row FOR
 			SELECT
+			  indication_logical,
+			  description,
 			  syntax
 			FROM v_cube_gen_template_function
 			WHERE fk_cub_name = p_fk_cub_name
@@ -4776,17 +4790,23 @@ CREATE OR REPLACE PACKAGE BODY pkg_cub IS
 	PROCEDURE insert_ctf (
 			p_fk_cub_name IN VARCHAR2,
 			p_name IN VARCHAR2,
+			p_indication_logical IN CHAR,
+			p_description IN VARCHAR2,
 			p_syntax IN VARCHAR2) IS
 	BEGIN
 		INSERT INTO v_cube_gen_template_function (
 			cube_id,
 			fk_cub_name,
 			name,
+			indication_logical,
+			description,
 			syntax)
 		VALUES (
 			NULL,
 			p_fk_cub_name,
 			p_name,
+			p_indication_logical,
+			p_description,
 			p_syntax);
 	EXCEPTION
 		WHEN DUP_VAL_ON_INDEX THEN
@@ -4796,9 +4816,13 @@ CREATE OR REPLACE PACKAGE BODY pkg_cub IS
 	PROCEDURE update_ctf (
 			p_fk_cub_name IN VARCHAR2,
 			p_name IN VARCHAR2,
+			p_indication_logical IN CHAR,
+			p_description IN VARCHAR2,
 			p_syntax IN VARCHAR2) IS
 	BEGIN
 		UPDATE v_cube_gen_template_function SET
+			indication_logical = p_indication_logical,
+			description = p_description,
 			syntax = p_syntax
 		WHERE fk_cub_name = p_fk_cub_name
 		  AND name = p_name;

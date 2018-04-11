@@ -254,7 +254,7 @@ function drop(p_event) {
 <tr><td style="padding-top:10px;">Description</td></tr><tr><td colspan="2"><div>
 <textarea id="InputDescription" type="text" maxlength="3999" rows="5" style="white-space:normal;width:100%;"></textarea></div></td></tr>
 <tr><td style="padding-top:10px;cursor:help;" oncontextmenu="OpenDescBox('DESC','CubeGenParagraph.Example','CUBE_GEN_PARAGRAPH','EXAMPLE',-1)">Example</td></tr><tr><td colspan="2"><div>
-<textarea id="InputExample" type="text" maxlength="3999" rows="11" style="font-family:courier new;font-size:12px;white-space:normal;width:100%;"></textarea></div></td></tr>
+<textarea id="InputExample" type="text" maxlength="3999" rows="11" style="overflow:auto;white-space:pre;font-family:courier new;font-size:12px;width:100%;"></textarea></div></td></tr>
 <tr><td><br></td><td style="width:100%;"></td></tr>
 <tr><td/><td>
 <button id="ButtonCreate" type="button" onclick="CreateCgp()">Create</button>&nbsp;&nbsp;&nbsp;

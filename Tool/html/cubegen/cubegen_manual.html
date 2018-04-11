@@ -41,6 +41,9 @@ INDEX</div>
 <div><a href="#F_LOOP" class="indent3">LOOP</a></div>
 <div><a href="#F_REPEAT" class="indent3">REPEAT</a></div>
 <div><a href="#F_VALUE" class="indent3">VALUE</a></div>
+<div><a href="#LOG_EXPR" class="indent1">Logical Expressions</a></div>
+<div><a href="#F_TAG" class="indent3">TAG</a></div>
+<br>
 </div>
 <div align="center" class="header0" style="overflow:hidden;position:absolute;top:76px;left:240px;right:0;height:30px;">
 CUBEGEN MANUAL</div>
@@ -69,13 +72,13 @@ The structure can best be explained by an example:</div><!
 	-&lt;tagC&gt;:;
 -&lt;tagA&gt;:;</span></div><!
 ><div id="CGM-000000100022" class="header1">First Impression</div><!
-><div>A simple example is used to give a first impression of the functionality of CubeGen.</div><!
+><div>A simple example with a small model is used to give a first impression of the functionality of CubeGen.</div><!
 ><div id="CGM-000000100022M" class="header3">Cube Model</div><!
 ><div><span style="display:block;" class="model code">=BUSINESS_OBJECT_TYPE[CASE1-BOT-000000100040]:CUSTOMER|customer_files;
 =BUSINESS_OBJECT_TYPE[CASE1-BOT-000000100024]:ORDER|order_directory;
 =BUSINESS_OBJECT_TYPE[CASE1-BOT-000000100025]:PRODUCT|product_definitions;</span></div><!
 ><div id="CGF-000000100024" class="header2">Iteration</div><!
-><div>The LOOP statement walks through the model elements for the specified element type.</div><!
+><div>The LOOP statement walks through the model elements for the specified type.</div><!
 ><div id="CGF-000000100024T" class="header3">Template</div><!
 ><div><span style="display:block;" class="template code">This is a list of the Busines Object Types:&#91;&#91;LOOP,BUSINESS_OBJECT_TYPE&#93;&#93;
 -	&lt;&lt;BUSINESS_OBJECT_TYPE:U&gt;&gt;&#91;&#91;ENDLOOP,BUSINESS_OBJECT_TYPE&#93;&#93;</span></div><!
@@ -118,7 +121,6 @@ Lowercase: product, product_definitions
 Camelcase: product, ProductDefinitions
 
 </span></div><!
-><div id="FUNCTIONS" class="header1">Template Functions</a></div><!
 ><div id="CGM-000000100040" class="header1">Introduction Recursivity</div><!
 ><div>A first impression of going through a hierarchy in a recursive way.</div><!
 ><div id="CGM-000000100040M" class="header3">Cube Model</div><!
@@ -143,7 +145,6 @@ Camelcase: product, ProductDefinitions
 	-	ProductionProces
 		-	ProductionProcesStep
 </span></div><!
-><div id="FUNCTIONS" class="header1">Template Functions</a></div><!
 ><div id="CGM-000000100061" class="header1">Model Enhancement</div><!
 ><div>The CUBE development framework has steps in which a cube model is copied with a number of enhancements. CubeGen has functions especially for supporting these steps.</div><!
 ><div id="CGM-000000100061M" class="header3">Cube Model</div><!
@@ -304,16 +305,24 @@ The VALUE function is used to copy a specified number of model element values.</
 -BUSINESS_OBJECT_TYPE:;</span></div><!
 ><div id="FUNCTIONS" class="header1">Template Functions</a></div><!
 ><div id="F_IF" class="header3">IF</a></div><!
+><div>Export a template segment that applies to a condition.</div><!
 ><div><span style="display:block;" class="template code">&#91;&#91;IF:&lt;condition&gt;&#93;&#93; ... &#91;&#91;ENDIF&#93;&#93;
 &#91;&#91;IF,&lt;tag&gt;:&lt;condition&gt;&#93;&#93; ... &#91;&#91;ELSIF,&lt;tag&gt;:&lt;condition&gt;&#93;&#93; ... &#91;&#91;ELSE&#93;&#93; ... &#91;&#91;ENDIF&#93;&#93;</span></div><!
 ><div id="F_LOOP" class="header3">LOOP</a></div><!
+><div>Export the template segment for the model elements of the specified type in sequential order .</div><!
 ><div><span style="display:block;" class="template code">&#91;&#91;LOOP,&lt;tag&gt;&#93;&#93; ... &#91;&#91;ENDLOOP,&lt;tag&gt;&#93;&#93;
 &#91;&#91;LOOP,&lt;tag&gt;:&lt;condition&gt;&#93;&#93; ... &#91;&#91;ENDLOOP,&lt;tag&gt;&#93;&#93;</span></div><!
 ><div id="F_REPEAT" class="header3">REPEAT</a></div><!
+><div>Repeat the LOOP function for all underlying model elements of the specified type.</div><!
 ><div><span style="display:block;" class="template code">&#91;&#91;LOOP,&lt;tag&gt;&#93;&#93; ... &#91;&#91;REPEAT&#93;&#93; ... &#91;&#91;ENDLOOP,&lt;tag&gt;&#93;&#93;
 &#91;&#91;LOOP,&lt;tag&gt;&#93;&#93; ... &#91;&#91;LOOP...&#93;&#93; ... &#91;&#91;REPEAT,&lt;tag&gt;:TAB&#93;&#93; ... &#91;&#91;ENDLOOP...&#93;&#93; ... &#91;&#91;ENDLOOP,&lt;tag&gt;&#93;&#93;</span></div><!
 ><div id="F_VALUE" class="header3">VALUE</a></div><!
+><div>Export the properties of a model element.</div><!
 ><div><span style="display:block;" class="template code">&#91;&#91;VALUE,&lt;tag&gt;:&lt;loop_spec&gt;:&lt;separator&gt;&#93;&#93;</span></div><!
+><div id="LOG_EXPR" class="header1">Logical Expressions</a></div><!
+><div id="F_TAG" class="header3">TAG</a></div><!
+><div>Check for the type of the actual model element.</div><!
+><div><span style="display:block;" class="template code">TAG(&lt;tag&gt;)</span></div><!
 ></pre>
 <div>
 <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>

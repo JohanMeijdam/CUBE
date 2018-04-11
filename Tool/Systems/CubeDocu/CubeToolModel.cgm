@@ -109,6 +109,7 @@
 	+META_TYPE:CUBE_GEN_DOCUMENTATION|A document to give an explanation of CubeGen based on examples.;
 		=PROPERTY:0|Name|The name of the document.;
 		=PROPERTY:1|Description|;
+		=PROPERTY:2|DescriptionFunctions|Description for Template Function chapter.;
 		+META_TYPE:CUBE_GEN_PARAGRAPH|;
 			=PROPERTY:0|Id|Technical identifier.;
 			=PROPERTY:1|Header|Text used as header and used in the index.;
@@ -132,7 +133,9 @@
 		-META_TYPE:CUBE_GEN_EXAMPLE_MODEL;
 		+META_TYPE:CUBE_GEN_TEMPLATE_FUNCTION|;
 			=PROPERTY:0|Name|;
-			=PROPERTY:1|Syntax|;
+			=PROPERTY:1|IndicationLogical|Indication that the function is a locical expression used in a condition. Values: Y(Yes), N(No);
+			=PROPERTY:2|Description|;
+			=PROPERTY:3|Syntax|;
 		-META_TYPE:CUBE_GEN_TEMPLATE_FUNCTION;
 	-META_TYPE:CUBE_GEN_DOCUMENTATION;
 -META_MODEL:CUBE;
@@ -184,10 +187,10 @@
 		-TYPE:PRODUCTION_PROCES;
 	-TYPE:PRODUCT;
 -BUSINESS_OBJECT_TYPE:PRODUCT;
-+CUBE_GEN_DOCUMENTATION[CUB-000000100022]:Cube_Gen_Manual|CubeGen is essentially a copy with replace function. The input consists of two text files: the model file and the template file. The model file contains the parameters for replacing the labels that have been applied in the template file. The template file contains the source code provided with labels.%0AThe special thing about CubeGen is that the parameters have a hierarchical structure, which you can easily run through recursively.;
++CUBE_GEN_DOCUMENTATION[CUB-000000100022]:Cube_Gen_Manual|CubeGen is essentially a copy with replace function. The input consists of two text files: the model file and the template file. The model file contains the parameters for replacing the labels that have been applied in the template file. The template file contains the source code provided with labels.%0AThe special thing about CubeGen is that the parameters have a hierarchical structure, which you can easily run through recursively.|;
 	=CUBE_GEN_PARAGRAPH[CGP-000000100022]:CMDLINE|Command Line|The program can be run from the command line as a executable or as a Perl script.|cubegen.exe <model> <template> <code> <arguments> %0Aperl cubegen.pl <model> <template> <code> <arguments>%0A-%09<model>: Imported Cube Model textfile%0A-%09<template>: Imported CubeGen Template Textfile%0A-%09<code>: Textfile to generate%0A-%09<arguments>: Parameters used in template;
 	=CUBE_GEN_PARAGRAPH[CGP-000000100041]:MDLSTRUC|Cube Model Structure|A Cube model is a hierachical structure of model elements.  An element can be a group of other elements. A group starts with a %22+%22 followed by a tag and ends with %22-%22 followed by the tag. In the case of a separate element the two lines can be merged into one line starting with a %22=%22.%0AThe structure can best be explained by an example:|+<tagA>:<prop0>%7C<prop1>%7C...%7CpropN%3B%0A%09=<tagB>:<prop0>%7C<prop1>%7C...%7CpropN%3B%0A%09+<tagC>:<prop0>%7C<prop1>%7C...%7CpropN%3B%0A%09%09=<tagD>:<prop0>%7C<prop1>%7C..%7CpropN%3B%0A%09-<tagC>:%3B%0A-<tagA>:%3B;
-	+CUBE_GEN_EXAMPLE_MODEL[CGM-000000100022]:CASE1|First Impression||A simple example is used to give a first impression of the functionality of CubeGen.;
+	+CUBE_GEN_EXAMPLE_MODEL[CGM-000000100022]:CASE1|First Impression||A simple example with a small model is used to give a first impression of the functionality of CubeGen.;
 		+CUBE_GEN_EXAMPLE_OBJECT[CGO-000000100060]:;
 			>BUSINESS_OBJECT_TYPE:BOT-000000100040;
 		-CUBE_GEN_EXAMPLE_OBJECT:;
@@ -197,7 +200,7 @@
 		+CUBE_GEN_EXAMPLE_OBJECT[CGO-000000100028]:;
 			>BUSINESS_OBJECT_TYPE:BOT-000000100025;
 		-CUBE_GEN_EXAMPLE_OBJECT:;
-		=CUBE_GEN_FUNCTION[CGF-000000100024]:LOOP1|Iteration|The LOOP statement walks through the model elements for the specified element type.|This is a list of the Busines Object Types:[[LOOP,BUSINESS_OBJECT_TYPE]]%0A-%09<<BUSINESS_OBJECT_TYPE:U>>[[ENDLOOP,BUSINESS_OBJECT_TYPE]];
+		=CUBE_GEN_FUNCTION[CGF-000000100024]:LOOP1|Iteration|The LOOP statement walks through the model elements for the specified type.|This is a list of the Busines Object Types:[[LOOP,BUSINESS_OBJECT_TYPE]]%0A-%09<<BUSINESS_OBJECT_TYPE:U>>[[ENDLOOP,BUSINESS_OBJECT_TYPE]];
 		=CUBE_GEN_FUNCTION[CGF-000000100060]:SELECT1|Selection|The IF, ELSIF, ELSE structure makes a choice between texts based on conditions.|Explain selection:[[LOOP,BUSINESS_OBJECT_TYPE]][[IF:0=CUSTOMER]]%0A<<BUSINESS_OBJECT_TYPE>> concerns customers.[[ELSIF:0=ORDER]]%0A<<BUSINESS_OBJECT_TYPE>> concerns no customers but orders.[[ELSE]]%0A<<BUSINESS_OBJECT_TYPE>> concerns something else.[[ENDIF]][[ENDLOOP,BUSINESS_OBJECT_TYPE]];
 		=CUBE_GEN_FUNCTION[CGF-000000100025]:REPL1|Replace|Replace a label with the model value.|[[LOOP,BUSINESS_OBJECT_TYPE]]Uppercase: <<BUSINESS_OBJECT_TYPE:U>>, <<BUSINESS_OBJECT_TYPE1:U>>%0ALowercase: <<BUSINESS_OBJECT_TYPE:L>>, <<BUSINESS_OBJECT_TYPE1:L>>%0ACamelcase: <<BUSINESS_OBJECT_TYPE:L>>, <<BUSINESS_OBJECT_TYPE1:C>>%0A%0A[[ENDLOOP,BUSINESS_OBJECT_TYPE]];
 	-CUBE_GEN_EXAMPLE_MODEL:CASE1;
@@ -220,8 +223,9 @@
 		=CUBE_GEN_FUNCTION[CGF-000000100081]:WILDCARD|Wildcard|Instead of a tag, an %22*%22 can be used to apply a template function for all model elements.%0AThe VALUE function is used to copy a specified number of model element values.|! Copied model[[LOOP,*]]%0A+<<*TAG>>[[IF:EVAL:'<<*:I>>'ne'']][<<*:I>>][[ENDIF]]:[[VALUE,*:0>N:%7C]]%3B[[REPEAT:TAB]][[LOOP,>*]]%0A%09><<*TAG>>:<<*:I>>%3B[[ENDLOOP,>*]]%0A-<<*TAG>>:%3B[[ENDLOOP,*]];
 		=CUBE_GEN_FUNCTION[CGF-000000100082]:ENHANCE|Enhance Model|In the generic model copy function texts can be added as specific enhancements. The TAG condition has been added to select the concerning model elements.|! Model enhanced with foreign keys[[LOOP,*]]%0A+<<*TAG>>[[IF:EVAL:'<<*:I>>'ne'']][<<*:I>>][[ENDIF]]:[[VALUE,*:0>N:%7C]]%3B[[IF:TAG(TYPE)]][[LOOP,REFERENCE]][[LOOP,REFERENCE_TYPE]][[LOOP,ATTRIBUTE:1=Y]]%0A%09=FOREIGN_KEY:FK_<<REFERENCE_TYPE1>>_<<ATTRIBUTE>>%7C<<REFERENCE1>>%3B[[ENDLOOP,ATTRIBUTE]][[ENDLOOP,REFERENCE_TYPE]][[ENDLOOP,REFERENCE]][[ENDIF]][[REPEAT:TAB]][[LOOP,>*]]%0A%09><<*TAG>>:<<*:I>>%3B[[ENDLOOP,>*]]%0A-<<*TAG>>:%3B[[ENDLOOP,*]];
 	-CUBE_GEN_EXAMPLE_MODEL:CASE90;
-	=CUBE_GEN_TEMPLATE_FUNCTION[CTF-000000100000]:IF|[[IF:<condition>]] ... [[ENDIF]]%0A[[IF,<tag>:<condition>]] ... [[ELSIF,<tag>:<condition>]] ... [[ELSE]] ... [[ENDIF]];
-	=CUBE_GEN_TEMPLATE_FUNCTION[CTF-000000100001]:LOOP|[[LOOP,<tag>]] ... [[ENDLOOP,<tag>]]%0A[[LOOP,<tag>:<condition>]] ... [[ENDLOOP,<tag>]];
-	=CUBE_GEN_TEMPLATE_FUNCTION[CTF-000000100002]:REPEAT|[[LOOP,<tag>]] ... [[REPEAT]] ... [[ENDLOOP,<tag>]]%0A[[LOOP,<tag>]] ... [[LOOP...]] ... [[REPEAT,<tag>:TAB]] ... [[ENDLOOP...]] ... [[ENDLOOP,<tag>]];
-	=CUBE_GEN_TEMPLATE_FUNCTION[CTF-000000100003]:VALUE|[[VALUE,<tag>:<loop_spec>:<separator>]];
+	=CUBE_GEN_TEMPLATE_FUNCTION[CTF-000000100000]:IF|N|Export a template segment that applies to a condition.|[[IF:<condition>]] ... [[ENDIF]]%0A[[IF,<tag>:<condition>]] ... [[ELSIF,<tag>:<condition>]] ... [[ELSE]] ... [[ENDIF]];
+	=CUBE_GEN_TEMPLATE_FUNCTION[CTF-000000100001]:LOOP|N|Export the template segment for the model elements of the specified type in sequential order .|[[LOOP,<tag>]] ... [[ENDLOOP,<tag>]]%0A[[LOOP,<tag>:<condition>]] ... [[ENDLOOP,<tag>]];
+	=CUBE_GEN_TEMPLATE_FUNCTION[CTF-000000100002]:REPEAT|N|Repeat the LOOP function for all underlying model elements of the specified type.|[[LOOP,<tag>]] ... [[REPEAT]] ... [[ENDLOOP,<tag>]]%0A[[LOOP,<tag>]] ... [[LOOP...]] ... [[REPEAT,<tag>:TAB]] ... [[ENDLOOP...]] ... [[ENDLOOP,<tag>]];
+	=CUBE_GEN_TEMPLATE_FUNCTION[CTF-000000100003]:VALUE|N|Export the properties of a model element.|[[VALUE,<tag>:<loop_spec>:<separator>]];
+	=CUBE_GEN_TEMPLATE_FUNCTION[CTF-000000100020]:TAG|Y|Check for the type of the actual model element.|TAG(<tag>);
 -CUBE_GEN_DOCUMENTATION:Cube_Gen_Manual;

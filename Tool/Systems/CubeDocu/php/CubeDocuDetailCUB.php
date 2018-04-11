@@ -15,6 +15,7 @@ g_xmlhttp.onreadystatechange = function() {
 		case "SELECT_CUB":
 			var l_values = l_argument[1].split("<|>");
 			document.getElementById("InputDescription").value=l_values[0];
+			document.getElementById("InputDescriptionFunctions").value=l_values[1];
 			break;
 		case "CREATE_CUB":
 			document.getElementById("InputName").readOnly=true;
@@ -97,14 +98,16 @@ function InitBody() {
 function CreateCub() {
 	var l_parameters = 
 		document.getElementById("InputName").value+'<|>'+
-		document.getElementById("InputDescription").value;
+		document.getElementById("InputDescription").value+'<|>'+
+		document.getElementById("InputDescriptionFunctions").value;
 	performTrans('CreateCub<|||>'+l_parameters);
 }
 
 function UpdateCub() {
 	var l_parameters = 
 		document.getElementById("InputName").value+'<|>'+
-		document.getElementById("InputDescription").value;
+		document.getElementById("InputDescription").value+'<|>'+
+		document.getElementById("InputDescriptionFunctions").value;
 	performTrans('UpdateCub<|||>'+l_parameters);
 }
 
@@ -225,6 +228,8 @@ function drop(p_event) {
 <input id="InputName" type="text" maxlength="30" style="width:100%;" onchange="ReplaceSpaces(this);"></input></div></td></tr>
 <tr><td style="padding-top:10px;">Description</td></tr><tr><td colspan="2"><div>
 <textarea id="InputDescription" type="text" maxlength="3999" rows="5" style="white-space:normal;width:100%;"></textarea></div></td></tr>
+<tr><td style="padding-top:10px;cursor:help;" oncontextmenu="OpenDescBox('CUBEGEN','CubeGenDocumentation.DescriptionFunctions','CUBE_GEN_DOCUMENTATION','DESCRIPTION_FUNCTIONS',-1)">DescriptionFunctions</td></tr><tr><td colspan="2"><div>
+<textarea id="InputDescriptionFunctions" type="text" maxlength="3999" rows="5" style="white-space:normal;width:100%;"></textarea></div></td></tr>
 <tr><td><br></td><td style="width:100%;"></td></tr>
 <tr><td/><td>
 <button id="ButtonCreate" type="button" onclick="CreateCub()">Create</button>&nbsp;&nbsp;&nbsp;

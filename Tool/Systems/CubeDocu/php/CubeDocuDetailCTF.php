@@ -14,7 +14,9 @@ g_xmlhttp.onreadystatechange = function() {
 		switch (l_argument[0]) {
 		case "SELECT_CTF":
 			var l_values = l_argument[1].split("<|>");
-			document.getElementById("InputSyntax").value=l_values[0];
+			document.getElementById("InputIndicationLogical").value=l_values[0];
+			document.getElementById("InputDescription").value=l_values[1];
+			document.getElementById("InputSyntax").value=l_values[2];
 			break;
 		case "CREATE_CTF":
 			document.getElementById("InputFkCubName").readOnly=true;
@@ -97,12 +99,15 @@ function InitBody() {
 	default:
 		alert ('Error InitBody: '+l_argument[1]);
 	}
+	document.getElementById("InputIndicationLogical").value='N';
 }
 
 function CreateCtf() {
 	var l_parameters = 
 		document.getElementById("InputFkCubName").value+'<|>'+
 		document.getElementById("InputName").value+'<|>'+
+		document.getElementById("InputIndicationLogical").value+'<|>'+
+		document.getElementById("InputDescription").value+'<|>'+
 		document.getElementById("InputSyntax").value;
 	performTrans('CreateCtf<|||>'+l_parameters);
 }
@@ -111,6 +116,8 @@ function UpdateCtf() {
 	var l_parameters = 
 		document.getElementById("InputFkCubName").value+'<|>'+
 		document.getElementById("InputName").value+'<|>'+
+		document.getElementById("InputIndicationLogical").value+'<|>'+
+		document.getElementById("InputDescription").value+'<|>'+
 		document.getElementById("InputSyntax").value;
 	performTrans('UpdateCtf<|||>'+l_parameters);
 }
@@ -233,8 +240,16 @@ function drop(p_event) {
 <input id="InputFkCubName" type="text" maxlength="30" style="width:100%;" onchange="ReplaceSpaces(this);"></input></div></td></tr>
 <tr><td><u>Name</u></td><td><div style="max-width:30em;">
 <input id="InputName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr><td style="cursor:help;" oncontextmenu="OpenDescBox('FUNCTION','CubeGenTemplateFunction.IndicationLogical','CUBE_GEN_TEMPLATE_FUNCTION','INDICATION_LOGICAL',-1)">IndicationLogical</td><td><div>
+<select id="InputIndicationLogical" type="text">
+	<option value=" " selected> </option>
+	<option value="Y">Yes</option>
+	<option value="N">No</option>
+</select></div></td></tr>
+<tr><td style="padding-top:10px;">Description</td></tr><tr><td colspan="2"><div>
+<textarea id="InputDescription" type="text" maxlength="3999" rows="5" style="white-space:normal;width:100%;"></textarea></div></td></tr>
 <tr><td style="padding-top:10px;">Syntax</td></tr><tr><td colspan="2"><div>
-<textarea id="InputSyntax" type="text" maxlength="3999" rows="11" style="font-family:courier new;font-size:12px;white-space:normal;width:100%;"></textarea></div></td></tr>
+<textarea id="InputSyntax" type="text" maxlength="3999" rows="11" style="overflow:auto;white-space:pre;font-family:courier new;font-size:12px;width:100%;"></textarea></div></td></tr>
 <tr><td><br></td><td style="width:100%;"></td></tr>
 <tr><td/><td>
 <button id="ButtonCreate" type="button" onclick="CreateCtf()">Create</button>&nbsp;&nbsp;&nbsp;

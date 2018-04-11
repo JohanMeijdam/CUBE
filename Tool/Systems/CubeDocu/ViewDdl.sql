@@ -2051,7 +2051,8 @@ CREATE OR REPLACE VIEW v_cube_gen_documentation AS
 	SELECT
 		cube_id,
 		name,
-		description
+		description,
+		description_functions
 	FROM t_cube_gen_documentation
 /
 CREATE OR REPLACE VIEW v_cube_gen_paragraph AS 
@@ -2102,6 +2103,8 @@ CREATE OR REPLACE VIEW v_cube_gen_template_function AS
 		cube_id,
 		fk_cub_name,
 		name,
+		indication_logical,
+		description,
 		syntax
 	FROM t_cube_gen_template_function
 /
@@ -2137,17 +2140,20 @@ CREATE OR REPLACE PACKAGE BODY pkg_cub_trg IS
 		INSERT INTO t_cube_gen_documentation (
 			cube_id,
 			name,
-			description)
+			description,
+			description_functions)
 		VALUES (
 			p_cub.cube_id,
 			p_cub.name,
-			p_cub.description);
+			p_cub.description,
+			p_cub.description_functions);
 	END;
 
 	PROCEDURE update_cub (p_cube_rowid UROWID, p_cub_old IN OUT NOCOPY v_cube_gen_documentation%ROWTYPE, p_cub_new IN OUT NOCOPY v_cube_gen_documentation%ROWTYPE) IS
 	BEGIN
 		UPDATE t_cube_gen_documentation SET 
-			description = p_cub_new.description
+			description = p_cub_new.description,
+			description_functions = p_cub_new.description_functions
 		WHERE rowid = p_cube_rowid;
 	END;
 
@@ -2307,17 +2313,23 @@ CREATE OR REPLACE PACKAGE BODY pkg_cub_trg IS
 			cube_id,
 			fk_cub_name,
 			name,
+			indication_logical,
+			description,
 			syntax)
 		VALUES (
 			p_ctf.cube_id,
 			p_ctf.fk_cub_name,
 			p_ctf.name,
+			p_ctf.indication_logical,
+			p_ctf.description,
 			p_ctf.syntax);
 	END;
 
 	PROCEDURE update_ctf (p_cube_rowid UROWID, p_ctf_old IN OUT NOCOPY v_cube_gen_template_function%ROWTYPE, p_ctf_new IN OUT NOCOPY v_cube_gen_template_function%ROWTYPE) IS
 	BEGIN
 		UPDATE t_cube_gen_template_function SET 
+			indication_logical = p_ctf_new.indication_logical,
+			description = p_ctf_new.description,
 			syntax = p_ctf_new.syntax
 		WHERE rowid = p_cube_rowid;
 	END;
@@ -2342,6 +2354,7 @@ BEGIN
 	IF INSERTING OR UPDATING THEN
 		r_cub_new.name := REPLACE(:NEW.name,' ','_');
 		r_cub_new.description := :NEW.description;
+		r_cub_new.description_functions := :NEW.description_functions;
 	END IF;
 	IF UPDATING THEN
 		r_cub_new.cube_id := :OLD.cube_id;
@@ -2351,6 +2364,7 @@ BEGIN
 		WHERE name = :OLD.name;
 		r_cub_old.name := :OLD.name;
 		r_cub_old.description := :OLD.description;
+		r_cub_old.description_functions := :OLD.description_functions;
 	END IF;
 
 	IF INSERTING THEN 
@@ -2541,6 +2555,8 @@ BEGIN
 	IF INSERTING OR UPDATING THEN
 		r_ctf_new.fk_cub_name := REPLACE(:NEW.fk_cub_name,' ','_');
 		r_ctf_new.name := REPLACE(:NEW.name,' ','_');
+		r_ctf_new.indication_logical := :NEW.indication_logical;
+		r_ctf_new.description := :NEW.description;
 		r_ctf_new.syntax := :NEW.syntax;
 	END IF;
 	IF UPDATING THEN
@@ -2552,6 +2568,8 @@ BEGIN
 		  AND name = :OLD.name;
 		r_ctf_old.fk_cub_name := :OLD.fk_cub_name;
 		r_ctf_old.name := :OLD.name;
+		r_ctf_old.indication_logical := :OLD.indication_logical;
+		r_ctf_old.description := :OLD.description;
 		r_ctf_old.syntax := :OLD.syntax;
 	END IF;
 
