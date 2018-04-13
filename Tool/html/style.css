@@ -8,28 +8,24 @@ iframe {
 }
 
 a:link {
-	font-weight: normal;
 	font-style: none;
 	text-decoration: none;
 	color: black;
 }
 
 a:active { 
-	font-weight: normal;
 	font-style: none;
 	text-decoration: none;
 	color: black;
 }
 
 a:visited { 
-	font-weight: normal;
 	font-style: none;
 	text-decoration: none;
 	color: black;
 }
 
 a:hover {
-	font-weight: normal;
 	font-style: none;
 	text-decoration: none;
 	background-color:grey;
@@ -129,8 +125,9 @@ pre {
 	padding-left: 15pt;
 	padding-right: 15pt;
 	font-size: 12pt;
-	display:block;
-	white-space:nowrap;
+	font-weight: bold;
+	display: block;
+	white-space: nowrap;
 }
 
 .indent2 {
@@ -138,8 +135,9 @@ pre {
 	padding-bottom: 1pt;
 	padding-left: 30pt;
 	padding-right: 15pt;
-	display:block;
-	white-space:nowrap;
+	font-weight: normal;
+	display: block;
+	white-space: nowrap;
 }
 
 .indent3 {
@@ -147,8 +145,9 @@ pre {
 	padding-bottom: 1pt;
 	padding-left: 45pt;
 	padding-right: 15pt;
-	display:block;
-	white-space:nowrap;
+	font-weight: normal;
+	display: block;
+	white-space: nowrap;
 }
 
 

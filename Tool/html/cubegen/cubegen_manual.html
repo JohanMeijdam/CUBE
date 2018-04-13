@@ -12,6 +12,7 @@ INDEX</div>
 <div><a href="#INTRO" class="indent1">Introduction</a></div>
 <div><a href="#CGP-000000100022" class="indent2">Command Line</a></div>
 <div><a href="#CGP-000000100041" class="indent2">Cube Model Structure</a></div>
+<div><a href="#CGP-000000100060" class="indent2">Reading Guide</a></div>
 <div><a href="#CGM-000000100022" class="indent1">First Impression</a></div>
 <div><a href="#CGM-000000100022M" class="model indent3">Cube Model</a></div>
 <div><a href="#CGF-000000100024" class="indent2">Iteration</a></div>
@@ -28,6 +29,14 @@ INDEX</div>
 <div><a href="#CGF-000000100040" class="indent2">Repeating Iteration</a></div>
 <div><a href="#CGF-000000100040T" class="template indent3">Template</a></div>
 <div><a href="#CGF-000000100040C" class="result indent3">Code</a></div>
+<div><a href="#CGM-000000100080" class="indent1">Hierarchy Navigation</a></div>
+<div><a href="#CGM-000000100080M" class="model indent3">Cube Model</a></div>
+<div><a href="#CGF-000000100101" class="indent2">Vertical navigation</a></div>
+<div><a href="#CGF-000000100101T" class="template indent3">Template</a></div>
+<div><a href="#CGF-000000100101C" class="result indent3">Code</a></div>
+<div><a href="#CGF-000000100100" class="indent2">Horizontal Navigation</a></div>
+<div><a href="#CGF-000000100100T" class="template indent3">Template</a></div>
+<div><a href="#CGF-000000100100C" class="result indent3">Code</a></div>
 <div><a href="#CGM-000000100061" class="indent1">Model Enhancement</a></div>
 <div><a href="#CGM-000000100061M" class="model indent3">Cube Model</a></div>
 <div><a href="#CGF-000000100081" class="indent2">Wildcard</a></div>
@@ -41,6 +50,8 @@ INDEX</div>
 <div><a href="#F_LOOP" class="indent3">LOOP</a></div>
 <div><a href="#F_REPEAT" class="indent3">REPEAT</a></div>
 <div><a href="#F_VALUE" class="indent3">VALUE</a></div>
+<div><a href="#F_FORH" class="indent3">FORH</a></div>
+<div><a href="#F_FORV" class="indent3">FORV</a></div>
 <div><a href="#LOG_EXPR" class="indent1">Logical Expressions</a></div>
 <div><a href="#F_TAG" class="indent3">TAG</a></div>
 <br>
@@ -71,6 +82,8 @@ The structure can best be explained by an example:</div><!
 		=&lt;tagD&gt;:&lt;prop0&gt;|&lt;prop1&gt;|..|propN;
 	-&lt;tagC&gt;:;
 -&lt;tagA&gt;:;</span></div><!
+><div id="CGP-000000100060" class="header2">Reading Guide</div><!
+><div>The functions are explained with examples. The input and output of CubeGen have a background color that match the arrows in the above logo.</div><!
 ><div id="CGM-000000100022" class="header1">First Impression</div><!
 ><div>A simple example with a small model is used to give a first impression of the functionality of CubeGen.</div><!
 ><div id="CGM-000000100022M" class="header3">Cube Model</div><!
@@ -144,6 +157,102 @@ Camelcase: product, ProductDefinitions
 	-	ProductPartApplication
 	-	ProductionProces
 		-	ProductionProcesStep
+</span></div><!
+><div id="CGM-000000100080" class="header1">Hierarchy Navigation</div><!
+><div>Navigate through a hierarchy of model elements of one type that are selected in the active LOOP functions.</div><!
+><div id="CGM-000000100080M" class="header3">Cube Model</div><!
+><div><span style="display:block;" class="model code">+BUSINESS_OBJECT_TYPE[CASE30-BOT-000000100060]:AAA|AAA_files;
+	+TYPE[CASE30-TYP-000000100040]:AAA|AAA|N;
+		+TYPE[CASE30-TYP-000000100041]:BBB1|BB1|N;
+			+TYPE[CASE30-TYP-000000100048]:CCC11|C11|N;
+				=TYPE[CASE30-TYP-000000100057]:DDD111|D01|N;
+				=TYPE[CASE30-TYP-000000100058]:DDD112|D02|N;
+				=TYPE[CASE30-TYP-000000100059]:DDD113|D03|N;
+			-TYPE:;
+			+TYPE[CASE30-TYP-000000100049]:CCC12|C12|N;
+				=TYPE[CASE30-TYP-000000100063]:DDD121|D11|N;
+				=TYPE[CASE30-TYP-000000100062]:DDD122|D12|N;
+				=TYPE[CASE30-TYP-000000100060]:DDD123|D13|N;
+			-TYPE:;
+			+TYPE[CASE30-TYP-000000100050]:CCC13|C13|N;
+				=TYPE[CASE30-TYP-000000100064]:DDD131|D21|N;
+				=TYPE[CASE30-TYP-000000100065]:DDD132|D22|N;
+				=TYPE[CASE30-TYP-000000100066]:DDD133|D23|N;
+			-TYPE:;
+		-TYPE:;
+		+TYPE[CASE30-TYP-000000100042]:BBB2|BB2|N;
+			=TYPE[CASE30-TYP-000000100051]:CCC21|C21|N;
+			=TYPE[CASE30-TYP-000000100052]:CCC22|C22|N;
+			=TYPE[CASE30-TYP-000000100053]:CCC23|C2|N;
+		-TYPE:;
+		+TYPE[CASE30-TYP-000000100044]:BBB3|BB3|N;
+			=TYPE[CASE30-TYP-000000100054]:CCC31|C31|N;
+			=TYPE[CASE30-TYP-000000100055]:CCC32|C32|N;
+			=TYPE[CASE30-TYP-000000100056]:CCC33|C33|N;
+		-TYPE:;
+	-TYPE:;
+-BUSINESS_OBJECT_TYPE:;</span></div><!
+><div id="CGF-000000100101" class="header2">Vertical navigation</div><!
+><div>In the hierarchy selected by LOOP functions, the FORV function navigates top down (vertical) through the model elements. The template segments for the selected model elements will be exported in the order of the loop specification.</div><!
+><div id="CGF-000000100101T" class="header3">Template</div><!
+><div><span style="display:block;" class="template code">Parents for all types (with types in between):&#91;&#91;LOOP,BUSINESS_OBJECT_TYPE&#93;&#93;&#91;&#91;LOOP,TYPE&#93;&#93;
+&lt;b&gt;&lt;&lt;TYPE&gt;&gt;&lt;/b&gt;: &#91;&#91;FORV:1&gt;N-1:, &#93;&#93;&lt;&lt;TYPE&gt;&gt;(&#91;&#91;FORV:V+1&gt;N-1:, &#93;&#93;&lt;&lt;TYPE&gt;&gt;&#91;&#91;ENDFOR&#93;&#93;)&#91;&#91;ENDFOR&#93;&#93;&#91;&#91;REPEAT&#93;&#93;&#91;&#91;ENDLOOP,TYPE&#93;&#93;
+&#91;&#91;ENDLOOP,BUSINESS_OBJECT_TYPE&#93;&#93;</span></div><!
+><div id="CGF-000000100101C" class="header3">Code</div><!
+><div><span style="display:block;" class="result code">Parents for all types (with types in between):
+<b>AAA</b>: 
+<b>BBB1</b>: AAA()
+<b>CCC11</b>: AAA(BBB1), BBB1()
+<b>DDD111</b>: AAA(BBB1, CCC11), BBB1(CCC11), CCC11()
+<b>DDD112</b>: AAA(BBB1, CCC11), BBB1(CCC11), CCC11()
+<b>DDD113</b>: AAA(BBB1, CCC11), BBB1(CCC11), CCC11()
+<b>CCC12</b>: AAA(BBB1), BBB1()
+<b>DDD121</b>: AAA(BBB1, CCC12), BBB1(CCC12), CCC12()
+<b>DDD122</b>: AAA(BBB1, CCC12), BBB1(CCC12), CCC12()
+<b>DDD123</b>: AAA(BBB1, CCC12), BBB1(CCC12), CCC12()
+<b>CCC13</b>: AAA(BBB1), BBB1()
+<b>DDD131</b>: AAA(BBB1, CCC13), BBB1(CCC13), CCC13()
+<b>DDD132</b>: AAA(BBB1, CCC13), BBB1(CCC13), CCC13()
+<b>DDD133</b>: AAA(BBB1, CCC13), BBB1(CCC13), CCC13()
+<b>BBB2</b>: AAA()
+<b>CCC21</b>: AAA(BBB2), BBB2()
+<b>CCC22</b>: AAA(BBB2), BBB2()
+<b>CCC23</b>: AAA(BBB2), BBB2()
+<b>BBB3</b>: AAA()
+<b>CCC31</b>: AAA(BBB3), BBB3()
+<b>CCC32</b>: AAA(BBB3), BBB3()
+<b>CCC33</b>: AAA(BBB3), BBB3()
+</span></div><!
+><div id="CGF-000000100100" class="header2">Horizontal Navigation</div><!
+><div>In the hierarchy selected by LOOP functions, the FORH function navigates on the same level (horizontal) through the model elements. The template segments for the selected model elements will be exported in the order of the loop specification.</div><!
+><div id="CGF-000000100100T" class="header3">Template</div><!
+><div><span style="display:block;" class="template code">Parents for all types (with types in between):&#91;&#91;LOOP,BUSINESS_OBJECT_TYPE&#93;&#93;&#91;&#91;LOOP,TYPE&#93;&#93;
+&lt;b&gt;&lt;&lt;TYPE&gt;&gt;&lt;/b&gt;: &#91;&#91;FORH:1&gt;N-1:, &#93;&#93;&lt;&lt;TYPE&gt;&gt;(&#91;&#91;FORH:2&gt;V-1:, &#93;&#93;&lt;&lt;TYPE&gt;&gt;&#91;&#91;ENDFOR&#93;&#93;) &#91;&#91;ENDFOR&#93;&#93;&#91;&#91;REPEAT&#93;&#93;&#91;&#91;ENDLOOP,TYPE&#93;&#93;
+&#91;&#91;ENDLOOP,BUSINESS_OBJECT_TYPE&#93;&#93;</span></div><!
+><div id="CGF-000000100100C" class="header3">Code</div><!
+><div><span style="display:block;" class="result code">Parents for all types (with types in between):
+<b>AAA</b>: 
+<b>BBB1</b>: 
+<b>CCC11</b>: 
+<b>DDD111</b>: 
+<b>DDD112</b>: DDD111() 
+<b>DDD113</b>: DDD111() , DDD112() 
+<b>CCC12</b>: CCC11() 
+<b>DDD121</b>: 
+<b>DDD122</b>: DDD121() 
+<b>DDD123</b>: DDD121() , DDD122() 
+<b>CCC13</b>: CCC11() , CCC12() 
+<b>DDD131</b>: 
+<b>DDD132</b>: DDD131() 
+<b>DDD133</b>: DDD131() , DDD132() 
+<b>BBB2</b>: BBB1() 
+<b>CCC21</b>: 
+<b>CCC22</b>: CCC21() 
+<b>CCC23</b>: CCC21() , CCC22() 
+<b>BBB3</b>: BBB1() , BBB2() 
+<b>CCC31</b>: 
+<b>CCC32</b>: CCC31() 
+<b>CCC33</b>: CCC31() , CCC32() 
 </span></div><!
 ><div id="CGM-000000100061" class="header1">Model Enhancement</div><!
 ><div>The CUBE development framework has steps in which a cube model is copied with a number of enhancements. CubeGen has functions especially for supporting these steps.</div><!
@@ -319,6 +428,12 @@ The VALUE function is used to copy a specified number of model element values.</
 ><div id="F_VALUE" class="header3">VALUE</a></div><!
 ><div>Export the properties of a model element.</div><!
 ><div><span style="display:block;" class="template code">&#91;&#91;VALUE,&lt;tag&gt;:&lt;loop_spec&gt;:&lt;separator&gt;&#93;&#93;</span></div><!
+><div id="F_FORH" class="header3">FORH</a></div><!
+><div></div><!
+><div><span style="display:block;" class="template code"></span></div><!
+><div id="F_FORV" class="header3">FORV</a></div><!
+><div></div><!
+><div><span style="display:block;" class="template code"></span></div><!
 ><div id="LOG_EXPR" class="header1">Logical Expressions</a></div><!
 ><div id="F_TAG" class="header3">TAG</a></div><!
 ><div>Check for the type of the actual model element.</div><!
