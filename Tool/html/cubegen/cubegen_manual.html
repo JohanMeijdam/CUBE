@@ -21,7 +21,7 @@ INDEX</div>
 <div><a href="#CGF-000000100060" class="indent2">Selection</a></div>
 <div><a href="#CGF-000000100060T" class="template indent3">Template</a></div>
 <div><a href="#CGF-000000100060C" class="result indent3">Code</a></div>
-<div><a href="#CGF-000000100025" class="indent2">Replace</a></div>
+<div><a href="#CGF-000000100025" class="indent2">Replacement</a></div>
 <div><a href="#CGF-000000100025T" class="template indent3">Template</a></div>
 <div><a href="#CGF-000000100025C" class="result indent3">Code</a></div>
 <div><a href="#CGM-000000100040" class="indent1">Introduction Recursivity</a></div>
@@ -37,6 +37,9 @@ INDEX</div>
 <div><a href="#CGF-000000100100" class="indent2">Horizontal Navigation</a></div>
 <div><a href="#CGF-000000100100T" class="template indent3">Template</a></div>
 <div><a href="#CGF-000000100100C" class="result indent3">Code</a></div>
+<div><a href="#CGF-000000100120" class="indent2">Replacement References</a></div>
+<div><a href="#CGF-000000100120T" class="template indent3">Template</a></div>
+<div><a href="#CGF-000000100120C" class="result indent3">Code</a></div>
 <div><a href="#CGM-000000100061" class="indent1">Model Enhancement</a></div>
 <div><a href="#CGM-000000100061M" class="model indent3">Cube Model</a></div>
 <div><a href="#CGF-000000100081" class="indent2">Wildcard</a></div>
@@ -46,12 +49,14 @@ INDEX</div>
 <div><a href="#CGF-000000100082T" class="template indent3">Template</a></div>
 <div><a href="#CGF-000000100082C" class="result indent3">Code</a></div>
 <div><a href="#FUNCTIONS" class="indent1">Template Functions</a></div>
+<div><a href="#F_FOR" class="indent3">FOR</a></div>
+<div><a href="#F_FORH" class="indent3">FORH</a></div>
+<div><a href="#F_FORV" class="indent3">FORV</a></div>
 <div><a href="#F_IF" class="indent3">IF</a></div>
 <div><a href="#F_LOOP" class="indent3">LOOP</a></div>
 <div><a href="#F_REPEAT" class="indent3">REPEAT</a></div>
+<div><a href="#F_REPLACEMENT" class="indent3">REPLACEMENT</a></div>
 <div><a href="#F_VALUE" class="indent3">VALUE</a></div>
-<div><a href="#F_FORH" class="indent3">FORH</a></div>
-<div><a href="#F_FORV" class="indent3">FORV</a></div>
 <div><a href="#LOG_EXPR" class="indent1">Logical Expressions</a></div>
 <div><a href="#F_TAG" class="indent3">TAG</a></div>
 <br>
@@ -112,7 +117,7 @@ The structure can best be explained by an example:</div><!
 CUSTOMER concerns customers.
 ORDER concerns no customers but orders.
 PRODUCT concerns something else.</span></div><!
-><div id="CGF-000000100025" class="header2">Replace</div><!
+><div id="CGF-000000100025" class="header2">Replacement</div><!
 ><div>Replace a label with the model value.</div><!
 ><div id="CGF-000000100025T" class="header3">Template</div><!
 ><div><span style="display:block;" class="template code">&#91;&#91;LOOP,BUSINESS_OBJECT_TYPE&#93;&#93;Uppercase: &lt;&lt;BUSINESS_OBJECT_TYPE:U&gt;&gt;, &lt;&lt;BUSINESS_OBJECT_TYPE1:U&gt;&gt;
@@ -211,26 +216,69 @@ Camelcase: product, ProductDefinitions
 ><div id="CGF-000000100100" class="header2">Horizontal Navigation</div><!
 ><div>In the hierarchy selected by LOOP functions, the FORH function navigates on the same level (horizontal) through the model elements. The template segments for the selected model elements will be exported in the order of the loop specification.</div><!
 ><div id="CGF-000000100100T" class="header3">Template</div><!
-><div><span style="display:block;" class="template code">All types in the hierachy with their left and right siblings&#91;&#91;LOOP,BUSINESS_OBJECT_TYPE&#93;&#93;&#91;&#91;LOOP,TYPE&#93;&#93;&#91;&#91;IF:LAST&#93;&#93;&#91;&#91;FORH:1&gt;N&#93;&#93;
-&lt;b&gt;&lt;&lt;TYPE&gt;&gt;&lt;/b&gt; left:&#91;&#91;FORH:V-1&gt;1:,&#93;&#93;&lt;&lt;TYPE&gt;&gt;&#91;&#91;ENDFOR&#93;&#93; right:&#91;&#91;FORH:V+1&gt;N:,&#93;&#93;&lt;&lt;TYPE&gt;&gt;&#91;&#91;ENDFOR&#93;&#93;&#91;&#91;ENDFOR&#93;&#93;&#91;&#91;ENDIF&#93;&#93;&#91;&#91;REPEAT&#93;&#93;&#91;&#91;ENDLOOP,TYPE&#93;&#93;
+><div><span style="display:block;" class="template code">All types in the hierachy with their left and right siblings:&#91;&#91;LOOP,BUSINESS_OBJECT_TYPE&#93;&#93;&#91;&#91;LOOP,TYPE&#93;&#93;&#91;&#91;REPEAT&#93;&#93;&#91;&#91;IF:LAST&#93;&#93;&#91;&#91;FORH:1&gt;N&#93;&#93;
+&lt;b&gt;&lt;&lt;TYPE&gt;&gt;&lt;/b&gt; left:&#91;&#91;FORH:V-1&gt;1:,&#93;&#93;&lt;&lt;TYPE&gt;&gt;&#91;&#91;ENDFOR&#93;&#93; right:&#91;&#91;FORH:V+1&gt;N:,&#93;&#93;&lt;&lt;TYPE&gt;&gt;&#91;&#91;ENDFOR&#93;&#93;&#91;&#91;ENDFOR&#93;&#93;&#91;&#91;ENDIF&#93;&#93;&#91;&#91;ENDLOOP,TYPE&#93;&#93;
 &#91;&#91;ENDLOOP,BUSINESS_OBJECT_TYPE&#93;&#93;</span></div><!
 ><div id="CGF-000000100100C" class="header3">Code</div><!
-><div><span style="display:block;" class="result code">All types in the hierachy with their left and right siblings
-<b>AAA</b> left: right:
+><div><span style="display:block;" class="result code">All types in the hierachy with their left and right siblings:
 <b>DDD111</b> left: right:
 <b>DDD121</b> left: right:DDD122
-<b>DDD122</b> left:DDD121 right:DDD122
-<b>CCC11</b> left: right:CCC12,CCC13
-<b>CCC12</b> left:CCC11 right:CCC12,CCC13
-<b>CCC13</b> left:CCC12,CCC11 right:CCC12,CCC13
+<b>DDD122</b> left:DDD121 right:
 <b>DDD131</b> left: right:DDD132,DDD133
-<b>DDD132</b> left:DDD131 right:DDD132,DDD133
-<b>DDD133</b> left:DDD132,DDD131 right:DDD132,DDD133
-<b>BBB1</b> left: right:BBB2
-<b>BBB2</b> left:BBB1 right:BBB2
+<b>DDD132</b> left:DDD131 right:DDD133
+<b>DDD133</b> left:DDD132,DDD131 right:
+<b>CCC11</b> left: right:CCC12,CCC13
+<b>CCC12</b> left:CCC11 right:CCC13
+<b>CCC13</b> left:CCC12,CCC11 right:
 <b>CCC21</b> left: right:CCC22,CCC23
-<b>CCC22</b> left:CCC21 right:CCC22,CCC23
-<b>CCC23</b> left:CCC22,CCC21 right:CCC22,CCC23
+<b>CCC22</b> left:CCC21 right:CCC23
+<b>CCC23</b> left:CCC22,CCC21 right:
+<b>BBB1</b> left: right:BBB2
+<b>BBB2</b> left:BBB1 right:
+<b>AAA</b> left: right:
+</span></div><!
+><div id="CGF-000000100120" class="header2">Replacement References</div><!
+><div>A replacement can refer to a model element selected by the current LOOP statements.</div><!
+><div id="CGF-000000100120T" class="header3">Template</div><!
+><div><span style="display:block;" class="template code">All types (with root and parent) with the types in the branch (with parent and child):&#91;&#91;LOOP,BUSINESS_OBJECT_TYPE&#93;&#93;&#91;&#91;LOOP,TYPE&#93;&#93;
+&lt;b&gt;&lt;&lt;TYPE&gt;&gt;&lt;/b&gt;: Root=&lt;&lt;TYPE(1)&gt;&gt; Parent=&#91;&#91;IF:!ROOT&#93;&#93;&lt;&lt;TYPE(N-1)&gt;&gt;&#91;&#91;ENDIF&#93;&#93;&#91;&#91;FOR:2&gt;N-1&#93;&#93;
+-	&lt;&lt;TYPE&gt;&gt; Parent=&lt;&lt;TYPE(V-1)&gt;&gt; Child=&lt;&lt;TYPE(V+1)&gt;&gt;&#91;&#91;ENDFOR&#93;&#93;&#91;&#91;REPEAT&#93;&#93;&#91;&#91;ENDLOOP,TYPE&#93;&#93;
+&#91;&#91;ENDLOOP,BUSINESS_OBJECT_TYPE&#93;&#93;</span></div><!
+><div id="CGF-000000100120C" class="header3">Code</div><!
+><div><span style="display:block;" class="result code">All types (with root and parent) with the types in the branch (with parent and child):
+<b>AAA</b>: Root=AAA Parent=
+<b>BBB1</b>: Root=AAA Parent=AAA
+<b>CCC11</b>: Root=AAA Parent=BBB1
+-	BBB1 Parent=AAA Child=CCC11
+<b>DDD111</b>: Root=AAA Parent=CCC11
+-	BBB1 Parent=AAA Child=CCC11
+-	CCC11 Parent=BBB1 Child=DDD111
+<b>CCC12</b>: Root=AAA Parent=BBB1
+-	BBB1 Parent=AAA Child=CCC12
+<b>DDD121</b>: Root=AAA Parent=CCC12
+-	BBB1 Parent=AAA Child=CCC12
+-	CCC12 Parent=BBB1 Child=DDD121
+<b>DDD122</b>: Root=AAA Parent=CCC12
+-	BBB1 Parent=AAA Child=CCC12
+-	CCC12 Parent=BBB1 Child=DDD122
+<b>CCC13</b>: Root=AAA Parent=BBB1
+-	BBB1 Parent=AAA Child=CCC13
+<b>DDD131</b>: Root=AAA Parent=CCC13
+-	BBB1 Parent=AAA Child=CCC13
+-	CCC13 Parent=BBB1 Child=DDD131
+<b>DDD132</b>: Root=AAA Parent=CCC13
+-	BBB1 Parent=AAA Child=CCC13
+-	CCC13 Parent=BBB1 Child=DDD132
+<b>DDD133</b>: Root=AAA Parent=CCC13
+-	BBB1 Parent=AAA Child=CCC13
+-	CCC13 Parent=BBB1 Child=DDD133
+<b>BBB2</b>: Root=AAA Parent=AAA
+<b>CCC21</b>: Root=AAA Parent=BBB2
+-	BBB2 Parent=AAA Child=CCC21
+<b>CCC22</b>: Root=AAA Parent=BBB2
+-	BBB2 Parent=AAA Child=CCC22
+<b>CCC23</b>: Root=AAA Parent=BBB2
+-	BBB2 Parent=AAA Child=CCC23
 </span></div><!
 ><div id="CGM-000000100061" class="header1">Model Enhancement</div><!
 ><div>The CUBE development framework has steps in which a cube model is copied with a number of enhancements. CubeGen has functions especially for supporting these steps.</div><!
@@ -391,6 +439,18 @@ The VALUE function is used to copy a specified number of model element values.</
 	-TYPE:;
 -BUSINESS_OBJECT_TYPE:;</span></div><!
 ><div id="FUNCTIONS" class="header1">Template Functions</a></div><!
+><div id="F_FOR" class="header3">FOR</a></div><!
+><div>Equal to FORV.</div><!
+><div><span style="display:block;" class="template code"></span></div><!
+><div id="F_FORH" class="header3">FORH</a></div><!
+><div>In the hierarchy selected by LOOP functions, the FORH function navigates on the same level (horizontal) through the model elements of the specified or actual type. The template segments for the selected model elements will be exported in the order of the loop specification, possibly separated by a specified string</div><!
+><div><span style="display:block;" class="template code">&#91;&#91;FORH:&lt;loopspec&gt;&#93;&#93; ... &#91;&#91;ENDFOR&#93;&#93;
+&#91;&#91;FORH,&lt;tag&gt;:&lt;loopspec&gt;:&lt;seperator&gt;&#93;&#93; ... &#91;&#91;ENDFOR&#93;&#93;</span></div><!
+><div id="F_FORV" class="header3">FORV</a></div><!
+><div>In the hierarchy selected by LOOP functions, the FORV function navigates top down (vertical) through the model elements of the specified or actual type. The template segments for the selected model elements will be exported in the order of the loop specification, possibly separated by a specified string.
+</div><!
+><div><span style="display:block;" class="template code">&#91;&#91;FORV:&lt;loopspec&gt;&#93;&#93; ... &#91;&#91;ENDFOR&#93;&#93;
+&#91;&#91;FORV,&lt;tag&gt;:&lt;loopspec&gt;:&lt;seperator&gt;&#93;&#93; ... &#91;&#91;ENDFOR&#93;&#93;</span></div><!
 ><div id="F_IF" class="header3">IF</a></div><!
 ><div>Export a template segment that applies to a condition.</div><!
 ><div><span style="display:block;" class="template code">&#91;&#91;IF:&lt;condition&gt;&#93;&#93; ... &#91;&#91;ENDIF&#93;&#93;
@@ -403,15 +463,13 @@ The VALUE function is used to copy a specified number of model element values.</
 ><div>Repeat the LOOP function for all underlying model elements of the specified type.</div><!
 ><div><span style="display:block;" class="template code">&#91;&#91;LOOP,&lt;tag&gt;&#93;&#93; ... &#91;&#91;REPEAT&#93;&#93; ... &#91;&#91;ENDLOOP,&lt;tag&gt;&#93;&#93;
 &#91;&#91;LOOP,&lt;tag&gt;&#93;&#93; ... &#91;&#91;LOOP...&#93;&#93; ... &#91;&#91;REPEAT,&lt;tag&gt;:TAB&#93;&#93; ... &#91;&#91;ENDLOOP...&#93;&#93; ... &#91;&#91;ENDLOOP,&lt;tag&gt;&#93;&#93;</span></div><!
+><div id="F_REPLACEMENT" class="header3">REPLACEMENT</a></div><!
+><div>Replace a label with a model value.</div><!
+><div><span style="display:block;" class="template code">&lt;&lt;&lt;tag&gt;&gt;&gt;
+&lt;&lt;&lt;tag&gt;(&lt;location&gt;)&lt;property&gt;&gt;&gt;</span></div><!
 ><div id="F_VALUE" class="header3">VALUE</a></div><!
 ><div>Export the properties of a model element.</div><!
 ><div><span style="display:block;" class="template code">&#91;&#91;VALUE,&lt;tag&gt;:&lt;loop_spec&gt;:&lt;separator&gt;&#93;&#93;</span></div><!
-><div id="F_FORH" class="header3">FORH</a></div><!
-><div></div><!
-><div><span style="display:block;" class="template code"></span></div><!
-><div id="F_FORV" class="header3">FORV</a></div><!
-><div></div><!
-><div><span style="display:block;" class="template code"></span></div><!
 ><div id="LOG_EXPR" class="header1">Logical Expressions</a></div><!
 ><div id="F_TAG" class="header3">TAG</a></div><!
 ><div>Check for the type of the actual model element.</div><!

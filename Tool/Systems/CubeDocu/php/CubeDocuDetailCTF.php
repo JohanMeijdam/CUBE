@@ -28,8 +28,13 @@ g_xmlhttp.onreadystatechange = function() {
 			document._nodeId = 'TYP_CTF<||>'+document.getElementById("InputFkCubName").value+'<|>'+document.getElementById("InputName").value;
 			if (l_objNode != null) {
 				if (l_objNode.firstChild._state == 'O') {
-					var l_position = 'L';
-					l_objNodePos = null;
+					if (l_argument[1] == null) {
+						var l_position = 'L';
+						l_objNodePos = null;
+					} else {
+						var l_position = 'B';
+						l_objNodePos = parent.TREE.document.getElementById('TYP_CTF<||>'+l_argument[1]);
+					}
 					parent.TREE.AddTreeviewNode(
 						l_objNode,
 						'TYP_CTF',

@@ -3471,7 +3471,8 @@ case 'CreateCtf':
 		:p_name,
 		:p_indication_logical,
 		:p_description,
-		:p_syntax);
+		:p_syntax,
+		:p_cube_row);
 	END;");
 	oci_bind_by_name($stid,":p_fk_cub_name",$p_fk_cub_name);
 	oci_bind_by_name($stid,":p_name",$p_name);
@@ -3479,12 +3480,12 @@ case 'CreateCtf':
 	oci_bind_by_name($stid,":p_description",$p_description);
 	oci_bind_by_name($stid,":p_syntax",$p_syntax);
 
-	$r = oci_execute($stid);
-	if (!$r) {
-		ProcessDbError($stid);
-		return;
-	}
+	$r = perform_db_request();
+	if (!$r) { return; }
 	echo "CREATE_CTF";
+	if ($row = oci_fetch_assoc($curs)) {
+		echo "<|||>".$row["FK_CUB_NAME"]."<|>".$row["NAME"];
+	}
 	break;
 
 case 'UpdateCtf':
