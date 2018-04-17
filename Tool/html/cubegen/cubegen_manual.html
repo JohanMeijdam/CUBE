@@ -29,6 +29,14 @@ INDEX</div>
 <div><a href="#CGF-000000100040" class="indent2">Repeating Iteration</a></div>
 <div><a href="#CGF-000000100040T" class="template indent3">Template</a></div>
 <div><a href="#CGF-000000100040C" class="result indent3">Code</a></div>
+<div><a href="#CGM-000000100101" class="indent1">Cube Model References</a></div>
+<div><a href="#CGM-000000100101M" class="model indent3">Cube Model</a></div>
+<div><a href="#CGF-000000100142" class="indent2">Reference Processing</a></div>
+<div><a href="#CGF-000000100142T" class="template indent3">Template</a></div>
+<div><a href="#CGF-000000100142C" class="result indent3">Code</a></div>
+<div><a href="#CGF-000000100143" class="indent2">Parent Processing</a></div>
+<div><a href="#CGF-000000100143T" class="template indent3">Template</a></div>
+<div><a href="#CGF-000000100143C" class="result indent3">Code</a></div>
 <div><a href="#CGM-000000100080" class="indent1">Hierarchy Navigation</a></div>
 <div><a href="#CGM-000000100080M" class="model indent3">Cube Model</a></div>
 <div><a href="#CGF-000000100101" class="indent2">Vertical navigation</a></div>
@@ -79,12 +87,12 @@ perl cubegen.pl &lt;model&gt; &lt;template&gt; &lt;code&gt; &lt;arguments&gt;
 -	&lt;code&gt;: Textfile to generate
 -	&lt;arguments&gt;: Parameters used in template</span></div><!
 ><div id="CGP-000000100041" class="header2">Cube Model Structure</div><!
-><div>A Cube model is a hierachical structure of model elements.  An element can be a group of other elements. A group starts with a &quot;+&quot; followed by a tag and ends with &quot;-&quot; followed by the tag. In the case of a separate element the two lines can be merged into one line starting with a &quot;=&quot;.
+><div>A Cube model is a hierachical structure of model elements.  An element can be a group of other elements. A group starts with a &quot;+&quot; followed by a tag and ends with &quot;-&quot; followed by the tag. In the case of a separate element the two lines can be merged into one line starting with a &quot;=&quot;. A model element can have an idenfier specified between brackets.
 The structure can best be explained by an example:</div><!
-><div><span style="display:block;" class="code">+&lt;tagA&gt;:&lt;prop0&gt;|&lt;prop1&gt;|...|propN;
-	=&lt;tagB&gt;:&lt;prop0&gt;|&lt;prop1&gt;|...|propN;
-	+&lt;tagC&gt;:&lt;prop0&gt;|&lt;prop1&gt;|...|propN;
-		=&lt;tagD&gt;:&lt;prop0&gt;|&lt;prop1&gt;|..|propN;
+><div><span style="display:block;" class="code">+&lt;tagA&gt;&#91;&lt;identA&#93;:&lt;prop0&gt;|&lt;prop1&gt;|...|propN;
+	=&lt;tagB&gt;&#91;&lt;identB&#93;:&lt;prop0&gt;|&lt;prop1&gt;|...|propN;
+	+&lt;tagC&gt;&#91;&lt;identC&#93;:&lt;prop0&gt;|&lt;prop1&gt;|...|propN;
+		=&lt;tagD&gt;&#91;&lt;identD&#93;:&lt;prop0&gt;|&lt;prop1&gt;|..|propN;
 	-&lt;tagC&gt;:;
 -&lt;tagA&gt;:;</span></div><!
 ><div id="CGP-000000100060" class="header2">Reading Guide</div><!
@@ -163,6 +171,54 @@ Camelcase: product, ProductDefinitions
 	-	ProductionProces
 		-	ProductionProcesStep
 </span></div><!
+><div id="CGM-000000100101" class="header1">Cube Model References</div><!
+><div>A model element can also have references to other model elements. These model lines start with &quot;&gt;&quot; and have an alias followed by the identifier of the target model element.</div><!
+><div id="CGM-000000100101M" class="header3">Cube Model</div><!
+><div><span style="display:block;" class="model code">+BUSINESS_OBJECT_TYPE[CASE10-BOT-000000100040]:CUSTOMER|customer_files;
+	+TYPE[CASE10-TYP-000000100021]:CUSTOMER|CUS|N;
+	-TYPE:;
+-BUSINESS_OBJECT_TYPE:;
++BUSINESS_OBJECT_TYPE[CASE10-BOT-000000100024]:ORDER|order_directory;
+	+TYPE[CASE10-TYP-000000100020]:ORDER|ORD|N;
+		+REFERENCE[CASE10-REF-000000100000]:IS_PLACED_BY|N;
+			&gt;REFERENCE_TYPE:CASE10-TYP-000000100021;
+		-REFERENCE:;
+		+TYPE[CASE10-TYP-000000100022]:ORDER_LINE|ORL|Y;
+			+REFERENCE[CASE10-REF-000000100001]:CONCERNS|Y;
+				&gt;REFERENCE_TYPE:CASE10-TYP-000000100000;
+			-REFERENCE:;
+		-TYPE:;
+	-TYPE:;
+-BUSINESS_OBJECT_TYPE:;
++BUSINESS_OBJECT_TYPE[CASE10-BOT-000000100025]:PRODUCT|product_definitions;
+	+TYPE[CASE10-TYP-000000100000]:PRODUCT|PRD|Y;
+		=TYPE[CASE10-TYP-000000100004]:PRODUCT_PART_APPLICATION|PPA|Y;
+		+TYPE[CASE10-TYP-000000100002]:PRODUCTION_PROCES|PPR|N;
+			=TYPE[CASE10-TYP-000000100003]:PRODUCTION_PROCES_STEP|PPS|N;
+		-TYPE:;
+	-TYPE:;
+-BUSINESS_OBJECT_TYPE:;</span></div><!
+><div id="CGF-000000100142" class="header2">Reference Processing</div><!
+><div>The LOOP statement also processes the references as they are model elements.</div><!
+><div id="CGF-000000100142T" class="header3">Template</div><!
+><div><span style="display:block;" class="template code">List of References:&#91;&#91;LOOP,BUSINESS_OBJECT_TYPE&#93;&#93;&#91;&#91;LOOP,TYPE&#93;&#93;&#91;&#91;LOOP,REFERENCE&#93;&#93;&#91;&#91;LOOP,REFERENCE_TYPE&#93;&#93;
+&lt;&lt;TYPE:C&gt;&gt; &lt;&lt;REFERENCE:C&gt;&gt; &lt;&lt;REFERENCE_TYPE:C&gt;&gt;&#91;&#91;ENDLOOP,REFERENCE_TYPE&#93;&#93;&#91;&#91;ENDLOOP,REFERENCE&#93;&#93;&#91;&#91;REPEAT&#93;&#93;&#91;&#91;ENDLOOP,TYPE&#93;&#93;&#91;&#91;ENDLOOP,BUSINESS_OBJECT_TYPE&#93;&#93;</span></div><!
+><div id="CGF-000000100142C" class="header3">Code</div><!
+><div><span style="display:block;" class="result code">List of References:
+Order IsPlacedBy Customer
+OrderLine Concerns Product</span></div><!
+><div id="CGF-000000100143" class="header2">Parent Processing</div><!
+><div>With the &quot;^&quot; in front of the tag, the LOOP statement also processes the parents as they are chiild model elements.</div><!
+><div id="CGF-000000100143T" class="header3">Template</div><!
+><div><span style="display:block;" class="template code">List of References with parent:&#91;&#91;LOOP,BUSINESS_OBJECT_TYPE&#93;&#93;&#91;&#91;LOOP,TYPE&#93;&#93;&#91;&#91;LOOP,REFERENCE&#93;&#93;&#91;&#91;LOOP,REFERENCE_TYPE&#93;&#93;
+&lt;&lt;TYPE:C&gt;&gt; &lt;&lt;REFERENCE:C&gt;&gt; &lt;&lt;REFERENCE_TYPE:C&gt;&gt; (&lt;&lt;REFERENCE_TYPE1:U&gt;&gt;)&#91;&#91;LOOP,^BUSINESS_OBJECT_TYPE&#93;&#93;
+-	Business Object Type: &lt;&lt;^BUSINESS_OBJECT_TYPE:C&gt;&gt; (&lt;&lt;^BUSINESS_OBJECT_TYPE1:C&gt;&gt;)&#91;&#91;ENDLOOP,^BUSINESS_OBJECT_TYPE&#93;&#93;&#91;&#91;ENDLOOP,REFERENCE_TYPE&#93;&#93;&#91;&#91;ENDLOOP,REFERENCE&#93;&#93;&#91;&#91;REPEAT&#93;&#93;&#91;&#91;ENDLOOP,TYPE&#93;&#93;&#91;&#91;ENDLOOP,BUSINESS_OBJECT_TYPE&#93;&#93;</span></div><!
+><div id="CGF-000000100143C" class="header3">Code</div><!
+><div><span style="display:block;" class="result code">List of References with parent:
+Order IsPlacedBy Customer (CUS)
+-	Business Object Type: Customer (CustomerFiles)
+OrderLine Concerns Product (PRD)
+-	Business Object Type: Product (ProductDefinitions)</span></div><!
 ><div id="CGM-000000100080" class="header1">Hierarchy Navigation</div><!
 ><div>Navigate through a hierarchy of model elements of one type selected in the active LOOP functions. For a better understanding of the examples, a coding is used for the tags of model elements.</div><!
 ><div id="CGM-000000100080M" class="header3">Cube Model</div><!
