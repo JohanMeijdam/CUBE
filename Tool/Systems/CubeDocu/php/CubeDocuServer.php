@@ -2905,8 +2905,8 @@ case 'GetCubItems':
 	$first = True;
 	while ($row = oci_fetch_assoc($curs)) {
 		if ($first) { $first = False; echo "LIST_CTF";}
-		echo "<|||>".$row["FK_CUB_NAME"]."<|>".$row["NAME"];
-		echo "<||>".$row["NAME"];
+		echo "<|||>".$row["FK_CUB_NAME"]."<|>".$row["NAME"]."<|>".$row["INDICATION_LOGICAL"];
+		echo "<||>".$row["NAME"]." ".$row["INDICATION_LOGICAL"];
 	}
 	break;
 
@@ -3444,21 +3444,23 @@ case 'DeleteCgf':
 
 case 'GetCtf':
 
-	list($p_fk_cub_name, $p_name) = explode("<|>", $import[1]);
+	list($p_fk_cub_name, $p_name, $p_indication_logical) = explode("<|>", $import[1]);
 
 	$stid = oci_parse($conn, "BEGIN pkg_cub.get_ctf (
 		:p_cube_row,
 		:p_fk_cub_name,
-		:p_name);
+		:p_name,
+		:p_indication_logical);
 	END;");
 	oci_bind_by_name($stid,":p_fk_cub_name",$p_fk_cub_name);
 	oci_bind_by_name($stid,":p_name",$p_name);
+	oci_bind_by_name($stid,":p_indication_logical",$p_indication_logical);
 
 	$r = perform_db_request();
 	if (!$r) { return; }
 	echo "SELECT_CTF";
 	if ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["INDICATION_LOGICAL"]."<|>".$row["DESCRIPTION"]."<|>".$row["SYNTAX"];
+		echo "<|||>".$row["DESCRIPTION"]."<|>".$row["SYNTAX"];
 	}
 	break;
 
@@ -3484,7 +3486,7 @@ case 'CreateCtf':
 	if (!$r) { return; }
 	echo "CREATE_CTF";
 	if ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["FK_CUB_NAME"]."<|>".$row["NAME"];
+		echo "<|||>".$row["FK_CUB_NAME"]."<|>".$row["NAME"]."<|>".$row["INDICATION_LOGICAL"];
 	}
 	break;
 
@@ -3515,14 +3517,16 @@ case 'UpdateCtf':
 
 case 'DeleteCtf':
 
-	list($p_fk_cub_name, $p_name) = explode("<|>", $import[1]);
+	list($p_fk_cub_name, $p_name, $p_indication_logical) = explode("<|>", $import[1]);
 
 	$stid = oci_parse($conn, "BEGIN pkg_cub.delete_ctf (
 		:p_fk_cub_name,
-		:p_name);
+		:p_name,
+		:p_indication_logical);
 	END;");
 	oci_bind_by_name($stid,":p_fk_cub_name",$p_fk_cub_name);
 	oci_bind_by_name($stid,":p_name",$p_name);
+	oci_bind_by_name($stid,":p_indication_logical",$p_indication_logical);
 
 	$r = oci_execute($stid);
 	if (!$r) {

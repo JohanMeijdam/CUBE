@@ -580,7 +580,7 @@ CREATE TABLE t_cube_gen_template_function (
 	description VARCHAR2(3999),
 	syntax VARCHAR2(3999),
 	CONSTRAINT ctf_pk
-		PRIMARY KEY (fk_cub_name, name),
+		PRIMARY KEY (fk_cub_name, name, indication_logical),
 	CONSTRAINT ctf_cub_fk
 		FOREIGN KEY (fk_cub_name)
 		REFERENCES t_cube_gen_documentation (name)

@@ -3987,7 +3987,8 @@ CREATE OR REPLACE PACKAGE pkg_cub IS
 	PROCEDURE get_ctf (
 			p_cube_row IN OUT c_cube_row,
 			p_fk_cub_name IN VARCHAR2,
-			p_name IN VARCHAR2);
+			p_name IN VARCHAR2,
+			p_indication_logical IN CHAR);
 	PROCEDURE insert_ctf (
 			p_fk_cub_name IN VARCHAR2,
 			p_name IN VARCHAR2,
@@ -4003,7 +4004,8 @@ CREATE OR REPLACE PACKAGE pkg_cub IS
 			p_syntax IN VARCHAR2);
 	PROCEDURE delete_ctf (
 			p_fk_cub_name IN VARCHAR2,
-			p_name IN VARCHAR2);
+			p_name IN VARCHAR2,
+			p_indication_logical IN CHAR);
 END;
 /
 SHOW ERRORS;
@@ -4073,10 +4075,11 @@ CREATE OR REPLACE PACKAGE BODY pkg_cub IS
 		OPEN p_cube_row FOR
 			SELECT
 			  fk_cub_name,
-			  name
+			  name,
+			  indication_logical
 			FROM v_cube_gen_template_function
 			WHERE fk_cub_name = p_name
-			ORDER BY fk_cub_name, name;
+			ORDER BY fk_cub_name, name, indication_logical;
 	END;
 
 	PROCEDURE insert_cub (
@@ -4776,32 +4779,38 @@ CREATE OR REPLACE PACKAGE BODY pkg_cub IS
 	PROCEDURE get_ctf (
 			p_cube_row IN OUT c_cube_row,
 			p_fk_cub_name IN VARCHAR2,
-			p_name IN VARCHAR2) IS
+			p_name IN VARCHAR2,
+			p_indication_logical IN CHAR) IS
 	BEGIN
 		OPEN p_cube_row FOR
 			SELECT
-			  indication_logical,
 			  description,
 			  syntax
 			FROM v_cube_gen_template_function
 			WHERE fk_cub_name = p_fk_cub_name
-			  AND name = p_name;
+			  AND name = p_name
+			  AND indication_logical = p_indication_logical;
 	END;
 
 	PROCEDURE get_next_ctf (
 			p_cube_row IN OUT c_cube_row,
 			p_fk_cub_name IN VARCHAR2,
-			p_name IN VARCHAR2) IS
+			p_name IN VARCHAR2,
+			p_indication_logical IN CHAR) IS
 	BEGIN
 		OPEN p_cube_row FOR
 			SELECT
 			  fk_cub_name,
-			  name
+			  name,
+			  indication_logical
 			FROM v_cube_gen_template_function
 			WHERE fk_cub_name > p_fk_cub_name
 			   OR 	    ( fk_cub_name = p_fk_cub_name
 				  AND name > p_name )
-			ORDER BY fk_cub_name, name;
+			   OR 	    ( fk_cub_name = p_fk_cub_name
+				  AND name = p_name
+				  AND indication_logical > p_indication_logical )
+			ORDER BY fk_cub_name, name, indication_logical;
 	END;
 
 	PROCEDURE insert_ctf (
@@ -4827,7 +4836,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_cub IS
 			p_description,
 			p_syntax);
 
-		get_next_ctf (p_cube_row, p_fk_cub_name, p_name);
+		get_next_ctf (p_cube_row, p_fk_cub_name, p_name, p_indication_logical);
 	EXCEPTION
 		WHEN DUP_VAL_ON_INDEX THEN
 			RAISE_APPLICATION_ERROR (-20001, 'Type cube_gen_template_function already exists');
@@ -4841,20 +4850,22 @@ CREATE OR REPLACE PACKAGE BODY pkg_cub IS
 			p_syntax IN VARCHAR2) IS
 	BEGIN
 		UPDATE v_cube_gen_template_function SET
-			indication_logical = p_indication_logical,
 			description = p_description,
 			syntax = p_syntax
 		WHERE fk_cub_name = p_fk_cub_name
-		  AND name = p_name;
+		  AND name = p_name
+		  AND indication_logical = p_indication_logical;
 	END;
 
 	PROCEDURE delete_ctf (
 			p_fk_cub_name IN VARCHAR2,
-			p_name IN VARCHAR2) IS
+			p_name IN VARCHAR2,
+			p_indication_logical IN CHAR) IS
 	BEGIN
 		DELETE v_cube_gen_template_function
 		WHERE fk_cub_name = p_fk_cub_name
-		  AND name = p_name;
+		  AND name = p_name
+		  AND indication_logical = p_indication_logical;
 	END;
 END;
 /

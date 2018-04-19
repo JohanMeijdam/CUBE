@@ -606,7 +606,7 @@ DECLARE
 			SELECT *				
 			FROM t_cube_gen_template_function
 			WHERE fk_cub_name = p_cub.name
-			ORDER BY fk_cub_name, name )
+			ORDER BY fk_cub_name, name, indication_logical )
 		LOOP
 			DBMS_OUTPUT.PUT_LINE (ftabs || '=CUBE_GEN_TEMPLATE_FUNCTION[' || r_ctf.cube_id || ']:' || fenperc(r_ctf.name) || '|' || fenperc(r_ctf.indication_logical) || '|' || fenperc(r_ctf.description) || '|' || fenperc(r_ctf.syntax) || ';');
 				l_level := l_level + 1;

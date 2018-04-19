@@ -2,6 +2,7 @@ Change log:
 28-03-2018 Initial version
 04-04-2018 Also for Edge and Explorer
 06-04-2018 Several enhancements
+19-04-2018 Index simplified.
 [[BODY]][[LOOP,CUBE_GEN_DOCUMENTATION]]<html>
 <head>
 <title>CubeGen Manual</title>
@@ -15,18 +16,16 @@ INDEX</div>
 <div style="overflow:auto;position:absolute;top:106px;left:0px;width:240px;bottom:0;background-color:whitesmoke;">
 <div><a href="#INTRO" class="indent1">Introduction</a></div>[[LOOP,CUBE_GEN_PARAGRAPH]]
 <div><a href="#<<CUBE_GEN_PARAGRAPH:I>>" class="indent2"><<CUBE_GEN_PARAGRAPH1>></a></div>[[ENDLOOP,CUBE_GEN_PARAGRAPH]][[LOOP,CUBE_GEN_EXAMPLE_MODEL]]
-<div><a href="#<<CUBE_GEN_EXAMPLE_MODEL:I>>" class="indent1"><<CUBE_GEN_EXAMPLE_MODEL1>></a></div>
-<div><a href="#<<CUBE_GEN_EXAMPLE_MODEL:I>>M" class="model indent3">Cube Model</a></div>[[LOOP,CUBE_GEN_FUNCTION]]
-<div><a href="#<<CUBE_GEN_FUNCTION:I>>" class="indent2"><<CUBE_GEN_FUNCTION1>></a></div>
-<div><a href="#<<CUBE_GEN_FUNCTION:I>>T" class="template indent3">Template</a></div>
-<div><a href="#<<CUBE_GEN_FUNCTION:I>>C" class="result indent3">Code</a></div>[[ENDLOOP,CUBE_GEN_FUNCTION]][[ENDLOOP,CUBE_GEN_EXAMPLE_MODEL]]
+<div><a href="#<<CUBE_GEN_EXAMPLE_MODEL:I>>" class="indent1"><<CUBE_GEN_EXAMPLE_MODEL1>></a></div>[[LOOP,CUBE_GEN_FUNCTION]]
+<div><a href="#<<CUBE_GEN_FUNCTION:I>>" class="indent2"><<CUBE_GEN_FUNCTION1>></a></div>[[ENDLOOP,CUBE_GEN_FUNCTION]][[ENDLOOP,CUBE_GEN_EXAMPLE_MODEL]]
 <div><a href="#FUNCTIONS" class="indent1">Template Functions</a></div>[[LOOP,CUBE_GEN_TEMPLATE_FUNCTION:!1=Y]]
-<div><a href="#F_<<CUBE_GEN_TEMPLATE_FUNCTION:U>>" class="indent3"><<CUBE_GEN_TEMPLATE_FUNCTION:U>></a></div>[[ENDLOOP,CUBE_GEN_TEMPLATE_FUNCTION]]
+<div><a href="#F_<<CUBE_GEN_TEMPLATE_FUNCTION:U>>" class="indent2"><<CUBE_GEN_TEMPLATE_FUNCTION>></a></div>[[ENDLOOP,CUBE_GEN_TEMPLATE_FUNCTION]]
 <div><a href="#LOG_EXPR" class="indent1">Logical Expressions</a></div>[[LOOP,CUBE_GEN_TEMPLATE_FUNCTION:1=Y]]
-<div><a href="#F_<<CUBE_GEN_TEMPLATE_FUNCTION:U>>" class="indent3"><<CUBE_GEN_TEMPLATE_FUNCTION:U>></a></div>[[ENDLOOP,CUBE_GEN_TEMPLATE_FUNCTION]]
+<div><a href="#F_<<CUBE_GEN_TEMPLATE_FUNCTION:U>>" class="indent2"><<CUBE_GEN_TEMPLATE_FUNCTION>></a></div>[[ENDLOOP,CUBE_GEN_TEMPLATE_FUNCTION]]
 <br>
-</div>
-<div align="center" class="header0" style="overflow:hidden;position:absolute;top:76px;left:240px;right:0;height:30px;">
+</div><a href="../index.html"><div align="center" class="header0" style="overflow:hidden;position:absolute;top:76px;left:240px;right:0;width:60px;height:30px;">
+HOME</div></a>
+<div align="center" class="header0" style="overflow:hidden;position:absolute;top:76px;left:300px;right:0;height:30px;">
 CUBEGEN MANUAL</div>
 <div style="overflow:auto;position:absolute;top:106px;left:240px;right:0;bottom:0;background-color:white;">
 <div align="center" style="padding:15px;font-size:16pt;">Transform a CubeGen Model into Code according to your own Template.</div>

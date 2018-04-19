@@ -14,18 +14,18 @@ g_xmlhttp.onreadystatechange = function() {
 		switch (l_argument[0]) {
 		case "SELECT_CTF":
 			var l_values = l_argument[1].split("<|>");
-			document.getElementById("InputIndicationLogical").value=l_values[0];
-			document.getElementById("InputDescription").value=l_values[1];
-			document.getElementById("InputSyntax").value=l_values[2];
+			document.getElementById("InputDescription").value=l_values[0];
+			document.getElementById("InputSyntax").value=l_values[1];
 			break;
 		case "CREATE_CTF":
 			document.getElementById("InputFkCubName").readOnly=true;
 			document.getElementById("InputName").readOnly=true;
+			document.getElementById("InputIndicationLogical").readOnly=true;
 			document.getElementById("ButtonCreate").disabled=true;
 			document.getElementById("ButtonUpdate").disabled=false;
 			document.getElementById("ButtonDelete").disabled=false;
 			l_objNode = parent.TREE.document.getElementById(document._nodeId);
-			document._nodeId = 'TYP_CTF<||>'+document.getElementById("InputFkCubName").value+'<|>'+document.getElementById("InputName").value;
+			document._nodeId = 'TYP_CTF<||>'+document.getElementById("InputFkCubName").value+'<|>'+document.getElementById("InputName").value+'<|>'+document.getElementById("InputIndicationLogical").value;
 			if (l_objNode != null) {
 				if (l_objNode.firstChild._state == 'O') {
 					if (l_argument[1] == null) {
@@ -40,7 +40,7 @@ g_xmlhttp.onreadystatechange = function() {
 						'TYP_CTF',
 						document._nodeId,
 						'icons/function.bmp', 
-						document.getElementById("InputName").value.toLowerCase(),
+						document.getElementById("InputName").value.toLowerCase()+' '+document.getElementById("InputIndicationLogical").value.toLowerCase(),
 						'N',
 						l_position,
 						l_objNodePos);
@@ -90,10 +90,12 @@ function InitBody() {
 	case "D":
 		document.getElementById("InputFkCubName").value=values[0];
 		document.getElementById("InputName").value=values[1];
+		document.getElementById("InputIndicationLogical").value=values[2];
 		document.getElementById("ButtonCreate").disabled=true;
 		performTrans('GetCtf'+'<|||>'+document._argument);
 		document.getElementById("InputFkCubName").readOnly=true;
 		document.getElementById("InputName").readOnly=true;
+		document.getElementById("InputIndicationLogical").readOnly=true;
 		break;
 	case "N":
 		document.getElementById("InputFkCubName").value=values[0];
@@ -104,7 +106,6 @@ function InitBody() {
 	default:
 		alert ('Error InitBody: '+l_argument[1]);
 	}
-	document.getElementById("InputIndicationLogical").value='N';
 }
 
 function CreateCtf() {
@@ -130,7 +131,8 @@ function UpdateCtf() {
 function DeleteCtf() {
 	var l_parameters = 
 		document.getElementById("InputFkCubName").value+'<|>'+
-		document.getElementById("InputName").value;
+		document.getElementById("InputName").value+'<|>'+
+		document.getElementById("InputIndicationLogical").value;
 	performTrans('DeleteCtf<|||>'+l_parameters);
 }
 
@@ -244,8 +246,8 @@ function drop(p_event) {
 <tr><td><u>CubeGenDocumentation.Name</u></td><td><div style="max-width:30em;">
 <input id="InputFkCubName" type="text" maxlength="30" style="width:100%;" onchange="ReplaceSpaces(this);"></input></div></td></tr>
 <tr><td><u>Name</u></td><td><div style="max-width:30em;">
-<input id="InputName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td style="cursor:help;" oncontextmenu="OpenDescBox('FUNCTION','CubeGenTemplateFunction.IndicationLogical','CUBE_GEN_TEMPLATE_FUNCTION','INDICATION_LOGICAL',-1)">IndicationLogical</td><td><div>
+<input id="InputName" type="text" maxlength="30" style="width:100%;" onchange="ReplaceSpaces(this);"></input></div></td></tr>
+<tr><td style="cursor:help;" oncontextmenu="OpenDescBox('FUNCTION','CubeGenTemplateFunction.IndicationLogical','CUBE_GEN_TEMPLATE_FUNCTION','INDICATION_LOGICAL',-1)"><u>IndicationLogical</u></td><td><div>
 <select id="InputIndicationLogical" type="text">
 	<option value=" " selected> </option>
 	<option value="Y">Yes</option>

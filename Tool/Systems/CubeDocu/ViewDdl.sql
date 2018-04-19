@@ -2328,7 +2328,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_cub_trg IS
 	PROCEDURE update_ctf (p_cube_rowid UROWID, p_ctf_old IN OUT NOCOPY v_cube_gen_template_function%ROWTYPE, p_ctf_new IN OUT NOCOPY v_cube_gen_template_function%ROWTYPE) IS
 	BEGIN
 		UPDATE t_cube_gen_template_function SET 
-			indication_logical = p_ctf_new.indication_logical,
 			description = p_ctf_new.description,
 			syntax = p_ctf_new.syntax
 		WHERE rowid = p_cube_rowid;
@@ -2565,7 +2564,8 @@ BEGIN
 	IF UPDATING OR DELETING THEN
 		SELECT rowid INTO l_cube_rowid FROM t_cube_gen_template_function
 		WHERE fk_cub_name = :OLD.fk_cub_name
-		  AND name = :OLD.name;
+		  AND name = :OLD.name
+		  AND indication_logical = :OLD.indication_logical;
 		r_ctf_old.fk_cub_name := :OLD.fk_cub_name;
 		r_ctf_old.name := :OLD.name;
 		r_ctf_old.indication_logical := :OLD.indication_logical;

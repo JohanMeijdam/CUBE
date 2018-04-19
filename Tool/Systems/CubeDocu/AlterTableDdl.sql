@@ -4305,7 +4305,8 @@ BEGIN
 	'ALTER TABLE t_cube_gen_template_function ADD CONSTRAINT ctf_pk
 		PRIMARY KEY (
 			fk_cub_name,
-			name )';
+			name,
+			indication_logical )';
 	DBMS_OUTPUT.PUT_LINE('Primary Key T_CUBE_GEN_TEMPLATE_FUNCTION.CTF_PK created');
 	EXECUTE IMMEDIATE
 	'ALTER TABLE t_cube_gen_template_function ADD CONSTRAINT ctf_cub_fk
