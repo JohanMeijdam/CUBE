@@ -191,7 +191,7 @@
 		-TYPE:PRODUCTION_PROCES;
 	-TYPE:PRODUCT;
 -BUSINESS_OBJECT_TYPE:PRODUCT;
-+BUSINESS_OBJECT_TYPE[BOT-000000100060]:AAA|<b>AAA</b>%250Dtest.;
++BUSINESS_OBJECT_TYPE[BOT-000000100060]:AAA|<b>AAA</b><br>test.;
 	+TYPE[TYP-000000100040]:AAA|AAA|N|N|N|N|N||Y;
 		+TYPE[TYP-000000100041]:BBB1|BB1|N|N|N|N|N||Y;
 			+TYPE[TYP-000000100048]:CCC11|C11|N|N|N|N|N||Y;
@@ -224,7 +224,7 @@
 	-TYPE:AAA;
 -BUSINESS_OBJECT_TYPE:AAA;
 +CUBE_GEN_DOCUMENTATION[CUB-000000100022]:Cube_Gen_Manual|CubeGen is essentially a copy with replace function. The input consists of two text files: the model file and the template file. The model file contains the parameters for replacing the labels that have been applied in the template file. The template file contains the source code provided with labels.%0AThe special thing about CubeGen is that the parameters have a hierarchical structure, which you can easily run through recursively.|;
-	=CUBE_GEN_PARAGRAPH[CGP-000000100022]:CMDLINE|Command Line|The program can be run from the command line as a executable or as a Perl script.|cubegen.exe <model> <template> <code> <arguments> %0Aperl cubegen.pl <model> <template> <code> <arguments>%0A-%09<model>: Imported Cube Model textfile%0A-%09<template>: Imported CubeGen Template Textfile%0A-%09<code>: Textfile to generate%0A-%09<arguments>: Parameters used in template;
+	=CUBE_GEN_PARAGRAPH[CGP-000000100022]:CMDLINE|Command Line|The program can be run from the command line as a executable or as a Perl script.|cubegen.exe <model> <template> <code> <arguments> %0Aperl cubegen.pl <model> <template> <code> <arguments>%0A-%09<model>: Imported Cube Model textfile%0A-%09<template>: Imported CubeGen Template Textfile%0A-%09<code>: Textfile to generate%0A-%09<parameters>: Arguments that can be referenced in the template;
 	=CUBE_GEN_PARAGRAPH[CGP-000000100041]:MDLSTRUC|Cube Model Structure|A Cube model is a hierachical structure of model elements.  An element can be a group of other elements. A group starts with a %22+%22 followed by a tag and ends with %22-%22 followed by the tag. In the case of a separate element the two lines can be merged into one line starting with a %22=%22. A model element can have an idenfier specified between brackets.%0AThe structure can best be explained by an example:|+<tagA>[<identA]:<prop0>%7C<prop1>%7C...%7CpropN%3B%0A%09=<tagB>[<identB]:<prop0>%7C<prop1>%7C...%7CpropN%3B%0A%09+<tagC>[<identC]:<prop0>%7C<prop1>%7C...%7CpropN%3B%0A%09%09=<tagD>[<identD]:<prop0>%7C<prop1>%7C..%7CpropN%3B%0A%09-<tagC>:%3B%0A-<tagA>:%3B;
 	=CUBE_GEN_PARAGRAPH[CGP-000000100060]:RGUIDE|Reading Guide|The functions are explained with examples. The input and output of CubeGen have a background color that match the arrows in the above logo.|#;
 	+CUBE_GEN_EXAMPLE_MODEL[CGM-000000100022]:CASE1|First Impression||A simple example with a small model is used to give a first impression of the functionality of CubeGen.;
@@ -282,7 +282,7 @@
 			>BUSINESS_OBJECT_TYPE:BOT-000000100025;
 		-CUBE_GEN_EXAMPLE_OBJECT:;
 		=CUBE_GEN_FUNCTION[CGF-000000100163]:REPL2|Basic Replacements||[[LOOP,BUSINESS_OBJECT_TYPE:!0=AAA]]%0AUppercase       : <<BUSINESS_OBJECT_TYPE:U>>, <<BUSINESS_OBJECT_TYPE1:U>>%0ALowercase       : <<BUSINESS_OBJECT_TYPE:L>>, <<BUSINESS_OBJECT_TYPE1:L>>%0ACamelcase       : <<BUSINESS_OBJECT_TYPE:L>>, <<BUSINESS_OBJECT_TYPE1:C>>%0AUnique Number   : <<BUSINESS_OBJECT_TYPE:N>>%0ASub Number      : <<BUSINESS_OBJECT_TYPE:S>> (serial number within parent model element)%0AIndex           : <<BUSINESS_OBJECT_TYPE:IX>> (serial number within the LOOP selection)%0ACube Identifier : <<BUSINESS_OBJECT_TYPE:I>>%0A[[ENDLOOP,BUSINESS_OBJECT_TYPE]];
-		=CUBE_GEN_FUNCTION[CGF-000000100164]:REPL3|Text Manipulation||[[LOOP,BUSINESS_OBJECT_TYPE:0=AAA]]<b><u>Plain text</u></b>%0A<<BUSINESS_OBJECT_TYPE1>>%0A<b><u>Percent escapes</u></b>%0A<<BUSINESS_OBJECT_TYPE1:P>>%0A<b><u>HTML escapes</u></b>%0A<<BUSINESS_OBJECT_TYPE1:H>>%0A<b><u>HTML escapes with EOL</u></b>%0A<<BUSINESS_OBJECT_TYPE1:HE>>%0A[[ENDLOOP,BUSINESS_OBJECT_TYPE]];
+		=CUBE_GEN_FUNCTION[CGF-000000100164]:REPL3|Character Escaping||[[LOOP,BUSINESS_OBJECT_TYPE:0=AAA]]<b><u>Plain text</u></b>%0A<<BUSINESS_OBJECT_TYPE1>>%0A<b><u>Percent escapes</u></b>%0A<<BUSINESS_OBJECT_TYPE1:P>>%0A<b><u>HTML escapes</u></b>%0A<<BUSINESS_OBJECT_TYPE1:H>>%0A<b><u>HTML escapes with EOL</u></b>%0A<<BUSINESS_OBJECT_TYPE1:HE>>%0A[[ENDLOOP,BUSINESS_OBJECT_TYPE]];
 	-CUBE_GEN_EXAMPLE_MODEL:CASE40;
 	+CUBE_GEN_EXAMPLE_MODEL[CGM-000000100103]:CASE50|External Functions||Perl expressions can be used for special functionality that is not available as standard CubeGen functions.;
 		+CUBE_GEN_EXAMPLE_OBJECT[CGO-000000100126]:;
@@ -329,5 +329,7 @@
 	=CUBE_GEN_TEMPLATE_FUNCTION[CTF-000000100020]:TAG|Y|Check for the type of the actual model element.|TAG(<tag>);
 	=CUBE_GEN_TEMPLATE_FUNCTION[CTF-000000100003]:VALUE|N|Export the properties of a model element.|[[VALUE,<tag>:<loop_spec>:<separator>]];
 	=CUBE_GEN_TEMPLATE_FUNCTION[CTF-000000100106]:comment|N|Text that is not exported.|[[* ... *]];
-	=CUBE_GEN_TEMPLATE_FUNCTION[CTF-000000100107]:replacement|N|Replace a label with a model value.|<<<tag>>>%0A<<<tag>(<location>)<property>>>;
+	=CUBE_GEN_TEMPLATE_FUNCTION[CTF-000000100120]:parameters|N|The parameters specified on the command line can be selected for export. Only the replace functions L (lowercase) and U (uppercase) are supported.|<<<parm_nr>>>%0A<<<parm_nr>:<function>>>;
+	=CUBE_GEN_TEMPLATE_FUNCTION[CTF-000000100121]:parameters|Y|The parameters specified on the command line can be referenced in the %22is equal to%22 logical expression.|P<parm_number>=<value>;
+	=CUBE_GEN_TEMPLATE_FUNCTION[CTF-000000100107]:replacement|N|Replace a label with a model value.|<<<tag>>>%0A<<<tag>(<location>)<property>:<function>>>;
 -CUBE_GEN_DOCUMENTATION:Cube_Gen_Manual;

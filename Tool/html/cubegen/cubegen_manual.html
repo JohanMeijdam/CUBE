@@ -28,7 +28,7 @@ INDEX</div>
 <div><a href="#CGF-000000100120" class="indent2">Replacement References</a></div>
 <div><a href="#CGM-000000100105" class="indent1">Replacement Functions</a></div>
 <div><a href="#CGF-000000100163" class="indent2">Basic Replacements</a></div>
-<div><a href="#CGF-000000100164" class="indent2">Text Manipulation</a></div>
+<div><a href="#CGF-000000100164" class="indent2">Character Escaping</a></div>
 <div><a href="#CGM-000000100103" class="indent1">External Functions</a></div>
 <div><a href="#CGF-000000100160" class="indent2">Perl Expressions</a></div>
 <div><a href="#CGM-000000100104" class="indent1">Sequential Processing</a></div>
@@ -38,21 +38,23 @@ INDEX</div>
 <div><a href="#CGF-000000100082" class="indent2">Enhance Model</a></div>
 <div><a href="#CGF-000000100161" class="indent2"></a></div>
 <div><a href="#FUNCTIONS" class="indent1">Template Functions</a></div>
-<div><a href="#F_DECL" class="indent2">DECL</a></div>
-<div><a href="#F_EVAL" class="indent2">EVAL</a></div>
-<div><a href="#F_FOR" class="indent2">FOR</a></div>
-<div><a href="#F_FORH" class="indent2">FORH</a></div>
-<div><a href="#F_FORV" class="indent2">FORV</a></div>
-<div><a href="#F_IF" class="indent2">IF</a></div>
-<div><a href="#F_LOOP" class="indent2">LOOP</a></div>
-<div><a href="#F_REPEAT" class="indent2">REPEAT</a></div>
-<div><a href="#F_SEQUENCE" class="indent2">SEQUENCE</a></div>
-<div><a href="#F_VALUE" class="indent2">VALUE</a></div>
-<div><a href="#F_COMMENT" class="indent2">comment</a></div>
-<div><a href="#F_REPLACEMENT" class="indent2">replacement</a></div>
+<div><a href="#F_DECL-N" class="indent2">DECL</a></div>
+<div><a href="#F_EVAL-N" class="indent2">EVAL</a></div>
+<div><a href="#F_FOR-N" class="indent2">FOR</a></div>
+<div><a href="#F_FORH-N" class="indent2">FORH</a></div>
+<div><a href="#F_FORV-N" class="indent2">FORV</a></div>
+<div><a href="#F_IF-N" class="indent2">IF</a></div>
+<div><a href="#F_LOOP-N" class="indent2">LOOP</a></div>
+<div><a href="#F_REPEAT-N" class="indent2">REPEAT</a></div>
+<div><a href="#F_SEQUENCE-N" class="indent2">SEQUENCE</a></div>
+<div><a href="#F_VALUE-N" class="indent2">VALUE</a></div>
+<div><a href="#F_COMMENT-N" class="indent2">comment</a></div>
+<div><a href="#F_PARAMETERS-N" class="indent2">parameters</a></div>
+<div><a href="#F_REPLACEMENT-N" class="indent2">replacement</a></div>
 <div><a href="#LOG_EXPR" class="indent1">Logical Expressions</a></div>
-<div><a href="#F_EVAL" class="indent2">EVAL</a></div>
-<div><a href="#F_TAG" class="indent2">TAG</a></div>
+<div><a href="#F_EVAL-Y" class="indent2">EVAL</a></div>
+<div><a href="#F_TAG-Y" class="indent2">TAG</a></div>
+<div><a href="#F_PARAMETERS-Y" class="indent2">parameters</a></div>
 <br>
 </div><a href="../index.html"><div align="center" class="header0" style="overflow:hidden;position:absolute;top:76px;left:240px;right:0;width:60px;height:30px;">
 HOME</div></a>
@@ -72,7 +74,7 @@ perl cubegen.pl &lt;model&gt; &lt;template&gt; &lt;code&gt; &lt;arguments&gt;
 -	&lt;model&gt;: Imported Cube Model textfile
 -	&lt;template&gt;: Imported CubeGen Template Textfile
 -	&lt;code&gt;: Textfile to generate
--	&lt;arguments&gt;: Parameters used in template</span></div><!
+-	&lt;parameters&gt;: Arguments that can be referenced in the template</span></div><!
 ><div id="CGP-000000100041" class="header2">Cube Model Structure</div><!
 ><div>A Cube model is a hierachical structure of model elements.  An element can be a group of other elements. A group starts with a &quot;+&quot; followed by a tag and ends with &quot;-&quot; followed by the tag. In the case of a separate element the two lines can be merged into one line starting with a &quot;=&quot;. A model element can have an idenfier specified between brackets.
 The structure can best be explained by an example:</div><!
@@ -209,7 +211,7 @@ OrderLine Concerns Product (PRD)
 ><div id="CGM-000000100080" class="header1">Hierarchy Navigation</div><!
 ><div>Navigate through a hierarchy of model elements of one type selected in the active LOOP functions. For a better understanding of the examples, a coding is used for the tags of model elements.</div><!
 ><div id="CGM-000000100080M" class="header3">Cube Model</div><!
-><div><span style="display:block;" class="model code">+BUSINESS_OBJECT_TYPE[CASE30-BOT-000000100060]:AAA|%3Cb%3EAAA%3C/b%3E%250Dtest.;
+><div><span style="display:block;" class="model code">+BUSINESS_OBJECT_TYPE[CASE30-BOT-000000100060]:AAA|%3Cb%3EAAA%3C/b%3E%0Atest.;
 	+TYPE[CASE30-TYP-000000100040]:AAA|AAA|N;
 		+TYPE[CASE30-TYP-000000100041]:BBB1|BB1|N;
 			+TYPE[CASE30-TYP-000000100048]:CCC11|C11|N;
@@ -326,7 +328,7 @@ OrderLine Concerns Product (PRD)
 ><div id="CGM-000000100105" class="header1">Replacement Functions</div><!
 ><div></div><!
 ><div id="CGM-000000100105M" class="header3">Cube Model</div><!
-><div><span style="display:block;" class="model code">=BUSINESS_OBJECT_TYPE[CASE40-BOT-000000100060]:AAA|%3Cb%3EAAA%3C/b%3E%250Dtest.;
+><div><span style="display:block;" class="model code">=BUSINESS_OBJECT_TYPE[CASE40-BOT-000000100060]:AAA|%3Cb%3EAAA%3C/b%3E%0Atest.;
 =BUSINESS_OBJECT_TYPE[CASE40-BOT-000000100040]:CUSTOMER|customer_files;
 =BUSINESS_OBJECT_TYPE[CASE40-BOT-000000100024]:ORDER|order_directory;
 =BUSINESS_OBJECT_TYPE[CASE40-BOT-000000100025]:PRODUCT|product_definitions;</span></div><!
@@ -368,7 +370,7 @@ Sub Number      : 004 (serial number within parent model element)
 Index           : 3 (serial number within the LOOP selection)
 Cube Identifier : CASE40-BOT-000000100025
 </span></div><!
-><div id="CGF-000000100164" class="header2">Text Manipulation</div><!
+><div id="CGF-000000100164" class="header2">Character Escaping</div><!
 ><div></div><!
 ><div id="CGF-000000100164T" class="header3">Template</div><!
 ><div><span style="display:block;" class="template code">&#91;&#91;LOOP,BUSINESS_OBJECT_TYPE:0=AAA&#93;&#93;&lt;b&gt;&lt;u&gt;Plain text&lt;/u&gt;&lt;/b&gt;
@@ -382,13 +384,15 @@ Cube Identifier : CASE40-BOT-000000100025
 &#91;&#91;ENDLOOP,BUSINESS_OBJECT_TYPE&#93;&#93;</span></div><!
 ><div id="CGF-000000100164C" class="header3">Code</div><!
 ><div><span style="display:block;" class="result code"><b><u>Plain text</u></b>
-<b>AAA</b>%0Dtest.
+<b>AAA</b>
+test.
 <b><u>Percent escapes</u></b>
-%3Cb%3EAAA%3C%2Fb%3E%250Dtest.
+%3Cb%3EAAA%3C%2Fb%3E%0Atest.
 <b><u>HTML escapes</u></b>
-&lt;b&gt;AAA&lt;/b&gt;%0Dtest.
+&lt;b&gt;AAA&lt;/b&gt;<br>test.
 <b><u>HTML escapes with EOL</u></b>
-&lt;b&gt;AAA&lt;/b&gt;%0Dtest.
+&lt;b&gt;AAA&lt;/b&gt;
+test.
 </span></div><!
 ><div id="CGM-000000100103" class="header1">External Functions</div><!
 ><div>Perl expressions can be used for special functionality that is not available as standard CubeGen functions.</div><!
@@ -618,38 +622,38 @@ The VALUE function is used to copy a specified number of model element values.</
 ><div id="CGF-000000100161C" class="header3">Code</div><!
 ><div><span style="display:block;" class="result code"></span></div><!
 ><div id="FUNCTIONS" class="header1">Template Functions</a></div><!
-><div id="F_DECL" class="header3">DECL</a></div><!
+><div id="F_DECL-N" class="header3">DECL</a></div><!
 ><div>Perform the Perl eval expression once to decclare in functions or variables. To prefix the names with &quot;my&quot;, they will not mixed up to the CubeGen code.</div><!
 ><div><span style="display:block;" class="template code">&#91;&#91;DECL:&lt;perl_expression&gt;&#93;&#93;</span></div><!
-><div id="F_EVAL" class="header3">EVAL</a></div><!
+><div id="F_EVAL-N" class="header3">EVAL</a></div><!
 ><div>Export the result of a Perl exprssion. When the Perl expression is placed between parentheses, the result is not exported. To prefix the names with &quot;my&quot;, they will not mixed up to the CubeGen code.</div><!
 ><div><span style="display:block;" class="template code">&#91;&#91;EVAL:&lt;perl_expression&gt;&#93;&#93;
 &#91;&#91;EVAL:(&lt;perl_expression&gt;)&#93;&#93;</span></div><!
-><div id="F_FOR" class="header3">FOR</a></div><!
+><div id="F_FOR-N" class="header3">FOR</a></div><!
 ><div>Equal to FORV.</div><!
 ><div><span style="display:block;" class="template code"></span></div><!
-><div id="F_FORH" class="header3">FORH</a></div><!
+><div id="F_FORH-N" class="header3">FORH</a></div><!
 ><div>In the hierarchy selected by LOOP functions, the FORH function navigates on the same level (horizontal) through the model elements of the specified or actual type. The template segments for the selected model elements will be exported in the order of the loop specification, possibly separated by a specified string</div><!
 ><div><span style="display:block;" class="template code">&#91;&#91;FORH:&lt;loopspec&gt;&#93;&#93; ... &#91;&#91;ENDFOR&#93;&#93;
 &#91;&#91;FORH,&lt;tag&gt;:&lt;loopspec&gt;:&lt;seperator&gt;&#93;&#93; ... &#91;&#91;ENDFOR&#93;&#93;</span></div><!
-><div id="F_FORV" class="header3">FORV</a></div><!
+><div id="F_FORV-N" class="header3">FORV</a></div><!
 ><div>In the hierarchy selected by LOOP functions, the FORV function navigates top down (vertical) through the model elements of the specified or actual type. The template segments for the selected model elements will be exported in the order of the loop specification, possibly separated by a specified string.
 </div><!
 ><div><span style="display:block;" class="template code">&#91;&#91;FORV:&lt;loopspec&gt;&#93;&#93; ... &#91;&#91;ENDFOR&#93;&#93;
 &#91;&#91;FORV,&lt;tag&gt;:&lt;loopspec&gt;:&lt;seperator&gt;&#93;&#93; ... &#91;&#91;ENDFOR&#93;&#93;</span></div><!
-><div id="F_IF" class="header3">IF</a></div><!
+><div id="F_IF-N" class="header3">IF</a></div><!
 ><div>Export a template segment that applies to a condition.</div><!
 ><div><span style="display:block;" class="template code">&#91;&#91;IF:&lt;condition&gt;&#93;&#93; ... &#91;&#91;ENDIF&#93;&#93;
 &#91;&#91;IF,&lt;tag&gt;:&lt;condition&gt;&#93;&#93; ... &#91;&#91;ELSIF,&lt;tag&gt;:&lt;condition&gt;&#93;&#93; ... &#91;&#91;ELSE&#93;&#93; ... &#91;&#91;ENDIF&#93;&#93;</span></div><!
-><div id="F_LOOP" class="header3">LOOP</a></div><!
+><div id="F_LOOP-N" class="header3">LOOP</a></div><!
 ><div>Export the template segment for the model elements of the specified type in sequential order .</div><!
 ><div><span style="display:block;" class="template code">&#91;&#91;LOOP,&lt;tag&gt;&#93;&#93; ... &#91;&#91;ENDLOOP,&lt;tag&gt;&#93;&#93;
 &#91;&#91;LOOP,&lt;tag&gt;:&lt;condition&gt;&#93;&#93; ... &#91;&#91;ENDLOOP,&lt;tag&gt;&#93;&#93;</span></div><!
-><div id="F_REPEAT" class="header3">REPEAT</a></div><!
+><div id="F_REPEAT-N" class="header3">REPEAT</a></div><!
 ><div>Repeat the LOOP function for all underlying model elements of the specified type.</div><!
 ><div><span style="display:block;" class="template code">&#91;&#91;LOOP,&lt;tag&gt;&#93;&#93; ... &#91;&#91;REPEAT&#93;&#93; ... &#91;&#91;ENDLOOP,&lt;tag&gt;&#93;&#93;
 &#91;&#91;LOOP,&lt;tag&gt;&#93;&#93; ... &#91;&#91;LOOP...&#93;&#93; ... &#91;&#91;REPEAT,&lt;tag&gt;:TAB&#93;&#93; ... &#91;&#91;ENDLOOP...&#93;&#93; ... &#91;&#91;ENDLOOP,&lt;tag&gt;&#93;&#93;</span></div><!
-><div id="F_SEQUENCE" class="header3">SEQUENCE</a></div><!
+><div id="F_SEQUENCE-N" class="header3">SEQUENCE</a></div><!
 ><div>The model elements referenced by the LOOP functions nested in the SEQUENCE function are exported in the order as they appear in the Cube model. The text within the SEQUENCE function and outside the nested LOOP function is ignored, and will not be exported. </div><!
 ><div><span style="display:block;" class="template code">&#91;&#91;SEQUENCE&#93;&#93;
 &#91;&#91;LOOP,&lt;tag1&gt;&#93;&#93; ... &#91;&#91;ENDLOOP,&lt;tag1&gt;&#93;&#93;
@@ -657,23 +661,30 @@ The VALUE function is used to copy a specified number of model element values.</
 ...
 &#91;&#91;LOOP,&lt;tagN&gt;&#93;&#93; ... &#91;&#91;ENDLOOP,&lt;tagN&gt;&#93;&#93;
 &#91;&#91;ENDSEQUENCE&#93;&#93;</span></div><!
-><div id="F_VALUE" class="header3">VALUE</a></div><!
+><div id="F_VALUE-N" class="header3">VALUE</a></div><!
 ><div>Export the properties of a model element.</div><!
 ><div><span style="display:block;" class="template code">&#91;&#91;VALUE,&lt;tag&gt;:&lt;loop_spec&gt;:&lt;separator&gt;&#93;&#93;</span></div><!
-><div id="F_COMMENT" class="header3">COMMENT</a></div><!
+><div id="F_COMMENT-N" class="header3">comment</a></div><!
 ><div>Text that is not exported.</div><!
 ><div><span style="display:block;" class="template code">&#91;&#91;* ... *&#93;&#93;</span></div><!
-><div id="F_REPLACEMENT" class="header3">REPLACEMENT</a></div><!
+><div id="F_PARAMETERS-N" class="header3">parameters</a></div><!
+><div>The parameters specified on the command line can be selected for export. Only the replace functions L (lowercase) and U (uppercase) are supported.</div><!
+><div><span style="display:block;" class="template code">&lt;&lt;&lt;parm_nr&gt;&gt;&gt;
+&lt;&lt;&lt;parm_nr&gt;:&lt;function&gt;&gt;&gt;</span></div><!
+><div id="F_REPLACEMENT-N" class="header3">replacement</a></div><!
 ><div>Replace a label with a model value.</div><!
 ><div><span style="display:block;" class="template code">&lt;&lt;&lt;tag&gt;&gt;&gt;
-&lt;&lt;&lt;tag&gt;(&lt;location&gt;)&lt;property&gt;&gt;&gt;</span></div><!
+&lt;&lt;&lt;tag&gt;(&lt;location&gt;)&lt;property&gt;:&lt;function&gt;&gt;&gt;</span></div><!
 ><div id="LOG_EXPR" class="header1">Logical Expressions</a></div><!
-><div id="F_EVAL" class="header3">EVAL</a></div><!
+><div id="F_EVAL-Y" class="header3">EVAL</a></div><!
 ><div>Perform a logical Perl expression.</div><!
 ><div><span style="display:block;" class="template code">EVAL:&lt;perl_logical_expression&gt;</span></div><!
-><div id="F_TAG" class="header3">TAG</a></div><!
+><div id="F_TAG-Y" class="header3">TAG</a></div><!
 ><div>Check for the type of the actual model element.</div><!
 ><div><span style="display:block;" class="template code">TAG(&lt;tag&gt;)</span></div><!
+><div id="F_PARAMETERS-Y" class="header3">parameters</a></div><!
+><div>The parameters specified on the command line can be referenced in the &quot;is equal to&quot; logical expression.</div><!
+><div><span style="display:block;" class="template code">P&lt;parm_number&gt;=&lt;value&gt;</span></div><!
 ></pre>
 <div>
 <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>

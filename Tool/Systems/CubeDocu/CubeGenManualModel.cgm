@@ -1,7 +1,7 @@
 ! CubeGenManualModel
 !
 +CUBE_GEN_DOCUMENTATION:Cube_Gen_Manual|CubeGen is essentially a copy with replace function. The input consists of two text files: the model file and the template file. The model file contains the parameters for replacing the labels that have been applied in the template file. The template file contains the source code provided with labels.%0AThe special thing about CubeGen is that the parameters have a hierarchical structure, which you can easily run through recursively.|;
-	+CUBE_GEN_PARAGRAPH[CGP-000000100022]:CMDLINE|Command Line|The program can be run from the command line as a executable or as a Perl script.|cubegen.exe %3Cmodel%3E %3Ctemplate%3E %3Ccode%3E %3Carguments%3E %0Aperl cubegen.pl %3Cmodel%3E %3Ctemplate%3E %3Ccode%3E %3Carguments%3E%0A-%09%3Cmodel%3E: Imported Cube Model textfile%0A-%09%3Ctemplate%3E: Imported CubeGen Template Textfile%0A-%09%3Ccode%3E: Textfile to generate%0A-%09%3Carguments%3E: Parameters used in template;
+	+CUBE_GEN_PARAGRAPH[CGP-000000100022]:CMDLINE|Command Line|The program can be run from the command line as a executable or as a Perl script.|cubegen.exe %3Cmodel%3E %3Ctemplate%3E %3Ccode%3E %3Carguments%3E %0Aperl cubegen.pl %3Cmodel%3E %3Ctemplate%3E %3Ccode%3E %3Carguments%3E%0A-%09%3Cmodel%3E: Imported Cube Model textfile%0A-%09%3Ctemplate%3E: Imported CubeGen Template Textfile%0A-%09%3Ccode%3E: Textfile to generate%0A-%09%3Cparameters%3E: Arguments that can be referenced in the template;
 	-CUBE_GEN_PARAGRAPH:;
 	+CUBE_GEN_PARAGRAPH[CGP-000000100041]:MDLSTRUC|Cube Model Structure|A Cube model is a hierachical structure of model elements.  An element can be a group of other elements. A group starts with a %22+%22 followed by a tag and ends with %22-%22 followed by the tag. In the case of a separate element the two lines can be merged into one line starting with a %22=%22. A model element can have an idenfier specified between brackets.%0AThe structure can best be explained by an example:|+%3CtagA%3E%5B%3CidentA%5D:%3Cprop0%3E%7C%3Cprop1%3E%7C...%7CpropN%3B%0A%09=%3CtagB%3E%5B%3CidentB%5D:%3Cprop0%3E%7C%3Cprop1%3E%7C...%7CpropN%3B%0A%09+%3CtagC%3E%5B%3CidentC%5D:%3Cprop0%3E%7C%3Cprop1%3E%7C...%7CpropN%3B%0A%09%09=%3CtagD%3E%5B%3CidentD%5D:%3Cprop0%3E%7C%3Cprop1%3E%7C..%7CpropN%3B%0A%09-%3CtagC%3E:%3B%0A-%3CtagA%3E:%3B;
 	-CUBE_GEN_PARAGRAPH:;
@@ -81,7 +81,7 @@
 		+CUBE_GEN_FUNCTION[CGF-000000100120]:REPREF1|Replacement References|A replacement can refer to a model element selected by the current LOOP statements.|All types (with root and parent) with the types in the branch (with parent and child):%5B%5BLOOP,BUSINESS_OBJECT_TYPE%5D%5D%5B%5BLOOP,TYPE%5D%5D%0A%3Cb%3E%3C%3CTYPE%3E%3E%3C/b%3E: Root=%3C%3CTYPE(1)%3E%3E Parent=%5B%5BIF:!ROOT%5D%5D%3C%3CTYPE(N-1)%3E%3E%5B%5BENDIF%5D%5D%5B%5BFOR:2%3EN-1%5D%5D%0A-%09%3C%3CTYPE%3E%3E Parent=%3C%3CTYPE(V-1)%3E%3E Child=%3C%3CTYPE(V+1)%3E%3E%5B%5BENDFOR%5D%5D%5B%5BREPEAT%5D%5D%5B%5BENDLOOP,TYPE%5D%5D%0A%5B%5BENDLOOP,BUSINESS_OBJECT_TYPE%5D%5D;
 		-CUBE_GEN_FUNCTION:;
 		+CUBE_MODEL:;
-			+BUSINESS_OBJECT_TYPE[CASE30-BOT-000000100060]:AAA|%3Cb%3EAAA%3C/b%3E%250Dtest.;
+			+BUSINESS_OBJECT_TYPE[CASE30-BOT-000000100060]:AAA|<b>AAA</b>%0Atest.;
 				+TYPE[CASE30-TYP-000000100040]:AAA|AAA|N;
 					+TYPE[CASE30-TYP-000000100041]:BBB1|BB1|N;
 						+TYPE[CASE30-TYP-000000100048]:CCC11|C11|N;
@@ -118,10 +118,10 @@
 	+CUBE_GEN_EXAMPLE_MODEL[CGM-000000100105]:CASE40|Replacement Functions||;
 		+CUBE_GEN_FUNCTION[CGF-000000100163]:REPL2|Basic Replacements||%5B%5BLOOP,BUSINESS_OBJECT_TYPE:!0=AAA%5D%5D%0AUppercase       : %3C%3CBUSINESS_OBJECT_TYPE:U%3E%3E, %3C%3CBUSINESS_OBJECT_TYPE1:U%3E%3E%0ALowercase       : %3C%3CBUSINESS_OBJECT_TYPE:L%3E%3E, %3C%3CBUSINESS_OBJECT_TYPE1:L%3E%3E%0ACamelcase       : %3C%3CBUSINESS_OBJECT_TYPE:L%3E%3E, %3C%3CBUSINESS_OBJECT_TYPE1:C%3E%3E%0AUnique Number   : %3C%3CBUSINESS_OBJECT_TYPE:N%3E%3E%0ASub Number      : %3C%3CBUSINESS_OBJECT_TYPE:S%3E%3E (serial number within parent model element)%0AIndex           : %3C%3CBUSINESS_OBJECT_TYPE:IX%3E%3E (serial number within the LOOP selection)%0ACube Identifier : %3C%3CBUSINESS_OBJECT_TYPE:I%3E%3E%0A%5B%5BENDLOOP,BUSINESS_OBJECT_TYPE%5D%5D;
 		-CUBE_GEN_FUNCTION:;
-		+CUBE_GEN_FUNCTION[CGF-000000100164]:REPL3|Text Manipulation||%5B%5BLOOP,BUSINESS_OBJECT_TYPE:0=AAA%5D%5D%3Cb%3E%3Cu%3EPlain text%3C/u%3E%3C/b%3E%0A%3C%3CBUSINESS_OBJECT_TYPE1%3E%3E%0A%3Cb%3E%3Cu%3EPercent escapes%3C/u%3E%3C/b%3E%0A%3C%3CBUSINESS_OBJECT_TYPE1:P%3E%3E%0A%3Cb%3E%3Cu%3EHTML escapes%3C/u%3E%3C/b%3E%0A%3C%3CBUSINESS_OBJECT_TYPE1:H%3E%3E%0A%3Cb%3E%3Cu%3EHTML escapes with EOL%3C/u%3E%3C/b%3E%0A%3C%3CBUSINESS_OBJECT_TYPE1:HE%3E%3E%0A%5B%5BENDLOOP,BUSINESS_OBJECT_TYPE%5D%5D;
+		+CUBE_GEN_FUNCTION[CGF-000000100164]:REPL3|Character Escaping||%5B%5BLOOP,BUSINESS_OBJECT_TYPE:0=AAA%5D%5D%3Cb%3E%3Cu%3EPlain text%3C/u%3E%3C/b%3E%0A%3C%3CBUSINESS_OBJECT_TYPE1%3E%3E%0A%3Cb%3E%3Cu%3EPercent escapes%3C/u%3E%3C/b%3E%0A%3C%3CBUSINESS_OBJECT_TYPE1:P%3E%3E%0A%3Cb%3E%3Cu%3EHTML escapes%3C/u%3E%3C/b%3E%0A%3C%3CBUSINESS_OBJECT_TYPE1:H%3E%3E%0A%3Cb%3E%3Cu%3EHTML escapes with EOL%3C/u%3E%3C/b%3E%0A%3C%3CBUSINESS_OBJECT_TYPE1:HE%3E%3E%0A%5B%5BENDLOOP,BUSINESS_OBJECT_TYPE%5D%5D;
 		-CUBE_GEN_FUNCTION:;
 		+CUBE_MODEL:;
-			+BUSINESS_OBJECT_TYPE[CASE40-BOT-000000100060]:AAA|%3Cb%3EAAA%3C/b%3E%250Dtest.;
+			+BUSINESS_OBJECT_TYPE[CASE40-BOT-000000100060]:AAA|<b>AAA</b>%0Atest.;
 			-BUSINESS_OBJECT_TYPE:;
 			+BUSINESS_OBJECT_TYPE[CASE40-BOT-000000100040]:CUSTOMER|customer_files;
 			-BUSINESS_OBJECT_TYPE:;
@@ -255,6 +255,10 @@
 	-CUBE_GEN_TEMPLATE_FUNCTION:;
 	+CUBE_GEN_TEMPLATE_FUNCTION[CTF-000000100106]:comment|N|Text that is not exported.|%5B%5B* ... *%5D%5D;
 	-CUBE_GEN_TEMPLATE_FUNCTION:;
-	+CUBE_GEN_TEMPLATE_FUNCTION[CTF-000000100107]:replacement|N|Replace a label with a model value.|%3C%3C%3Ctag%3E%3E%3E%0A%3C%3C%3Ctag%3E(%3Clocation%3E)%3Cproperty%3E%3E%3E;
+	+CUBE_GEN_TEMPLATE_FUNCTION[CTF-000000100120]:parameters|N|The parameters specified on the command line can be selected for export. Only the replace functions L (lowercase) and U (uppercase) are supported.|%3C%3C%3Cparm_nr%3E%3E%3E%0A%3C%3C%3Cparm_nr%3E:%3Cfunction%3E%3E%3E;
+	-CUBE_GEN_TEMPLATE_FUNCTION:;
+	+CUBE_GEN_TEMPLATE_FUNCTION[CTF-000000100121]:parameters|Y|The parameters specified on the command line can be referenced in the %22is equal to%22 logical expression.|P%3Cparm_number%3E=%3Cvalue%3E;
+	-CUBE_GEN_TEMPLATE_FUNCTION:;
+	+CUBE_GEN_TEMPLATE_FUNCTION[CTF-000000100107]:replacement|N|Replace a label with a model value.|%3C%3C%3Ctag%3E%3E%3E%0A%3C%3C%3Ctag%3E(%3Clocation%3E)%3Cproperty%3E:%3Cfunction%3E%3E%3E;
 	-CUBE_GEN_TEMPLATE_FUNCTION:;
 -CUBE_GEN_DOCUMENTATION:;
