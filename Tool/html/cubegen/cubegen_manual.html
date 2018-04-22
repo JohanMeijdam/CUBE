@@ -27,7 +27,8 @@ INDEX</div>
 <div><a href="#CGF-000000100100" class="indent2">Horizontal Navigation</a></div>
 <div><a href="#CGF-000000100120" class="indent2">Replacement References</a></div>
 <div><a href="#CGM-000000100105" class="indent1">Replacement Functions</a></div>
-<div><a href="#CGF-000000100163" class="indent2">Basic Replacements</a></div>
+<div><a href="#CGF-000000100182" class="indent2">Manipulate Text</a></div>
+<div><a href="#CGF-000000100163" class="indent2">Property Replacements</a></div>
 <div><a href="#CGF-000000100164" class="indent2">Character Escaping</a></div>
 <div><a href="#CGM-000000100103" class="indent1">External Functions</a></div>
 <div><a href="#CGF-000000100160" class="indent2">Perl Expressions</a></div>
@@ -47,6 +48,7 @@ INDEX</div>
 <div><a href="#F_LOOP-N" class="indent2">LOOP</a></div>
 <div><a href="#F_REPEAT-N" class="indent2">REPEAT</a></div>
 <div><a href="#F_SEQUENCE-N" class="indent2">SEQUENCE</a></div>
+<div><a href="#F_TEMPLATE-N" class="indent2">TEMPLATE</a></div>
 <div><a href="#F_VALUE-N" class="indent2">VALUE</a></div>
 <div><a href="#F_COMMENT-N" class="indent2">comment</a></div>
 <div><a href="#F_PARAMETERS-N" class="indent2">parameters</a></div>
@@ -117,20 +119,24 @@ PRODUCT concerns something else.</span></div><!
 ><div id="CGF-000000100025" class="header2">Replacement</div><!
 ><div>Replace a label with the model value.</div><!
 ><div id="CGF-000000100025T" class="header3">Template</div><!
-><div><span style="display:block;" class="template code">&#91;&#91;LOOP,BUSINESS_OBJECT_TYPE&#93;&#93;Uppercase: &lt;&lt;BUSINESS_OBJECT_TYPE:U&gt;&gt;, &lt;&lt;BUSINESS_OBJECT_TYPE1:U&gt;&gt;
+><div><span style="display:block;" class="template code">&#91;&#91;LOOP,BUSINESS_OBJECT_TYPE&#93;&#93;Unchanged: &lt;&lt;BUSINESS_OBJECT_TYPE&gt;&gt;, &lt;&lt;BUSINESS_OBJECT_TYPE1&gt;&gt;
+Uppercase: &lt;&lt;BUSINESS_OBJECT_TYPE:U&gt;&gt;, &lt;&lt;BUSINESS_OBJECT_TYPE1:U&gt;&gt;
 Lowercase: &lt;&lt;BUSINESS_OBJECT_TYPE:L&gt;&gt;, &lt;&lt;BUSINESS_OBJECT_TYPE1:L&gt;&gt;
 Camelcase: &lt;&lt;BUSINESS_OBJECT_TYPE:L&gt;&gt;, &lt;&lt;BUSINESS_OBJECT_TYPE1:C&gt;&gt;
 
 &#91;&#91;ENDLOOP,BUSINESS_OBJECT_TYPE&#93;&#93;</span></div><!
 ><div id="CGF-000000100025C" class="header3">Code</div><!
-><div><span style="display:block;" class="result code">Uppercase: CUSTOMER, CUSTOMER_FILES
+><div><span style="display:block;" class="result code">Unchanged: CUSTOMER, customer_files
+Uppercase: CUSTOMER, CUSTOMER_FILES
 Lowercase: customer, customer_files
 Camelcase: customer, CustomerFiles
 
+Unchanged: ORDER, order_directory
 Uppercase: ORDER, ORDER_DIRECTORY
 Lowercase: order, order_directory
 Camelcase: order, OrderDirectory
 
+Unchanged: PRODUCT, product_definitions
 Uppercase: PRODUCT, PRODUCT_DEFINITIONS
 Lowercase: product, product_definitions
 Camelcase: product, ProductDefinitions
@@ -211,7 +217,7 @@ OrderLine Concerns Product (PRD)
 ><div id="CGM-000000100080" class="header1">Hierarchy Navigation</div><!
 ><div>Navigate through a hierarchy of model elements of one type selected in the active LOOP functions. For a better understanding of the examples, a coding is used for the tags of model elements.</div><!
 ><div id="CGM-000000100080M" class="header3">Cube Model</div><!
-><div><span style="display:block;" class="model code">+BUSINESS_OBJECT_TYPE[CASE30-BOT-000000100060]:AAA|%3Cb%3EAAA%3C/b%3E%0Atest.;
+><div><span style="display:block;" class="model code">+BUSINESS_OBJECT_TYPE[CASE30-BOT-000000100060]:AAA|%3Cb%3EBold%3C/b%3E%0ANormal;
 	+TYPE[CASE30-TYP-000000100040]:AAA|AAA|N;
 		+TYPE[CASE30-TYP-000000100041]:BBB1|BB1|N;
 			+TYPE[CASE30-TYP-000000100048]:CCC11|C11|N;
@@ -326,73 +332,87 @@ OrderLine Concerns Product (PRD)
 -	BBB2 Parent=AAA Child=CCC23
 </span></div><!
 ><div id="CGM-000000100105" class="header1">Replacement Functions</div><!
-><div></div><!
+><div>Manipulate the export of the model element properties by a function.</div><!
 ><div id="CGM-000000100105M" class="header3">Cube Model</div><!
-><div><span style="display:block;" class="model code">=BUSINESS_OBJECT_TYPE[CASE40-BOT-000000100060]:AAA|%3Cb%3EAAA%3C/b%3E%0Atest.;
+><div><span style="display:block;" class="model code">=BUSINESS_OBJECT_TYPE[CASE40-BOT-000000100060]:AAA|%3Cb%3EBold%3C/b%3E%0ANormal;
 =BUSINESS_OBJECT_TYPE[CASE40-BOT-000000100040]:CUSTOMER|customer_files;
 =BUSINESS_OBJECT_TYPE[CASE40-BOT-000000100024]:ORDER|order_directory;
 =BUSINESS_OBJECT_TYPE[CASE40-BOT-000000100025]:PRODUCT|product_definitions;</span></div><!
-><div id="CGF-000000100163" class="header2">Basic Replacements</div><!
-><div></div><!
+><div id="CGF-000000100182" class="header2">Manipulate Text</div><!
+><div>Manipulate the exported text of the model element properties by a function.</div><!
+><div id="CGF-000000100182T" class="header3">Template</div><!
+><div><span style="display:block;" class="template code">&#91;&#91;LOOP,BUSINESS_OBJECT_TYPE:!0=AAA&#93;&#93;Unchanged: &lt;&lt;BUSINESS_OBJECT_TYPE&gt;&gt;, &lt;&lt;BUSINESS_OBJECT_TYPE1&gt;&gt;
+Uppercase: &lt;&lt;BUSINESS_OBJECT_TYPE:U&gt;&gt;, &lt;&lt;BUSINESS_OBJECT_TYPE1:U&gt;&gt;
+Lowercase: &lt;&lt;BUSINESS_OBJECT_TYPE:L&gt;&gt;, &lt;&lt;BUSINESS_OBJECT_TYPE1:L&gt;&gt;
+Camelcase: &lt;&lt;BUSINESS_OBJECT_TYPE:L&gt;&gt;, &lt;&lt;BUSINESS_OBJECT_TYPE1:C&gt;&gt;
+
+&#91;&#91;ENDLOOP,BUSINESS_OBJECT_TYPE&#93;&#93;</span></div><!
+><div id="CGF-000000100182C" class="header3">Code</div><!
+><div><span style="display:block;" class="result code">Unchanged: CUSTOMER, customer_files
+Uppercase: CUSTOMER, CUSTOMER_FILES
+Lowercase: customer, customer_files
+Camelcase: customer, CustomerFiles
+
+Unchanged: ORDER, order_directory
+Uppercase: ORDER, ORDER_DIRECTORY
+Lowercase: order, order_directory
+Camelcase: order, OrderDirectory
+
+Unchanged: PRODUCT, product_definitions
+Uppercase: PRODUCT, PRODUCT_DEFINITIONS
+Lowercase: product, product_definitions
+Camelcase: product, ProductDefinitions
+
+</span></div><!
+><div id="CGF-000000100163" class="header2">Property Replacements</div><!
+><div>Export a model property of the model element.</div><!
 ><div id="CGF-000000100163T" class="header3">Template</div><!
-><div><span style="display:block;" class="template code">&#91;&#91;LOOP,BUSINESS_OBJECT_TYPE:!0=AAA&#93;&#93;
-Uppercase       : &lt;&lt;BUSINESS_OBJECT_TYPE:U&gt;&gt;, &lt;&lt;BUSINESS_OBJECT_TYPE1:U&gt;&gt;
-Lowercase       : &lt;&lt;BUSINESS_OBJECT_TYPE:L&gt;&gt;, &lt;&lt;BUSINESS_OBJECT_TYPE1:L&gt;&gt;
-Camelcase       : &lt;&lt;BUSINESS_OBJECT_TYPE:L&gt;&gt;, &lt;&lt;BUSINESS_OBJECT_TYPE1:C&gt;&gt;
-Unique Number   : &lt;&lt;BUSINESS_OBJECT_TYPE:N&gt;&gt;
-Sub Number      : &lt;&lt;BUSINESS_OBJECT_TYPE:S&gt;&gt; (serial number within parent model element)
-Index           : &lt;&lt;BUSINESS_OBJECT_TYPE:IX&gt;&gt; (serial number within the LOOP selection)
-Cube Identifier : &lt;&lt;BUSINESS_OBJECT_TYPE:I&gt;&gt;
+><div><span style="display:block;" class="template code">&#91;&#91;LOOP,BUSINESS_OBJECT_TYPE:!0=AAA&#93;&#93;Unique Number  : &lt;&lt;BUSINESS_OBJECT_TYPE:N&gt;&gt;
+Sub Number     : &lt;&lt;BUSINESS_OBJECT_TYPE:S&gt;&gt; (serial number within parent model element)
+Index          : &lt;&lt;BUSINESS_OBJECT_TYPE:IX&gt;&gt; (serial number within the LOOP selection)
+Cube Identifier: &lt;&lt;BUSINESS_OBJECT_TYPE:I&gt;&gt;
+
 &#91;&#91;ENDLOOP,BUSINESS_OBJECT_TYPE&#93;&#93;</span></div><!
 ><div id="CGF-000000100163C" class="header3">Code</div><!
-><div><span style="display:block;" class="result code">
-Uppercase       : CUSTOMER, CUSTOMER_FILES
-Lowercase       : customer, customer_files
-Camelcase       : customer, CustomerFiles
-Unique Number   : 00065
-Sub Number      : 002 (serial number within parent model element)
-Index           : 1 (serial number within the LOOP selection)
-Cube Identifier : CASE40-BOT-000000100040
+><div><span style="display:block;" class="result code">Unique Number  : 00066
+Sub Number     : 002 (serial number within parent model element)
+Index          : 1 (serial number within the LOOP selection)
+Cube Identifier: CASE40-BOT-000000100040
 
-Uppercase       : ORDER, ORDER_DIRECTORY
-Lowercase       : order, order_directory
-Camelcase       : order, OrderDirectory
-Unique Number   : 00066
-Sub Number      : 003 (serial number within parent model element)
-Index           : 2 (serial number within the LOOP selection)
-Cube Identifier : CASE40-BOT-000000100024
+Unique Number  : 00067
+Sub Number     : 003 (serial number within parent model element)
+Index          : 2 (serial number within the LOOP selection)
+Cube Identifier: CASE40-BOT-000000100024
 
-Uppercase       : PRODUCT, PRODUCT_DEFINITIONS
-Lowercase       : product, product_definitions
-Camelcase       : product, ProductDefinitions
-Unique Number   : 00067
-Sub Number      : 004 (serial number within parent model element)
-Index           : 3 (serial number within the LOOP selection)
-Cube Identifier : CASE40-BOT-000000100025
+Unique Number  : 00068
+Sub Number     : 004 (serial number within parent model element)
+Index          : 3 (serial number within the LOOP selection)
+Cube Identifier: CASE40-BOT-000000100025
+
 </span></div><!
 ><div id="CGF-000000100164" class="header2">Character Escaping</div><!
-><div></div><!
+><div>Escape characters in the exported text of the model element properties by a function. On the way the code is shown in the HTML, the difference between a &lt;br&gt; and a \ n is not visible. Of course it can be seen in the source.</div><!
 ><div id="CGF-000000100164T" class="header3">Template</div><!
 ><div><span style="display:block;" class="template code">&#91;&#91;LOOP,BUSINESS_OBJECT_TYPE:0=AAA&#93;&#93;&lt;b&gt;&lt;u&gt;Plain text&lt;/u&gt;&lt;/b&gt;
 &lt;&lt;BUSINESS_OBJECT_TYPE1&gt;&gt;
 &lt;b&gt;&lt;u&gt;Percent escapes&lt;/u&gt;&lt;/b&gt;
 &lt;&lt;BUSINESS_OBJECT_TYPE1:P&gt;&gt;
-&lt;b&gt;&lt;u&gt;HTML escapes&lt;/u&gt;&lt;/b&gt;
+&lt;b&gt;&lt;u&gt;HTML escapes&lt;/u&gt;&lt;/b&gt; (with HTML break)
 &lt;&lt;BUSINESS_OBJECT_TYPE1:H&gt;&gt;
-&lt;b&gt;&lt;u&gt;HTML escapes with EOL&lt;/u&gt;&lt;/b&gt;
+&lt;b&gt;&lt;u&gt;HTML escapes&lt;/u&gt;&lt;/b&gt; (with linefeed)
 &lt;&lt;BUSINESS_OBJECT_TYPE1:HE&gt;&gt;
 &#91;&#91;ENDLOOP,BUSINESS_OBJECT_TYPE&#93;&#93;</span></div><!
 ><div id="CGF-000000100164C" class="header3">Code</div><!
 ><div><span style="display:block;" class="result code"><b><u>Plain text</u></b>
-<b>AAA</b>
-test.
+<b>Bold</b>
+Normal
 <b><u>Percent escapes</u></b>
-%3Cb%3EAAA%3C%2Fb%3E%0Atest.
-<b><u>HTML escapes</u></b>
-&lt;b&gt;AAA&lt;/b&gt;<br>test.
-<b><u>HTML escapes with EOL</u></b>
-&lt;b&gt;AAA&lt;/b&gt;
-test.
+%3Cb%3EBold%3C%2Fb%3E%0ANormal
+<b><u>HTML escapes</u></b> (with HTML break)
+&lt;b&gt;Bold&lt;/b&gt;<br>Normal
+<b><u>HTML escapes</u></b> (with linefeed)
+&lt;b&gt;Bold&lt;/b&gt;
+Normal
 </span></div><!
 ><div id="CGM-000000100103" class="header1">External Functions</div><!
 ><div>Perl expressions can be used for special functionality that is not available as standard CubeGen functions.</div><!
@@ -661,6 +681,10 @@ The VALUE function is used to copy a specified number of model element values.</
 ...
 &#91;&#91;LOOP,&lt;tagN&gt;&#93;&#93; ... &#91;&#91;ENDLOOP,&lt;tagN&gt;&#93;&#93;
 &#91;&#91;ENDSEQUENCE&#93;&#93;</span></div><!
+><div id="F_TEMPLATE-N" class="header3">TEMPLATE</a></div><!
+><div>Process a model element property as a template segment.</div><!
+><div><span style="display:block;" class="template code">&#91;&#91;TEMPLATE:&lt;&lt;tag&gt;&#93;&#93;
+&#91;&#91;TEMPLATE:&lt;tag&gt;(&lt;location&gt;)&lt;property&gt;:&lt;function&gt;&#93;&#93;</span></div><!
 ><div id="F_VALUE-N" class="header3">VALUE</a></div><!
 ><div>Export the properties of a model element.</div><!
 ><div><span style="display:block;" class="template code">&#91;&#91;VALUE,&lt;tag&gt;:&lt;loop_spec&gt;:&lt;separator&gt;&#93;&#93;</span></div><!
