@@ -453,8 +453,8 @@ my (@FkeyValues);
 							last;
 						}
 						$Sequence++;
-						print IMPORT "INSERT INTO v_business_object_type (CUBE_SEQUENCE, NAME, DIRECTORY)\n"; 
-						print IMPORT "	VALUES ($Sequence, '".ReplX($NodeString[$j])."', '".ReplX($NodeValue[$NodeValuePntr[$j]])."');\n";
+						print IMPORT "INSERT INTO v_business_object_type (CUBE_SEQUENCE, NAME, CUBE_TSG_INT_EXT, DIRECTORY)\n"; 
+						print IMPORT "	VALUES ($Sequence, '".ReplX($NodeString[$j])."', '".ReplX($NodeValue[$NodeValuePntr[$j]])."', '".ReplX($NodeValue[$NodeValuePntr[$j]+1])."');\n";
 						print IMPORT "\n";
 						$FkeyValues[0] = ReplX($NodeString[$j]);
 						$i = $NodeFirst[$j];
@@ -640,8 +640,8 @@ my (@FkeyValues);
 						} else {
 							$FKeyFlag = 0;
 						}
-						print IMPORT "INSERT INTO v_type_specialisation_group (CUBE_SEQUENCE, FK_BOT_NAME, FK_TYP_NAME, FK_TSG_CODE, CODE, NAME, PRIMARY_KEY)\n"; 
-						print IMPORT "	VALUES ($Sequence, '$_[1]', '$_[2]', '".SwitchFlag($FKeyFlag,$_[3])."', '".ReplX($NodeString[$j])."', '".ReplX($NodeValue[$NodeValuePntr[$j]])."', '".ReplX($NodeValue[$NodeValuePntr[$j]+1])."');\n";
+						print IMPORT "INSERT INTO v_type_specialisation_group (CUBE_SEQUENCE, FK_BOT_NAME, FK_TYP_NAME, FK_TSG_CODE, CODE, NAME, PRIMARY_KEY, XF_ATB_TYP_NAME, XK_ATB_NAME)\n"; 
+						print IMPORT "	VALUES ($Sequence, '$_[1]', '$_[2]', '".SwitchFlag($FKeyFlag,$_[3])."', '".ReplX($NodeString[$j])."', '".ReplX($NodeValue[$NodeValuePntr[$j]])."', '".ReplX($NodeValue[$NodeValuePntr[$j]+1])."', '".ReplX(GetXkey($j,'ATTRIBUTE','TYPE',001))."', '".ReplX(GetXkey($j,'ATTRIBUTE','ATTRIBUTE',001))."');\n";
 						print IMPORT "\n";
 						$FkeyValues[0] = $_[1];
 						$FkeyValues[1] = $_[2];

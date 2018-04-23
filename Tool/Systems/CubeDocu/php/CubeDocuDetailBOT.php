@@ -14,7 +14,9 @@ g_xmlhttp.onreadystatechange = function() {
 		switch (l_argument[0]) {
 		case "SELECT_BOT":
 			var l_values = l_argument[1].split("<|>");
-			document.getElementById("InputDirectory").value=l_values[0];
+			document.getElementById("InputCubeTsgIntExt").value=l_values[0];
+			document.getElementById("InputDirectory").value=l_values[1];
+			ProcessTypeSpecialisation();
 			break;
 		case "CREATE_BOT":
 			document.getElementById("InputName").readOnly=true;
@@ -85,6 +87,7 @@ function InitBody() {
 		document.getElementById("ButtonCreate").disabled=true;
 		performTrans('GetBot'+'<|||>'+document._argument);
 		document.getElementById("InputName").readOnly=true;
+		document.getElementById("InputCubeTsgIntExt").readOnly=true;
 		break;
 	case "N":
 		document.getElementById("ButtonUpdate").disabled=true;
@@ -98,6 +101,7 @@ function InitBody() {
 function CreateBot() {
 	var l_parameters = 
 		document.getElementById("InputName").value+'<|>'+
+		document.getElementById("InputCubeTsgIntExt").value+'<|>'+
 		document.getElementById("InputDirectory").value;
 	if (g_option[0] == 'F' || g_option[0] == 'L') {
 		performTrans('CreateBot<|||>'+g_option[0]+'<|>'+l_parameters);
@@ -109,6 +113,7 @@ function CreateBot() {
 function UpdateBot() {
 	var l_parameters = 
 		document.getElementById("InputName").value+'<|>'+
+		document.getElementById("InputCubeTsgIntExt").value+'<|>'+
 		document.getElementById("InputDirectory").value;
 	performTrans('UpdateBot<|||>'+l_parameters);
 }
@@ -220,12 +225,24 @@ function drop(p_event) {
 		l_obj.style.top = l_y + 'px';
 	}
 }
+
+function ProcessTypeSpecialisation() {
+	if (document.getElementById("InputCubeTsgIntExt").value != ' ') {
+		document.getElementById("InputCubeTsgIntExt").disabled=true;
+		document.getElementById("TableMain").style.display="inline";
+	}
+}
 -->
 </script>
 </head><body oncontextmenu="return false;" onload="InitBody()" ondrop="drop(event)" ondragover="allowDrop(event)">
-<div><img src="icons/botype_large.bmp" /><span style="cursor:help" oncontextmenu="OpenDescBox('BOTYPE','BusinessObjectType','BUSINESS_OBJECT_TYPE','_',-1)"> BUSINESS_OBJECT_TYPE</span></div>
+<div><img src="icons/botype_large.bmp" /><span style="cursor:help" oncontextmenu="OpenDescBox('BOTYPE','BusinessObjectType','BUSINESS_OBJECT_TYPE','_',-1)"> BUSINESS_OBJECT_TYPE /
+<select id="InputCubeTsgIntExt" type="text" onchange="ProcessTypeSpecialisation()">
+	<option value=" " selected>&lt;int_ext&gt;</option>
+	<option value="INT">INTERNAL</option>
+	<option value="EXT">EXTERNAL</option>
+</select></span></div>
 <hr/>
-<table>
+<table id="TableMain" style="display:none">
 <tr><td><u>Name</u></td><td><div style="max-width:30em;">
 <input id="InputName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
 <tr><td>Directory</td><td><div style="max-width:80em;">

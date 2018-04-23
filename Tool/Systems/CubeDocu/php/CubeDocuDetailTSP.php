@@ -376,7 +376,7 @@ function drop(p_event) {
 -->
 </script>
 </head><body oncontextmenu="return false;" onload="InitBody()" ondrop="drop(event)" ondragover="allowDrop(event)">
-<div><img src="icons/typespec_large.bmp" /><span> TYPE_SPECIALISATION</span></div>
+<div><img src="icons/typespec_large.bmp" /><span style="cursor:help" oncontextmenu="OpenDescBox('TYPESPEC','TypeSpecialisation','TYPE_SPECIALISATION','_',-1)"> TYPE_SPECIALISATION</span></div>
 <hr/>
 <table>
 <tr><td>BusinessObjectType.Name</td><td><div style="max-width:30em;">
