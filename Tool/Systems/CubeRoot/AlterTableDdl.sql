@@ -501,6 +501,7 @@ BEGIN
 			cube_id VARCHAR2(16),
 			cube_sequence NUMBER(8),
 			name VARCHAR2(30),
+			cube_tsg_int_ext VARCHAR2(8) DEFAULT ''INT'',
 			directory VARCHAR2(80))';
 		DBMS_OUTPUT.PUT_LINE('Table T_BUSINESS_OBJECT_TYPE created');
 	ELSE
@@ -524,6 +525,13 @@ BEGIN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_business_object_type ADD name VARCHAR2(30)';
 			DBMS_OUTPUT.PUT_LINE('Column T_BUSINESS_OBJECT_TYPE.NAME created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_BUSINESS_OBJECT_TYPE' AND column_name = 'CUBE_TSG_INT_EXT';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_business_object_type ADD cube_tsg_int_ext VARCHAR2(8) DEFAULT ''INT''';
+			DBMS_OUTPUT.PUT_LINE('Column T_BUSINESS_OBJECT_TYPE.CUBE_TSG_INT_EXT created');
 		END IF;
 
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_BUSINESS_OBJECT_TYPE' AND column_name = 'DIRECTORY';
@@ -820,7 +828,7 @@ BEGIN
 			fk_bot_name VARCHAR2(30),
 			fk_typ_name VARCHAR2(30),
 			fk_atb_name VARCHAR2(30),
-			cube_tsg_type VARCHAR2(8),
+			cube_tsg_type VARCHAR2(8) DEFAULT ''DN'',
 			aggregate_function VARCHAR2(3) DEFAULT ''SUM'',
 			xk_typ_name VARCHAR2(30),
 			xk_typ_name_1 VARCHAR2(30))';
@@ -858,7 +866,7 @@ BEGIN
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_DERIVATION' AND column_name = 'CUBE_TSG_TYPE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
-			'ALTER TABLE t_derivation ADD cube_tsg_type VARCHAR2(8)';
+			'ALTER TABLE t_derivation ADD cube_tsg_type VARCHAR2(8) DEFAULT ''DN''';
 			DBMS_OUTPUT.PUT_LINE('Column T_DERIVATION.CUBE_TSG_TYPE created');
 		END IF;
 
@@ -1570,7 +1578,9 @@ BEGIN
 			fk_tsg_code VARCHAR2(8),
 			code VARCHAR2(8),
 			name VARCHAR2(30),
-			primary_key CHAR(1) DEFAULT ''N'')';
+			primary_key CHAR(1) DEFAULT ''N'',
+			xf_atb_typ_name VARCHAR2(30),
+			xk_atb_name VARCHAR2(30))';
 		DBMS_OUTPUT.PUT_LINE('Table T_TYPE_SPECIALISATION_GROUP created');
 	ELSE
 
@@ -1635,6 +1645,20 @@ BEGIN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_type_specialisation_group ADD primary_key CHAR(1) DEFAULT ''N''';
 			DBMS_OUTPUT.PUT_LINE('Column T_TYPE_SPECIALISATION_GROUP.PRIMARY_KEY created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_TYPE_SPECIALISATION_GROUP' AND column_name = 'XF_ATB_TYP_NAME';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_type_specialisation_group ADD xf_atb_typ_name VARCHAR2(30)';
+			DBMS_OUTPUT.PUT_LINE('Column T_TYPE_SPECIALISATION_GROUP.XF_ATB_TYP_NAME created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_TYPE_SPECIALISATION_GROUP' AND column_name = 'XK_ATB_NAME';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_type_specialisation_group ADD xk_atb_name VARCHAR2(30)';
+			DBMS_OUTPUT.PUT_LINE('Column T_TYPE_SPECIALISATION_GROUP.XK_ATB_NAME created');
 		END IF;
 
 		FOR r_key IN (SELECT constraint_name FROM all_constraints WHERE owner = 'CUBEROOT' AND table_name = 'T_TYPE_SPECIALISATION_GROUP' AND constraint_type IN ('P','U','R') ORDER BY constraint_type DESC)
@@ -2181,11 +2205,13 @@ BEGIN
 			'CUBE_ID','VARCHAR2(16)',
 			'CUBE_SEQUENCE','NUMBER(8)',
 			'NAME','VARCHAR2(30)',
+			'CUBE_TSG_INT_EXT','VARCHAR2(8)',
 			'DIRECTORY','VARCHAR2(80)',NULL) new_domain,
 		DECODE(column_name,
 			'CUBE_ID',NULL,
 			'CUBE_SEQUENCE',NULL,
 			'NAME',NULL,
+			'CUBE_TSG_INT_EXT','''INT''',
 			'DIRECTORY',NULL,NULL) new_default_value
   		FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_BUSINESS_OBJECT_TYPE')
 	LOOP
@@ -2220,6 +2246,7 @@ BEGIN
 							'CUBE_ID',
 							'CUBE_SEQUENCE',
 							'NAME',
+							'CUBE_TSG_INT_EXT',
 							'DIRECTORY'))
 	LOOP
 		EXECUTE IMMEDIATE
@@ -2426,7 +2453,7 @@ BEGIN
 			'FK_BOT_NAME',NULL,
 			'FK_TYP_NAME',NULL,
 			'FK_ATB_NAME',NULL,
-			'CUBE_TSG_TYPE',NULL,
+			'CUBE_TSG_TYPE','''DN''',
 			'AGGREGATE_FUNCTION','''SUM''',
 			'XK_TYP_NAME',NULL,
 			'XK_TYP_NAME_1',NULL,NULL) new_default_value
@@ -3064,7 +3091,9 @@ BEGIN
 			'FK_TSG_CODE','VARCHAR2(8)',
 			'CODE','VARCHAR2(8)',
 			'NAME','VARCHAR2(30)',
-			'PRIMARY_KEY','CHAR(1)',NULL) new_domain,
+			'PRIMARY_KEY','CHAR(1)',
+			'XF_ATB_TYP_NAME','VARCHAR2(30)',
+			'XK_ATB_NAME','VARCHAR2(30)',NULL) new_domain,
 		DECODE(column_name,
 			'CUBE_ID',NULL,
 			'CUBE_SEQUENCE',NULL,
@@ -3074,7 +3103,9 @@ BEGIN
 			'FK_TSG_CODE',NULL,
 			'CODE',NULL,
 			'NAME',NULL,
-			'PRIMARY_KEY','''N''',NULL) new_default_value
+			'PRIMARY_KEY','''N''',
+			'XF_ATB_TYP_NAME',NULL,
+			'XK_ATB_NAME',NULL,NULL) new_default_value
   		FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_TYPE_SPECIALISATION_GROUP')
 	LOOP
 		IF r_field.old_domain <> r_field.new_domain THEN
@@ -3124,7 +3155,9 @@ BEGIN
 							'FK_TSG_CODE',
 							'CODE',
 							'NAME',
-							'PRIMARY_KEY'))
+							'PRIMARY_KEY',
+							'XF_ATB_TYP_NAME',
+							'XK_ATB_NAME'))
 	LOOP
 		EXECUTE IMMEDIATE
 		'ALTER TABLE t_type_specialisation_group DROP COLUMN ' || r_field.column_name;

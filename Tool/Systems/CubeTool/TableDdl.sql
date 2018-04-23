@@ -215,6 +215,7 @@ CREATE TABLE t_business_object_type (
 	cube_id VARCHAR2(16),
 	cube_sequence NUMBER(8),
 	name VARCHAR2(30),
+	cube_tsg_int_ext VARCHAR2(8) DEFAULT 'INT',
 	directory VARCHAR2(80),
 	CONSTRAINT bot_pk
 		PRIMARY KEY (name) )
@@ -270,7 +271,7 @@ CREATE TABLE t_derivation (
 	fk_bot_name VARCHAR2(30),
 	fk_typ_name VARCHAR2(30),
 	fk_atb_name VARCHAR2(30),
-	cube_tsg_type VARCHAR2(8),
+	cube_tsg_type VARCHAR2(8) DEFAULT 'DN',
 	aggregate_function VARCHAR2(3) DEFAULT 'SUM',
 	xk_typ_name VARCHAR2(30),
 	xk_typ_name_1 VARCHAR2(30),
@@ -411,6 +412,8 @@ CREATE TABLE t_type_specialisation_group (
 	code VARCHAR2(8),
 	name VARCHAR2(30),
 	primary_key CHAR(1) DEFAULT 'N',
+	xf_atb_typ_name VARCHAR2(30),
+	xk_atb_name VARCHAR2(30),
 	CONSTRAINT tsg_pk
 		PRIMARY KEY (fk_typ_name, code),
 	CONSTRAINT tsg_typ_fk

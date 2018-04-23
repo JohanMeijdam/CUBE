@@ -282,6 +282,7 @@ CREATE OR REPLACE VIEW v_business_object_type AS
 		cube_id,
 		cube_sequence,
 		name,
+		cube_tsg_int_ext,
 		directory
 	FROM t_business_object_type
 /
@@ -429,7 +430,9 @@ CREATE OR REPLACE VIEW v_type_specialisation_group AS
 		fk_tsg_code,
 		code,
 		name,
-		primary_key
+		primary_key,
+		xf_atb_typ_name,
+		xk_atb_name
 	FROM t_type_specialisation_group
 /
 CREATE OR REPLACE VIEW v_type_specialisation AS 
@@ -518,11 +521,13 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			cube_id,
 			cube_sequence,
 			name,
+			cube_tsg_int_ext,
 			directory)
 		VALUES (
 			p_bot.cube_id,
 			p_bot.cube_sequence,
 			p_bot.name,
+			p_bot.cube_tsg_int_ext,
 			p_bot.directory);
 	END;
 
@@ -1076,7 +1081,9 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			fk_tsg_code,
 			code,
 			name,
-			primary_key)
+			primary_key,
+			xf_atb_typ_name,
+			xk_atb_name)
 		VALUES (
 			p_tsg.cube_id,
 			p_tsg.cube_sequence,
@@ -1086,7 +1093,9 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			p_tsg.fk_tsg_code,
 			p_tsg.code,
 			p_tsg.name,
-			p_tsg.primary_key);
+			p_tsg.primary_key,
+			p_tsg.xf_atb_typ_name,
+			p_tsg.xk_atb_name);
 	END;
 
 	PROCEDURE update_tsg (p_cube_rowid UROWID, p_tsg_old IN OUT NOCOPY v_type_specialisation_group%ROWTYPE, p_tsg_new IN OUT NOCOPY v_type_specialisation_group%ROWTYPE) IS
@@ -1099,7 +1108,9 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			cube_level = p_tsg_new.cube_level,
 			fk_tsg_code = p_tsg_new.fk_tsg_code,
 			name = p_tsg_new.name,
-			primary_key = p_tsg_new.primary_key
+			primary_key = p_tsg_new.primary_key,
+			xf_atb_typ_name = p_tsg_new.xf_atb_typ_name,
+			xk_atb_name = p_tsg_new.xk_atb_name
 		WHERE rowid = p_cube_rowid;
 	END;
 
@@ -1231,6 +1242,7 @@ BEGIN
 	IF INSERTING OR UPDATING THEN
 		r_bot_new.cube_sequence := :NEW.cube_sequence;
 		r_bot_new.name := REPLACE(:NEW.name,' ','_');
+		r_bot_new.cube_tsg_int_ext := :NEW.cube_tsg_int_ext;
 		r_bot_new.directory := REPLACE(:NEW.directory,' ','_');
 	END IF;
 	IF UPDATING THEN
@@ -1241,6 +1253,7 @@ BEGIN
 		WHERE name = :OLD.name;
 		r_bot_old.cube_sequence := :OLD.cube_sequence;
 		r_bot_old.name := :OLD.name;
+		r_bot_old.cube_tsg_int_ext := :OLD.cube_tsg_int_ext;
 		r_bot_old.directory := :OLD.directory;
 	END IF;
 
@@ -1767,6 +1780,8 @@ BEGIN
 		r_tsg_new.code := REPLACE(:NEW.code,' ','_');
 		r_tsg_new.name := REPLACE(:NEW.name,' ','_');
 		r_tsg_new.primary_key := :NEW.primary_key;
+		r_tsg_new.xf_atb_typ_name := REPLACE(:NEW.xf_atb_typ_name,' ','_');
+		r_tsg_new.xk_atb_name := REPLACE(:NEW.xk_atb_name,' ','_');
 	END IF;
 	IF UPDATING THEN
 		r_tsg_new.cube_id := :OLD.cube_id;
@@ -1783,6 +1798,8 @@ BEGIN
 		r_tsg_old.code := :OLD.code;
 		r_tsg_old.name := :OLD.name;
 		r_tsg_old.primary_key := :OLD.primary_key;
+		r_tsg_old.xf_atb_typ_name := :OLD.xf_atb_typ_name;
+		r_tsg_old.xk_atb_name := :OLD.xk_atb_name;
 	END IF;
 
 	IF INSERTING THEN 

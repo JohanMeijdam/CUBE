@@ -521,10 +521,12 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 	PROCEDURE insert_bot (
 			p_cube_pos_action IN VARCHAR2,
 			p_name IN VARCHAR2,
+			p_cube_tsg_int_ext IN VARCHAR2,
 			p_directory IN VARCHAR2,
 			x_name IN VARCHAR2);
 	PROCEDURE update_bot (
 			p_name IN VARCHAR2,
+			p_cube_tsg_int_ext IN VARCHAR2,
 			p_directory IN VARCHAR2);
 	PROCEDURE delete_bot (
 			p_name IN VARCHAR2);
@@ -600,6 +602,10 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_transferable IN CHAR);
 	PROCEDURE delete_typ (
 			p_name IN VARCHAR2);
+	PROCEDURE get_atb_for_typ_list (
+			p_cube_row IN OUT c_cube_row,
+			p_cube_scope_level IN NUMBER,
+			x_fk_typ_name IN VARCHAR2);
 	PROCEDURE get_atb (
 			p_cube_row IN OUT c_cube_row,
 			p_fk_typ_name IN VARCHAR2,
@@ -958,6 +964,8 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_code IN VARCHAR2,
 			p_name IN VARCHAR2,
 			p_primary_key IN CHAR,
+			p_xf_atb_typ_name IN VARCHAR2,
+			p_xk_atb_name IN VARCHAR2,
 			x_fk_typ_name IN VARCHAR2,
 			x_code IN VARCHAR2);
 	PROCEDURE update_tsg (
@@ -966,7 +974,9 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_fk_tsg_code IN VARCHAR2,
 			p_code IN VARCHAR2,
 			p_name IN VARCHAR2,
-			p_primary_key IN CHAR);
+			p_primary_key IN CHAR,
+			p_xf_atb_typ_name IN VARCHAR2,
+			p_xk_atb_name IN VARCHAR2);
 	PROCEDURE delete_tsg (
 			p_fk_typ_name IN VARCHAR2,
 			p_code IN VARCHAR2);
@@ -1069,6 +1079,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 	BEGIN
 		OPEN p_cube_row FOR
 			SELECT
+			  cube_tsg_int_ext,
 			  directory
 			FROM v_business_object_type
 			WHERE name = p_name;
@@ -1179,6 +1190,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 	PROCEDURE insert_bot (
 			p_cube_pos_action IN VARCHAR2,
 			p_name IN VARCHAR2,
+			p_cube_tsg_int_ext IN VARCHAR2,
 			p_directory IN VARCHAR2,
 			x_name IN VARCHAR2) IS
 		l_cube_sequence NUMBER(8);
@@ -1192,11 +1204,13 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			cube_id,
 			cube_sequence,
 			name,
+			cube_tsg_int_ext,
 			directory)
 		VALUES (
 			NULL,
 			l_cube_sequence,
 			p_name,
+			p_cube_tsg_int_ext,
 			p_directory);
 	EXCEPTION
 		WHEN DUP_VAL_ON_INDEX THEN
@@ -1205,9 +1219,11 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 
 	PROCEDURE update_bot (
 			p_name IN VARCHAR2,
+			p_cube_tsg_int_ext IN VARCHAR2,
 			p_directory IN VARCHAR2) IS
 	BEGIN
 		UPDATE v_business_object_type SET
+			cube_tsg_int_ext = p_cube_tsg_int_ext,
 			directory = p_directory
 		WHERE name = p_name;
 	END;
@@ -1640,6 +1656,47 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 	BEGIN
 		DELETE v_type
 		WHERE name = p_name;
+	END;
+
+	PROCEDURE get_atb_for_typ_list (
+			p_cube_row IN OUT c_cube_row,
+			p_cube_scope_level IN NUMBER,
+			x_fk_typ_name IN VARCHAR2) IS
+		l_cube_scope_level NUMBER(1) := 0;
+		l_name v_type.name%TYPE;
+	BEGIN
+		l_name := x_fk_typ_name;
+		IF p_cube_scope_level > 0 THEN
+			LOOP
+				IF p_cube_scope_level = l_cube_scope_level THEN
+					EXIT;
+				END IF;
+				l_cube_scope_level := l_cube_scope_level + 1;
+				SELECT fk_typ_name
+				INTO l_name
+				FROM v_type
+				WHERE name = l_name;
+			END LOOP;
+		ELSIF p_cube_scope_level < 0 THEN
+			LOOP
+				IF p_cube_scope_level = l_cube_scope_level THEN
+					EXIT;
+				END IF;
+				l_cube_scope_level := l_cube_scope_level - 1;
+				SELECT name
+				INTO l_name
+				FROM v_type
+				WHERE fk_typ_name = l_name;
+			END LOOP;
+		END IF;
+		OPEN p_cube_row FOR
+			SELECT
+			  cube_sequence,
+			  fk_typ_name,
+			  name
+			FROM v_attribute
+			WHERE fk_typ_name = l_name
+			ORDER BY fk_typ_name, cube_sequence;
 	END;
 
 	PROCEDURE get_atb (
@@ -2990,7 +3047,9 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			  fk_bot_name,
 			  fk_tsg_code,
 			  name,
-			  primary_key
+			  primary_key,
+			  xf_atb_typ_name,
+			  xk_atb_name
 			FROM v_type_specialisation_group
 			WHERE fk_typ_name = p_fk_typ_name
 			  AND code = p_code;
@@ -3190,6 +3249,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_code IN VARCHAR2,
 			p_name IN VARCHAR2,
 			p_primary_key IN CHAR,
+			p_xf_atb_typ_name IN VARCHAR2,
+			p_xk_atb_name IN VARCHAR2,
 			x_fk_typ_name IN VARCHAR2,
 			x_code IN VARCHAR2) IS
 		l_cube_sequence NUMBER(8);
@@ -3208,7 +3269,9 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			fk_tsg_code,
 			code,
 			name,
-			primary_key)
+			primary_key,
+			xf_atb_typ_name,
+			xk_atb_name)
 		VALUES (
 			NULL,
 			l_cube_sequence,
@@ -3218,7 +3281,9 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_fk_tsg_code,
 			p_code,
 			p_name,
-			p_primary_key);
+			p_primary_key,
+			p_xf_atb_typ_name,
+			p_xk_atb_name);
 	EXCEPTION
 		WHEN DUP_VAL_ON_INDEX THEN
 			RAISE_APPLICATION_ERROR (-20001, 'Type type_specialisation_group already exists');
@@ -3230,13 +3295,17 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_fk_tsg_code IN VARCHAR2,
 			p_code IN VARCHAR2,
 			p_name IN VARCHAR2,
-			p_primary_key IN CHAR) IS
+			p_primary_key IN CHAR,
+			p_xf_atb_typ_name IN VARCHAR2,
+			p_xk_atb_name IN VARCHAR2) IS
 	BEGIN
 		UPDATE v_type_specialisation_group SET
 			fk_bot_name = p_fk_bot_name,
 			fk_tsg_code = p_fk_tsg_code,
 			name = p_name,
-			primary_key = p_primary_key
+			primary_key = p_primary_key,
+			xf_atb_typ_name = p_xf_atb_typ_name,
+			xk_atb_name = p_xk_atb_name
 		WHERE fk_typ_name = p_fk_typ_name
 		  AND code = p_code;
 	END;

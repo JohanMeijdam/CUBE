@@ -6,6 +6,7 @@
 21-02-2018 - Recursive type at the end.
 10-03-2018 - Implementation of tranferable.
 13-04-2018 - Fix for move recursive parts.
+23-04-2018 - BUSINESS_OBJECT_TYPE int ext.
 *]][[INCLUDE,templates\includes\general.cgt]]
 [[BODY]][[LOOP,SYSTEM:0=<<1>>]]<?php
 session_start();
@@ -68,7 +69,7 @@ function InitBody() {
 	l_objBody = document.body;
 	l_objBody._type = 'ROOT';
 	l_objBody.childNodes[0]._index = 0;[[LOOP,SYSTEM_BO_TYPE]][[LOOP,BUSINESS_OBJECT_TYPE]][[LOOP,TYPE]]
-	AddTreeviewNode(l_objBody, 'DIR_<<TYPE1:U>>', 'DIR_<<TYPE1:U>>', 'icons/folder.bmp', '<<BUSINESS_OBJECT_TYPE1>>', 'Y', ' ', null);[[ENDLOOP,TYPE]][[ENDLOOP,BUSINESS_OBJECT_TYPE]][[ENDLOOP,SYSTEM_BO_TYPE]]
+	AddTreeviewNode(l_objBody, 'DIR_<<TYPE1:U>>', 'DIR_<<TYPE1:U>>', 'icons/folder.bmp', '<<BUSINESS_OBJECT_TYPE2>>', 'Y', ' ', null);[[ENDLOOP,TYPE]][[ENDLOOP,BUSINESS_OBJECT_TYPE]][[ENDLOOP,SYSTEM_BO_TYPE]]
 }
 
 function CheckMenuItem (p_type, p_count) {

@@ -449,8 +449,8 @@ my (@FkeyValues);
 							last;
 						}
 						$Sequence++;
-						print IMPORT "INSERT INTO v_business_object_type (CUBE_SEQUENCE, NAME, DIRECTORY)\n"; 
-						print IMPORT "	VALUES ($Sequence, '".ReplX($NodeString[$j])."', '".ReplX($NodeValue[$NodeValuePntr[$j]])."');\n";
+						print IMPORT "INSERT INTO v_business_object_type (CUBE_SEQUENCE, NAME, CUBE_TSG_INT_EXT, DIRECTORY)\n"; 
+						print IMPORT "	VALUES ($Sequence, '".ReplX($NodeString[$j])."', '".ReplX($NodeValue[$NodeValuePntr[$j]])."', '".ReplX($NodeValue[$NodeValuePntr[$j]+1])."');\n";
 						print IMPORT "\n";
 						$FkeyValues[0] = ReplX($NodeString[$j]);
 						$i = $NodeFirst[$j];
@@ -636,8 +636,8 @@ my (@FkeyValues);
 						} else {
 							$FKeyFlag = 0;
 						}
-						print IMPORT "INSERT INTO v_type_specialisation_group (CUBE_SEQUENCE, FK_BOT_NAME, FK_TYP_NAME, FK_TSG_CODE, CODE, NAME, PRIMARY_KEY)\n"; 
-						print IMPORT "	VALUES ($Sequence, '$_[1]', '$_[2]', '".SwitchFlag($FKeyFlag,$_[3])."', '".ReplX($NodeString[$j])."', '".ReplX($NodeValue[$NodeValuePntr[$j]])."', '".ReplX($NodeValue[$NodeValuePntr[$j]+1])."');\n";
+						print IMPORT "INSERT INTO v_type_specialisation_group (CUBE_SEQUENCE, FK_BOT_NAME, FK_TYP_NAME, FK_TSG_CODE, CODE, NAME, PRIMARY_KEY, XF_ATB_TYP_NAME, XK_ATB_NAME)\n"; 
+						print IMPORT "	VALUES ($Sequence, '$_[1]', '$_[2]', '".SwitchFlag($FKeyFlag,$_[3])."', '".ReplX($NodeString[$j])."', '".ReplX($NodeValue[$NodeValuePntr[$j]])."', '".ReplX($NodeValue[$NodeValuePntr[$j]+1])."', '".ReplX(GetXkey($j,'ATTRIBUTE','TYPE',001))."', '".ReplX(GetXkey($j,'ATTRIBUTE','ATTRIBUTE',001))."');\n";
 						print IMPORT "\n";
 						$FkeyValues[0] = $_[1];
 						$FkeyValues[1] = $_[2];
@@ -761,8 +761,8 @@ my (@FkeyValues);
 						if ($j == -1) {
 							last;
 						}
-						print IMPORT "INSERT INTO v_cube_gen_documentation (NAME)\n"; 
-						print IMPORT "	VALUES ('".ReplX($NodeString[$j])."');\n";
+						print IMPORT "INSERT INTO v_cube_gen_documentation (NAME, DESCRIPTION, DESCRIPTION_FUNCTIONS)\n"; 
+						print IMPORT "	VALUES ('".ReplX($NodeString[$j])."', '".ReplX($NodeValue[$NodeValuePntr[$j]])."', '".ReplX($NodeValue[$NodeValuePntr[$j]+1])."');\n";
 						print IMPORT "\n";
 						$FkeyValues[0] = ReplX($NodeString[$j]);
 						$i = $NodeFirst[$j];
@@ -778,8 +778,8 @@ my (@FkeyValues);
 							last;
 						}
 						$Sequence++;
-						print IMPORT "INSERT INTO v_cube_gen_paragraph (CUBE_SEQUENCE, FK_CUB_NAME, ID, HEADER, DESCRIPTION)\n"; 
-						print IMPORT "	VALUES ($Sequence, '$_[1]', '".ReplX($NodeString[$j])."', '".ReplX($NodeValue[$NodeValuePntr[$j]])."', '".ReplX($NodeValue[$NodeValuePntr[$j]+1])."');\n";
+						print IMPORT "INSERT INTO v_cube_gen_paragraph (CUBE_SEQUENCE, FK_CUB_NAME, ID, HEADER, DESCRIPTION, EXAMPLE)\n"; 
+						print IMPORT "	VALUES ($Sequence, '$_[1]', '".ReplX($NodeString[$j])."', '".ReplX($NodeValue[$NodeValuePntr[$j]])."', '".ReplX($NodeValue[$NodeValuePntr[$j]+1])."', '".ReplX($NodeValue[$NodeValuePntr[$j]+2])."');\n";
 						print IMPORT "\n";
 						$j = $NodeNext[$j];
 					}
@@ -826,6 +826,18 @@ my (@FkeyValues);
 						$Sequence++;
 						print IMPORT "INSERT INTO v_cube_gen_function (CUBE_SEQUENCE, FK_CUB_NAME, FK_CGM_ID, ID, HEADER, DESCRIPTION, TEMPLATE)\n"; 
 						print IMPORT "	VALUES ($Sequence, '$_[1]', '$_[2]', '".ReplX($NodeString[$j])."', '".ReplX($NodeValue[$NodeValuePntr[$j]])."', '".ReplX($NodeValue[$NodeValuePntr[$j]+1])."', '".ReplX($NodeValue[$NodeValuePntr[$j]+2])."');\n";
+						print IMPORT "\n";
+						$j = $NodeNext[$j];
+					}
+				}
+				case "CUBE_GEN_TEMPLATE_FUNCTION" {
+					$j = $NodeFirst[$_[0]];
+					while (1) {
+						if ($j == -1) {
+							last;
+						}
+						print IMPORT "INSERT INTO v_cube_gen_template_function (FK_CUB_NAME, NAME, INDICATION_LOGICAL, DESCRIPTION, SYNTAX)\n"; 
+						print IMPORT "	VALUES ('$_[1]', '".ReplX($NodeString[$j])."', '".ReplX($NodeValue[$NodeValuePntr[$j]])."', '".ReplX($NodeValue[$NodeValuePntr[$j]+1])."', '".ReplX($NodeValue[$NodeValuePntr[$j]+2])."');\n";
 						print IMPORT "\n";
 						$j = $NodeNext[$j];
 					}

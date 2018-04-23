@@ -382,7 +382,7 @@ case 'GetBot':
 	if (!$r) { return; }
 	echo "SELECT_BOT";
 	if ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["DIRECTORY"];
+		echo "<|||>".$row["CUBE_TSG_INT_EXT"]."<|>".$row["DIRECTORY"];
 	}
 	break;
 
@@ -447,16 +447,18 @@ case 'MoveBot':
 
 case 'CreateBot':
 
-	list($p_cube_pos_action, $p_name, $p_directory, $x_name) = explode("<|>", $import[1]."<|>");
+	list($p_cube_pos_action, $p_name, $p_cube_tsg_int_ext, $p_directory, $x_name) = explode("<|>", $import[1]."<|>");
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.insert_bot (
 		:p_cube_pos_action,
 		:p_name,
+		:p_cube_tsg_int_ext,
 		:p_directory,
 		:x_name);
 	END;");
 	oci_bind_by_name($stid,":p_cube_pos_action",$p_cube_pos_action);
 	oci_bind_by_name($stid,":p_name",$p_name);
+	oci_bind_by_name($stid,":p_cube_tsg_int_ext",$p_cube_tsg_int_ext);
 	oci_bind_by_name($stid,":p_directory",$p_directory);
 	oci_bind_by_name($stid,":x_name",$x_name);
 
@@ -470,13 +472,15 @@ case 'CreateBot':
 
 case 'UpdateBot':
 
-	list($p_name, $p_directory) = explode("<|>", $import[1]);
+	list($p_name, $p_cube_tsg_int_ext, $p_directory) = explode("<|>", $import[1]);
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.update_bot (
 		:p_name,
+		:p_cube_tsg_int_ext,
 		:p_directory);
 	END;");
 	oci_bind_by_name($stid,":p_name",$p_name);
+	oci_bind_by_name($stid,":p_cube_tsg_int_ext",$p_cube_tsg_int_ext);
 	oci_bind_by_name($stid,":p_directory",$p_directory);
 
 	$r = oci_execute($stid);
@@ -842,6 +846,27 @@ case 'DeleteTyp':
 		return;
 	}
 	echo "DELETE_TYP";
+	break;
+
+case 'GetAtbForTypList':
+
+	list($p_cube_scope_level, $x_fk_typ_name) = explode("<|>", $import[1]);
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.get_atb_for_typ_list (
+		:p_cube_row,
+		:p_cube_scope_level,
+		:x_fk_typ_name);
+	END;");
+	oci_bind_by_name($stid,":p_cube_scope_level",$p_cube_scope_level);
+	oci_bind_by_name($stid,":x_fk_typ_name",$x_fk_typ_name);
+
+	$r = perform_db_request();
+	if (!$r) { return; }
+	echo "LIST_ATB";
+	while ($row = oci_fetch_assoc($curs)) {
+		echo "<|||>".$row["FK_TYP_NAME"]."<|>".$row["NAME"];
+		echo "<||>".$row["FK_TYP_NAME"]." ".$row["NAME"];
+	}
 	break;
 
 case 'GetAtb':
@@ -2194,7 +2219,7 @@ case 'GetTsg':
 	if (!$r) { return; }
 	echo "SELECT_TSG";
 	if ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["FK_BOT_NAME"]."<|>".$row["FK_TSG_CODE"]."<|>".$row["NAME"]."<|>".$row["PRIMARY_KEY"];
+		echo "<|||>".$row["FK_BOT_NAME"]."<|>".$row["FK_TSG_CODE"]."<|>".$row["NAME"]."<|>".$row["PRIMARY_KEY"]."<|>".$row["XF_ATB_TYP_NAME"]."<|>".$row["XK_ATB_NAME"];
 	}
 	break;
 
@@ -2305,7 +2330,7 @@ case 'MoveTsg':
 
 case 'CreateTsg':
 
-	list($p_cube_pos_action, $p_fk_bot_name, $p_fk_typ_name, $p_fk_tsg_code, $p_code, $p_name, $p_primary_key, $x_fk_typ_name, $x_code) = explode("<|>", $import[1]."<|><|>");
+	list($p_cube_pos_action, $p_fk_bot_name, $p_fk_typ_name, $p_fk_tsg_code, $p_code, $p_name, $p_primary_key, $p_xf_atb_typ_name, $p_xk_atb_name, $x_fk_typ_name, $x_code) = explode("<|>", $import[1]."<|><|>");
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.insert_tsg (
 		:p_cube_pos_action,
@@ -2315,6 +2340,8 @@ case 'CreateTsg':
 		:p_code,
 		:p_name,
 		:p_primary_key,
+		:p_xf_atb_typ_name,
+		:p_xk_atb_name,
 		:x_fk_typ_name,
 		:x_code);
 	END;");
@@ -2325,6 +2352,8 @@ case 'CreateTsg':
 	oci_bind_by_name($stid,":p_code",$p_code);
 	oci_bind_by_name($stid,":p_name",$p_name);
 	oci_bind_by_name($stid,":p_primary_key",$p_primary_key);
+	oci_bind_by_name($stid,":p_xf_atb_typ_name",$p_xf_atb_typ_name);
+	oci_bind_by_name($stid,":p_xk_atb_name",$p_xk_atb_name);
 	oci_bind_by_name($stid,":x_fk_typ_name",$x_fk_typ_name);
 	oci_bind_by_name($stid,":x_code",$x_code);
 
@@ -2338,7 +2367,7 @@ case 'CreateTsg':
 
 case 'UpdateTsg':
 
-	list($p_fk_bot_name, $p_fk_typ_name, $p_fk_tsg_code, $p_code, $p_name, $p_primary_key) = explode("<|>", $import[1]);
+	list($p_fk_bot_name, $p_fk_typ_name, $p_fk_tsg_code, $p_code, $p_name, $p_primary_key, $p_xf_atb_typ_name, $p_xk_atb_name) = explode("<|>", $import[1]);
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.update_tsg (
 		:p_fk_bot_name,
@@ -2346,7 +2375,9 @@ case 'UpdateTsg':
 		:p_fk_tsg_code,
 		:p_code,
 		:p_name,
-		:p_primary_key);
+		:p_primary_key,
+		:p_xf_atb_typ_name,
+		:p_xk_atb_name);
 	END;");
 	oci_bind_by_name($stid,":p_fk_bot_name",$p_fk_bot_name);
 	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
@@ -2354,6 +2385,8 @@ case 'UpdateTsg':
 	oci_bind_by_name($stid,":p_code",$p_code);
 	oci_bind_by_name($stid,":p_name",$p_name);
 	oci_bind_by_name($stid,":p_primary_key",$p_primary_key);
+	oci_bind_by_name($stid,":p_xf_atb_typ_name",$p_xf_atb_typ_name);
+	oci_bind_by_name($stid,":p_xk_atb_name",$p_xk_atb_name);
 
 	$r = oci_execute($stid);
 	if (!$r) {

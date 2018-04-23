@@ -378,6 +378,16 @@ DECLARE
 				l_level := l_level + 1;
 				report_tsp (r_tsg);
 				report_tsg_recursive (r_tsg);
+				BEGIN
+					SELECT cube_id INTO l_cube_id FROM t_attribute
+					WHERE fk_typ_name = r_tsg.xf_atb_typ_name
+					  AND name = r_tsg.xk_atb_name;
+
+					DBMS_OUTPUT.PUT_LINE (ftabs || '>ATTRIBUTE:' || l_cube_id || ';');
+				EXCEPTION
+					WHEN NO_DATA_FOUND THEN
+						NULL; 
+				END;
 				l_level := l_level - 1;
 			DBMS_OUTPUT.PUT_LINE (ftabs || '-TYPE_SPECIALISATION_GROUP:' || r_tsg.code || ';');
 		END LOOP;
@@ -398,6 +408,16 @@ DECLARE
 				l_level := l_level + 1;
 				report_tsp (r_tsg);
 				report_tsg_recursive (r_tsg);
+				BEGIN
+					SELECT cube_id INTO l_cube_id FROM t_attribute
+					WHERE fk_typ_name = r_tsg.xf_atb_typ_name
+					  AND name = r_tsg.xk_atb_name;
+
+					DBMS_OUTPUT.PUT_LINE (ftabs || '>ATTRIBUTE:' || l_cube_id || ';');
+				EXCEPTION
+					WHEN NO_DATA_FOUND THEN
+						NULL; 
+				END;
 				l_level := l_level - 1;
 			DBMS_OUTPUT.PUT_LINE (ftabs || '-TYPE_SPECIALISATION_GROUP:' || r_tsg.code || ';');
 		END LOOP;
@@ -475,7 +495,7 @@ DECLARE
 			FROM t_business_object_type
 			ORDER BY cube_sequence )
 		LOOP
-			DBMS_OUTPUT.PUT_LINE (ftabs || '+BUSINESS_OBJECT_TYPE[' || r_bot.cube_id || ']:' || fenperc(r_bot.name) || '|' || fenperc(r_bot.directory) || ';');
+			DBMS_OUTPUT.PUT_LINE (ftabs || '+BUSINESS_OBJECT_TYPE[' || r_bot.cube_id || ']:' || fenperc(r_bot.name) || '|' || fenperc(r_bot.cube_tsg_int_ext) || '|' || fenperc(r_bot.directory) || ';');
 				l_level := l_level + 1;
 				report_typ (r_bot);
 				l_level := l_level - 1;
@@ -578,7 +598,8 @@ BEGIN
 	DBMS_OUTPUT.PUT_LINE ('	-META_TYPE:INFORMATION_TYPE;');
 	DBMS_OUTPUT.PUT_LINE ('	+META_TYPE:BUSINESS_OBJECT_TYPE|'||REPLACE('An%20object%20type%20related%20to%20the%20business%20supported%20by%20the%20system.','%20',' ')||';');
 	DBMS_OUTPUT.PUT_LINE ('		=PROPERTY:0|Name|;');
-	DBMS_OUTPUT.PUT_LINE ('		=PROPERTY:1|Directory|;');
+	DBMS_OUTPUT.PUT_LINE ('		=PROPERTY:1|CubeTsgIntExt| Values: INT(INTERNAL), EXT(EXTERNAL);');
+	DBMS_OUTPUT.PUT_LINE ('		=PROPERTY:2|Directory|;');
 	DBMS_OUTPUT.PUT_LINE ('		+META_TYPE:TYPE|'||REPLACE('An%20entity%20type%20related%20to%20the%20business%20that%20is%20supported%20by%20the%20system.','%20',' ')||';');
 	DBMS_OUTPUT.PUT_LINE ('			=PROPERTY:0|Name|;');
 	DBMS_OUTPUT.PUT_LINE ('			=PROPERTY:1|Code|;');
@@ -640,11 +661,12 @@ BEGIN
 	DBMS_OUTPUT.PUT_LINE ('					=PROPERTY:0|Name|;');
 	DBMS_OUTPUT.PUT_LINE ('				-META_TYPE:SUBTYPE;');
 	DBMS_OUTPUT.PUT_LINE ('			-META_TYPE:PARTITION;');
-	DBMS_OUTPUT.PUT_LINE ('			+META_TYPE:TYPE_SPECIALISATION_GROUP|;');
+	DBMS_OUTPUT.PUT_LINE ('			+META_TYPE:TYPE_SPECIALISATION_GROUP|'||REPLACE('A%20group%20of%20classifications%20of%20the%20type.','%20',' ')||';');
 	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:0|Code|;');
 	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:1|Name|;');
 	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:2|PrimaryKey|'||REPLACE('Indication%20that%20the%20type%20specification%20group%20is%20part%20of%20the%20unique%20identification%20of%20the%20type.','%20',' ')||' Values: Y(Yes), N(No);');
-	DBMS_OUTPUT.PUT_LINE ('				+META_TYPE:TYPE_SPECIALISATION|;');
+	DBMS_OUTPUT.PUT_LINE ('				=ASSOCIATION:ATTRIBUTE|IsLocatedAfter|ATTRIBUTE|'||REPLACE('Defines%20the%20location%20of%20the%20classifying%20attribute%20within%20the%20type.','%20',' ')||';');
+	DBMS_OUTPUT.PUT_LINE ('				+META_TYPE:TYPE_SPECIALISATION|'||REPLACE('A%20classification%20of%20the%20type.','%20',' ')||';');
 	DBMS_OUTPUT.PUT_LINE ('					=PROPERTY:0|Code|;');
 	DBMS_OUTPUT.PUT_LINE ('					=PROPERTY:1|Name|;');
 	DBMS_OUTPUT.PUT_LINE ('					=ASSOCIATION:TYPE_SPECIALISATION|Specialise|TYPE_SPECIALISATION|;');
