@@ -1,8 +1,6 @@
-<?php
-session_start();
-$_SESSION['views']=0;
-?><html>
+<html>
 <head>
+<link rel="stylesheet" type="text/css" href="../style.css">
 <script language='javascript' type='text/javascript'>
 <!--
 var g_option;
@@ -14,58 +12,8 @@ g_xmlhttp.onreadystatechange = function() {
 	} 
 }
 
-function InitBody() {
-
-document.getElementById("InputModel").value = 
-'+BUSINESS_OBJECT_TYPE[BOT-40]:CUSTOMER|EXT|customer_files;\n' +
-'	+TYPE[TYP-21]:CUSTOMER|CUS|N;\n' +
-'		=ATTRIBUTE[ATB-04]:RELATION_NUMBER|Y;\n' +
-'		=ATTRIBUTE[ATB-01]:NAME|N;\n' +
-'	-TYPE:;\n' +
-'-BUSINESS_OBJECT_TYPE:;\n' +
-'+BUSINESS_OBJECT_TYPE[BOT-24]:ORDER|INT|order_directory;\n' +
-'	+TYPE[TYP-20]:ORDER|ORD|N;\n' +
-'		=ATTRIBUTE[ATB-05]:NUMBER|N;\n' +
-'		=ATTRIBUTE[ATB-06]:DELIVERY_DATE|N;\n' +
-'		=ATTRIBUTE[ATB-03]:DESCRIPTION|N;\n' +
-'		+REFERENCE[REF-00]:IS_PLACED_BY|N;\n' +
-'			>REFERENCE_TYPE:TYP-21;\n' +
-'		-REFERENCE:;\n' +
-'		+TYPE[TYP-22]:ORDER_LINE|ORL|Y;\n' +
-'			=ATTRIBUTE[ATB-20]:NUMBER|Y;\n' +
-'			=ATTRIBUTE[ATB-21]:DESCRIPTION|N;\n' +
-'			+REFERENCE[REF-01]:CONCERNS|Y;\n' +
-'				>REFERENCE_TYPE:TYP-00;\n' +
-'			-REFERENCE:;\n' +
-'		-TYPE:;\n' +
-'	-TYPE:;\n' +
-'-BUSINESS_OBJECT_TYPE:;\n' +
-'+BUSINESS_OBJECT_TYPE[BOT-25]:PRODUCT|INT|product_definitions;\n' +
-'	+TYPE[TYP-00]:PRODUCT|PRD|Y;\n' +
-'		=ATTRIBUTE[ATB-07]:CODE|Y;\n' +
-'		+TYPE[TYP-04]:PRODUCT_PART_APPLICATION|PPA|Y;\n' +
-'			=ATTRIBUTE[ATB-08]:CODE|Y;\n' +
-'			=ATTRIBUTE[ATB-10]:COUNT|N;\n' +
-'		-TYPE:;\n' +
-'		+TYPE[TYP-02]:PRODUCTION_PROCES|PPR|N;\n' +
-'			=ATTRIBUTE[ATB-12]:PROCES_ID|Y;\n' +
-'			+TYPE[TYP-03]:PRODUCTION_PROCES_STEP|PPS|N;\n' +
-'				=ATTRIBUTE[ATB-13]:PROCES_STEP_ID|Y;\n' +
-'				=ATTRIBUTE[ATB-14]:DESCRIPTION|N;\n' +
-'			-TYPE:;\n' +
-'		-TYPE:;\n' +
-'	-TYPE:;\n' +
-'-BUSINESS_OBJECT_TYPE:;';
-
-document.getElementById("InputTemplate").value = 
-'[[LOOP,BUSINESS_OBJECT_TYPE]]Structure of <<BUSINESS_OBJECT_TYPE:C>>:[[SEQUENCE]][[LOOP,ATTRIBUTE]]\n' +
-'-	Attribute: <<ATTRIBUTE:C>>[[ENDLOOP,ATTRIBUTE]][[LOOP,TYPE]]\n' +
-'-	Type: <<TYPE:C>>[[REPEAT:TAB]][[ENDLOOP,TYPE]][[ENDSEQUENCE]]\n' +
-'[[ENDLOOP,BUSINESS_OBJECT_TYPE]]';
-}
-
 function performTrans() {
-	var l_message = document.getElementById("InputModel").value+'<|||>'+document.getElementById("InputTemplate").value;
+	var l_message = document.getElementById("InputModel").value+'<|||>'+document.getElementById("InputTemplate").innerText;
 	g_xmlhttp.open('POST','cubegen.php',true);
 	g_xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 	g_xmlhttp.send(l_message);
@@ -73,10 +21,52 @@ function performTrans() {
 
 -->
 </script>
-</head><body onload="InitBody()">
-<textarea id="InputModel" type="text" maxlength="9999" rows="20" style="white-space:normal;width:100%;"></textarea></div></td></tr>
-<textarea id="InputTemplate" type="text" maxlength="9999" rows="6" style="white-space:normal;width:100%;"></textarea></div></td></tr>
+</head><body><div style="position:fixed;top:8px;left:8px;right:8px;bottom:8px;">
+<textarea id="InputModel" type="text" wrap="off" rows="20" style="width:100%;" class="model code">+BUSINESS_OBJECT_TYPE[BOT-40]:CUSTOMER|EXT|customer_files;
+	+TYPE[TYP-21]:CUSTOMER|CUS|N;
+		=ATTRIBUTE[ATB-04]:RELATION_NUMBER|Y;
+		=ATTRIBUTE[ATB-01]:NAME|N;
+	-TYPE:;
+-BUSINESS_OBJECT_TYPE:;
++BUSINESS_OBJECT_TYPE[BOT-24]:ORDER|INT|order_directory;
+	+TYPE[TYP-20]:ORDER|ORD|N;
+		=ATTRIBUTE[ATB-05]:NUMBER|N;
+		=ATTRIBUTE[ATB-06]:DELIVERY_DATE|N;
+		=ATTRIBUTE[ATB-03]:DESCRIPTION|N;
+		+REFERENCE[REF-00]:IS_PLACED_BY|N;
+			>REFERENCE_TYPE:TYP-21;
+		-REFERENCE:;
+		+TYPE[TYP-22]:ORDER_LINE|ORL|Y;
+			=ATTRIBUTE[ATB-20]:NUMBER|Y;
+			=ATTRIBUTE[ATB-21]:DESCRIPTION|N;
+			+REFERENCE[REF-01]:CONCERNS|Y;
+				>REFERENCE_TYPE:TYP-00;
+			-REFERENCE:;
+		-TYPE:;
+	-TYPE:;
+-BUSINESS_OBJECT_TYPE:;
++BUSINESS_OBJECT_TYPE[BOT-25]:PRODUCT|INT|product_definitions;
+	+TYPE[TYP-00]:PRODUCT|PRD|Y;
+		=ATTRIBUTE[ATB-07]:CODE|Y;
+		+TYPE[TYP-04]:PRODUCT_PART_APPLICATION|PPA|Y;
+			=ATTRIBUTE[ATB-08]:CODE|Y;
+			=ATTRIBUTE[ATB-10]:COUNT|N;
+		-TYPE:;
+		+TYPE[TYP-02]:PRODUCTION_PROCES|PPR|N;
+			=ATTRIBUTE[ATB-12]:PROCES_ID|Y;
+			+TYPE[TYP-03]:PRODUCTION_PROCES_STEP|PPS|N;
+				=ATTRIBUTE[ATB-13]:PROCES_STEP_ID|Y;
+				=ATTRIBUTE[ATB-14]:DESCRIPTION|N;
+			-TYPE:;
+		-TYPE:;
+	-TYPE:;
+-BUSINESS_OBJECT_TYPE:;</textarea>
+<div><span id="InputTemplate" contenteditable="true" style="white-space:pre;display:block;" class="template code">[[LOOP,BUSINESS_OBJECT_TYPE]]Structure of &lt;&lt;BUSINESS_OBJECT_TYPE:C&gt;&gt;:[[SEQUENCE]][[LOOP,ATTRIBUTE]]<br>-	Attribute: &lt;&lt;ATTRIBUTE:C&gt;&gt;[[ENDLOOP,ATTRIBUTE]][[LOOP,TYPE]]<br>-	Type: &lt;&lt;TYPE:C&gt;&gt;[[REPEAT:TAB]][[ENDLOOP,TYPE]][[ENDSEQUENCE]]<br>[[ENDLOOP,BUSINESS_OBJECT_TYPE]]</span></div>
+<textarea type="text" wrap="off" style="height:auto;width:100%;" class="template code">[[LOOP,BUSINESS_OBJECT_TYPE]]Structure of <<BUSINESS_OBJECT_TYPE:C>>:[[SEQUENCE]][[LOOP,ATTRIBUTE]]
+-	Attribute: <<ATTRIBUTE:C>>[[ENDLOOP,ATTRIBUTE]][[LOOP,TYPE]]
+-	Type: <<TYPE:C>>[[REPEAT:TAB]][[ENDLOOP,TYPE]][[ENDSEQUENCE]]
+[[ENDLOOP,BUSINESS_OBJECT_TYPE]]</textarea>
 <button id="ButtonTest" type="button" onclick="performTrans()">Test</button>
-<textarea id="OutputCode" type="text" maxlength="9999" rows="20" style="white-space:normal;width:100%;"></textarea></div></td></tr>
-</body>
+<textarea id="OutputCode" readonly type="text" wrap="off" rows="20" style="width:100%;" class="result code">Dit is een test
+Dit is een test</textarea></div></body>
 </html>
