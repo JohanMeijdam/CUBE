@@ -15,10 +15,9 @@ g_xmlhttp = new XMLHttpRequest();
 g_xmlhttp.onreadystatechange = function() {
 	if (g_xmlhttp.readyState == 4) {
 		var g_code = g_xmlhttp.responseText;
-		document.getElementById(g_id_code).innerHTML = g_code;
+		document.getElementById(g_id_code).innerText = g_code;
 	} 
 }
-
 function performTrans(p_id_model, p_id_template, p_id_code) {
 	var l_message = document.getElementById(p_id_model).innerText+'<|||>'+document.getElementById(p_id_template).innerText;
 	g_id_code = p_id_code;
@@ -26,12 +25,6 @@ function performTrans(p_id_model, p_id_template, p_id_code) {
 	g_xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 	g_xmlhttp.send(l_message);
 }
-
-function showHTML(p_id_code) {
-	var l_text = document.getElementById(p_id_code).innerHTML;
-	document.getElementById(p_id_code).innerText = l_text;
-}
-
 -->
 </script>
 </head>
@@ -58,31 +51,31 @@ CUBEGEN MANUAL</div>
 <div align="center"><img src="../images/cubegen_logo_doc.png"/></div>
 <pre>
 <div id="INTRO" class="header1">Introduction</div><!
-><div><<CUBE_GEN_DOCUMENTATION1:HE>></div><![[LOOP,CUBE_GEN_PARAGRAPH]]
+><div><<CUBE_GEN_DOCUMENTATION1:H>></div><![[LOOP,CUBE_GEN_PARAGRAPH]]
 ><div id="<<CUBE_GEN_PARAGRAPH:I>>" class="header2"><<CUBE_GEN_PARAGRAPH1>></div><!
-><div><<CUBE_GEN_PARAGRAPH2:HE>></div><![[IF:!3=#]]
+><div><<CUBE_GEN_PARAGRAPH2:H>></div><![[IF:!3=#]]
 ><div><span style="display:block;" class="code"><<CUBE_GEN_PARAGRAPH3:H>></span></div><![[ENDIF]][[ENDLOOP,CUBE_GEN_PARAGRAPH]][[LOOP,CUBE_GEN_EXAMPLE_MODEL]]
 ><div id="<<CUBE_GEN_EXAMPLE_MODEL:I>>" class="header1"><<CUBE_GEN_EXAMPLE_MODEL1>></div><!
-><div><<CUBE_GEN_EXAMPLE_MODEL3:HE>></div><!
+><div><<CUBE_GEN_EXAMPLE_MODEL3:H>></div><!
 ><div id="<<CUBE_GEN_EXAMPLE_MODEL:I>>M" class="header3">Cube Model</div><!
-><div><span id="M_<<CUBE_GEN_EXAMPLE_MODEL:U>>" contenteditable="true" style="display:block;" class="model code">[[LOOP,CUBE_MODEL]][[LOOP,*]][[IF:CHILD(*)]][[IF:!(TAG(BUSINESS_OBJECT_TYPE)[AND]FIRST)]]
+><div><span id="M_<<CUBE_GEN_EXAMPLE_MODEL:U>>" contenteditable="true" style="display:block;" class="model code">[[LOOP_HTML,CUBE_MODEL]][[LOOP,*]][[IF:CHILD(*)]][[IF:!(TAG(BUSINESS_OBJECT_TYPE)[AND]FIRST)]]
 [[ENDIF]]+<<*TAG>>[[IF:EVAL:'<<*:I>>'ne'']][<<*:I>>][[ENDIF]]:[[VALUE,*:0>N:|]];[[REPEAT:TAB]][[LOOP,>*]]
-	&gt;<<*TAG>>:<<*:I>>;[[ENDLOOP,>*]]
+	><<*TAG>>:<<*:I>>;[[ENDLOOP,>*]]
 -<<*TAG>>:;[[ELSE]][[IF:!(TAG(BUSINESS_OBJECT_TYPE)[AND]FIRST)]]
 [[ENDIF]]=<<*TAG>>[[IF:EVAL:'<<*:I>>'ne'']][<<*:I>>][[ENDIF]]:[[VALUE,*:0>N:|]];[[ENDIF]][[ENDLOOP,*]][[ENDLOOP,CUBE_MODEL]]</span></div><![[LOOP,CUBE_GEN_FUNCTION]]
 ><div id="<<CUBE_GEN_FUNCTION:I>>" class="header2"><<CUBE_GEN_FUNCTION1>></div><!
-><div><<CUBE_GEN_FUNCTION2:HE>></div><!
+><div><<CUBE_GEN_FUNCTION2:H>></div><!
 ><div id="<<CUBE_GEN_FUNCTION:I>>T" class="header3">Template</div><!
 ><div><span id="T_<<CUBE_GEN_EXAMPLE_MODEL:U>>_<<CUBE_GEN_FUNCTION:U>>" contenteditable="true" style="display:block;" class="template code"><<CUBE_GEN_FUNCTION3:H>></span></div><!
-><div id="<<CUBE_GEN_FUNCTION:I>>C" class="header3">Code<button type="button" style="position:absolute;right:80px;" onclick="performTrans('M_<<CUBE_GEN_EXAMPLE_MODEL:U>>','T_<<CUBE_GEN_EXAMPLE_MODEL:U>>_<<CUBE_GEN_FUNCTION:U>>','R_<<CUBE_GEN_EXAMPLE_MODEL:U>>_<<CUBE_GEN_FUNCTION:U>>')">CubeGen</button><button type="button" style="position:absolute;right:10px;" onclick="showHTML('R_<<CUBE_GEN_EXAMPLE_MODEL:U>>_<<CUBE_GEN_FUNCTION:U>>')">HTML</button></div><!
-><div><span id="R_<<CUBE_GEN_EXAMPLE_MODEL:U>>_<<CUBE_GEN_FUNCTION:U>>" style="display:block;" class="result code">[[FOR,CUBE_GEN_EXAMPLE_MODEL:N>N]][[LOOP,CUBE_MODEL]][[TEMPLATE:CUBE_GEN_FUNCTION3]][[ENDLOOP,CUBE_MODEL]][[ENDFOR]]</span></div><![[ENDLOOP,CUBE_GEN_FUNCTION]][[ENDLOOP,CUBE_GEN_EXAMPLE_MODEL]]
+><div id="<<CUBE_GEN_FUNCTION:I>>C" class="header3">Code<button type="button" style="position:absolute;right:10px;" onclick="performTrans('M_<<CUBE_GEN_EXAMPLE_MODEL:U>>','T_<<CUBE_GEN_EXAMPLE_MODEL:U>>_<<CUBE_GEN_FUNCTION:U>>','R_<<CUBE_GEN_EXAMPLE_MODEL:U>>_<<CUBE_GEN_FUNCTION:U>>')">CubeGen</button></div><!
+><div><span id="R_<<CUBE_GEN_EXAMPLE_MODEL:U>>_<<CUBE_GEN_FUNCTION:U>>" style="display:block;" class="result code">[[FOR,CUBE_GEN_EXAMPLE_MODEL:N>N]][[LOOP_HTML,CUBE_MODEL]][[TEMPLATE:CUBE_GEN_FUNCTION3]][[ENDLOOP,CUBE_MODEL]][[ENDFOR]]</span></div><![[ENDLOOP,CUBE_GEN_FUNCTION]][[ENDLOOP,CUBE_GEN_EXAMPLE_MODEL]]
 ><div id="FUNCTIONS" class="header1">Template Functions</a></div><![[LOOP,CUBE_GEN_TEMPLATE_FUNCTION:!1=Y]]
 ><div id="F_<<CUBE_GEN_TEMPLATE_FUNCTION:U>>-<<CUBE_GEN_TEMPLATE_FUNCTION1:U>>" class="header3"><<CUBE_GEN_TEMPLATE_FUNCTION>></a></div><!
-><div><<CUBE_GEN_TEMPLATE_FUNCTION2:HE>></div><!
+><div><<CUBE_GEN_TEMPLATE_FUNCTION2:H>></div><!
 ><div><span style="display:block;" class="template code"><<CUBE_GEN_TEMPLATE_FUNCTION3:H>></span></div><![[ENDLOOP,CUBE_GEN_TEMPLATE_FUNCTION]]
 ><div id="LOG_EXPR" class="header1">Logical Expressions</a></div><![[LOOP,CUBE_GEN_TEMPLATE_FUNCTION:1=Y]]
 ><div id="F_<<CUBE_GEN_TEMPLATE_FUNCTION:U>>-<<CUBE_GEN_TEMPLATE_FUNCTION1:U>>" class="header3"><<CUBE_GEN_TEMPLATE_FUNCTION>></a></div><!
-><div><<CUBE_GEN_TEMPLATE_FUNCTION2:HE>></div><!
+><div><<CUBE_GEN_TEMPLATE_FUNCTION2:H>></div><!
 ><div><span style="display:block;" class="template code"><<CUBE_GEN_TEMPLATE_FUNCTION3:H>></span></div><![[ENDLOOP,CUBE_GEN_TEMPLATE_FUNCTION]]
 ></pre>
 <div>
