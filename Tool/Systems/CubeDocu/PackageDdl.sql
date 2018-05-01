@@ -3937,11 +3937,13 @@ CREATE OR REPLACE PACKAGE pkg_cub IS
 	PROCEDURE insert_cub (
 			p_name IN VARCHAR2,
 			p_description IN VARCHAR2,
-			p_description_functions IN VARCHAR2);
+			p_description_functions IN VARCHAR2,
+			p_description_logical_expression IN VARCHAR2);
 	PROCEDURE update_cub (
 			p_name IN VARCHAR2,
 			p_description IN VARCHAR2,
-			p_description_functions IN VARCHAR2);
+			p_description_functions IN VARCHAR2,
+			p_description_logical_expression IN VARCHAR2);
 	PROCEDURE delete_cub (
 			p_name IN VARCHAR2);
 	PROCEDURE get_cgp (
@@ -4102,7 +4104,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_cub IS
 		OPEN p_cube_row FOR
 			SELECT
 			  description,
-			  description_functions
+			  description_functions,
+			  description_logical_expression
 			FROM v_cube_gen_documentation
 			WHERE name = p_name;
 	END;
@@ -4154,18 +4157,21 @@ CREATE OR REPLACE PACKAGE BODY pkg_cub IS
 	PROCEDURE insert_cub (
 			p_name IN VARCHAR2,
 			p_description IN VARCHAR2,
-			p_description_functions IN VARCHAR2) IS
+			p_description_functions IN VARCHAR2,
+			p_description_logical_expression IN VARCHAR2) IS
 	BEGIN
 		INSERT INTO v_cube_gen_documentation (
 			cube_id,
 			name,
 			description,
-			description_functions)
+			description_functions,
+			description_logical_expression)
 		VALUES (
 			NULL,
 			p_name,
 			p_description,
-			p_description_functions);
+			p_description_functions,
+			p_description_logical_expression);
 	EXCEPTION
 		WHEN DUP_VAL_ON_INDEX THEN
 			RAISE_APPLICATION_ERROR (-20001, 'Type cube_gen_documentation already exists');
@@ -4174,11 +4180,13 @@ CREATE OR REPLACE PACKAGE BODY pkg_cub IS
 	PROCEDURE update_cub (
 			p_name IN VARCHAR2,
 			p_description IN VARCHAR2,
-			p_description_functions IN VARCHAR2) IS
+			p_description_functions IN VARCHAR2,
+			p_description_logical_expression IN VARCHAR2) IS
 	BEGIN
 		UPDATE v_cube_gen_documentation SET
 			description = p_description,
-			description_functions = p_description_functions
+			description_functions = p_description_functions,
+			description_logical_expression = p_description_logical_expression
 		WHERE name = p_name;
 	END;
 

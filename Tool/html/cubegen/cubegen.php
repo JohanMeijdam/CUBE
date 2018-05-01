@@ -15,13 +15,16 @@ fwrite ($handleTempl,$import[1]);
 fclose($handleModel);
 fclose($handleTempl);
 
-exec ('perl CubeGen.pl '.$tmpModel.' '.$tmpTempl.' '.$tmpCode);
-$handleCode = fopen($tmpCode, "r");
-$code = fread($handleCode, filesize($tmpCode));
+if (strpos($import[1], '[[EVAL') !== false || strpos($import[1], '[[DECL') !== false || strpos($import[1], ':EVAL') !== false || strpos($import[1], '[[FILE') !== false) {
+    echo 'For security reasons the eval and file functions are not allowed here!!!';
+} else { 
+	exec ('perl CubeGen.pl '.$tmpModel.' '.$tmpTempl.' '.$tmpCode);
+	$handleCode = fopen($tmpCode, "r");
+	$code = fread($handleCode, filesize($tmpCode));
 
-echo $code;
-fclose($handleCode);
-
+	echo $code;
+	fclose($handleCode);
+}
 unlink($tmpModel);
 unlink($tmpTempl);
 unlink($tmpCode);

@@ -7622,6 +7622,9 @@
 			+GET:;
 				=EXPRESSION:REF_NAME|description_functions;
 			-GET:;
+			+GET:;
+				=EXPRESSION:REF_NAME|description_logical_expression;
+			-GET:;
 			+SELECTION:;
 				+EXPRESSION:LOGICAL|AND;
 					+EXPRESSION:CONDITION|=;
@@ -7727,6 +7730,7 @@
 		=ARGUMENT:p_name|IN|VARCHAR2;
 		=ARGUMENT:p_description|IN|VARCHAR2;
 		=ARGUMENT:p_description_functions|IN|VARCHAR2;
+		=ARGUMENT:p_description_logical_expression|IN|VARCHAR2;
 		+STATEMENT:CREATE|v_cube_gen_documentation;
 			+SET:cube_id;
 				=EXPRESSION:NULL;
@@ -7739,6 +7743,9 @@
 			-SET:;
 			+SET:description_functions;
 				=EXPRESSION:REF_NAME|p_description_functions;
+			-SET:;
+			+SET:description_logical_expression;
+				=EXPRESSION:REF_NAME|p_description_logical_expression;
 			-SET:;
 		-STATEMENT:;
 		+EXCEPTION:DUP_VAL_ON_INDEX;
@@ -7754,12 +7761,16 @@
 		=ARGUMENT:p_name|IN|VARCHAR2;
 		=ARGUMENT:p_description|IN|VARCHAR2;
 		=ARGUMENT:p_description_functions|IN|VARCHAR2;
+		=ARGUMENT:p_description_logical_expression|IN|VARCHAR2;
 		+STATEMENT:UPDATE|v_cube_gen_documentation;
 			+SET:description;
 				=EXPRESSION:REF_NAME|p_description;
 			-SET:;
 			+SET:description_functions;
 				=EXPRESSION:REF_NAME|p_description_functions;
+			-SET:;
+			+SET:description_logical_expression;
+				=EXPRESSION:REF_NAME|p_description_logical_expression;
 			-SET:;
 			+SELECTION:;
 				+EXPRESSION:LOGICAL|AND;

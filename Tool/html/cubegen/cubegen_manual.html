@@ -43,6 +43,10 @@ INDEX</div>
 <div><a href="#CGF-000000100143" class="indent2">Parent Processing</a></div>
 <div><a href="#CGF-000000100200" class="indent2">Inversion Processing</a></div>
 <div><a href="#CGM-000000100120" class="indent1">Logical Expressions</a></div>
+<div><a href="#CGF-000000100243" class="indent2">Logical Operators</a></div>
+<div><a href="#CGF-000000100244" class="indent2">Tags</a></div>
+<div><a href="#CGF-000000100240" class="indent2">First and Last</a></div>
+<div><a href="#CGF-000000100241" class="indent2">Parent and Child</a></div>
 <div><a href="#CGM-000000100080" class="indent1">Hierarchy Navigation</a></div>
 <div><a href="#CGF-000000100101" class="indent2">Vertical navigation</a></div>
 <div><a href="#CGF-000000100100" class="indent2">Horizontal Navigation</a></div>
@@ -52,6 +56,8 @@ INDEX</div>
 <div><a href="#CGF-000000100163" class="indent2">Property Replacements</a></div>
 <div><a href="#CGF-000000100164" class="indent2">Character Escaping</a></div>
 <div><a href="#CGF-000000100220" class="indent2">HTML / Percent Encoding</a></div>
+<div><a href="#CGM-000000100140" class="indent1">Reusable Text</a></div>
+<div><a href="#CGF-000000100245" class="indent2">Text Blocks / Text Labels</a></div>
 <div><a href="#CGM-000000100103" class="indent1">External Functions</a></div>
 <div><a href="#CGF-000000100160" class="indent2">Perl Expressions</a></div>
 <div><a href="#CGM-000000100104" class="indent1">Sequential Processing</a></div>
@@ -60,24 +66,40 @@ INDEX</div>
 <div><a href="#CGF-000000100081" class="indent2">Wildcard</a></div>
 <div><a href="#CGF-000000100082" class="indent2">Enhance Model</a></div>
 <div><a href="#FUNCTIONS" class="indent1">Template Functions</a></div>
+<div><a href="#F_BODY-N" class="indent2">BODY</a></div>
 <div><a href="#F_DECL-N" class="indent2">DECL</a></div>
 <div><a href="#F_EVAL-N" class="indent2">EVAL</a></div>
+<div><a href="#F_FILE-N" class="indent2">FILE</a></div>
 <div><a href="#F_FOR-N" class="indent2">FOR</a></div>
 <div><a href="#F_FORH-N" class="indent2">FORH</a></div>
 <div><a href="#F_FORV-N" class="indent2">FORV</a></div>
 <div><a href="#F_IF-N" class="indent2">IF</a></div>
+<div><a href="#F_INCLUDE-N" class="indent2">INCLUDE</a></div>
 <div><a href="#F_LOOP-N" class="indent2">LOOP</a></div>
 <div><a href="#F_REPEAT-N" class="indent2">REPEAT</a></div>
 <div><a href="#F_SEQUENCE-N" class="indent2">SEQUENCE</a></div>
 <div><a href="#F_TEMPLATE-N" class="indent2">TEMPLATE</a></div>
+<div><a href="#F_TEXT-N" class="indent2">TEXT</a></div>
 <div><a href="#F_VALUE-N" class="indent2">VALUE</a></div>
 <div><a href="#F_COMMENT-N" class="indent2">comment</a></div>
 <div><a href="#F_PARAMETERS-N" class="indent2">parameters</a></div>
 <div><a href="#F_REPLACEMENT-N" class="indent2">replacement</a></div>
-<div><a href="#LOG_EXPR" class="indent1">Logical Expressions</a></div>
+<div><a href="#LOG_EXPR" class="indent1">Logical Functions</a></div>
+<div><a href="#F_AND-Y" class="indent2">AND</a></div>
+<div><a href="#F_CHILD-Y" class="indent2">CHILD</a></div>
 <div><a href="#F_EVAL-Y" class="indent2">EVAL</a></div>
+<div><a href="#F_FIRST-Y" class="indent2">FIRST</a></div>
+<div><a href="#F_ID-Y" class="indent2">ID</a></div>
+<div><a href="#F_LAST-Y" class="indent2">LAST</a></div>
+<div><a href="#F_LEVEL-Y" class="indent2">LEVEL</a></div>
+<div><a href="#F_NOT-Y" class="indent2">NOT</a></div>
+<div><a href="#F_OR-Y" class="indent2">OR</a></div>
+<div><a href="#F_PARENT-Y" class="indent2">PARENT</a></div>
+<div><a href="#F_ROOT-Y" class="indent2">ROOT</a></div>
 <div><a href="#F_TAG-Y" class="indent2">TAG</a></div>
-<div><a href="#F_PARAMETERS-Y" class="indent2">parameters</a></div>
+<div><a href="#F_PARAMETER=-Y" class="indent2">parameter=</a></div>
+<div><a href="#F_PARENTHESES-Y" class="indent2">parentheses</a></div>
+<div><a href="#F_PROPERTY=-Y" class="indent2">property=</a></div>
 <br>
 </div><a href="../index.html"><div align="center" class="header0" style="overflow:hidden;position:absolute;top:76px;left:240px;right:0;width:60px;height:30px;">
 HOME</div></a>
@@ -108,7 +130,7 @@ CUBEGEN MANUAL</div>
 ><div id="CGF-000000100024C" class="header3">Code<button type="button" style="position:absolute;right:10px;" onclick="performTrans('M_CASE1','T_CASE1_LOOP1','R_CASE1_LOOP1')">CubeGen</button></div><!
 ><div><span id="R_CASE1_LOOP1" style="display:block;" class="result code">This is a list of the Busines Object Types:<br>-	CUSTOMER<br>-	ORDER<br>-	PRODUCT</span></div><!
 ><div id="CGF-000000100060" class="header2">Selection</div><!
-><div>The IF, ELSIF, ELSE structure makes a choice between texts based on conditions.</div><!
+><div>The IF, ELSIF, ELSE structure makes a choice between texts based on conditions (logical_expressions).</div><!
 ><div id="CGF-000000100060T" class="header3">Template</div><!
 ><div><span id="T_CASE1_SELECT1" contenteditable="true" style="display:block;" class="template code">Explain selection:&#91;&#91;LOOP,BUSINESS_OBJECT_TYPE&#93;&#93;&#91;&#91;IF:0=CUSTOMER&#93;&#93;<br>&lt;&lt;BUSINESS_OBJECT_TYPE&gt;&gt; concerns customers.&#91;&#91;ELSIF:0=ORDER&#93;&#93;<br>&lt;&lt;BUSINESS_OBJECT_TYPE&gt;&gt; concerns no customers but orders.&#91;&#91;ELSE&#93;&#93;<br>&lt;&lt;BUSINESS_OBJECT_TYPE&gt;&gt; concerns something else.&#91;&#91;ENDIF&#93;&#93;&#91;&#91;ENDLOOP,BUSINESS_OBJECT_TYPE&#93;&#93;</span></div><!
 ><div id="CGF-000000100060C" class="header3">Code<button type="button" style="position:absolute;right:10px;" onclick="performTrans('M_CASE1','T_CASE1_SELECT1','R_CASE1_SELECT1')">CubeGen</button></div><!
@@ -152,9 +174,33 @@ CUBEGEN MANUAL</div>
 ><div id="CGF-000000100200C" class="header3">Code<button type="button" style="position:absolute;right:10px;" onclick="performTrans('M_CASE10','T_CASE10_LOOPINV1','R_CASE10_LOOPINV1')">CubeGen</button></div><!
 ><div><span id="R_CASE10_LOOPINV1" style="display:block;" class="result code">List of referenced types:<br>Customer is referenced by Order with reference IsPlacedBy<br>Product is referenced by OrderLine with reference Concerns</span></div><!
 ><div id="CGM-000000100120" class="header1">Logical Expressions</div><!
-><div></div><!
+><div>Logical expressions are used in the LOOP, IF, CHILD and PARENT functions. A logical expression consists of one logical function or one or more logical operators that combine logical functions.</div><!
 ><div id="CGM-000000100120M" class="header3">Cube Model</div><!
-><div><span id="M_CASE20" contenteditable="true" style="display:block;" class="model code">+BUSINESS_OBJECT_TYPE[CASE20-BOT-000000100040]:CUSTOMER|EXT|customer_files;<br>	=TYPE[CASE20-TYP-000000100021]:CUSTOMER|CUS|N;<br>-BUSINESS_OBJECT_TYPE:;<br>+BUSINESS_OBJECT_TYPE[CASE20-BOT-000000100024]:ORDER|INT|order_directory;<br>	+TYPE[CASE20-TYP-000000100020]:ORDER|ORD|N;<br>		=TYPE[CASE20-TYP-000000100022]:ORDER_LINE|ORL|Y;<br>	-TYPE:;<br>-BUSINESS_OBJECT_TYPE:;<br>+BUSINESS_OBJECT_TYPE[CASE20-BOT-000000100025]:PRODUCT|INT|product_definitions;<br>	+TYPE[CASE20-TYP-000000100000]:PRODUCT|PRD|Y;<br>		=TYPE[CASE20-TYP-000000100004]:PRODUCT_PART_APPLICATION|PPA|Y;<br>		+TYPE[CASE20-TYP-000000100002]:PRODUCTION_PROCES|PPR|N;<br>			=TYPE[CASE20-TYP-000000100003]:PRODUCTION_PROCES_STEP|PPS|N;<br>		-TYPE:;<br>	-TYPE:;<br>-BUSINESS_OBJECT_TYPE:;<br>+BUSINESS_OBJECT_TYPE[CASE20-BOT-000000100100]:FACTORY|INT|production_locations;<br>	+TYPE[CASE20-TYP-000000100100]:FACTORY|FCT|N;<br>		=TYPE[CASE20-TYP-000000100101]:FACTORY_HALL|FCH|N;<br>	-TYPE:;<br>-BUSINESS_OBJECT_TYPE:;</span></div><!
+><div><span id="M_CASE20" contenteditable="true" style="display:block;" class="model code">+BUSINESS_OBJECT_TYPE[CASE20-BOT-000000100040]:CUSTOMER|EXT|customer_files;<br>	+TYPE[CASE20-TYP-000000100021]:CUSTOMER|CUS|N;<br>	-TYPE:;<br>-BUSINESS_OBJECT_TYPE:;<br>+BUSINESS_OBJECT_TYPE[CASE20-BOT-000000100024]:ORDER|INT|order_directory;<br>	+TYPE[CASE20-TYP-000000100020]:ORDER|ORD|N;<br>		+REFERENCE[CASE20-REF-000000100000]:IS_PLACED_BY|N;<br>			&gt;REFERENCE_TYPE:CASE20-TYP-000000100021;<br>		-REFERENCE:;<br>		+TYPE[CASE20-TYP-000000100022]:ORDER_LINE|ORL|Y;<br>			+REFERENCE[CASE20-REF-000000100001]:CONCERNS|Y;<br>				&gt;REFERENCE_TYPE:CASE20-TYP-000000100000;<br>			-REFERENCE:;<br>		-TYPE:;<br>	-TYPE:;<br>-BUSINESS_OBJECT_TYPE:;<br>+BUSINESS_OBJECT_TYPE[CASE20-BOT-000000100025]:PRODUCT|INT|product_definitions;<br>	+TYPE[CASE20-TYP-000000100000]:PRODUCT|PRD|Y;<br>		=TYPE[CASE20-TYP-000000100004]:PRODUCT_PART_APPLICATION|PPA|Y;<br>		+TYPE[CASE20-TYP-000000100002]:PRODUCTION_PROCES|PPR|N;<br>			=TYPE[CASE20-TYP-000000100003]:PRODUCTION_PROCES_STEP|PPS|N;<br>		-TYPE:;<br>	-TYPE:;<br>-BUSINESS_OBJECT_TYPE:;<br>+BUSINESS_OBJECT_TYPE[CASE20-BOT-000000100100]:FACTORY|INT|production_locations;<br>	+TYPE[CASE20-TYP-000000100100]:FACTORY|FCT|N;<br>		=TYPE[CASE20-TYP-000000100101]:FACTORY_HALL|FCH|N;<br>	-TYPE:;<br>-BUSINESS_OBJECT_TYPE:;</span></div><!
+><div id="CGF-000000100243" class="header2">Logical Operators</div><!
+><div>The logical operators are acting on the results of logical expressions. The precedence order of execution is first the NOT, then the AND, and finally the OR.  </div><!
+><div id="CGF-000000100243T" class="header3">Template</div><!
+><div><span id="T_CASE20_LOGIC0" contenteditable="true" style="display:block;" class="template code">Show the precedence of the logical operators:&#91;&#91;LOOP,BUSINESS_OBJECT_TYPE:1=EXT&#93;&#93;<br> True OR False  AND False = &#91;&#91;IF:1=EXT&#91;OR&#93;1=INT&#91;AND&#93;1=INT&#93;&#93;True&#91;&#91;ELSE&#93;&#93;False&#91;&#91;ENDIF&#93;&#93;<br>(True OR False) AND False = &#91;&#91;IF:(1=EXT&#91;OR&#93;1=INT)&#91;AND&#93;1=INT&#93;&#93;True&#91;&#91;ELSE&#93;&#93;False&#91;&#91;ENDIF&#93;&#93;<br> False OR NOT True AND False  = &#91;&#91;IF:1=INT&#91;OR&#93;!1=EXT&#91;AND&#93;1=INT&#93;&#93;True&#91;&#91;ELSE&#93;&#93;False&#91;&#91;ENDIF&#93;&#93;<br> False OR NOT(True AND False) = &#91;&#91;IF:1=INT&#91;OR&#93;!(1=EXT&#91;AND&#93;1=INT)&#93;&#93;True&#91;&#91;ELSE&#93;&#93;False&#91;&#91;ENDIF&#93;&#93;&#91;&#91;ENDLOOP,BUSINESS_OBJECT_TYPE&#93;&#93;</span></div><!
+><div id="CGF-000000100243C" class="header3">Code<button type="button" style="position:absolute;right:10px;" onclick="performTrans('M_CASE20','T_CASE20_LOGIC0','R_CASE20_LOGIC0')">CubeGen</button></div><!
+><div><span id="R_CASE20_LOGIC0" style="display:block;" class="result code">Show the precedence of the logical operators:<br> True OR False  AND False = True<br>(True OR False) AND False = False<br> False OR NOT True AND False  = False<br> False OR NOT(True AND False) = True</span></div><!
+><div id="CGF-000000100244" class="header2">Tags</div><!
+><div></div><!
+><div id="CGF-000000100244T" class="header3">Template</div><!
+><div><span id="T_CASE20_LOGIC3" contenteditable="true" style="display:block;" class="template code">&#91;&#91;LOOP,BUSINESS_OBJECT_TYPE&#93;&#93;&#91;&#91;LOOP,TYPE&#93;&#93;&#91;&#91;IF:BUSINESS_OBJECT_TYPE.1=INT&#91;AND&#93;TYPE(1).2=Y&#93;&#93;<br>&lt;&lt;TYPE:C&gt;&gt;&#91;&#91;ENDIF&#93;&#93;&#91;&#91;IF,TYPE(1):BUSINESS_OBJECT_TYPE.1=INT&#91;AND&#93;2=Y&#93;&#93;<br>&lt;&lt;TYPE:C&gt;&gt;&#91;&#91;ENDIF&#93;&#93;&#91;&#91;REPEAT&#93;&#93;&#91;&#91;ENDLOOP,TYPE&#93;&#93;&#91;&#91;ENDLOOP,BUSINESS_OBJECT_TYPE&#93;&#93;</span></div><!
+><div id="CGF-000000100244C" class="header3">Code<button type="button" style="position:absolute;right:10px;" onclick="performTrans('M_CASE20','T_CASE20_LOGIC3','R_CASE20_LOGIC3')">CubeGen</button></div><!
+><div><span id="R_CASE20_LOGIC3" style="display:block;" class="result code"><br>Product<br>Product<br>ProductPartApplication<br>ProductPartApplication<br>ProductionProces<br>ProductionProces<br>ProductionProcesStep<br>ProductionProcesStep</span></div><!
+><div id="CGF-000000100240" class="header2">First and Last</div><!
+><div>The FIRST and LAST logical functions are referring to the first and last selected model element.</div><!
+><div id="CGF-000000100240T" class="header3">Template</div><!
+><div><span id="T_CASE20_LOGIC1" contenteditable="true" style="display:block;" class="template code">&#91;&#91;LOOP,BUSINESS_OBJECT_TYPE:1=INT&#93;&#93;&#91;&#91;IF:FIRST&#93;&#93;Internal Objects: &#91;&#91;ENDIF&#93;&#93;&lt;&lt;BUSINESS_OBJECT_TYPE:C&gt;&gt;&#91;&#91;IF:!LAST&#93;&#93;, &#91;&#91;ELSE&#93;&#93;;<br>&#91;&#91;ENDIF&#93;&#93;&#91;&#91;ENDLOOP,BUSINESS_OBJECT_TYPE&#93;&#93;&#91;&#91;LOOP,BUSINESS_OBJECT_TYPE:1=EXT&#93;&#93;&#91;&#91;IF:FIRST&#93;&#93;External Objects: &#91;&#91;ENDIF&#93;&#93;&lt;&lt;BUSINESS_OBJECT_TYPE:C&gt;&gt;&#91;&#91;IF:!LAST&#93;&#93;, &#91;&#91;ELSE&#93;&#93;;<br>&#91;&#91;ENDIF&#93;&#93;&#91;&#91;ENDLOOP,BUSINESS_OBJECT_TYPE&#93;&#93;&#91;&#91;LOOP,BUSINESS_OBJECT_TYPE:1=INV&#93;&#93;&#91;&#91;IF:FIRST&#93;&#93;Invalid Objects: &#91;&#91;ENDIF&#93;&#93;&lt;&lt;BUSINESS_OBJECT_TYPE:C&gt;&gt;&#91;&#91;IF:!LAST&#93;&#93;, &#91;&#91;ELSE&#93;&#93;;<br>&#91;&#91;ENDIF&#93;&#93;&#91;&#91;ENDLOOP,BUSINESS_OBJECT_TYPE&#93;&#93;</span></div><!
+><div id="CGF-000000100240C" class="header3">Code<button type="button" style="position:absolute;right:10px;" onclick="performTrans('M_CASE20','T_CASE20_LOGIC1','R_CASE20_LOGIC1')">CubeGen</button></div><!
+><div><span id="R_CASE20_LOGIC1" style="display:block;" class="result code">Internal Objects: Order, Product, Factory;<br>External Objects: Customer;<br></span></div><!
+><div id="CGF-000000100241" class="header2">Parent and Child</div><!
+><div>The PARENT and CHILD logical functions are referring to relative locations in the hierarchy.</div><!
+><div id="CGF-000000100241T" class="header3">Template</div><!
+><div><span id="T_CASE20_LOGIC2" contenteditable="true" style="display:block;" class="template code">Type list:&#91;&#91;LOOP,BUSINESS_OBJECT_TYPE&#93;&#93;&#91;&#91;LOOP,TYPE&#93;&#93;<br>&#91;&#91;IF:PARENT(BUSINESS_OBJECT_TYPE:1=EXT)&#93;&#93;External&#91;&#91;ELSE&#93;&#93;Internal&#91;&#91;ENDIF&#93;&#93; &lt;&lt;TYPE:C&gt;&gt;&#91;&#91;IF:CHILD(TYPE)&#93;&#93;<br>- has child&#91;&#91;ENDIF&#93;&#93;&#91;&#91;REPEAT&#93;&#93;&#91;&#91;ENDLOOP,TYPE&#93;&#93;&#91;&#91;ENDLOOP,BUSINESS_OBJECT_TYPE&#93;&#93;<br><br>List of internal objects with a child:&#91;&#91;LOOP,BUSINESS_OBJECT_TYPE&#93;&#93;&#91;&#91;LOOP,TYPE:PARENT(BUSINESS_OBJECT_TYPE:1=INT)&#91;AND&#93;CHILD(TYPE)&#93;&#93;<br>- &lt;&lt;TYPE:C&gt;&gt;&#91;&#91;REPEAT&#93;&#93;&#91;&#91;ENDLOOP,TYPE&#93;&#93;&#91;&#91;ENDLOOP,BUSINESS_OBJECT_TYPE&#93;&#93;</span></div><!
+><div id="CGF-000000100241C" class="header3">Code<button type="button" style="position:absolute;right:10px;" onclick="performTrans('M_CASE20','T_CASE20_LOGIC2','R_CASE20_LOGIC2')">CubeGen</button></div><!
+><div><span id="R_CASE20_LOGIC2" style="display:block;" class="result code">Type list:<br>External Customer<br>Internal Order<br>- has child<br>Internal OrderLine<br>Internal Product<br>- has child<br>Internal ProductPartApplication<br>Internal ProductionProces<br>- has child<br>Internal ProductionProcesStep<br>Internal Factory<br>- has child<br>Internal FactoryHall<br><br>List of internal objects with a child:<br>- Order<br>- Product<br>- ProductionProces<br>- Factory</span></div><!
 ><div id="CGM-000000100080" class="header1">Hierarchy Navigation</div><!
 ><div>Navigate through a hierarchy of model elements of one type selected in the active LOOP functions. For a better understanding of the examples, a coding is used for the tags of model elements.</div><!
 ><div id="CGM-000000100080M" class="header3">Cube Model</div><!
@@ -192,7 +238,7 @@ CUBEGEN MANUAL</div>
 ><div id="CGF-000000100163T" class="header3">Template</div><!
 ><div><span id="T_CASE40_REPL2" contenteditable="true" style="display:block;" class="template code">&#91;&#91;LOOP,BUSINESS_OBJECT_TYPE:!0=AAA&#93;&#93;Unique Number  : &lt;&lt;BUSINESS_OBJECT_TYPE:N&gt;&gt;<br>Sub Number     : &lt;&lt;BUSINESS_OBJECT_TYPE:S&gt;&gt; (serial number within parent model element)<br>Index          : &lt;&lt;BUSINESS_OBJECT_TYPE:IX&gt;&gt; (serial number within the LOOP selection)<br>Cube Identifier: &lt;&lt;BUSINESS_OBJECT_TYPE:I&gt;&gt;<br><br>&#91;&#91;ENDLOOP,BUSINESS_OBJECT_TYPE&#93;&#93;</span></div><!
 ><div id="CGF-000000100163C" class="header3">Code<button type="button" style="position:absolute;right:10px;" onclick="performTrans('M_CASE40','T_CASE40_REPL2','R_CASE40_REPL2')">CubeGen</button></div><!
-><div><span id="R_CASE40_REPL2" style="display:block;" class="result code">Unique Number  : 00083<br>Sub Number     : 002 (serial number within parent model element)<br>Index          : 1 (serial number within the LOOP selection)<br>Cube Identifier: CASE40-BOT-000000100040<br><br>Unique Number  : 00084<br>Sub Number     : 003 (serial number within parent model element)<br>Index          : 2 (serial number within the LOOP selection)<br>Cube Identifier: CASE40-BOT-000000100024<br><br>Unique Number  : 00085<br>Sub Number     : 004 (serial number within parent model element)<br>Index          : 3 (serial number within the LOOP selection)<br>Cube Identifier: CASE40-BOT-000000100025<br><br></span></div><!
+><div><span id="R_CASE40_REPL2" style="display:block;" class="result code">Unique Number  : 00091<br>Sub Number     : 002 (serial number within parent model element)<br>Index          : 1 (serial number within the LOOP selection)<br>Cube Identifier: CASE40-BOT-000000100040<br><br>Unique Number  : 00092<br>Sub Number     : 003 (serial number within parent model element)<br>Index          : 2 (serial number within the LOOP selection)<br>Cube Identifier: CASE40-BOT-000000100024<br><br>Unique Number  : 00093<br>Sub Number     : 004 (serial number within parent model element)<br>Index          : 3 (serial number within the LOOP selection)<br>Cube Identifier: CASE40-BOT-000000100025<br><br></span></div><!
 ><div id="CGF-000000100164" class="header2">Character Escaping</div><!
 ><div>Escape characters in the exported text of the model element properties by a function.</div><!
 ><div id="CGF-000000100164T" class="header3">Template</div><!
@@ -205,6 +251,16 @@ CUBEGEN MANUAL</div>
 ><div><span id="T_CASE40_LOOPRF1" contenteditable="true" style="display:block;" class="template code">The result of LOOP also presented In HTML and percentage escaping:<br>&#91;&#91;LOOP,BUSINESS_OBJECT_TYPE:!0=AAA&#93;&#93;&lt;&lt;&lt;BUSINESS_OBJECT_TYPE:C&gt;&gt;/&gt;<br>&#91;&#91;ENDLOOP,BUSINESS_OBJECT_TYPE&#93;&#93;<br>HTML: <br>&#91;&#91;LOOP_HTML,BUSINESS_OBJECT_TYPE:!0=AAA&#93;&#93;&lt;&lt;&lt;BUSINESS_OBJECT_TYPE:C&gt;&gt;/&gt;<br>&#91;&#91;ENDLOOP,BUSINESS_OBJECT_TYPE&#93;&#93;<br>PERC: <br>&#91;&#91;LOOP_PERC,BUSINESS_OBJECT_TYPE:!0=AAA&#93;&#93;&lt;&lt;&lt;BUSINESS_OBJECT_TYPE:C&gt;&gt;/&gt;<br>&#91;&#91;ENDLOOP,BUSINESS_OBJECT_TYPE&#93;&#93;<br></span></div><!
 ><div id="CGF-000000100220C" class="header3">Code<button type="button" style="position:absolute;right:10px;" onclick="performTrans('M_CASE40','T_CASE40_LOOPRF1','R_CASE40_LOOPRF1')">CubeGen</button></div><!
 ><div><span id="R_CASE40_LOOPRF1" style="display:block;" class="result code">The result of LOOP also presented In HTML and percentage escaping:<br>&lt;Customer/&gt;<br>&lt;Order/&gt;<br>&lt;Product/&gt;<br><br>HTML: <br>&amp;lt;Customer/&amp;gt;&lt;br&gt;&amp;lt;Order/&amp;gt;&lt;br&gt;&amp;lt;Product/&amp;gt;&lt;br&gt;<br>PERC: <br>%3CCustomer%2F%3E%0A%3COrder%2F%3E%0A%3CProduct%2F%3E%0A<br></span></div><!
+><div id="CGM-000000100140" class="header1">Reusable Text</div><!
+><div></div><!
+><div id="CGM-000000100140M" class="header3">Cube Model</div><!
+><div><span id="M_CASE45" contenteditable="true" style="display:block;" class="model code">=BUSINESS_OBJECT_TYPE[CASE45-BOT-000000100040]:CUSTOMER|EXT|customer_files;<br>=BUSINESS_OBJECT_TYPE[CASE45-BOT-000000100024]:ORDER|INT|order_directory;<br>=BUSINESS_OBJECT_TYPE[CASE45-BOT-000000100025]:PRODUCT|INT|product_definitions;<br>=BUSINESS_OBJECT_TYPE[CASE45-BOT-000000100100]:FACTORY|INT|production_locations;</span></div><!
+><div id="CGF-000000100245" class="header2">Text Blocks / Text Labels</div><!
+><div>Text blocks are defined for reuse of template segments. The text may contain labels that are replaced with arguments that are defined at the place where the text is applied. </div><!
+><div id="CGF-000000100245T" class="header3">Template</div><!
+><div><span id="T_CASE45_TEXT0" contenteditable="true" style="display:block;" class="template code">&#91;&#91;TEXT,OBJECT_LIST&#93;&#93;&#91;&#91;LOOP,BUSINESS_OBJECT_TYPE:1=&lt;&lt;T1&gt;&gt;&#93;&#93;&#91;&#91;IF:FIRST&#93;&#93;&lt;&lt;T2&gt;&gt; Objects: &#91;&#91;ENDIF&#93;&#93;&lt;&lt;BUSINESS_OBJECT_TYPE:C&gt;&gt;&#91;&#91;IF:!LAST&#93;&#93;, &#91;&#91;ELSE&#93;&#93;;<br>&#91;&#91;ENDIF&#93;&#93;&#91;&#91;ENDLOOP,BUSINESS_OBJECT_TYPE&#93;&#93;&#91;&#91;ENDTEXT&#93;&#93;<br>&#91;&#91;BODY&#93;&#93;&lt;&lt;TEXT,OBJECT_LIST&#91;|&#93;INT&#91;|&#93;Internal&#91;|&#93;&gt;&gt;&lt;&lt;TEXT,OBJECT_LIST&#91;|&#93;EXT&#91;|&#93;External&#91;|&#93;&gt;&gt;&lt;&lt;TEXT,OBJECT_LIST&#91;|&#93;INV&#91;|&#93;Invalid&#91;|&#93;&gt;&gt;&#91;&#91;ENDBODY&#93;&#93;</span></div><!
+><div id="CGF-000000100245C" class="header3">Code<button type="button" style="position:absolute;right:10px;" onclick="performTrans('M_CASE45','T_CASE45_TEXT0','R_CASE45_TEXT0')">CubeGen</button></div><!
+><div><span id="R_CASE45_TEXT0" style="display:block;" class="result code">Internal Objects: Order, Product, Factory;<br>External Objects: Customer;<br></span></div><!
 ><div id="CGM-000000100103" class="header1">External Functions</div><!
 ><div>Perl expressions can be used for special functionality that is not available as standard CubeGen functions.</div><!
 ><div id="CGM-000000100103M" class="header3">Cube Model</div><!
@@ -218,7 +274,7 @@ CUBEGEN MANUAL</div>
 ><div id="CGM-000000100104" class="header1">Sequential Processing</div><!
 ><div>Export the model elements in the order as they appaer in de Cube model.</div><!
 ><div id="CGM-000000100104M" class="header3">Cube Model</div><!
-><div><span id="M_CASE60" contenteditable="true" style="display:block;" class="model code">+BUSINESS_OBJECT_TYPE[CASE60-BOT-000000100024]:ORDER|INT|order_directory;<br>	+TYPE[CASE60-TYP-000000100020]:ORDER|ORD|N;<br>		=ATTRIBUTE[CASE60-ATB-000000100005]:NUMBER|N;<br>		=ATTRIBUTE[CASE60-ATB-000000100006]:DELIVERY_DATE|N;<br>		=ATTRIBUTE[CASE60-ATB-000000100003]:DESCRIPTION|N;<br>		+TYPE[CASE60-TYP-000000100022]:ORDER_LINE|ORL|Y;<br>			=ATTRIBUTE[CASE60-ATB-000000100020]:NUMBER|Y;<br>			=ATTRIBUTE[CASE60-ATB-000000100021]:DESCRIPTION|N;<br>			=ATTRIBUTE[CASE60-ATB-000099900127]:STATUS|N;<br>		-TYPE:;<br>		=ATTRIBUTE[CASE60-ATB-000099900121]:STATUS|N;<br>	-TYPE:;<br>-BUSINESS_OBJECT_TYPE:;</span></div><!
+><div><span id="M_CASE60" contenteditable="true" style="display:block;" class="model code">+BUSINESS_OBJECT_TYPE[CASE60-BOT-000000100024]:ORDER|INT|order_directory;<br>	+TYPE[CASE60-TYP-000000100020]:ORDER|ORD|N;<br>		=ATTRIBUTE[CASE60-ATB-000000100005]:NUMBER|N;<br>		=ATTRIBUTE[CASE60-ATB-000000100006]:DELIVERY_DATE|N;<br>		=ATTRIBUTE[CASE60-ATB-000000100003]:DESCRIPTION|N;<br>		+TYPE[CASE60-TYP-000000100022]:ORDER_LINE|ORL|Y;<br>			=ATTRIBUTE[CASE60-ATB-000000100020]:NUMBER|Y;<br>			=ATTRIBUTE[CASE60-ATB-000000100021]:DESCRIPTION|N;<br>			=ATTRIBUTE[CASE60-ATB-000099900128]:STATUS|N;<br>		-TYPE:;<br>		=ATTRIBUTE[CASE60-ATB-000099900122]:STATUS|N;<br>	-TYPE:;<br>-BUSINESS_OBJECT_TYPE:;</span></div><!
 ><div id="CGF-000000100162" class="header2">Sequential Iterations</div><!
 ><div>The model elements referenced by the LOOP functions nested in the SEQUENCE function are exported in the order as they appear in the Cube model.</div><!
 ><div id="CGF-000000100162T" class="header3">Template</div><!
@@ -232,22 +288,29 @@ CUBEGEN MANUAL</div>
 ><div id="CGF-000000100081" class="header2">Wildcard</div><!
 ><div>Instead of a tag, an &quot;*&quot; can be used to apply a template function for all model elements.<br>The VALUE function is used to copy a specified number of model element values.</div><!
 ><div id="CGF-000000100081T" class="header3">Template</div><!
-><div><span id="T_CASE90_WILDCARD" contenteditable="true" style="display:block;" class="template code">! Copied model&#91;&#91;LOOP,*&#93;&#93;<br>+&lt;&lt;*TAG&gt;&gt;&#91;&#91;IF:EVAL:&#39;&lt;&lt;*:I&gt;&gt;&#39;ne&#39;&#39;&#93;&#93;&#91;&lt;&lt;*:I&gt;&gt;&#93;&#91;&#91;ENDIF&#93;&#93;:&#91;&#91;VALUE,*:0&gt;N:|&#93;&#93;;&#91;&#91;REPEAT:TAB&#93;&#93;&#91;&#91;LOOP,&gt;*&#93;&#93;<br>	&gt;&lt;&lt;*TAG&gt;&gt;:&lt;&lt;*:I&gt;&gt;;&#91;&#91;ENDLOOP,&gt;*&#93;&#93;<br>-&lt;&lt;*TAG&gt;&gt;:;&#91;&#91;ENDLOOP,*&#93;&#93;</span></div><!
+><div><span id="T_CASE90_WILDCARD" contenteditable="true" style="display:block;" class="template code">! Copied model&#91;&#91;LOOP,*&#93;&#93;<br>+&lt;&lt;*TAG&gt;&gt;&#91;&#91;IF:!ID()&#93;&#93;&#91;&lt;&lt;*:I&gt;&gt;&#93;&#91;&#91;ENDIF&#93;&#93;:&#91;&#91;VALUE,*:0&gt;N:|&#93;&#93;;&#91;&#91;REPEAT:TAB&#93;&#93;&#91;&#91;LOOP,&gt;*&#93;&#93;<br>	&gt;&lt;&lt;*TAG&gt;&gt;:&lt;&lt;*:I&gt;&gt;;&#91;&#91;ENDLOOP,&gt;*&#93;&#93;<br>-&lt;&lt;*TAG&gt;&gt;:;&#91;&#91;ENDLOOP,*&#93;&#93;</span></div><!
 ><div id="CGF-000000100081C" class="header3">Code<button type="button" style="position:absolute;right:10px;" onclick="performTrans('M_CASE90','T_CASE90_WILDCARD','R_CASE90_WILDCARD')">CubeGen</button></div><!
 ><div><span id="R_CASE90_WILDCARD" style="display:block;" class="result code">! Copied model<br>+BUSINESS_OBJECT_TYPE[CASE90-BOT-000000100040]:CUSTOMER|EXT|customer_files;<br>	+TYPE[CASE90-TYP-000000100021]:CUSTOMER|CUS|N;<br>		+ATTRIBUTE[CASE90-ATB-000000100004]:RELATION_NUMBER|Y;<br>		-ATTRIBUTE:;<br>		+ATTRIBUTE[CASE90-ATB-000000100001]:NAME|N;<br>		-ATTRIBUTE:;<br>	-TYPE:;<br>-BUSINESS_OBJECT_TYPE:;<br>+BUSINESS_OBJECT_TYPE[CASE90-BOT-000000100024]:ORDER|INT|order_directory;<br>	+TYPE[CASE90-TYP-000000100020]:ORDER|ORD|N;<br>		+ATTRIBUTE[CASE90-ATB-000000100005]:NUMBER|N;<br>		-ATTRIBUTE:;<br>		+ATTRIBUTE[CASE90-ATB-000000100006]:DELIVERY_DATE|N;<br>		-ATTRIBUTE:;<br>		+ATTRIBUTE[CASE90-ATB-000000100003]:DESCRIPTION|N;<br>		-ATTRIBUTE:;<br>		+REFERENCE[CASE90-REF-000000100000]:IS_PLACED_BY|N;<br>			&gt;REFERENCE_TYPE:CASE90-TYP-000000100021;<br>		-REFERENCE:;<br>		+TYPE[CASE90-TYP-000000100022]:ORDER_LINE|ORL|Y;<br>			+ATTRIBUTE[CASE90-ATB-000000100020]:NUMBER|Y;<br>			-ATTRIBUTE:;<br>			+ATTRIBUTE[CASE90-ATB-000000100021]:DESCRIPTION|N;<br>			-ATTRIBUTE:;<br>			+REFERENCE[CASE90-REF-000000100001]:CONCERNS|Y;<br>				&gt;REFERENCE_TYPE:CASE90-TYP-000000100000;<br>			-REFERENCE:;<br>		-TYPE:;<br>	-TYPE:;<br>-BUSINESS_OBJECT_TYPE:;<br>+BUSINESS_OBJECT_TYPE[CASE90-BOT-000000100025]:PRODUCT|INT|product_definitions;<br>	+TYPE[CASE90-TYP-000000100000]:PRODUCT|PRD|Y;<br>		+ATTRIBUTE[CASE90-ATB-000000100007]:CODE|Y;<br>		-ATTRIBUTE:;<br>		+TYPE[CASE90-TYP-000000100004]:PRODUCT_PART_APPLICATION|PPA|Y;<br>			+ATTRIBUTE[CASE90-ATB-000000100008]:CODE|Y;<br>			-ATTRIBUTE:;<br>			+ATTRIBUTE[CASE90-ATB-000000100010]:COUNT|N;<br>			-ATTRIBUTE:;<br>		-TYPE:;<br>		+TYPE[CASE90-TYP-000000100002]:PRODUCTION_PROCES|PPR|N;<br>			+ATTRIBUTE[CASE90-ATB-000000100012]:PROCES_ID|Y;<br>			-ATTRIBUTE:;<br>			+TYPE[CASE90-TYP-000000100003]:PRODUCTION_PROCES_STEP|PPS|N;<br>				+ATTRIBUTE[CASE90-ATB-000000100013]:PROCES_STEP_ID|Y;<br>				-ATTRIBUTE:;<br>				+ATTRIBUTE[CASE90-ATB-000000100014]:DESCRIPTION|N;<br>				-ATTRIBUTE:;<br>			-TYPE:;<br>		-TYPE:;<br>	-TYPE:;<br>-BUSINESS_OBJECT_TYPE:;</span></div><!
 ><div id="CGF-000000100082" class="header2">Enhance Model</div><!
-><div>In the generic model copy function texts can be added as specific enhancements. The TAG condition has been added to select the concerning model elements.</div><!
+><div>In the generic model copy function texts can be added as specific enhancements. The TAG logical function has been added to select the concerning model elements.</div><!
 ><div id="CGF-000000100082T" class="header3">Template</div><!
-><div><span id="T_CASE90_ENHANCE" contenteditable="true" style="display:block;" class="template code">! Model enhanced with foreign keys&#91;&#91;LOOP,*&#93;&#93;<br>+&lt;&lt;*TAG&gt;&gt;&#91;&#91;IF:EVAL:&#39;&lt;&lt;*:I&gt;&gt;&#39;ne&#39;&#39;&#93;&#93;&#91;&lt;&lt;*:I&gt;&gt;&#93;&#91;&#91;ENDIF&#93;&#93;:&#91;&#91;VALUE,*:0&gt;N:|&#93;&#93;;&#91;&#91;IF:TAG(TYPE)&#93;&#93;&#91;&#91;LOOP,REFERENCE&#93;&#93;&#91;&#91;LOOP,REFERENCE_TYPE&#93;&#93;&#91;&#91;LOOP,ATTRIBUTE:1=Y&#93;&#93;<br>	=FOREIGN_KEY:FK_&lt;&lt;REFERENCE_TYPE1&gt;&gt;_&lt;&lt;ATTRIBUTE&gt;&gt;|&lt;&lt;REFERENCE1&gt;&gt;;&#91;&#91;ENDLOOP,ATTRIBUTE&#93;&#93;&#91;&#91;ENDLOOP,REFERENCE_TYPE&#93;&#93;&#91;&#91;ENDLOOP,REFERENCE&#93;&#93;&#91;&#91;ENDIF&#93;&#93;&#91;&#91;REPEAT:TAB&#93;&#93;&#91;&#91;LOOP,&gt;*&#93;&#93;<br>	&gt;&lt;&lt;*TAG&gt;&gt;:&lt;&lt;*:I&gt;&gt;;&#91;&#91;ENDLOOP,&gt;*&#93;&#93;<br>-&lt;&lt;*TAG&gt;&gt;:;&#91;&#91;ENDLOOP,*&#93;&#93;</span></div><!
+><div><span id="T_CASE90_ENHANCE" contenteditable="true" style="display:block;" class="template code">! Model enhanced with foreign keys&#91;&#91;LOOP,*&#93;&#93;<br>+&lt;&lt;*TAG&gt;&gt;&#91;&#91;IF:!ID()&#93;&#93;&#91;&lt;&lt;*:I&gt;&gt;&#93;&#91;&#91;ENDIF&#93;&#93;:&#91;&#91;VALUE,*:0&gt;N:|&#93;&#93;;&#91;&#91;IF:TAG(TYPE)&#93;&#93;&#91;&#91;LOOP,REFERENCE&#93;&#93;&#91;&#91;LOOP,REFERENCE_TYPE&#93;&#93;&#91;&#91;LOOP,ATTRIBUTE:1=Y&#93;&#93;<br>	=FOREIGN_KEY:FK_&lt;&lt;REFERENCE_TYPE1&gt;&gt;_&lt;&lt;ATTRIBUTE&gt;&gt;|&lt;&lt;REFERENCE1&gt;&gt;;&#91;&#91;ENDLOOP,ATTRIBUTE&#93;&#93;&#91;&#91;ENDLOOP,REFERENCE_TYPE&#93;&#93;&#91;&#91;ENDLOOP,REFERENCE&#93;&#93;&#91;&#91;ENDIF&#93;&#93;&#91;&#91;REPEAT:TAB&#93;&#93;&#91;&#91;LOOP,&gt;*&#93;&#93;<br>	&gt;&lt;&lt;*TAG&gt;&gt;:&lt;&lt;*:I&gt;&gt;;&#91;&#91;ENDLOOP,&gt;*&#93;&#93;<br>-&lt;&lt;*TAG&gt;&gt;:;&#91;&#91;ENDLOOP,*&#93;&#93;</span></div><!
 ><div id="CGF-000000100082C" class="header3">Code<button type="button" style="position:absolute;right:10px;" onclick="performTrans('M_CASE90','T_CASE90_ENHANCE','R_CASE90_ENHANCE')">CubeGen</button></div><!
 ><div><span id="R_CASE90_ENHANCE" style="display:block;" class="result code">! Model enhanced with foreign keys<br>+BUSINESS_OBJECT_TYPE[CASE90-BOT-000000100040]:CUSTOMER|EXT|customer_files;<br>	+TYPE[CASE90-TYP-000000100021]:CUSTOMER|CUS|N;<br>		+ATTRIBUTE[CASE90-ATB-000000100004]:RELATION_NUMBER|Y;<br>		-ATTRIBUTE:;<br>		+ATTRIBUTE[CASE90-ATB-000000100001]:NAME|N;<br>		-ATTRIBUTE:;<br>	-TYPE:;<br>-BUSINESS_OBJECT_TYPE:;<br>+BUSINESS_OBJECT_TYPE[CASE90-BOT-000000100024]:ORDER|INT|order_directory;<br>	+TYPE[CASE90-TYP-000000100020]:ORDER|ORD|N;<br>		=FOREIGN_KEY:FK_CUS_RELATION_NUMBER|N;<br>		+ATTRIBUTE[CASE90-ATB-000000100005]:NUMBER|N;<br>		-ATTRIBUTE:;<br>		+ATTRIBUTE[CASE90-ATB-000000100006]:DELIVERY_DATE|N;<br>		-ATTRIBUTE:;<br>		+ATTRIBUTE[CASE90-ATB-000000100003]:DESCRIPTION|N;<br>		-ATTRIBUTE:;<br>		+REFERENCE[CASE90-REF-000000100000]:IS_PLACED_BY|N;<br>			&gt;REFERENCE_TYPE:CASE90-TYP-000000100021;<br>		-REFERENCE:;<br>		+TYPE[CASE90-TYP-000000100022]:ORDER_LINE|ORL|Y;<br>			=FOREIGN_KEY:FK_PRD_CODE|Y;<br>			+ATTRIBUTE[CASE90-ATB-000000100020]:NUMBER|Y;<br>			-ATTRIBUTE:;<br>			+ATTRIBUTE[CASE90-ATB-000000100021]:DESCRIPTION|N;<br>			-ATTRIBUTE:;<br>			+REFERENCE[CASE90-REF-000000100001]:CONCERNS|Y;<br>				&gt;REFERENCE_TYPE:CASE90-TYP-000000100000;<br>			-REFERENCE:;<br>		-TYPE:;<br>	-TYPE:;<br>-BUSINESS_OBJECT_TYPE:;<br>+BUSINESS_OBJECT_TYPE[CASE90-BOT-000000100025]:PRODUCT|INT|product_definitions;<br>	+TYPE[CASE90-TYP-000000100000]:PRODUCT|PRD|Y;<br>		+ATTRIBUTE[CASE90-ATB-000000100007]:CODE|Y;<br>		-ATTRIBUTE:;<br>		+TYPE[CASE90-TYP-000000100004]:PRODUCT_PART_APPLICATION|PPA|Y;<br>			+ATTRIBUTE[CASE90-ATB-000000100008]:CODE|Y;<br>			-ATTRIBUTE:;<br>			+ATTRIBUTE[CASE90-ATB-000000100010]:COUNT|N;<br>			-ATTRIBUTE:;<br>		-TYPE:;<br>		+TYPE[CASE90-TYP-000000100002]:PRODUCTION_PROCES|PPR|N;<br>			+ATTRIBUTE[CASE90-ATB-000000100012]:PROCES_ID|Y;<br>			-ATTRIBUTE:;<br>			+TYPE[CASE90-TYP-000000100003]:PRODUCTION_PROCES_STEP|PPS|N;<br>				+ATTRIBUTE[CASE90-ATB-000000100013]:PROCES_STEP_ID|Y;<br>				-ATTRIBUTE:;<br>				+ATTRIBUTE[CASE90-ATB-000000100014]:DESCRIPTION|N;<br>				-ATTRIBUTE:;<br>			-TYPE:;<br>		-TYPE:;<br>	-TYPE:;<br>-BUSINESS_OBJECT_TYPE:;</span></div><!
 ><div id="FUNCTIONS" class="header1">Template Functions</a></div><!
+><div>Functions that are applied In the templates to navigate through the hierarchy of the model elements and then export the selected template segments. In addition to navigation functions, there are functions for replacing the labels in the texts to be exported.</div><!
+><div id="F_BODY-N" class="header3">BODY</a></div><!
+><div>The BODY function selects the part of the template file or include file that is being exported. Only one BODY function can be applied per file. If the file contains no BODY function, the entire file is exported.</div><!
+><div><span style="display:block;" class="template code">... &#91;&#91;BODY&#93;&#93; ... &#91;&#91;ENDBODY&#93;&#93; ... </span></div><!
 ><div id="F_DECL-N" class="header3">DECL</a></div><!
 ><div>Perform the Perl eval expression once to decclare in functions or variables. To prefix the names with &quot;my&quot;, they will not mixed up to the CubeGen code.</div><!
 ><div><span style="display:block;" class="template code">&#91;&#91;DECL:&lt;perl_expression&gt;&#93;&#93;</span></div><!
 ><div id="F_EVAL-N" class="header3">EVAL</a></div><!
-><div>Export the result of a Perl exprssion. When the Perl expression is placed between parentheses, the result is not exported. To prefix the names with &quot;my&quot;, they will not mixed up to the CubeGen code.</div><!
+><div>Export the result of a Perl exprssion. When the Perl expression is placed between parentheses, the result is not exported. To prefix the names with &quot;my&quot;, they will not mixed up to the CubeGen code.<br>The &lt;perl_expression&gt; can contain labels that will be replaced by model element property values.</div><!
 ><div><span style="display:block;" class="template code">&#91;&#91;EVAL:&lt;perl_expression&gt;&#93;&#93;<br>&#91;&#91;EVAL:(&lt;perl_expression&gt;)&#93;&#93;</span></div><!
+><div id="F_FILE-N" class="header3">FILE</a></div><!
+><div>The FILE function switches over to another code file during the generation process. The &lt;file_name&gt; can also contain a path reference and labels that will be replaced by a model element property value or parameter value.</div><!
+><div><span style="display:block;" class="template code">&#91;&#91;FILE,&lt;file_name&gt;&#93;&#93;</span></div><!
 ><div id="F_FOR-N" class="header3">FOR</a></div><!
 ><div>Equal to FORV.</div><!
 ><div><span style="display:block;" class="template code"></span></div><!
@@ -258,11 +321,14 @@ CUBEGEN MANUAL</div>
 ><div>In the hierarchy selected by LOOP functions, the FORV function navigates top down (vertical) through the model elements of the specified or actual type. The template segments for the selected model elements will be exported in the order of the loop specification, possibly separated by a specified string.<br></div><!
 ><div><span style="display:block;" class="template code">&#91;&#91;FORV:&lt;loopspec&gt;&#93;&#93; ... &#91;&#91;ENDFOR&#93;&#93;<br>&#91;&#91;FORV,&lt;tag&gt;:&lt;loopspec&gt;:&lt;seperator&gt;&#93;&#93; ... &#91;&#91;ENDFOR&#93;&#93;</span></div><!
 ><div id="F_IF-N" class="header3">IF</a></div><!
-><div>Export a template segment that applies to a condition.</div><!
-><div><span style="display:block;" class="template code">&#91;&#91;IF:&lt;condition&gt;&#93;&#93; ... &#91;&#91;ENDIF&#93;&#93;<br>&#91;&#91;IF,&lt;tag&gt;:&lt;condition&gt;&#93;&#93; ... &#91;&#91;ELSIF,&lt;tag&gt;:&lt;condition&gt;&#93;&#93; ... &#91;&#91;ELSE&#93;&#93; ... &#91;&#91;ENDIF&#93;&#93;</span></div><!
+><div>Export a template segment that applies to a condition (logical_expression). By default, the logical functions in the logical expression work on the model elements that are selected within the valid loop. If a tag for the colon is filled, the model elements of this tag are used by default. This tag can be overruled by a tag that can be defined for the logical function.</div><!
+><div><span style="display:block;" class="template code">&#91;&#91;IF:&lt;(logical_expression&gt;&#93;&#93; ... &#91;&#91;ENDIF&#93;&#93;<br>&#91;&#91;IF,&lt;tag&gt;:&lt;(logical_expression&gt;&#93;&#93; ... &#91;&#91;ELSIF,&lt;tag&gt;:&lt;(logical_expression&gt;&#93;&#93; ... &#91;&#91;ELSE&#93;&#93; ... &#91;&#91;ENDIF&#93;&#93;</span></div><!
+><div id="F_INCLUDE-N" class="header3">INCLUDE</a></div><!
+><div>Template segments can be included from another file. The filename can also contain a path reference.</div><!
+><div><span style="display:block;" class="template code">&#91;&#91;INCLUDE,&lt;&lt;file_name&gt;&gt;&#93;&#93;</span></div><!
 ><div id="F_LOOP-N" class="header3">LOOP</a></div><!
-><div>Export the template segment for the model elements of the specified type in sequential order .</div><!
-><div><span style="display:block;" class="template code">&#91;&#91;LOOP,&lt;tag&gt;&#93;&#93; ... &#91;&#91;ENDLOOP,&lt;tag&gt;&#93;&#93;<br>&#91;&#91;LOOP,&lt;tag&gt;:&lt;condition&gt;&#93;&#93; ... &#91;&#91;ENDLOOP,&lt;tag&gt;&#93;&#93;</span></div><!
+><div>Export the template segment for the model elements that (optionally) meet the logical expression for the specified tag in sequential order .</div><!
+><div><span style="display:block;" class="template code">&#91;&#91;LOOP,&lt;tag&gt;&#93;&#93; ... &#91;&#91;ENDLOOP,&lt;tag&gt;&#93;&#93;<br>&#91;&#91;LOOP,&lt;tag&gt;:&lt;(logical_expression&gt;&#93;&#93; ... &#91;&#91;ENDLOOP,&lt;tag&gt;&#93;&#93;</span></div><!
 ><div id="F_REPEAT-N" class="header3">REPEAT</a></div><!
 ><div>Repeat the LOOP function for all underlying model elements of the specified type.</div><!
 ><div><span style="display:block;" class="template code">&#91;&#91;LOOP,&lt;tag&gt;&#93;&#93; ... &#91;&#91;REPEAT&#93;&#93; ... &#91;&#91;ENDLOOP,&lt;tag&gt;&#93;&#93;<br>&#91;&#91;LOOP,&lt;tag&gt;&#93;&#93; ... &#91;&#91;LOOP...&#93;&#93; ... &#91;&#91;REPEAT,&lt;tag&gt;:TAB&#93;&#93; ... &#91;&#91;ENDLOOP...&#93;&#93; ... &#91;&#91;ENDLOOP,&lt;tag&gt;&#93;&#93;</span></div><!
@@ -272,6 +338,9 @@ CUBEGEN MANUAL</div>
 ><div id="F_TEMPLATE-N" class="header3">TEMPLATE</a></div><!
 ><div>Process a model element property as a template segment.</div><!
 ><div><span style="display:block;" class="template code">&#91;&#91;TEMPLATE:&lt;&lt;tag&gt;&#93;&#93;<br>&#91;&#91;TEMPLATE:&lt;tag&gt;(&lt;location&gt;)&lt;property&gt;:&lt;function&gt;&#93;&#93;</span></div><!
+><div id="F_TEXT-N" class="header3">TEXT</a></div><!
+><div>Text blocks are defined for reuse of template segments. The text may contain labels that are replaced with arguments that are defined at the place where the text is applied. The optional list of arguments starts and ends with the separator &quot;&#91;|&#93;&quot;. The text is only exported at the location of the text labels. The text blocks themselves are not exported.</div><!
+><div><span style="display:block;" class="template code">&#91;&#91;TEXT,&lt;name&gt;&#93;&#93; ... &#91;&#91;ENDTEXT&#93;&#93;<br>&lt;&lt;TEXT,&lt;name&gt;&gt;&gt;<br><br>&#91;&#91;TEXT,&lt;name&gt;&#93;&#93; ... &lt;&lt;T1&gt;&gt; ... &lt;&lt;T2&gt;&gt; ... &#91;&#91;ENDTEXT&#93;&#93;<br>&lt;&lt;TEXT,&lt;name&gt;&#91;|&#93;&lt;parm1&gt;&#91;|&#93;&lt;parm2&gt;&#91;|&#93;&gt;&gt;</span></div><!
 ><div id="F_VALUE-N" class="header3">VALUE</a></div><!
 ><div>Export the properties of a model element.</div><!
 ><div><span style="display:block;" class="template code">&#91;&#91;VALUE,&lt;tag&gt;:&lt;loop_spec&gt;:&lt;separator&gt;&#93;&#93;</span></div><!
@@ -280,20 +349,57 @@ CUBEGEN MANUAL</div>
 ><div><span style="display:block;" class="template code">&#91;&#91;* ... *&#93;&#93;</span></div><!
 ><div id="F_PARAMETERS-N" class="header3">parameters</a></div><!
 ><div>The parameters specified on the command line can be selected for export. Only the replace functions L (lowercase) and U (uppercase) are supported.</div><!
-><div><span style="display:block;" class="template code">&lt;&lt;&lt;parm_nr&gt;&gt;&gt;<br>&lt;&lt;&lt;parm_nr&gt;:&lt;function&gt;&gt;&gt;</span></div><!
+><div><span style="display:block;" class="template code">&lt;&lt;&lt;parm_number&gt;&gt;&gt;<br>&lt;&lt;&lt;parm_number&gt;:&lt;function&gt;&gt;&gt;</span></div><!
 ><div id="F_REPLACEMENT-N" class="header3">replacement</a></div><!
 ><div>Replace a label with a model value.</div><!
 ><div><span style="display:block;" class="template code">&lt;&lt;&lt;tag&gt;&gt;&gt;<br>&lt;&lt;&lt;tag&gt;(&lt;location&gt;)&lt;property&gt;:&lt;function&gt;&gt;&gt;</span></div><!
-><div id="LOG_EXPR" class="header1">Logical Expressions</a></div><!
+><div id="LOG_EXPR" class="header1">Logical Functions</a></div><!
+><div>The logical functions are the elements of the logical expressions.</div><!
+><div id="F_AND-Y" class="header3">AND</a></div><!
+><div>Perform the logical AND function on the results of two logical expressions.</div><!
+><div><span style="display:block;" class="template code">&lt;logical_expression&gt;&#91;AND&#93;&lt;logical_expression&gt;</span></div><!
+><div id="F_CHILD-Y" class="header3">CHILD</a></div><!
+><div>Check that the current model element for the concerned tag has a child model element with the specified tag (or all for *) that meets (optionally) the specified logical expression. </div><!
+><div><span style="display:block;" class="template code">CHILD(&lt;tag&gt;)<br>CHILD(*)<br>CHILD(&lt;tag&gt;:&lt;logical_expression&gt;)<br></span></div><!
 ><div id="F_EVAL-Y" class="header3">EVAL</a></div><!
-><div>Perform a logical Perl expression.</div><!
-><div><span style="display:block;" class="template code">EVAL:&lt;perl_logical_expression&gt;</span></div><!
+><div>Perform a logical Perl expression.<br>The &lt;perl logicsal expression&gt; can contain labels that will be replaced by a model element property value.</div><!
+><div><span style="display:block;" class="template code">EVAL:&lt;perl logical expression&gt;</span></div><!
+><div id="F_FIRST-Y" class="header3">FIRST</a></div><!
+><div>Check that it is the first selected model element in the LOOP for the concerned tag. </div><!
+><div><span style="display:block;" class="template code">FIRST</span></div><!
+><div id="F_ID-Y" class="header3">ID</a></div><!
+><div>Check for the id of the actual model element.<br>The &lt;value&gt; can contain labels that will be replaced by a model element property value.</div><!
+><div><span style="display:block;" class="template code">ID(&lt;value&gt;)</span></div><!
+><div id="F_LAST-Y" class="header3">LAST</a></div><!
+><div>Check that it is the last selected model element in the LOOP for the concerned tag. </div><!
+><div><span style="display:block;" class="template code">LAST</span></div><!
+><div id="F_LEVEL-Y" class="header3">LEVEL</a></div><!
+><div>Check that the model element is of the specified level in the hierachy of the REPEAT LOOP for the concerned tag. So LEVEL(1) checks for the root model element.</div><!
+><div><span style="display:block;" class="template code">LEVEL(&lt;repeat_level&gt;)</span></div><!
+><div id="F_NOT-Y" class="header3">NOT</a></div><!
+><div>Invert the result of a logical expression.</div><!
+><div><span style="display:block;" class="template code">!&lt;logical_expression&gt;</span></div><!
+><div id="F_OR-Y" class="header3">OR</a></div><!
+><div>Perform the logical OR function on the results of two logical expressions.</div><!
+><div><span style="display:block;" class="template code">&lt;logical_expression&gt;&#91;OR&#93;&lt;logical_expression&gt;</span></div><!
+><div id="F_PARENT-Y" class="header3">PARENT</a></div><!
+><div>Check that the current model element for the concerned tag has a parent model element with the specified tag that meets (optionally) the specified logical expression. </div><!
+><div><span style="display:block;" class="template code">PARENT(&lt;tag&gt;)<br>PARENT(&lt;tag&gt;:&lt;(logical_expression&gt;)</span></div><!
+><div id="F_ROOT-Y" class="header3">ROOT</a></div><!
+><div>Check that the model element is the root of the hierachy of the REPEAT LOOP for the concerned tag. </div><!
+><div><span style="display:block;" class="template code">ROOT</span></div><!
 ><div id="F_TAG-Y" class="header3">TAG</a></div><!
 ><div>Check for the type of the actual model element.</div><!
 ><div><span style="display:block;" class="template code">TAG(&lt;tag&gt;)</span></div><!
-><div id="F_PARAMETERS-Y" class="header3">parameters</a></div><!
-><div>The parameters specified on the command line can be referenced in the &quot;is equal to&quot; logical expression.</div><!
+><div id="F_PARAMETER=-Y" class="header3">parameter=</a></div><!
+><div>The parameters specified on the command line can be referenced in the &quot;is equal to&quot; logical expression.<br>The &lt;value&gt; can contain labels that will be replaced by a model element property value or parameter value.</div><!
 ><div><span style="display:block;" class="template code">P&lt;parm_number&gt;=&lt;value&gt;</span></div><!
+><div id="F_PARENTHESES-Y" class="header3">parentheses</a></div><!
+><div>Parentheses are used in the logical expressions to define the precedence of the AND,OR and NOT operations.</div><!
+><div><span style="display:block;" class="template code">!(&lt;logical_expression&gt;&#91;AND&#93;(&lt;logical_expression&gt;&#91;OR&#93;&lt;logical_expression&gt;))</span></div><!
+><div id="F_PROPERTY=-Y" class="header3">property=</a></div><!
+><div>A model element property can be referenced in the &quot;is equal to&quot; logical expression.<br>The &lt;value&gt; can contain labels that will be replaced by a model element property value or parameter value.</div><!
+><div><span style="display:block;" class="template code">&lt;property_number&gt;=&lt;value&gt;</span></div><!
 ></pre>
 <div>
 <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>

@@ -2887,7 +2887,7 @@ case 'GetCub':
 	if (!$r) { return; }
 	echo "SELECT_CUB";
 	if ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["DESCRIPTION"]."<|>".$row["DESCRIPTION_FUNCTIONS"];
+		echo "<|||>".$row["DESCRIPTION"]."<|>".$row["DESCRIPTION_FUNCTIONS"]."<|>".$row["DESCRIPTION_LOGICAL_EXPRESSION"];
 	}
 	break;
 
@@ -2945,16 +2945,18 @@ case 'GetCubItems':
 
 case 'CreateCub':
 
-	list($p_name, $p_description, $p_description_functions) = explode("<|>", $import[1]);
+	list($p_name, $p_description, $p_description_functions, $p_description_logical_expression) = explode("<|>", $import[1]);
 
 	$stid = oci_parse($conn, "BEGIN pkg_cub.insert_cub (
 		:p_name,
 		:p_description,
-		:p_description_functions);
+		:p_description_functions,
+		:p_description_logical_expression);
 	END;");
 	oci_bind_by_name($stid,":p_name",$p_name);
 	oci_bind_by_name($stid,":p_description",$p_description);
 	oci_bind_by_name($stid,":p_description_functions",$p_description_functions);
+	oci_bind_by_name($stid,":p_description_logical_expression",$p_description_logical_expression);
 
 	$r = oci_execute($stid);
 	if (!$r) {
@@ -2966,16 +2968,18 @@ case 'CreateCub':
 
 case 'UpdateCub':
 
-	list($p_name, $p_description, $p_description_functions) = explode("<|>", $import[1]);
+	list($p_name, $p_description, $p_description_functions, $p_description_logical_expression) = explode("<|>", $import[1]);
 
 	$stid = oci_parse($conn, "BEGIN pkg_cub.update_cub (
 		:p_name,
 		:p_description,
-		:p_description_functions);
+		:p_description_functions,
+		:p_description_logical_expression);
 	END;");
 	oci_bind_by_name($stid,":p_name",$p_name);
 	oci_bind_by_name($stid,":p_description",$p_description);
 	oci_bind_by_name($stid,":p_description_functions",$p_description_functions);
+	oci_bind_by_name($stid,":p_description_logical_expression",$p_description_logical_expression);
 
 	$r = oci_execute($stid);
 	if (!$r) {

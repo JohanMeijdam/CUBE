@@ -39,7 +39,7 @@ INDEX</div>
 <div><a href="#<<CUBE_GEN_FUNCTION:I>>" class="indent2"><<CUBE_GEN_FUNCTION1>></a></div>[[ENDLOOP,CUBE_GEN_FUNCTION]][[ENDLOOP,CUBE_GEN_EXAMPLE_MODEL]]
 <div><a href="#FUNCTIONS" class="indent1">Template Functions</a></div>[[LOOP,CUBE_GEN_TEMPLATE_FUNCTION:!1=Y]]
 <div><a href="#F_<<CUBE_GEN_TEMPLATE_FUNCTION:U>>-<<CUBE_GEN_TEMPLATE_FUNCTION1:U>>" class="indent2"><<CUBE_GEN_TEMPLATE_FUNCTION>></a></div>[[ENDLOOP,CUBE_GEN_TEMPLATE_FUNCTION]]
-<div><a href="#LOG_EXPR" class="indent1">Logical Expressions</a></div>[[LOOP,CUBE_GEN_TEMPLATE_FUNCTION:1=Y]]
+<div><a href="#LOG_EXPR" class="indent1">Logical Functions</a></div>[[LOOP,CUBE_GEN_TEMPLATE_FUNCTION:1=Y]]
 <div><a href="#F_<<CUBE_GEN_TEMPLATE_FUNCTION:U>>-<<CUBE_GEN_TEMPLATE_FUNCTION1:U>>" class="indent2"><<CUBE_GEN_TEMPLATE_FUNCTION>></a></div>[[ENDLOOP,CUBE_GEN_TEMPLATE_FUNCTION]]
 <br>
 </div><a href="../index.html"><div align="center" class="header0" style="overflow:hidden;position:absolute;top:76px;left:240px;right:0;width:60px;height:30px;">
@@ -69,11 +69,13 @@ CUBEGEN MANUAL</div>
 ><div><span id="T_<<CUBE_GEN_EXAMPLE_MODEL:U>>_<<CUBE_GEN_FUNCTION:U>>" contenteditable="true" style="display:block;" class="template code"><<CUBE_GEN_FUNCTION3:H>></span></div><!
 ><div id="<<CUBE_GEN_FUNCTION:I>>C" class="header3">Code<button type="button" style="position:absolute;right:10px;" onclick="performTrans('M_<<CUBE_GEN_EXAMPLE_MODEL:U>>','T_<<CUBE_GEN_EXAMPLE_MODEL:U>>_<<CUBE_GEN_FUNCTION:U>>','R_<<CUBE_GEN_EXAMPLE_MODEL:U>>_<<CUBE_GEN_FUNCTION:U>>')">CubeGen</button></div><!
 ><div><span id="R_<<CUBE_GEN_EXAMPLE_MODEL:U>>_<<CUBE_GEN_FUNCTION:U>>" style="display:block;" class="result code">[[FOR,CUBE_GEN_EXAMPLE_MODEL:N>N]][[LOOP_HTML,CUBE_MODEL]][[TEMPLATE:CUBE_GEN_FUNCTION3]][[ENDLOOP,CUBE_MODEL]][[ENDFOR]]</span></div><![[ENDLOOP,CUBE_GEN_FUNCTION]][[ENDLOOP,CUBE_GEN_EXAMPLE_MODEL]]
-><div id="FUNCTIONS" class="header1">Template Functions</a></div><![[LOOP,CUBE_GEN_TEMPLATE_FUNCTION:!1=Y]]
+><div id="FUNCTIONS" class="header1">Template Functions</a></div><!
+><div><<CUBE_GEN_DOCUMENTATION2:H>></div><![[LOOP,CUBE_GEN_TEMPLATE_FUNCTION:!1=Y]]
 ><div id="F_<<CUBE_GEN_TEMPLATE_FUNCTION:U>>-<<CUBE_GEN_TEMPLATE_FUNCTION1:U>>" class="header3"><<CUBE_GEN_TEMPLATE_FUNCTION>></a></div><!
 ><div><<CUBE_GEN_TEMPLATE_FUNCTION2:H>></div><!
 ><div><span style="display:block;" class="template code"><<CUBE_GEN_TEMPLATE_FUNCTION3:H>></span></div><![[ENDLOOP,CUBE_GEN_TEMPLATE_FUNCTION]]
-><div id="LOG_EXPR" class="header1">Logical Expressions</a></div><![[LOOP,CUBE_GEN_TEMPLATE_FUNCTION:1=Y]]
+><div id="LOG_EXPR" class="header1">Logical Functions</a></div><!
+><div><<CUBE_GEN_DOCUMENTATION3:H>></div><![[LOOP,CUBE_GEN_TEMPLATE_FUNCTION:1=Y]]
 ><div id="F_<<CUBE_GEN_TEMPLATE_FUNCTION:U>>-<<CUBE_GEN_TEMPLATE_FUNCTION1:U>>" class="header3"><<CUBE_GEN_TEMPLATE_FUNCTION>></a></div><!
 ><div><<CUBE_GEN_TEMPLATE_FUNCTION2:H>></div><!
 ><div><span style="display:block;" class="template code"><<CUBE_GEN_TEMPLATE_FUNCTION3:H>></span></div><![[ENDLOOP,CUBE_GEN_TEMPLATE_FUNCTION]]

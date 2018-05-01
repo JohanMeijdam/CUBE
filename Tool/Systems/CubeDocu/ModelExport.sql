@@ -642,7 +642,7 @@ DECLARE
 			FROM t_cube_gen_documentation
 			ORDER BY cube_id )
 		LOOP
-			DBMS_OUTPUT.PUT_LINE (ftabs || '+CUBE_GEN_DOCUMENTATION[' || r_cub.cube_id || ']:' || fenperc(r_cub.name) || '|' || fenperc(r_cub.description) || '|' || fenperc(r_cub.description_functions) || ';');
+			DBMS_OUTPUT.PUT_LINE (ftabs || '+CUBE_GEN_DOCUMENTATION[' || r_cub.cube_id || ']:' || fenperc(r_cub.name) || '|' || fenperc(r_cub.description) || '|' || fenperc(r_cub.description_functions) || '|' || fenperc(r_cub.description_logical_expression) || ';');
 				l_level := l_level + 1;
 				report_cgp (r_cub);
 				report_cgm (r_cub);
@@ -767,6 +767,7 @@ BEGIN
 	DBMS_OUTPUT.PUT_LINE ('		=PROPERTY:0|Name|'||REPLACE('The%20name%20of%20the%20document.','%20',' ')||';');
 	DBMS_OUTPUT.PUT_LINE ('		=PROPERTY:1|Description|;');
 	DBMS_OUTPUT.PUT_LINE ('		=PROPERTY:2|DescriptionFunctions|'||REPLACE('Description%20for%20Template%20Function%20chapter.','%20',' ')||';');
+	DBMS_OUTPUT.PUT_LINE ('		=PROPERTY:3|DescriptionLogicalExpression|'||REPLACE('Description%20for%20Template%20Logical%20Expressions%20chapter.','%20',' ')||';');
 	DBMS_OUTPUT.PUT_LINE ('		+META_TYPE:CUBE_GEN_PARAGRAPH|;');
 	DBMS_OUTPUT.PUT_LINE ('			=PROPERTY:0|Id|'||REPLACE('Technical%20identifier.','%20',' ')||';');
 	DBMS_OUTPUT.PUT_LINE ('			=PROPERTY:1|Header|'||REPLACE('Text%20used%20as%20header%20and%20used%20in%20the%20index.','%20',' ')||';');

@@ -765,8 +765,8 @@ my (@FkeyValues);
 						if ($j == -1) {
 							last;
 						}
-						print IMPORT "INSERT INTO v_cube_gen_documentation (NAME, DESCRIPTION, DESCRIPTION_FUNCTIONS)\n"; 
-						print IMPORT "	VALUES ('".ReplX($NodeString[$j])."', '".ReplX($NodeValue[$NodeValuePntr[$j]])."', '".ReplX($NodeValue[$NodeValuePntr[$j]+1])."');\n";
+						print IMPORT "INSERT INTO v_cube_gen_documentation (NAME, DESCRIPTION, DESCRIPTION_FUNCTIONS, DESCRIPTION_LOGICAL_EXPRESSION)\n"; 
+						print IMPORT "	VALUES ('".ReplX($NodeString[$j])."', '".ReplX($NodeValue[$NodeValuePntr[$j]])."', '".ReplX($NodeValue[$NodeValuePntr[$j]+1])."', '".ReplX($NodeValue[$NodeValuePntr[$j]+2])."');\n";
 						print IMPORT "\n";
 						$FkeyValues[0] = ReplX($NodeString[$j]);
 						$i = $NodeFirst[$j];

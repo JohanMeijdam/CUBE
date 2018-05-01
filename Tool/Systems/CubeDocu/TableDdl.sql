@@ -513,6 +513,7 @@ CREATE TABLE t_cube_gen_documentation (
 	name VARCHAR2(30),
 	description VARCHAR2(3999),
 	description_functions VARCHAR2(3999),
+	description_logical_expression VARCHAR2(3999),
 	CONSTRAINT cub_pk
 		PRIMARY KEY (name) )
 /

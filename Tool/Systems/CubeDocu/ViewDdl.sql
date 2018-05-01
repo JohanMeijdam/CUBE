@@ -2069,7 +2069,8 @@ CREATE OR REPLACE VIEW v_cube_gen_documentation AS
 		cube_id,
 		name,
 		description,
-		description_functions
+		description_functions,
+		description_logical_expression
 	FROM t_cube_gen_documentation
 /
 CREATE OR REPLACE VIEW v_cube_gen_paragraph AS 
@@ -2158,19 +2159,22 @@ CREATE OR REPLACE PACKAGE BODY pkg_cub_trg IS
 			cube_id,
 			name,
 			description,
-			description_functions)
+			description_functions,
+			description_logical_expression)
 		VALUES (
 			p_cub.cube_id,
 			p_cub.name,
 			p_cub.description,
-			p_cub.description_functions);
+			p_cub.description_functions,
+			p_cub.description_logical_expression);
 	END;
 
 	PROCEDURE update_cub (p_cube_rowid UROWID, p_cub_old IN OUT NOCOPY v_cube_gen_documentation%ROWTYPE, p_cub_new IN OUT NOCOPY v_cube_gen_documentation%ROWTYPE) IS
 	BEGIN
 		UPDATE t_cube_gen_documentation SET 
 			description = p_cub_new.description,
-			description_functions = p_cub_new.description_functions
+			description_functions = p_cub_new.description_functions,
+			description_logical_expression = p_cub_new.description_logical_expression
 		WHERE rowid = p_cube_rowid;
 	END;
 
@@ -2371,6 +2375,7 @@ BEGIN
 		r_cub_new.name := REPLACE(:NEW.name,' ','_');
 		r_cub_new.description := :NEW.description;
 		r_cub_new.description_functions := :NEW.description_functions;
+		r_cub_new.description_logical_expression := :NEW.description_logical_expression;
 	END IF;
 	IF UPDATING THEN
 		r_cub_new.cube_id := :OLD.cube_id;
@@ -2381,6 +2386,7 @@ BEGIN
 		r_cub_old.name := :OLD.name;
 		r_cub_old.description := :OLD.description;
 		r_cub_old.description_functions := :OLD.description_functions;
+		r_cub_old.description_logical_expression := :OLD.description_logical_expression;
 	END IF;
 
 	IF INSERTING THEN 
