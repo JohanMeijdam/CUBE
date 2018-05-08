@@ -1,0 +1,72 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="../style.css">
+<script language='javascript' type='text/javascript'>
+<!--
+var g_option;
+g_xmlhttp = new XMLHttpRequest();
+g_xmlhttp.onreadystatechange = function() {
+	if (g_xmlhttp.readyState == 4) {
+		var g_code = g_xmlhttp.responseText;
+		document.getElementById("OutputCode").value = g_code;
+	} 
+}
+
+function performTrans() {
+	var l_message = document.getElementById("InputModel").value+'<|||>'+document.getElementById("InputTemplate").innerText;
+	g_xmlhttp.open('POST','cubegen.php',true);
+	g_xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+	g_xmlhttp.send(l_message);
+}
+
+-->
+</script>
+</head><body><div style="position:fixed;top:8px;left:8px;right:8px;bottom:8px;">
+<textarea id="InputModel" type="text" wrap="off" rows="20" style="width:100%;" class="model code">+BUSINESS_OBJECT_TYPE[BOT-40]:CUSTOMER|EXT|customer_files;
+	+TYPE[TYP-21]:CUSTOMER|CUS|N;
+		=ATTRIBUTE[ATB-04]:RELATION_NUMBER|Y;
+		=ATTRIBUTE[ATB-01]:NAME|N;
+	-TYPE:;
+-BUSINESS_OBJECT_TYPE:;
++BUSINESS_OBJECT_TYPE[BOT-24]:ORDER|INT|order_directory;
+	+TYPE[TYP-20]:ORDER|ORD|N;
+		=ATTRIBUTE[ATB-05]:NUMBER|N;
+		=ATTRIBUTE[ATB-06]:DELIVERY_DATE|N;
+		=ATTRIBUTE[ATB-03]:DESCRIPTION|N;
+		+REFERENCE[REF-00]:IS_PLACED_BY|N;
+			>REFERENCE_TYPE:TYP-21;
+		-REFERENCE:;
+		+TYPE[TYP-22]:ORDER_LINE|ORL|Y;
+			=ATTRIBUTE[ATB-20]:NUMBER|Y;
+			=ATTRIBUTE[ATB-21]:DESCRIPTION|N;
+			+REFERENCE[REF-01]:CONCERNS|Y;
+				>REFERENCE_TYPE:TYP-00;
+			-REFERENCE:;
+		-TYPE:;
+	-TYPE:;
+-BUSINESS_OBJECT_TYPE:;
++BUSINESS_OBJECT_TYPE[BOT-25]:PRODUCT|INT|product_definitions;
+	+TYPE[TYP-00]:PRODUCT|PRD|Y;
+		=ATTRIBUTE[ATB-07]:CODE|Y;
+		+TYPE[TYP-04]:PRODUCT_PART_APPLICATION|PPA|Y;
+			=ATTRIBUTE[ATB-08]:CODE|Y;
+			=ATTRIBUTE[ATB-10]:COUNT|N;
+		-TYPE:;
+		+TYPE[TYP-02]:PRODUCTION_PROCES|PPR|N;
+			=ATTRIBUTE[ATB-12]:PROCES_ID|Y;
+			+TYPE[TYP-03]:PRODUCTION_PROCES_STEP|PPS|N;
+				=ATTRIBUTE[ATB-13]:PROCES_STEP_ID|Y;
+				=ATTRIBUTE[ATB-14]:DESCRIPTION|N;
+			-TYPE:;
+		-TYPE:;
+	-TYPE:;
+-BUSINESS_OBJECT_TYPE:;</textarea>
+<div><span id="InputTemplate" contenteditable="true" style="white-space:pre;display:block;" class="template code">[[LOOP,BUSINESS_OBJECT_TYPE]]Structure of &lt;&lt;BUSINESS_OBJECT_TYPE:C&gt;&gt;:[[SEQUENCE]][[LOOP,ATTRIBUTE]]<br>-	Attribute: &lt;&lt;ATTRIBUTE:C&gt;&gt;[[ENDLOOP,ATTRIBUTE]][[LOOP,TYPE]]<br>-	Type: &lt;&lt;TYPE:C&gt;&gt;[[REPEAT:TAB]][[ENDLOOP,TYPE]][[ENDSEQUENCE]]<br>[[ENDLOOP,BUSINESS_OBJECT_TYPE]]</span></div>
+<textarea type="text" wrap="off" style="height:auto;width:100%;" class="template code">[[LOOP,BUSINESS_OBJECT_TYPE]]Structure of <<BUSINESS_OBJECT_TYPE:C>>:[[SEQUENCE]][[LOOP,ATTRIBUTE]]
+-	Attribute: <<ATTRIBUTE:C>>[[ENDLOOP,ATTRIBUTE]][[LOOP,TYPE]]
+-	Type: <<TYPE:C>>[[REPEAT:TAB]][[ENDLOOP,TYPE]][[ENDSEQUENCE]]
+[[ENDLOOP,BUSINESS_OBJECT_TYPE]]</textarea>
+<button id="ButtonTest" type="button" onclick="performTrans()">Test</button>
+<textarea id="OutputCode" readonly type="text" wrap="off" rows="20" style="width:100%;" class="result code">Dit is een test
+Dit is een test</textarea></div></body>
+</html>

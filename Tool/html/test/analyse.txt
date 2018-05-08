@@ -1,0 +1,43 @@
+[{"aantal_cilinders":"4","aantal_deuren":"4","aantal_rolstoelplaatsen":"0","aantal_wielen":"4","aantal_zitplaatsen":"5","afstand_hart_koppeling_tot_achterzijde_voertuig":"0","afstand_voorzijde_voertuig_tot_hart_koppeling":"0","api_gekentekende_voertuigen_assen":"https://opendata.rdw.nl/resource/3huj-srit.json","api_gekentekende_voertuigen_brandstof":"https://opendata.rdw.nl/resource/8ys7-d773.json","api_gekentekende_voertuigen_carrosserie":"https://opendata.rdw.nl/resource/vezc-m2t6.json","api_gekentekende_voertuigen_carrosserie_specifiek":"https://opendata.rdw.nl/resource/jhie-znh9.json","api_gekentekende_voertuigen_voertuigklasse":"https://opendata.rdw.nl/resource/kmfi-hrps.json","breedte":"0","bruto_bpm":"7968","catalogusprijs":"41789","cilinderinhoud":"1995","datum_eerste_afgifte_nederland":"15/10/2016","datum_eerste_toelating":"15/10/2016","datum_tenaamstelling":"15/10/2016","eerste_kleur":"BRUIN","europese_voertuigcategorie":"M1","export_indicator":"Nee","handelsbenaming":"FORESTER","inrichting":"stationwagen","kenteken":"KL237Z","lengte":"0","massa_ledig_voertuig":"1500","massa_rijklaar":"1600","maximum_massa_samenstelling":"4015","maximum_massa_trekken_ongeremd":"750","maximum_ondersteunende_snelheid":"0","maximum_trekken_massa_geremd":"2000","merk":"SUBARU","openstaande_terugroepactie_indicator":"Nee","plaats_chassisnummer":"in bodemplaat r. v.","taxi_indicator":"Nee","technische_max_massa_voertuig":"2015","toegestane_maximum_massa_voertuig":"2015","tweede_kleur":"Niet geregistreerd","type":"SJ","typegoedkeuringsnummer":"e13*2007/46*1305*06","uitvoering":"530","variant":"SJ5","vermogen_massarijklaar":"0.07","vervaldatum_apk":"15/10/2020","voertuigsoort":"Personenauto","volgnummer_wijziging_eu_typegoedkeuring":"0","wacht_op_keuren":"Nee","wam_verzekerd":"Ja","wielbasis":"264","zuinigheidslabel":"D"}]
+
+
+{	"_embedded":{"addresses":
+	[{	"purpose":"woonfunctie",
+		"postcode":"2587RV",
+		"surface":277,
+		"municipality":{"id":"0518","label":"'s-Gravenhage"},
+		"city":{"id":"1245","label":"'s-Gravenhage"},
+		"letter":null,
+		"geo":
+		{	"center":
+			{	"rd":
+				{	"type":"Point",
+					"coordinates":[79851.778,459116.679],
+					"crs":
+					{	"type":"name",
+						"properties":
+						{	"name":"urn:ogc:def:crs:EPSG::28992"}
+					}
+				},
+				"wgs84":
+				{	"type":"Point",
+					"coordinates":[4.2900484,52.1151651],
+					"crs":
+					{	"type":"name",
+						"properties":
+						{	"name":"urn:ogc:def:crs:OGC:1.3:CRS84"}
+					}
+				}
+			}
+		},
+		"nen5825":{"postcode":"2587 RV","street":"HOORNSE HOP"},
+		"addition":null,
+		"number":8,
+		"year":2005,
+		"province":{"id":"28","label":"Zuid-Holland"},
+		"id":"0518200000749807",
+		"type":"Verblijfsobject",
+		"street":"Hoornse Hop",
+		"_links":{"self":{"href":"https://api.postcodeapi.nu/v2/addresses/0518200000749807/"}}
+	}]
+},"_links":{"self":{"href":"https://api.postcodeapi.nu/v2/addresses/?postcode=2587RV&number=8"}}}

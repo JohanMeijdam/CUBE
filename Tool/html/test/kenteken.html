@@ -22,7 +22,7 @@ g_xmlhttp.onreadystatechange = function() {
 function performTrans() {
 	l_objParm = { "kenteken" : document.getElementById("InputKenteken").value };
 	var l_requestText = JSON.stringify(l_objParm);
-	g_xmlhttp.open('POST','test_curl.php',true);
+	g_xmlhttp.open('POST','kenteken_api.php',true);
 	g_xmlhttp.send(l_requestText);
 }
 -->
