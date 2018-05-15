@@ -11,31 +11,27 @@ g_xmlhttp.onreadystatechange = function() {
 		var g_responseText = g_xmlhttp.responseText;
 		document.getElementById("OutputCode").value = g_responseText;
 		var myObj = JSON.parse(g_responseText);
-		document.getElementById("InputMerk").value = myObj.merk;
-		document.getElementById("InputHandelsbenaming").value = myObj.handelsbenaming;
-		document.getElementById("InputAantalCilinders").value = myObj.aantal_cilinders;
-		document.getElementById("InputAantalDeuren").value = myObj.aantal_deuren;
+		document.getElementById("InputStreet").value = myObj.street;
+		document.getElementById("InputCity").value = myObj.city;
 		document.getElementById("DivStatusCode").innerHTML = g_xmlhttp.status;
 	}
 }
 
 function performTrans() {
-	l_objParm = { "kenteken" : document.getElementById("InputKenteken").value };
+	l_objParm = { "postcode" : document.getElementById("InputPostcode").value, "Number" : document.getElementById("InputNumber").value};
 	var l_requestText = JSON.stringify(l_objParm);
-	g_xmlhttp.open('POST','kenteken_api.php',true);
+	g_xmlhttp.open('POST','postcode_api.php',true);
 	g_xmlhttp.send(l_requestText);
 }
 -->
 </script>
-</head><body>
-TEST
-<input id="InputKenteken" type="text" value = "KL237Z"></input><br/>
+</head><body style="margin:0px;">
+<input id="InputPostcode" type="text" value = "2587RV"></input><br/>
+<input id="InputNumber" type="text" value = "8"></input><br/>
 <button id="ButtonTest" type="button" onclick="performTrans()">Test</button>
 <textarea id="OutputCode" readonly type="text" wrap="off" rows="20" style="width:100%;" class="result code">Dit is een test</textarea><br/>
-<input id="InputMerk" type="text" value = "-- Merk --" readonly></input><br/>
-<input id="InputHandelsbenaming" type="text" value = "-- Handelsbenaming --" readonly></input><br/>
-<input id="InputAantalCilinders" type="text" value = "-- AantalCilinders --" readonly></input><br/>
-<input id="InputAantalDeuren" type="text" value = "-- AantalDeuren --" readonly></input><br/>
+<input id="InputStreet" type="text" value = "-- Street --" readonly></input><br/>
+<input id="InputCity" type="text" value = "-- City --" readonly></input><br/>
 <p id="DivStatusCode">-- Status --</p>
 </body>
 </html>

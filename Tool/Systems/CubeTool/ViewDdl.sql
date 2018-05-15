@@ -283,7 +283,8 @@ CREATE OR REPLACE VIEW v_business_object_type AS
 		cube_sequence,
 		name,
 		cube_tsg_int_ext,
-		directory
+		directory,
+		api_url
 	FROM t_business_object_type
 /
 CREATE OR REPLACE VIEW v_type AS 
@@ -522,20 +523,23 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			cube_sequence,
 			name,
 			cube_tsg_int_ext,
-			directory)
+			directory,
+			api_url)
 		VALUES (
 			p_bot.cube_id,
 			p_bot.cube_sequence,
 			p_bot.name,
 			p_bot.cube_tsg_int_ext,
-			p_bot.directory);
+			p_bot.directory,
+			p_bot.api_url);
 	END;
 
 	PROCEDURE update_bot (p_cube_rowid UROWID, p_bot_old IN OUT NOCOPY v_business_object_type%ROWTYPE, p_bot_new IN OUT NOCOPY v_business_object_type%ROWTYPE) IS
 	BEGIN
 		UPDATE t_business_object_type SET 
 			cube_sequence = p_bot_new.cube_sequence,
-			directory = p_bot_new.directory
+			directory = p_bot_new.directory,
+			api_url = p_bot_new.api_url
 		WHERE rowid = p_cube_rowid;
 	END;
 
@@ -1244,6 +1248,7 @@ BEGIN
 		r_bot_new.name := REPLACE(:NEW.name,' ','_');
 		r_bot_new.cube_tsg_int_ext := :NEW.cube_tsg_int_ext;
 		r_bot_new.directory := REPLACE(:NEW.directory,' ','_');
+		r_bot_new.api_url := REPLACE(:NEW.api_url,' ','_');
 	END IF;
 	IF UPDATING THEN
 		r_bot_new.cube_id := :OLD.cube_id;
@@ -1255,6 +1260,7 @@ BEGIN
 		r_bot_old.name := :OLD.name;
 		r_bot_old.cube_tsg_int_ext := :OLD.cube_tsg_int_ext;
 		r_bot_old.directory := :OLD.directory;
+		r_bot_old.api_url := :OLD.api_url;
 	END IF;
 
 	IF INSERTING THEN 

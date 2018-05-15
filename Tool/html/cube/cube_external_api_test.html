@@ -1,9 +1,6 @@
 <html>
 <head>
-<title>CUBE</title>
-<meta charset="UTF-8">
-<meta name="description" content="CompoSYS Homepage">
-<meta name="keywords" content="CUBE,Model Based Application Development,CubeGen,Code Generator,Bussiness Object Model,Hierarchical Structure,Template,JSON">
+<title>Cube External JSON API Test</title>
 <link rel="icon" href="../images/composys_icon.png">
 <link rel="stylesheet" type="text/css" href="../style.css">
 </head>
@@ -12,24 +9,29 @@
 <div align="center" class="header0" style="position:absolute;top:76px;left:0px;width:240px;height:30px;">
 INDEX</div>
 <div style="overflow:auto;position:absolute;top:106px;left:0px;width:240px;bottom:0;background-color:whitesmoke;">
-<div><a href="#JSON" class="indent1">JSON API Test</a></div>
+<div><a href="#INTRO" class="indent1">Introduction</a></div>
+<div><a href="#TYP-000000100440" class="indent1">Kenteken</a></div>
+<div><a href="#TYP-000000100441" class="indent1">Postcode</a></div>
+<br>
 </div><a href="../index.html"><div align="center" class="header0" style="overflow:hidden;position:absolute;top:76px;left:240px;right:0;width:60px;height:30px;">
 HOME</div></a>
 <div align="center" class="header0" style="overflow:hidden;position:absolute;top:76px;left:300px;right:0;height:30px;">
-CUBE</div>
+CUBE EXTERNAL JSON API TEST</div>
 <div style="overflow:auto;position:absolute;top:106px;left:240px;right:0;bottom:0;background-color:white;">
-<div align="center" style="padding:15px;font-size:16pt;">Translate your standards into templates and generate your applications independently of a vendor.</div>
-<br><br>
-<div style="margin-top:60px;font-size:16pt;" align="center"><a href="https://github.com/JohanMeijdam/CUBE">CUBE github</a></div>
-<pre>
-<div id="JSON" class="header2">JSON API Test</div><!
-><div>In the CUBE development framework the External Business Object Types specify the data structure of objects that are requested from other parties via API calls.
-For these External Business Object Types, a separate <u><a href="cube_external_api_test.html">External API Test page</a></u> has been generated to test the API calls.
-Details about Cube models and templates are described on the <u><a href="cube_gen_external_api_test.html">Generate External API Test page</a></u>.</div><!
-></pre>
-<div>
+<div align="center" style="padding:15px;font-size:16pt;">Test the CUBE model API specifications of the External Business Object Types in a separate generated page.</div>
+<pre><!
+><div id="INTRO" class="header1">Introduction</div><!
+><div>For each External Business Object Types there is a chapter to test the JSON API call.</div><!
+><div id="TYP-000000100440" class="header1">Kenteken</div><!
+><div>Test the "https://opendata.rdw.nl/resource/m9d7-ebf2.json" API.</div><!
+><iframe src="test_kenteken_api.html" style="width:100%;" onload="this.style.height=this.contentDocument.body.scrollHeight + 'px';"></iframe><!
+><div id="TYP-000000100441" class="header1">Postcode</div><!
+><div>Test the "https://postcode-api.apiwise.nl/v2/addresses" API.</div><!
+><iframe src="test_postcode_api.html" style="width:100%;" onload="this.style.height=this.contentDocument.body.scrollHeight + 'px';"></iframe><!
+><div>
 <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
 <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
 </div>
+</pre>
 </div>
 </div></body></html>

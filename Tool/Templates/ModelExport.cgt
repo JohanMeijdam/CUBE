@@ -1,10 +1,11 @@
-[[* Change log:
+Change log:
 21-08-2016 - RERERENCE renamed to EXTERNAL_REFERENCE
 29-10-2017 - Meta model added.
 17-11-2017 - Sequence of reference added to ref tag.
 20-01-2018 - Referenece name in stead of sequence.
 05-03-2018 - Reference type prefixen with source type
-*]][[TEXT,PROCEDURE]]
+14-05-2018 - Support of type specialisations
+[[TEXT,PROCEDURE]]
 	PROCEDURE report_<<TYPE1:L>><<TEXT,SIGNATURE>> IS
 	BEGIN
 		FOR r_<<TYPE1:L>> IN (

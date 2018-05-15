@@ -912,6 +912,9 @@
 			+GET:;
 				=EXPRESSION:REF_NAME|directory;
 			-GET:;
+			+GET:;
+				=EXPRESSION:REF_NAME|api_url;
+			-GET:;
 			+SELECTION:;
 				+EXPRESSION:LOGICAL|AND;
 					+EXPRESSION:CONDITION|=;
@@ -1238,6 +1241,7 @@
 		=ARGUMENT:p_name|IN|VARCHAR2;
 		=ARGUMENT:p_cube_tsg_int_ext|IN|VARCHAR2;
 		=ARGUMENT:p_directory|IN|VARCHAR2;
+		=ARGUMENT:p_api_url|IN|VARCHAR2;
 		=ARGUMENT:x_name|IN|VARCHAR2;
 		=VARIABLE:l_cube_sequence|NUMBER(8);
 		=STATEMENT:NOTE|A=After B=Before F=First L=Last;
@@ -1286,6 +1290,9 @@
 			+SET:directory;
 				=EXPRESSION:REF_NAME|p_directory;
 			-SET:;
+			+SET:api_url;
+				=EXPRESSION:REF_NAME|p_api_url;
+			-SET:;
 		-STATEMENT:;
 		+EXCEPTION:DUP_VAL_ON_INDEX;
 			+STATEMENT:USE|RAISE_APPLICATION_ERROR;
@@ -1300,12 +1307,16 @@
 		=ARGUMENT:p_name|IN|VARCHAR2;
 		=ARGUMENT:p_cube_tsg_int_ext|IN|VARCHAR2;
 		=ARGUMENT:p_directory|IN|VARCHAR2;
+		=ARGUMENT:p_api_url|IN|VARCHAR2;
 		+STATEMENT:UPDATE|v_business_object_type;
 			+SET:cube_tsg_int_ext;
 				=EXPRESSION:REF_NAME|p_cube_tsg_int_ext;
 			-SET:;
 			+SET:directory;
 				=EXPRESSION:REF_NAME|p_directory;
+			-SET:;
+			+SET:api_url;
+				=EXPRESSION:REF_NAME|p_api_url;
 			-SET:;
 			+SELECTION:;
 				+EXPRESSION:LOGICAL|AND;

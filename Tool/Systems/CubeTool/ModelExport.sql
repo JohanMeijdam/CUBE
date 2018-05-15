@@ -495,7 +495,7 @@ DECLARE
 			FROM t_business_object_type
 			ORDER BY cube_sequence )
 		LOOP
-			DBMS_OUTPUT.PUT_LINE (ftabs || '+BUSINESS_OBJECT_TYPE[' || r_bot.cube_id || ']:' || fenperc(r_bot.name) || '|' || fenperc(r_bot.cube_tsg_int_ext) || '|' || fenperc(r_bot.directory) || ';');
+			DBMS_OUTPUT.PUT_LINE (ftabs || '+BUSINESS_OBJECT_TYPE[' || r_bot.cube_id || ']:' || fenperc(r_bot.name) || '|' || fenperc(r_bot.cube_tsg_int_ext) || '|' || fenperc(r_bot.directory) || '|' || fenperc(r_bot.api_url) || ';');
 				l_level := l_level + 1;
 				report_typ (r_bot);
 				l_level := l_level - 1;
@@ -600,6 +600,7 @@ BEGIN
 	DBMS_OUTPUT.PUT_LINE ('		=PROPERTY:0|Name|;');
 	DBMS_OUTPUT.PUT_LINE ('		=PROPERTY:1|CubeTsgIntExt| Values: INT(INTERNAL), EXT(EXTERNAL);');
 	DBMS_OUTPUT.PUT_LINE ('		=PROPERTY:2|Directory|;');
+	DBMS_OUTPUT.PUT_LINE ('		=PROPERTY:3|ApiUrl|'||REPLACE('The%20basic%20URL%20for%20calling%20the%20API.','%20',' ')||';');
 	DBMS_OUTPUT.PUT_LINE ('		+META_TYPE:TYPE|'||REPLACE('An%20entity%20type%20related%20to%20the%20business%20that%20is%20supported%20by%20the%20system.','%20',' ')||';');
 	DBMS_OUTPUT.PUT_LINE ('			=PROPERTY:0|Name|;');
 	DBMS_OUTPUT.PUT_LINE ('			=PROPERTY:1|Code|;');

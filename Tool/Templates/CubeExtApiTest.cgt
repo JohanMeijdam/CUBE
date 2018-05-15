@@ -1,0 +1,70 @@
+[[BODY]][[LOOP,SYSTEM:0=<<1>>]]<html>
+<head>
+<title>Cube External JSON API Test</title>
+<link rel="icon" href="../images/composys_icon.png">
+<link rel="stylesheet" type="text/css" href="../style.css">
+</head>
+<body lang="en"><div style="position:fixed;top:8px;left:8px;right:8px;bottom:8px;">
+<iframe src="../composys_header.html" style="height:76px;width:100%;"></iframe>
+<div align="center" class="header0" style="position:absolute;top:76px;left:0px;width:240px;height:30px;">
+INDEX</div>
+<div style="overflow:auto;position:absolute;top:106px;left:0px;width:240px;bottom:0;background-color:whitesmoke;">
+<div><a href="#INTRO" class="indent1">Introduction</a></div>[[LOOP,SYSTEM_BO_TYPE]][[LOOP,BUSINESS_OBJECT_TYPE:1=EXT]][[LOOP,TYPE]]
+<div><a href="#<<TYPE:I>>" class="indent1"><<TYPE:C>></a></div>[[ENDLOOP,TYPE]][[ENDLOOP,BUSINESS_OBJECT_TYPE]][[ENDLOOP,SYSTEM_BO_TYPE]]
+<br>
+</div><a href="../index.html"><div align="center" class="header0" style="overflow:hidden;position:absolute;top:76px;left:240px;right:0;width:60px;height:30px;">
+HOME</div></a>
+<div align="center" class="header0" style="overflow:hidden;position:absolute;top:76px;left:300px;right:0;height:30px;">
+CUBE EXTERNAL JSON API TEST</div>
+<div style="overflow:auto;position:absolute;top:106px;left:240px;right:0;bottom:0;background-color:white;">
+<div align="center" style="padding:15px;font-size:16pt;">Test the CUBE model API specifications of the External Business Object Types in a separate generated page.</div>
+<pre><!
+><div id="INTRO" class="header1">Introduction</div><!
+><div>For each External Business Object Types there is a chapter to test the JSON API call.</div><![[LOOP,SYSTEM_BO_TYPE]][[LOOP,BUSINESS_OBJECT_TYPE:1=EXT]][[LOOP,TYPE]]
+><div id="<<TYPE:I>>" class="header1"><<TYPE:C>></div><!
+><div>Test the "<<BUSINESS_OBJECT_TYPE3>>" API.</div><!
+><iframe src="test_<<TYPE:L>>_api.html" style="width:100%;" onload="this.style.height=this.contentDocument.body.scrollHeight + 'px';"></iframe><![[ENDLOOP,TYPE]][[ENDLOOP,BUSINESS_OBJECT_TYPE]][[ENDLOOP,SYSTEM_BO_TYPE]]
+><div>
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+</div>
+</pre>
+</div>
+</div></body></html>[[LOOP,SYSTEM_BO_TYPE]][[LOOP,BUSINESS_OBJECT_TYPE:1=EXT]][[LOOP,TYPE]][[FILE,html\cube\test_<<TYPE:L>>_api.html]]<html>
+<head>
+<link rel="stylesheet" type="text/css" href="../style.css">
+<script language='javascript' type='text/javascript'>
+<!--
+var g_option;
+g_xmlhttp = new XMLHttpRequest();
+g_xmlhttp.onreadystatechange = function() {
+	if (g_xmlhttp.readyState == 4) {
+		var g_responseText = g_xmlhttp.responseText;
+		var myObj = JSON.parse(g_responseText);
+		document.getElementById("InputMerk").value = myObj.merk;
+		document.getElementById("InputHandelsbenaming").value = myObj.handelsbenaming;
+		document.getElementById("InputAantalCilinders").value = myObj.aantal_cilinders;
+		document.getElementById("InputAantalDeuren").value = myObj.aantal_deuren;
+		document.getElementById("DivStatusCode").innerHTML = g_xmlhttp.status;
+	}
+}
+
+function performTrans() {
+	l_objParm = { "kenteken" : document.getElementById("InputKenteken").value };
+	var l_requestText = JSON.stringify(l_objParm);
+	g_xmlhttp.open('POST','kenteken_api.php',true);
+	g_xmlhttp.send(l_requestText);
+}
+-->
+</script>
+</head><body style="margin:0px;">
+<input id="InputKenteken" type="text" value = "KL237Z"></input><br/>
+<button id="ButtonTest" type="button" onclick="performTrans()">Test</button><br/>
+<input id="InputMerk" type="text" value = "-- Merk --" readonly></input><br/>
+<input id="InputHandelsbenaming" type="text" value = "-- Handelsbenaming --" readonly></input><br/>
+<input id="InputAantalCilinders" type="text" value = "-- AantalCilinders --" readonly></input><br/>
+<input id="InputAantalDeuren" type="text" value = "-- AantalDeuren --" readonly></input><br/>
+<p id="DivStatusCode">-- Status --</p>
+</body>
+</html>[[ENDLOOP,TYPE]][[ENDLOOP,BUSINESS_OBJECT_TYPE]][[ENDLOOP,SYSTEM_BO_TYPE]]
+[[ENDLOOP,SYSTEM]][[ENDBODY]]

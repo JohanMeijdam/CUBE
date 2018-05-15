@@ -217,6 +217,7 @@ CREATE TABLE t_business_object_type (
 	name VARCHAR2(30),
 	cube_tsg_int_ext VARCHAR2(8) DEFAULT 'INT',
 	directory VARCHAR2(80),
+	api_url VARCHAR2(300),
 	CONSTRAINT bot_pk
 		PRIMARY KEY (name) )
 /

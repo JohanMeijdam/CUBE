@@ -3,13 +3,11 @@
 <link rel="stylesheet" type="text/css" href="../style.css">
 <script language='javascript' type='text/javascript'>
 <!--
-
 var g_option;
 g_xmlhttp = new XMLHttpRequest();
 g_xmlhttp.onreadystatechange = function() {
 	if (g_xmlhttp.readyState == 4) {
 		var g_responseText = g_xmlhttp.responseText;
-		document.getElementById("OutputCode").value = g_responseText;
 		var myObj = JSON.parse(g_responseText);
 		document.getElementById("InputMerk").value = myObj.merk;
 		document.getElementById("InputHandelsbenaming").value = myObj.handelsbenaming;
@@ -27,11 +25,9 @@ function performTrans() {
 }
 -->
 </script>
-</head><body>
-TEST
+</head><body style="margin:0px;">
 <input id="InputKenteken" type="text" value = "KL237Z"></input><br/>
-<button id="ButtonTest" type="button" onclick="performTrans()">Test</button>
-<textarea id="OutputCode" readonly type="text" wrap="off" rows="20" style="width:100%;" class="result code">Dit is een test</textarea><br/>
+<button id="ButtonTest" type="button" onclick="performTrans()">Test</button><br/>
 <input id="InputMerk" type="text" value = "-- Merk --" readonly></input><br/>
 <input id="InputHandelsbenaming" type="text" value = "-- Handelsbenaming --" readonly></input><br/>
 <input id="InputAantalCilinders" type="text" value = "-- AantalCilinders --" readonly></input><br/>

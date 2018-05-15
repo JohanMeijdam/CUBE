@@ -376,10 +376,8 @@ function ProcessTypeSpecialisation() {
 	if (document.getElementById("InputCubeTsgType").value != ' ') {
 		document.getElementById("InputCubeTsgType").disabled=true;
 		switch (document.getElementById("InputCubeTsgType").value) {
-		case "DN":
+		case "AG":
 			document.getElementById("RowAtbAggregateFunction").style.display="none";
-			break;
-		case "IN":
 			document.getElementById("RowAtbAggregateFunction").style.display="none";
 			break;
 		}

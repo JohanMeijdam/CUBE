@@ -11,6 +11,7 @@ set sysroot=%wwwroot%\%sysname%
 
 echo Start > %logfile%
 ::goto Models
+goto Scripts
 ::goto ModelImport
 ::goto ModelExport
 ::goto Packages
@@ -31,7 +32,7 @@ CubeGen.exe %sysdir%\CubeServerSpecModel.cgm Templates\ServerImplModel.cgt %sysd
 echo Generate Scripts.
 CubeGen.exe %sysdir%\CubeBoModel.cgm Templates\ModelImport.cgt %sysdir%\ModelImport.pl %sysname% >> %logfile% 2>&1
 CubeGen.exe %sysdir%\CubeBoModel.cgm Templates\ModelExport.cgt %sysdir%\ModelExport.sql %sysname% >> %logfile% 2>&1
-::goto End
+goto End
 :Database
 echo Generate Database Tables.
 CubeGen.exe %sysdir%\CubeDbModel.cgm Templates\Table.cgt %sysdir%\TableDdl.sql >> %logfile% 2>&1

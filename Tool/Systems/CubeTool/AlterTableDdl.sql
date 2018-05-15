@@ -528,7 +528,8 @@ BEGIN
 			cube_sequence NUMBER(8),
 			name VARCHAR2(30),
 			cube_tsg_int_ext VARCHAR2(8) DEFAULT ''INT'',
-			directory VARCHAR2(80))';
+			directory VARCHAR2(80),
+			api_url VARCHAR2(300))';
 		DBMS_OUTPUT.PUT_LINE('Table T_BUSINESS_OBJECT_TYPE created');
 	ELSE
 
@@ -565,6 +566,13 @@ BEGIN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_business_object_type ADD directory VARCHAR2(80)';
 			DBMS_OUTPUT.PUT_LINE('Column T_BUSINESS_OBJECT_TYPE.DIRECTORY created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_BUSINESS_OBJECT_TYPE' AND column_name = 'API_URL';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_business_object_type ADD api_url VARCHAR2(300)';
+			DBMS_OUTPUT.PUT_LINE('Column T_BUSINESS_OBJECT_TYPE.API_URL created');
 		END IF;
 
 		FOR r_key IN (SELECT constraint_name FROM all_constraints WHERE owner = 'CUBETOOL' AND table_name = 'T_BUSINESS_OBJECT_TYPE' AND constraint_type IN ('P','U','R') ORDER BY constraint_type DESC)
@@ -2334,13 +2342,15 @@ BEGIN
 			'CUBE_SEQUENCE','NUMBER(8)',
 			'NAME','VARCHAR2(30)',
 			'CUBE_TSG_INT_EXT','VARCHAR2(8)',
-			'DIRECTORY','VARCHAR2(80)',NULL) new_domain,
+			'DIRECTORY','VARCHAR2(80)',
+			'API_URL','VARCHAR2(300)',NULL) new_domain,
 		DECODE(column_name,
 			'CUBE_ID',NULL,
 			'CUBE_SEQUENCE',NULL,
 			'NAME',NULL,
 			'CUBE_TSG_INT_EXT','''INT''',
-			'DIRECTORY',NULL,NULL) new_default_value
+			'DIRECTORY',NULL,
+			'API_URL',NULL,NULL) new_default_value
   		FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_BUSINESS_OBJECT_TYPE')
 	LOOP
 		IF r_field.old_domain <> r_field.new_domain THEN
@@ -2375,7 +2385,8 @@ BEGIN
 							'CUBE_SEQUENCE',
 							'NAME',
 							'CUBE_TSG_INT_EXT',
-							'DIRECTORY'))
+							'DIRECTORY',
+							'API_URL'))
 	LOOP
 		EXECUTE IMMEDIATE
 		'ALTER TABLE t_business_object_type DROP COLUMN ' || r_field.column_name;

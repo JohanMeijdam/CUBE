@@ -382,7 +382,7 @@ case 'GetBot':
 	if (!$r) { return; }
 	echo "SELECT_BOT";
 	if ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["CUBE_TSG_INT_EXT"]."<|>".$row["DIRECTORY"];
+		echo "<|||>".$row["CUBE_TSG_INT_EXT"]."<|>".$row["DIRECTORY"]."<|>".$row["API_URL"];
 	}
 	break;
 
@@ -447,19 +447,21 @@ case 'MoveBot':
 
 case 'CreateBot':
 
-	list($p_cube_pos_action, $p_name, $p_cube_tsg_int_ext, $p_directory, $x_name) = explode("<|>", $import[1]."<|>");
+	list($p_cube_pos_action, $p_name, $p_cube_tsg_int_ext, $p_directory, $p_api_url, $x_name) = explode("<|>", $import[1]."<|>");
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.insert_bot (
 		:p_cube_pos_action,
 		:p_name,
 		:p_cube_tsg_int_ext,
 		:p_directory,
+		:p_api_url,
 		:x_name);
 	END;");
 	oci_bind_by_name($stid,":p_cube_pos_action",$p_cube_pos_action);
 	oci_bind_by_name($stid,":p_name",$p_name);
 	oci_bind_by_name($stid,":p_cube_tsg_int_ext",$p_cube_tsg_int_ext);
 	oci_bind_by_name($stid,":p_directory",$p_directory);
+	oci_bind_by_name($stid,":p_api_url",$p_api_url);
 	oci_bind_by_name($stid,":x_name",$x_name);
 
 	$r = oci_execute($stid);
@@ -472,16 +474,18 @@ case 'CreateBot':
 
 case 'UpdateBot':
 
-	list($p_name, $p_cube_tsg_int_ext, $p_directory) = explode("<|>", $import[1]);
+	list($p_name, $p_cube_tsg_int_ext, $p_directory, $p_api_url) = explode("<|>", $import[1]);
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.update_bot (
 		:p_name,
 		:p_cube_tsg_int_ext,
-		:p_directory);
+		:p_directory,
+		:p_api_url);
 	END;");
 	oci_bind_by_name($stid,":p_name",$p_name);
 	oci_bind_by_name($stid,":p_cube_tsg_int_ext",$p_cube_tsg_int_ext);
 	oci_bind_by_name($stid,":p_directory",$p_directory);
+	oci_bind_by_name($stid,":p_api_url",$p_api_url);
 
 	$r = oci_execute($stid);
 	if (!$r) {
