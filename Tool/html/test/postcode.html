@@ -16,7 +16,7 @@ g_xmlhttp.onreadystatechange = function() {
 		document.getElementById("DivStatusCode").innerHTML = g_xmlhttp.status;
 	}
 }
-
+ 
 function performTrans() {
 	l_objParm = { "postcode" : document.getElementById("InputPostcode").value, "Number" : document.getElementById("InputNumber").value};
 	var l_requestText = JSON.stringify(l_objParm);
