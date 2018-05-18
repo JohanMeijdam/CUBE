@@ -3,7 +3,6 @@
 <link rel="stylesheet" type="text/css" href="../style.css">
 <script language='javascript' type='text/javascript'>
 <!--
-
 var g_option;
 g_xmlhttp = new XMLHttpRequest();
 g_xmlhttp.onreadystatechange = function() {
@@ -18,20 +17,41 @@ g_xmlhttp.onreadystatechange = function() {
 }
  
 function performTrans() {
-	l_objParm = { "postcode" : document.getElementById("InputPostcode").value, "Number" : document.getElementById("InputNumber").value};
-	var l_requestText = JSON.stringify(l_objParm);
-	g_xmlhttp.open('POST','postcode_api.php',true);
-	g_xmlhttp.send(l_requestText);
+	var l_validation_ok = true;
+	var l_objInputPostcode = document.getElementById("InputPostcode");
+    if (!l_objInputPostcode.checkValidity()) {
+        document.getElementById("ErrorPostcode").innerHTML = ' * ' + l_objInputPostcode.validationMessage;
+		l_validation_ok = false;
+    } else {
+        document.getElementById("ErrorPostcode").innerHTML = '';
+    } 	
+	var l_objInputNumber = document.getElementById("InputNumber");
+    if (!l_objInputNumber.checkValidity()) {
+        document.getElementById("ErrorNumber").innerHTML = ' * ' + l_objInputNumber.validationMessage;
+		l_validation_ok = false;
+    } else {
+        document.getElementById("ErrorNumber").innerHTML = '';
+    }
+	l_objParm = { "postcode" : l_objInputPostcode.value, "Number" : document.getElementById("InputNumber").value};
+	if (l_validation_ok) {
+		var l_requestText = JSON.stringify(l_objParm);
+		g_xmlhttp.open('POST','postcode_api.php',true);
+		g_xmlhttp.send(l_requestText);
+	}
 }
 -->
 </script>
 </head><body>
-<input id="InputPostcode" type="text" value = "2587RV"></input><br/>
-<input id="InputNumber" type="text" value = "8"></input><br/>
-<button id="ButtonTest" type="button" onclick="performTrans()">Test</button>
-<textarea id="OutputCode" readonly type="text" wrap="off" rows="20" style="width:100%;" class="result code">Dit is een test</textarea><br/>
-<input id="InputStreet" type="text" value = "-- Street --" readonly></input><br/>
-<input id="InputCity" type="text" value = "-- City --" readonly></input><br/>
+<div>
+<label>Postcode</label><br>
+<input id="InputPostcode" type="text" value="2587RV" required pattern="[0-9]{4}[A-Z]{2}" style="max-width:6em"></input><span id="ErrorPostcode" class="errmsg"></span><br>
+<label>Number</label><br>
+<input id="InputNumber" type="number" class="no-spinners" required min="1" max="99999" value="8" style="max-width:5em;"></input><span id="ErrorNumber" class="errmsg"></span><br>
+<br><button id="ButtonTest" type="button" onclick="performTrans()">Test</button><br><br>
+<textarea id="OutputCode" readonly type="text" wrap="off" rows="20" style="width:100%;" class="result code">Dit is een test</textarea><br>
+<input id="InputStreet" type="text" value = "-- Street --" readonly></input><br>
+<input id="InputCity" type="text" value = "-- City --" readonly></input><br>
 <p id="DivStatusCode">-- Status --</p>
+</div>
 </body>
 </html>

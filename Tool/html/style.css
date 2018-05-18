@@ -73,7 +73,12 @@ pre {
 	padding-right: 5pt;
 	white-space: pre-wrap;
 }
- 
+
+label {
+	display: inline-block;
+	margin-top: 3pt;
+}
+
 .model {
 	background-color: lightpink;
 }
@@ -151,8 +156,20 @@ pre {
 	white-space: nowrap;
 }
 
+.errmsg {
+	font-weight: bold;
+	color: red;
+}
 
+.no-spinners {
+	-moz-appearance:textfield;
+}
 
+.no-spinners::-webkit-outer-spin-button,
+.no-spinners::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
 
 
 
