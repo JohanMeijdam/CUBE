@@ -20,7 +20,7 @@
 <br><a class="BO_link" HREF="#<<ATTRIBUTE:I>>"> <<ATTRIBUTE:U>></a>[[ENDLOOP,ATTRIBUTE]][[ENDIF]][[LOOP,ATTRIBUTE]]
 <p><h3><a id="<<ATTRIBUTE:I>>"></a>Attribute <<ATTRIBUTE:U>></h3>[[LOOP,INFORMATION_TYPE]]
 <p><font class="kop">Domain</font><lu>[[LOOP,INFORMATION_TYPE_ELEMENT]]
-<li type="square">[[IF:2=NR]]Number(<<INFORMATION_TYPE_ELEMENT3>>,<<INFORMATION_TYPE_ELEMENT4>>)[[ELSIF:2=CH]]Text(<<INFORMATION_TYPE_ELEMENT3>>)[[ELSIF:2=DT]]Date[[ELSIF:2=TI]]Time[[ELSIF:2=TI]]Timestamp[[ENDIF]]</li>[[ENDLOOP,INFORMATION_TYPE_ELEMENT]]</lu>[[ENDLOOP,INFORMATION_TYPE]]
+<li type="square"><<INFORMATION_TYPE_ELEMENT2:C>>[[IF:2=NUMBER]](<<INFORMATION_TYPE_ELEMENT3>>,<<INFORMATION_TYPE_ELEMENT4>>)[[ELSIF:2=TEXT]](<<INFORMATION_TYPE_ELEMENT3>>)[[ENDIF]]</li>[[ENDLOOP,INFORMATION_TYPE_ELEMENT]]</lu>[[ENDLOOP,INFORMATION_TYPE]]
 <p><font class="kop">[[IF:!CHILD(DESCRIPTION_ATTRIBUTE)]]No description!</font>[[ELSE]]Description</font><br>[[LOOP,DESCRIPTION_ATTRIBUTE]]<<DESCRIPTION_ATTRIBUTE>>[[ENDLOOP,DESCRIPTION_ATTRIBUTE]][[ENDIF]][[ENDLOOP,ATTRIBUTE]][[REPEAT]][[ENDLOOP,TYPE]][[ENDLOOP,BUSINESS_OBJECT_TYPE]]
 <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
 <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br></body></html>

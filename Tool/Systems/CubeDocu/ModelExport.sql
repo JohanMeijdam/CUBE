@@ -495,7 +495,7 @@ DECLARE
 			FROM t_business_object_type
 			ORDER BY cube_sequence )
 		LOOP
-			DBMS_OUTPUT.PUT_LINE (ftabs || '+BUSINESS_OBJECT_TYPE[' || r_bot.cube_id || ']:' || fenperc(r_bot.name) || '|' || fenperc(r_bot.cube_tsg_int_ext) || '|' || fenperc(r_bot.directory) || ';');
+			DBMS_OUTPUT.PUT_LINE (ftabs || '+BUSINESS_OBJECT_TYPE[' || r_bot.cube_id || ']:' || fenperc(r_bot.name) || '|' || fenperc(r_bot.cube_tsg_int_ext) || '|' || fenperc(r_bot.directory) || '|' || fenperc(r_bot.api_url) || ';');
 				l_level := l_level + 1;
 				report_typ (r_bot);
 				l_level := l_level - 1;
@@ -660,7 +660,7 @@ BEGIN
 	DBMS_OUTPUT.PUT_LINE ('		+META_TYPE:INFORMATION_TYPE_ELEMENT|;');
 	DBMS_OUTPUT.PUT_LINE ('			=PROPERTY:0|Sequence|;');
 	DBMS_OUTPUT.PUT_LINE ('			=PROPERTY:1|Suffix|;');
-	DBMS_OUTPUT.PUT_LINE ('			=PROPERTY:2|Domain| Values: CH(Text), NR(Number), DT(Date), TI(Time), TS(Timestamp);');
+	DBMS_OUTPUT.PUT_LINE ('			=PROPERTY:2|Domain| Values: TEXT(Text), NUMBER(Number), DATE(Date), TIME(Time), DATETIME-LOCAL(Timestamp);');
 	DBMS_OUTPUT.PUT_LINE ('			=PROPERTY:3|Length|;');
 	DBMS_OUTPUT.PUT_LINE ('			=PROPERTY:4|Decimals|;');
 	DBMS_OUTPUT.PUT_LINE ('			=PROPERTY:5|CaseSensitive| Values: Y(Yes), N(No);');
@@ -677,6 +677,7 @@ BEGIN
 	DBMS_OUTPUT.PUT_LINE ('		=PROPERTY:0|Name|;');
 	DBMS_OUTPUT.PUT_LINE ('		=PROPERTY:1|CubeTsgIntExt| Values: INT(INTERNAL), EXT(EXTERNAL);');
 	DBMS_OUTPUT.PUT_LINE ('		=PROPERTY:2|Directory|;');
+	DBMS_OUTPUT.PUT_LINE ('		=PROPERTY:3|ApiUrl|'||REPLACE('The%20basic%20URL%20for%20calling%20the%20API.','%20',' ')||';');
 	DBMS_OUTPUT.PUT_LINE ('		+META_TYPE:TYPE|'||REPLACE('An%20entity%20type%20related%20to%20the%20business%20that%20is%20supported%20by%20the%20system.','%20',' ')||';');
 	DBMS_OUTPUT.PUT_LINE ('			=PROPERTY:0|Name|;');
 	DBMS_OUTPUT.PUT_LINE ('			=PROPERTY:1|Code|;');
@@ -767,7 +768,7 @@ BEGIN
 	DBMS_OUTPUT.PUT_LINE ('		=PROPERTY:0|Name|'||REPLACE('The%20name%20of%20the%20document.','%20',' ')||';');
 	DBMS_OUTPUT.PUT_LINE ('		=PROPERTY:1|Description|;');
 	DBMS_OUTPUT.PUT_LINE ('		=PROPERTY:2|DescriptionFunctions|'||REPLACE('Description%20for%20Template%20Function%20chapter.','%20',' ')||';');
-	DBMS_OUTPUT.PUT_LINE ('		=PROPERTY:3|DescriptionLogicalExpression|'||REPLACE('Description%20for%20Template%20Logical%20Expressions%20chapter.','%20',' ')||';');
+	DBMS_OUTPUT.PUT_LINE ('		=PROPERTY:3|DescriptionLogicalExpression|'||REPLACE('Description%20for%20Template%20Logical%20Functions%20chapter.','%20',' ')||';');
 	DBMS_OUTPUT.PUT_LINE ('		+META_TYPE:CUBE_GEN_PARAGRAPH|;');
 	DBMS_OUTPUT.PUT_LINE ('			=PROPERTY:0|Id|'||REPLACE('Technical%20identifier.','%20',' ')||';');
 	DBMS_OUTPUT.PUT_LINE ('			=PROPERTY:1|Header|'||REPLACE('Text%20used%20as%20header%20and%20used%20in%20the%20index.','%20',' ')||';');

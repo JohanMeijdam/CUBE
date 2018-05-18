@@ -287,7 +287,7 @@
 		=ARGUMENT:p_fk_itp_name|IN|VARCHAR2;
 		=ARGUMENT:p_sequence|IN|NUMBER;
 		=ARGUMENT:p_suffix|IN|VARCHAR2;
-		=ARGUMENT:p_domain|IN|CHAR;
+		=ARGUMENT:p_domain|IN|VARCHAR2;
 		=ARGUMENT:p_length|IN|NUMBER;
 		=ARGUMENT:p_decimals|IN|NUMBER;
 		=ARGUMENT:p_case_sensitive|IN|CHAR;
@@ -351,7 +351,7 @@
 		=ARGUMENT:p_fk_itp_name|IN|VARCHAR2;
 		=ARGUMENT:p_sequence|IN|NUMBER;
 		=ARGUMENT:p_suffix|IN|VARCHAR2;
-		=ARGUMENT:p_domain|IN|CHAR;
+		=ARGUMENT:p_domain|IN|VARCHAR2;
 		=ARGUMENT:p_length|IN|NUMBER;
 		=ARGUMENT:p_decimals|IN|NUMBER;
 		=ARGUMENT:p_case_sensitive|IN|CHAR;

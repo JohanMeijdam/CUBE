@@ -65,7 +65,7 @@ CREATE OR REPLACE PACKAGE pkg_itp IS
 			p_fk_itp_name IN VARCHAR2,
 			p_sequence IN NUMBER,
 			p_suffix IN VARCHAR2,
-			p_domain IN CHAR,
+			p_domain IN VARCHAR2,
 			p_length IN NUMBER,
 			p_decimals IN NUMBER,
 			p_case_sensitive IN CHAR,
@@ -77,7 +77,7 @@ CREATE OR REPLACE PACKAGE pkg_itp IS
 			p_fk_itp_name IN VARCHAR2,
 			p_sequence IN NUMBER,
 			p_suffix IN VARCHAR2,
-			p_domain IN CHAR,
+			p_domain IN VARCHAR2,
 			p_length IN NUMBER,
 			p_decimals IN NUMBER,
 			p_case_sensitive IN CHAR,
@@ -257,7 +257,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_itp IS
 			p_fk_itp_name IN VARCHAR2,
 			p_sequence IN NUMBER,
 			p_suffix IN VARCHAR2,
-			p_domain IN CHAR,
+			p_domain IN VARCHAR2,
 			p_length IN NUMBER,
 			p_decimals IN NUMBER,
 			p_case_sensitive IN CHAR,
@@ -301,7 +301,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_itp IS
 			p_fk_itp_name IN VARCHAR2,
 			p_sequence IN NUMBER,
 			p_suffix IN VARCHAR2,
-			p_domain IN CHAR,
+			p_domain IN VARCHAR2,
 			p_length IN NUMBER,
 			p_decimals IN NUMBER,
 			p_case_sensitive IN CHAR,
@@ -523,11 +523,13 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_name IN VARCHAR2,
 			p_cube_tsg_int_ext IN VARCHAR2,
 			p_directory IN VARCHAR2,
+			p_api_url IN VARCHAR2,
 			x_name IN VARCHAR2);
 	PROCEDURE update_bot (
 			p_name IN VARCHAR2,
 			p_cube_tsg_int_ext IN VARCHAR2,
-			p_directory IN VARCHAR2);
+			p_directory IN VARCHAR2,
+			p_api_url IN VARCHAR2);
 	PROCEDURE delete_bot (
 			p_name IN VARCHAR2);
 	PROCEDURE get_typ_list_all (
@@ -1080,7 +1082,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 		OPEN p_cube_row FOR
 			SELECT
 			  cube_tsg_int_ext,
-			  directory
+			  directory,
+			  api_url
 			FROM v_business_object_type
 			WHERE name = p_name;
 	END;
@@ -1192,6 +1195,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_name IN VARCHAR2,
 			p_cube_tsg_int_ext IN VARCHAR2,
 			p_directory IN VARCHAR2,
+			p_api_url IN VARCHAR2,
 			x_name IN VARCHAR2) IS
 		l_cube_sequence NUMBER(8);
 	BEGIN
@@ -1205,13 +1209,15 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			cube_sequence,
 			name,
 			cube_tsg_int_ext,
-			directory)
+			directory,
+			api_url)
 		VALUES (
 			NULL,
 			l_cube_sequence,
 			p_name,
 			p_cube_tsg_int_ext,
-			p_directory);
+			p_directory,
+			p_api_url);
 	EXCEPTION
 		WHEN DUP_VAL_ON_INDEX THEN
 			RAISE_APPLICATION_ERROR (-20001, 'Type business_object_type already exists');
@@ -1220,11 +1226,13 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 	PROCEDURE update_bot (
 			p_name IN VARCHAR2,
 			p_cube_tsg_int_ext IN VARCHAR2,
-			p_directory IN VARCHAR2) IS
+			p_directory IN VARCHAR2,
+			p_api_url IN VARCHAR2) IS
 	BEGIN
 		UPDATE v_business_object_type SET
 			cube_tsg_int_ext = p_cube_tsg_int_ext,
-			directory = p_directory
+			directory = p_directory,
+			api_url = p_api_url
 		WHERE name = p_name;
 	END;
 

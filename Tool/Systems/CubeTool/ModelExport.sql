@@ -583,7 +583,7 @@ BEGIN
 	DBMS_OUTPUT.PUT_LINE ('		+META_TYPE:INFORMATION_TYPE_ELEMENT|;');
 	DBMS_OUTPUT.PUT_LINE ('			=PROPERTY:0|Sequence|;');
 	DBMS_OUTPUT.PUT_LINE ('			=PROPERTY:1|Suffix|;');
-	DBMS_OUTPUT.PUT_LINE ('			=PROPERTY:2|Domain| Values: CH(Text), NR(Number), DT(Date), TI(Time), TS(Timestamp);');
+	DBMS_OUTPUT.PUT_LINE ('			=PROPERTY:2|Domain| Values: TEXT(Text), NUMBER(Number), DATE(Date), TIME(Time), DATETIME-LOCAL(Timestamp);');
 	DBMS_OUTPUT.PUT_LINE ('			=PROPERTY:3|Length|;');
 	DBMS_OUTPUT.PUT_LINE ('			=PROPERTY:4|Decimals|;');
 	DBMS_OUTPUT.PUT_LINE ('			=PROPERTY:5|CaseSensitive| Values: Y(Yes), N(No);');

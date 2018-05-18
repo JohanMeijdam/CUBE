@@ -392,7 +392,7 @@ BEGIN
 			fk_itp_name VARCHAR2(30),
 			sequence NUMBER(8) DEFAULT ''0'',
 			suffix VARCHAR2(12),
-			domain CHAR(2) DEFAULT ''CH'',
+			domain VARCHAR2(16) DEFAULT ''TEXT'',
 			length NUMBER(8) DEFAULT ''0'',
 			decimals NUMBER(8) DEFAULT ''0'',
 			case_sensitive CHAR(1) DEFAULT ''N'',
@@ -433,7 +433,7 @@ BEGIN
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_INFORMATION_TYPE_ELEMENT' AND column_name = 'DOMAIN';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
-			'ALTER TABLE t_information_type_element ADD domain CHAR(2) DEFAULT ''CH''';
+			'ALTER TABLE t_information_type_element ADD domain VARCHAR2(16) DEFAULT ''TEXT''';
 			DBMS_OUTPUT.PUT_LINE('Column T_INFORMATION_TYPE_ELEMENT.DOMAIN created');
 		END IF;
 
@@ -506,7 +506,7 @@ BEGIN
 			cube_sequence NUMBER(8),
 			fk_itp_name VARCHAR2(30),
 			fk_ite_sequence NUMBER(8) DEFAULT ''0'',
-			code VARCHAR2(8),
+			code VARCHAR2(16),
 			prompt VARCHAR2(32))';
 		DBMS_OUTPUT.PUT_LINE('Table T_PERMITTED_VALUE created');
 	ELSE
@@ -542,7 +542,7 @@ BEGIN
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_PERMITTED_VALUE' AND column_name = 'CODE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
-			'ALTER TABLE t_permitted_value ADD code VARCHAR2(8)';
+			'ALTER TABLE t_permitted_value ADD code VARCHAR2(16)';
 			DBMS_OUTPUT.PUT_LINE('Column T_PERMITTED_VALUE.CODE created');
 		END IF;
 
@@ -580,7 +580,8 @@ BEGIN
 			cube_sequence NUMBER(8),
 			name VARCHAR2(30),
 			cube_tsg_int_ext VARCHAR2(8) DEFAULT ''INT'',
-			directory VARCHAR2(80))';
+			directory VARCHAR2(80),
+			api_url VARCHAR2(300))';
 		DBMS_OUTPUT.PUT_LINE('Table T_BUSINESS_OBJECT_TYPE created');
 	ELSE
 
@@ -617,6 +618,13 @@ BEGIN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_business_object_type ADD directory VARCHAR2(80)';
 			DBMS_OUTPUT.PUT_LINE('Column T_BUSINESS_OBJECT_TYPE.DIRECTORY created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_BUSINESS_OBJECT_TYPE' AND column_name = 'API_URL';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_business_object_type ADD api_url VARCHAR2(300)';
+			DBMS_OUTPUT.PUT_LINE('Column T_BUSINESS_OBJECT_TYPE.API_URL created');
 		END IF;
 
 		FOR r_key IN (SELECT constraint_name FROM all_constraints WHERE owner = 'CUBEDOCU' AND table_name = 'T_BUSINESS_OBJECT_TYPE' AND constraint_type IN ('P','U','R') ORDER BY constraint_type DESC)
@@ -1064,8 +1072,8 @@ BEGIN
 			fk_atb_name VARCHAR2(30),
 			include_or_exclude CHAR(2) DEFAULT ''IN'',
 			xf_tsp_typ_name VARCHAR2(30),
-			xf_tsp_tsg_code VARCHAR2(8),
-			xk_tsp_code VARCHAR2(8))';
+			xf_tsp_tsg_code VARCHAR2(16),
+			xk_tsp_code VARCHAR2(16))';
 		DBMS_OUTPUT.PUT_LINE('Table T_RESTRICTION_TYPE_SPEC_ATB created');
 	ELSE
 
@@ -1114,14 +1122,14 @@ BEGIN
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_RESTRICTION_TYPE_SPEC_ATB' AND column_name = 'XF_TSP_TSG_CODE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
-			'ALTER TABLE t_restriction_type_spec_atb ADD xf_tsp_tsg_code VARCHAR2(8)';
+			'ALTER TABLE t_restriction_type_spec_atb ADD xf_tsp_tsg_code VARCHAR2(16)';
 			DBMS_OUTPUT.PUT_LINE('Column T_RESTRICTION_TYPE_SPEC_ATB.XF_TSP_TSG_CODE created');
 		END IF;
 
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_RESTRICTION_TYPE_SPEC_ATB' AND column_name = 'XK_TSP_CODE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
-			'ALTER TABLE t_restriction_type_spec_atb ADD xk_tsp_code VARCHAR2(8)';
+			'ALTER TABLE t_restriction_type_spec_atb ADD xk_tsp_code VARCHAR2(16)';
 			DBMS_OUTPUT.PUT_LINE('Column T_RESTRICTION_TYPE_SPEC_ATB.XK_TSP_CODE created');
 		END IF;
 
@@ -1359,8 +1367,8 @@ BEGIN
 			fk_ref_typ_name VARCHAR2(30),
 			include_or_exclude CHAR(2) DEFAULT ''IN'',
 			xf_tsp_typ_name VARCHAR2(30),
-			xf_tsp_tsg_code VARCHAR2(8),
-			xk_tsp_code VARCHAR2(8))';
+			xf_tsp_tsg_code VARCHAR2(16),
+			xk_tsp_code VARCHAR2(16))';
 		DBMS_OUTPUT.PUT_LINE('Table T_RESTRICTION_TYPE_SPEC_REF created');
 	ELSE
 
@@ -1416,14 +1424,14 @@ BEGIN
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_RESTRICTION_TYPE_SPEC_REF' AND column_name = 'XF_TSP_TSG_CODE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
-			'ALTER TABLE t_restriction_type_spec_ref ADD xf_tsp_tsg_code VARCHAR2(8)';
+			'ALTER TABLE t_restriction_type_spec_ref ADD xf_tsp_tsg_code VARCHAR2(16)';
 			DBMS_OUTPUT.PUT_LINE('Column T_RESTRICTION_TYPE_SPEC_REF.XF_TSP_TSG_CODE created');
 		END IF;
 
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_RESTRICTION_TYPE_SPEC_REF' AND column_name = 'XK_TSP_CODE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
-			'ALTER TABLE t_restriction_type_spec_ref ADD xk_tsp_code VARCHAR2(8)';
+			'ALTER TABLE t_restriction_type_spec_ref ADD xk_tsp_code VARCHAR2(16)';
 			DBMS_OUTPUT.PUT_LINE('Column T_RESTRICTION_TYPE_SPEC_REF.XK_TSP_CODE created');
 		END IF;
 
@@ -1653,8 +1661,8 @@ BEGIN
 			cube_level NUMBER(8) DEFAULT ''1'',
 			fk_bot_name VARCHAR2(30),
 			fk_typ_name VARCHAR2(30),
-			fk_tsg_code VARCHAR2(8),
-			code VARCHAR2(8),
+			fk_tsg_code VARCHAR2(16),
+			code VARCHAR2(16),
 			name VARCHAR2(30),
 			primary_key CHAR(1) DEFAULT ''N'',
 			xf_atb_typ_name VARCHAR2(30),
@@ -1700,14 +1708,14 @@ BEGIN
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_TYPE_SPECIALISATION_GROUP' AND column_name = 'FK_TSG_CODE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
-			'ALTER TABLE t_type_specialisation_group ADD fk_tsg_code VARCHAR2(8)';
+			'ALTER TABLE t_type_specialisation_group ADD fk_tsg_code VARCHAR2(16)';
 			DBMS_OUTPUT.PUT_LINE('Column T_TYPE_SPECIALISATION_GROUP.FK_TSG_CODE created');
 		END IF;
 
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_TYPE_SPECIALISATION_GROUP' AND column_name = 'CODE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
-			'ALTER TABLE t_type_specialisation_group ADD code VARCHAR2(8)';
+			'ALTER TABLE t_type_specialisation_group ADD code VARCHAR2(16)';
 			DBMS_OUTPUT.PUT_LINE('Column T_TYPE_SPECIALISATION_GROUP.CODE created');
 		END IF;
 
@@ -1766,12 +1774,12 @@ BEGIN
 			cube_sequence NUMBER(8),
 			fk_bot_name VARCHAR2(30),
 			fk_typ_name VARCHAR2(30),
-			fk_tsg_code VARCHAR2(8),
-			code VARCHAR2(8),
+			fk_tsg_code VARCHAR2(16),
+			code VARCHAR2(16),
 			name VARCHAR2(30),
 			xf_tsp_typ_name VARCHAR2(30),
-			xf_tsp_tsg_code VARCHAR2(8),
-			xk_tsp_code VARCHAR2(8))';
+			xf_tsp_tsg_code VARCHAR2(16),
+			xk_tsp_code VARCHAR2(16))';
 		DBMS_OUTPUT.PUT_LINE('Table T_TYPE_SPECIALISATION created');
 	ELSE
 
@@ -1806,14 +1814,14 @@ BEGIN
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_TYPE_SPECIALISATION' AND column_name = 'FK_TSG_CODE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
-			'ALTER TABLE t_type_specialisation ADD fk_tsg_code VARCHAR2(8)';
+			'ALTER TABLE t_type_specialisation ADD fk_tsg_code VARCHAR2(16)';
 			DBMS_OUTPUT.PUT_LINE('Column T_TYPE_SPECIALISATION.FK_TSG_CODE created');
 		END IF;
 
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_TYPE_SPECIALISATION' AND column_name = 'CODE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
-			'ALTER TABLE t_type_specialisation ADD code VARCHAR2(8)';
+			'ALTER TABLE t_type_specialisation ADD code VARCHAR2(16)';
 			DBMS_OUTPUT.PUT_LINE('Column T_TYPE_SPECIALISATION.CODE created');
 		END IF;
 
@@ -1834,14 +1842,14 @@ BEGIN
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_TYPE_SPECIALISATION' AND column_name = 'XF_TSP_TSG_CODE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
-			'ALTER TABLE t_type_specialisation ADD xf_tsp_tsg_code VARCHAR2(8)';
+			'ALTER TABLE t_type_specialisation ADD xf_tsp_tsg_code VARCHAR2(16)';
 			DBMS_OUTPUT.PUT_LINE('Column T_TYPE_SPECIALISATION.XF_TSP_TSG_CODE created');
 		END IF;
 
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_TYPE_SPECIALISATION' AND column_name = 'XK_TSP_CODE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
-			'ALTER TABLE t_type_specialisation ADD xk_tsp_code VARCHAR2(8)';
+			'ALTER TABLE t_type_specialisation ADD xk_tsp_code VARCHAR2(16)';
 			DBMS_OUTPUT.PUT_LINE('Column T_TYPE_SPECIALISATION.XK_TSP_CODE created');
 		END IF;
 
@@ -2119,7 +2127,7 @@ BEGIN
 			cube_id VARCHAR2(16),
 			cube_sequence NUMBER(8),
 			fk_cub_name VARCHAR2(30),
-			id VARCHAR2(8),
+			id VARCHAR2(16),
 			header VARCHAR2(40),
 			description VARCHAR2(3999),
 			example VARCHAR2(3999) DEFAULT ''#'')';
@@ -2150,7 +2158,7 @@ BEGIN
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_CUBE_GEN_PARAGRAPH' AND column_name = 'ID';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
-			'ALTER TABLE t_cube_gen_paragraph ADD id VARCHAR2(8)';
+			'ALTER TABLE t_cube_gen_paragraph ADD id VARCHAR2(16)';
 			DBMS_OUTPUT.PUT_LINE('Column T_CUBE_GEN_PARAGRAPH.ID created');
 		END IF;
 
@@ -2201,7 +2209,7 @@ BEGIN
 			cube_id VARCHAR2(16),
 			cube_sequence NUMBER(8),
 			fk_cub_name VARCHAR2(30),
-			id VARCHAR2(8),
+			id VARCHAR2(16),
 			header VARCHAR2(40),
 			included_object_names VARCHAR2(120),
 			description VARCHAR2(3999))';
@@ -2232,7 +2240,7 @@ BEGIN
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_CUBE_GEN_EXAMPLE_MODEL' AND column_name = 'ID';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
-			'ALTER TABLE t_cube_gen_example_model ADD id VARCHAR2(8)';
+			'ALTER TABLE t_cube_gen_example_model ADD id VARCHAR2(16)';
 			DBMS_OUTPUT.PUT_LINE('Column T_CUBE_GEN_EXAMPLE_MODEL.ID created');
 		END IF;
 
@@ -2283,7 +2291,7 @@ BEGIN
 			cube_id VARCHAR2(16),
 			cube_sequence NUMBER(8),
 			fk_cub_name VARCHAR2(30),
-			fk_cgm_id VARCHAR2(8),
+			fk_cgm_id VARCHAR2(16),
 			xk_bot_name VARCHAR2(30))';
 		DBMS_OUTPUT.PUT_LINE('Table T_CUBE_GEN_EXAMPLE_OBJECT created');
 	ELSE
@@ -2312,7 +2320,7 @@ BEGIN
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_CUBE_GEN_EXAMPLE_OBJECT' AND column_name = 'FK_CGM_ID';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
-			'ALTER TABLE t_cube_gen_example_object ADD fk_cgm_id VARCHAR2(8)';
+			'ALTER TABLE t_cube_gen_example_object ADD fk_cgm_id VARCHAR2(16)';
 			DBMS_OUTPUT.PUT_LINE('Column T_CUBE_GEN_EXAMPLE_OBJECT.FK_CGM_ID created');
 		END IF;
 
@@ -2349,8 +2357,8 @@ BEGIN
 			cube_id VARCHAR2(16),
 			cube_sequence NUMBER(8),
 			fk_cub_name VARCHAR2(30),
-			fk_cgm_id VARCHAR2(8),
-			id VARCHAR2(8),
+			fk_cgm_id VARCHAR2(16),
+			id VARCHAR2(16),
 			header VARCHAR2(40),
 			description VARCHAR2(3999),
 			template VARCHAR2(3999))';
@@ -2381,14 +2389,14 @@ BEGIN
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_CUBE_GEN_FUNCTION' AND column_name = 'FK_CGM_ID';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
-			'ALTER TABLE t_cube_gen_function ADD fk_cgm_id VARCHAR2(8)';
+			'ALTER TABLE t_cube_gen_function ADD fk_cgm_id VARCHAR2(16)';
 			DBMS_OUTPUT.PUT_LINE('Column T_CUBE_GEN_FUNCTION.FK_CGM_ID created');
 		END IF;
 
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_CUBE_GEN_FUNCTION' AND column_name = 'ID';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
-			'ALTER TABLE t_cube_gen_function ADD id VARCHAR2(8)';
+			'ALTER TABLE t_cube_gen_function ADD id VARCHAR2(16)';
 			DBMS_OUTPUT.PUT_LINE('Column T_CUBE_GEN_FUNCTION.ID created');
 		END IF;
 
@@ -2600,7 +2608,7 @@ BEGIN
 			'FK_ITP_NAME','VARCHAR2(30)',
 			'SEQUENCE','NUMBER(8)',
 			'SUFFIX','VARCHAR2(12)',
-			'DOMAIN','CHAR(2)',
+			'DOMAIN','VARCHAR2(16)',
 			'LENGTH','NUMBER(8)',
 			'DECIMALS','NUMBER(8)',
 			'CASE_SENSITIVE','CHAR(1)',
@@ -2612,7 +2620,7 @@ BEGIN
 			'FK_ITP_NAME',NULL,
 			'SEQUENCE','''0''',
 			'SUFFIX',NULL,
-			'DOMAIN','''CH''',
+			'DOMAIN','''TEXT''',
 			'LENGTH','''0''',
 			'DECIMALS','''0''',
 			'CASE_SENSITIVE','''N''',
@@ -2682,7 +2690,7 @@ BEGIN
 			'CUBE_SEQUENCE','NUMBER(8)',
 			'FK_ITP_NAME','VARCHAR2(30)',
 			'FK_ITE_SEQUENCE','NUMBER(8)',
-			'CODE','VARCHAR2(8)',
+			'CODE','VARCHAR2(16)',
 			'PROMPT','VARCHAR2(32)',NULL) new_domain,
 		DECODE(column_name,
 			'CUBE_ID',NULL,
@@ -2750,13 +2758,15 @@ BEGIN
 			'CUBE_SEQUENCE','NUMBER(8)',
 			'NAME','VARCHAR2(30)',
 			'CUBE_TSG_INT_EXT','VARCHAR2(8)',
-			'DIRECTORY','VARCHAR2(80)',NULL) new_domain,
+			'DIRECTORY','VARCHAR2(80)',
+			'API_URL','VARCHAR2(300)',NULL) new_domain,
 		DECODE(column_name,
 			'CUBE_ID',NULL,
 			'CUBE_SEQUENCE',NULL,
 			'NAME',NULL,
 			'CUBE_TSG_INT_EXT','''INT''',
-			'DIRECTORY',NULL,NULL) new_default_value
+			'DIRECTORY',NULL,
+			'API_URL',NULL,NULL) new_default_value
   		FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_BUSINESS_OBJECT_TYPE')
 	LOOP
 		IF r_field.old_domain <> r_field.new_domain THEN
@@ -2791,7 +2801,8 @@ BEGIN
 							'CUBE_SEQUENCE',
 							'NAME',
 							'CUBE_TSG_INT_EXT',
-							'DIRECTORY'))
+							'DIRECTORY',
+							'API_URL'))
 	LOOP
 		EXECUTE IMMEDIATE
 		'ALTER TABLE t_business_object_type DROP COLUMN ' || r_field.column_name;
@@ -3127,8 +3138,8 @@ BEGIN
 			'FK_ATB_NAME','VARCHAR2(30)',
 			'INCLUDE_OR_EXCLUDE','CHAR(2)',
 			'XF_TSP_TYP_NAME','VARCHAR2(30)',
-			'XF_TSP_TSG_CODE','VARCHAR2(8)',
-			'XK_TSP_CODE','VARCHAR2(8)',NULL) new_domain,
+			'XF_TSP_TSG_CODE','VARCHAR2(16)',
+			'XK_TSP_CODE','VARCHAR2(16)',NULL) new_domain,
 		DECODE(column_name,
 			'CUBE_ID',NULL,
 			'FK_BOT_NAME',NULL,
@@ -3361,8 +3372,8 @@ BEGIN
 			'FK_REF_TYP_NAME','VARCHAR2(30)',
 			'INCLUDE_OR_EXCLUDE','CHAR(2)',
 			'XF_TSP_TYP_NAME','VARCHAR2(30)',
-			'XF_TSP_TSG_CODE','VARCHAR2(8)',
-			'XK_TSP_CODE','VARCHAR2(8)',NULL) new_domain,
+			'XF_TSP_TSG_CODE','VARCHAR2(16)',
+			'XK_TSP_CODE','VARCHAR2(16)',NULL) new_domain,
 		DECODE(column_name,
 			'CUBE_ID',NULL,
 			'FK_BOT_NAME',NULL,
@@ -3632,8 +3643,8 @@ BEGIN
 			'CUBE_LEVEL','NUMBER(8)',
 			'FK_BOT_NAME','VARCHAR2(30)',
 			'FK_TYP_NAME','VARCHAR2(30)',
-			'FK_TSG_CODE','VARCHAR2(8)',
-			'CODE','VARCHAR2(8)',
+			'FK_TSG_CODE','VARCHAR2(16)',
+			'CODE','VARCHAR2(16)',
 			'NAME','VARCHAR2(30)',
 			'PRIMARY_KEY','CHAR(1)',
 			'XF_ATB_TYP_NAME','VARCHAR2(30)',
@@ -3718,12 +3729,12 @@ BEGIN
 			'CUBE_SEQUENCE','NUMBER(8)',
 			'FK_BOT_NAME','VARCHAR2(30)',
 			'FK_TYP_NAME','VARCHAR2(30)',
-			'FK_TSG_CODE','VARCHAR2(8)',
-			'CODE','VARCHAR2(8)',
+			'FK_TSG_CODE','VARCHAR2(16)',
+			'CODE','VARCHAR2(16)',
 			'NAME','VARCHAR2(30)',
 			'XF_TSP_TYP_NAME','VARCHAR2(30)',
-			'XF_TSP_TSG_CODE','VARCHAR2(8)',
-			'XK_TSP_CODE','VARCHAR2(8)',NULL) new_domain,
+			'XF_TSP_TSG_CODE','VARCHAR2(16)',
+			'XK_TSP_CODE','VARCHAR2(16)',NULL) new_domain,
 		DECODE(column_name,
 			'CUBE_ID',NULL,
 			'CUBE_SEQUENCE',NULL,
@@ -4034,7 +4045,7 @@ BEGIN
 			'CUBE_ID','VARCHAR2(16)',
 			'CUBE_SEQUENCE','NUMBER(8)',
 			'FK_CUB_NAME','VARCHAR2(30)',
-			'ID','VARCHAR2(8)',
+			'ID','VARCHAR2(16)',
 			'HEADER','VARCHAR2(40)',
 			'DESCRIPTION','VARCHAR2(3999)',
 			'EXAMPLE','VARCHAR2(3999)',NULL) new_domain,
@@ -4104,7 +4115,7 @@ BEGIN
 			'CUBE_ID','VARCHAR2(16)',
 			'CUBE_SEQUENCE','NUMBER(8)',
 			'FK_CUB_NAME','VARCHAR2(30)',
-			'ID','VARCHAR2(8)',
+			'ID','VARCHAR2(16)',
 			'HEADER','VARCHAR2(40)',
 			'INCLUDED_OBJECT_NAMES','VARCHAR2(120)',
 			'DESCRIPTION','VARCHAR2(3999)',NULL) new_domain,
@@ -4174,7 +4185,7 @@ BEGIN
 			'CUBE_ID','VARCHAR2(16)',
 			'CUBE_SEQUENCE','NUMBER(8)',
 			'FK_CUB_NAME','VARCHAR2(30)',
-			'FK_CGM_ID','VARCHAR2(8)',
+			'FK_CGM_ID','VARCHAR2(16)',
 			'XK_BOT_NAME','VARCHAR2(30)',NULL) new_domain,
 		DECODE(column_name,
 			'CUBE_ID',NULL,
@@ -4239,8 +4250,8 @@ BEGIN
 			'CUBE_ID','VARCHAR2(16)',
 			'CUBE_SEQUENCE','NUMBER(8)',
 			'FK_CUB_NAME','VARCHAR2(30)',
-			'FK_CGM_ID','VARCHAR2(8)',
-			'ID','VARCHAR2(8)',
+			'FK_CGM_ID','VARCHAR2(16)',
+			'ID','VARCHAR2(16)',
 			'HEADER','VARCHAR2(40)',
 			'DESCRIPTION','VARCHAR2(3999)',
 			'TEMPLATE','VARCHAR2(3999)',NULL) new_domain,

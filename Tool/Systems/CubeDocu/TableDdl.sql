@@ -215,7 +215,7 @@ CREATE TABLE t_information_type_element (
 	fk_itp_name VARCHAR2(30),
 	sequence NUMBER(8) DEFAULT '0',
 	suffix VARCHAR2(12),
-	domain CHAR(2) DEFAULT 'CH',
+	domain VARCHAR2(16) DEFAULT 'TEXT',
 	length NUMBER(8) DEFAULT '0',
 	decimals NUMBER(8) DEFAULT '0',
 	case_sensitive CHAR(1) DEFAULT 'N',
@@ -234,7 +234,7 @@ CREATE TABLE t_permitted_value (
 	cube_sequence NUMBER(8),
 	fk_itp_name VARCHAR2(30),
 	fk_ite_sequence NUMBER(8) DEFAULT '0',
-	code VARCHAR2(8),
+	code VARCHAR2(16),
 	prompt VARCHAR2(32),
 	CONSTRAINT val_pk
 		PRIMARY KEY (fk_itp_name, fk_ite_sequence, code),
@@ -249,6 +249,7 @@ CREATE TABLE t_business_object_type (
 	name VARCHAR2(30),
 	cube_tsg_int_ext VARCHAR2(8) DEFAULT 'INT',
 	directory VARCHAR2(80),
+	api_url VARCHAR2(300),
 	CONSTRAINT bot_pk
 		PRIMARY KEY (name) )
 /
@@ -334,8 +335,8 @@ CREATE TABLE t_restriction_type_spec_atb (
 	fk_atb_name VARCHAR2(30),
 	include_or_exclude CHAR(2) DEFAULT 'IN',
 	xf_tsp_typ_name VARCHAR2(30),
-	xf_tsp_tsg_code VARCHAR2(8),
-	xk_tsp_code VARCHAR2(8),
+	xf_tsp_tsg_code VARCHAR2(16),
+	xk_tsp_code VARCHAR2(16),
 	CONSTRAINT rta_pk
 		PRIMARY KEY (fk_typ_name, fk_atb_name, xf_tsp_typ_name, xf_tsp_tsg_code, xk_tsp_code),
 	CONSTRAINT rta_atb_fk
@@ -386,8 +387,8 @@ CREATE TABLE t_restriction_type_spec_ref (
 	fk_ref_typ_name VARCHAR2(30),
 	include_or_exclude CHAR(2) DEFAULT 'IN',
 	xf_tsp_typ_name VARCHAR2(30),
-	xf_tsp_tsg_code VARCHAR2(8),
-	xk_tsp_code VARCHAR2(8),
+	xf_tsp_tsg_code VARCHAR2(16),
+	xk_tsp_code VARCHAR2(16),
 	CONSTRAINT rtr_pk
 		PRIMARY KEY (fk_typ_name, fk_ref_sequence, fk_ref_typ_name, xf_tsp_typ_name, xf_tsp_tsg_code, xk_tsp_code),
 	CONSTRAINT rtr_ref_fk
@@ -440,8 +441,8 @@ CREATE TABLE t_type_specialisation_group (
 	cube_level NUMBER(8) DEFAULT '1',
 	fk_bot_name VARCHAR2(30),
 	fk_typ_name VARCHAR2(30),
-	fk_tsg_code VARCHAR2(8),
-	code VARCHAR2(8),
+	fk_tsg_code VARCHAR2(16),
+	code VARCHAR2(16),
 	name VARCHAR2(30),
 	primary_key CHAR(1) DEFAULT 'N',
 	xf_atb_typ_name VARCHAR2(30),
@@ -462,12 +463,12 @@ CREATE TABLE t_type_specialisation (
 	cube_sequence NUMBER(8),
 	fk_bot_name VARCHAR2(30),
 	fk_typ_name VARCHAR2(30),
-	fk_tsg_code VARCHAR2(8),
-	code VARCHAR2(8),
+	fk_tsg_code VARCHAR2(16),
+	code VARCHAR2(16),
 	name VARCHAR2(30),
 	xf_tsp_typ_name VARCHAR2(30),
-	xf_tsp_tsg_code VARCHAR2(8),
-	xk_tsp_code VARCHAR2(8),
+	xf_tsp_tsg_code VARCHAR2(16),
+	xk_tsp_code VARCHAR2(16),
 	CONSTRAINT tsp_pk
 		PRIMARY KEY (fk_typ_name, fk_tsg_code, code),
 	CONSTRAINT tsp_tsg_fk
@@ -521,7 +522,7 @@ CREATE TABLE t_cube_gen_paragraph (
 	cube_id VARCHAR2(16),
 	cube_sequence NUMBER(8),
 	fk_cub_name VARCHAR2(30),
-	id VARCHAR2(8),
+	id VARCHAR2(16),
 	header VARCHAR2(40),
 	description VARCHAR2(3999),
 	example VARCHAR2(3999) DEFAULT '#',
@@ -536,7 +537,7 @@ CREATE TABLE t_cube_gen_example_model (
 	cube_id VARCHAR2(16),
 	cube_sequence NUMBER(8),
 	fk_cub_name VARCHAR2(30),
-	id VARCHAR2(8),
+	id VARCHAR2(16),
 	header VARCHAR2(40),
 	included_object_names VARCHAR2(120),
 	description VARCHAR2(3999),
@@ -551,7 +552,7 @@ CREATE TABLE t_cube_gen_example_object (
 	cube_id VARCHAR2(16),
 	cube_sequence NUMBER(8),
 	fk_cub_name VARCHAR2(30),
-	fk_cgm_id VARCHAR2(8),
+	fk_cgm_id VARCHAR2(16),
 	xk_bot_name VARCHAR2(30),
 	CONSTRAINT cgo_pk
 		PRIMARY KEY (fk_cub_name, fk_cgm_id, xk_bot_name),
@@ -564,8 +565,8 @@ CREATE TABLE t_cube_gen_function (
 	cube_id VARCHAR2(16),
 	cube_sequence NUMBER(8),
 	fk_cub_name VARCHAR2(30),
-	fk_cgm_id VARCHAR2(8),
-	id VARCHAR2(8),
+	fk_cgm_id VARCHAR2(16),
+	id VARCHAR2(16),
 	header VARCHAR2(40),
 	description VARCHAR2(3999),
 	template VARCHAR2(3999),

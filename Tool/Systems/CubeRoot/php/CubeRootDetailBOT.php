@@ -16,6 +16,7 @@ g_xmlhttp.onreadystatechange = function() {
 			var l_values = l_argument[1].split("<|>");
 			document.getElementById("InputCubeTsgIntExt").value=l_values[0];
 			document.getElementById("InputDirectory").value=l_values[1];
+			document.getElementById("InputApiUrl").value=l_values[2];
 			ProcessTypeSpecialisation();
 			break;
 		case "CREATE_BOT":
@@ -102,7 +103,8 @@ function CreateBot() {
 	var l_parameters = 
 		document.getElementById("InputName").value+'<|>'+
 		document.getElementById("InputCubeTsgIntExt").value+'<|>'+
-		document.getElementById("InputDirectory").value;
+		document.getElementById("InputDirectory").value+'<|>'+
+		document.getElementById("InputApiUrl").value;
 	if (g_option[0] == 'F' || g_option[0] == 'L') {
 		performTrans('CreateBot<|||>'+g_option[0]+'<|>'+l_parameters);
 	} else {
@@ -114,7 +116,8 @@ function UpdateBot() {
 	var l_parameters = 
 		document.getElementById("InputName").value+'<|>'+
 		document.getElementById("InputCubeTsgIntExt").value+'<|>'+
-		document.getElementById("InputDirectory").value;
+		document.getElementById("InputDirectory").value+'<|>'+
+		document.getElementById("InputApiUrl").value;
 	performTrans('UpdateBot<|||>'+l_parameters);
 }
 
@@ -229,6 +232,11 @@ function drop(p_event) {
 function ProcessTypeSpecialisation() {
 	if (document.getElementById("InputCubeTsgIntExt").value != ' ') {
 		document.getElementById("InputCubeTsgIntExt").disabled=true;
+		switch (document.getElementById("InputCubeTsgIntExt").value) {
+		case "INT":
+			document.getElementById("RowAtbApiUrl").style.display="none";
+			break;
+		}
 		document.getElementById("TableMain").style.display="inline";
 	}
 }
@@ -247,6 +255,8 @@ function ProcessTypeSpecialisation() {
 <input id="InputName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
 <tr><td>Directory</td><td><div style="max-width:80em;">
 <input id="InputDirectory" type="text" maxlength="80" style="width:100%;" onchange="ReplaceSpaces(this);"></input></div></td></tr>
+<tr id="RowAtbApiUrl"><td style="cursor:help;" oncontextmenu="OpenDescBox('BOTYPE','BusinessObjectType.ApiUrl','BUSINESS_OBJECT_TYPE','API_URL',-1)">ApiUrl</td><td><div style="max-width:300em;">
+<input id="InputApiUrl" type="text" maxlength="300" style="width:100%;" onchange="ReplaceSpaces(this);"></input></div></td></tr>
 <tr><td><br></td><td style="width:100%;"></td></tr>
 <tr><td/><td>
 <button id="ButtonCreate" type="button" onclick="CreateBot()">Create</button>&nbsp;&nbsp;&nbsp;

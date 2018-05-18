@@ -220,9 +220,9 @@
 						-ATTRIBUTE:;
 						+ATTRIBUTE[CASE60-ATB-000000100021]:DESCRIPTION|N;
 						-ATTRIBUTE:;
-						=ATTRIBUTE[CASE60-ATB-000099900128]:STATUS|N;[[Extra Attribute to explain Sequence]]
+						=ATTRIBUTE[CASE60-ATB-000099900129]:STATUS|N;[[Extra Attribute to explain Sequence]]
 					-TYPE:;
-					=ATTRIBUTE[CASE60-ATB-000099900122]:STATUS|N;[[Extra Attribute to explain Sequence]]
+					=ATTRIBUTE[CASE60-ATB-000099900123]:STATUS|N;[[Extra Attribute to explain Sequence]]
 				-TYPE:;
 			-BUSINESS_OBJECT_TYPE:;
 		-CUBE_MODEL:;

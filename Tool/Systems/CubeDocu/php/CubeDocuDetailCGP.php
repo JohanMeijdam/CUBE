@@ -247,8 +247,8 @@ function drop(p_event) {
 <table>
 <tr><td><u>CubeGenDocumentation.Name</u></td><td><div style="max-width:30em;">
 <input id="InputFkCubName" type="text" maxlength="30" style="width:100%;" onchange="ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td style="cursor:help;" oncontextmenu="OpenDescBox('DESC','CubeGenParagraph.Id','CUBE_GEN_PARAGRAPH','ID',-1)"><u>Id</u></td><td><div style="max-width:8em;">
-<input id="InputId" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr><td style="cursor:help;" oncontextmenu="OpenDescBox('DESC','CubeGenParagraph.Id','CUBE_GEN_PARAGRAPH','ID',-1)"><u>Id</u></td><td><div style="max-width:16em;">
+<input id="InputId" type="text" maxlength="16" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
 <tr><td style="cursor:help;" oncontextmenu="OpenDescBox('DESC','CubeGenParagraph.Header','CUBE_GEN_PARAGRAPH','HEADER',-1)">Header</td><td><div style="max-width:40em;">
 <input id="InputHeader" type="text" maxlength="40" style="width:100%;"></input></div></td></tr>
 <tr><td style="padding-top:10px;">Description</td></tr><tr><td colspan="2"><div>

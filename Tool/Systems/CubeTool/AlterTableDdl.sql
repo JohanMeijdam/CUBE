@@ -340,7 +340,7 @@ BEGIN
 			fk_itp_name VARCHAR2(30),
 			sequence NUMBER(8) DEFAULT ''0'',
 			suffix VARCHAR2(12),
-			domain CHAR(2) DEFAULT ''CH'',
+			domain VARCHAR2(16) DEFAULT ''TEXT'',
 			length NUMBER(8) DEFAULT ''0'',
 			decimals NUMBER(8) DEFAULT ''0'',
 			case_sensitive CHAR(1) DEFAULT ''N'',
@@ -381,7 +381,7 @@ BEGIN
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_INFORMATION_TYPE_ELEMENT' AND column_name = 'DOMAIN';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
-			'ALTER TABLE t_information_type_element ADD domain CHAR(2) DEFAULT ''CH''';
+			'ALTER TABLE t_information_type_element ADD domain VARCHAR2(16) DEFAULT ''TEXT''';
 			DBMS_OUTPUT.PUT_LINE('Column T_INFORMATION_TYPE_ELEMENT.DOMAIN created');
 		END IF;
 
@@ -454,7 +454,7 @@ BEGIN
 			cube_sequence NUMBER(8),
 			fk_itp_name VARCHAR2(30),
 			fk_ite_sequence NUMBER(8) DEFAULT ''0'',
-			code VARCHAR2(8),
+			code VARCHAR2(16),
 			prompt VARCHAR2(32))';
 		DBMS_OUTPUT.PUT_LINE('Table T_PERMITTED_VALUE created');
 	ELSE
@@ -490,7 +490,7 @@ BEGIN
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_PERMITTED_VALUE' AND column_name = 'CODE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
-			'ALTER TABLE t_permitted_value ADD code VARCHAR2(8)';
+			'ALTER TABLE t_permitted_value ADD code VARCHAR2(16)';
 			DBMS_OUTPUT.PUT_LINE('Column T_PERMITTED_VALUE.CODE created');
 		END IF;
 
@@ -1020,8 +1020,8 @@ BEGIN
 			fk_atb_name VARCHAR2(30),
 			include_or_exclude CHAR(2) DEFAULT ''IN'',
 			xf_tsp_typ_name VARCHAR2(30),
-			xf_tsp_tsg_code VARCHAR2(8),
-			xk_tsp_code VARCHAR2(8))';
+			xf_tsp_tsg_code VARCHAR2(16),
+			xk_tsp_code VARCHAR2(16))';
 		DBMS_OUTPUT.PUT_LINE('Table T_RESTRICTION_TYPE_SPEC_ATB created');
 	ELSE
 
@@ -1070,14 +1070,14 @@ BEGIN
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_RESTRICTION_TYPE_SPEC_ATB' AND column_name = 'XF_TSP_TSG_CODE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
-			'ALTER TABLE t_restriction_type_spec_atb ADD xf_tsp_tsg_code VARCHAR2(8)';
+			'ALTER TABLE t_restriction_type_spec_atb ADD xf_tsp_tsg_code VARCHAR2(16)';
 			DBMS_OUTPUT.PUT_LINE('Column T_RESTRICTION_TYPE_SPEC_ATB.XF_TSP_TSG_CODE created');
 		END IF;
 
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_RESTRICTION_TYPE_SPEC_ATB' AND column_name = 'XK_TSP_CODE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
-			'ALTER TABLE t_restriction_type_spec_atb ADD xk_tsp_code VARCHAR2(8)';
+			'ALTER TABLE t_restriction_type_spec_atb ADD xk_tsp_code VARCHAR2(16)';
 			DBMS_OUTPUT.PUT_LINE('Column T_RESTRICTION_TYPE_SPEC_ATB.XK_TSP_CODE created');
 		END IF;
 
@@ -1315,8 +1315,8 @@ BEGIN
 			fk_ref_typ_name VARCHAR2(30),
 			include_or_exclude CHAR(2) DEFAULT ''IN'',
 			xf_tsp_typ_name VARCHAR2(30),
-			xf_tsp_tsg_code VARCHAR2(8),
-			xk_tsp_code VARCHAR2(8))';
+			xf_tsp_tsg_code VARCHAR2(16),
+			xk_tsp_code VARCHAR2(16))';
 		DBMS_OUTPUT.PUT_LINE('Table T_RESTRICTION_TYPE_SPEC_REF created');
 	ELSE
 
@@ -1372,14 +1372,14 @@ BEGIN
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_RESTRICTION_TYPE_SPEC_REF' AND column_name = 'XF_TSP_TSG_CODE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
-			'ALTER TABLE t_restriction_type_spec_ref ADD xf_tsp_tsg_code VARCHAR2(8)';
+			'ALTER TABLE t_restriction_type_spec_ref ADD xf_tsp_tsg_code VARCHAR2(16)';
 			DBMS_OUTPUT.PUT_LINE('Column T_RESTRICTION_TYPE_SPEC_REF.XF_TSP_TSG_CODE created');
 		END IF;
 
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_RESTRICTION_TYPE_SPEC_REF' AND column_name = 'XK_TSP_CODE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
-			'ALTER TABLE t_restriction_type_spec_ref ADD xk_tsp_code VARCHAR2(8)';
+			'ALTER TABLE t_restriction_type_spec_ref ADD xk_tsp_code VARCHAR2(16)';
 			DBMS_OUTPUT.PUT_LINE('Column T_RESTRICTION_TYPE_SPEC_REF.XK_TSP_CODE created');
 		END IF;
 
@@ -1609,8 +1609,8 @@ BEGIN
 			cube_level NUMBER(8) DEFAULT ''1'',
 			fk_bot_name VARCHAR2(30),
 			fk_typ_name VARCHAR2(30),
-			fk_tsg_code VARCHAR2(8),
-			code VARCHAR2(8),
+			fk_tsg_code VARCHAR2(16),
+			code VARCHAR2(16),
 			name VARCHAR2(30),
 			primary_key CHAR(1) DEFAULT ''N'',
 			xf_atb_typ_name VARCHAR2(30),
@@ -1656,14 +1656,14 @@ BEGIN
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_TYPE_SPECIALISATION_GROUP' AND column_name = 'FK_TSG_CODE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
-			'ALTER TABLE t_type_specialisation_group ADD fk_tsg_code VARCHAR2(8)';
+			'ALTER TABLE t_type_specialisation_group ADD fk_tsg_code VARCHAR2(16)';
 			DBMS_OUTPUT.PUT_LINE('Column T_TYPE_SPECIALISATION_GROUP.FK_TSG_CODE created');
 		END IF;
 
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_TYPE_SPECIALISATION_GROUP' AND column_name = 'CODE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
-			'ALTER TABLE t_type_specialisation_group ADD code VARCHAR2(8)';
+			'ALTER TABLE t_type_specialisation_group ADD code VARCHAR2(16)';
 			DBMS_OUTPUT.PUT_LINE('Column T_TYPE_SPECIALISATION_GROUP.CODE created');
 		END IF;
 
@@ -1722,12 +1722,12 @@ BEGIN
 			cube_sequence NUMBER(8),
 			fk_bot_name VARCHAR2(30),
 			fk_typ_name VARCHAR2(30),
-			fk_tsg_code VARCHAR2(8),
-			code VARCHAR2(8),
+			fk_tsg_code VARCHAR2(16),
+			code VARCHAR2(16),
 			name VARCHAR2(30),
 			xf_tsp_typ_name VARCHAR2(30),
-			xf_tsp_tsg_code VARCHAR2(8),
-			xk_tsp_code VARCHAR2(8))';
+			xf_tsp_tsg_code VARCHAR2(16),
+			xk_tsp_code VARCHAR2(16))';
 		DBMS_OUTPUT.PUT_LINE('Table T_TYPE_SPECIALISATION created');
 	ELSE
 
@@ -1762,14 +1762,14 @@ BEGIN
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_TYPE_SPECIALISATION' AND column_name = 'FK_TSG_CODE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
-			'ALTER TABLE t_type_specialisation ADD fk_tsg_code VARCHAR2(8)';
+			'ALTER TABLE t_type_specialisation ADD fk_tsg_code VARCHAR2(16)';
 			DBMS_OUTPUT.PUT_LINE('Column T_TYPE_SPECIALISATION.FK_TSG_CODE created');
 		END IF;
 
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_TYPE_SPECIALISATION' AND column_name = 'CODE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
-			'ALTER TABLE t_type_specialisation ADD code VARCHAR2(8)';
+			'ALTER TABLE t_type_specialisation ADD code VARCHAR2(16)';
 			DBMS_OUTPUT.PUT_LINE('Column T_TYPE_SPECIALISATION.CODE created');
 		END IF;
 
@@ -1790,14 +1790,14 @@ BEGIN
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_TYPE_SPECIALISATION' AND column_name = 'XF_TSP_TSG_CODE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
-			'ALTER TABLE t_type_specialisation ADD xf_tsp_tsg_code VARCHAR2(8)';
+			'ALTER TABLE t_type_specialisation ADD xf_tsp_tsg_code VARCHAR2(16)';
 			DBMS_OUTPUT.PUT_LINE('Column T_TYPE_SPECIALISATION.XF_TSP_TSG_CODE created');
 		END IF;
 
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_TYPE_SPECIALISATION' AND column_name = 'XK_TSP_CODE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
-			'ALTER TABLE t_type_specialisation ADD xk_tsp_code VARCHAR2(8)';
+			'ALTER TABLE t_type_specialisation ADD xk_tsp_code VARCHAR2(16)';
 			DBMS_OUTPUT.PUT_LINE('Column T_TYPE_SPECIALISATION.XK_TSP_CODE created');
 		END IF;
 
@@ -2192,7 +2192,7 @@ BEGIN
 			'FK_ITP_NAME','VARCHAR2(30)',
 			'SEQUENCE','NUMBER(8)',
 			'SUFFIX','VARCHAR2(12)',
-			'DOMAIN','CHAR(2)',
+			'DOMAIN','VARCHAR2(16)',
 			'LENGTH','NUMBER(8)',
 			'DECIMALS','NUMBER(8)',
 			'CASE_SENSITIVE','CHAR(1)',
@@ -2204,7 +2204,7 @@ BEGIN
 			'FK_ITP_NAME',NULL,
 			'SEQUENCE','''0''',
 			'SUFFIX',NULL,
-			'DOMAIN','''CH''',
+			'DOMAIN','''TEXT''',
 			'LENGTH','''0''',
 			'DECIMALS','''0''',
 			'CASE_SENSITIVE','''N''',
@@ -2274,7 +2274,7 @@ BEGIN
 			'CUBE_SEQUENCE','NUMBER(8)',
 			'FK_ITP_NAME','VARCHAR2(30)',
 			'FK_ITE_SEQUENCE','NUMBER(8)',
-			'CODE','VARCHAR2(8)',
+			'CODE','VARCHAR2(16)',
 			'PROMPT','VARCHAR2(32)',NULL) new_domain,
 		DECODE(column_name,
 			'CUBE_ID',NULL,
@@ -2722,8 +2722,8 @@ BEGIN
 			'FK_ATB_NAME','VARCHAR2(30)',
 			'INCLUDE_OR_EXCLUDE','CHAR(2)',
 			'XF_TSP_TYP_NAME','VARCHAR2(30)',
-			'XF_TSP_TSG_CODE','VARCHAR2(8)',
-			'XK_TSP_CODE','VARCHAR2(8)',NULL) new_domain,
+			'XF_TSP_TSG_CODE','VARCHAR2(16)',
+			'XK_TSP_CODE','VARCHAR2(16)',NULL) new_domain,
 		DECODE(column_name,
 			'CUBE_ID',NULL,
 			'FK_BOT_NAME',NULL,
@@ -2956,8 +2956,8 @@ BEGIN
 			'FK_REF_TYP_NAME','VARCHAR2(30)',
 			'INCLUDE_OR_EXCLUDE','CHAR(2)',
 			'XF_TSP_TYP_NAME','VARCHAR2(30)',
-			'XF_TSP_TSG_CODE','VARCHAR2(8)',
-			'XK_TSP_CODE','VARCHAR2(8)',NULL) new_domain,
+			'XF_TSP_TSG_CODE','VARCHAR2(16)',
+			'XK_TSP_CODE','VARCHAR2(16)',NULL) new_domain,
 		DECODE(column_name,
 			'CUBE_ID',NULL,
 			'FK_BOT_NAME',NULL,
@@ -3227,8 +3227,8 @@ BEGIN
 			'CUBE_LEVEL','NUMBER(8)',
 			'FK_BOT_NAME','VARCHAR2(30)',
 			'FK_TYP_NAME','VARCHAR2(30)',
-			'FK_TSG_CODE','VARCHAR2(8)',
-			'CODE','VARCHAR2(8)',
+			'FK_TSG_CODE','VARCHAR2(16)',
+			'CODE','VARCHAR2(16)',
 			'NAME','VARCHAR2(30)',
 			'PRIMARY_KEY','CHAR(1)',
 			'XF_ATB_TYP_NAME','VARCHAR2(30)',
@@ -3313,12 +3313,12 @@ BEGIN
 			'CUBE_SEQUENCE','NUMBER(8)',
 			'FK_BOT_NAME','VARCHAR2(30)',
 			'FK_TYP_NAME','VARCHAR2(30)',
-			'FK_TSG_CODE','VARCHAR2(8)',
-			'CODE','VARCHAR2(8)',
+			'FK_TSG_CODE','VARCHAR2(16)',
+			'CODE','VARCHAR2(16)',
 			'NAME','VARCHAR2(30)',
 			'XF_TSP_TYP_NAME','VARCHAR2(30)',
-			'XF_TSP_TSG_CODE','VARCHAR2(8)',
-			'XK_TSP_CODE','VARCHAR2(8)',NULL) new_domain,
+			'XF_TSP_TSG_CODE','VARCHAR2(16)',
+			'XK_TSP_CODE','VARCHAR2(16)',NULL) new_domain,
 		DECODE(column_name,
 			'CUBE_ID',NULL,
 			'CUBE_SEQUENCE',NULL,

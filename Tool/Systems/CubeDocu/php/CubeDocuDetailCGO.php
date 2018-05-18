@@ -344,8 +344,8 @@ function drop(p_event) {
 <table>
 <tr><td><u>CubeGenDocumentation.Name</u></td><td><div style="max-width:30em;">
 <input id="InputFkCubName" type="text" maxlength="30" style="width:100%;" onchange="ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td><u>CubeGenExampleModel.Id</u></td><td><div style="max-width:8em;">
-<input id="InputFkCgmId" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr><td><u>CubeGenExampleModel.Id</u></td><td><div style="max-width:16em;">
+<input id="InputFkCgmId" type="text" maxlength="16" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
 <tr><td height=6></td></tr><tr><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/botype.bmp"/> BusinessObjectType (UsesAsExample)</legend>
 <table style="width:100%;">
 <tr><td><u>BusinessObjectType.Name</u></td><td style="width:100%;"><div style="max-width:30em;">

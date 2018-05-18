@@ -113,7 +113,7 @@ function InitBody() {
 	default:
 		alert ('Error InitBody: '+l_argument[1]);
 	}
-	document.getElementById("InputDomain").value='CH';
+	document.getElementById("InputDomain").value='TEXT';
 	document.getElementById("InputLength").value='0';
 	document.getElementById("InputDecimals").value='0';
 	document.getElementById("InputCaseSensitive").value='N';
@@ -274,11 +274,11 @@ function drop(p_event) {
 <tr><td>Domain</td><td><div>
 <select id="InputDomain" type="text">
 	<option value=" " selected> </option>
-	<option value="CH">Text</option>
-	<option value="NR">Number</option>
-	<option value="DT">Date</option>
-	<option value="TI">Time</option>
-	<option value="TS">Timestamp</option>
+	<option value="TEXT">Text</option>
+	<option value="NUMBER">Number</option>
+	<option value="DATE">Date</option>
+	<option value="TIME">Time</option>
+	<option value="DATETIME-LOCAL">Timestamp</option>
 </select></div></td></tr>
 <tr><td>Length</td><td><div style="max-width:9em;">
 <input id="InputLength" type="text" maxlength="9" style="width:100%;"></input></div></td></tr>
