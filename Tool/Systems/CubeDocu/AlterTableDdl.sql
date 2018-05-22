@@ -238,32 +238,6 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
-	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBEDOCU' AND sequence_name = 'SYS_SEQ';
-	IF l_count = 0 THEN
-
-		EXECUTE IMMEDIATE 
-		'CREATE SEQUENCE sys_seq START WITH 100000';
-		DBMS_OUTPUT.PUT_LINE('Sequence SYS_SEQ created');
-
-	END IF;
-END;
-/
-DECLARE
-	l_count NUMBER(4);
-BEGIN
-	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBEDOCU' AND sequence_name = 'SBT_SEQ';
-	IF l_count = 0 THEN
-
-		EXECUTE IMMEDIATE 
-		'CREATE SEQUENCE sbt_seq START WITH 100000';
-		DBMS_OUTPUT.PUT_LINE('Sequence SBT_SEQ created');
-
-	END IF;
-END;
-/
-DECLARE
-	l_count NUMBER(4);
-BEGIN
 	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBEDOCU' AND sequence_name = 'CUB_SEQ';
 	IF l_count = 0 THEN
 
@@ -335,6 +309,32 @@ BEGIN
 		EXECUTE IMMEDIATE 
 		'CREATE SEQUENCE ctf_seq START WITH 100000';
 		DBMS_OUTPUT.PUT_LINE('Sequence CTF_SEQ created');
+
+	END IF;
+END;
+/
+DECLARE
+	l_count NUMBER(4);
+BEGIN
+	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBEDOCU' AND sequence_name = 'SYS_SEQ';
+	IF l_count = 0 THEN
+
+		EXECUTE IMMEDIATE 
+		'CREATE SEQUENCE sys_seq START WITH 100000';
+		DBMS_OUTPUT.PUT_LINE('Sequence SYS_SEQ created');
+
+	END IF;
+END;
+/
+DECLARE
+	l_count NUMBER(4);
+BEGIN
+	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBEDOCU' AND sequence_name = 'SBT_SEQ';
+	IF l_count = 0 THEN
+
+		EXECUTE IMMEDIATE 
+		'CREATE SEQUENCE sbt_seq START WITH 100000';
+		DBMS_OUTPUT.PUT_LINE('Sequence SBT_SEQ created');
 
 	END IF;
 END;
@@ -1930,130 +1930,6 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
-	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = 'CUBEDOCU' AND table_name = 'T_SYSTEM';
-	IF l_count = 0 THEN
-		EXECUTE IMMEDIATE
-		'CREATE TABLE t_system (
-			cube_id VARCHAR2(16),
-			name VARCHAR2(30),
-			database VARCHAR2(30),
-			schema VARCHAR2(30),
-			password VARCHAR2(20))';
-		DBMS_OUTPUT.PUT_LINE('Table T_SYSTEM created');
-	ELSE
-
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_SYSTEM' AND column_name = 'CUBE_ID';
-		IF l_count = 0 THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_system ADD cube_id VARCHAR2(16)';
-			DBMS_OUTPUT.PUT_LINE('Column T_SYSTEM.CUBE_ID created');
-		END IF;
-
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_SYSTEM' AND column_name = 'NAME';
-		IF l_count = 0 THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_system ADD name VARCHAR2(30)';
-			DBMS_OUTPUT.PUT_LINE('Column T_SYSTEM.NAME created');
-		END IF;
-
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_SYSTEM' AND column_name = 'DATABASE';
-		IF l_count = 0 THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_system ADD database VARCHAR2(30)';
-			DBMS_OUTPUT.PUT_LINE('Column T_SYSTEM.DATABASE created');
-		END IF;
-
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_SYSTEM' AND column_name = 'SCHEMA';
-		IF l_count = 0 THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_system ADD schema VARCHAR2(30)';
-			DBMS_OUTPUT.PUT_LINE('Column T_SYSTEM.SCHEMA created');
-		END IF;
-
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_SYSTEM' AND column_name = 'PASSWORD';
-		IF l_count = 0 THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_system ADD password VARCHAR2(20)';
-			DBMS_OUTPUT.PUT_LINE('Column T_SYSTEM.PASSWORD created');
-		END IF;
-
-		FOR r_key IN (SELECT constraint_name FROM all_constraints WHERE owner = 'CUBEDOCU' AND table_name = 'T_SYSTEM' AND constraint_type IN ('P','U','R') ORDER BY constraint_type DESC)
-		LOOP
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_system DROP CONSTRAINT ' || r_key.constraint_name || ' CASCADE';
-			DBMS_OUTPUT.PUT_LINE('Primary Key T_SYSTEM.' || UPPER(r_key.constraint_name) || ' dropped');
-		END LOOP;
-
-		FOR r_index IN (SELECT index_name FROM all_indexes WHERE owner = 'CUBEDOCU' AND table_name = 'T_SYSTEM')
-		LOOP
-			EXECUTE IMMEDIATE
-			'DROP INDEX ' || r_index.index_name;
-			DBMS_OUTPUT.PUT_LINE('Index T_SYSTEM.' || UPPER(r_index.index_name) || ' dropped');
-		END LOOP;
-	END IF;
-END;
-/
-DECLARE
-	l_count NUMBER(4);
-BEGIN
-	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = 'CUBEDOCU' AND table_name = 'T_SYSTEM_BO_TYPE';
-	IF l_count = 0 THEN
-		EXECUTE IMMEDIATE
-		'CREATE TABLE t_system_bo_type (
-			cube_id VARCHAR2(16),
-			cube_sequence NUMBER(8),
-			fk_sys_name VARCHAR2(30),
-			xk_bot_name VARCHAR2(30))';
-		DBMS_OUTPUT.PUT_LINE('Table T_SYSTEM_BO_TYPE created');
-	ELSE
-
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_SYSTEM_BO_TYPE' AND column_name = 'CUBE_ID';
-		IF l_count = 0 THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_system_bo_type ADD cube_id VARCHAR2(16)';
-			DBMS_OUTPUT.PUT_LINE('Column T_SYSTEM_BO_TYPE.CUBE_ID created');
-		END IF;
-
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_SYSTEM_BO_TYPE' AND column_name = 'CUBE_SEQUENCE';
-		IF l_count = 0 THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_system_bo_type ADD cube_sequence NUMBER(8)';
-			DBMS_OUTPUT.PUT_LINE('Column T_SYSTEM_BO_TYPE.CUBE_SEQUENCE created');
-		END IF;
-
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_SYSTEM_BO_TYPE' AND column_name = 'FK_SYS_NAME';
-		IF l_count = 0 THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_system_bo_type ADD fk_sys_name VARCHAR2(30)';
-			DBMS_OUTPUT.PUT_LINE('Column T_SYSTEM_BO_TYPE.FK_SYS_NAME created');
-		END IF;
-
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_SYSTEM_BO_TYPE' AND column_name = 'XK_BOT_NAME';
-		IF l_count = 0 THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_system_bo_type ADD xk_bot_name VARCHAR2(30)';
-			DBMS_OUTPUT.PUT_LINE('Column T_SYSTEM_BO_TYPE.XK_BOT_NAME created');
-		END IF;
-
-		FOR r_key IN (SELECT constraint_name FROM all_constraints WHERE owner = 'CUBEDOCU' AND table_name = 'T_SYSTEM_BO_TYPE' AND constraint_type IN ('P','U','R') ORDER BY constraint_type DESC)
-		LOOP
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_system_bo_type DROP CONSTRAINT ' || r_key.constraint_name || ' CASCADE';
-			DBMS_OUTPUT.PUT_LINE('Primary Key T_SYSTEM_BO_TYPE.' || UPPER(r_key.constraint_name) || ' dropped');
-		END LOOP;
-
-		FOR r_index IN (SELECT index_name FROM all_indexes WHERE owner = 'CUBEDOCU' AND table_name = 'T_SYSTEM_BO_TYPE')
-		LOOP
-			EXECUTE IMMEDIATE
-			'DROP INDEX ' || r_index.index_name;
-			DBMS_OUTPUT.PUT_LINE('Index T_SYSTEM_BO_TYPE.' || UPPER(r_index.index_name) || ' dropped');
-		END LOOP;
-	END IF;
-END;
-/
-DECLARE
-	l_count NUMBER(4);
-BEGIN
 	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = 'CUBEDOCU' AND table_name = 'T_CUBE_GEN_DOCUMENTATION';
 	IF l_count = 0 THEN
 		EXECUTE IMMEDIATE
@@ -2511,6 +2387,130 @@ BEGIN
 	END IF;
 END;
 /
+DECLARE
+	l_count NUMBER(4);
+BEGIN
+	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = 'CUBEDOCU' AND table_name = 'T_SYSTEM';
+	IF l_count = 0 THEN
+		EXECUTE IMMEDIATE
+		'CREATE TABLE t_system (
+			cube_id VARCHAR2(16),
+			name VARCHAR2(30),
+			database VARCHAR2(30),
+			schema VARCHAR2(30),
+			password VARCHAR2(20))';
+		DBMS_OUTPUT.PUT_LINE('Table T_SYSTEM created');
+	ELSE
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_SYSTEM' AND column_name = 'CUBE_ID';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_system ADD cube_id VARCHAR2(16)';
+			DBMS_OUTPUT.PUT_LINE('Column T_SYSTEM.CUBE_ID created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_SYSTEM' AND column_name = 'NAME';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_system ADD name VARCHAR2(30)';
+			DBMS_OUTPUT.PUT_LINE('Column T_SYSTEM.NAME created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_SYSTEM' AND column_name = 'DATABASE';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_system ADD database VARCHAR2(30)';
+			DBMS_OUTPUT.PUT_LINE('Column T_SYSTEM.DATABASE created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_SYSTEM' AND column_name = 'SCHEMA';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_system ADD schema VARCHAR2(30)';
+			DBMS_OUTPUT.PUT_LINE('Column T_SYSTEM.SCHEMA created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_SYSTEM' AND column_name = 'PASSWORD';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_system ADD password VARCHAR2(20)';
+			DBMS_OUTPUT.PUT_LINE('Column T_SYSTEM.PASSWORD created');
+		END IF;
+
+		FOR r_key IN (SELECT constraint_name FROM all_constraints WHERE owner = 'CUBEDOCU' AND table_name = 'T_SYSTEM' AND constraint_type IN ('P','U','R') ORDER BY constraint_type DESC)
+		LOOP
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_system DROP CONSTRAINT ' || r_key.constraint_name || ' CASCADE';
+			DBMS_OUTPUT.PUT_LINE('Primary Key T_SYSTEM.' || UPPER(r_key.constraint_name) || ' dropped');
+		END LOOP;
+
+		FOR r_index IN (SELECT index_name FROM all_indexes WHERE owner = 'CUBEDOCU' AND table_name = 'T_SYSTEM')
+		LOOP
+			EXECUTE IMMEDIATE
+			'DROP INDEX ' || r_index.index_name;
+			DBMS_OUTPUT.PUT_LINE('Index T_SYSTEM.' || UPPER(r_index.index_name) || ' dropped');
+		END LOOP;
+	END IF;
+END;
+/
+DECLARE
+	l_count NUMBER(4);
+BEGIN
+	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = 'CUBEDOCU' AND table_name = 'T_SYSTEM_BO_TYPE';
+	IF l_count = 0 THEN
+		EXECUTE IMMEDIATE
+		'CREATE TABLE t_system_bo_type (
+			cube_id VARCHAR2(16),
+			cube_sequence NUMBER(8),
+			fk_sys_name VARCHAR2(30),
+			xk_bot_name VARCHAR2(30))';
+		DBMS_OUTPUT.PUT_LINE('Table T_SYSTEM_BO_TYPE created');
+	ELSE
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_SYSTEM_BO_TYPE' AND column_name = 'CUBE_ID';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_system_bo_type ADD cube_id VARCHAR2(16)';
+			DBMS_OUTPUT.PUT_LINE('Column T_SYSTEM_BO_TYPE.CUBE_ID created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_SYSTEM_BO_TYPE' AND column_name = 'CUBE_SEQUENCE';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_system_bo_type ADD cube_sequence NUMBER(8)';
+			DBMS_OUTPUT.PUT_LINE('Column T_SYSTEM_BO_TYPE.CUBE_SEQUENCE created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_SYSTEM_BO_TYPE' AND column_name = 'FK_SYS_NAME';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_system_bo_type ADD fk_sys_name VARCHAR2(30)';
+			DBMS_OUTPUT.PUT_LINE('Column T_SYSTEM_BO_TYPE.FK_SYS_NAME created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_SYSTEM_BO_TYPE' AND column_name = 'XK_BOT_NAME';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_system_bo_type ADD xk_bot_name VARCHAR2(30)';
+			DBMS_OUTPUT.PUT_LINE('Column T_SYSTEM_BO_TYPE.XK_BOT_NAME created');
+		END IF;
+
+		FOR r_key IN (SELECT constraint_name FROM all_constraints WHERE owner = 'CUBEDOCU' AND table_name = 'T_SYSTEM_BO_TYPE' AND constraint_type IN ('P','U','R') ORDER BY constraint_type DESC)
+		LOOP
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_system_bo_type DROP CONSTRAINT ' || r_key.constraint_name || ' CASCADE';
+			DBMS_OUTPUT.PUT_LINE('Primary Key T_SYSTEM_BO_TYPE.' || UPPER(r_key.constraint_name) || ' dropped');
+		END LOOP;
+
+		FOR r_index IN (SELECT index_name FROM all_indexes WHERE owner = 'CUBEDOCU' AND table_name = 'T_SYSTEM_BO_TYPE')
+		LOOP
+			EXECUTE IMMEDIATE
+			'DROP INDEX ' || r_index.index_name;
+			DBMS_OUTPUT.PUT_LINE('Index T_SYSTEM_BO_TYPE.' || UPPER(r_index.index_name) || ' dropped');
+		END LOOP;
+	END IF;
+END;
+/
 BEGIN
 	FOR r_table IN (SELECT t.table_name FROM all_tables t, all_tab_comments c
 				WHERE t.table_name = c.table_name
@@ -2534,14 +2534,14 @@ BEGIN
 							'T_TYPE_SPECIALISATION_GROUP',
 							'T_TYPE_SPECIALISATION',
 							'T_DESCRIPTION_TYPE',
-							'T_SYSTEM',
-							'T_SYSTEM_BO_TYPE',
 							'T_CUBE_GEN_DOCUMENTATION',
 							'T_CUBE_GEN_PARAGRAPH',
 							'T_CUBE_GEN_EXAMPLE_MODEL',
 							'T_CUBE_GEN_EXAMPLE_OBJECT',
 							'T_CUBE_GEN_FUNCTION',
-							'T_CUBE_GEN_TEMPLATE_FUNCTION')
+							'T_CUBE_GEN_TEMPLATE_FUNCTION',
+							'T_SYSTEM',
+							'T_SYSTEM_BO_TYPE')
 				  AND SUBSTR(t.table_name,1,7) <> 'T_CUBE_')
 	LOOP
 		EXECUTE IMMEDIATE
@@ -3867,125 +3867,6 @@ BEGIN
   		DECODE(column_name,
 			'CUBE_ID','VARCHAR2(16)',
 			'NAME','VARCHAR2(30)',
-			'DATABASE','VARCHAR2(30)',
-			'SCHEMA','VARCHAR2(30)',
-			'PASSWORD','VARCHAR2(20)',NULL) new_domain,
-		DECODE(column_name,
-			'CUBE_ID',NULL,
-			'NAME',NULL,
-			'DATABASE',NULL,
-			'SCHEMA',NULL,
-			'PASSWORD',NULL,NULL) new_default_value
-  		FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_SYSTEM')
-	LOOP
-		IF r_field.old_domain <> r_field.new_domain THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_system RENAME COLUMN ' || r_field.column_name || ' TO old#domain#field';
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_system ADD ' || r_field.column_name || ' ' || r_field.new_domain;
- 			IF r_field.new_domain = 'VARCHAR2' THEN  
-				EXECUTE IMMEDIATE
-				'UPDATE t_system SET ' || r_field.column_name || '= TRIM(old#domain#field)';
-			ELSE
-				EXECUTE IMMEDIATE
-				'UPDATE t_system SET ' || r_field.column_name || '= old#domain#field';
-			END IF;
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_system DROP COLUMN old#domain#field';
-			DBMS_OUTPUT.PUT_LINE('Field T_SYSTEM.' || UPPER(r_field.column_name) || ' converted from ' || r_field.old_domain || ' to ' || r_field.new_domain);
-		END IF;
-		IF NOT((r_field.old_default_value IS NULL AND r_field.new_default_value IS NULL) OR r_field.old_default_value = r_field.new_default_value) THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_system MODIFY (' || r_field.column_name || ' DEFAULT ' || NVL(r_field.new_default_value,'NULL') || ')';
-			DBMS_OUTPUT.PUT_LINE('Field T_SYSTEM.' || UPPER(r_field.column_name) || ' default value set to ' || NVL(r_field.new_default_value,'NULL'));
-		END IF;
-	END LOOP;
-	EXECUTE IMMEDIATE
-	'ALTER TABLE t_system ADD CONSTRAINT sys_pk
-		PRIMARY KEY (
-			name )';
-	DBMS_OUTPUT.PUT_LINE('Primary Key T_SYSTEM.SYS_PK created');
-	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_SYSTEM' AND column_name NOT IN (
-							'CUBE_ID',
-							'NAME',
-							'DATABASE',
-							'SCHEMA',
-							'PASSWORD'))
-	LOOP
-		EXECUTE IMMEDIATE
-		'ALTER TABLE t_system DROP COLUMN ' || r_field.column_name;
-		DBMS_OUTPUT.PUT_LINE('Field T_SYSTEM.' || UPPER(r_field.column_name) || ' dropped');
-	END LOOP;
-END;
-/
-BEGIN
-	FOR r_field IN (SELECT column_name,
-		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
-		data_default old_default_value,
-  		DECODE(column_name,
-			'CUBE_ID','VARCHAR2(16)',
-			'CUBE_SEQUENCE','NUMBER(8)',
-			'FK_SYS_NAME','VARCHAR2(30)',
-			'XK_BOT_NAME','VARCHAR2(30)',NULL) new_domain,
-		DECODE(column_name,
-			'CUBE_ID',NULL,
-			'CUBE_SEQUENCE',NULL,
-			'FK_SYS_NAME',NULL,
-			'XK_BOT_NAME',NULL,NULL) new_default_value
-  		FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_SYSTEM_BO_TYPE')
-	LOOP
-		IF r_field.old_domain <> r_field.new_domain THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_system_bo_type RENAME COLUMN ' || r_field.column_name || ' TO old#domain#field';
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_system_bo_type ADD ' || r_field.column_name || ' ' || r_field.new_domain;
- 			IF r_field.new_domain = 'VARCHAR2' THEN  
-				EXECUTE IMMEDIATE
-				'UPDATE t_system_bo_type SET ' || r_field.column_name || '= TRIM(old#domain#field)';
-			ELSE
-				EXECUTE IMMEDIATE
-				'UPDATE t_system_bo_type SET ' || r_field.column_name || '= old#domain#field';
-			END IF;
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_system_bo_type DROP COLUMN old#domain#field';
-			DBMS_OUTPUT.PUT_LINE('Field T_SYSTEM_BO_TYPE.' || UPPER(r_field.column_name) || ' converted from ' || r_field.old_domain || ' to ' || r_field.new_domain);
-		END IF;
-		IF NOT((r_field.old_default_value IS NULL AND r_field.new_default_value IS NULL) OR r_field.old_default_value = r_field.new_default_value) THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_system_bo_type MODIFY (' || r_field.column_name || ' DEFAULT ' || NVL(r_field.new_default_value,'NULL') || ')';
-			DBMS_OUTPUT.PUT_LINE('Field T_SYSTEM_BO_TYPE.' || UPPER(r_field.column_name) || ' default value set to ' || NVL(r_field.new_default_value,'NULL'));
-		END IF;
-	END LOOP;
-	EXECUTE IMMEDIATE
-	'ALTER TABLE t_system_bo_type ADD CONSTRAINT sbt_pk
-		PRIMARY KEY (
-			fk_sys_name,
-			xk_bot_name )';
-	DBMS_OUTPUT.PUT_LINE('Primary Key T_SYSTEM_BO_TYPE.SBT_PK created');
-	EXECUTE IMMEDIATE
-	'ALTER TABLE t_system_bo_type ADD CONSTRAINT sbt_sys_fk
-		FOREIGN KEY (fk_sys_name)
-		REFERENCES t_system (name)
-		ON DELETE CASCADE';
-	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_SYSTEM_BO_TYPE' AND column_name NOT IN (
-							'CUBE_ID',
-							'CUBE_SEQUENCE',
-							'FK_SYS_NAME',
-							'XK_BOT_NAME'))
-	LOOP
-		EXECUTE IMMEDIATE
-		'ALTER TABLE t_system_bo_type DROP COLUMN ' || r_field.column_name;
-		DBMS_OUTPUT.PUT_LINE('Field T_SYSTEM_BO_TYPE.' || UPPER(r_field.column_name) || ' dropped');
-	END LOOP;
-END;
-/
-BEGIN
-	FOR r_field IN (SELECT column_name,
-		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
-		data_default old_default_value,
-  		DECODE(column_name,
-			'CUBE_ID','VARCHAR2(16)',
-			'NAME','VARCHAR2(30)',
 			'DESCRIPTION','VARCHAR2(3999)',
 			'DESCRIPTION_FUNCTIONS','VARCHAR2(3999)',
 			'DESCRIPTION_LOGICAL_EXPRESSION','VARCHAR2(3999)',NULL) new_domain,
@@ -4379,6 +4260,125 @@ BEGIN
 		EXECUTE IMMEDIATE
 		'ALTER TABLE t_cube_gen_template_function DROP COLUMN ' || r_field.column_name;
 		DBMS_OUTPUT.PUT_LINE('Field T_CUBE_GEN_TEMPLATE_FUNCTION.' || UPPER(r_field.column_name) || ' dropped');
+	END LOOP;
+END;
+/
+BEGIN
+	FOR r_field IN (SELECT column_name,
+		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
+		data_default old_default_value,
+  		DECODE(column_name,
+			'CUBE_ID','VARCHAR2(16)',
+			'NAME','VARCHAR2(30)',
+			'DATABASE','VARCHAR2(30)',
+			'SCHEMA','VARCHAR2(30)',
+			'PASSWORD','VARCHAR2(20)',NULL) new_domain,
+		DECODE(column_name,
+			'CUBE_ID',NULL,
+			'NAME',NULL,
+			'DATABASE',NULL,
+			'SCHEMA',NULL,
+			'PASSWORD',NULL,NULL) new_default_value
+  		FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_SYSTEM')
+	LOOP
+		IF r_field.old_domain <> r_field.new_domain THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_system RENAME COLUMN ' || r_field.column_name || ' TO old#domain#field';
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_system ADD ' || r_field.column_name || ' ' || r_field.new_domain;
+ 			IF r_field.new_domain = 'VARCHAR2' THEN  
+				EXECUTE IMMEDIATE
+				'UPDATE t_system SET ' || r_field.column_name || '= TRIM(old#domain#field)';
+			ELSE
+				EXECUTE IMMEDIATE
+				'UPDATE t_system SET ' || r_field.column_name || '= old#domain#field';
+			END IF;
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_system DROP COLUMN old#domain#field';
+			DBMS_OUTPUT.PUT_LINE('Field T_SYSTEM.' || UPPER(r_field.column_name) || ' converted from ' || r_field.old_domain || ' to ' || r_field.new_domain);
+		END IF;
+		IF NOT((r_field.old_default_value IS NULL AND r_field.new_default_value IS NULL) OR r_field.old_default_value = r_field.new_default_value) THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_system MODIFY (' || r_field.column_name || ' DEFAULT ' || NVL(r_field.new_default_value,'NULL') || ')';
+			DBMS_OUTPUT.PUT_LINE('Field T_SYSTEM.' || UPPER(r_field.column_name) || ' default value set to ' || NVL(r_field.new_default_value,'NULL'));
+		END IF;
+	END LOOP;
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_system ADD CONSTRAINT sys_pk
+		PRIMARY KEY (
+			name )';
+	DBMS_OUTPUT.PUT_LINE('Primary Key T_SYSTEM.SYS_PK created');
+	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_SYSTEM' AND column_name NOT IN (
+							'CUBE_ID',
+							'NAME',
+							'DATABASE',
+							'SCHEMA',
+							'PASSWORD'))
+	LOOP
+		EXECUTE IMMEDIATE
+		'ALTER TABLE t_system DROP COLUMN ' || r_field.column_name;
+		DBMS_OUTPUT.PUT_LINE('Field T_SYSTEM.' || UPPER(r_field.column_name) || ' dropped');
+	END LOOP;
+END;
+/
+BEGIN
+	FOR r_field IN (SELECT column_name,
+		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
+		data_default old_default_value,
+  		DECODE(column_name,
+			'CUBE_ID','VARCHAR2(16)',
+			'CUBE_SEQUENCE','NUMBER(8)',
+			'FK_SYS_NAME','VARCHAR2(30)',
+			'XK_BOT_NAME','VARCHAR2(30)',NULL) new_domain,
+		DECODE(column_name,
+			'CUBE_ID',NULL,
+			'CUBE_SEQUENCE',NULL,
+			'FK_SYS_NAME',NULL,
+			'XK_BOT_NAME',NULL,NULL) new_default_value
+  		FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_SYSTEM_BO_TYPE')
+	LOOP
+		IF r_field.old_domain <> r_field.new_domain THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_system_bo_type RENAME COLUMN ' || r_field.column_name || ' TO old#domain#field';
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_system_bo_type ADD ' || r_field.column_name || ' ' || r_field.new_domain;
+ 			IF r_field.new_domain = 'VARCHAR2' THEN  
+				EXECUTE IMMEDIATE
+				'UPDATE t_system_bo_type SET ' || r_field.column_name || '= TRIM(old#domain#field)';
+			ELSE
+				EXECUTE IMMEDIATE
+				'UPDATE t_system_bo_type SET ' || r_field.column_name || '= old#domain#field';
+			END IF;
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_system_bo_type DROP COLUMN old#domain#field';
+			DBMS_OUTPUT.PUT_LINE('Field T_SYSTEM_BO_TYPE.' || UPPER(r_field.column_name) || ' converted from ' || r_field.old_domain || ' to ' || r_field.new_domain);
+		END IF;
+		IF NOT((r_field.old_default_value IS NULL AND r_field.new_default_value IS NULL) OR r_field.old_default_value = r_field.new_default_value) THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_system_bo_type MODIFY (' || r_field.column_name || ' DEFAULT ' || NVL(r_field.new_default_value,'NULL') || ')';
+			DBMS_OUTPUT.PUT_LINE('Field T_SYSTEM_BO_TYPE.' || UPPER(r_field.column_name) || ' default value set to ' || NVL(r_field.new_default_value,'NULL'));
+		END IF;
+	END LOOP;
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_system_bo_type ADD CONSTRAINT sbt_pk
+		PRIMARY KEY (
+			fk_sys_name,
+			xk_bot_name )';
+	DBMS_OUTPUT.PUT_LINE('Primary Key T_SYSTEM_BO_TYPE.SBT_PK created');
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_system_bo_type ADD CONSTRAINT sbt_sys_fk
+		FOREIGN KEY (fk_sys_name)
+		REFERENCES t_system (name)
+		ON DELETE CASCADE';
+	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_SYSTEM_BO_TYPE' AND column_name NOT IN (
+							'CUBE_ID',
+							'CUBE_SEQUENCE',
+							'FK_SYS_NAME',
+							'XK_BOT_NAME'))
+	LOOP
+		EXECUTE IMMEDIATE
+		'ALTER TABLE t_system_bo_type DROP COLUMN ' || r_field.column_name;
+		DBMS_OUTPUT.PUT_LINE('Field T_SYSTEM_BO_TYPE.' || UPPER(r_field.column_name) || ' dropped');
 	END LOOP;
 END;
 /

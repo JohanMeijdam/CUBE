@@ -2682,189 +2682,6 @@ case 'DeleteDct':
 	echo "DELETE_DCT";
 	break;
 
-case 'GetDirSysItems':
-
-	$stid = oci_parse($conn, "BEGIN pkg_sys.get_sys_root_items (:p_cube_row); END;");
-	$r = perform_db_request();
-	if (!$r) { return; }
-	echo "LIST_SYS";
-	while ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["NAME"];
-		echo "<||>".$row["NAME"];
-	}
-	break;
-
-case 'GetSys':
-
-	list($p_name) = explode("<|>", $import[1]);
-
-	$stid = oci_parse($conn, "BEGIN pkg_sys.get_sys (
-		:p_cube_row,
-		:p_name);
-	END;");
-	oci_bind_by_name($stid,":p_name",$p_name);
-
-	$r = perform_db_request();
-	if (!$r) { return; }
-	echo "SELECT_SYS";
-	if ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["DATABASE"]."<|>".$row["SCHEMA"]."<|>".$row["PASSWORD"];
-	}
-	break;
-
-case 'GetSysItems':
-
-	list($p_name) = explode("<|>", $import[1]);
-
-	$stid = oci_parse($conn, "BEGIN pkg_sys.get_sys_sbt_items (
-		:p_cube_row,
-		:p_name);
-	END;");
-	oci_bind_by_name($stid,":p_name",$p_name);
-
-	$r = perform_db_request();
-	if (!$r) { return; }
-	$first = True;
-	while ($row = oci_fetch_assoc($curs)) {
-		if ($first) { $first = False; echo "LIST_SBT";}
-		echo "<|||>".$row["FK_SYS_NAME"]."<|>".$row["XK_BOT_NAME"];
-		echo "<||>".$row["XK_BOT_NAME"];
-	}
-	break;
-
-case 'CreateSys':
-
-	list($p_name, $p_database, $p_schema, $p_password) = explode("<|>", $import[1]);
-
-	$stid = oci_parse($conn, "BEGIN pkg_sys.insert_sys (
-		:p_name,
-		:p_database,
-		:p_schema,
-		:p_password,
-		:p_cube_row);
-	END;");
-	oci_bind_by_name($stid,":p_name",$p_name);
-	oci_bind_by_name($stid,":p_database",$p_database);
-	oci_bind_by_name($stid,":p_schema",$p_schema);
-	oci_bind_by_name($stid,":p_password",$p_password);
-
-	$r = perform_db_request();
-	if (!$r) { return; }
-	echo "CREATE_SYS";
-	if ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["NAME"];
-	}
-	break;
-
-case 'UpdateSys':
-
-	list($p_name, $p_database, $p_schema, $p_password) = explode("<|>", $import[1]);
-
-	$stid = oci_parse($conn, "BEGIN pkg_sys.update_sys (
-		:p_name,
-		:p_database,
-		:p_schema,
-		:p_password);
-	END;");
-	oci_bind_by_name($stid,":p_name",$p_name);
-	oci_bind_by_name($stid,":p_database",$p_database);
-	oci_bind_by_name($stid,":p_schema",$p_schema);
-	oci_bind_by_name($stid,":p_password",$p_password);
-
-	$r = oci_execute($stid);
-	if (!$r) {
-		ProcessDbError($stid);
-		return;
-	}
-	echo "UPDATE_SYS";
-	break;
-
-case 'DeleteSys':
-
-	list($p_name) = explode("<|>", $import[1]);
-
-	$stid = oci_parse($conn, "BEGIN pkg_sys.delete_sys (
-		:p_name);
-	END;");
-	oci_bind_by_name($stid,":p_name",$p_name);
-
-	$r = oci_execute($stid);
-	if (!$r) {
-		ProcessDbError($stid);
-		return;
-	}
-	echo "DELETE_SYS";
-	break;
-
-case 'MoveSbt':
-
-	list($p_cube_pos_action, $p_fk_sys_name, $p_xk_bot_name, $x_fk_sys_name, $x_xk_bot_name) = explode("<|>", $import[1]);
-
-	$stid = oci_parse($conn, "BEGIN pkg_sys.move_sbt (
-		:p_cube_pos_action,
-		:p_fk_sys_name,
-		:p_xk_bot_name,
-		:x_fk_sys_name,
-		:x_xk_bot_name);
-	END;");
-	oci_bind_by_name($stid,":p_cube_pos_action",$p_cube_pos_action);
-	oci_bind_by_name($stid,":p_fk_sys_name",$p_fk_sys_name);
-	oci_bind_by_name($stid,":p_xk_bot_name",$p_xk_bot_name);
-	oci_bind_by_name($stid,":x_fk_sys_name",$x_fk_sys_name);
-	oci_bind_by_name($stid,":x_xk_bot_name",$x_xk_bot_name);
-
-	$r = oci_execute($stid);
-	if (!$r) {
-		ProcessDbError($stid);
-		return;
-	}
-	echo "MOVE_SBT";
-	break;
-
-case 'CreateSbt':
-
-	list($p_cube_pos_action, $p_fk_sys_name, $p_xk_bot_name, $x_fk_sys_name, $x_xk_bot_name) = explode("<|>", $import[1]."<|><|>");
-
-	$stid = oci_parse($conn, "BEGIN pkg_sys.insert_sbt (
-		:p_cube_pos_action,
-		:p_fk_sys_name,
-		:p_xk_bot_name,
-		:x_fk_sys_name,
-		:x_xk_bot_name);
-	END;");
-	oci_bind_by_name($stid,":p_cube_pos_action",$p_cube_pos_action);
-	oci_bind_by_name($stid,":p_fk_sys_name",$p_fk_sys_name);
-	oci_bind_by_name($stid,":p_xk_bot_name",$p_xk_bot_name);
-	oci_bind_by_name($stid,":x_fk_sys_name",$x_fk_sys_name);
-	oci_bind_by_name($stid,":x_xk_bot_name",$x_xk_bot_name);
-
-	$r = oci_execute($stid);
-	if (!$r) {
-		ProcessDbError($stid);
-		return;
-	}
-	echo "CREATE_SBT";
-	break;
-
-case 'DeleteSbt':
-
-	list($p_fk_sys_name, $p_xk_bot_name) = explode("<|>", $import[1]);
-
-	$stid = oci_parse($conn, "BEGIN pkg_sys.delete_sbt (
-		:p_fk_sys_name,
-		:p_xk_bot_name);
-	END;");
-	oci_bind_by_name($stid,":p_fk_sys_name",$p_fk_sys_name);
-	oci_bind_by_name($stid,":p_xk_bot_name",$p_xk_bot_name);
-
-	$r = oci_execute($stid);
-	if (!$r) {
-		ProcessDbError($stid);
-		return;
-	}
-	echo "DELETE_SBT";
-	break;
-
 case 'GetDirCubItems':
 
 	$stid = oci_parse($conn, "BEGIN pkg_cub.get_cub_root_items (:p_cube_row); END;");
@@ -3575,6 +3392,189 @@ case 'DeleteCtf':
 		return;
 	}
 	echo "DELETE_CTF";
+	break;
+
+case 'GetDirSysItems':
+
+	$stid = oci_parse($conn, "BEGIN pkg_sys.get_sys_root_items (:p_cube_row); END;");
+	$r = perform_db_request();
+	if (!$r) { return; }
+	echo "LIST_SYS";
+	while ($row = oci_fetch_assoc($curs)) {
+		echo "<|||>".$row["NAME"];
+		echo "<||>".$row["NAME"];
+	}
+	break;
+
+case 'GetSys':
+
+	list($p_name) = explode("<|>", $import[1]);
+
+	$stid = oci_parse($conn, "BEGIN pkg_sys.get_sys (
+		:p_cube_row,
+		:p_name);
+	END;");
+	oci_bind_by_name($stid,":p_name",$p_name);
+
+	$r = perform_db_request();
+	if (!$r) { return; }
+	echo "SELECT_SYS";
+	if ($row = oci_fetch_assoc($curs)) {
+		echo "<|||>".$row["DATABASE"]."<|>".$row["SCHEMA"]."<|>".$row["PASSWORD"];
+	}
+	break;
+
+case 'GetSysItems':
+
+	list($p_name) = explode("<|>", $import[1]);
+
+	$stid = oci_parse($conn, "BEGIN pkg_sys.get_sys_sbt_items (
+		:p_cube_row,
+		:p_name);
+	END;");
+	oci_bind_by_name($stid,":p_name",$p_name);
+
+	$r = perform_db_request();
+	if (!$r) { return; }
+	$first = True;
+	while ($row = oci_fetch_assoc($curs)) {
+		if ($first) { $first = False; echo "LIST_SBT";}
+		echo "<|||>".$row["FK_SYS_NAME"]."<|>".$row["XK_BOT_NAME"];
+		echo "<||>".$row["XK_BOT_NAME"];
+	}
+	break;
+
+case 'CreateSys':
+
+	list($p_name, $p_database, $p_schema, $p_password) = explode("<|>", $import[1]);
+
+	$stid = oci_parse($conn, "BEGIN pkg_sys.insert_sys (
+		:p_name,
+		:p_database,
+		:p_schema,
+		:p_password,
+		:p_cube_row);
+	END;");
+	oci_bind_by_name($stid,":p_name",$p_name);
+	oci_bind_by_name($stid,":p_database",$p_database);
+	oci_bind_by_name($stid,":p_schema",$p_schema);
+	oci_bind_by_name($stid,":p_password",$p_password);
+
+	$r = perform_db_request();
+	if (!$r) { return; }
+	echo "CREATE_SYS";
+	if ($row = oci_fetch_assoc($curs)) {
+		echo "<|||>".$row["NAME"];
+	}
+	break;
+
+case 'UpdateSys':
+
+	list($p_name, $p_database, $p_schema, $p_password) = explode("<|>", $import[1]);
+
+	$stid = oci_parse($conn, "BEGIN pkg_sys.update_sys (
+		:p_name,
+		:p_database,
+		:p_schema,
+		:p_password);
+	END;");
+	oci_bind_by_name($stid,":p_name",$p_name);
+	oci_bind_by_name($stid,":p_database",$p_database);
+	oci_bind_by_name($stid,":p_schema",$p_schema);
+	oci_bind_by_name($stid,":p_password",$p_password);
+
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		return;
+	}
+	echo "UPDATE_SYS";
+	break;
+
+case 'DeleteSys':
+
+	list($p_name) = explode("<|>", $import[1]);
+
+	$stid = oci_parse($conn, "BEGIN pkg_sys.delete_sys (
+		:p_name);
+	END;");
+	oci_bind_by_name($stid,":p_name",$p_name);
+
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		return;
+	}
+	echo "DELETE_SYS";
+	break;
+
+case 'MoveSbt':
+
+	list($p_cube_pos_action, $p_fk_sys_name, $p_xk_bot_name, $x_fk_sys_name, $x_xk_bot_name) = explode("<|>", $import[1]);
+
+	$stid = oci_parse($conn, "BEGIN pkg_sys.move_sbt (
+		:p_cube_pos_action,
+		:p_fk_sys_name,
+		:p_xk_bot_name,
+		:x_fk_sys_name,
+		:x_xk_bot_name);
+	END;");
+	oci_bind_by_name($stid,":p_cube_pos_action",$p_cube_pos_action);
+	oci_bind_by_name($stid,":p_fk_sys_name",$p_fk_sys_name);
+	oci_bind_by_name($stid,":p_xk_bot_name",$p_xk_bot_name);
+	oci_bind_by_name($stid,":x_fk_sys_name",$x_fk_sys_name);
+	oci_bind_by_name($stid,":x_xk_bot_name",$x_xk_bot_name);
+
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		return;
+	}
+	echo "MOVE_SBT";
+	break;
+
+case 'CreateSbt':
+
+	list($p_cube_pos_action, $p_fk_sys_name, $p_xk_bot_name, $x_fk_sys_name, $x_xk_bot_name) = explode("<|>", $import[1]."<|><|>");
+
+	$stid = oci_parse($conn, "BEGIN pkg_sys.insert_sbt (
+		:p_cube_pos_action,
+		:p_fk_sys_name,
+		:p_xk_bot_name,
+		:x_fk_sys_name,
+		:x_xk_bot_name);
+	END;");
+	oci_bind_by_name($stid,":p_cube_pos_action",$p_cube_pos_action);
+	oci_bind_by_name($stid,":p_fk_sys_name",$p_fk_sys_name);
+	oci_bind_by_name($stid,":p_xk_bot_name",$p_xk_bot_name);
+	oci_bind_by_name($stid,":x_fk_sys_name",$x_fk_sys_name);
+	oci_bind_by_name($stid,":x_xk_bot_name",$x_xk_bot_name);
+
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		return;
+	}
+	echo "CREATE_SBT";
+	break;
+
+case 'DeleteSbt':
+
+	list($p_fk_sys_name, $p_xk_bot_name) = explode("<|>", $import[1]);
+
+	$stid = oci_parse($conn, "BEGIN pkg_sys.delete_sbt (
+		:p_fk_sys_name,
+		:p_xk_bot_name);
+	END;");
+	oci_bind_by_name($stid,":p_fk_sys_name",$p_fk_sys_name);
+	oci_bind_by_name($stid,":p_xk_bot_name",$p_xk_bot_name);
+
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		return;
+	}
+	echo "DELETE_SBT";
 	break;
 
 default:

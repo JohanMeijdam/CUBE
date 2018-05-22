@@ -3657,273 +3657,6 @@ END;
 /
 SHOW ERRORS;
 
-CREATE OR REPLACE PACKAGE pkg_sys IS
-
-	TYPE c_cube_row IS REF CURSOR;
-	FUNCTION cube_package RETURN VARCHAR2;
-	PROCEDURE get_sys_root_items (
-			p_cube_row IN OUT c_cube_row);
-	PROCEDURE get_sys (
-			p_cube_row IN OUT c_cube_row,
-			p_name IN VARCHAR2);
-	PROCEDURE get_sys_sbt_items (
-			p_cube_row IN OUT c_cube_row,
-			p_name IN VARCHAR2);
-	PROCEDURE insert_sys (
-			p_name IN VARCHAR2,
-			p_database IN VARCHAR2,
-			p_schema IN VARCHAR2,
-			p_password IN VARCHAR2,
-			p_cube_row IN OUT c_cube_row);
-	PROCEDURE update_sys (
-			p_name IN VARCHAR2,
-			p_database IN VARCHAR2,
-			p_schema IN VARCHAR2,
-			p_password IN VARCHAR2);
-	PROCEDURE delete_sys (
-			p_name IN VARCHAR2);
-	PROCEDURE move_sbt (
-			p_cube_pos_action IN VARCHAR2,
-			p_fk_sys_name IN VARCHAR2,
-			p_xk_bot_name IN VARCHAR2,
-			x_fk_sys_name IN VARCHAR2,
-			x_xk_bot_name IN VARCHAR2);
-	PROCEDURE insert_sbt (
-			p_cube_pos_action IN VARCHAR2,
-			p_fk_sys_name IN VARCHAR2,
-			p_xk_bot_name IN VARCHAR2,
-			x_fk_sys_name IN VARCHAR2,
-			x_xk_bot_name IN VARCHAR2);
-	PROCEDURE delete_sbt (
-			p_fk_sys_name IN VARCHAR2,
-			p_xk_bot_name IN VARCHAR2);
-END;
-/
-SHOW ERRORS;
-
-CREATE OR REPLACE PACKAGE BODY pkg_sys IS
-	FUNCTION cube_package RETURN VARCHAR2 IS
-	BEGIN
-		RETURN 'cube_package';
-	END;
-
-	PROCEDURE get_sys_root_items (
-			p_cube_row IN OUT c_cube_row) IS
-	BEGIN
-		OPEN p_cube_row FOR
-			SELECT
-			  name
-			FROM v_system
-			ORDER BY name;
-	END;
-
-	PROCEDURE get_sys (
-			p_cube_row IN OUT c_cube_row,
-			p_name IN VARCHAR2) IS
-	BEGIN
-		OPEN p_cube_row FOR
-			SELECT
-			  database,
-			  schema,
-			  password
-			FROM v_system
-			WHERE name = p_name;
-	END;
-
-	PROCEDURE get_sys_sbt_items (
-			p_cube_row IN OUT c_cube_row,
-			p_name IN VARCHAR2) IS
-	BEGIN
-		OPEN p_cube_row FOR
-			SELECT
-			  cube_sequence,
-			  fk_sys_name,
-			  xk_bot_name
-			FROM v_system_bo_type
-			WHERE fk_sys_name = p_name
-			ORDER BY fk_sys_name, cube_sequence;
-	END;
-
-	PROCEDURE get_next_sys (
-			p_cube_row IN OUT c_cube_row,
-			p_name IN VARCHAR2) IS
-	BEGIN
-		OPEN p_cube_row FOR
-			SELECT
-			  name
-			FROM v_system
-			WHERE name > p_name
-			ORDER BY name;
-	END;
-
-	PROCEDURE insert_sys (
-			p_name IN VARCHAR2,
-			p_database IN VARCHAR2,
-			p_schema IN VARCHAR2,
-			p_password IN VARCHAR2,
-			p_cube_row IN OUT c_cube_row) IS
-	BEGIN
-		INSERT INTO v_system (
-			cube_id,
-			name,
-			database,
-			schema,
-			password)
-		VALUES (
-			NULL,
-			p_name,
-			p_database,
-			p_schema,
-			p_password);
-
-		get_next_sys (p_cube_row, p_name);
-	EXCEPTION
-		WHEN DUP_VAL_ON_INDEX THEN
-			RAISE_APPLICATION_ERROR (-20001, 'Type system already exists');
-	END;
-
-	PROCEDURE update_sys (
-			p_name IN VARCHAR2,
-			p_database IN VARCHAR2,
-			p_schema IN VARCHAR2,
-			p_password IN VARCHAR2) IS
-	BEGIN
-		UPDATE v_system SET
-			database = p_database,
-			schema = p_schema,
-			password = p_password
-		WHERE name = p_name;
-	END;
-
-	PROCEDURE delete_sys (
-			p_name IN VARCHAR2) IS
-	BEGIN
-		DELETE v_system
-		WHERE name = p_name;
-	END;
-
-	PROCEDURE determine_position_sbt (
-			p_cube_sequence OUT NUMBER,
-			p_cube_pos_action IN VARCHAR2,
-			p_fk_sys_name IN VARCHAR2,
-			p_xk_bot_name IN VARCHAR2) IS
-		l_cube_pos_action VARCHAR2(1);
-		l_cube_position_sequ NUMBER(8);
-		l_cube_near_sequ NUMBER(8);
-		l_cube_count NUMBER(8) := 1024;
-	BEGIN
-		-- A=After B=Before F=First L=Last
-		CASE p_cube_pos_action
-		WHEN 'F' THEN
-			l_cube_position_sequ := 0;
-			l_cube_pos_action := 'A';
-		WHEN 'L' THEN
-			l_cube_position_sequ := 99999999;
-			l_cube_pos_action := 'B';
-		ELSE
-			l_cube_pos_action := p_cube_pos_action;
-		END CASE;
-		LOOP
-			IF p_cube_pos_action IN ('B', 'A') THEN
-				-- Read sequence number of the target.
-				SELECT NVL (MAX (cube_sequence), DECODE (p_cube_pos_action, 'B', 99999999, 0))
-				INTO l_cube_position_sequ
-				FROM v_system_bo_type
-				WHERE fk_sys_name = p_fk_sys_name
-				  AND xk_bot_name = p_xk_bot_name;
-			END IF;
-			-- read sequence number near the target.
-			SELECT DECODE (l_cube_pos_action, 'B', NVL (MAX (cube_sequence), 0), NVL (MIN (cube_sequence), 99999999))
-			INTO l_cube_near_sequ
-			FROM v_system_bo_type
-			WHERE fk_sys_name = p_fk_sys_name
-			  AND 	    ( 	    ( l_cube_pos_action = 'B'
-					  AND cube_sequence < l_cube_position_sequ )
-				   OR 	    ( l_cube_pos_action = 'A'
-					  AND cube_sequence > l_cube_position_sequ ) );
-			IF ABS (l_cube_position_sequ - l_cube_near_sequ) > 1 THEN
-				p_cube_sequence := l_cube_position_sequ - (l_cube_position_sequ - l_cube_near_sequ) / 2; -- Formula both directions OK.
-				EXIT;
-			ELSE
-				-- renumber.
-				FOR r_sbt IN (
-					SELECT
-					  rowid row_id
-					FROM v_system_bo_type
-					WHERE fk_sys_name = p_fk_sys_name
-					ORDER BY cube_sequence)
-				LOOP
-					UPDATE v_system_bo_type SET
-						cube_sequence = l_cube_count
-					WHERE rowid = r_sbt.row_id;
-					l_cube_count := l_cube_count + 1024;
-				END LOOP;
-			END IF;
-		END LOOP;
-	END;
-
-	PROCEDURE move_sbt (
-			p_cube_pos_action IN VARCHAR2,
-			p_fk_sys_name IN VARCHAR2,
-			p_xk_bot_name IN VARCHAR2,
-			x_fk_sys_name IN VARCHAR2,
-			x_xk_bot_name IN VARCHAR2) IS
-		l_cube_sequence NUMBER(8);
-	BEGIN
-		-- A=After B=Before F=First L=Last
-		IF p_cube_pos_action NOT IN ('A', 'B', 'F', 'L') THEN
-			RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
-		END IF;
-		determine_position_sbt (l_cube_sequence, p_cube_pos_action, x_fk_sys_name, x_xk_bot_name);
-		UPDATE v_system_bo_type SET
-			cube_sequence = l_cube_sequence
-		WHERE fk_sys_name = p_fk_sys_name
-		  AND xk_bot_name = p_xk_bot_name;
-		IF SQL%NOTFOUND THEN
-			RAISE_APPLICATION_ERROR (-20002, 'Type system_bo_type not found');
-		END IF;
-	END;
-
-	PROCEDURE insert_sbt (
-			p_cube_pos_action IN VARCHAR2,
-			p_fk_sys_name IN VARCHAR2,
-			p_xk_bot_name IN VARCHAR2,
-			x_fk_sys_name IN VARCHAR2,
-			x_xk_bot_name IN VARCHAR2) IS
-		l_cube_sequence NUMBER(8);
-	BEGIN
-		-- A=After B=Before F=First L=Last
-		IF p_cube_pos_action NOT IN ('A', 'B', 'F', 'L') THEN
-			RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
-		END IF;
-		determine_position_sbt (l_cube_sequence, p_cube_pos_action, x_fk_sys_name, x_xk_bot_name);
-		INSERT INTO v_system_bo_type (
-			cube_id,
-			cube_sequence,
-			fk_sys_name,
-			xk_bot_name)
-		VALUES (
-			NULL,
-			l_cube_sequence,
-			p_fk_sys_name,
-			p_xk_bot_name);
-	EXCEPTION
-		WHEN DUP_VAL_ON_INDEX THEN
-			RAISE_APPLICATION_ERROR (-20001, 'Type system_bo_type already exists');
-	END;
-
-	PROCEDURE delete_sbt (
-			p_fk_sys_name IN VARCHAR2,
-			p_xk_bot_name IN VARCHAR2) IS
-	BEGIN
-		DELETE v_system_bo_type
-		WHERE fk_sys_name = p_fk_sys_name
-		  AND xk_bot_name = p_xk_bot_name;
-	END;
-END;
-/
-SHOW ERRORS;
-
 CREATE OR REPLACE PACKAGE pkg_cub IS
 
 	TYPE c_cube_row IS REF CURSOR;
@@ -4951,6 +4684,273 @@ CREATE OR REPLACE PACKAGE BODY pkg_cub IS
 		WHERE fk_cub_name = p_fk_cub_name
 		  AND name = p_name
 		  AND indication_logical = p_indication_logical;
+	END;
+END;
+/
+SHOW ERRORS;
+
+CREATE OR REPLACE PACKAGE pkg_sys IS
+
+	TYPE c_cube_row IS REF CURSOR;
+	FUNCTION cube_package RETURN VARCHAR2;
+	PROCEDURE get_sys_root_items (
+			p_cube_row IN OUT c_cube_row);
+	PROCEDURE get_sys (
+			p_cube_row IN OUT c_cube_row,
+			p_name IN VARCHAR2);
+	PROCEDURE get_sys_sbt_items (
+			p_cube_row IN OUT c_cube_row,
+			p_name IN VARCHAR2);
+	PROCEDURE insert_sys (
+			p_name IN VARCHAR2,
+			p_database IN VARCHAR2,
+			p_schema IN VARCHAR2,
+			p_password IN VARCHAR2,
+			p_cube_row IN OUT c_cube_row);
+	PROCEDURE update_sys (
+			p_name IN VARCHAR2,
+			p_database IN VARCHAR2,
+			p_schema IN VARCHAR2,
+			p_password IN VARCHAR2);
+	PROCEDURE delete_sys (
+			p_name IN VARCHAR2);
+	PROCEDURE move_sbt (
+			p_cube_pos_action IN VARCHAR2,
+			p_fk_sys_name IN VARCHAR2,
+			p_xk_bot_name IN VARCHAR2,
+			x_fk_sys_name IN VARCHAR2,
+			x_xk_bot_name IN VARCHAR2);
+	PROCEDURE insert_sbt (
+			p_cube_pos_action IN VARCHAR2,
+			p_fk_sys_name IN VARCHAR2,
+			p_xk_bot_name IN VARCHAR2,
+			x_fk_sys_name IN VARCHAR2,
+			x_xk_bot_name IN VARCHAR2);
+	PROCEDURE delete_sbt (
+			p_fk_sys_name IN VARCHAR2,
+			p_xk_bot_name IN VARCHAR2);
+END;
+/
+SHOW ERRORS;
+
+CREATE OR REPLACE PACKAGE BODY pkg_sys IS
+	FUNCTION cube_package RETURN VARCHAR2 IS
+	BEGIN
+		RETURN 'cube_package';
+	END;
+
+	PROCEDURE get_sys_root_items (
+			p_cube_row IN OUT c_cube_row) IS
+	BEGIN
+		OPEN p_cube_row FOR
+			SELECT
+			  name
+			FROM v_system
+			ORDER BY name;
+	END;
+
+	PROCEDURE get_sys (
+			p_cube_row IN OUT c_cube_row,
+			p_name IN VARCHAR2) IS
+	BEGIN
+		OPEN p_cube_row FOR
+			SELECT
+			  database,
+			  schema,
+			  password
+			FROM v_system
+			WHERE name = p_name;
+	END;
+
+	PROCEDURE get_sys_sbt_items (
+			p_cube_row IN OUT c_cube_row,
+			p_name IN VARCHAR2) IS
+	BEGIN
+		OPEN p_cube_row FOR
+			SELECT
+			  cube_sequence,
+			  fk_sys_name,
+			  xk_bot_name
+			FROM v_system_bo_type
+			WHERE fk_sys_name = p_name
+			ORDER BY fk_sys_name, cube_sequence;
+	END;
+
+	PROCEDURE get_next_sys (
+			p_cube_row IN OUT c_cube_row,
+			p_name IN VARCHAR2) IS
+	BEGIN
+		OPEN p_cube_row FOR
+			SELECT
+			  name
+			FROM v_system
+			WHERE name > p_name
+			ORDER BY name;
+	END;
+
+	PROCEDURE insert_sys (
+			p_name IN VARCHAR2,
+			p_database IN VARCHAR2,
+			p_schema IN VARCHAR2,
+			p_password IN VARCHAR2,
+			p_cube_row IN OUT c_cube_row) IS
+	BEGIN
+		INSERT INTO v_system (
+			cube_id,
+			name,
+			database,
+			schema,
+			password)
+		VALUES (
+			NULL,
+			p_name,
+			p_database,
+			p_schema,
+			p_password);
+
+		get_next_sys (p_cube_row, p_name);
+	EXCEPTION
+		WHEN DUP_VAL_ON_INDEX THEN
+			RAISE_APPLICATION_ERROR (-20001, 'Type system already exists');
+	END;
+
+	PROCEDURE update_sys (
+			p_name IN VARCHAR2,
+			p_database IN VARCHAR2,
+			p_schema IN VARCHAR2,
+			p_password IN VARCHAR2) IS
+	BEGIN
+		UPDATE v_system SET
+			database = p_database,
+			schema = p_schema,
+			password = p_password
+		WHERE name = p_name;
+	END;
+
+	PROCEDURE delete_sys (
+			p_name IN VARCHAR2) IS
+	BEGIN
+		DELETE v_system
+		WHERE name = p_name;
+	END;
+
+	PROCEDURE determine_position_sbt (
+			p_cube_sequence OUT NUMBER,
+			p_cube_pos_action IN VARCHAR2,
+			p_fk_sys_name IN VARCHAR2,
+			p_xk_bot_name IN VARCHAR2) IS
+		l_cube_pos_action VARCHAR2(1);
+		l_cube_position_sequ NUMBER(8);
+		l_cube_near_sequ NUMBER(8);
+		l_cube_count NUMBER(8) := 1024;
+	BEGIN
+		-- A=After B=Before F=First L=Last
+		CASE p_cube_pos_action
+		WHEN 'F' THEN
+			l_cube_position_sequ := 0;
+			l_cube_pos_action := 'A';
+		WHEN 'L' THEN
+			l_cube_position_sequ := 99999999;
+			l_cube_pos_action := 'B';
+		ELSE
+			l_cube_pos_action := p_cube_pos_action;
+		END CASE;
+		LOOP
+			IF p_cube_pos_action IN ('B', 'A') THEN
+				-- Read sequence number of the target.
+				SELECT NVL (MAX (cube_sequence), DECODE (p_cube_pos_action, 'B', 99999999, 0))
+				INTO l_cube_position_sequ
+				FROM v_system_bo_type
+				WHERE fk_sys_name = p_fk_sys_name
+				  AND xk_bot_name = p_xk_bot_name;
+			END IF;
+			-- read sequence number near the target.
+			SELECT DECODE (l_cube_pos_action, 'B', NVL (MAX (cube_sequence), 0), NVL (MIN (cube_sequence), 99999999))
+			INTO l_cube_near_sequ
+			FROM v_system_bo_type
+			WHERE fk_sys_name = p_fk_sys_name
+			  AND 	    ( 	    ( l_cube_pos_action = 'B'
+					  AND cube_sequence < l_cube_position_sequ )
+				   OR 	    ( l_cube_pos_action = 'A'
+					  AND cube_sequence > l_cube_position_sequ ) );
+			IF ABS (l_cube_position_sequ - l_cube_near_sequ) > 1 THEN
+				p_cube_sequence := l_cube_position_sequ - (l_cube_position_sequ - l_cube_near_sequ) / 2; -- Formula both directions OK.
+				EXIT;
+			ELSE
+				-- renumber.
+				FOR r_sbt IN (
+					SELECT
+					  rowid row_id
+					FROM v_system_bo_type
+					WHERE fk_sys_name = p_fk_sys_name
+					ORDER BY cube_sequence)
+				LOOP
+					UPDATE v_system_bo_type SET
+						cube_sequence = l_cube_count
+					WHERE rowid = r_sbt.row_id;
+					l_cube_count := l_cube_count + 1024;
+				END LOOP;
+			END IF;
+		END LOOP;
+	END;
+
+	PROCEDURE move_sbt (
+			p_cube_pos_action IN VARCHAR2,
+			p_fk_sys_name IN VARCHAR2,
+			p_xk_bot_name IN VARCHAR2,
+			x_fk_sys_name IN VARCHAR2,
+			x_xk_bot_name IN VARCHAR2) IS
+		l_cube_sequence NUMBER(8);
+	BEGIN
+		-- A=After B=Before F=First L=Last
+		IF p_cube_pos_action NOT IN ('A', 'B', 'F', 'L') THEN
+			RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
+		END IF;
+		determine_position_sbt (l_cube_sequence, p_cube_pos_action, x_fk_sys_name, x_xk_bot_name);
+		UPDATE v_system_bo_type SET
+			cube_sequence = l_cube_sequence
+		WHERE fk_sys_name = p_fk_sys_name
+		  AND xk_bot_name = p_xk_bot_name;
+		IF SQL%NOTFOUND THEN
+			RAISE_APPLICATION_ERROR (-20002, 'Type system_bo_type not found');
+		END IF;
+	END;
+
+	PROCEDURE insert_sbt (
+			p_cube_pos_action IN VARCHAR2,
+			p_fk_sys_name IN VARCHAR2,
+			p_xk_bot_name IN VARCHAR2,
+			x_fk_sys_name IN VARCHAR2,
+			x_xk_bot_name IN VARCHAR2) IS
+		l_cube_sequence NUMBER(8);
+	BEGIN
+		-- A=After B=Before F=First L=Last
+		IF p_cube_pos_action NOT IN ('A', 'B', 'F', 'L') THEN
+			RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
+		END IF;
+		determine_position_sbt (l_cube_sequence, p_cube_pos_action, x_fk_sys_name, x_xk_bot_name);
+		INSERT INTO v_system_bo_type (
+			cube_id,
+			cube_sequence,
+			fk_sys_name,
+			xk_bot_name)
+		VALUES (
+			NULL,
+			l_cube_sequence,
+			p_fk_sys_name,
+			p_xk_bot_name);
+	EXCEPTION
+		WHEN DUP_VAL_ON_INDEX THEN
+			RAISE_APPLICATION_ERROR (-20001, 'Type system_bo_type already exists');
+	END;
+
+	PROCEDURE delete_sbt (
+			p_fk_sys_name IN VARCHAR2,
+			p_xk_bot_name IN VARCHAR2) IS
+	BEGIN
+		DELETE v_system_bo_type
+		WHERE fk_sys_name = p_fk_sys_name
+		  AND xk_bot_name = p_xk_bot_name;
 	END;
 END;
 /

@@ -16,7 +16,7 @@ echo Start > %logfile%
 ::goto Packages
 ::goto Application 
 echo Extract Cube Model
-sqlplus.exe cuberoot/composys@composys @Systems\CubeRoot\ModelExport.sql %sysdir%\CubeModel.cgm REPLACE >> %logfile% 2>&1
+sqlplus.exe cuberoot/composys@composys @Systems\CubeRoot\ModelExport.sql %sysdir%\CubeModel.cgm %sysname% REPLACE >> %logfile% 2>&1
 ::goto End
 :Models
 echo Generate Models.
@@ -49,7 +49,7 @@ echo Import Model.
 ::goto End
 :ModelExport
 echo Extract Tool Model
-sqlplus.exe %db_schema%/%db_password%@%db_name% @%sysdir%\ModelExport.sql %sysdir%\CubeToolModel.cgm REPLACE >> %logfile% 2>&1
+sqlplus.exe %db_schema%/%db_password%@%db_name% @%sysdir%\ModelExport.sql %sysdir%\CubeToolModel.cgm ALL REPLACE >> %logfile% 2>&1
 ::goto End
 :Packages
 echo Generate Packages.

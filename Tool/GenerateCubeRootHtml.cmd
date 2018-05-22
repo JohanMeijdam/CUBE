@@ -12,7 +12,7 @@ set sysroot=%wwwroot%\%sysname%
 echo Start > %logfile%
 
 echo Exporting model.
-sqlplus.exe %db_schema%/%db_password%@%db_name% @%sysdir%\ModelExport.sql %sysdir%\CubeToolModel.cgm REPLACE >> %logfile% 2>&1
+sqlplus.exe %db_schema%/%db_password%@%db_name% @%sysdir%\ModelExport.sql %sysdir%\CubeToolModel.cgm ALL REPLACE >> %logfile% 2>&1
 
 echo Generate HTML documentation.
 CubeGen.exe %sysdir%\CubeToolModel.cgm Templates\BoHtml.cgt %sysdir%\html\CubeMetaModel.htm %sysname% >> %logfile% 2>&1

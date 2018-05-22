@@ -7,11 +7,12 @@ SET HEADING ON
 SET PAGESIZE 0
 SET LINESIZE 999
 
-SPOOL "&1" &2;
+SPOOL "&1" &3;
 DECLARE
 
 	l_level NUMBER(4) := 0;
 	l_cube_id VARCHAR2(16);
+	g_system_name VARCHAR2(30) :=  '&2';
 
 	FUNCTION ftabs RETURN VARCHAR2 IS
 		l_tabs VARCHAR2(80) := '';
@@ -493,6 +494,7 @@ DECLARE
 		FOR r_bot IN (
 			SELECT *				
 			FROM t_business_object_type
+			WHERE (g_system_name = 'ALL' OR name in (SELECT xk_bot_name FROM t_system_bo_type WHERE fk_sys_name = g_system_name ))
 			ORDER BY cube_sequence )
 		LOOP
 			DBMS_OUTPUT.PUT_LINE (ftabs || '+BUSINESS_OBJECT_TYPE[' || r_bot.cube_id || ']:' || fenperc(r_bot.name) || '|' || fenperc(r_bot.cube_tsg_int_ext) || '|' || fenperc(r_bot.directory) || '|' || fenperc(r_bot.api_url) || ';');
@@ -534,6 +536,7 @@ DECLARE
 		FOR r_sys IN (
 			SELECT *				
 			FROM t_system
+			WHERE g_system_name = 'ALL' OR name = g_system_name
 			ORDER BY name )
 		LOOP
 			DBMS_OUTPUT.PUT_LINE (ftabs || '+SYSTEM[' || r_sys.cube_id || ']:' || fenperc(r_sys.name) || '|' || fenperc(r_sys.database) || '|' || fenperc(r_sys.schema) || '|' || fenperc(r_sys.password) || ';');

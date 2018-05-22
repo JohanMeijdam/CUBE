@@ -6,7 +6,7 @@
 		+META_TYPE:INFORMATION_TYPE_ELEMENT|;
 			=PROPERTY:0|Sequence|;
 			=PROPERTY:1|Suffix|;
-			=PROPERTY:2|Domain| Values: TEXT(Text), NUMBER(Number), DATE(Date), TIME(Time), DATETIME(Timestamp);
+			=PROPERTY:2|Domain| Values: TEXT(Text), NUMBER(Number), DATE(Date), TIME(Time), DATETIME-LOCAL(Timestamp);
 			=PROPERTY:3|Length|;
 			=PROPERTY:4|Decimals|;
 			=PROPERTY:5|CaseSensitive| Values: Y(Yes), N(No);

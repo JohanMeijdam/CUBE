@@ -4,7 +4,6 @@
 --
 -- Delete All
 --
-DELETE v_cube_description;
 --
 -- Insert Descriptions
 --

@@ -11,13 +11,13 @@ set sysroot=%wwwroot%\%sysname%
 
 echo Start > %logfile%
 ::goto Models
-::goto Scripts
+goto Scripts
 ::goto ModelImport
 ::goto ModelExport
 ::goto Packages
 ::goto Application 
 echo Extract Cube Model
-sqlplus.exe cuberoot/composys@composys @Systems\CubeRoot\ModelExport.sql %sysdir%\CubeModel.cgm REPLACE >> %logfile% 2>&1
+sqlplus.exe cuberoot/composys@composys @Systems\CubeRoot\ModelExport.sql %sysdir%\CubeModel.cgm %sysname% REPLACE >> %logfile% 2>&1
 ::goto End
 :Models
 echo Generate Models.
@@ -32,7 +32,7 @@ CubeGen.exe %sysdir%\CubeServerSpecModel.cgm Templates\ServerImplModel.cgt %sysd
 echo Generate Scripts.
 CubeGen.exe %sysdir%\CubeBoModel.cgm Templates\ModelImport.cgt %sysdir%\ModelImport.pl %sysname% >> %logfile% 2>&1
 CubeGen.exe %sysdir%\CubeBoModel.cgm Templates\ModelExport.cgt %sysdir%\ModelExport.sql %sysname% >> %logfile% 2>&1
-::goto End
+goto End
 :Database
 echo Generate Database Tables.
 CubeGen.exe %sysdir%\CubeDbModel.cgm Templates\Table.cgt %sysdir%\TableDdl.sql >> %logfile% 2>&1
@@ -50,7 +50,7 @@ echo Import Model.
 ::goto End
 :ModelExport
 echo Extract Tool Model
-sqlplus.exe %db_schema%/%db_password%@%db_name% @%sysdir%\ModelExport.sql %sysdir%\CubeToolModel.cgm REPLACE >> %logfile% 2>&1
+sqlplus.exe %db_schema%/%db_password%@%db_name% @%sysdir%\ModelExport.sql %sysdir%\CubeToolModel.cgm %sysname% REPLACE >> %logfile% 2>&1
 ::goto End
 :Packages
 echo Generate Packages.

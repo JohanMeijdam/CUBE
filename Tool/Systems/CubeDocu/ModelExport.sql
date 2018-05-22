@@ -7,11 +7,12 @@ SET HEADING ON
 SET PAGESIZE 0
 SET LINESIZE 999
 
-SPOOL "&1" &2;
+SPOOL "&1" &3;
 DECLARE
 
 	l_level NUMBER(4) := 0;
 	l_cube_id VARCHAR2(16);
+	g_system_name VARCHAR2(30) :=  '&2';
 
 	FUNCTION ftabs RETURN VARCHAR2 IS
 		l_tabs VARCHAR2(80) := '';
@@ -493,6 +494,7 @@ DECLARE
 		FOR r_bot IN (
 			SELECT *				
 			FROM t_business_object_type
+			WHERE (g_system_name = 'ALL' OR name in (SELECT xk_bot_name FROM t_system_bo_type WHERE fk_sys_name = g_system_name ))
 			ORDER BY cube_sequence )
 		LOOP
 			DBMS_OUTPUT.PUT_LINE (ftabs || '+BUSINESS_OBJECT_TYPE[' || r_bot.cube_id || ']:' || fenperc(r_bot.name) || '|' || fenperc(r_bot.cube_tsg_int_ext) || '|' || fenperc(r_bot.directory) || '|' || fenperc(r_bot.api_url) || ';');
@@ -500,47 +502,6 @@ DECLARE
 				report_typ (r_bot);
 				l_level := l_level - 1;
 			DBMS_OUTPUT.PUT_LINE (ftabs || '-BUSINESS_OBJECT_TYPE:' || r_bot.name || ';');
-		END LOOP;
-	END;
-
-
-	PROCEDURE report_sbt (p_sys IN t_system%ROWTYPE) IS
-	BEGIN
-		FOR r_sbt IN (
-			SELECT *				
-			FROM t_system_bo_type
-			WHERE fk_sys_name = p_sys.name
-			ORDER BY cube_sequence )
-		LOOP
-			DBMS_OUTPUT.PUT_LINE (ftabs || '+SYSTEM_BO_TYPE[' || r_sbt.cube_id || ']:' || ';');
-				l_level := l_level + 1;
-				BEGIN
-					SELECT cube_id INTO l_cube_id FROM t_business_object_type
-					WHERE name = r_sbt.xk_bot_name;
-
-					DBMS_OUTPUT.PUT_LINE (ftabs || '>BUSINESS_OBJECT_TYPE:' || l_cube_id || ';');
-				EXCEPTION
-					WHEN NO_DATA_FOUND THEN
-						NULL; 
-				END;
-				l_level := l_level - 1;
-			DBMS_OUTPUT.PUT_LINE (ftabs || '-SYSTEM_BO_TYPE:' || ';');
-		END LOOP;
-	END;
-
-
-	PROCEDURE report_sys IS
-	BEGIN
-		FOR r_sys IN (
-			SELECT *				
-			FROM t_system
-			ORDER BY name )
-		LOOP
-			DBMS_OUTPUT.PUT_LINE (ftabs || '+SYSTEM[' || r_sys.cube_id || ']:' || fenperc(r_sys.name) || '|' || fenperc(r_sys.database) || '|' || fenperc(r_sys.schema) || '|' || fenperc(r_sys.password) || ';');
-				l_level := l_level + 1;
-				report_sbt (r_sys);
-				l_level := l_level - 1;
-			DBMS_OUTPUT.PUT_LINE (ftabs || '-SYSTEM:' || r_sys.name || ';');
 		END LOOP;
 	END;
 
@@ -652,6 +613,48 @@ DECLARE
 		END LOOP;
 	END;
 
+
+	PROCEDURE report_sbt (p_sys IN t_system%ROWTYPE) IS
+	BEGIN
+		FOR r_sbt IN (
+			SELECT *				
+			FROM t_system_bo_type
+			WHERE fk_sys_name = p_sys.name
+			ORDER BY cube_sequence )
+		LOOP
+			DBMS_OUTPUT.PUT_LINE (ftabs || '+SYSTEM_BO_TYPE[' || r_sbt.cube_id || ']:' || ';');
+				l_level := l_level + 1;
+				BEGIN
+					SELECT cube_id INTO l_cube_id FROM t_business_object_type
+					WHERE name = r_sbt.xk_bot_name;
+
+					DBMS_OUTPUT.PUT_LINE (ftabs || '>BUSINESS_OBJECT_TYPE:' || l_cube_id || ';');
+				EXCEPTION
+					WHEN NO_DATA_FOUND THEN
+						NULL; 
+				END;
+				l_level := l_level - 1;
+			DBMS_OUTPUT.PUT_LINE (ftabs || '-SYSTEM_BO_TYPE:' || ';');
+		END LOOP;
+	END;
+
+
+	PROCEDURE report_sys IS
+	BEGIN
+		FOR r_sys IN (
+			SELECT *				
+			FROM t_system
+			WHERE g_system_name = 'ALL' OR name = g_system_name
+			ORDER BY name )
+		LOOP
+			DBMS_OUTPUT.PUT_LINE (ftabs || '+SYSTEM[' || r_sys.cube_id || ']:' || fenperc(r_sys.name) || '|' || fenperc(r_sys.database) || '|' || fenperc(r_sys.schema) || '|' || fenperc(r_sys.password) || ';');
+				l_level := l_level + 1;
+				report_sbt (r_sys);
+				l_level := l_level - 1;
+			DBMS_OUTPUT.PUT_LINE (ftabs || '-SYSTEM:' || r_sys.name || ';');
+		END LOOP;
+	END;
+
 BEGIN
 	DBMS_OUTPUT.PUT_LINE ('! Generated with CubeGen');
 	DBMS_OUTPUT.PUT_LINE ('+META_MODEL:CUBE;');
@@ -755,15 +758,6 @@ BEGIN
 	DBMS_OUTPUT.PUT_LINE ('			-META_TYPE:DESCRIPTION_TYPE;');
 	DBMS_OUTPUT.PUT_LINE ('		-META_TYPE:TYPE;');
 	DBMS_OUTPUT.PUT_LINE ('	-META_TYPE:BUSINESS_OBJECT_TYPE;');
-	DBMS_OUTPUT.PUT_LINE ('	+META_TYPE:SYSTEM|;');
-	DBMS_OUTPUT.PUT_LINE ('		=PROPERTY:0|Name|;');
-	DBMS_OUTPUT.PUT_LINE ('		=PROPERTY:1|Database|;');
-	DBMS_OUTPUT.PUT_LINE ('		=PROPERTY:2|Schema|;');
-	DBMS_OUTPUT.PUT_LINE ('		=PROPERTY:3|Password|;');
-	DBMS_OUTPUT.PUT_LINE ('		+META_TYPE:SYSTEM_BO_TYPE|;');
-	DBMS_OUTPUT.PUT_LINE ('			=ASSOCIATION:BUSINESS_OBJECT_TYPE|Has|BUSINESS_OBJECT_TYPE|;');
-	DBMS_OUTPUT.PUT_LINE ('		-META_TYPE:SYSTEM_BO_TYPE;');
-	DBMS_OUTPUT.PUT_LINE ('	-META_TYPE:SYSTEM;');
 	DBMS_OUTPUT.PUT_LINE ('	+META_TYPE:CUBE_GEN_DOCUMENTATION|'||REPLACE('A%20document%20to%20give%20an%20explanation%20of%20CubeGen%20based%20on%20examples.','%20',' ')||';');
 	DBMS_OUTPUT.PUT_LINE ('		=PROPERTY:0|Name|'||REPLACE('The%20name%20of%20the%20document.','%20',' ')||';');
 	DBMS_OUTPUT.PUT_LINE ('		=PROPERTY:1|Description|;');
@@ -797,12 +791,21 @@ BEGIN
 	DBMS_OUTPUT.PUT_LINE ('			=PROPERTY:3|Syntax|;');
 	DBMS_OUTPUT.PUT_LINE ('		-META_TYPE:CUBE_GEN_TEMPLATE_FUNCTION;');
 	DBMS_OUTPUT.PUT_LINE ('	-META_TYPE:CUBE_GEN_DOCUMENTATION;');
+	DBMS_OUTPUT.PUT_LINE ('	+META_TYPE:SYSTEM|;');
+	DBMS_OUTPUT.PUT_LINE ('		=PROPERTY:0|Name|;');
+	DBMS_OUTPUT.PUT_LINE ('		=PROPERTY:1|Database|;');
+	DBMS_OUTPUT.PUT_LINE ('		=PROPERTY:2|Schema|;');
+	DBMS_OUTPUT.PUT_LINE ('		=PROPERTY:3|Password|;');
+	DBMS_OUTPUT.PUT_LINE ('		+META_TYPE:SYSTEM_BO_TYPE|;');
+	DBMS_OUTPUT.PUT_LINE ('			=ASSOCIATION:BUSINESS_OBJECT_TYPE|Has|BUSINESS_OBJECT_TYPE|;');
+	DBMS_OUTPUT.PUT_LINE ('		-META_TYPE:SYSTEM_BO_TYPE;');
+	DBMS_OUTPUT.PUT_LINE ('	-META_TYPE:SYSTEM;');
 	DBMS_OUTPUT.PUT_LINE ('-META_MODEL:CUBE;');
 
 	report_itp;
 	report_bot;
-	report_sys;
 	report_cub;
+	report_sys;
 END;
 /
 SPOOL OFF;

@@ -51,9 +51,6 @@ g_xmlhttp.onreadystatechange = function(){
 			case 'MOVE_TSP': MoveNode (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.body._moveAction); break;
 			case 'LIST_DCT': AddTreeviewChildren(l_rows,'TYP_DCT','icons/desc.bmp'); break;
 			case 'COUNT_DCT': CheckMenuItem('TYP_DCT',l_rows[1]); break;
-			case 'LIST_SYS': AddTreeviewChildren(l_rows,'TYP_SYS','icons/system.bmp'); break;
-			case 'LIST_SBT': AddTreeviewChildren(l_rows,'TYP_SBT','icons/sysbot.bmp'); break;
-			case 'MOVE_SBT': MoveNode (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.body._moveAction); break;
 			case 'LIST_CUB': AddTreeviewChildren(l_rows,'TYP_CUB','icons/cubegen.bmp'); break;
 			case 'LIST_CGP': AddTreeviewChildren(l_rows,'TYP_CGP','icons/desc.bmp'); break;
 			case 'MOVE_CGP': MoveNode (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.body._moveAction); break;
@@ -64,6 +61,9 @@ g_xmlhttp.onreadystatechange = function(){
 			case 'LIST_CGF': AddTreeviewChildren(l_rows,'TYP_CGF','icons/template.bmp'); break;
 			case 'MOVE_CGF': MoveNode (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.body._moveAction); break;
 			case 'LIST_CTF': AddTreeviewChildren(l_rows,'TYP_CTF','icons/function.bmp'); break;
+			case 'LIST_SYS': AddTreeviewChildren(l_rows,'TYP_SYS','icons/system.bmp'); break;
+			case 'LIST_SBT': AddTreeviewChildren(l_rows,'TYP_SBT','icons/sysbot.bmp'); break;
+			case 'MOVE_SBT': MoveNode (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.body._moveAction); break;
 			case "ERROR": alert ('Error: '+l_rows[1]); break;
 			default: alert ('Unknown reply: '+l_rows[0]);
 			}
@@ -102,8 +102,8 @@ function InitBody() {
 	l_objBody.childNodes[0]._index = 0;
 	AddTreeviewNode(l_objBody, 'DIR_ITP', 'DIR_ITP', 'icons/folder.bmp', 'Information_Types', 'Y', ' ', null);
 	AddTreeviewNode(l_objBody, 'DIR_BOT', 'DIR_BOT', 'icons/folder.bmp', 'Business_Object_Types', 'Y', ' ', null);
-	AddTreeviewNode(l_objBody, 'DIR_SYS', 'DIR_SYS', 'icons/folder.bmp', 'Systems', 'Y', ' ', null);
 	AddTreeviewNode(l_objBody, 'DIR_CUB', 'DIR_CUB', 'icons/folder.bmp', 'CubeGen_documentation', 'Y', ' ', null);
+	AddTreeviewNode(l_objBody, 'DIR_SYS', 'DIR_SYS', 'icons/folder.bmp', 'Systems', 'Y', ' ', null);
 }
 
 function CheckMenuItem (p_type, p_count) {
@@ -150,15 +150,15 @@ function DefineTypePosition (p_parentType, p_type, p_switch) {
 	case 'TYP_TSG':
 		switch (p_type) { case 'TYP_TSP': l_index = 2; break;case 'TYP_TSG': l_index = 3; break;}
 		var l_count = 2; break;
-	case 'TYP_SYS':
-		switch (p_type) { case 'TYP_SBT': l_index = 2; break;}
-		var l_count = 1; break;
 	case 'TYP_CUB':
 		switch (p_type) { case 'TYP_CGP': l_index = 2; break; case 'TYP_CGM': l_index = 3; break; case 'TYP_CTF': l_index = 4; break;}
 		var l_count = 3; break;
 	case 'TYP_CGM':
 		switch (p_type) { case 'TYP_CGO': l_index = 2; break; case 'TYP_CGF': l_index = 3; break;}
 		var l_count = 2; break;
+	case 'TYP_SYS':
+		switch (p_type) { case 'TYP_SBT': l_index = 2; break;}
+		var l_count = 1; break;
 	default: var l_count = 0;
 	}
 	if (p_switch == 'C') {
@@ -389,12 +389,6 @@ function OpenCloseOnClick(p_obj) {
  		case 'TYP_TSG':
 			PerformTrans('GetTsgItems'+'<|||>'+p_obj.parentNode.id.split("<||>")[1]);
 			break;
- 		case 'DIR_SYS':
-			PerformTrans('GetDirSysItems');
-			break;
- 		case 'TYP_SYS':
-			PerformTrans('GetSysItems'+'<|||>'+p_obj.parentNode.id.split("<||>")[1]);
-			break;
  		case 'DIR_CUB':
 			PerformTrans('GetDirCubItems');
 			break;
@@ -403,6 +397,12 @@ function OpenCloseOnClick(p_obj) {
 			break;
  		case 'TYP_CGM':
 			PerformTrans('GetCgmItems'+'<|||>'+p_obj.parentNode.id.split("<||>")[1]);
+			break;
+ 		case 'DIR_SYS':
+			PerformTrans('GetDirSysItems');
+			break;
+ 		case 'TYP_SYS':
+			PerformTrans('GetSysItems'+'<|||>'+p_obj.parentNode.id.split("<||>")[1]);
 			break;
 		} 
 	}
@@ -457,9 +457,6 @@ function OpenDetail(p_obj) {
 			case 'TYP_TSP':
 				PerformTrans('MoveTsp'+'<|||>'+document.body._moveAction+'<|>'+g_currentObjId.split("<||>")[1]+'<|>'+document.body._objNodePosId.split("<||>")[1]);
 				break;
-			case 'TYP_SBT':
-				PerformTrans('MoveSbt'+'<|||>'+document.body._moveAction+'<|>'+g_currentObjId.split("<||>")[1]+'<|>'+document.body._objNodePosId.split("<||>")[1]);
-				break;
 			case 'TYP_CGP':
 				PerformTrans('MoveCgp'+'<|||>'+document.body._moveAction+'<|>'+g_currentObjId.split("<||>")[1]+'<|>'+document.body._objNodePosId.split("<||>")[1]);
 				break;
@@ -471,6 +468,9 @@ function OpenDetail(p_obj) {
 				break;
 			case 'TYP_CGF':
 				PerformTrans('MoveCgf'+'<|||>'+document.body._moveAction+'<|>'+g_currentObjId.split("<||>")[1]+'<|>'+document.body._objNodePosId.split("<||>")[1]);
+				break;
+			case 'TYP_SBT':
+				PerformTrans('MoveSbt'+'<|||>'+document.body._moveAction+'<|>'+g_currentObjId.split("<||>")[1]+'<|>'+document.body._objNodePosId.split("<||>")[1]);
 				break;
 			}
 		}
@@ -651,17 +651,6 @@ function OpenMenu(p_obj) {
 			AddMenuItem(g_objMenuList, 'move', 'icons/cube_move.bmp','CubeMove','','CUBE_M_TSP',0,'N',0);
 		}
 		break;
- 	case 'DIR_SYS':
-		AddMenuItem(g_objMenuList, 'add system', 'icons/system.bmp','DetailSYS','N','TYP_SYS',0,'N',2);
-		break;
- 	case 'TYP_SYS':
-		AddMenuItem(g_objMenuList, 'add system_bo_type', 'icons/sysbot.bmp','CubeAdd','N','TYP_SBT',0,'N',2);
-		break;
- 	case 'TYP_SBT':
-		if (l_childCount > 1) {
-			AddMenuItem(g_objMenuList, 'move', 'icons/cube_move.bmp','CubeMove','','CUBE_M_SBT',0,'N',0);
-		}
-		break;
  	case 'DIR_CUB':
 		AddMenuItem(g_objMenuList, 'add cube_gen_documentation', 'icons/cubegen.bmp','DetailCUB','N','TYP_CUB',0,'N',2);
 		break;
@@ -690,6 +679,17 @@ function OpenMenu(p_obj) {
  	case 'TYP_CGF':
 		if (l_childCount > 1) {
 			AddMenuItem(g_objMenuList, 'move', 'icons/cube_move.bmp','CubeMove','','CUBE_M_CGF',0,'N',0);
+		}
+		break;
+ 	case 'DIR_SYS':
+		AddMenuItem(g_objMenuList, 'add system', 'icons/system.bmp','DetailSYS','N','TYP_SYS',0,'N',2);
+		break;
+ 	case 'TYP_SYS':
+		AddMenuItem(g_objMenuList, 'add system_bo_type', 'icons/sysbot.bmp','CubeAdd','N','TYP_SBT',0,'N',2);
+		break;
+ 	case 'TYP_SBT':
+		if (l_childCount > 1) {
+			AddMenuItem(g_objMenuList, 'move', 'icons/cube_move.bmp','CubeMove','','CUBE_M_SBT',0,'N',0);
 		}
 		break;
 	}

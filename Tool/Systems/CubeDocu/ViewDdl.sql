@@ -1903,173 +1903,6 @@ END;
 /
 SHOW ERRORS
 
-CREATE OR REPLACE VIEW v_system AS 
-	SELECT
-		cube_id,
-		name,
-		database,
-		schema,
-		password
-	FROM t_system
-/
-CREATE OR REPLACE VIEW v_system_bo_type AS 
-	SELECT
-		cube_id,
-		cube_sequence,
-		fk_sys_name,
-		xk_bot_name
-	FROM t_system_bo_type
-/
-
-CREATE OR REPLACE PACKAGE pkg_sys_trg IS
-	PROCEDURE insert_sys (p_sys IN OUT NOCOPY v_system%ROWTYPE);
-	PROCEDURE update_sys (p_cube_rowid IN UROWID, p_sys_old IN OUT NOCOPY v_system%ROWTYPE, p_sys_new IN OUT NOCOPY v_system%ROWTYPE);
-	PROCEDURE delete_sys (p_cube_rowid IN UROWID, p_sys IN OUT NOCOPY v_system%ROWTYPE);
-	PROCEDURE insert_sbt (p_sbt IN OUT NOCOPY v_system_bo_type%ROWTYPE);
-	PROCEDURE update_sbt (p_cube_rowid IN UROWID, p_sbt_old IN OUT NOCOPY v_system_bo_type%ROWTYPE, p_sbt_new IN OUT NOCOPY v_system_bo_type%ROWTYPE);
-	PROCEDURE delete_sbt (p_cube_rowid IN UROWID, p_sbt IN OUT NOCOPY v_system_bo_type%ROWTYPE);
-END;
-/
-SHOW ERRORS;
-
-CREATE OR REPLACE PACKAGE BODY pkg_sys_trg IS
-
-	PROCEDURE insert_sys (p_sys IN OUT NOCOPY v_system%ROWTYPE) IS
-	BEGIN
-		p_sys.cube_id := 'SYS-' || TO_CHAR(sys_seq.NEXTVAL,'FM000000000000');
-		INSERT INTO t_system (
-			cube_id,
-			name,
-			database,
-			schema,
-			password)
-		VALUES (
-			p_sys.cube_id,
-			p_sys.name,
-			p_sys.database,
-			p_sys.schema,
-			p_sys.password);
-	END;
-
-	PROCEDURE update_sys (p_cube_rowid UROWID, p_sys_old IN OUT NOCOPY v_system%ROWTYPE, p_sys_new IN OUT NOCOPY v_system%ROWTYPE) IS
-	BEGIN
-		UPDATE t_system SET 
-			database = p_sys_new.database,
-			schema = p_sys_new.schema,
-			password = p_sys_new.password
-		WHERE rowid = p_cube_rowid;
-	END;
-
-	PROCEDURE delete_sys (p_cube_rowid UROWID, p_sys IN OUT NOCOPY v_system%ROWTYPE) IS
-	BEGIN
-		DELETE t_system 
-		WHERE rowid = p_cube_rowid;
-	END;
-
-	PROCEDURE insert_sbt (p_sbt IN OUT NOCOPY v_system_bo_type%ROWTYPE) IS
-	BEGIN
-		p_sbt.cube_id := 'SBT-' || TO_CHAR(sbt_seq.NEXTVAL,'FM000000000000');
-		INSERT INTO t_system_bo_type (
-			cube_id,
-			cube_sequence,
-			fk_sys_name,
-			xk_bot_name)
-		VALUES (
-			p_sbt.cube_id,
-			p_sbt.cube_sequence,
-			p_sbt.fk_sys_name,
-			p_sbt.xk_bot_name);
-	END;
-
-	PROCEDURE update_sbt (p_cube_rowid UROWID, p_sbt_old IN OUT NOCOPY v_system_bo_type%ROWTYPE, p_sbt_new IN OUT NOCOPY v_system_bo_type%ROWTYPE) IS
-	BEGIN
-		UPDATE t_system_bo_type SET 
-			cube_sequence = p_sbt_new.cube_sequence
-		WHERE rowid = p_cube_rowid;
-	END;
-
-	PROCEDURE delete_sbt (p_cube_rowid UROWID, p_sbt IN OUT NOCOPY v_system_bo_type%ROWTYPE) IS
-	BEGIN
-		DELETE t_system_bo_type 
-		WHERE rowid = p_cube_rowid;
-	END;
-END;
-/
-SHOW ERRORS;
-
-CREATE OR REPLACE TRIGGER trg_sys
-INSTEAD OF INSERT OR DELETE OR UPDATE ON v_system
-FOR EACH ROW
-DECLARE
-	l_cube_rowid UROWID;
-	r_sys_new v_system%ROWTYPE;
-	r_sys_old v_system%ROWTYPE;
-BEGIN
-	IF INSERTING OR UPDATING THEN
-		r_sys_new.name := REPLACE(:NEW.name,' ','_');
-		r_sys_new.database := REPLACE(:NEW.database,' ','_');
-		r_sys_new.schema := REPLACE(:NEW.schema,' ','_');
-		r_sys_new.password := REPLACE(:NEW.password,' ','_');
-	END IF;
-	IF UPDATING THEN
-		r_sys_new.cube_id := :OLD.cube_id;
-	END IF;
-	IF UPDATING OR DELETING THEN
-		SELECT rowid INTO l_cube_rowid FROM t_system
-		WHERE name = :OLD.name;
-		r_sys_old.name := :OLD.name;
-		r_sys_old.database := :OLD.database;
-		r_sys_old.schema := :OLD.schema;
-		r_sys_old.password := :OLD.password;
-	END IF;
-
-	IF INSERTING THEN 
-		pkg_sys_trg.insert_sys (r_sys_new);
-	ELSIF UPDATING THEN
-		pkg_sys_trg.update_sys (l_cube_rowid, r_sys_old, r_sys_new);
-	ELSIF DELETING THEN
-		pkg_sys_trg.delete_sys (l_cube_rowid, r_sys_old);
-	END IF;
-END;
-/
-SHOW ERRORS
-
-CREATE OR REPLACE TRIGGER trg_sbt
-INSTEAD OF INSERT OR DELETE OR UPDATE ON v_system_bo_type
-FOR EACH ROW
-DECLARE
-	l_cube_rowid UROWID;
-	r_sbt_new v_system_bo_type%ROWTYPE;
-	r_sbt_old v_system_bo_type%ROWTYPE;
-BEGIN
-	IF INSERTING OR UPDATING THEN
-		r_sbt_new.cube_sequence := :NEW.cube_sequence;
-		r_sbt_new.fk_sys_name := REPLACE(:NEW.fk_sys_name,' ','_');
-		r_sbt_new.xk_bot_name := REPLACE(:NEW.xk_bot_name,' ','_');
-	END IF;
-	IF UPDATING THEN
-		r_sbt_new.cube_id := :OLD.cube_id;
-	END IF;
-	IF UPDATING OR DELETING THEN
-		SELECT rowid INTO l_cube_rowid FROM t_system_bo_type
-		WHERE fk_sys_name = :OLD.fk_sys_name
-		  AND xk_bot_name = :OLD.xk_bot_name;
-		r_sbt_old.cube_sequence := :OLD.cube_sequence;
-		r_sbt_old.fk_sys_name := :OLD.fk_sys_name;
-		r_sbt_old.xk_bot_name := :OLD.xk_bot_name;
-	END IF;
-
-	IF INSERTING THEN 
-		pkg_sys_trg.insert_sbt (r_sbt_new);
-	ELSIF UPDATING THEN
-		pkg_sys_trg.update_sbt (l_cube_rowid, r_sbt_old, r_sbt_new);
-	ELSIF DELETING THEN
-		pkg_sys_trg.delete_sbt (l_cube_rowid, r_sbt_old);
-	END IF;
-END;
-/
-SHOW ERRORS
-
 CREATE OR REPLACE VIEW v_cube_gen_documentation AS 
 	SELECT
 		cube_id,
@@ -2608,6 +2441,173 @@ BEGIN
 		pkg_cub_trg.update_ctf (l_cube_rowid, r_ctf_old, r_ctf_new);
 	ELSIF DELETING THEN
 		pkg_cub_trg.delete_ctf (l_cube_rowid, r_ctf_old);
+	END IF;
+END;
+/
+SHOW ERRORS
+
+CREATE OR REPLACE VIEW v_system AS 
+	SELECT
+		cube_id,
+		name,
+		database,
+		schema,
+		password
+	FROM t_system
+/
+CREATE OR REPLACE VIEW v_system_bo_type AS 
+	SELECT
+		cube_id,
+		cube_sequence,
+		fk_sys_name,
+		xk_bot_name
+	FROM t_system_bo_type
+/
+
+CREATE OR REPLACE PACKAGE pkg_sys_trg IS
+	PROCEDURE insert_sys (p_sys IN OUT NOCOPY v_system%ROWTYPE);
+	PROCEDURE update_sys (p_cube_rowid IN UROWID, p_sys_old IN OUT NOCOPY v_system%ROWTYPE, p_sys_new IN OUT NOCOPY v_system%ROWTYPE);
+	PROCEDURE delete_sys (p_cube_rowid IN UROWID, p_sys IN OUT NOCOPY v_system%ROWTYPE);
+	PROCEDURE insert_sbt (p_sbt IN OUT NOCOPY v_system_bo_type%ROWTYPE);
+	PROCEDURE update_sbt (p_cube_rowid IN UROWID, p_sbt_old IN OUT NOCOPY v_system_bo_type%ROWTYPE, p_sbt_new IN OUT NOCOPY v_system_bo_type%ROWTYPE);
+	PROCEDURE delete_sbt (p_cube_rowid IN UROWID, p_sbt IN OUT NOCOPY v_system_bo_type%ROWTYPE);
+END;
+/
+SHOW ERRORS;
+
+CREATE OR REPLACE PACKAGE BODY pkg_sys_trg IS
+
+	PROCEDURE insert_sys (p_sys IN OUT NOCOPY v_system%ROWTYPE) IS
+	BEGIN
+		p_sys.cube_id := 'SYS-' || TO_CHAR(sys_seq.NEXTVAL,'FM000000000000');
+		INSERT INTO t_system (
+			cube_id,
+			name,
+			database,
+			schema,
+			password)
+		VALUES (
+			p_sys.cube_id,
+			p_sys.name,
+			p_sys.database,
+			p_sys.schema,
+			p_sys.password);
+	END;
+
+	PROCEDURE update_sys (p_cube_rowid UROWID, p_sys_old IN OUT NOCOPY v_system%ROWTYPE, p_sys_new IN OUT NOCOPY v_system%ROWTYPE) IS
+	BEGIN
+		UPDATE t_system SET 
+			database = p_sys_new.database,
+			schema = p_sys_new.schema,
+			password = p_sys_new.password
+		WHERE rowid = p_cube_rowid;
+	END;
+
+	PROCEDURE delete_sys (p_cube_rowid UROWID, p_sys IN OUT NOCOPY v_system%ROWTYPE) IS
+	BEGIN
+		DELETE t_system 
+		WHERE rowid = p_cube_rowid;
+	END;
+
+	PROCEDURE insert_sbt (p_sbt IN OUT NOCOPY v_system_bo_type%ROWTYPE) IS
+	BEGIN
+		p_sbt.cube_id := 'SBT-' || TO_CHAR(sbt_seq.NEXTVAL,'FM000000000000');
+		INSERT INTO t_system_bo_type (
+			cube_id,
+			cube_sequence,
+			fk_sys_name,
+			xk_bot_name)
+		VALUES (
+			p_sbt.cube_id,
+			p_sbt.cube_sequence,
+			p_sbt.fk_sys_name,
+			p_sbt.xk_bot_name);
+	END;
+
+	PROCEDURE update_sbt (p_cube_rowid UROWID, p_sbt_old IN OUT NOCOPY v_system_bo_type%ROWTYPE, p_sbt_new IN OUT NOCOPY v_system_bo_type%ROWTYPE) IS
+	BEGIN
+		UPDATE t_system_bo_type SET 
+			cube_sequence = p_sbt_new.cube_sequence
+		WHERE rowid = p_cube_rowid;
+	END;
+
+	PROCEDURE delete_sbt (p_cube_rowid UROWID, p_sbt IN OUT NOCOPY v_system_bo_type%ROWTYPE) IS
+	BEGIN
+		DELETE t_system_bo_type 
+		WHERE rowid = p_cube_rowid;
+	END;
+END;
+/
+SHOW ERRORS;
+
+CREATE OR REPLACE TRIGGER trg_sys
+INSTEAD OF INSERT OR DELETE OR UPDATE ON v_system
+FOR EACH ROW
+DECLARE
+	l_cube_rowid UROWID;
+	r_sys_new v_system%ROWTYPE;
+	r_sys_old v_system%ROWTYPE;
+BEGIN
+	IF INSERTING OR UPDATING THEN
+		r_sys_new.name := REPLACE(:NEW.name,' ','_');
+		r_sys_new.database := REPLACE(:NEW.database,' ','_');
+		r_sys_new.schema := REPLACE(:NEW.schema,' ','_');
+		r_sys_new.password := REPLACE(:NEW.password,' ','_');
+	END IF;
+	IF UPDATING THEN
+		r_sys_new.cube_id := :OLD.cube_id;
+	END IF;
+	IF UPDATING OR DELETING THEN
+		SELECT rowid INTO l_cube_rowid FROM t_system
+		WHERE name = :OLD.name;
+		r_sys_old.name := :OLD.name;
+		r_sys_old.database := :OLD.database;
+		r_sys_old.schema := :OLD.schema;
+		r_sys_old.password := :OLD.password;
+	END IF;
+
+	IF INSERTING THEN 
+		pkg_sys_trg.insert_sys (r_sys_new);
+	ELSIF UPDATING THEN
+		pkg_sys_trg.update_sys (l_cube_rowid, r_sys_old, r_sys_new);
+	ELSIF DELETING THEN
+		pkg_sys_trg.delete_sys (l_cube_rowid, r_sys_old);
+	END IF;
+END;
+/
+SHOW ERRORS
+
+CREATE OR REPLACE TRIGGER trg_sbt
+INSTEAD OF INSERT OR DELETE OR UPDATE ON v_system_bo_type
+FOR EACH ROW
+DECLARE
+	l_cube_rowid UROWID;
+	r_sbt_new v_system_bo_type%ROWTYPE;
+	r_sbt_old v_system_bo_type%ROWTYPE;
+BEGIN
+	IF INSERTING OR UPDATING THEN
+		r_sbt_new.cube_sequence := :NEW.cube_sequence;
+		r_sbt_new.fk_sys_name := REPLACE(:NEW.fk_sys_name,' ','_');
+		r_sbt_new.xk_bot_name := REPLACE(:NEW.xk_bot_name,' ','_');
+	END IF;
+	IF UPDATING THEN
+		r_sbt_new.cube_id := :OLD.cube_id;
+	END IF;
+	IF UPDATING OR DELETING THEN
+		SELECT rowid INTO l_cube_rowid FROM t_system_bo_type
+		WHERE fk_sys_name = :OLD.fk_sys_name
+		  AND xk_bot_name = :OLD.xk_bot_name;
+		r_sbt_old.cube_sequence := :OLD.cube_sequence;
+		r_sbt_old.fk_sys_name := :OLD.fk_sys_name;
+		r_sbt_old.xk_bot_name := :OLD.xk_bot_name;
+	END IF;
+
+	IF INSERTING THEN 
+		pkg_sys_trg.insert_sbt (r_sbt_new);
+	ELSIF UPDATING THEN
+		pkg_sys_trg.update_sbt (l_cube_rowid, r_sbt_old, r_sbt_new);
+	ELSIF DELETING THEN
+		pkg_sys_trg.delete_sbt (l_cube_rowid, r_sbt_old);
 	END IF;
 END;
 /

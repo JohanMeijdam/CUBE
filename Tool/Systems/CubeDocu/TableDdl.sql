@@ -72,14 +72,6 @@ DROP SEQUENCE dct_seq
 /
 CREATE SEQUENCE dct_seq START WITH 100000
 /
-DROP SEQUENCE sys_seq
-/
-CREATE SEQUENCE sys_seq START WITH 100000
-/
-DROP SEQUENCE sbt_seq
-/
-CREATE SEQUENCE sbt_seq START WITH 100000
-/
 DROP SEQUENCE cub_seq
 /
 CREATE SEQUENCE cub_seq START WITH 100000
@@ -103,6 +95,14 @@ CREATE SEQUENCE cgf_seq START WITH 100000
 DROP SEQUENCE ctf_seq
 /
 CREATE SEQUENCE ctf_seq START WITH 100000
+/
+DROP SEQUENCE sys_seq
+/
+CREATE SEQUENCE sys_seq START WITH 100000
+/
+DROP SEQUENCE sbt_seq
+/
+CREATE SEQUENCE sbt_seq START WITH 100000
 /
 ALTER TABLE t_information_type_element DROP CONSTRAINT ite_itp_fk
 /
@@ -140,8 +140,6 @@ ALTER TABLE t_type_specialisation DROP CONSTRAINT tsp_tsg_fk
 /
 ALTER TABLE t_description_type DROP CONSTRAINT dct_typ_fk
 /
-ALTER TABLE t_system_bo_type DROP CONSTRAINT sbt_sys_fk
-/
 ALTER TABLE t_cube_gen_paragraph DROP CONSTRAINT cgp_cub_fk
 /
 ALTER TABLE t_cube_gen_example_model DROP CONSTRAINT cgm_cub_fk
@@ -151,6 +149,8 @@ ALTER TABLE t_cube_gen_example_object DROP CONSTRAINT cgo_cgm_fk
 ALTER TABLE t_cube_gen_function DROP CONSTRAINT cgf_cgm_fk
 /
 ALTER TABLE t_cube_gen_template_function DROP CONSTRAINT ctf_cub_fk
+/
+ALTER TABLE t_system_bo_type DROP CONSTRAINT sbt_sys_fk
 /
 DROP TABLE t_information_type
 /
@@ -188,10 +188,6 @@ DROP TABLE t_type_specialisation
 /
 DROP TABLE t_description_type
 /
-DROP TABLE t_system
-/
-DROP TABLE t_system_bo_type
-/
 DROP TABLE t_cube_gen_documentation
 /
 DROP TABLE t_cube_gen_paragraph
@@ -203,6 +199,10 @@ DROP TABLE t_cube_gen_example_object
 DROP TABLE t_cube_gen_function
 /
 DROP TABLE t_cube_gen_template_function
+/
+DROP TABLE t_system
+/
+DROP TABLE t_system_bo_type
 /
 CREATE TABLE t_information_type (
 	cube_id VARCHAR2(16),
@@ -488,27 +488,6 @@ CREATE TABLE t_description_type (
 		REFERENCES t_type (name)
 		ON DELETE CASCADE )
 /
-CREATE TABLE t_system (
-	cube_id VARCHAR2(16),
-	name VARCHAR2(30),
-	database VARCHAR2(30),
-	schema VARCHAR2(30),
-	password VARCHAR2(20),
-	CONSTRAINT sys_pk
-		PRIMARY KEY (name) )
-/
-CREATE TABLE t_system_bo_type (
-	cube_id VARCHAR2(16),
-	cube_sequence NUMBER(8),
-	fk_sys_name VARCHAR2(30),
-	xk_bot_name VARCHAR2(30),
-	CONSTRAINT sbt_pk
-		PRIMARY KEY (fk_sys_name, xk_bot_name),
-	CONSTRAINT sbt_sys_fk
-		FOREIGN KEY (fk_sys_name)
-		REFERENCES t_system (name)
-		ON DELETE CASCADE )
-/
 CREATE TABLE t_cube_gen_documentation (
 	cube_id VARCHAR2(16),
 	name VARCHAR2(30),
@@ -589,6 +568,27 @@ CREATE TABLE t_cube_gen_template_function (
 	CONSTRAINT ctf_cub_fk
 		FOREIGN KEY (fk_cub_name)
 		REFERENCES t_cube_gen_documentation (name)
+		ON DELETE CASCADE )
+/
+CREATE TABLE t_system (
+	cube_id VARCHAR2(16),
+	name VARCHAR2(30),
+	database VARCHAR2(30),
+	schema VARCHAR2(30),
+	password VARCHAR2(20),
+	CONSTRAINT sys_pk
+		PRIMARY KEY (name) )
+/
+CREATE TABLE t_system_bo_type (
+	cube_id VARCHAR2(16),
+	cube_sequence NUMBER(8),
+	fk_sys_name VARCHAR2(30),
+	xk_bot_name VARCHAR2(30),
+	CONSTRAINT sbt_pk
+		PRIMARY KEY (fk_sys_name, xk_bot_name),
+	CONSTRAINT sbt_sys_fk
+		FOREIGN KEY (fk_sys_name)
+		REFERENCES t_system (name)
 		ON DELETE CASCADE )
 /
 EXIT;
