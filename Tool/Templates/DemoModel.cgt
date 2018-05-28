@@ -1,0 +1,6 @@
+Reshape a CubeModel to publish as Demo.
+[[BODY]]! Cube Demo model[[LOOP,*]][[IF:!TAG(META_MODEL)[AND](!TAG(INFORMATION_TYPE)[OR]CHILD(*ATTRIBUTE))]][[IF:CHILD(*)]]
++<<*TAG>>[[IF:!ID()]][<<*:I>>][[ENDIF]]:[[VALUE,*:0>N:|]];[[REPEAT:TAB]][[LOOP,>*]]
+	><<*TAG>>:<<*:I>>;[[ENDLOOP,>*]]
+-<<*TAG>>:;[[ELSE]]
+=<<*TAG>>[[IF:!ID()]][<<*:I>>][[ENDIF]]:[[VALUE,*:0>N:|]];[[ENDIF]][[ENDIF]][[ENDLOOP,*]][[ENDBODY]]
