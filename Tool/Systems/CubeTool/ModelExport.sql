@@ -275,6 +275,34 @@ DECLARE
 	END;
 
 
+	PROCEDURE report_rtt (p_typ IN t_type%ROWTYPE) IS
+	BEGIN
+		FOR r_rtt IN (
+			SELECT *				
+			FROM t_restriction_type_spec_typ
+			WHERE fk_bot_name = p_typ.fk_bot_name
+			  AND fk_typ_name = p_typ.name
+			ORDER BY fk_typ_name, xf_tsp_typ_name, xf_tsp_tsg_code, xk_tsp_code )
+		LOOP
+			DBMS_OUTPUT.PUT_LINE (ftabs || '+RESTRICTION_TYPE_SPEC_TYP[' || r_rtt.cube_id || ']:' || fenperc(r_rtt.include_or_exclude) || ';');
+				l_level := l_level + 1;
+				BEGIN
+					SELECT cube_id INTO l_cube_id FROM t_type_specialisation
+					WHERE fk_typ_name = r_rtt.xf_tsp_typ_name
+					  AND fk_tsg_code = r_rtt.xf_tsp_tsg_code
+					  AND code = r_rtt.xk_tsp_code;
+
+					DBMS_OUTPUT.PUT_LINE (ftabs || '>TYPE_SPECIALISATION:' || l_cube_id || ';');
+				EXCEPTION
+					WHEN NO_DATA_FOUND THEN
+						NULL; 
+				END;
+				l_level := l_level - 1;
+			DBMS_OUTPUT.PUT_LINE (ftabs || '-RESTRICTION_TYPE_SPEC_TYP:' || r_rtt.include_or_exclude || ';');
+		END LOOP;
+	END;
+
+
 	PROCEDURE report_tyr (p_typ IN t_type%ROWTYPE) IS
 	BEGIN
 		FOR r_tyr IN (
@@ -454,6 +482,7 @@ DECLARE
 				l_level := l_level + 1;
 				report_atb (r_typ);
 				report_ref (r_typ);
+				report_rtt (r_typ);
 				report_tyr (r_typ);
 				report_par (r_typ);
 				report_tsg (r_typ);
@@ -478,6 +507,7 @@ DECLARE
 				l_level := l_level + 1;
 				report_atb (r_typ);
 				report_ref (r_typ);
+				report_rtt (r_typ);
 				report_tyr (r_typ);
 				report_par (r_typ);
 				report_tsg (r_typ);
@@ -492,11 +522,10 @@ DECLARE
 	PROCEDURE report_bot IS
 	BEGIN
 		FOR r_bot IN (
-			SELECT t_business_object_type.*				
-			FROM t_business_object_type, t_system_bo_type
-			WHERE t_business_object_type.name =  t_system_bo_type.xk_bot_name
-			  AND (g_system_name = 'ALL' OR t_system_bo_type.fk_sys_name = g_system_name )
-			ORDER BY t_business_object_type.cube_sequence )
+			SELECT *				
+			FROM t_business_object_type
+			WHERE (g_system_name = 'ALL' OR name in (SELECT xk_bot_name FROM t_system_bo_type WHERE fk_sys_name = g_system_name ))
+			ORDER BY cube_sequence )
 		LOOP
 			DBMS_OUTPUT.PUT_LINE (ftabs || '+BUSINESS_OBJECT_TYPE[' || r_bot.cube_id || ']:' || fenperc(r_bot.name) || '|' || fenperc(r_bot.cube_tsg_int_ext) || '|' || fenperc(r_bot.directory) || '|' || fenperc(r_bot.api_url) || ';');
 				l_level := l_level + 1;
@@ -656,6 +685,10 @@ BEGIN
 	DBMS_OUTPUT.PUT_LINE ('					=ASSOCIATION:TYPE_SPECIALISATION|IsValidFor|TYPE_SPECIALISATION|;');
 	DBMS_OUTPUT.PUT_LINE ('				-META_TYPE:RESTRICTION_TYPE_SPEC_REF;');
 	DBMS_OUTPUT.PUT_LINE ('			-META_TYPE:REFERENCE;');
+	DBMS_OUTPUT.PUT_LINE ('			+META_TYPE:RESTRICTION_TYPE_SPEC_TYP|;');
+	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:0|IncludeOrExclude|'||REPLACE('Indication%20that%20the%20child%20type%20is%20valid%20(included)%20or%20invalid%20(excluded)%20for%20the%20concerning%20type%20specialisation.','%20',' ')||' Values: IN(Include), EX(Exclude);');
+	DBMS_OUTPUT.PUT_LINE ('				=ASSOCIATION:TYPE_SPECIALISATION|IsValidFor|TYPE_SPECIALISATION|;');
+	DBMS_OUTPUT.PUT_LINE ('			-META_TYPE:RESTRICTION_TYPE_SPEC_TYP;');
 	DBMS_OUTPUT.PUT_LINE ('			+META_TYPE:TYPE_REUSE|;');
 	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:0|Cardinality| Values: 1(1), 2(2), 3(3), 4(4), 5(5), N(Many);');
 	DBMS_OUTPUT.PUT_LINE ('				=ASSOCIATION:TYPE_REUSE_TYPE|Refer|TYPE|;');

@@ -4,7 +4,6 @@
 --
 -- Delete All
 --
-DELETE v_cube_description;
 --
 -- Insert Descriptions
 --
@@ -42,6 +41,8 @@ INSERT INTO v_cube_description (CUBE_ID, TYPE_NAME, ATTRIBUTE_TYPE_NAME, SEQUENC
 	VALUES ( 'CUBE-DCR-0100001','REFERENCE','TYPE',1,UTL_URL.UNESCAPE('In%20case%20of%20non%20recursive%20target%20or%20a%20scope%20all%20recursive%20target%20the%20common%20type%20for%20the%20selection.'));
 INSERT INTO v_cube_description (CUBE_ID, TYPE_NAME, ATTRIBUTE_TYPE_NAME, SEQUENCE, VALUE)
 	VALUES ( 'CUBE-DCA-0100012','RESTRICTION_TYPE_SPEC_REF','INCLUDE_OR_EXCLUDE',-1,UTL_URL.UNESCAPE('Indication%20that%20the%20reference%20is%20valid%20(included)%20or%20invalid%20(excluded)%20for%20the%20concerning%20type%20specialisation.'));
+INSERT INTO v_cube_description (CUBE_ID, TYPE_NAME, ATTRIBUTE_TYPE_NAME, SEQUENCE, VALUE)
+	VALUES ( 'CUBE-DCA-0100040','RESTRICTION_TYPE_SPEC_TYP','INCLUDE_OR_EXCLUDE',-1,UTL_URL.UNESCAPE('Indication%20that%20the%20child%20type%20is%20valid%20(included)%20or%20invalid%20(excluded)%20for%20the%20concerning%20type%20specialisation.'));
 INSERT INTO v_cube_description (CUBE_ID, TYPE_NAME, ATTRIBUTE_TYPE_NAME, SEQUENCE, VALUE)
 	VALUES ( 'CUBE-DCT-0100002','TYPE_SPECIALISATION_GROUP','_',-1,UTL_URL.UNESCAPE('A%20group%20of%20classifications%20of%20the%20type.'));
 INSERT INTO v_cube_description (CUBE_ID, TYPE_NAME, ATTRIBUTE_TYPE_NAME, SEQUENCE, VALUE)

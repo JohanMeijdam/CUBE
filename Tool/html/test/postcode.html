@@ -32,7 +32,7 @@ function performTrans() {
     } else {
         document.getElementById("ErrorNumber").innerHTML = '';
     }
-	l_objParm = { "postcode" : l_objInputPostcode.value, "Number" : document.getElementById("InputNumber").value};
+	l_objParm = { "postcode" : l_objInputPostcode.value , "number" : document.getElementById("InputNumber").value};
 	if (l_validation_ok) {
 		var l_requestText = JSON.stringify(l_objParm);
 		g_xmlhttp.open('POST','postcode_api.php',true);

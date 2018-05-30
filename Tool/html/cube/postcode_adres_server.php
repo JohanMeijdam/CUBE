@@ -2,7 +2,6 @@
 
 include 'ApiKeys.php';
 
-// header("Content-Type: application/json; charset=UTF-8");
 $requestText = file_get_contents('php://input');
 $requestObj = json_decode($requestText, false);
 
@@ -26,19 +25,17 @@ curl_setopt_array($curl, array(
 
 $response = curl_exec($curl);
 $info = curl_getinfo($curl);
-$err = curl_error($curl);
-
 curl_close($curl);
 
-if ($err) {
-	echo '[{"curl_error":"' . $err . '"}]';
-} else {
-	$obj = json_decode($response, false)->_embedded->addresses[0];
-	$responseObj = new \stdClass();
-	$responseObj->street = $obj->street;
-	$responseObj->city = $obj->city->label;
-	$responseText = json_encode($responseObj);
-	echo $responseText;
-}
+$obj = json_decode($response, false)->_embedded->addresses[0];
+$responseObj = new \stdClass();
+$responseObj->straat_naam = $obj->street;
+$responseObj->plaats_naam = $obj->city->label;
+$responseObj->gps_locatie = $obj->geo->center->wgs84->coordinates;
 
+$responseObj->cube_api_http_code = $info["http_code"];
+$responseText = json_encode($responseObj);
+echo $responseText;
+//http_response_code($info["http_code"]);
+//http_response_code();
 ?>

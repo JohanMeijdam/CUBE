@@ -337,6 +337,7 @@ $FKeyRef = '';
 $FKeyPar = '';
 $FKeyTsg[0] = '';
 $ITsg = 0;
+$FKeyJob = '';
 $FKeySys = '';
 $FKeyFun = '';
 $FKeyCub = '';
@@ -364,11 +365,14 @@ print IMPORT "DELETE v_restriction_type_spec_atb;\n";
 print IMPORT "DELETE v_reference;\n";
 print IMPORT "DELETE v_description_reference;\n";
 print IMPORT "DELETE v_restriction_type_spec_ref;\n";
+print IMPORT "DELETE v_restriction_type_spec_typ;\n";
 print IMPORT "DELETE v_type_reuse;\n";
 print IMPORT "DELETE v_partition;\n";
 print IMPORT "DELETE v_subtype;\n";
 print IMPORT "DELETE v_type_specialisation_group;\n";
 print IMPORT "DELETE v_type_specialisation;\n";
+print IMPORT "DELETE v_json_object;\n";
+print IMPORT "DELETE v_json_attribute_reference;\n";
 print IMPORT "DELETE v_description_type;\n";
 print IMPORT "DELETE v_system;\n";
 print IMPORT "DELETE v_system_bo_type;\n";
@@ -578,6 +582,18 @@ my (@FkeyValues);
 						$j = $NodeNext[$j];
 					}
 				}
+				case "RESTRICTION_TYPE_SPEC_TYP" {
+					$j = $NodeFirst[$_[0]];
+					while (1) {
+						if ($j == -1) {
+							last;
+						}
+						print IMPORT "INSERT INTO v_restriction_type_spec_typ (FK_BOT_NAME, FK_TYP_NAME, INCLUDE_OR_EXCLUDE, XF_TSP_TYP_NAME, XF_TSP_TSG_CODE, XK_TSP_CODE)\n"; 
+						print IMPORT "	VALUES ('$_[1]', '$_[2]', '".ReplX($NodeString[$j])."', '".ReplX(GetXkey($j,'TYPE_SPECIALISATION','TYPE',001))."', '".ReplX(GetXkey($j,'TYPE_SPECIALISATION','TYPE_SPECIALISATION_GROUP',001))."', '".ReplX(GetXkey($j,'TYPE_SPECIALISATION','TYPE_SPECIALISATION',001))."');\n";
+						print IMPORT "\n";
+						$j = $NodeNext[$j];
+					}
+				}
 				case "TYPE_REUSE" {
 					$j = $NodeFirst[$_[0]];
 					while (1) {
@@ -655,6 +671,36 @@ my (@FkeyValues);
 						$Sequence++;
 						print IMPORT "INSERT INTO v_type_specialisation (CUBE_SEQUENCE, FK_BOT_NAME, FK_TYP_NAME, FK_TSG_CODE, CODE, NAME, XF_TSP_TYP_NAME, XF_TSP_TSG_CODE, XK_TSP_CODE)\n"; 
 						print IMPORT "	VALUES ($Sequence, '$_[1]', '$_[2]', '$_[3]', '".ReplX($NodeString[$j])."', '".ReplX($NodeValue[$NodeValuePntr[$j]])."', '".ReplX(GetXkey($j,'TYPE_SPECIALISATION','TYPE',001))."', '".ReplX(GetXkey($j,'TYPE_SPECIALISATION','TYPE_SPECIALISATION_GROUP',001))."', '".ReplX(GetXkey($j,'TYPE_SPECIALISATION','TYPE_SPECIALISATION',001))."');\n";
+						print IMPORT "\n";
+						$j = $NodeNext[$j];
+					}
+				}
+				case "JSON_OBJECT" {
+					$j = $NodeFirst[$_[0]];
+					$Sequence = 0;
+					while (1) {
+						if ($j == -1) {
+							last;
+						}
+						$Sequence++;
+						print IMPORT "INSERT INTO v_json_object (CUBE_SEQUENCE, FK_BOT_NAME, FK_TYP_NAME, CUBE_TSG_GROUP_OR_ELEMENT)\n"; 
+						print IMPORT "	VALUES ($Sequence, '$_[1]', '$_[2]', '".ReplX($NodeString[$j])."');\n";
+						print IMPORT "\n";
+						$FkeyValues[0] = $_[1];
+						$FkeyValues[1] = $_[2];
+						$i = $NodeFirst[$j];
+						CreateInsertStmnts($i,@FkeyValues);
+						$j = $NodeNext[$j];
+					}
+				}
+				case "JSON_ATTRIBUTE_REFERENCE" {
+					$j = $NodeFirst[$_[0]];
+					while (1) {
+						if ($j == -1) {
+							last;
+						}
+						print IMPORT "INSERT INTO v_json_attribute_reference (FK_BOT_NAME, FK_TYP_NAME, XF_ATB_TYP_NAME, XK_ATB_NAME)\n"; 
+						print IMPORT "	VALUES ('$_[1]', '$_[2]', '".ReplX(GetXkey($j,'ATTRIBUTE','TYPE',001))."', '".ReplX(GetXkey($j,'ATTRIBUTE','ATTRIBUTE',001))."');\n";
 						print IMPORT "\n";
 						$j = $NodeNext[$j];
 					}

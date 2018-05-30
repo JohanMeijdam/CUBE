@@ -638,6 +638,22 @@ case 'GetTypItems':
 	}
 	echo "<||||>";
 
+	$stid = oci_parse($conn, "BEGIN pkg_bot.get_typ_rtt_items (
+		:p_cube_row,
+		:p_name);
+	END;");
+	oci_bind_by_name($stid,":p_name",$p_name);
+
+	$r = perform_db_request();
+	if (!$r) { return; }
+	$first = True;
+	while ($row = oci_fetch_assoc($curs)) {
+		if ($first) { $first = False; echo "LIST_RTT";}
+		echo "<|||>".$row["FK_TYP_NAME"]."<|>".$row["XF_TSP_TYP_NAME"]."<|>".$row["XF_TSP_TSG_CODE"]."<|>".$row["XK_TSP_CODE"];
+		echo "<||>".$row["XF_TSP_TYP_NAME"]." ".$row["XF_TSP_TSG_CODE"]." ".$row["XK_TSP_CODE"];
+	}
+	echo "<||||>";
+
 	$stid = oci_parse($conn, "BEGIN pkg_bot.get_typ_tyr_items (
 		:p_cube_row,
 		:p_name);
@@ -1870,6 +1886,108 @@ case 'DeleteRtr':
 		return;
 	}
 	echo "DELETE_RTR";
+	break;
+
+case 'GetRtt':
+
+	list($p_fk_typ_name, $p_xf_tsp_typ_name, $p_xf_tsp_tsg_code, $p_xk_tsp_code) = explode("<|>", $import[1]);
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.get_rtt (
+		:p_cube_row,
+		:p_fk_typ_name,
+		:p_xf_tsp_typ_name,
+		:p_xf_tsp_tsg_code,
+		:p_xk_tsp_code);
+	END;");
+	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
+	oci_bind_by_name($stid,":p_xf_tsp_typ_name",$p_xf_tsp_typ_name);
+	oci_bind_by_name($stid,":p_xf_tsp_tsg_code",$p_xf_tsp_tsg_code);
+	oci_bind_by_name($stid,":p_xk_tsp_code",$p_xk_tsp_code);
+
+	$r = perform_db_request();
+	if (!$r) { return; }
+	echo "SELECT_RTT";
+	if ($row = oci_fetch_assoc($curs)) {
+		echo "<|||>".$row["FK_BOT_NAME"]."<|>".$row["INCLUDE_OR_EXCLUDE"];
+	}
+	break;
+
+case 'CreateRtt':
+
+	list($p_fk_bot_name, $p_fk_typ_name, $p_include_or_exclude, $p_xf_tsp_typ_name, $p_xf_tsp_tsg_code, $p_xk_tsp_code) = explode("<|>", $import[1]);
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.insert_rtt (
+		:p_fk_bot_name,
+		:p_fk_typ_name,
+		:p_include_or_exclude,
+		:p_xf_tsp_typ_name,
+		:p_xf_tsp_tsg_code,
+		:p_xk_tsp_code,
+		:p_cube_row);
+	END;");
+	oci_bind_by_name($stid,":p_fk_bot_name",$p_fk_bot_name);
+	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
+	oci_bind_by_name($stid,":p_include_or_exclude",$p_include_or_exclude);
+	oci_bind_by_name($stid,":p_xf_tsp_typ_name",$p_xf_tsp_typ_name);
+	oci_bind_by_name($stid,":p_xf_tsp_tsg_code",$p_xf_tsp_tsg_code);
+	oci_bind_by_name($stid,":p_xk_tsp_code",$p_xk_tsp_code);
+
+	$r = perform_db_request();
+	if (!$r) { return; }
+	echo "CREATE_RTT";
+	if ($row = oci_fetch_assoc($curs)) {
+		echo "<|||>".$row["FK_TYP_NAME"]."<|>".$row["XF_TSP_TYP_NAME"]."<|>".$row["XF_TSP_TSG_CODE"]."<|>".$row["XK_TSP_CODE"];
+	}
+	break;
+
+case 'UpdateRtt':
+
+	list($p_fk_bot_name, $p_fk_typ_name, $p_include_or_exclude, $p_xf_tsp_typ_name, $p_xf_tsp_tsg_code, $p_xk_tsp_code) = explode("<|>", $import[1]);
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.update_rtt (
+		:p_fk_bot_name,
+		:p_fk_typ_name,
+		:p_include_or_exclude,
+		:p_xf_tsp_typ_name,
+		:p_xf_tsp_tsg_code,
+		:p_xk_tsp_code);
+	END;");
+	oci_bind_by_name($stid,":p_fk_bot_name",$p_fk_bot_name);
+	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
+	oci_bind_by_name($stid,":p_include_or_exclude",$p_include_or_exclude);
+	oci_bind_by_name($stid,":p_xf_tsp_typ_name",$p_xf_tsp_typ_name);
+	oci_bind_by_name($stid,":p_xf_tsp_tsg_code",$p_xf_tsp_tsg_code);
+	oci_bind_by_name($stid,":p_xk_tsp_code",$p_xk_tsp_code);
+
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		return;
+	}
+	echo "UPDATE_RTT";
+	break;
+
+case 'DeleteRtt':
+
+	list($p_fk_typ_name, $p_xf_tsp_typ_name, $p_xf_tsp_tsg_code, $p_xk_tsp_code) = explode("<|>", $import[1]);
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.delete_rtt (
+		:p_fk_typ_name,
+		:p_xf_tsp_typ_name,
+		:p_xf_tsp_tsg_code,
+		:p_xk_tsp_code);
+	END;");
+	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
+	oci_bind_by_name($stid,":p_xf_tsp_typ_name",$p_xf_tsp_typ_name);
+	oci_bind_by_name($stid,":p_xf_tsp_tsg_code",$p_xf_tsp_tsg_code);
+	oci_bind_by_name($stid,":p_xk_tsp_code",$p_xk_tsp_code);
+
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		return;
+	}
+	echo "DELETE_RTT";
 	break;
 
 case 'GetTyr':

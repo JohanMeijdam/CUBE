@@ -48,6 +48,10 @@ DROP SEQUENCE rtr_seq
 /
 CREATE SEQUENCE rtr_seq START WITH 100000
 /
+DROP SEQUENCE rtt_seq
+/
+CREATE SEQUENCE rtt_seq START WITH 100000
+/
 DROP SEQUENCE tyr_seq
 /
 CREATE SEQUENCE tyr_seq START WITH 100000
@@ -110,6 +114,8 @@ ALTER TABLE t_description_reference DROP CONSTRAINT dcr_ref_fk
 /
 ALTER TABLE t_restriction_type_spec_ref DROP CONSTRAINT rtr_ref_fk
 /
+ALTER TABLE t_restriction_type_spec_typ DROP CONSTRAINT rtt_typ_fk
+/
 ALTER TABLE t_type_reuse DROP CONSTRAINT tyr_typ_fk
 /
 ALTER TABLE t_partition DROP CONSTRAINT par_typ_fk
@@ -151,6 +157,8 @@ DROP TABLE t_reference
 DROP TABLE t_description_reference
 /
 DROP TABLE t_restriction_type_spec_ref
+/
+DROP TABLE t_restriction_type_spec_typ
 /
 DROP TABLE t_type_reuse
 /
@@ -229,7 +237,7 @@ CREATE TABLE t_type (
 	fk_typ_name VARCHAR2(30),
 	name VARCHAR2(30),
 	code VARCHAR2(3),
-	flag_partial_key CHAR(1) DEFAULT 'N',
+	flag_partial_key CHAR(1) DEFAULT 'Y',
 	flag_recursive CHAR(1) DEFAULT 'N',
 	recursive_cardinality CHAR(1) DEFAULT 'N',
 	cardinality CHAR(1) DEFAULT 'N',
@@ -362,6 +370,21 @@ CREATE TABLE t_restriction_type_spec_ref (
 	CONSTRAINT rtr_ref_fk
 		FOREIGN KEY (fk_typ_name, fk_ref_sequence, fk_ref_typ_name)
 		REFERENCES t_reference (fk_typ_name, sequence, xk_typ_name)
+		ON DELETE CASCADE )
+/
+CREATE TABLE t_restriction_type_spec_typ (
+	cube_id VARCHAR2(16),
+	fk_bot_name VARCHAR2(30),
+	fk_typ_name VARCHAR2(30),
+	include_or_exclude CHAR(2) DEFAULT 'IN',
+	xf_tsp_typ_name VARCHAR2(30),
+	xf_tsp_tsg_code VARCHAR2(16),
+	xk_tsp_code VARCHAR2(16),
+	CONSTRAINT rtt_pk
+		PRIMARY KEY (fk_typ_name, xf_tsp_typ_name, xf_tsp_tsg_code, xk_tsp_code),
+	CONSTRAINT rtt_typ_fk
+		FOREIGN KEY (fk_typ_name)
+		REFERENCES t_type (name)
 		ON DELETE CASCADE )
 /
 CREATE TABLE t_type_reuse (

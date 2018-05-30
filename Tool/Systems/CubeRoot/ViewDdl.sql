@@ -394,6 +394,17 @@ CREATE OR REPLACE VIEW v_restriction_type_spec_ref AS
 		xk_tsp_code
 	FROM t_restriction_type_spec_ref
 /
+CREATE OR REPLACE VIEW v_restriction_type_spec_typ AS 
+	SELECT
+		cube_id,
+		fk_bot_name,
+		fk_typ_name,
+		include_or_exclude,
+		xf_tsp_typ_name,
+		xf_tsp_tsg_code,
+		xk_tsp_code
+	FROM t_restriction_type_spec_typ
+/
 CREATE OR REPLACE VIEW v_type_reuse AS 
 	SELECT
 		cube_id,
@@ -450,6 +461,24 @@ CREATE OR REPLACE VIEW v_type_specialisation AS
 		xk_tsp_code
 	FROM t_type_specialisation
 /
+CREATE OR REPLACE VIEW v_json_object AS 
+	SELECT
+		cube_id,
+		cube_sequence,
+		fk_bot_name,
+		fk_typ_name,
+		cube_tsg_group_or_element
+	FROM t_json_object
+/
+CREATE OR REPLACE VIEW v_json_attribute_reference AS 
+	SELECT
+		cube_id,
+		fk_bot_name,
+		fk_typ_name,
+		xf_atb_typ_name,
+		xk_atb_name
+	FROM t_json_attribute_reference
+/
 CREATE OR REPLACE VIEW v_description_type AS 
 	SELECT
 		cube_id,
@@ -489,6 +518,9 @@ CREATE OR REPLACE PACKAGE pkg_bot_trg IS
 	PROCEDURE insert_rtr (p_rtr IN OUT NOCOPY v_restriction_type_spec_ref%ROWTYPE);
 	PROCEDURE update_rtr (p_cube_rowid IN UROWID, p_rtr_old IN OUT NOCOPY v_restriction_type_spec_ref%ROWTYPE, p_rtr_new IN OUT NOCOPY v_restriction_type_spec_ref%ROWTYPE);
 	PROCEDURE delete_rtr (p_cube_rowid IN UROWID, p_rtr IN OUT NOCOPY v_restriction_type_spec_ref%ROWTYPE);
+	PROCEDURE insert_rtt (p_rtt IN OUT NOCOPY v_restriction_type_spec_typ%ROWTYPE);
+	PROCEDURE update_rtt (p_cube_rowid IN UROWID, p_rtt_old IN OUT NOCOPY v_restriction_type_spec_typ%ROWTYPE, p_rtt_new IN OUT NOCOPY v_restriction_type_spec_typ%ROWTYPE);
+	PROCEDURE delete_rtt (p_cube_rowid IN UROWID, p_rtt IN OUT NOCOPY v_restriction_type_spec_typ%ROWTYPE);
 	PROCEDURE insert_tyr (p_tyr IN OUT NOCOPY v_type_reuse%ROWTYPE);
 	PROCEDURE update_tyr (p_cube_rowid IN UROWID, p_tyr_old IN OUT NOCOPY v_type_reuse%ROWTYPE, p_tyr_new IN OUT NOCOPY v_type_reuse%ROWTYPE);
 	PROCEDURE delete_tyr (p_cube_rowid IN UROWID, p_tyr IN OUT NOCOPY v_type_reuse%ROWTYPE);
@@ -506,6 +538,12 @@ CREATE OR REPLACE PACKAGE pkg_bot_trg IS
 	PROCEDURE insert_tsp (p_tsp IN OUT NOCOPY v_type_specialisation%ROWTYPE);
 	PROCEDURE update_tsp (p_cube_rowid IN UROWID, p_tsp_old IN OUT NOCOPY v_type_specialisation%ROWTYPE, p_tsp_new IN OUT NOCOPY v_type_specialisation%ROWTYPE);
 	PROCEDURE delete_tsp (p_cube_rowid IN UROWID, p_tsp IN OUT NOCOPY v_type_specialisation%ROWTYPE);
+	PROCEDURE insert_job (p_job IN OUT NOCOPY v_json_object%ROWTYPE);
+	PROCEDURE update_job (p_cube_rowid IN UROWID, p_job_old IN OUT NOCOPY v_json_object%ROWTYPE, p_job_new IN OUT NOCOPY v_json_object%ROWTYPE);
+	PROCEDURE delete_job (p_cube_rowid IN UROWID, p_job IN OUT NOCOPY v_json_object%ROWTYPE);
+	PROCEDURE insert_jar (p_jar IN OUT NOCOPY v_json_attribute_reference%ROWTYPE);
+	PROCEDURE update_jar (p_cube_rowid IN UROWID, p_jar_old IN OUT NOCOPY v_json_attribute_reference%ROWTYPE, p_jar_new IN OUT NOCOPY v_json_attribute_reference%ROWTYPE);
+	PROCEDURE delete_jar (p_cube_rowid IN UROWID, p_jar IN OUT NOCOPY v_json_attribute_reference%ROWTYPE);
 	PROCEDURE insert_dct (p_dct IN OUT NOCOPY v_description_type%ROWTYPE);
 	PROCEDURE update_dct (p_cube_rowid IN UROWID, p_dct_old IN OUT NOCOPY v_description_type%ROWTYPE, p_dct_new IN OUT NOCOPY v_description_type%ROWTYPE);
 	PROCEDURE delete_dct (p_cube_rowid IN UROWID, p_dct IN OUT NOCOPY v_description_type%ROWTYPE);
@@ -957,6 +995,44 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 		WHERE rowid = p_cube_rowid;
 	END;
 
+	PROCEDURE insert_rtt (p_rtt IN OUT NOCOPY v_restriction_type_spec_typ%ROWTYPE) IS
+	BEGIN
+		p_rtt.cube_id := 'CUBE-RTT-' || TO_CHAR(rtt_seq.NEXTVAL,'FM0000000');
+		SELECT fk_bot_name
+		  INTO p_rtt.fk_bot_name
+		FROM t_type
+		WHERE name = p_rtt.fk_typ_name;
+		INSERT INTO t_restriction_type_spec_typ (
+			cube_id,
+			fk_bot_name,
+			fk_typ_name,
+			include_or_exclude,
+			xf_tsp_typ_name,
+			xf_tsp_tsg_code,
+			xk_tsp_code)
+		VALUES (
+			p_rtt.cube_id,
+			p_rtt.fk_bot_name,
+			p_rtt.fk_typ_name,
+			p_rtt.include_or_exclude,
+			p_rtt.xf_tsp_typ_name,
+			p_rtt.xf_tsp_tsg_code,
+			p_rtt.xk_tsp_code);
+	END;
+
+	PROCEDURE update_rtt (p_cube_rowid UROWID, p_rtt_old IN OUT NOCOPY v_restriction_type_spec_typ%ROWTYPE, p_rtt_new IN OUT NOCOPY v_restriction_type_spec_typ%ROWTYPE) IS
+	BEGIN
+		UPDATE t_restriction_type_spec_typ SET 
+			include_or_exclude = p_rtt_new.include_or_exclude
+		WHERE rowid = p_cube_rowid;
+	END;
+
+	PROCEDURE delete_rtt (p_cube_rowid UROWID, p_rtt IN OUT NOCOPY v_restriction_type_spec_typ%ROWTYPE) IS
+	BEGIN
+		DELETE t_restriction_type_spec_typ 
+		WHERE rowid = p_cube_rowid;
+	END;
+
 	PROCEDURE insert_tyr (p_tyr IN OUT NOCOPY v_type_reuse%ROWTYPE) IS
 	BEGIN
 		p_tyr.cube_id := 'CUBE-TYR-' || TO_CHAR(tyr_seq.NEXTVAL,'FM0000000');
@@ -1197,6 +1273,72 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 	PROCEDURE delete_tsp (p_cube_rowid UROWID, p_tsp IN OUT NOCOPY v_type_specialisation%ROWTYPE) IS
 	BEGIN
 		DELETE t_type_specialisation 
+		WHERE rowid = p_cube_rowid;
+	END;
+
+	PROCEDURE insert_job (p_job IN OUT NOCOPY v_json_object%ROWTYPE) IS
+	BEGIN
+		p_job.cube_id := 'CUBE-JOB-' || TO_CHAR(job_seq.NEXTVAL,'FM0000000');
+		SELECT fk_bot_name
+		  INTO p_job.fk_bot_name
+		FROM t_type
+		WHERE name = p_job.fk_typ_name;
+		INSERT INTO t_json_object (
+			cube_id,
+			cube_sequence,
+			fk_bot_name,
+			fk_typ_name,
+			cube_tsg_group_or_element)
+		VALUES (
+			p_job.cube_id,
+			p_job.cube_sequence,
+			p_job.fk_bot_name,
+			p_job.fk_typ_name,
+			p_job.cube_tsg_group_or_element);
+	END;
+
+	PROCEDURE update_job (p_cube_rowid UROWID, p_job_old IN OUT NOCOPY v_json_object%ROWTYPE, p_job_new IN OUT NOCOPY v_json_object%ROWTYPE) IS
+	BEGIN
+		UPDATE t_json_object SET 
+			cube_sequence = p_job_new.cube_sequence
+		WHERE rowid = p_cube_rowid;
+	END;
+
+	PROCEDURE delete_job (p_cube_rowid UROWID, p_job IN OUT NOCOPY v_json_object%ROWTYPE) IS
+	BEGIN
+		DELETE t_json_object 
+		WHERE rowid = p_cube_rowid;
+	END;
+
+	PROCEDURE insert_jar (p_jar IN OUT NOCOPY v_json_attribute_reference%ROWTYPE) IS
+	BEGIN
+		p_jar.cube_id := 'CUBE-JAR-' || TO_CHAR(jar_seq.NEXTVAL,'FM0000000');
+		SELECT fk_bot_name
+		  INTO p_jar.fk_bot_name
+		FROM t_json_object
+		WHERE fk_typ_name = p_jar.fk_typ_name;
+		INSERT INTO t_json_attribute_reference (
+			cube_id,
+			fk_bot_name,
+			fk_typ_name,
+			xf_atb_typ_name,
+			xk_atb_name)
+		VALUES (
+			p_jar.cube_id,
+			p_jar.fk_bot_name,
+			p_jar.fk_typ_name,
+			p_jar.xf_atb_typ_name,
+			p_jar.xk_atb_name);
+	END;
+
+	PROCEDURE update_jar (p_cube_rowid UROWID, p_jar_old IN OUT NOCOPY v_json_attribute_reference%ROWTYPE, p_jar_new IN OUT NOCOPY v_json_attribute_reference%ROWTYPE) IS
+	BEGIN
+		NULL;
+	END;
+
+	PROCEDURE delete_jar (p_cube_rowid UROWID, p_jar IN OUT NOCOPY v_json_attribute_reference%ROWTYPE) IS
+	BEGIN
+		DELETE t_json_attribute_reference 
 		WHERE rowid = p_cube_rowid;
 	END;
 
@@ -1655,6 +1797,50 @@ END;
 /
 SHOW ERRORS
 
+CREATE OR REPLACE TRIGGER trg_rtt
+INSTEAD OF INSERT OR DELETE OR UPDATE ON v_restriction_type_spec_typ
+FOR EACH ROW
+DECLARE
+	l_cube_rowid UROWID;
+	r_rtt_new v_restriction_type_spec_typ%ROWTYPE;
+	r_rtt_old v_restriction_type_spec_typ%ROWTYPE;
+BEGIN
+	IF INSERTING OR UPDATING THEN
+		r_rtt_new.fk_bot_name := REPLACE(:NEW.fk_bot_name,' ','_');
+		r_rtt_new.fk_typ_name := REPLACE(:NEW.fk_typ_name,' ','_');
+		r_rtt_new.include_or_exclude := REPLACE(:NEW.include_or_exclude,' ','_');
+		r_rtt_new.xf_tsp_typ_name := REPLACE(:NEW.xf_tsp_typ_name,' ','_');
+		r_rtt_new.xf_tsp_tsg_code := REPLACE(:NEW.xf_tsp_tsg_code,' ','_');
+		r_rtt_new.xk_tsp_code := REPLACE(:NEW.xk_tsp_code,' ','_');
+	END IF;
+	IF UPDATING THEN
+		r_rtt_new.cube_id := :OLD.cube_id;
+	END IF;
+	IF UPDATING OR DELETING THEN
+		SELECT rowid INTO l_cube_rowid FROM t_restriction_type_spec_typ
+		WHERE fk_typ_name = :OLD.fk_typ_name
+		  AND xf_tsp_typ_name = :OLD.xf_tsp_typ_name
+		  AND xf_tsp_tsg_code = :OLD.xf_tsp_tsg_code
+		  AND xk_tsp_code = :OLD.xk_tsp_code;
+		r_rtt_old.fk_bot_name := :OLD.fk_bot_name;
+		r_rtt_old.fk_typ_name := :OLD.fk_typ_name;
+		r_rtt_old.include_or_exclude := :OLD.include_or_exclude;
+		r_rtt_old.xf_tsp_typ_name := :OLD.xf_tsp_typ_name;
+		r_rtt_old.xf_tsp_tsg_code := :OLD.xf_tsp_tsg_code;
+		r_rtt_old.xk_tsp_code := :OLD.xk_tsp_code;
+	END IF;
+
+	IF INSERTING THEN 
+		pkg_bot_trg.insert_rtt (r_rtt_new);
+	ELSIF UPDATING THEN
+		pkg_bot_trg.update_rtt (l_cube_rowid, r_rtt_old, r_rtt_new);
+	ELSIF DELETING THEN
+		pkg_bot_trg.delete_rtt (l_cube_rowid, r_rtt_old);
+	END IF;
+END;
+/
+SHOW ERRORS
+
 CREATE OR REPLACE TRIGGER trg_tyr
 INSTEAD OF INSERT OR DELETE OR UPDATE ON v_type_reuse
 FOR EACH ROW
@@ -1863,6 +2049,82 @@ BEGIN
 		pkg_bot_trg.update_tsp (l_cube_rowid, r_tsp_old, r_tsp_new);
 	ELSIF DELETING THEN
 		pkg_bot_trg.delete_tsp (l_cube_rowid, r_tsp_old);
+	END IF;
+END;
+/
+SHOW ERRORS
+
+CREATE OR REPLACE TRIGGER trg_job
+INSTEAD OF INSERT OR DELETE OR UPDATE ON v_json_object
+FOR EACH ROW
+DECLARE
+	l_cube_rowid UROWID;
+	r_job_new v_json_object%ROWTYPE;
+	r_job_old v_json_object%ROWTYPE;
+BEGIN
+	IF INSERTING OR UPDATING THEN
+		r_job_new.cube_sequence := :NEW.cube_sequence;
+		r_job_new.fk_bot_name := REPLACE(:NEW.fk_bot_name,' ','_');
+		r_job_new.fk_typ_name := REPLACE(:NEW.fk_typ_name,' ','_');
+		r_job_new.cube_tsg_group_or_element := :NEW.cube_tsg_group_or_element;
+	END IF;
+	IF UPDATING THEN
+		r_job_new.cube_id := :OLD.cube_id;
+	END IF;
+	IF UPDATING OR DELETING THEN
+		SELECT rowid INTO l_cube_rowid FROM t_json_object
+		WHERE fk_typ_name = :OLD.fk_typ_name;
+		r_job_old.cube_sequence := :OLD.cube_sequence;
+		r_job_old.fk_bot_name := :OLD.fk_bot_name;
+		r_job_old.fk_typ_name := :OLD.fk_typ_name;
+		r_job_old.cube_tsg_group_or_element := :OLD.cube_tsg_group_or_element;
+	END IF;
+
+	IF INSERTING THEN 
+		pkg_bot_trg.insert_job (r_job_new);
+	ELSIF UPDATING THEN
+		pkg_bot_trg.update_job (l_cube_rowid, r_job_old, r_job_new);
+	ELSIF DELETING THEN
+		pkg_bot_trg.delete_job (l_cube_rowid, r_job_old);
+	END IF;
+END;
+/
+SHOW ERRORS
+
+CREATE OR REPLACE TRIGGER trg_jar
+INSTEAD OF INSERT OR DELETE OR UPDATE ON v_json_attribute_reference
+FOR EACH ROW
+DECLARE
+	l_cube_rowid UROWID;
+	r_jar_new v_json_attribute_reference%ROWTYPE;
+	r_jar_old v_json_attribute_reference%ROWTYPE;
+BEGIN
+	IF INSERTING OR UPDATING THEN
+		r_jar_new.fk_bot_name := REPLACE(:NEW.fk_bot_name,' ','_');
+		r_jar_new.fk_typ_name := REPLACE(:NEW.fk_typ_name,' ','_');
+		r_jar_new.xf_atb_typ_name := REPLACE(:NEW.xf_atb_typ_name,' ','_');
+		r_jar_new.xk_atb_name := REPLACE(:NEW.xk_atb_name,' ','_');
+	END IF;
+	IF UPDATING THEN
+		r_jar_new.cube_id := :OLD.cube_id;
+	END IF;
+	IF UPDATING OR DELETING THEN
+		SELECT rowid INTO l_cube_rowid FROM t_json_attribute_reference
+		WHERE fk_typ_name = :OLD.fk_typ_name
+		  AND xf_atb_typ_name = :OLD.xf_atb_typ_name
+		  AND xk_atb_name = :OLD.xk_atb_name;
+		r_jar_old.fk_bot_name := :OLD.fk_bot_name;
+		r_jar_old.fk_typ_name := :OLD.fk_typ_name;
+		r_jar_old.xf_atb_typ_name := :OLD.xf_atb_typ_name;
+		r_jar_old.xk_atb_name := :OLD.xk_atb_name;
+	END IF;
+
+	IF INSERTING THEN 
+		pkg_bot_trg.insert_jar (r_jar_new);
+	ELSIF UPDATING THEN
+		pkg_bot_trg.update_jar (l_cube_rowid, r_jar_old, r_jar_new);
+	ELSIF DELETING THEN
+		pkg_bot_trg.delete_jar (l_cube_rowid, r_jar_old);
 	END IF;
 END;
 /

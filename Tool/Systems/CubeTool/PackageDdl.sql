@@ -554,6 +554,9 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 	PROCEDURE get_typ_ref_items (
 			p_cube_row IN OUT c_cube_row,
 			p_name IN VARCHAR2);
+	PROCEDURE get_typ_rtt_items (
+			p_cube_row IN OUT c_cube_row,
+			p_name IN VARCHAR2);
 	PROCEDURE get_typ_tyr_items (
 			p_cube_row IN OUT c_cube_row,
 			p_name IN VARCHAR2);
@@ -857,6 +860,32 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_ref_sequence IN NUMBER,
 			p_fk_ref_typ_name IN VARCHAR2,
+			p_xf_tsp_typ_name IN VARCHAR2,
+			p_xf_tsp_tsg_code IN VARCHAR2,
+			p_xk_tsp_code IN VARCHAR2);
+	PROCEDURE get_rtt (
+			p_cube_row IN OUT c_cube_row,
+			p_fk_typ_name IN VARCHAR2,
+			p_xf_tsp_typ_name IN VARCHAR2,
+			p_xf_tsp_tsg_code IN VARCHAR2,
+			p_xk_tsp_code IN VARCHAR2);
+	PROCEDURE insert_rtt (
+			p_fk_bot_name IN VARCHAR2,
+			p_fk_typ_name IN VARCHAR2,
+			p_include_or_exclude IN CHAR,
+			p_xf_tsp_typ_name IN VARCHAR2,
+			p_xf_tsp_tsg_code IN VARCHAR2,
+			p_xk_tsp_code IN VARCHAR2,
+			p_cube_row IN OUT c_cube_row);
+	PROCEDURE update_rtt (
+			p_fk_bot_name IN VARCHAR2,
+			p_fk_typ_name IN VARCHAR2,
+			p_include_or_exclude IN CHAR,
+			p_xf_tsp_typ_name IN VARCHAR2,
+			p_xf_tsp_tsg_code IN VARCHAR2,
+			p_xk_tsp_code IN VARCHAR2);
+	PROCEDURE delete_rtt (
+			p_fk_typ_name IN VARCHAR2,
 			p_xf_tsp_typ_name IN VARCHAR2,
 			p_xf_tsp_tsg_code IN VARCHAR2,
 			p_xk_tsp_code IN VARCHAR2);
@@ -1372,6 +1401,21 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			FROM v_reference
 			WHERE fk_typ_name = p_name
 			ORDER BY fk_typ_name, cube_sequence;
+	END;
+
+	PROCEDURE get_typ_rtt_items (
+			p_cube_row IN OUT c_cube_row,
+			p_name IN VARCHAR2) IS
+	BEGIN
+		OPEN p_cube_row FOR
+			SELECT
+			  fk_typ_name,
+			  xf_tsp_typ_name,
+			  xf_tsp_tsg_code,
+			  xk_tsp_code
+			FROM v_restriction_type_spec_typ
+			WHERE fk_typ_name = p_name
+			ORDER BY fk_typ_name, xf_tsp_typ_name, xf_tsp_tsg_code, xk_tsp_code;
 	END;
 
 	PROCEDURE get_typ_tyr_items (
@@ -2716,6 +2760,113 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 		WHERE fk_typ_name = p_fk_typ_name
 		  AND fk_ref_sequence = p_fk_ref_sequence
 		  AND fk_ref_typ_name = p_fk_ref_typ_name
+		  AND xf_tsp_typ_name = p_xf_tsp_typ_name
+		  AND xf_tsp_tsg_code = p_xf_tsp_tsg_code
+		  AND xk_tsp_code = p_xk_tsp_code;
+	END;
+
+	PROCEDURE get_rtt (
+			p_cube_row IN OUT c_cube_row,
+			p_fk_typ_name IN VARCHAR2,
+			p_xf_tsp_typ_name IN VARCHAR2,
+			p_xf_tsp_tsg_code IN VARCHAR2,
+			p_xk_tsp_code IN VARCHAR2) IS
+	BEGIN
+		OPEN p_cube_row FOR
+			SELECT
+			  fk_bot_name,
+			  include_or_exclude
+			FROM v_restriction_type_spec_typ
+			WHERE fk_typ_name = p_fk_typ_name
+			  AND xf_tsp_typ_name = p_xf_tsp_typ_name
+			  AND xf_tsp_tsg_code = p_xf_tsp_tsg_code
+			  AND xk_tsp_code = p_xk_tsp_code;
+	END;
+
+	PROCEDURE get_next_rtt (
+			p_cube_row IN OUT c_cube_row,
+			p_fk_typ_name IN VARCHAR2,
+			p_xf_tsp_typ_name IN VARCHAR2,
+			p_xf_tsp_tsg_code IN VARCHAR2,
+			p_xk_tsp_code IN VARCHAR2) IS
+	BEGIN
+		OPEN p_cube_row FOR
+			SELECT
+			  fk_typ_name,
+			  xf_tsp_typ_name,
+			  xf_tsp_tsg_code,
+			  xk_tsp_code
+			FROM v_restriction_type_spec_typ
+			WHERE fk_typ_name > p_fk_typ_name
+			   OR 	    ( fk_typ_name = p_fk_typ_name
+				  AND xf_tsp_typ_name > p_xf_tsp_typ_name )
+			   OR 	    ( fk_typ_name = p_fk_typ_name
+				  AND xf_tsp_typ_name = p_xf_tsp_typ_name
+				  AND xf_tsp_tsg_code > p_xf_tsp_tsg_code )
+			   OR 	    ( fk_typ_name = p_fk_typ_name
+				  AND xf_tsp_typ_name = p_xf_tsp_typ_name
+				  AND xf_tsp_tsg_code = p_xf_tsp_tsg_code
+				  AND xk_tsp_code > p_xk_tsp_code )
+			ORDER BY fk_typ_name, xf_tsp_typ_name, xf_tsp_tsg_code, xk_tsp_code;
+	END;
+
+	PROCEDURE insert_rtt (
+			p_fk_bot_name IN VARCHAR2,
+			p_fk_typ_name IN VARCHAR2,
+			p_include_or_exclude IN CHAR,
+			p_xf_tsp_typ_name IN VARCHAR2,
+			p_xf_tsp_tsg_code IN VARCHAR2,
+			p_xk_tsp_code IN VARCHAR2,
+			p_cube_row IN OUT c_cube_row) IS
+	BEGIN
+		INSERT INTO v_restriction_type_spec_typ (
+			cube_id,
+			fk_bot_name,
+			fk_typ_name,
+			include_or_exclude,
+			xf_tsp_typ_name,
+			xf_tsp_tsg_code,
+			xk_tsp_code)
+		VALUES (
+			NULL,
+			p_fk_bot_name,
+			p_fk_typ_name,
+			p_include_or_exclude,
+			p_xf_tsp_typ_name,
+			p_xf_tsp_tsg_code,
+			p_xk_tsp_code);
+
+		get_next_rtt (p_cube_row, p_fk_typ_name, p_xf_tsp_typ_name, p_xf_tsp_tsg_code, p_xk_tsp_code);
+	EXCEPTION
+		WHEN DUP_VAL_ON_INDEX THEN
+			RAISE_APPLICATION_ERROR (-20001, 'Type restriction_type_spec_typ already exists');
+	END;
+
+	PROCEDURE update_rtt (
+			p_fk_bot_name IN VARCHAR2,
+			p_fk_typ_name IN VARCHAR2,
+			p_include_or_exclude IN CHAR,
+			p_xf_tsp_typ_name IN VARCHAR2,
+			p_xf_tsp_tsg_code IN VARCHAR2,
+			p_xk_tsp_code IN VARCHAR2) IS
+	BEGIN
+		UPDATE v_restriction_type_spec_typ SET
+			fk_bot_name = p_fk_bot_name,
+			include_or_exclude = p_include_or_exclude
+		WHERE fk_typ_name = p_fk_typ_name
+		  AND xf_tsp_typ_name = p_xf_tsp_typ_name
+		  AND xf_tsp_tsg_code = p_xf_tsp_tsg_code
+		  AND xk_tsp_code = p_xk_tsp_code;
+	END;
+
+	PROCEDURE delete_rtt (
+			p_fk_typ_name IN VARCHAR2,
+			p_xf_tsp_typ_name IN VARCHAR2,
+			p_xf_tsp_tsg_code IN VARCHAR2,
+			p_xk_tsp_code IN VARCHAR2) IS
+	BEGIN
+		DELETE v_restriction_type_spec_typ
+		WHERE fk_typ_name = p_fk_typ_name
 		  AND xf_tsp_typ_name = p_xf_tsp_typ_name
 		  AND xf_tsp_tsg_code = p_xf_tsp_tsg_code
 		  AND xk_tsp_code = p_xk_tsp_code;

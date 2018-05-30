@@ -9,6 +9,7 @@
 27-02-2018 - select check_no_parent fixed (only foreign keys has as source a primary key)
 28-02-2018 - TYPE CODE not from BUSINESS_OBJECT_TYPE but from TYPE.
 02-03-2018 - Scoping in hierarchy selection (SCOPE_LEVEL) implemented.
+30-05-2018 - Create with position always define l_cube_sequence.
 [[INCLUDE,templates\includes\general.cgt]]
 [[TEXT,IMPL_SQL_NOT_FOUND]][[*No arguments*]]
 		+STATEMENT:SELECTION|IF;
@@ -825,8 +826,10 @@
 				-STATEMENT:;[[ENDIF]]
 			-STATEMENT_GROUP:;
 		-STATEMENT:;[[*
-*]][[ELSIF,SERVICE:1=create]][[IF:6=P[AND]CHILD(ATTRIBUTE:<<TEXT,GEN_IS_OWN_KEY>>)]]
-		=VARIABLE:l_cube_sequence|NUMBER(8);<<TEXT,IMPL_VAL_POS_ACTION>><<TEXT,IMPL_USE_DETERM_POS[|]p[|]>>[[ENDIF]]
+*]][[ELSIF,SERVICE:1=create]][[IF:6=P]]
+		+VARIABLE:l_cube_sequence|NUMBER(8);[[IF:!CHILD(ATTRIBUTE:<<TEXT,GEN_IS_OWN_KEY>>)]]
+			=EXPRESSION:NUMBER|1;[[ENDIF]]
+		-VARIABLE:;[[IF:CHILD(ATTRIBUTE:<<TEXT,GEN_IS_OWN_KEY>>)]]<<TEXT,IMPL_VAL_POS_ACTION>><<TEXT,IMPL_USE_DETERM_POS[|]p[|]>>[[ENDIF]][[ENDIF]]
 		+STATEMENT:CREATE|v_<<OPERATION_TYPE:L>>;[[LOOP,ATTRIBUTE]]
 			+SET:<<ATTRIBUTE:L>>;
 				=EXPRESSION:[[IF:CHILD(DERIVATION)[AND]!0=CUBE_SEQUENCE]]NULL[[ELSE]]REF_NAME|[[IF:0=CUBE_SEQUENCE]]l_[[ELSE]]p_[[ENDIF]]<<ATTRIBUTE:L>>[[ENDIF]];

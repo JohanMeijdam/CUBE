@@ -1,3 +1,7 @@
+html {
+	font-size: 11pt;
+}
+
 body {
 	font-family: Arial, Helvetica, sans-serif;
 	background-color:white;
@@ -93,7 +97,7 @@ label {
 
 .code {
 	font-family: courier new;
-	font-size: 14px;
+	font-size: 11pt;
 	white-space: pre;
 	word-wrap: normal;
 	overflow: auto;

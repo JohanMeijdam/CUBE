@@ -1,5 +1,6 @@
 <html>
 <head>
+<meta name="viewport" content="width=device-width, maximum-scale=1.0, user-scalable=yes">
 <link rel="stylesheet" type="text/css" href="../style.css">
 <script language='javascript' type='text/javascript'>
 <!--
@@ -9,29 +10,33 @@ g_xmlhttp.onreadystatechange = function() {
 	if (g_xmlhttp.readyState == 4) {
 		var g_responseText = g_xmlhttp.responseText;
 		var myObj = JSON.parse(g_responseText);
-		document.getElementById("InputMerk").value = myObj.merk;
-		document.getElementById("InputHandelsbenaming").value = myObj.handelsbenaming;
-		document.getElementById("InputAantalCilinders").value = myObj.aantal_cilinders;
-		document.getElementById("InputAantalDeuren").value = myObj.aantal_deuren;
-		document.getElementById("DivStatusCode").innerHTML = g_xmlhttp.status;
+		document.getElementById("InputStraatNaam").value = myObj.straat_naam;
+		document.getElementById("InputPlaatsNaam").value = myObj.plaats_naam;
+		document.getElementById("InputGpsLocatie").value = myObj.gps_locatie;
+		document.getElementById("DivStatusCode").innerHTML = "API HTTP reponse code: " + myObj.cube_api_http_code;
 	}
 }
 
 function performTrans() {
-	l_objParm = { "kenteken" : document.getElementById("InputKenteken").value };
+	l_objParm = { "postcode" : document.getElementById("InputPostcode").value , "nummer" : document.getElementById("InputNummer").value };
 	var l_requestText = JSON.stringify(l_objParm);
-	g_xmlhttp.open('POST','kenteken_api.php',true);
+	g_xmlhttp.open('POST','postcode_adres_server.php',true);
 	g_xmlhttp.send(l_requestText);
 }
 -->
 </script>
 </head><body style="margin:0px;">
-<input id="InputKenteken" type="text" value = "KL237Z"></input><br/>
+<label>Postcode</label><br>
+<input id="InputPostcode" type="text" style="width:100%;max-width:6em;"></input><br/>
+<label>Nummer</label><br>
+<input id="InputNummer" type="number" style="width:100%;max-width:6em;"></input><br/>
 <button id="ButtonTest" type="button" onclick="performTrans()">Test</button><br/>
-<input id="InputMerk" type="text" value = "-- Merk --" readonly></input><br/>
-<input id="InputHandelsbenaming" type="text" value = "-- Handelsbenaming --" readonly></input><br/>
-<input id="InputAantalCilinders" type="text" value = "-- AantalCilinders --" readonly></input><br/>
-<input id="InputAantalDeuren" type="text" value = "-- AantalDeuren --" readonly></input><br/>
-<p id="DivStatusCode">-- Status --</p>
+<label>StraatNaam</label><br>
+<input id="InputStraatNaam" type="text" style="width:100%;max-width:80em;" readonly></input><br/>
+<label>PlaatsNaam</label><br>
+<input id="InputPlaatsNaam" type="text" style="width:100%;max-width:80em;" readonly></input><br/>
+<label>GpsLocatie</label><br>
+<input id="InputGpsLocatie" type="text" style="width:100%;max-width:25em;" readonly></input><br/>
+<p id="DivStatusCode">-- message --</p>
 </body>
 </html>

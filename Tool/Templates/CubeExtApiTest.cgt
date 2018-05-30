@@ -1,6 +1,7 @@
 [[BODY]][[LOOP,SYSTEM:0=<<1>>]]<html>
 <head>
 <title>Cube External JSON API Test</title>
+<meta name="viewport" content="width=device-width, maximum-scale=1.0, user-scalable=yes">
 <link rel="icon" href="../images/composys_icon.png">
 <link rel="stylesheet" type="text/css" href="../style.css">
 </head>
@@ -25,13 +26,15 @@ CUBE EXTERNAL JSON API TEST</div>
 ><div>Test the "<<BUSINESS_OBJECT_TYPE3>>" API.</div><!
 ><iframe src="test_<<TYPE:L>>_api.html" style="width:100%;" onload="this.style.height=this.contentDocument.body.scrollHeight + 'px';"></iframe><![[ENDLOOP,TYPE]][[ENDLOOP,BUSINESS_OBJECT_TYPE]][[ENDLOOP,SYSTEM_BO_TYPE]]
 ><div>
-<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br ><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
 <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
 </div>
 </pre>
 </div>
-</div></body></html>[[LOOP,SYSTEM_BO_TYPE]][[LOOP,BUSINESS_OBJECT_TYPE:1=EXT]][[LOOP,TYPE]][[FILE,html\cube\test_<<TYPE:L>>_api.html]]<html>
+</div></body></html>
+[[LOOP,SYSTEM_BO_TYPE]][[LOOP,BUSINESS_OBJECT_TYPE:1=EXT]][[LOOP,TYPE]][[FILE,html\cube\test_<<TYPE:L>>_api.html]]<html>
 <head>
+<meta name="viewport" content="width=device-width, maximum-scale=1.0, user-scalable=yes">
 <link rel="stylesheet" type="text/css" href="../style.css">
 <script language='javascript' type='text/javascript'>
 <!--
@@ -40,31 +43,27 @@ g_xmlhttp = new XMLHttpRequest();
 g_xmlhttp.onreadystatechange = function() {
 	if (g_xmlhttp.readyState == 4) {
 		var g_responseText = g_xmlhttp.responseText;
-		var myObj = JSON.parse(g_responseText);
-		document.getElementById("InputMerk").value = myObj.merk;
-		document.getElementById("InputHandelsbenaming").value = myObj.handelsbenaming;
-		document.getElementById("InputAantalCilinders").value = myObj.aantal_cilinders;
-		document.getElementById("InputAantalDeuren").value = myObj.aantal_deuren;
-		document.getElementById("DivStatusCode").innerHTML = g_xmlhttp.status;
+		var myObj = JSON.parse(g_responseText);[[LOOP,ATTRIBUTE:1=N]]
+		document.getElementById("Input<<ATTRIBUTE:C>>").value = myObj.<<ATTRIBUTE:L>>;[[ENDLOOP,ATTRIBUTE]]
+		document.getElementById("DivStatusCode").innerHTML = "API HTTP reponse code: " + myObj.cube_api_http_code;
 	}
 }
 
 function performTrans() {
-	l_objParm = { "kenteken" : document.getElementById("InputKenteken").value };
+	l_objParm = { [[LOOP,ATTRIBUTE:1=Y]]"<<ATTRIBUTE:L>>" : document.getElementById("Input<<ATTRIBUTE:C>>").value[[IF:!LAST]] , [[ENDIF]][[ENDLOOP,ATTRIBUTE]] };
 	var l_requestText = JSON.stringify(l_objParm);
-	g_xmlhttp.open('POST','kenteken_api.php',true);
+	g_xmlhttp.open('POST','<<TYPE:L>>_server.php',true);
 	g_xmlhttp.send(l_requestText);
 }
 -->
 </script>
-</head><body style="margin:0px;">
-<input id="InputKenteken" type="text" value = "KL237Z"></input><br/>
-<button id="ButtonTest" type="button" onclick="performTrans()">Test</button><br/>
-<input id="InputMerk" type="text" value = "-- Merk --" readonly></input><br/>
-<input id="InputHandelsbenaming" type="text" value = "-- Handelsbenaming --" readonly></input><br/>
-<input id="InputAantalCilinders" type="text" value = "-- AantalCilinders --" readonly></input><br/>
-<input id="InputAantalDeuren" type="text" value = "-- AantalDeuren --" readonly></input><br/>
-<p id="DivStatusCode">-- Status --</p>
+</head><body style="margin:0px;">[[LOOP,ATTRIBUTE:1=Y]]
+<label><<ATTRIBUTE:C>></label><br>
+<input id="Input<<ATTRIBUTE:C>>"[[LOOP,INFORMATION_TYPE_ELEMENT]] type="<<INFORMATION_TYPE_ELEMENT2:L>>" style="width:100%;max-width:<<INFORMATION_TYPE_ELEMENT3>>em;"[[ENDLOOP,INFORMATION_TYPE_ELEMENT]]></input><br/>[[ENDLOOP,ATTRIBUTE]]
+<button id="ButtonTest" type="button" onclick="performTrans()">Test</button><br/>[[LOOP,ATTRIBUTE:1=N]]
+<label><<ATTRIBUTE:C>></label><br>
+<input id="Input<<ATTRIBUTE:C>>"[[LOOP,INFORMATION_TYPE_ELEMENT]] type="<<INFORMATION_TYPE_ELEMENT2:L>>" style="width:100%;max-width:<<INFORMATION_TYPE_ELEMENT3>>em;"[[ENDLOOP,INFORMATION_TYPE_ELEMENT]] readonly></input><br/>[[ENDLOOP,ATTRIBUTE]]
+<p id="DivStatusCode">-- message --</p>
 </body>
 </html>[[ENDLOOP,TYPE]][[ENDLOOP,BUSINESS_OBJECT_TYPE]][[ENDLOOP,SYSTEM_BO_TYPE]]
 [[ENDLOOP,SYSTEM]][[ENDBODY]]

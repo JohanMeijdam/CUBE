@@ -638,6 +638,22 @@ case 'GetTypItems':
 	}
 	echo "<||||>";
 
+	$stid = oci_parse($conn, "BEGIN pkg_bot.get_typ_rtt_items (
+		:p_cube_row,
+		:p_name);
+	END;");
+	oci_bind_by_name($stid,":p_name",$p_name);
+
+	$r = perform_db_request();
+	if (!$r) { return; }
+	$first = True;
+	while ($row = oci_fetch_assoc($curs)) {
+		if ($first) { $first = False; echo "LIST_RTT";}
+		echo "<|||>".$row["FK_TYP_NAME"]."<|>".$row["XF_TSP_TYP_NAME"]."<|>".$row["XF_TSP_TSG_CODE"]."<|>".$row["XK_TSP_CODE"];
+		echo "<||>".$row["XF_TSP_TYP_NAME"]." ".$row["XF_TSP_TSG_CODE"]." ".$row["XK_TSP_CODE"];
+	}
+	echo "<||||>";
+
 	$stid = oci_parse($conn, "BEGIN pkg_bot.get_typ_tyr_items (
 		:p_cube_row,
 		:p_name);
@@ -683,6 +699,22 @@ case 'GetTypItems':
 		if ($first) { $first = False; echo "LIST_TSG";}
 		echo "<|||>".$row["FK_TYP_NAME"]."<|>".$row["CODE"];
 		echo "<||>"."(".$row["CODE"].")"." ".$row["NAME"];
+	}
+	echo "<||||>";
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.get_typ_job_items (
+		:p_cube_row,
+		:p_name);
+	END;");
+	oci_bind_by_name($stid,":p_name",$p_name);
+
+	$r = perform_db_request();
+	if (!$r) { return; }
+	$first = True;
+	while ($row = oci_fetch_assoc($curs)) {
+		if ($first) { $first = False; echo "LIST_JOB";}
+		echo "<|||>".$row["FK_TYP_NAME"];
+		echo "<||>";
 	}
 	echo "<||||>";
 
@@ -1872,6 +1904,108 @@ case 'DeleteRtr':
 	echo "DELETE_RTR";
 	break;
 
+case 'GetRtt':
+
+	list($p_fk_typ_name, $p_xf_tsp_typ_name, $p_xf_tsp_tsg_code, $p_xk_tsp_code) = explode("<|>", $import[1]);
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.get_rtt (
+		:p_cube_row,
+		:p_fk_typ_name,
+		:p_xf_tsp_typ_name,
+		:p_xf_tsp_tsg_code,
+		:p_xk_tsp_code);
+	END;");
+	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
+	oci_bind_by_name($stid,":p_xf_tsp_typ_name",$p_xf_tsp_typ_name);
+	oci_bind_by_name($stid,":p_xf_tsp_tsg_code",$p_xf_tsp_tsg_code);
+	oci_bind_by_name($stid,":p_xk_tsp_code",$p_xk_tsp_code);
+
+	$r = perform_db_request();
+	if (!$r) { return; }
+	echo "SELECT_RTT";
+	if ($row = oci_fetch_assoc($curs)) {
+		echo "<|||>".$row["FK_BOT_NAME"]."<|>".$row["INCLUDE_OR_EXCLUDE"];
+	}
+	break;
+
+case 'CreateRtt':
+
+	list($p_fk_bot_name, $p_fk_typ_name, $p_include_or_exclude, $p_xf_tsp_typ_name, $p_xf_tsp_tsg_code, $p_xk_tsp_code) = explode("<|>", $import[1]);
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.insert_rtt (
+		:p_fk_bot_name,
+		:p_fk_typ_name,
+		:p_include_or_exclude,
+		:p_xf_tsp_typ_name,
+		:p_xf_tsp_tsg_code,
+		:p_xk_tsp_code,
+		:p_cube_row);
+	END;");
+	oci_bind_by_name($stid,":p_fk_bot_name",$p_fk_bot_name);
+	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
+	oci_bind_by_name($stid,":p_include_or_exclude",$p_include_or_exclude);
+	oci_bind_by_name($stid,":p_xf_tsp_typ_name",$p_xf_tsp_typ_name);
+	oci_bind_by_name($stid,":p_xf_tsp_tsg_code",$p_xf_tsp_tsg_code);
+	oci_bind_by_name($stid,":p_xk_tsp_code",$p_xk_tsp_code);
+
+	$r = perform_db_request();
+	if (!$r) { return; }
+	echo "CREATE_RTT";
+	if ($row = oci_fetch_assoc($curs)) {
+		echo "<|||>".$row["FK_TYP_NAME"]."<|>".$row["XF_TSP_TYP_NAME"]."<|>".$row["XF_TSP_TSG_CODE"]."<|>".$row["XK_TSP_CODE"];
+	}
+	break;
+
+case 'UpdateRtt':
+
+	list($p_fk_bot_name, $p_fk_typ_name, $p_include_or_exclude, $p_xf_tsp_typ_name, $p_xf_tsp_tsg_code, $p_xk_tsp_code) = explode("<|>", $import[1]);
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.update_rtt (
+		:p_fk_bot_name,
+		:p_fk_typ_name,
+		:p_include_or_exclude,
+		:p_xf_tsp_typ_name,
+		:p_xf_tsp_tsg_code,
+		:p_xk_tsp_code);
+	END;");
+	oci_bind_by_name($stid,":p_fk_bot_name",$p_fk_bot_name);
+	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
+	oci_bind_by_name($stid,":p_include_or_exclude",$p_include_or_exclude);
+	oci_bind_by_name($stid,":p_xf_tsp_typ_name",$p_xf_tsp_typ_name);
+	oci_bind_by_name($stid,":p_xf_tsp_tsg_code",$p_xf_tsp_tsg_code);
+	oci_bind_by_name($stid,":p_xk_tsp_code",$p_xk_tsp_code);
+
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		return;
+	}
+	echo "UPDATE_RTT";
+	break;
+
+case 'DeleteRtt':
+
+	list($p_fk_typ_name, $p_xf_tsp_typ_name, $p_xf_tsp_tsg_code, $p_xk_tsp_code) = explode("<|>", $import[1]);
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.delete_rtt (
+		:p_fk_typ_name,
+		:p_xf_tsp_typ_name,
+		:p_xf_tsp_tsg_code,
+		:p_xk_tsp_code);
+	END;");
+	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
+	oci_bind_by_name($stid,":p_xf_tsp_typ_name",$p_xf_tsp_typ_name);
+	oci_bind_by_name($stid,":p_xf_tsp_tsg_code",$p_xf_tsp_tsg_code);
+	oci_bind_by_name($stid,":p_xk_tsp_code",$p_xk_tsp_code);
+
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		return;
+	}
+	echo "DELETE_RTT";
+	break;
+
 case 'GetTyr':
 
 	list($p_fk_typ_name, $p_xk_typ_name) = explode("<|>", $import[1]);
@@ -2603,6 +2737,214 @@ case 'DeleteTsp':
 		return;
 	}
 	echo "DELETE_TSP";
+	break;
+
+case 'GetJob':
+
+	list($p_fk_typ_name) = explode("<|>", $import[1]);
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.get_job (
+		:p_cube_row,
+		:p_fk_typ_name);
+	END;");
+	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
+
+	$r = perform_db_request();
+	if (!$r) { return; }
+	echo "SELECT_JOB";
+	if ($row = oci_fetch_assoc($curs)) {
+		echo "<|||>".$row["FK_BOT_NAME"]."<|>".$row["CUBE_TSG_GROUP_OR_ELEMENT"];
+	}
+	break;
+
+case 'GetJobFkey':
+
+	list($p_fk_typ_name) = explode("<|>", $import[1]);
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.get_job_fkey (
+		:p_cube_row,
+		:p_fk_typ_name);
+	END;");
+	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
+
+	$r = perform_db_request();
+	if (!$r) { return; }
+	echo "SELECT_FKEY_JOB";
+	if ($row = oci_fetch_assoc($curs)) {
+		echo "<|||>".$row["FK_BOT_NAME"];
+	}
+	break;
+
+case 'GetJobItems':
+
+	list($p_fk_typ_name) = explode("<|>", $import[1]);
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.get_job_jar_items (
+		:p_cube_row,
+		:p_fk_typ_name);
+	END;");
+	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
+
+	$r = perform_db_request();
+	if (!$r) { return; }
+	$first = True;
+	while ($row = oci_fetch_assoc($curs)) {
+		if ($first) { $first = False; echo "LIST_JAR";}
+		echo "<|||>".$row["FK_TYP_NAME"]."<|>".$row["XF_ATB_TYP_NAME"]."<|>".$row["XK_ATB_NAME"];
+		echo "<||>";
+	}
+	break;
+
+case 'CreateJob':
+
+	list($p_cube_pos_action, $p_fk_bot_name, $p_fk_typ_name, $p_cube_tsg_group_or_element, $x_fk_typ_name) = explode("<|>", $import[1]."<|>");
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.insert_job (
+		:p_cube_pos_action,
+		:p_fk_bot_name,
+		:p_fk_typ_name,
+		:p_cube_tsg_group_or_element,
+		:x_fk_typ_name);
+	END;");
+	oci_bind_by_name($stid,":p_cube_pos_action",$p_cube_pos_action);
+	oci_bind_by_name($stid,":p_fk_bot_name",$p_fk_bot_name);
+	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
+	oci_bind_by_name($stid,":p_cube_tsg_group_or_element",$p_cube_tsg_group_or_element);
+	oci_bind_by_name($stid,":x_fk_typ_name",$x_fk_typ_name);
+
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		return;
+	}
+	echo "CREATE_JOB";
+	break;
+
+case 'UpdateJob':
+
+	list($p_fk_bot_name, $p_fk_typ_name, $p_cube_tsg_group_or_element) = explode("<|>", $import[1]);
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.update_job (
+		:p_fk_bot_name,
+		:p_fk_typ_name,
+		:p_cube_tsg_group_or_element);
+	END;");
+	oci_bind_by_name($stid,":p_fk_bot_name",$p_fk_bot_name);
+	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
+	oci_bind_by_name($stid,":p_cube_tsg_group_or_element",$p_cube_tsg_group_or_element);
+
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		return;
+	}
+	echo "UPDATE_JOB";
+	break;
+
+case 'DeleteJob':
+
+	list($p_fk_typ_name) = explode("<|>", $import[1]);
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.delete_job (
+		:p_fk_typ_name);
+	END;");
+	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
+
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		return;
+	}
+	echo "DELETE_JOB";
+	break;
+
+case 'GetJar':
+
+	list($p_fk_typ_name, $p_xf_atb_typ_name, $p_xk_atb_name) = explode("<|>", $import[1]);
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.get_jar (
+		:p_cube_row,
+		:p_fk_typ_name,
+		:p_xf_atb_typ_name,
+		:p_xk_atb_name);
+	END;");
+	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
+	oci_bind_by_name($stid,":p_xf_atb_typ_name",$p_xf_atb_typ_name);
+	oci_bind_by_name($stid,":p_xk_atb_name",$p_xk_atb_name);
+
+	$r = perform_db_request();
+	if (!$r) { return; }
+	echo "SELECT_JAR";
+	if ($row = oci_fetch_assoc($curs)) {
+		echo "<|||>".$row["FK_BOT_NAME"];
+	}
+	break;
+
+case 'CreateJar':
+
+	list($p_fk_bot_name, $p_fk_typ_name, $p_xf_atb_typ_name, $p_xk_atb_name) = explode("<|>", $import[1]);
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.insert_jar (
+		:p_fk_bot_name,
+		:p_fk_typ_name,
+		:p_xf_atb_typ_name,
+		:p_xk_atb_name);
+	END;");
+	oci_bind_by_name($stid,":p_fk_bot_name",$p_fk_bot_name);
+	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
+	oci_bind_by_name($stid,":p_xf_atb_typ_name",$p_xf_atb_typ_name);
+	oci_bind_by_name($stid,":p_xk_atb_name",$p_xk_atb_name);
+
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		return;
+	}
+	echo "CREATE_JAR";
+	break;
+
+case 'UpdateJar':
+
+	list($p_fk_bot_name, $p_fk_typ_name, $p_xf_atb_typ_name, $p_xk_atb_name) = explode("<|>", $import[1]);
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.update_jar (
+		:p_fk_bot_name,
+		:p_fk_typ_name,
+		:p_xf_atb_typ_name,
+		:p_xk_atb_name);
+	END;");
+	oci_bind_by_name($stid,":p_fk_bot_name",$p_fk_bot_name);
+	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
+	oci_bind_by_name($stid,":p_xf_atb_typ_name",$p_xf_atb_typ_name);
+	oci_bind_by_name($stid,":p_xk_atb_name",$p_xk_atb_name);
+
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		return;
+	}
+	echo "UPDATE_JAR";
+	break;
+
+case 'DeleteJar':
+
+	list($p_fk_typ_name, $p_xf_atb_typ_name, $p_xk_atb_name) = explode("<|>", $import[1]);
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.delete_jar (
+		:p_fk_typ_name,
+		:p_xf_atb_typ_name,
+		:p_xk_atb_name);
+	END;");
+	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
+	oci_bind_by_name($stid,":p_xf_atb_typ_name",$p_xf_atb_typ_name);
+	oci_bind_by_name($stid,":p_xk_atb_name",$p_xk_atb_name);
+
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		return;
+	}
+	echo "DELETE_JAR";
 	break;
 
 case 'GetDct':

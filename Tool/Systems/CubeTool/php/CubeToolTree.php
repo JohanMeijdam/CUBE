@@ -40,6 +40,7 @@ g_xmlhttp.onreadystatechange = function(){
 			case 'LIST_DCR': AddTreeviewChildren(l_rows,'TYP_DCR','icons/desc.bmp'); break;
 			case 'COUNT_DCR': CheckMenuItem('TYP_DCR',l_rows[1]); break;
 			case 'LIST_RTR': AddTreeviewChildren(l_rows,'TYP_RTR','icons/restrict.bmp'); break;
+			case 'LIST_RTT': AddTreeviewChildren(l_rows,'TYP_RTT','icons/restrict.bmp'); break;
 			case 'LIST_TYR': AddTreeviewChildren(l_rows,'TYP_TYR','icons/reuse.bmp'); break;
 			case 'LIST_PAR': AddTreeviewChildren(l_rows,'TYP_PAR','icons/partit.bmp'); break;
 			case 'LIST_STP': AddTreeviewChildren(l_rows,'TYP_STP','icons/subtype.bmp'); break;
@@ -130,8 +131,8 @@ function DefineTypePosition (p_parentType, p_type, p_switch) {
 		switch (p_type) { case 'TYP_TYP': l_index = 2; break;}
 		var l_count = 1; break;
 	case 'TYP_TYP':
-		switch (p_type) { case 'TYP_ATB': l_index = 2; break; case 'TYP_REF': l_index = 3; break; case 'TYP_TYR': l_index = 4; break; case 'TYP_PAR': l_index = 5; break; case 'TYP_TSG': l_index = 6; break; case 'TYP_DCT': l_index = 7; break;case 'TYP_TYP': l_index = 8; break;}
-		var l_count = 7; break;
+		switch (p_type) { case 'TYP_ATB': l_index = 2; break; case 'TYP_REF': l_index = 3; break; case 'TYP_RTT': l_index = 4; break; case 'TYP_TYR': l_index = 5; break; case 'TYP_PAR': l_index = 6; break; case 'TYP_TSG': l_index = 7; break; case 'TYP_DCT': l_index = 8; break;case 'TYP_TYP': l_index = 9; break;}
+		var l_count = 8; break;
 	case 'TYP_ATB':
 		switch (p_type) { case 'TYP_DER': l_index = 2; break; case 'TYP_DCA': l_index = 3; break; case 'TYP_RTA': l_index = 4; break;}
 		var l_count = 3; break;
@@ -585,11 +586,12 @@ function OpenMenu(p_obj) {
 		}
 		AddMenuItem(g_objMenuList, 'add attribute', 'icons/attrib.bmp','CubeAdd','N','TYP_ATB',0,'N',2);
 		AddMenuItem(g_objMenuList, 'add reference', 'icons/ref.bmp','CubeAdd','N','TYP_REF',0,'N',3);
-		AddMenuItem(g_objMenuList, 'add type_reuse', 'icons/reuse.bmp','DetailTYR','N','TYP_TYR',0,'N',4);
-		AddMenuItem(g_objMenuList, 'add partition', 'icons/partit.bmp','DetailPAR','N','TYP_PAR',0,'N',5);
-		AddMenuItem(g_objMenuList, 'add type_specialisation_group', 'icons/tspgroup.bmp','CubeAdd','N','TYP_TSG',0,'N',6);
-		AddMenuItem(g_objMenuList, 'add description_type', 'icons/desc.bmp','DetailDCT','N','TYP_DCT',1,'N',7);
-		AddMenuItem(g_objMenuList, 'add type', 'icons/type.bmp','CubeAdd','R','TYP_TYP',0,'N',8);
+		AddMenuItem(g_objMenuList, 'add restriction_type_spec_typ', 'icons/restrict.bmp','DetailRTT','N','TYP_RTT',0,'N',4);
+		AddMenuItem(g_objMenuList, 'add type_reuse', 'icons/reuse.bmp','DetailTYR','N','TYP_TYR',0,'N',5);
+		AddMenuItem(g_objMenuList, 'add partition', 'icons/partit.bmp','DetailPAR','N','TYP_PAR',0,'N',6);
+		AddMenuItem(g_objMenuList, 'add type_specialisation_group', 'icons/tspgroup.bmp','CubeAdd','N','TYP_TSG',0,'N',7);
+		AddMenuItem(g_objMenuList, 'add description_type', 'icons/desc.bmp','DetailDCT','N','TYP_DCT',1,'N',8);
+		AddMenuItem(g_objMenuList, 'add type', 'icons/type.bmp','CubeAdd','R','TYP_TYP',0,'N',9);
 		PerformTrans('CountTypRestrictedItems'+'<|||>'+l_type_id[1]);
 		break;
  	case 'TYP_ATB':

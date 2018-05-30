@@ -21,12 +21,12 @@ $response = curl_exec($curl);
 $info = curl_getinfo($curl);
 curl_close($curl);
 
-$obj = json_decode($response, false);
+$obj = json_decode($response, false)[0];
 $responseObj = new \stdClass();
-$responseObj->merk = $obj[0]->merk;
-$responseObj->handelsbenaming =  $obj[0]->handelsbenaming;
-$responseObj->aantal_cilinders =  $obj[0]->aantal_cilinders;
-$responseObj->aantal_deuren =  $obj[0]->aantal_deuren;
+$responseObj->merk = $obj->merk;
+$responseObj->handelsbenaming = $obj->handelsbenaming;
+$responseObj->aantal_cilinders = $obj->aantal_cilinders;
+$responseObj->aantal_deuren = $obj->aantal_deuren;
 $responseText = json_encode($responseObj);
 echo $responseText;
 http_response_code($info["http_code"]);

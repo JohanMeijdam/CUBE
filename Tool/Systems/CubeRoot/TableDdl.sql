@@ -48,6 +48,10 @@ DROP SEQUENCE rtr_seq
 /
 CREATE SEQUENCE rtr_seq START WITH 100000
 /
+DROP SEQUENCE rtt_seq
+/
+CREATE SEQUENCE rtt_seq START WITH 100000
+/
 DROP SEQUENCE tyr_seq
 /
 CREATE SEQUENCE tyr_seq START WITH 100000
@@ -67,6 +71,14 @@ CREATE SEQUENCE tsg_seq START WITH 100000
 DROP SEQUENCE tsp_seq
 /
 CREATE SEQUENCE tsp_seq START WITH 100000
+/
+DROP SEQUENCE job_seq
+/
+CREATE SEQUENCE job_seq START WITH 100000
+/
+DROP SEQUENCE jar_seq
+/
+CREATE SEQUENCE jar_seq START WITH 100000
 /
 DROP SEQUENCE dct_seq
 /
@@ -102,6 +114,8 @@ ALTER TABLE t_description_reference DROP CONSTRAINT dcr_ref_fk
 /
 ALTER TABLE t_restriction_type_spec_ref DROP CONSTRAINT rtr_ref_fk
 /
+ALTER TABLE t_restriction_type_spec_typ DROP CONSTRAINT rtt_typ_fk
+/
 ALTER TABLE t_type_reuse DROP CONSTRAINT tyr_typ_fk
 /
 ALTER TABLE t_partition DROP CONSTRAINT par_typ_fk
@@ -113,6 +127,10 @@ ALTER TABLE t_type_specialisation_group DROP CONSTRAINT tsg_typ_fk
 ALTER TABLE t_type_specialisation_group DROP CONSTRAINT tsg_tsg_fk
 /
 ALTER TABLE t_type_specialisation DROP CONSTRAINT tsp_tsg_fk
+/
+ALTER TABLE t_json_object DROP CONSTRAINT job_typ_fk
+/
+ALTER TABLE t_json_attribute_reference DROP CONSTRAINT jar_job_fk
 /
 ALTER TABLE t_description_type DROP CONSTRAINT dct_typ_fk
 /
@@ -142,6 +160,8 @@ DROP TABLE t_description_reference
 /
 DROP TABLE t_restriction_type_spec_ref
 /
+DROP TABLE t_restriction_type_spec_typ
+/
 DROP TABLE t_type_reuse
 /
 DROP TABLE t_partition
@@ -151,6 +171,10 @@ DROP TABLE t_subtype
 DROP TABLE t_type_specialisation_group
 /
 DROP TABLE t_type_specialisation
+/
+DROP TABLE t_json_object
+/
+DROP TABLE t_json_attribute_reference
 /
 DROP TABLE t_description_type
 /
@@ -215,7 +239,7 @@ CREATE TABLE t_type (
 	fk_typ_name VARCHAR2(30),
 	name VARCHAR2(30),
 	code VARCHAR2(3),
-	flag_partial_key CHAR(1) DEFAULT 'N',
+	flag_partial_key CHAR(1) DEFAULT 'Y',
 	flag_recursive CHAR(1) DEFAULT 'N',
 	recursive_cardinality CHAR(1) DEFAULT 'N',
 	cardinality CHAR(1) DEFAULT 'N',
@@ -350,6 +374,21 @@ CREATE TABLE t_restriction_type_spec_ref (
 		REFERENCES t_reference (fk_typ_name, sequence, xk_typ_name)
 		ON DELETE CASCADE )
 /
+CREATE TABLE t_restriction_type_spec_typ (
+	cube_id VARCHAR2(16),
+	fk_bot_name VARCHAR2(30),
+	fk_typ_name VARCHAR2(30),
+	include_or_exclude CHAR(2) DEFAULT 'IN',
+	xf_tsp_typ_name VARCHAR2(30),
+	xf_tsp_tsg_code VARCHAR2(16),
+	xk_tsp_code VARCHAR2(16),
+	CONSTRAINT rtt_pk
+		PRIMARY KEY (fk_typ_name, xf_tsp_typ_name, xf_tsp_tsg_code, xk_tsp_code),
+	CONSTRAINT rtt_typ_fk
+		FOREIGN KEY (fk_typ_name)
+		REFERENCES t_type (name)
+		ON DELETE CASCADE )
+/
 CREATE TABLE t_type_reuse (
 	cube_id VARCHAR2(16),
 	fk_bot_name VARCHAR2(30),
@@ -428,6 +467,32 @@ CREATE TABLE t_type_specialisation (
 	CONSTRAINT tsp_tsg_fk
 		FOREIGN KEY (fk_typ_name, fk_tsg_code)
 		REFERENCES t_type_specialisation_group (fk_typ_name, code)
+		ON DELETE CASCADE )
+/
+CREATE TABLE t_json_object (
+	cube_id VARCHAR2(16),
+	cube_sequence NUMBER(8),
+	fk_bot_name VARCHAR2(30),
+	fk_typ_name VARCHAR2(30),
+	cube_tsg_group_or_element VARCHAR2(8) DEFAULT 'GR',
+	CONSTRAINT job_pk
+		PRIMARY KEY (fk_typ_name),
+	CONSTRAINT job_typ_fk
+		FOREIGN KEY (fk_typ_name)
+		REFERENCES t_type (name)
+		ON DELETE CASCADE )
+/
+CREATE TABLE t_json_attribute_reference (
+	cube_id VARCHAR2(16),
+	fk_bot_name VARCHAR2(30),
+	fk_typ_name VARCHAR2(30),
+	xf_atb_typ_name VARCHAR2(30),
+	xk_atb_name VARCHAR2(30),
+	CONSTRAINT jar_pk
+		PRIMARY KEY (fk_typ_name, xf_atb_typ_name, xk_atb_name),
+	CONSTRAINT jar_job_fk
+		FOREIGN KEY (fk_typ_name)
+		REFERENCES t_json_object (fk_typ_name)
 		ON DELETE CASCADE )
 /
 CREATE TABLE t_description_type (

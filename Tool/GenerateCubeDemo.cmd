@@ -13,11 +13,11 @@ sqlplus.exe %db_schema%/%db_password%@%db_name% @Systems\cubetool\ModelExport.sq
 
 echo :Models
 echo Generate Models.
-CubeGen.exe %sysdir%\CubeModel.cgm Templates\DemoModel.cgt %sysdir%\CubeDemoModel.cgm %sysname% >> %logfile% 2>&1
-CubeGen.exe %sysdir%\CubeDemoModel.cgm Templates\Model0.cgt %sysdir%\CubeModel0.cgm %sysname% >> %logfile% 2>&1
+CubeGen.exe %sysdir%\CubeModel.cgm Templates\Model0.cgt %sysdir%\CubeModel0.cgm %sysname% >> %logfile% 2>&1
+CubeGen.exe %sysdir%\CubeModel0.cgm Templates\DemoModel.cgt %sysdir%\CubeDemoModel.cgm %sysname% >> %logfile% 2>&1
 
 echo Generate Ext API Test page.
-::CubeGen.exe %sysdir%\CubeModel.cgm Templates\CubeExtApiTest.cgt html\cube\cube_external_api_test.html %sysname% >> %logfile% 2>&1
+CubeGen.exe %sysdir%\CubeDemoModel.cgm Templates\CubeExtApiTest.cgt html\cube\cube_external_api_test.html %sysname% >> %logfile% 2>&1
 
 echo Generate Ext API Test servers.
 

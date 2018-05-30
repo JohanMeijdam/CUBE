@@ -6,6 +6,7 @@ Change log:
 [[BODY]][[LOOP,CUBE_GEN_DOCUMENTATION]]<html>
 <head>
 <title>CubeGen Manual</title>
+<meta name="viewport" content="width=device-width, maximum-scale=1.0, user-scalable=yes">
 <link rel="icon" href="../images/composys_icon.png">
 <link rel="stylesheet" type="text/css" href="../style.css">
 <script language='javascript' type='text/javascript'>

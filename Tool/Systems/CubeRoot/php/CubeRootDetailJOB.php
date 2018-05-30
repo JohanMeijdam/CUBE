@@ -12,51 +12,39 @@ g_xmlhttp.onreadystatechange = function() {
 	if(g_xmlhttp.readyState == 4) {
 		var l_argument = g_xmlhttp.responseText.split("<|||>");
 		switch (l_argument[0]) {
-		case "SELECT_TYP":
+		case "SELECT_JOB":
 			var l_values = l_argument[1].split("<|>");
 			document.getElementById("InputFkBotName").value=l_values[0];
-			document.getElementById("InputFkTypName").value=l_values[1];
-			document.getElementById("InputCode").value=l_values[2];
-			document.getElementById("InputFlagPartialKey").value=l_values[3];
-			document.getElementById("InputFlagRecursive").value=l_values[4];
-			document.getElementById("InputRecursiveCardinality").value=l_values[5];
-			document.getElementById("InputCardinality").value=l_values[6];
-			document.getElementById("InputSortOrder").value=l_values[7];
-			document.getElementById("InputIcon").value=l_values[8];
-			document.getElementById("InputTransferable").value=l_values[9];
+			document.getElementById("InputCubeTsgGroupOrElement").value=l_values[1];
+			ProcessTypeSpecialisation();
 			break;
-		case "CREATE_TYP":
+		case "CREATE_JOB":
 			document.getElementById("InputFkBotName").readOnly=true;
 			document.getElementById("InputFkTypName").readOnly=true;
-			document.getElementById("InputName").readOnly=true;
 			document.getElementById("ButtonCreate").disabled=true;
 			document.getElementById("ButtonUpdate").disabled=false;
 			document.getElementById("ButtonDelete").disabled=false;
 			l_objNode = parent.TREE.document.getElementById(document._nodeId);
-			document._nodeId = 'TYP_TYP<||>'+document.getElementById("InputName").value;
+			document._nodeId = 'TYP_JOB<||>'+document.getElementById("InputFkTypName").value;
 			if (l_objNode != null) {
 				if (l_objNode.firstChild._state == 'O') {
 					var l_position = g_option[0];
-					l_objNodePos = parent.TREE.document.getElementById('TYP_TYP<||>'+g_option[1]);
+					l_objNodePos = parent.TREE.document.getElementById('TYP_JOB<||>'+g_option[1]);
 					parent.TREE.AddTreeviewNode(
 						l_objNode,
-						'TYP_TYP',
+						'TYP_JOB',
 						document._nodeId,
-						'icons/type.bmp', 
-						document.getElementById("InputName").value.toLowerCase()+' ('+document.getElementById("InputCode").value.toLowerCase()+')',
+						'icons/braces.bmp', 
+						' ',
 						'N',
 						l_position,
 						l_objNodePos);
 				}
 			}
 			break;
-		case "UPDATE_TYP":
-			l_objNode = parent.TREE.document.getElementById(document._nodeId);
-			if (l_objNode != null) {
-				l_objNode.children[1].lastChild.nodeValue = ' '+document.getElementById("InputName").value.toLowerCase()+' ('+document.getElementById("InputCode").value.toLowerCase()+')';
-			}
+		case "UPDATE_JOB":
 			break;
-		case "DELETE_TYP":
+		case "DELETE_JOB":
 			document.getElementById("ButtonUpdate").disabled=true;
 			document.getElementById("ButtonDelete").disabled=true;
 			l_objNode = parent.TREE.document.getElementById(document._nodeId);
@@ -82,7 +70,7 @@ g_xmlhttp.onreadystatechange = function() {
 }
 
 function performTrans(p_message) {
-	g_xmlhttp.open('POST','CubeToolServer.php',true);
+	g_xmlhttp.open('POST','CubeRootServer.php',true);
 	g_xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 	g_xmlhttp.send(p_message);
 }
@@ -100,21 +88,14 @@ function InitBody() {
 	}
 	switch (l_argument[1]) {
 	case "D":
-		document.getElementById("InputName").value=values[0];
+		document.getElementById("InputFkTypName").value=values[0];
 		document.getElementById("ButtonCreate").disabled=true;
-		performTrans('GetTyp'+'<|||>'+document._argument);
+		performTrans('GetJob'+'<|||>'+document._argument);
 		document.getElementById("InputFkBotName").readOnly=true;
 		document.getElementById("InputFkTypName").readOnly=true;
-		document.getElementById("InputName").readOnly=true;
+		document.getElementById("InputCubeTsgGroupOrElement").readOnly=true;
 		break;
 	case "N":
-		document.getElementById("InputFkBotName").value=values[0];
-		document.getElementById("ButtonUpdate").disabled=true;
-		document.getElementById("ButtonDelete").disabled=true;
-		document.getElementById("InputFkBotName").readOnly=true;
-		document.getElementById("InputFkTypName").readOnly=true;
-		break;  
-	case "R":
 		document.getElementById("InputFkTypName").value=values[0];
 		document.getElementById("ButtonUpdate").disabled=true;
 		document.getElementById("ButtonDelete").disabled=true;
@@ -125,55 +106,32 @@ function InitBody() {
 	default:
 		alert ('Error InitBody: '+l_argument[1]);
 	}
-	document.getElementById("InputCubeLevel").value='1';
-	document.getElementById("InputFlagPartialKey").value='Y';
-	document.getElementById("InputFlagRecursive").value='N';
-	document.getElementById("InputRecursiveCardinality").value='N';
-	document.getElementById("InputCardinality").value='N';
-	document.getElementById("InputSortOrder").value='N';
-	document.getElementById("InputTransferable").value='Y';
 }
 
-function CreateTyp() {
+function CreateJob() {
 	var l_parameters = 
 		document.getElementById("InputFkBotName").value+'<|>'+
 		document.getElementById("InputFkTypName").value+'<|>'+
-		document.getElementById("InputName").value+'<|>'+
-		document.getElementById("InputCode").value+'<|>'+
-		document.getElementById("InputFlagPartialKey").value+'<|>'+
-		document.getElementById("InputFlagRecursive").value+'<|>'+
-		document.getElementById("InputRecursiveCardinality").value+'<|>'+
-		document.getElementById("InputCardinality").value+'<|>'+
-		document.getElementById("InputSortOrder").value+'<|>'+
-		document.getElementById("InputIcon").value+'<|>'+
-		document.getElementById("InputTransferable").value;
+		document.getElementById("InputCubeTsgGroupOrElement").value;
 	if (g_option[0] == 'F' || g_option[0] == 'L') {
-		performTrans('CreateTyp<|||>'+g_option[0]+'<|>'+l_parameters);
+		performTrans('CreateJob<|||>'+g_option[0]+'<|>'+l_parameters);
 	} else {
-		performTrans('CreateTyp<|||>'+g_option[0]+'<|>'+l_parameters+'<|>'+g_option[1]);
+		performTrans('CreateJob<|||>'+g_option[0]+'<|>'+l_parameters+'<|>'+g_option[1]);
 	}
 }
 
-function UpdateTyp() {
+function UpdateJob() {
 	var l_parameters = 
 		document.getElementById("InputFkBotName").value+'<|>'+
 		document.getElementById("InputFkTypName").value+'<|>'+
-		document.getElementById("InputName").value+'<|>'+
-		document.getElementById("InputCode").value+'<|>'+
-		document.getElementById("InputFlagPartialKey").value+'<|>'+
-		document.getElementById("InputFlagRecursive").value+'<|>'+
-		document.getElementById("InputRecursiveCardinality").value+'<|>'+
-		document.getElementById("InputCardinality").value+'<|>'+
-		document.getElementById("InputSortOrder").value+'<|>'+
-		document.getElementById("InputIcon").value+'<|>'+
-		document.getElementById("InputTransferable").value;
-	performTrans('UpdateTyp<|||>'+l_parameters);
+		document.getElementById("InputCubeTsgGroupOrElement").value;
+	performTrans('UpdateJob<|||>'+l_parameters);
 }
 
-function DeleteTyp() {
+function DeleteJob() {
 	var l_parameters = 
-		document.getElementById("InputName").value;
-	performTrans('DeleteTyp<|||>'+l_parameters);
+		document.getElementById("InputFkTypName").value;
+	performTrans('DeleteJob<|||>'+l_parameters);
 }
 
 function OpenDescBox(p_icon,p_name,p_type,p_attribute_type,p_sequence) {
@@ -277,75 +235,35 @@ function drop(p_event) {
 		l_obj.style.top = l_y + 'px';
 	}
 }
+
+function ProcessTypeSpecialisation() {
+	if (document.getElementById("InputCubeTsgGroupOrElement").value != ' ') {
+		document.getElementById("InputCubeTsgGroupOrElement").disabled=true;
+		document.getElementById("TableMain").style.display="inline";
+	}
+}
 -->
 </script>
 </head><body oncontextmenu="return false;" onload="InitBody()" ondrop="drop(event)" ondragover="allowDrop(event)">
-<div><img src="icons/type_large.bmp" /><span style="cursor:help" oncontextmenu="OpenDescBox('TYPE','Type','TYPE','_',-1)"> TYPE</span></div>
+<div><img src="icons/braces_large.bmp" /><span> JSON_OBJECT /
+<select id="InputCubeTsgGroupOrElement" type="text" onchange="ProcessTypeSpecialisation()">
+	<option value=" " selected>&lt;group_or_element&gt;</option>
+	<option value="GR">GROUP</option>
+	<option value="EL">ELEMENT</option>
+</select></span></div>
 <hr/>
-<table>
+<table id="TableMain" style="display:none">
 <tr><td>BusinessObjectType.Name</td><td><div style="max-width:30em;">
 <input id="InputFkBotName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td>Type.Name</td><td><div style="max-width:30em;">
+<tr><td><u>Type.Name</u></td><td><div style="max-width:30em;">
 <input id="InputFkTypName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td><u>Name</u></td><td><div style="max-width:30em;">
-<input id="InputName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td>Code</td><td><div style="max-width:3em;">
-<input id="InputCode" type="text" maxlength="3" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td>FlagPartialKey</td><td><div>
-<select id="InputFlagPartialKey" type="text">
-	<option value=" " selected> </option>
-	<option value="Y">Yes</option>
-	<option value="N">No</option>
-</select></div></td></tr>
-<tr><td>FlagRecursive</td><td><div>
-<select id="InputFlagRecursive" type="text">
-	<option value=" " selected> </option>
-	<option value="Y">Yes</option>
-	<option value="N">No</option>
-</select></div></td></tr>
-<tr><td>RecursiveCardinality</td><td><div>
-<select id="InputRecursiveCardinality" type="text">
-	<option value=" " selected> </option>
-	<option value="1">1</option>
-	<option value="2">2</option>
-	<option value="3">3</option>
-	<option value="4">4</option>
-	<option value="5">5</option>
-	<option value="N">Many</option>
-</select></div></td></tr>
-<tr><td>Cardinality</td><td><div>
-<select id="InputCardinality" type="text">
-	<option value=" " selected> </option>
-	<option value="1">1</option>
-	<option value="2">2</option>
-	<option value="3">3</option>
-	<option value="4">4</option>
-	<option value="5">5</option>
-	<option value="N">Many</option>
-</select></div></td></tr>
-<tr><td>SortOrder</td><td><div>
-<select id="InputSortOrder" type="text">
-	<option value=" " selected> </option>
-	<option value="N">No sort</option>
-	<option value="K">Key</option>
-	<option value="P">Position</option>
-</select></div></td></tr>
-<tr><td>Icon</td><td><div style="max-width:8em;">
-<input id="InputIcon" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td style="cursor:help;" oncontextmenu="OpenDescBox('TYPE','Type.Transferable','TYPE','TRANSFERABLE',-1)">Transferable</td><td><div>
-<select id="InputTransferable" type="text">
-	<option value=" " selected> </option>
-	<option value="Y">Yes</option>
-	<option value="N">No</option>
-</select></div></td></tr>
 <tr><td><br></td><td style="width:100%;"></td></tr>
 <tr><td/><td>
-<button id="ButtonCreate" type="button" onclick="CreateTyp()">Create</button>&nbsp;&nbsp;&nbsp;
-<button id="ButtonUpdate" type="button" onclick="UpdateTyp()">Update</button>&nbsp;&nbsp;&nbsp;
-<button id="ButtonDelete" type="button" onclick="DeleteTyp()">Delete</button></td></tr>
+<button id="ButtonCreate" type="button" onclick="CreateJob()">Create</button>&nbsp;&nbsp;&nbsp;
+<button id="ButtonUpdate" type="button" onclick="UpdateJob()">Update</button>&nbsp;&nbsp;&nbsp;
+<button id="ButtonDelete" type="button" onclick="DeleteJob()">Delete</button></td></tr>
 </table>
 <input id="InputCubeId" type="hidden"></input>
 <input id="InputCubeSequence" type="hidden"></input>
-<input id="InputCubeLevel" type="hidden"></input>
 </body>
 </html>
