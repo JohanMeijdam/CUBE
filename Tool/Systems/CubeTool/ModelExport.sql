@@ -453,6 +453,60 @@ DECLARE
 	END;
 
 
+	PROCEDURE report_jar (p_job IN t_json_object%ROWTYPE) IS
+	BEGIN
+		FOR r_jar IN (
+			SELECT *				
+			FROM t_json_attribute_reference
+			WHERE fk_bot_name = p_job.fk_bot_name
+			  AND fk_typ_name = p_job.fk_typ_name
+			ORDER BY cube_id )
+		LOOP
+			DBMS_OUTPUT.PUT_LINE (ftabs || '+JSON_ATTRIBUTE_REFERENCE[' || r_jar.cube_id || ']:' || ';');
+				l_level := l_level + 1;
+				BEGIN
+					SELECT cube_id INTO l_cube_id FROM t_attribute
+					WHERE fk_typ_name = r_jar.xf_atb_typ_name
+					  AND name = r_jar.xk_atb_name;
+
+					DBMS_OUTPUT.PUT_LINE (ftabs || '>ATTRIBUTE:' || l_cube_id || ';');
+				EXCEPTION
+					WHEN NO_DATA_FOUND THEN
+						NULL; 
+				END;
+				l_level := l_level - 1;
+			DBMS_OUTPUT.PUT_LINE (ftabs || '-JSON_ATTRIBUTE_REFERENCE:' || ';');
+		END LOOP;
+	END;
+
+
+	PROCEDURE report_job (p_typ IN t_type%ROWTYPE) IS
+	BEGIN
+		FOR r_job IN (
+			SELECT *				
+			FROM t_json_object
+			WHERE fk_bot_name = p_typ.fk_bot_name
+			  AND fk_typ_name = p_typ.name
+			ORDER BY cube_sequence )
+		LOOP
+			DBMS_OUTPUT.PUT_LINE (ftabs || '+JSON_OBJECT[' || r_job.cube_id || ']:' || fenperc(r_job.cube_tsg_group_or_element) || ';');
+				l_level := l_level + 1;
+				report_jar (r_job);
+				BEGIN
+					SELECT cube_id INTO l_cube_id FROM t_business_object_type
+					WHERE name = r_job.xk_bot_name;
+
+					DBMS_OUTPUT.PUT_LINE (ftabs || '>BUSINESS_OBJECT_TYPE:' || l_cube_id || ';');
+				EXCEPTION
+					WHEN NO_DATA_FOUND THEN
+						NULL; 
+				END;
+				l_level := l_level - 1;
+			DBMS_OUTPUT.PUT_LINE (ftabs || '-JSON_OBJECT:' || r_job.cube_tsg_group_or_element || ';');
+		END LOOP;
+	END;
+
+
 	PROCEDURE report_dct (p_typ IN t_type%ROWTYPE) IS
 	BEGIN
 		FOR r_dct IN (
@@ -486,6 +540,7 @@ DECLARE
 				report_tyr (r_typ);
 				report_par (r_typ);
 				report_tsg (r_typ);
+				report_job (r_typ);
 				report_dct (r_typ);
 				report_typ_recursive (r_typ);
 				l_level := l_level - 1;
@@ -511,6 +566,7 @@ DECLARE
 				report_tyr (r_typ);
 				report_par (r_typ);
 				report_tsg (r_typ);
+				report_job (r_typ);
 				report_dct (r_typ);
 				report_typ_recursive (r_typ);
 				l_level := l_level - 1;
@@ -710,6 +766,13 @@ BEGIN
 	DBMS_OUTPUT.PUT_LINE ('					=ASSOCIATION:TYPE_SPECIALISATION|Specialise|TYPE_SPECIALISATION|;');
 	DBMS_OUTPUT.PUT_LINE ('				-META_TYPE:TYPE_SPECIALISATION;');
 	DBMS_OUTPUT.PUT_LINE ('			-META_TYPE:TYPE_SPECIALISATION_GROUP;');
+	DBMS_OUTPUT.PUT_LINE ('			+META_TYPE:JSON_OBJECT|;');
+	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:0|CubeTsgGroupOrElement| Values: GR(GROUP), EL(ELEMENT);');
+	DBMS_OUTPUT.PUT_LINE ('				=ASSOCIATION:BUSINESS_OBJECT_TYPE|Test|BUSINESS_OBJECT_TYPE|;');
+	DBMS_OUTPUT.PUT_LINE ('				+META_TYPE:JSON_ATTRIBUTE_REFERENCE|;');
+	DBMS_OUTPUT.PUT_LINE ('					=ASSOCIATION:ATTRIBUTE|Concerns|ATTRIBUTE|;');
+	DBMS_OUTPUT.PUT_LINE ('				-META_TYPE:JSON_ATTRIBUTE_REFERENCE;');
+	DBMS_OUTPUT.PUT_LINE ('			-META_TYPE:JSON_OBJECT;');
 	DBMS_OUTPUT.PUT_LINE ('			+META_TYPE:DESCRIPTION_TYPE|'||REPLACE('Test%0D%0AMet%20LF%20en%20%22%20en%20%27%20%20en%20%25%20%20%20%20%25%0D%0AEInde','%20',' ')||';');
 	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:0|Text|;');
 	DBMS_OUTPUT.PUT_LINE ('			-META_TYPE:DESCRIPTION_TYPE;');

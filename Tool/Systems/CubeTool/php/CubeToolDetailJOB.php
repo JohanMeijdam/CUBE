@@ -12,47 +12,40 @@ g_xmlhttp.onreadystatechange = function() {
 	if(g_xmlhttp.readyState == 4) {
 		var l_argument = g_xmlhttp.responseText.split("<|||>");
 		switch (l_argument[0]) {
-		case "SELECT_RTT":
+		case "SELECT_JOB":
 			var l_values = l_argument[1].split("<|>");
 			document.getElementById("InputFkBotName").value=l_values[0];
-			document.getElementById("InputIncludeOrExclude").value=l_values[1];
+			document.getElementById("InputCubeTsgGroupOrElement").value=l_values[1];
+			document.getElementById("InputXkBotName").value=l_values[2];
+			ProcessTypeSpecialisation();
 			break;
-		case "CREATE_RTT":
+		case "CREATE_JOB":
 			document.getElementById("InputFkBotName").readOnly=true;
 			document.getElementById("InputFkTypName").readOnly=true;
-			document.getElementById("InputXfTspTypName").readOnly=true;
-			document.getElementById("InputXfTspTsgCode").readOnly=true;
-			document.getElementById("InputXkTspCode").readOnly=true;
-			document.getElementById("RefSelect001").disabled=true;
 			document.getElementById("ButtonCreate").disabled=true;
 			document.getElementById("ButtonUpdate").disabled=false;
 			document.getElementById("ButtonDelete").disabled=false;
 			l_objNode = parent.TREE.document.getElementById(document._nodeId);
-			document._nodeId = 'TYP_RTT<||>'+document.getElementById("InputFkTypName").value+'<|>'+document.getElementById("InputXfTspTypName").value+'<|>'+document.getElementById("InputXfTspTsgCode").value+'<|>'+document.getElementById("InputXkTspCode").value;
+			document._nodeId = 'TYP_JOB<||>'+document.getElementById("InputFkTypName").value;
 			if (l_objNode != null) {
 				if (l_objNode.firstChild._state == 'O') {
-					if (l_argument[1] == null) {
-						var l_position = 'L';
-						l_objNodePos = null;
-					} else {
-						var l_position = 'B';
-						l_objNodePos = parent.TREE.document.getElementById('TYP_RTT<||>'+l_argument[1]);
-					}
+					var l_position = g_option[0];
+					l_objNodePos = parent.TREE.document.getElementById('TYP_JOB<||>'+g_option[1]);
 					parent.TREE.AddTreeviewNode(
 						l_objNode,
-						'TYP_RTT',
+						'TYP_JOB',
 						document._nodeId,
-						'icons/restrict.bmp', 
-						document.getElementById("InputXfTspTypName").value.toLowerCase()+' '+document.getElementById("InputXfTspTsgCode").value.toLowerCase()+' '+document.getElementById("InputXkTspCode").value.toLowerCase(),
+						'icons/braces.bmp', 
+						' ',
 						'N',
 						l_position,
 						l_objNodePos);
 				}
 			}
 			break;
-		case "UPDATE_RTT":
+		case "UPDATE_JOB":
 			break;
-		case "DELETE_RTT":
+		case "DELETE_JOB":
 			document.getElementById("ButtonUpdate").disabled=true;
 			document.getElementById("ButtonDelete").disabled=true;
 			l_objNode = parent.TREE.document.getElementById(document._nodeId);
@@ -61,8 +54,8 @@ g_xmlhttp.onreadystatechange = function() {
 				l_objNode.parentNode.removeChild(l_objNode);
 			}
 			break;
-		case "LIST_TSP":
-			OpenListBox(l_argument,'typespec','TypeSpecialisation','Y');
+		case "LIST_BOT":
+			OpenListBox(l_argument,'botype','BusinessObjectType','Y');
 			break;
 		case "SELECT_FKEY_TYP":
 			var l_values = l_argument[1].split("<|>");
@@ -93,22 +86,19 @@ function InitBody() {
 	document.body._ListBoxCode="Ref000";
 	document._nodeId = l_argument[2];
 	document._argument = document._nodeId.split("<||>")[1];
+	g_option = l_argument[3].split("<||>");
 	if (document._argument != null) {
 		var values = document._argument.split("<|>");
 	}
 	switch (l_argument[1]) {
 	case "D":
 		document.getElementById("InputFkTypName").value=values[0];
-		document.getElementById("InputXfTspTypName").value=values[1];
-		document.getElementById("InputXfTspTsgCode").value=values[2];
-		document.getElementById("InputXkTspCode").value=values[3];
 		document.getElementById("ButtonCreate").disabled=true;
-		performTrans('GetRtt'+'<|||>'+document._argument);
+		performTrans('GetJob'+'<|||>'+document._argument);
 		document.getElementById("InputFkBotName").readOnly=true;
 		document.getElementById("InputFkTypName").readOnly=true;
-		document.getElementById("InputXfTspTypName").readOnly=true;
-		document.getElementById("InputXfTspTsgCode").readOnly=true;
-		document.getElementById("InputXkTspCode").readOnly=true;
+		document.getElementById("InputCubeTsgGroupOrElement").readOnly=true;
+		document.getElementById("InputXkBotName").readOnly=true;
 		document.getElementById("RefSelect001").disabled=true;
 		break;
 	case "N":
@@ -122,38 +112,34 @@ function InitBody() {
 	default:
 		alert ('Error InitBody: '+l_argument[1]);
 	}
-	document.getElementById("InputIncludeOrExclude").value='IN';
 }
 
-function CreateRtt() {
+function CreateJob() {
 	var l_parameters = 
 		document.getElementById("InputFkBotName").value+'<|>'+
 		document.getElementById("InputFkTypName").value+'<|>'+
-		document.getElementById("InputIncludeOrExclude").value+'<|>'+
-		document.getElementById("InputXfTspTypName").value+'<|>'+
-		document.getElementById("InputXfTspTsgCode").value+'<|>'+
-		document.getElementById("InputXkTspCode").value;
-	performTrans('CreateRtt<|||>'+l_parameters);
+		document.getElementById("InputCubeTsgGroupOrElement").value+'<|>'+
+		document.getElementById("InputXkBotName").value;
+	if (g_option[0] == 'F' || g_option[0] == 'L') {
+		performTrans('CreateJob<|||>'+g_option[0]+'<|>'+l_parameters);
+	} else {
+		performTrans('CreateJob<|||>'+g_option[0]+'<|>'+l_parameters+'<|>'+g_option[1]);
+	}
 }
 
-function UpdateRtt() {
+function UpdateJob() {
 	var l_parameters = 
 		document.getElementById("InputFkBotName").value+'<|>'+
 		document.getElementById("InputFkTypName").value+'<|>'+
-		document.getElementById("InputIncludeOrExclude").value+'<|>'+
-		document.getElementById("InputXfTspTypName").value+'<|>'+
-		document.getElementById("InputXfTspTsgCode").value+'<|>'+
-		document.getElementById("InputXkTspCode").value;
-	performTrans('UpdateRtt<|||>'+l_parameters);
+		document.getElementById("InputCubeTsgGroupOrElement").value+'<|>'+
+		document.getElementById("InputXkBotName").value;
+	performTrans('UpdateJob<|||>'+l_parameters);
 }
 
-function DeleteRtt() {
+function DeleteJob() {
 	var l_parameters = 
-		document.getElementById("InputFkTypName").value+'<|>'+
-		document.getElementById("InputXfTspTypName").value+'<|>'+
-		document.getElementById("InputXfTspTsgCode").value+'<|>'+
-		document.getElementById("InputXkTspCode").value;
-	performTrans('DeleteRtt<|||>'+l_parameters);
+		document.getElementById("InputFkTypName").value;
+	performTrans('DeleteJob<|||>'+l_parameters);
 }
 
 function OpenListBox(p_rows,p_icon,p_header,p_optional) {
@@ -237,19 +223,9 @@ function UpdateForeignKey(p_obj) {
 	switch (document.body._ListBoxCode){
 	case "Ref001":
 		if (l_obj_option.value == '') {
-			document.getElementById("InputXfTspTypName").value = '';
+			document.getElementById("InputXkBotName").value = '';
 		} else {
-			document.getElementById("InputXfTspTypName").value = l_values[0];
-		}
-		if (l_obj_option.value == '') {
-			document.getElementById("InputXfTspTsgCode").value = '';
-		} else {
-			document.getElementById("InputXfTspTsgCode").value = l_values[1];
-		}
-		if (l_obj_option.value == '') {
-			document.getElementById("InputXkTspCode").value = '';
-		} else {
-			document.getElementById("InputXkTspCode").value = l_values[2];
+			document.getElementById("InputXkBotName").value = l_values[0];
 		}
 		break;
 	default:
@@ -262,8 +238,7 @@ function StartSelect001(p_event) {
 	document.body._SelectLeft = p_event.clientX;
 	document.body._SelectTop = p_event.clientY;
 	document.body._ListBoxCode = 'Ref001';
-	var l_parameters = '1<|>'+document.getElementById("InputFkTypName").value
-	performTrans('GetTspForTypList<|||>'+l_parameters);
+	performTrans('GetBotList');
 }
 
 function OpenDescBox(p_icon,p_name,p_type,p_attribute_type,p_sequence) {
@@ -367,38 +342,41 @@ function drop(p_event) {
 		l_obj.style.top = l_y + 'px';
 	}
 }
+
+function ProcessTypeSpecialisation() {
+	if (document.getElementById("InputCubeTsgGroupOrElement").value != ' ') {
+		document.getElementById("InputCubeTsgGroupOrElement").disabled=true;
+		document.getElementById("TableMain").style.display="inline";
+	}
+}
 -->
 </script>
 </head><body oncontextmenu="return false;" onload="InitBody()" ondrop="drop(event)" ondragover="allowDrop(event)">
-<div><img src="icons/restrict_large.bmp" /><span> RESTRICTION_TYPE_SPEC_TYP</span></div>
+<div><img src="icons/braces_large.bmp" /><span> JSON_OBJECT /
+<select id="InputCubeTsgGroupOrElement" type="text" onchange="ProcessTypeSpecialisation()">
+	<option value=" " selected>&lt;group_or_element&gt;</option>
+	<option value="GR">GROUP</option>
+	<option value="EL">ELEMENT</option>
+</select></span></div>
 <hr/>
-<table>
+<table id="TableMain" style="display:none">
 <tr><td>BusinessObjectType.Name</td><td><div style="max-width:30em;">
 <input id="InputFkBotName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
 <tr><td><u>Type.Name</u></td><td><div style="max-width:30em;">
 <input id="InputFkTypName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td style="cursor:help;" oncontextmenu="OpenDescBox('RESTRICT','RestrictionTypeSpecTyp.IncludeOrExclude','RESTRICTION_TYPE_SPEC_TYP','INCLUDE_OR_EXCLUDE',-1)">IncludeOrExclude</td><td><div>
-<select id="InputIncludeOrExclude" type="text">
-	<option value=" " selected> </option>
-	<option value="IN">Include</option>
-	<option value="EX">Exclude</option>
-</select></div></td></tr>
-<tr><td height=6></td></tr><tr><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/typespec.bmp"/> TypeSpecialisation (IsValidFor)</legend>
+<tr><td height=6></td></tr><tr><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/botype.bmp"/> BusinessObjectType (Test)</legend>
 <table style="width:100%;">
-<tr><td><u>Type.Name</u></td><td style="width:100%;"><div style="max-width:30em;">
-<input id="InputXfTspTypName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" readonly></input></div></td>
+<tr><td>BusinessObjectType.Name</td><td style="width:100%;"><div style="max-width:30em;">
+<input id="InputXkBotName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" readonly></input></div></td>
 <td><button id="RefSelect001" type="button" onclick="StartSelect001(event)">Select</button></td></tr>
-<tr><td><u>TypeSpecialisationGroup.Code</u></td><td style="width:100%;"><div style="max-width:16em;">
-<input id="InputXfTspTsgCode" type="text" maxlength="16" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" readonly></input></div></td></tr>
-<tr><td><u>TypeSpecialisation.Code</u></td><td style="width:100%;"><div style="max-width:16em;">
-<input id="InputXkTspCode" type="text" maxlength="16" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" readonly></input></div></td></tr>
 </table></fieldset></td></tr>
 <tr><td><br></td><td style="width:100%;"></td></tr>
 <tr><td/><td>
-<button id="ButtonCreate" type="button" onclick="CreateRtt()">Create</button>&nbsp;&nbsp;&nbsp;
-<button id="ButtonUpdate" type="button" onclick="UpdateRtt()">Update</button>&nbsp;&nbsp;&nbsp;
-<button id="ButtonDelete" type="button" onclick="DeleteRtt()">Delete</button></td></tr>
+<button id="ButtonCreate" type="button" onclick="CreateJob()">Create</button>&nbsp;&nbsp;&nbsp;
+<button id="ButtonUpdate" type="button" onclick="UpdateJob()">Update</button>&nbsp;&nbsp;&nbsp;
+<button id="ButtonDelete" type="button" onclick="DeleteJob()">Delete</button></td></tr>
 </table>
 <input id="InputCubeId" type="hidden"></input>
+<input id="InputCubeSequence" type="hidden"></input>
 </body>
 </html>

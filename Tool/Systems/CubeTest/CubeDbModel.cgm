@@ -1,0 +1,10 @@
+! Cube Database Model
+!
+! Structure:
+!	DATABASE: 0=Name 1=DbSchema 2=Password
+!		SEQUENCE: 0=Name 2=StartValue
+!		TABLE: 0=Name 1=PrimaryKey
+!			FIELD: 0=Name 1=FlagPrimKey 2=Domain 3=DefaultValue
+!			FOREIGN_KEY: 0=Name, 1=RefTable 2=FlagCascadeDelete
+!				FIELD: 0=Name, 1=RefField
+!;

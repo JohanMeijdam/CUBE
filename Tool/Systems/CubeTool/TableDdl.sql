@@ -72,6 +72,14 @@ DROP SEQUENCE tsp_seq
 /
 CREATE SEQUENCE tsp_seq START WITH 100000
 /
+DROP SEQUENCE job_seq
+/
+CREATE SEQUENCE job_seq START WITH 100000
+/
+DROP SEQUENCE jar_seq
+/
+CREATE SEQUENCE jar_seq START WITH 100000
+/
 DROP SEQUENCE dct_seq
 /
 CREATE SEQUENCE dct_seq START WITH 100000
@@ -128,6 +136,10 @@ ALTER TABLE t_type_specialisation_group DROP CONSTRAINT tsg_tsg_fk
 /
 ALTER TABLE t_type_specialisation DROP CONSTRAINT tsp_tsg_fk
 /
+ALTER TABLE t_json_object DROP CONSTRAINT job_typ_fk
+/
+ALTER TABLE t_json_attribute_reference DROP CONSTRAINT jar_job_fk
+/
 ALTER TABLE t_description_type DROP CONSTRAINT dct_typ_fk
 /
 ALTER TABLE t_system_bo_type DROP CONSTRAINT sbt_sys_fk
@@ -169,6 +181,10 @@ DROP TABLE t_subtype
 DROP TABLE t_type_specialisation_group
 /
 DROP TABLE t_type_specialisation
+/
+DROP TABLE t_json_object
+/
+DROP TABLE t_json_attribute_reference
 /
 DROP TABLE t_description_type
 /
@@ -465,6 +481,33 @@ CREATE TABLE t_type_specialisation (
 	CONSTRAINT tsp_tsg_fk
 		FOREIGN KEY (fk_typ_name, fk_tsg_code)
 		REFERENCES t_type_specialisation_group (fk_typ_name, code)
+		ON DELETE CASCADE )
+/
+CREATE TABLE t_json_object (
+	cube_id VARCHAR2(16),
+	cube_sequence NUMBER(8),
+	fk_bot_name VARCHAR2(30),
+	fk_typ_name VARCHAR2(30),
+	cube_tsg_group_or_element VARCHAR2(8) DEFAULT 'GR',
+	xk_bot_name VARCHAR2(30),
+	CONSTRAINT job_pk
+		PRIMARY KEY (fk_typ_name),
+	CONSTRAINT job_typ_fk
+		FOREIGN KEY (fk_typ_name)
+		REFERENCES t_type (name)
+		ON DELETE CASCADE )
+/
+CREATE TABLE t_json_attribute_reference (
+	cube_id VARCHAR2(16),
+	fk_bot_name VARCHAR2(30),
+	fk_typ_name VARCHAR2(30),
+	xf_atb_typ_name VARCHAR2(30),
+	xk_atb_name VARCHAR2(30),
+	CONSTRAINT jar_pk
+		PRIMARY KEY (fk_typ_name, xf_atb_typ_name, xk_atb_name),
+	CONSTRAINT jar_job_fk
+		FOREIGN KEY (fk_typ_name)
+		REFERENCES t_json_object (fk_typ_name)
 		ON DELETE CASCADE )
 /
 CREATE TABLE t_description_type (

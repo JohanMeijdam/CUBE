@@ -1,0 +1,40 @@
+-- CUBETEST Packages
+--
+BEGIN
+	FOR r_pck IN (
+		SELECT object_name
+		FROM all_procedures p
+		WHERE p.owner = 'CUBETEST'
+		  AND p.procedure_name = 'CUBE_PACKAGE' )
+	LOOP
+		EXECUTE IMMEDIATE 'DROP PACKAGE CUBETEST.'||r_pck.object_name;
+	END LOOP;
+END;
+/
+CREATE OR REPLACE PACKAGE pkg_cube IS
+	FUNCTION cube_package RETURN VARCHAR2;
+	FUNCTION years(p_date DATE) RETURN NUMBER;
+	FUNCTION multiply(p_num_1 NUMBER, p_num_2 NUMBER) RETURN NUMBER;
+	FUNCTION add(p_num_1 NUMBER, p_num_2 NUMBER) RETURN NUMBER;
+END;
+/
+CREATE OR REPLACE PACKAGE BODY pkg_cube IS
+	FUNCTION cube_package RETURN VARCHAR2 IS
+	BEGIN
+		RETURN 'cube_package';
+	END;
+	FUNCTION years(p_date DATE) RETURN NUMBER IS
+	BEGIN
+		RETURN (TRUNC(MONTHS_BETWEEN (CURRENT_DATE, p_date) / 12));
+	END;
+	FUNCTION multiply(p_num_1 NUMBER, p_num_2 NUMBER) RETURN NUMBER IS
+	BEGIN
+		RETURN (p_num_1 * p_num_2);
+	END;
+	FUNCTION add(p_num_1 NUMBER, p_num_2 NUMBER) RETURN NUMBER IS
+	BEGIN
+		RETURN (p_num_1 + p_num_2);
+	END;
+END;
+/
+EXIT;

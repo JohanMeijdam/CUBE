@@ -50,6 +50,8 @@ g_xmlhttp.onreadystatechange = function(){
 			case 'MOVE_TSG': MoveNode (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.body._moveAction); break;
 			case 'LIST_TSP': AddTreeviewChildren(l_rows,'TYP_TSP','icons/typespec.bmp'); break;
 			case 'MOVE_TSP': MoveNode (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.body._moveAction); break;
+			case 'LIST_JOB': AddTreeviewChildren(l_rows,'TYP_JOB','icons/braces.bmp'); break;
+			case 'LIST_JAR': AddTreeviewChildren(l_rows,'TYP_JAR','icons/atbref.bmp'); break;
 			case 'LIST_DCT': AddTreeviewChildren(l_rows,'TYP_DCT','icons/desc.bmp'); break;
 			case 'COUNT_DCT': CheckMenuItem('TYP_DCT',l_rows[1]); break;
 			case 'LIST_SYS': AddTreeviewChildren(l_rows,'TYP_SYS','icons/system.bmp'); break;
@@ -131,8 +133,8 @@ function DefineTypePosition (p_parentType, p_type, p_switch) {
 		switch (p_type) { case 'TYP_TYP': l_index = 2; break;}
 		var l_count = 1; break;
 	case 'TYP_TYP':
-		switch (p_type) { case 'TYP_ATB': l_index = 2; break; case 'TYP_REF': l_index = 3; break; case 'TYP_RTT': l_index = 4; break; case 'TYP_TYR': l_index = 5; break; case 'TYP_PAR': l_index = 6; break; case 'TYP_TSG': l_index = 7; break; case 'TYP_DCT': l_index = 8; break;case 'TYP_TYP': l_index = 9; break;}
-		var l_count = 8; break;
+		switch (p_type) { case 'TYP_ATB': l_index = 2; break; case 'TYP_REF': l_index = 3; break; case 'TYP_RTT': l_index = 4; break; case 'TYP_TYR': l_index = 5; break; case 'TYP_PAR': l_index = 6; break; case 'TYP_TSG': l_index = 7; break; case 'TYP_JOB': l_index = 8; break; case 'TYP_DCT': l_index = 9; break;case 'TYP_TYP': l_index = 10; break;}
+		var l_count = 9; break;
 	case 'TYP_ATB':
 		switch (p_type) { case 'TYP_DER': l_index = 2; break; case 'TYP_DCA': l_index = 3; break; case 'TYP_RTA': l_index = 4; break;}
 		var l_count = 3; break;
@@ -145,6 +147,9 @@ function DefineTypePosition (p_parentType, p_type, p_switch) {
 	case 'TYP_TSG':
 		switch (p_type) { case 'TYP_TSP': l_index = 2; break;case 'TYP_TSG': l_index = 3; break;}
 		var l_count = 2; break;
+	case 'TYP_JOB':
+		switch (p_type) { case 'TYP_JAR': l_index = 2; break;}
+		var l_count = 1; break;
 	case 'TYP_SYS':
 		switch (p_type) { case 'TYP_SBT': l_index = 2; break;}
 		var l_count = 1; break;
@@ -381,6 +386,9 @@ function OpenCloseOnClick(p_obj) {
  		case 'TYP_TSG':
 			PerformTrans('GetTsgItems'+'<|||>'+p_obj.parentNode.id.split("<||>")[1]);
 			break;
+ 		case 'TYP_JOB':
+			PerformTrans('GetJobItems'+'<|||>'+p_obj.parentNode.id.split("<||>")[1]);
+			break;
  		case 'DIR_SYS':
 			PerformTrans('GetDirSysItems');
 			break;
@@ -590,8 +598,9 @@ function OpenMenu(p_obj) {
 		AddMenuItem(g_objMenuList, 'add type_reuse', 'icons/reuse.bmp','DetailTYR','N','TYP_TYR',0,'N',5);
 		AddMenuItem(g_objMenuList, 'add partition', 'icons/partit.bmp','DetailPAR','N','TYP_PAR',0,'N',6);
 		AddMenuItem(g_objMenuList, 'add type_specialisation_group', 'icons/tspgroup.bmp','CubeAdd','N','TYP_TSG',0,'N',7);
-		AddMenuItem(g_objMenuList, 'add description_type', 'icons/desc.bmp','DetailDCT','N','TYP_DCT',1,'N',8);
-		AddMenuItem(g_objMenuList, 'add type', 'icons/type.bmp','CubeAdd','R','TYP_TYP',0,'N',9);
+		AddMenuItem(g_objMenuList, 'add json_object', 'icons/braces.bmp','CubeAdd','N','TYP_JOB',0,'N',8);
+		AddMenuItem(g_objMenuList, 'add description_type', 'icons/desc.bmp','DetailDCT','N','TYP_DCT',1,'N',9);
+		AddMenuItem(g_objMenuList, 'add type', 'icons/type.bmp','CubeAdd','R','TYP_TYP',0,'N',10);
 		PerformTrans('CountTypRestrictedItems'+'<|||>'+l_type_id[1]);
 		break;
  	case 'TYP_ATB':
@@ -631,6 +640,9 @@ function OpenMenu(p_obj) {
 		if (l_childCount > 1) {
 			AddMenuItem(g_objMenuList, 'move', 'icons/cube_move.bmp','CubeMove','','CUBE_M_TSP',0,'N',0);
 		}
+		break;
+ 	case 'TYP_JOB':
+		AddMenuItem(g_objMenuList, 'add json_attribute_reference', 'icons/atbref.bmp','DetailJAR','N','TYP_JAR',0,'N',2);
 		break;
  	case 'DIR_SYS':
 		AddMenuItem(g_objMenuList, 'add system', 'icons/system.bmp','DetailSYS','N','TYP_SYS',0,'N',2);

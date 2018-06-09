@@ -566,6 +566,9 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 	PROCEDURE get_typ_tsg_items (
 			p_cube_row IN OUT c_cube_row,
 			p_name IN VARCHAR2);
+	PROCEDURE get_typ_job_items (
+			p_cube_row IN OUT c_cube_row,
+			p_name IN VARCHAR2);
 	PROCEDURE get_typ_dct_items (
 			p_cube_row IN OUT c_cube_row,
 			p_name IN VARCHAR2);
@@ -1059,6 +1062,48 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_tsg_code IN VARCHAR2,
 			p_code IN VARCHAR2);
+	PROCEDURE get_job (
+			p_cube_row IN OUT c_cube_row,
+			p_fk_typ_name IN VARCHAR2);
+	PROCEDURE get_job_fkey (
+			p_cube_row IN OUT c_cube_row,
+			p_fk_typ_name IN VARCHAR2);
+	PROCEDURE get_job_jar_items (
+			p_cube_row IN OUT c_cube_row,
+			p_fk_typ_name IN VARCHAR2);
+	PROCEDURE insert_job (
+			p_cube_pos_action IN VARCHAR2,
+			p_fk_bot_name IN VARCHAR2,
+			p_fk_typ_name IN VARCHAR2,
+			p_cube_tsg_group_or_element IN VARCHAR2,
+			p_xk_bot_name IN VARCHAR2,
+			x_fk_typ_name IN VARCHAR2);
+	PROCEDURE update_job (
+			p_fk_bot_name IN VARCHAR2,
+			p_fk_typ_name IN VARCHAR2,
+			p_cube_tsg_group_or_element IN VARCHAR2,
+			p_xk_bot_name IN VARCHAR2);
+	PROCEDURE delete_job (
+			p_fk_typ_name IN VARCHAR2);
+	PROCEDURE get_jar (
+			p_cube_row IN OUT c_cube_row,
+			p_fk_typ_name IN VARCHAR2,
+			p_xf_atb_typ_name IN VARCHAR2,
+			p_xk_atb_name IN VARCHAR2);
+	PROCEDURE insert_jar (
+			p_fk_bot_name IN VARCHAR2,
+			p_fk_typ_name IN VARCHAR2,
+			p_xf_atb_typ_name IN VARCHAR2,
+			p_xk_atb_name IN VARCHAR2);
+	PROCEDURE update_jar (
+			p_fk_bot_name IN VARCHAR2,
+			p_fk_typ_name IN VARCHAR2,
+			p_xf_atb_typ_name IN VARCHAR2,
+			p_xk_atb_name IN VARCHAR2);
+	PROCEDURE delete_jar (
+			p_fk_typ_name IN VARCHAR2,
+			p_xf_atb_typ_name IN VARCHAR2,
+			p_xk_atb_name IN VARCHAR2);
 	PROCEDURE get_dct (
 			p_cube_row IN OUT c_cube_row,
 			p_fk_typ_name IN VARCHAR2);
@@ -1457,6 +1502,19 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			FROM v_type_specialisation_group
 			WHERE fk_typ_name = p_name
 			  AND fk_tsg_code IS NULL
+			ORDER BY fk_typ_name, cube_sequence;
+	END;
+
+	PROCEDURE get_typ_job_items (
+			p_cube_row IN OUT c_cube_row,
+			p_name IN VARCHAR2) IS
+	BEGIN
+		OPEN p_cube_row FOR
+			SELECT
+			  cube_sequence,
+			  fk_typ_name
+			FROM v_json_object
+			WHERE fk_typ_name = p_name
 			ORDER BY fk_typ_name, cube_sequence;
 	END;
 
@@ -3753,6 +3811,154 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 		WHERE fk_typ_name = p_fk_typ_name
 		  AND fk_tsg_code = p_fk_tsg_code
 		  AND code = p_code;
+	END;
+
+	PROCEDURE get_job (
+			p_cube_row IN OUT c_cube_row,
+			p_fk_typ_name IN VARCHAR2) IS
+	BEGIN
+		OPEN p_cube_row FOR
+			SELECT
+			  fk_bot_name,
+			  cube_tsg_group_or_element,
+			  xk_bot_name
+			FROM v_json_object
+			WHERE fk_typ_name = p_fk_typ_name;
+	END;
+
+	PROCEDURE get_job_fkey (
+			p_cube_row IN OUT c_cube_row,
+			p_fk_typ_name IN VARCHAR2) IS
+	BEGIN
+		OPEN p_cube_row FOR
+			SELECT
+			  fk_bot_name
+			FROM v_json_object
+			WHERE fk_typ_name = p_fk_typ_name;
+	END;
+
+	PROCEDURE get_job_jar_items (
+			p_cube_row IN OUT c_cube_row,
+			p_fk_typ_name IN VARCHAR2) IS
+	BEGIN
+		OPEN p_cube_row FOR
+			SELECT
+			  fk_typ_name,
+			  xf_atb_typ_name,
+			  xk_atb_name
+			FROM v_json_attribute_reference
+			WHERE fk_typ_name = p_fk_typ_name
+			ORDER BY fk_typ_name, xf_atb_typ_name, xk_atb_name;
+	END;
+
+	PROCEDURE insert_job (
+			p_cube_pos_action IN VARCHAR2,
+			p_fk_bot_name IN VARCHAR2,
+			p_fk_typ_name IN VARCHAR2,
+			p_cube_tsg_group_or_element IN VARCHAR2,
+			p_xk_bot_name IN VARCHAR2,
+			x_fk_typ_name IN VARCHAR2) IS
+		l_cube_sequence NUMBER(8) := 1;
+	BEGIN
+		INSERT INTO v_json_object (
+			cube_id,
+			cube_sequence,
+			fk_bot_name,
+			fk_typ_name,
+			cube_tsg_group_or_element,
+			xk_bot_name)
+		VALUES (
+			NULL,
+			l_cube_sequence,
+			p_fk_bot_name,
+			p_fk_typ_name,
+			p_cube_tsg_group_or_element,
+			p_xk_bot_name);
+	EXCEPTION
+		WHEN DUP_VAL_ON_INDEX THEN
+			RAISE_APPLICATION_ERROR (-20001, 'Type json_object already exists');
+	END;
+
+	PROCEDURE update_job (
+			p_fk_bot_name IN VARCHAR2,
+			p_fk_typ_name IN VARCHAR2,
+			p_cube_tsg_group_or_element IN VARCHAR2,
+			p_xk_bot_name IN VARCHAR2) IS
+	BEGIN
+		UPDATE v_json_object SET
+			fk_bot_name = p_fk_bot_name,
+			cube_tsg_group_or_element = p_cube_tsg_group_or_element,
+			xk_bot_name = p_xk_bot_name
+		WHERE fk_typ_name = p_fk_typ_name;
+	END;
+
+	PROCEDURE delete_job (
+			p_fk_typ_name IN VARCHAR2) IS
+	BEGIN
+		DELETE v_json_object
+		WHERE fk_typ_name = p_fk_typ_name;
+	END;
+
+	PROCEDURE get_jar (
+			p_cube_row IN OUT c_cube_row,
+			p_fk_typ_name IN VARCHAR2,
+			p_xf_atb_typ_name IN VARCHAR2,
+			p_xk_atb_name IN VARCHAR2) IS
+	BEGIN
+		OPEN p_cube_row FOR
+			SELECT
+			  fk_bot_name
+			FROM v_json_attribute_reference
+			WHERE fk_typ_name = p_fk_typ_name
+			  AND xf_atb_typ_name = p_xf_atb_typ_name
+			  AND xk_atb_name = p_xk_atb_name;
+	END;
+
+	PROCEDURE insert_jar (
+			p_fk_bot_name IN VARCHAR2,
+			p_fk_typ_name IN VARCHAR2,
+			p_xf_atb_typ_name IN VARCHAR2,
+			p_xk_atb_name IN VARCHAR2) IS
+	BEGIN
+		INSERT INTO v_json_attribute_reference (
+			cube_id,
+			fk_bot_name,
+			fk_typ_name,
+			xf_atb_typ_name,
+			xk_atb_name)
+		VALUES (
+			NULL,
+			p_fk_bot_name,
+			p_fk_typ_name,
+			p_xf_atb_typ_name,
+			p_xk_atb_name);
+	EXCEPTION
+		WHEN DUP_VAL_ON_INDEX THEN
+			RAISE_APPLICATION_ERROR (-20001, 'Type json_attribute_reference already exists');
+	END;
+
+	PROCEDURE update_jar (
+			p_fk_bot_name IN VARCHAR2,
+			p_fk_typ_name IN VARCHAR2,
+			p_xf_atb_typ_name IN VARCHAR2,
+			p_xk_atb_name IN VARCHAR2) IS
+	BEGIN
+		UPDATE v_json_attribute_reference SET
+			fk_bot_name = p_fk_bot_name
+		WHERE fk_typ_name = p_fk_typ_name
+		  AND xf_atb_typ_name = p_xf_atb_typ_name
+		  AND xk_atb_name = p_xk_atb_name;
+	END;
+
+	PROCEDURE delete_jar (
+			p_fk_typ_name IN VARCHAR2,
+			p_xf_atb_typ_name IN VARCHAR2,
+			p_xk_atb_name IN VARCHAR2) IS
+	BEGIN
+		DELETE v_json_attribute_reference
+		WHERE fk_typ_name = p_fk_typ_name
+		  AND xf_atb_typ_name = p_xf_atb_typ_name
+		  AND xk_atb_name = p_xk_atb_name;
 	END;
 
 	PROCEDURE get_dct (

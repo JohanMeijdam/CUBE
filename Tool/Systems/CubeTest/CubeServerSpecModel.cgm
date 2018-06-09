@@ -1,0 +1,213 @@
+! Cube Server Specification Model
+!
++META_MODEL:CUBE;
+	+META_TYPE:INFORMATION_TYPE|;
+		=PROPERTY:0|Name|;
+		+META_TYPE:INFORMATION_TYPE_ELEMENT|;
+			=PROPERTY:0|Sequence|;
+			=PROPERTY:1|Suffix|;
+			=PROPERTY:2|Domain| Values: TEXT(Text), NUMBER(Number), DATE(Date), TIME(Time), DATETIME-LOCAL(Timestamp);
+			=PROPERTY:3|Length|;
+			=PROPERTY:4|Decimals|;
+			=PROPERTY:5|CaseSensitive| Values: Y(Yes), N(No);
+			=PROPERTY:6|DefaultValue|;
+			=PROPERTY:7|SpacesAllowed| Values: Y(Yes), N(No);
+			=PROPERTY:8|Presentation|Indication how the string is presented in the user dialog. Values: LIN(Line), DES(Description), COD(Code);
+			+META_TYPE:PERMITTED_VALUE|;
+				=PROPERTY:0|Code|;
+				=PROPERTY:1|Prompt|;
+				+META_TYPE:PERMITTED_VALUE_GROUP;
+					=PROPERTY:0|CODE|;
+				-META_TYPE:;
+			-META_TYPE:;
+		-META_TYPE:;
+	-META_TYPE:;
+	+META_TYPE:BUSINESS_OBJECT_TYPE|An object type related to the business supported by the system.;
+		=PROPERTY:0|Name|;
+		=PROPERTY:1|CubeTsgIntExt| Values: INT(INTERNAL), EXT(EXTERNAL);
+		=PROPERTY:2|Directory|;
+		=PROPERTY:3|ApiUrl|The basic URL for calling the API.;
+		+META_TYPE:TYPE|An entity type related to the business that is supported by the system.;
+			=PROPERTY:0|Name|;
+			=PROPERTY:1|Code|;
+			=PROPERTY:2|FlagPartialKey| Values: Y(Yes), N(No);
+			=PROPERTY:3|FlagRecursive| Values: Y(Yes), N(No);
+			=PROPERTY:4|RecursiveCardinality| Values: 1(1), 2(2), 3(3), 4(4), 5(5), N(Many);
+			=PROPERTY:5|Cardinality| Values: 1(1), 2(2), 3(3), 4(4), 5(5), N(Many);
+			=PROPERTY:6|SortOrder| Values: N(No sort), K(Key), P(Position);
+			=PROPERTY:7|Icon|;
+			=PROPERTY:8|Transferable|Indication that in case of a recursive type the type may moved to an other parent in the hierarchy. Values: Y(Yes), N(No);
+			=ASSOCIATION:REFERENCE_RECURSIVE|Specialises|REFERENCE;
+			+META_TYPE:TYPE_LIST;
+				=PROPERTY:0|ListType|;
+				=ASSOCIATION:TYPE_LIST_SCOPE|WithinScopeOf|TYPE;
+				+META_TYPE:TYPE_LIST_SCOPE_ATTRIBUTE;
+					=PROPERTY:0|Name|;
+					=ASSOCIATION:TYPE_LIST_SCOPE_ATTRIBUTE_SOURCE|IsSourceOf|ATTRIBUTE;
+				-META_TYPE:;
+			-META_TYPE:;
+			+META_TYPE:ATTRIBUTE|;
+				=PROPERTY:0|Name|Unique identifier of the attribute.;
+				=PROPERTY:1|PrimaryKey|Indication that attribute is part of the unique identification of the type. Values: Y(Yes), N(No);
+				=PROPERTY:2|CodeDisplayKey| Values: Y(Yes), S(Sub), N(No);
+				=PROPERTY:3|CodeForeignKey| Values: N(None);
+				=PROPERTY:4|FlagHidden| Values: Y(Yes), N(No);
+				=PROPERTY:5|DefaultValue|Defaut value that overules the default value specified by the information type element.;
+				=PROPERTY:6|Unchangeable|Indication that after the creation of the type the value of the atrribute can not be changed. Values: Y(Yes), N(No);
+				=ASSOCIATION:INFORMATION_TYPE_ELEMENT|HasDomain|INFORMATION_TYPE_ELEMENT|;
+				=ASSOCIATION:ATTRIBUTE_TYPE_SPECIALISATION_GROUP|IsImplementationOf|TYPE_SPECIALISATION_GROUP|;
+				=ASSOCIATION:ATTRIBUTE_ROOT|Reference|ATTRIBUTE|;
+				=ASSOCIATION:ATTRIBUTE_SOURCE|Reference|ATTRIBUTE|;
+				=ASSOCIATION:ATTRIBUTE_DERIVATION_SOURCE|IsImportFor|DERIVATION;
+				=ASSOCIATION:ATTRIBUTE_KEY_TYPE|IsKeyOf|TYPE;
+				+META_TYPE:ATTRIBUTE_NUMBER|Property number for normal attributes as used in model file;
+					=PROPERTY:0|Number|;
+				-META_TYPE:;
+				+META_TYPE:ATTRIBUTE_GROUP;
+					=ASSOCIATION:ATTRIBUTE_GROUP_ATTRIBUTE|HasValueGroupDefinedBy|ATTRIBUTE|;
+				-META_TYPE:;
+				+META_TYPE:DERIVATION|;
+					=PROPERTY:0|CubeTsgType| Values: DN(DENORMALIZATION), IN(INTERNAL), AG(AGGREGATION);
+					=PROPERTY:1|AggregateFunction| Values: SUM(Sum), AVG(Average), MIN(Minimum), MAX(Maximum);
+					=ASSOCIATION:DERIVATION_TYPE|ConcernsParent|TYPE|;
+					=ASSOCIATION:DERIVATION_TYPE_CONCERNS_CHILD|ConcernsChild|TYPE|;
+					=ASSOCIATION:DERIVATION_TYPE_DESTINATION|HasTarget|TYPE;
+				-META_TYPE:;
+				+META_TYPE:DESCRIPTION_ATTRIBUTE|;
+					=PROPERTY:0|Text|;
+				-META_TYPE:;
+				+META_TYPE:RESTRICTION_TYPE_SPEC_ATB|;
+					=PROPERTY:0|IncludeOrExclude|Indication that the attribute is valid (included) or invalid (excluded) for the concerning type specialisation. Values: IN(Include), EX(Exclude);
+					=ASSOCIATION:TYPE_SPECIALISATION|IsValidFor|TYPE_SPECIALISATION|;
+				-META_TYPE:;
+			-META_TYPE:;
+			+META_TYPE:REFERENCE|;
+				=PROPERTY:0|Name|;
+				=PROPERTY:1|PrimaryKey|Indication that reference is part of the unique identification of the type. Values: Y(Yes), N(No);
+				=PROPERTY:2|CodeDisplayKey| Values: Y(Yes), S(Sub), N(No);
+				=PROPERTY:3|Sequence|;
+				=PROPERTY:4|Scope|In case of a recursive target, the definition of the collection of the types to select. Values: ALL(All), ENC(Encapsulated), PRA(Parents all), PR1(Parents first level), CHA(Children all), CH1(Children first level);
+				=PROPERTY:5|Unchangeable|Indication that after the creation of the type the reference can not be changed. So in case of a recursive reference the indication too that the relation is used to select the parents or children in the hierarchy. Values: Y(Yes), N(No);
+				=PROPERTY:6|WithinScopeLevel|In case of recursive %22wihin scope of%22 type the relative level in the hierarchy, Positive numbers are the parent levels, Negative numbers are the child levels.;
+				=ASSOCIATION:REFERENCE_TYPE|Refer|TYPE|The target entity type of the reference.;
+				=ASSOCIATION:REFERENCE_TYPE_WITHIN_SCOPE_OF|WithinScopeOf|TYPE|In case of non recursive target or a scope all recursive target the common type for the selection.;
+				=ASSOCIATION:FKEY|Reference|ATTRIBUTE;
+				=ASSOCIATION:REFERENCE_SCOPE_ATTRIBUTE|UsedInSelection|ATTRIBUTE;
+				+META_TYPE:DESCRIPTION_REFERENCE|;
+					=PROPERTY:0|Text|;
+				-META_TYPE:;
+				+META_TYPE:RESTRICTION_TYPE_SPEC_REF|;
+					=PROPERTY:0|IncludeOrExclude|Indication that the reference is valid (included) or invalid (excluded) for the concerning type specialisation. Values: IN(Include), EX(Exclude);
+					=ASSOCIATION:TYPE_SPECIALISATION|IsValidFor|TYPE_SPECIALISATION|;
+				-META_TYPE:;
+			-META_TYPE:;
+			+META_TYPE:RESTRICTION_TYPE_SPEC_TYP|;
+				=PROPERTY:0|IncludeOrExclude|Indication that the child type is valid (included) or invalid (excluded) for the concerning type specialisation. Values: IN(Include), EX(Exclude);
+				=ASSOCIATION:TYPE_SPECIALISATION|IsValidFor|TYPE_SPECIALISATION|;
+			-META_TYPE:;
+			+META_TYPE:TYPE_REUSE|;
+				=PROPERTY:0|Cardinality| Values: 1(1), 2(2), 3(3), 4(4), 5(5), N(Many);
+				=ASSOCIATION:TYPE_REUSE_TYPE|Refer|TYPE|;
+			-META_TYPE:;
+			+META_TYPE:PARTITION|;
+				=PROPERTY:0|Name|;
+				+META_TYPE:SUBTYPE|;
+					=PROPERTY:0|Name|;
+				-META_TYPE:;
+			-META_TYPE:;
+			+META_TYPE:TYPE_SPECIALISATION_GROUP|A group of classifications of the type.;
+				=PROPERTY:0|Code|;
+				=PROPERTY:1|Name|;
+				=PROPERTY:2|PrimaryKey|Indication that the type specification group is part of the unique identification of the type. Values: Y(Yes), N(No);
+				=ASSOCIATION:ATTRIBUTE|IsLocatedAfter|ATTRIBUTE|Defines the location of the classifying attribute within the type.;
+				+META_TYPE:TYPE_SPECIALISATION|A classification of the type.;
+					=PROPERTY:0|Code|;
+					=PROPERTY:1|Name|;
+					=ASSOCIATION:TYPE_SPECIALISATION|Specialise|TYPE_SPECIALISATION|;
+				-META_TYPE:;
+			-META_TYPE:;
+			+META_TYPE:JSON_OBJECT|;
+				=PROPERTY:0|CubeTsgGroupOrElement| Values: GR(GROUP), EL(ELEMENT);
+				=ASSOCIATION:BUSINESS_OBJECT_TYPE|Test|BUSINESS_OBJECT_TYPE|;
+				+META_TYPE:JSON_ATTRIBUTE_REFERENCE|;
+					=ASSOCIATION:ATTRIBUTE|Concerns|ATTRIBUTE|;
+				-META_TYPE:;
+			-META_TYPE:;
+			+META_TYPE:DESCRIPTION_TYPE|Test%0D%0AMet LF en %22 en '  en %25    %25%0D%0AEInde;
+				=PROPERTY:0|Text|;
+			-META_TYPE:;
+		-META_TYPE:;
+	-META_TYPE:;
+	+META_TYPE:SYSTEM|;
+		=PROPERTY:0|Name|;
+		=PROPERTY:1|Database|;
+		=PROPERTY:2|Schema|;
+		=PROPERTY:3|Password|;
+		+META_TYPE:SYSTEM_BO_TYPE|;
+			=ASSOCIATION:BUSINESS_OBJECT_TYPE|Has|BUSINESS_OBJECT_TYPE|;
+		-META_TYPE:;
+	-META_TYPE:;
+	+META_TYPE:FUNCTION|;
+		=PROPERTY:0|Name|;
+		+META_TYPE:ARGUMENT|;
+			=PROPERTY:0|Name|;
+		-META_TYPE:;
+	-META_TYPE:;
+-META_MODEL:;
+! Structure (nog vertalen naar meta model):
+!	SYSTEM_ATTRIBUTE: 0=Name
+!		INFORMATION_TYPE_ELEMENT: 2=Domain 3=Length 4=Decimals
+!	BUSINESS_OBJECT_TYPE: 0=Name 1=Code
+!		SERVICE: 0=Name 1=Class 2=FlagNoSelect 3=InternalOrExternal
+!			>SERVICE_TYPE: TYPE
+!			>SERVICE_TYPE_LIST: TYPE_LIST
+!			ARGUMENT: 0=Name 1=Prefix 2=InputOutput
+!				>ARGUMENT_ATTRIBUTE: ATTRIBUTE
+!			OPERATION: 0=Name 1=SelectionType 2=ResultNameExtension 3=FlagMultipleExport 4=FlagMultipleList
+!				>OPERATION_TYPE: TYPE
+!				LOCAL:
+!					>LOCAL_FIELD: FIELD
+!				SELECTION:
+!					EXPRESSION: 0=Class 1=Domain
+!						EXPRESSION: 
+!						EXPRESSION: 0=Class
+!				SORT_ORDER:
+!					>SORT_ORDER_FIELD: FIELD 
+!				EXPORT: 0=Type 1=FlagSeparated
+!					ARGUMENT: 0=Name 1=Type
+!
++INFORMATION_TYPE[CUBE-ID-ITP]:CUBE_ID;
+	+INFORMATION_TYPE_ELEMENT[CUBE-ID-ITE]:1|#|TEXT|16|0|Y|||N;
+	-INFORMATION_TYPE_ELEMENT:;
+-INFORMATION_TYPE:;
++INFORMATION_TYPE[CUBE-SEQU-ITP]:CUBE_SEQUENCE;
+	+INFORMATION_TYPE_ELEMENT[CUBE-SEQU-ITE]:1|#|NUMBER|8|0|N|||N;
+	-INFORMATION_TYPE_ELEMENT:;
+-INFORMATION_TYPE:;
++INFORMATION_TYPE[CUBE-LEVEL-ITP]:CUBE_LEVEL;
+	+INFORMATION_TYPE_ELEMENT[CUBE-LEVEL-ITE]:1|#|NUMBER|8|0|N|||N;
+	-INFORMATION_TYPE_ELEMENT:;
+-INFORMATION_TYPE:;
++INFORMATION_TYPE[ITP-000000100016]:NAAM;
+	+INFORMATION_TYPE_ELEMENT[ITE-000000100016]:1|#|TEXT|40|0|Y||Y|LIN;
+	-INFORMATION_TYPE_ELEMENT:;
+-INFORMATION_TYPE:;
++INFORMATION_TYPE[ITP-000000100020]:OMSCHRIJVING;
+	+INFORMATION_TYPE_ELEMENT[ITE-000000100020]:1|#|TEXT|120|0|Y||Y|LIN;
+	-INFORMATION_TYPE_ELEMENT:;
+-INFORMATION_TYPE:;
++SYSTEM_ATTRIBUTE[CUBE_POS_ACTION]:CUBE_POS_ACTION;
+	=INFORMATION_TYPE_ELEMENT: | |TEXT|9999|0;
+-SYSTEM_ATTRIBUTE:;
++SYSTEM_ATTRIBUTE[CUBE_FLAG_ROOT]:CUBE_FLAG_ROOT;
+	=INFORMATION_TYPE_ELEMENT: | |TEXT|9999|0;
+-SYSTEM_ATTRIBUTE:;
++SYSTEM_ATTRIBUTE[CUBE_UP_OR_DOWN]:CUBE_UP_OR_DOWN;
+	=INFORMATION_TYPE_ELEMENT: | |TEXT|9999|0;
+-SYSTEM_ATTRIBUTE:;
++SYSTEM_ATTRIBUTE[CUBE_X_LEVEL]:CUBE_X_LEVEL;
+	=INFORMATION_TYPE_ELEMENT: | |NUMBER|9999|0;
+-SYSTEM_ATTRIBUTE:;
++SYSTEM_ATTRIBUTE[CUBE_SCOPE_LEVEL]:CUBE_SCOPE_LEVEL;
+	=INFORMATION_TYPE_ELEMENT: | |NUMBER|9999|0;
+-SYSTEM_ATTRIBUTE:;

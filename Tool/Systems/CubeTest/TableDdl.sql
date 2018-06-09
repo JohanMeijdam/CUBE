@@ -1,0 +1,3 @@
+-- TABLE DDL
+--
+EXIT;
