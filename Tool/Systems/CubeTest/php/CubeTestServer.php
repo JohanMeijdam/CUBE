@@ -7,6 +7,280 @@ set_error_handler("CubeError");
 $import=explode("<|||>",file_get_contents('php://input'));
 switch ($import[0]) {
 
+case 'GetDirAaaItems':
+
+	$stid = oci_parse($conn, "BEGIN pkg_aaa.get_aaa_root_items (:p_cube_row); END;");
+	$r = perform_db_request();
+	if (!$r) { return; }
+	echo "LIST_AAA";
+	while ($row = oci_fetch_assoc($curs)) {
+		echo "<|||>".$row["NAAM"];
+		echo "<||>".$row["NAAM"];
+	}
+	break;
+
+case 'GetAaaListAll':
+
+	$stid = oci_parse($conn, "BEGIN pkg_aaa.get_aaa_list_all (:p_cube_row); END;");
+	$r = perform_db_request();
+	if (!$r) { return; }
+	echo "LIST_AAA";
+	while ($row = oci_fetch_assoc($curs)) {
+		echo "<|||>".$row["NAAM"];
+		echo "<||>".$row["NAAM"];
+	}
+	break;
+
+case 'GetAaaListRecursive':
+
+	list($p_cube_up_or_down, $p_cube_x_level, $p_naam) = explode("<|>", $import[1]);
+
+	$stid = oci_parse($conn, "BEGIN pkg_aaa.get_aaa_list_recursive (
+		:p_cube_row,
+		:p_cube_up_or_down,
+		:p_cube_x_level,
+		:p_naam);
+	END;");
+	oci_bind_by_name($stid,":p_cube_up_or_down",$p_cube_up_or_down);
+	oci_bind_by_name($stid,":p_cube_x_level",$p_cube_x_level);
+	oci_bind_by_name($stid,":p_naam",$p_naam);
+
+	$r = perform_db_request();
+	if (!$r) { return; }
+	echo "LIST_AAA";
+	while ($row = oci_fetch_assoc($curs)) {
+		echo "<|||>".$row["NAAM"];
+		echo "<||>".$row["NAAM"];
+	}
+	break;
+
+case 'GetAaa':
+
+	list($p_naam) = explode("<|>", $import[1]);
+
+	$stid = oci_parse($conn, "BEGIN pkg_aaa.get_aaa (
+		:p_cube_row,
+		:p_naam);
+	END;");
+	oci_bind_by_name($stid,":p_naam",$p_naam);
+
+	$r = perform_db_request();
+	if (!$r) { return; }
+	echo "SELECT_AAA";
+	if ($row = oci_fetch_assoc($curs)) {
+		echo "<|||>".$row["FK_AAA_NAAM"]."<|>".$row["OMSCHRIJVING"]."<|>".$row["XK_AAA_NAAM"];
+	}
+	break;
+
+case 'GetAaaItems':
+
+	list($p_naam) = explode("<|>", $import[1]);
+
+	$stid = oci_parse($conn, "BEGIN pkg_aaa.get_aaa_aaa_items (
+		:p_cube_row,
+		:p_naam);
+	END;");
+	oci_bind_by_name($stid,":p_naam",$p_naam);
+
+	$r = perform_db_request();
+	if (!$r) { return; }
+	$first = True;
+	while ($row = oci_fetch_assoc($curs)) {
+		if ($first) { $first = False; echo "LIST_AAA";}
+		echo "<|||>".$row["NAAM"];
+		echo "<||>".$row["NAAM"];
+	}
+	break;
+
+case 'ChangeParentAaa':
+
+	list($p_cube_flag_root, $p_naam, $x_naam) = explode("<|>", $import[1]);
+
+	$stid = oci_parse($conn, "BEGIN pkg_aaa.change_parent_aaa (
+		:p_cube_flag_root,
+		:p_naam,
+		:x_naam);
+	END;");
+	oci_bind_by_name($stid,":p_cube_flag_root",$p_cube_flag_root);
+	oci_bind_by_name($stid,":p_naam",$p_naam);
+	oci_bind_by_name($stid,":x_naam",$x_naam);
+
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		return;
+	}
+	echo "CHANGE_PARENT_AAA";
+	break;
+
+case 'CreateAaa':
+
+	list($p_fk_aaa_naam, $p_naam, $p_omschrijving, $p_xk_aaa_naam) = explode("<|>", $import[1]);
+
+	$stid = oci_parse($conn, "BEGIN pkg_aaa.insert_aaa (
+		:p_fk_aaa_naam,
+		:p_naam,
+		:p_omschrijving,
+		:p_xk_aaa_naam);
+	END;");
+	oci_bind_by_name($stid,":p_fk_aaa_naam",$p_fk_aaa_naam);
+	oci_bind_by_name($stid,":p_naam",$p_naam);
+	oci_bind_by_name($stid,":p_omschrijving",$p_omschrijving);
+	oci_bind_by_name($stid,":p_xk_aaa_naam",$p_xk_aaa_naam);
+
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		return;
+	}
+	echo "CREATE_AAA";
+	break;
+
+case 'UpdateAaa':
+
+	list($p_fk_aaa_naam, $p_naam, $p_omschrijving, $p_xk_aaa_naam) = explode("<|>", $import[1]);
+
+	$stid = oci_parse($conn, "BEGIN pkg_aaa.update_aaa (
+		:p_fk_aaa_naam,
+		:p_naam,
+		:p_omschrijving,
+		:p_xk_aaa_naam);
+	END;");
+	oci_bind_by_name($stid,":p_fk_aaa_naam",$p_fk_aaa_naam);
+	oci_bind_by_name($stid,":p_naam",$p_naam);
+	oci_bind_by_name($stid,":p_omschrijving",$p_omschrijving);
+	oci_bind_by_name($stid,":p_xk_aaa_naam",$p_xk_aaa_naam);
+
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		return;
+	}
+	echo "UPDATE_AAA";
+	break;
+
+case 'DeleteAaa':
+
+	list($p_naam) = explode("<|>", $import[1]);
+
+	$stid = oci_parse($conn, "BEGIN pkg_aaa.delete_aaa (
+		:p_naam);
+	END;");
+	oci_bind_by_name($stid,":p_naam",$p_naam);
+
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		return;
+	}
+	echo "DELETE_AAA";
+	break;
+
+case 'GetDirBbbItems':
+
+	$stid = oci_parse($conn, "BEGIN pkg_bbb.get_bbb_root_items (:p_cube_row); END;");
+	$r = perform_db_request();
+	if (!$r) { return; }
+	echo "LIST_BBB";
+	while ($row = oci_fetch_assoc($curs)) {
+		echo "<|||>".$row["NAAM"];
+		echo "<||>".$row["NAAM"];
+	}
+	break;
+
+case 'GetBbbList':
+
+	$stid = oci_parse($conn, "BEGIN pkg_bbb.get_bbb_list (:p_cube_row); END;");
+	$r = perform_db_request();
+	if (!$r) { return; }
+	echo "LIST_BBB";
+	while ($row = oci_fetch_assoc($curs)) {
+		echo "<|||>".$row["NAAM"];
+		echo "<||>".$row["NAAM"];
+	}
+	break;
+
+case 'GetBbb':
+
+	list($p_naam) = explode("<|>", $import[1]);
+
+	$stid = oci_parse($conn, "BEGIN pkg_bbb.get_bbb (
+		:p_cube_row,
+		:p_naam);
+	END;");
+	oci_bind_by_name($stid,":p_naam",$p_naam);
+
+	$r = perform_db_request();
+	if (!$r) { return; }
+	echo "SELECT_BBB";
+	if ($row = oci_fetch_assoc($curs)) {
+		echo "<|||>".$row["OMSCHRIJVING"]."<|>".$row["XK_AAA_NAAM"]."<|>".$row["XK_BBB_NAAM_1"];
+	}
+	break;
+
+case 'CreateBbb':
+
+	list($p_naam, $p_omschrijving, $p_xk_aaa_naam, $p_xk_bbb_naam_1) = explode("<|>", $import[1]);
+
+	$stid = oci_parse($conn, "BEGIN pkg_bbb.insert_bbb (
+		:p_naam,
+		:p_omschrijving,
+		:p_xk_aaa_naam,
+		:p_xk_bbb_naam_1);
+	END;");
+	oci_bind_by_name($stid,":p_naam",$p_naam);
+	oci_bind_by_name($stid,":p_omschrijving",$p_omschrijving);
+	oci_bind_by_name($stid,":p_xk_aaa_naam",$p_xk_aaa_naam);
+	oci_bind_by_name($stid,":p_xk_bbb_naam_1",$p_xk_bbb_naam_1);
+
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		return;
+	}
+	echo "CREATE_BBB";
+	break;
+
+case 'UpdateBbb':
+
+	list($p_naam, $p_omschrijving, $p_xk_aaa_naam, $p_xk_bbb_naam_1) = explode("<|>", $import[1]);
+
+	$stid = oci_parse($conn, "BEGIN pkg_bbb.update_bbb (
+		:p_naam,
+		:p_omschrijving,
+		:p_xk_aaa_naam,
+		:p_xk_bbb_naam_1);
+	END;");
+	oci_bind_by_name($stid,":p_naam",$p_naam);
+	oci_bind_by_name($stid,":p_omschrijving",$p_omschrijving);
+	oci_bind_by_name($stid,":p_xk_aaa_naam",$p_xk_aaa_naam);
+	oci_bind_by_name($stid,":p_xk_bbb_naam_1",$p_xk_bbb_naam_1);
+
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		return;
+	}
+	echo "UPDATE_BBB";
+	break;
+
+case 'DeleteBbb':
+
+	list($p_naam) = explode("<|>", $import[1]);
+
+	$stid = oci_parse($conn, "BEGIN pkg_bbb.delete_bbb (
+		:p_naam);
+	END;");
+	oci_bind_by_name($stid,":p_naam",$p_naam);
+
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		return;
+	}
+	echo "DELETE_BBB";
+	break;
+
 default:
 	echo "ERROR<|||>";
 	echo file_get_contents('php://input');
