@@ -92,8 +92,6 @@ function InitBody() {
 		document.getElementById("ButtonCreate").disabled=true;
 		performTrans('GetBbb'+'<|||>'+document._argument);
 		document.getElementById("InputNaam").readOnly=true;
-		document.getElementById("InputXkAaaNaam").readOnly=true;
-		document.getElementById("RefSelect001").disabled=true;
 		break;
 	case "N":
 		document.getElementById("ButtonUpdate").disabled=true;

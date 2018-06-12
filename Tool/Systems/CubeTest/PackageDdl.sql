@@ -45,12 +45,17 @@ CREATE OR REPLACE PACKAGE pkg_aaa IS
 			p_cube_row IN OUT c_cube_row);
 	PROCEDURE get_aaa_list_all (
 			p_cube_row IN OUT c_cube_row);
+	PROCEDURE get_aaa_list_encapsulated (
+			p_cube_row IN OUT c_cube_row);
 	PROCEDURE get_aaa_list_recursive (
 			p_cube_row IN OUT c_cube_row,
 			p_cube_up_or_down IN VARCHAR2,
 			p_cube_x_level IN NUMBER,
 			p_naam IN VARCHAR2);
 	PROCEDURE get_aaa (
+			p_cube_row IN OUT c_cube_row,
+			p_naam IN VARCHAR2);
+	PROCEDURE get_aaa_aad_items (
 			p_cube_row IN OUT c_cube_row,
 			p_naam IN VARCHAR2);
 	PROCEDURE get_aaa_aaa_items (
@@ -71,6 +76,21 @@ CREATE OR REPLACE PACKAGE pkg_aaa IS
 			p_omschrijving IN VARCHAR2,
 			p_xk_aaa_naam IN VARCHAR2);
 	PROCEDURE delete_aaa (
+			p_naam IN VARCHAR2);
+	PROCEDURE get_aad (
+			p_cube_row IN OUT c_cube_row,
+			p_fk_aaa_naam IN VARCHAR2,
+			p_naam IN VARCHAR2);
+	PROCEDURE insert_aad (
+			p_fk_aaa_naam IN VARCHAR2,
+			p_naam IN VARCHAR2,
+			p_xk_aaa_naam IN VARCHAR2);
+	PROCEDURE update_aad (
+			p_fk_aaa_naam IN VARCHAR2,
+			p_naam IN VARCHAR2,
+			p_xk_aaa_naam IN VARCHAR2);
+	PROCEDURE delete_aad (
+			p_fk_aaa_naam IN VARCHAR2,
 			p_naam IN VARCHAR2);
 END;
 /
@@ -102,6 +122,17 @@ CREATE OR REPLACE PACKAGE BODY pkg_aaa IS
 			ORDER BY naam;
 	END;
 
+	PROCEDURE get_aaa_list_encapsulated (
+			p_cube_row IN OUT c_cube_row) IS
+	BEGIN
+		OPEN p_cube_row FOR
+			SELECT
+			  naam
+			FROM v_aaa
+			WHERE fk_aaa_naam IS NULL
+			ORDER BY naam;
+	END;
+
 	PROCEDURE get_aaa_list_recursive (
 			p_cube_row IN OUT c_cube_row,
 			p_cube_up_or_down IN VARCHAR2,
@@ -112,10 +143,12 @@ CREATE OR REPLACE PACKAGE BODY pkg_aaa IS
 			WITH anchor (
 				naam,
 				fk_aaa_naam,
+				xk_aaa_naam,
 				cube_x_level) AS (
 				SELECT
 					naam,
 					fk_aaa_naam,
+					xk_aaa_naam,
 					0 
 				FROM v_aaa
 				WHERE naam = p_naam
@@ -123,12 +156,15 @@ CREATE OR REPLACE PACKAGE BODY pkg_aaa IS
 				SELECT
 					recursive.naam,
 					recursive.fk_aaa_naam,
+					recursive.xk_aaa_naam,
 					anchor.cube_x_level+1
 				FROM v_aaa recursive, anchor
 				WHERE 	    ( 	    ( p_cube_up_or_down = 'D'
-						  AND anchor.naam = recursive.fk_aaa_naam )
+						  AND 	    ( anchor.naam = recursive.fk_aaa_naam
+							   OR anchor.naam = recursive.xk_aaa_naam ) )
 					   OR 	    ( p_cube_up_or_down = 'U'
-						  AND anchor.fk_aaa_naam = recursive.naam ) )
+						  AND 	    ( anchor.fk_aaa_naam = recursive.naam
+							   OR anchor.xk_aaa_naam = recursive.naam ) ) )
 				  AND anchor.cube_x_level < p_cube_x_level
 				)
 			SELECT DISTINCT naam
@@ -148,6 +184,19 @@ CREATE OR REPLACE PACKAGE BODY pkg_aaa IS
 			  xk_aaa_naam
 			FROM v_aaa
 			WHERE naam = p_naam;
+	END;
+
+	PROCEDURE get_aaa_aad_items (
+			p_cube_row IN OUT c_cube_row,
+			p_naam IN VARCHAR2) IS
+	BEGIN
+		OPEN p_cube_row FOR
+			SELECT
+			  fk_aaa_naam,
+			  naam
+			FROM v_aaa_deel
+			WHERE fk_aaa_naam = p_naam
+			ORDER BY fk_aaa_naam, naam;
 	END;
 
 	PROCEDURE get_aaa_aaa_items (
@@ -248,6 +297,59 @@ CREATE OR REPLACE PACKAGE BODY pkg_aaa IS
 	BEGIN
 		DELETE v_aaa
 		WHERE naam = p_naam;
+	END;
+
+	PROCEDURE get_aad (
+			p_cube_row IN OUT c_cube_row,
+			p_fk_aaa_naam IN VARCHAR2,
+			p_naam IN VARCHAR2) IS
+	BEGIN
+		OPEN p_cube_row FOR
+			SELECT
+			  xk_aaa_naam
+			FROM v_aaa_deel
+			WHERE fk_aaa_naam = p_fk_aaa_naam
+			  AND naam = p_naam;
+	END;
+
+	PROCEDURE insert_aad (
+			p_fk_aaa_naam IN VARCHAR2,
+			p_naam IN VARCHAR2,
+			p_xk_aaa_naam IN VARCHAR2) IS
+	BEGIN
+		INSERT INTO v_aaa_deel (
+			cube_id,
+			fk_aaa_naam,
+			naam,
+			xk_aaa_naam)
+		VALUES (
+			NULL,
+			p_fk_aaa_naam,
+			p_naam,
+			p_xk_aaa_naam);
+	EXCEPTION
+		WHEN DUP_VAL_ON_INDEX THEN
+			RAISE_APPLICATION_ERROR (-20001, 'Type aaa_deel already exists');
+	END;
+
+	PROCEDURE update_aad (
+			p_fk_aaa_naam IN VARCHAR2,
+			p_naam IN VARCHAR2,
+			p_xk_aaa_naam IN VARCHAR2) IS
+	BEGIN
+		UPDATE v_aaa_deel SET
+			xk_aaa_naam = p_xk_aaa_naam
+		WHERE fk_aaa_naam = p_fk_aaa_naam
+		  AND naam = p_naam;
+	END;
+
+	PROCEDURE delete_aad (
+			p_fk_aaa_naam IN VARCHAR2,
+			p_naam IN VARCHAR2) IS
+	BEGIN
+		DELETE v_aaa_deel
+		WHERE fk_aaa_naam = p_fk_aaa_naam
+		  AND naam = p_naam;
 	END;
 END;
 /

@@ -12,29 +12,27 @@ g_xmlhttp.onreadystatechange = function() {
 	if(g_xmlhttp.readyState == 4) {
 		var l_argument = g_xmlhttp.responseText.split("<|||>");
 		switch (l_argument[0]) {
-		case "SELECT_AAA":
+		case "SELECT_AAD":
 			var l_values = l_argument[1].split("<|>");
-			document.getElementById("InputFkAaaNaam").value=l_values[0];
-			document.getElementById("InputOmschrijving").value=l_values[1];
-			document.getElementById("InputXkAaaNaam").value=l_values[2];
+			document.getElementById("InputXkAaaNaam").value=l_values[0];
 			break;
-		case "CREATE_AAA":
+		case "CREATE_AAD":
 			document.getElementById("InputFkAaaNaam").readOnly=true;
 			document.getElementById("InputNaam").readOnly=true;
 			document.getElementById("ButtonCreate").disabled=true;
 			document.getElementById("ButtonUpdate").disabled=false;
 			document.getElementById("ButtonDelete").disabled=false;
 			l_objNode = parent.TREE.document.getElementById(document._nodeId);
-			document._nodeId = 'TYP_AAA<||>'+document.getElementById("InputNaam").value;
+			document._nodeId = 'TYP_AAD<||>'+document.getElementById("InputFkAaaNaam").value+'<|>'+document.getElementById("InputNaam").value;
 			if (l_objNode != null) {
 				if (l_objNode.firstChild._state == 'O') {
 					var l_position = 'L';
 					l_objNodePos = null;
 					parent.TREE.AddTreeviewNode(
 						l_objNode,
-						'TYP_AAA',
+						'TYP_AAD',
 						document._nodeId,
-						'icons/produkt.bmp', 
+						'icons/attrib.bmp', 
 						document.getElementById("InputNaam").value.toLowerCase(),
 						'N',
 						l_position,
@@ -42,9 +40,9 @@ g_xmlhttp.onreadystatechange = function() {
 				}
 			}
 			break;
-		case "UPDATE_AAA":
+		case "UPDATE_AAD":
 			break;
-		case "DELETE_AAA":
+		case "DELETE_AAD":
 			document.getElementById("ButtonUpdate").disabled=true;
 			document.getElementById("ButtonDelete").disabled=true;
 			l_objNode = parent.TREE.document.getElementById(document._nodeId);
@@ -86,20 +84,14 @@ function InitBody() {
 	}
 	switch (l_argument[1]) {
 	case "D":
-		document.getElementById("InputNaam").value=values[0];
+		document.getElementById("InputFkAaaNaam").value=values[0];
+		document.getElementById("InputNaam").value=values[1];
 		document.getElementById("ButtonCreate").disabled=true;
-		performTrans('GetAaa'+'<|||>'+document._argument);
+		performTrans('GetAad'+'<|||>'+document._argument);
 		document.getElementById("InputFkAaaNaam").readOnly=true;
 		document.getElementById("InputNaam").readOnly=true;
-		document.getElementById("InputXkAaaNaam").readOnly=true;
-		document.getElementById("RefSelect001").disabled=true;
 		break;
 	case "N":
-		document.getElementById("ButtonUpdate").disabled=true;
-		document.getElementById("ButtonDelete").disabled=true;
-		document.getElementById("InputFkAaaNaam").readOnly=true;
-		break;  
-	case "R":
 		document.getElementById("InputFkAaaNaam").value=values[0];
 		document.getElementById("ButtonUpdate").disabled=true;
 		document.getElementById("ButtonDelete").disabled=true;
@@ -108,31 +100,29 @@ function InitBody() {
 	default:
 		alert ('Error InitBody: '+l_argument[1]);
 	}
-	document.getElementById("InputCubeLevel").value='1';
 }
 
-function CreateAaa() {
+function CreateAad() {
 	var l_parameters = 
 		document.getElementById("InputFkAaaNaam").value+'<|>'+
 		document.getElementById("InputNaam").value+'<|>'+
-		document.getElementById("InputOmschrijving").value+'<|>'+
 		document.getElementById("InputXkAaaNaam").value;
-	performTrans('CreateAaa<|||>'+l_parameters);
+	performTrans('CreateAad<|||>'+l_parameters);
 }
 
-function UpdateAaa() {
+function UpdateAad() {
 	var l_parameters = 
 		document.getElementById("InputFkAaaNaam").value+'<|>'+
 		document.getElementById("InputNaam").value+'<|>'+
-		document.getElementById("InputOmschrijving").value+'<|>'+
 		document.getElementById("InputXkAaaNaam").value;
-	performTrans('UpdateAaa<|||>'+l_parameters);
+	performTrans('UpdateAad<|||>'+l_parameters);
 }
 
-function DeleteAaa() {
+function DeleteAad() {
 	var l_parameters = 
+		document.getElementById("InputFkAaaNaam").value+'<|>'+
 		document.getElementById("InputNaam").value;
-	performTrans('DeleteAaa<|||>'+l_parameters);
+	performTrans('DeleteAad<|||>'+l_parameters);
 }
 
 function OpenListBox(p_rows,p_icon,p_header,p_optional) {
@@ -230,8 +220,10 @@ function UpdateForeignKey(p_obj) {
 function StartSelect001(p_event) {
 	document.body._SelectLeft = p_event.clientX;
 	document.body._SelectTop = p_event.clientY;
-	document.body._ListBoxCode = 'Ref001';;
-	performTrans('GetAaaListEncapsulated<|||>');
+	document.body._ListBoxCode = 'Ref001';
+	var l_parameters = 'U<|>1<|>'+
+		document.getElementById("InputFkAaaNaam").value;
+	performTrans('GetAaaListRecursive<|||>'+l_parameters);
 }
 
 function OpenDescBox(p_icon,p_name,p_type,p_attribute_type,p_sequence) {
@@ -338,16 +330,14 @@ function drop(p_event) {
 -->
 </script>
 </head><body oncontextmenu="return false;" onload="InitBody()" ondrop="drop(event)" ondragover="allowDrop(event)">
-<div><img src="icons/produkt_large.bmp" /><span> AAA</span></div>
+<div><img src="icons/attrib_large.bmp" /><span> AAA_DEEL</span></div>
 <hr/>
 <table>
-<tr><td>Aaa.Naam</td><td><div style="max-width:40em;">
+<tr><td><u>Aaa.Naam</u></td><td><div style="max-width:40em;">
 <input id="InputFkAaaNaam" type="text" maxlength="40" style="width:100%;"></input></div></td></tr>
 <tr><td><u>Naam</u></td><td><div style="max-width:40em;">
 <input id="InputNaam" type="text" maxlength="40" style="width:100%;"></input></div></td></tr>
-<tr><td>Omschrijving</td><td><div style="max-width:120em;">
-<input id="InputOmschrijving" type="text" maxlength="120" style="width:100%;"></input></div></td></tr>
-<tr><td height=6></td></tr><tr><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/produkt.bmp"/> Aaa (Recursive)</legend>
+<tr><td height=6></td></tr><tr><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/produkt.bmp"/> Aaa (PastBij)</legend>
 <table style="width:100%;">
 <tr><td>Aaa.Naam</td><td style="width:100%;"><div style="max-width:40em;">
 <input id="InputXkAaaNaam" type="text" maxlength="40" style="width:100%;" readonly></input></div></td>
@@ -355,11 +345,10 @@ function drop(p_event) {
 </table></fieldset></td></tr>
 <tr><td><br></td><td style="width:100%;"></td></tr>
 <tr><td/><td>
-<button id="ButtonCreate" type="button" onclick="CreateAaa()">Create</button>&nbsp;&nbsp;&nbsp;
-<button id="ButtonUpdate" type="button" onclick="UpdateAaa()">Update</button>&nbsp;&nbsp;&nbsp;
-<button id="ButtonDelete" type="button" onclick="DeleteAaa()">Delete</button></td></tr>
+<button id="ButtonCreate" type="button" onclick="CreateAad()">Create</button>&nbsp;&nbsp;&nbsp;
+<button id="ButtonUpdate" type="button" onclick="UpdateAad()">Update</button>&nbsp;&nbsp;&nbsp;
+<button id="ButtonDelete" type="button" onclick="DeleteAad()">Delete</button></td></tr>
 </table>
 <input id="InputCubeId" type="hidden"></input>
-<input id="InputCubeLevel" type="hidden"></input>
 </body>
 </html>

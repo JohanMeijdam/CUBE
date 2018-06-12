@@ -4,13 +4,21 @@ DROP SEQUENCE aaa_seq
 /
 CREATE SEQUENCE aaa_seq START WITH 100000
 /
+DROP SEQUENCE aad_seq
+/
+CREATE SEQUENCE aad_seq START WITH 100000
+/
 DROP SEQUENCE bbb_seq
 /
 CREATE SEQUENCE bbb_seq START WITH 100000
 /
 ALTER TABLE t_aaa DROP CONSTRAINT aaa_aaa_fk
 /
+ALTER TABLE t_aaa_deel DROP CONSTRAINT aad_aaa_fk
+/
 DROP TABLE t_aaa
+/
+DROP TABLE t_aaa_deel
 /
 DROP TABLE t_bbb
 /
@@ -24,6 +32,18 @@ CREATE TABLE t_aaa (
 	CONSTRAINT aaa_pk
 		PRIMARY KEY (naam),
 	CONSTRAINT aaa_aaa_fk
+		FOREIGN KEY (fk_aaa_naam)
+		REFERENCES t_aaa (naam)
+		ON DELETE CASCADE )
+/
+CREATE TABLE t_aaa_deel (
+	cube_id VARCHAR2(16),
+	fk_aaa_naam VARCHAR2(40),
+	naam VARCHAR2(40),
+	xk_aaa_naam VARCHAR2(40),
+	CONSTRAINT aad_pk
+		PRIMARY KEY (fk_aaa_naam, naam),
+	CONSTRAINT aad_aaa_fk
 		FOREIGN KEY (fk_aaa_naam)
 		REFERENCES t_aaa (naam)
 		ON DELETE CASCADE )

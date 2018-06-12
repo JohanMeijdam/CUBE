@@ -10,6 +10,14 @@ CREATE OR REPLACE VIEW v_aaa AS
 		xk_aaa_naam
 	FROM t_aaa
 /
+CREATE OR REPLACE VIEW v_aaa_deel AS 
+	SELECT
+		cube_id,
+		fk_aaa_naam,
+		naam,
+		xk_aaa_naam
+	FROM t_aaa_deel
+/
 
 CREATE OR REPLACE PACKAGE pkg_aaa_trg IS
 	PROCEDURE insert_aaa (p_aaa IN OUT NOCOPY v_aaa%ROWTYPE);
@@ -17,6 +25,9 @@ CREATE OR REPLACE PACKAGE pkg_aaa_trg IS
 	PROCEDURE delete_aaa (p_cube_rowid IN UROWID, p_aaa IN OUT NOCOPY v_aaa%ROWTYPE);
 	PROCEDURE denorm_aaa_aaa (p_aaa IN OUT NOCOPY v_aaa%ROWTYPE, p_aaa_in IN v_aaa%ROWTYPE);
 	PROCEDURE get_denorm_aaa_aaa (p_aaa IN OUT NOCOPY v_aaa%ROWTYPE);
+	PROCEDURE insert_aad (p_aad IN OUT NOCOPY v_aaa_deel%ROWTYPE);
+	PROCEDURE update_aad (p_cube_rowid IN UROWID, p_aad_old IN OUT NOCOPY v_aaa_deel%ROWTYPE, p_aad_new IN OUT NOCOPY v_aaa_deel%ROWTYPE);
+	PROCEDURE delete_aad (p_cube_rowid IN UROWID, p_aad IN OUT NOCOPY v_aaa_deel%ROWTYPE);
 END;
 /
 SHOW ERRORS;
@@ -58,9 +69,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_aaa_trg IS
 		END IF;
 		UPDATE t_aaa SET 
 			cube_level = p_aaa_new.cube_level,
-			fk_aaa_naam = p_aaa_new.fk_aaa_naam,
-			omschrijving = p_aaa_new.omschrijving,
-			xk_aaa_naam = p_aaa_new.xk_aaa_naam
+			omschrijving = p_aaa_new.omschrijving
 		WHERE rowid = p_cube_rowid;
 		IF NVL(p_aaa_old.cube_level,0) <> NVL(p_aaa_new.cube_level,0) THEN
 			OPEN c_aaa;
@@ -113,6 +122,34 @@ CREATE OR REPLACE PACKAGE BODY pkg_aaa_trg IS
 		END IF;
 		denorm_aaa_aaa (p_aaa, r_aaa);
 	END;
+
+	PROCEDURE insert_aad (p_aad IN OUT NOCOPY v_aaa_deel%ROWTYPE) IS
+	BEGIN
+		p_aad.cube_id := 'AAD-' || TO_CHAR(aad_seq.NEXTVAL,'FM000000000000');
+		INSERT INTO t_aaa_deel (
+			cube_id,
+			fk_aaa_naam,
+			naam,
+			xk_aaa_naam)
+		VALUES (
+			p_aad.cube_id,
+			p_aad.fk_aaa_naam,
+			p_aad.naam,
+			p_aad.xk_aaa_naam);
+	END;
+
+	PROCEDURE update_aad (p_cube_rowid UROWID, p_aad_old IN OUT NOCOPY v_aaa_deel%ROWTYPE, p_aad_new IN OUT NOCOPY v_aaa_deel%ROWTYPE) IS
+	BEGIN
+		UPDATE t_aaa_deel SET 
+			xk_aaa_naam = p_aad_new.xk_aaa_naam
+		WHERE rowid = p_cube_rowid;
+	END;
+
+	PROCEDURE delete_aad (p_cube_rowid UROWID, p_aad IN OUT NOCOPY v_aaa_deel%ROWTYPE) IS
+	BEGIN
+		DELETE t_aaa_deel 
+		WHERE rowid = p_cube_rowid;
+	END;
 END;
 /
 SHOW ERRORS;
@@ -150,6 +187,42 @@ BEGIN
 		pkg_aaa_trg.update_aaa (l_cube_rowid, r_aaa_old, r_aaa_new);
 	ELSIF DELETING THEN
 		pkg_aaa_trg.delete_aaa (l_cube_rowid, r_aaa_old);
+	END IF;
+END;
+/
+SHOW ERRORS
+
+CREATE OR REPLACE TRIGGER trg_aad
+INSTEAD OF INSERT OR DELETE OR UPDATE ON v_aaa_deel
+FOR EACH ROW
+DECLARE
+	l_cube_rowid UROWID;
+	r_aad_new v_aaa_deel%ROWTYPE;
+	r_aad_old v_aaa_deel%ROWTYPE;
+BEGIN
+	IF INSERTING OR UPDATING THEN
+		r_aad_new.fk_aaa_naam := :NEW.fk_aaa_naam;
+		r_aad_new.naam := :NEW.naam;
+		r_aad_new.xk_aaa_naam := :NEW.xk_aaa_naam;
+	END IF;
+	IF UPDATING THEN
+		r_aad_new.cube_id := :OLD.cube_id;
+	END IF;
+	IF UPDATING OR DELETING THEN
+		SELECT rowid INTO l_cube_rowid FROM t_aaa_deel
+		WHERE fk_aaa_naam = :OLD.fk_aaa_naam
+		  AND naam = :OLD.naam;
+		r_aad_old.fk_aaa_naam := :OLD.fk_aaa_naam;
+		r_aad_old.naam := :OLD.naam;
+		r_aad_old.xk_aaa_naam := :OLD.xk_aaa_naam;
+	END IF;
+
+	IF INSERTING THEN 
+		pkg_aaa_trg.insert_aad (r_aad_new);
+	ELSIF UPDATING THEN
+		pkg_aaa_trg.update_aad (l_cube_rowid, r_aad_old, r_aad_new);
+	ELSIF DELETING THEN
+		pkg_aaa_trg.delete_aad (l_cube_rowid, r_aad_old);
 	END IF;
 END;
 /
@@ -196,6 +269,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bbb_trg IS
 	BEGIN
 		UPDATE t_bbb SET 
 			omschrijving = p_bbb_new.omschrijving,
+			xk_aaa_naam = p_bbb_new.xk_aaa_naam,
 			xk_bbb_naam_1 = p_bbb_new.xk_bbb_naam_1
 		WHERE rowid = p_cube_rowid;
 	END;

@@ -31,6 +31,18 @@ case 'GetAaaListAll':
 	}
 	break;
 
+case 'GetAaaListEncapsulated':
+
+	$stid = oci_parse($conn, "BEGIN pkg_aaa.get_aaa_list_encapsulated (:p_cube_row); END;");
+	$r = perform_db_request();
+	if (!$r) { return; }
+	echo "LIST_AAA";
+	while ($row = oci_fetch_assoc($curs)) {
+		echo "<|||>".$row["NAAM"];
+		echo "<||>".$row["NAAM"];
+	}
+	break;
+
 case 'GetAaaListRecursive':
 
 	list($p_cube_up_or_down, $p_cube_x_level, $p_naam) = explode("<|>", $import[1]);
@@ -75,6 +87,22 @@ case 'GetAaa':
 case 'GetAaaItems':
 
 	list($p_naam) = explode("<|>", $import[1]);
+
+	$stid = oci_parse($conn, "BEGIN pkg_aaa.get_aaa_aad_items (
+		:p_cube_row,
+		:p_naam);
+	END;");
+	oci_bind_by_name($stid,":p_naam",$p_naam);
+
+	$r = perform_db_request();
+	if (!$r) { return; }
+	$first = True;
+	while ($row = oci_fetch_assoc($curs)) {
+		if ($first) { $first = False; echo "LIST_AAD";}
+		echo "<|||>".$row["FK_AAA_NAAM"]."<|>".$row["NAAM"];
+		echo "<||>".$row["NAAM"];
+	}
+	echo "<||||>";
 
 	$stid = oci_parse($conn, "BEGIN pkg_aaa.get_aaa_aaa_items (
 		:p_cube_row,
@@ -174,6 +202,87 @@ case 'DeleteAaa':
 		return;
 	}
 	echo "DELETE_AAA";
+	break;
+
+case 'GetAad':
+
+	list($p_fk_aaa_naam, $p_naam) = explode("<|>", $import[1]);
+
+	$stid = oci_parse($conn, "BEGIN pkg_aaa.get_aad (
+		:p_cube_row,
+		:p_fk_aaa_naam,
+		:p_naam);
+	END;");
+	oci_bind_by_name($stid,":p_fk_aaa_naam",$p_fk_aaa_naam);
+	oci_bind_by_name($stid,":p_naam",$p_naam);
+
+	$r = perform_db_request();
+	if (!$r) { return; }
+	echo "SELECT_AAD";
+	if ($row = oci_fetch_assoc($curs)) {
+		echo "<|||>".$row["XK_AAA_NAAM"];
+	}
+	break;
+
+case 'CreateAad':
+
+	list($p_fk_aaa_naam, $p_naam, $p_xk_aaa_naam) = explode("<|>", $import[1]);
+
+	$stid = oci_parse($conn, "BEGIN pkg_aaa.insert_aad (
+		:p_fk_aaa_naam,
+		:p_naam,
+		:p_xk_aaa_naam);
+	END;");
+	oci_bind_by_name($stid,":p_fk_aaa_naam",$p_fk_aaa_naam);
+	oci_bind_by_name($stid,":p_naam",$p_naam);
+	oci_bind_by_name($stid,":p_xk_aaa_naam",$p_xk_aaa_naam);
+
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		return;
+	}
+	echo "CREATE_AAD";
+	break;
+
+case 'UpdateAad':
+
+	list($p_fk_aaa_naam, $p_naam, $p_xk_aaa_naam) = explode("<|>", $import[1]);
+
+	$stid = oci_parse($conn, "BEGIN pkg_aaa.update_aad (
+		:p_fk_aaa_naam,
+		:p_naam,
+		:p_xk_aaa_naam);
+	END;");
+	oci_bind_by_name($stid,":p_fk_aaa_naam",$p_fk_aaa_naam);
+	oci_bind_by_name($stid,":p_naam",$p_naam);
+	oci_bind_by_name($stid,":p_xk_aaa_naam",$p_xk_aaa_naam);
+
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		return;
+	}
+	echo "UPDATE_AAD";
+	break;
+
+case 'DeleteAad':
+
+	list($p_fk_aaa_naam, $p_naam) = explode("<|>", $import[1]);
+
+	$stid = oci_parse($conn, "BEGIN pkg_aaa.delete_aad (
+		:p_fk_aaa_naam,
+		:p_naam);
+	END;");
+	oci_bind_by_name($stid,":p_fk_aaa_naam",$p_fk_aaa_naam);
+	oci_bind_by_name($stid,":p_naam",$p_naam);
+
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		return;
+	}
+	echo "DELETE_AAD";
 	break;
 
 case 'GetDirBbbItems':

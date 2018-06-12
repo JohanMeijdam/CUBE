@@ -17,6 +17,19 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
+	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBETEST' AND sequence_name = 'AAD_SEQ';
+	IF l_count = 0 THEN
+
+		EXECUTE IMMEDIATE 
+		'CREATE SEQUENCE aad_seq START WITH 100000';
+		DBMS_OUTPUT.PUT_LINE('Sequence AAD_SEQ created');
+
+	END IF;
+END;
+/
+DECLARE
+	l_count NUMBER(4);
+BEGIN
 	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBETEST' AND sequence_name = 'BBB_SEQ';
 	IF l_count = 0 THEN
 
@@ -104,6 +117,64 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
+	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = 'CUBETEST' AND table_name = 'T_AAA_DEEL';
+	IF l_count = 0 THEN
+		EXECUTE IMMEDIATE
+		'CREATE TABLE t_aaa_deel (
+			cube_id VARCHAR2(16),
+			fk_aaa_naam VARCHAR2(40),
+			naam VARCHAR2(40),
+			xk_aaa_naam VARCHAR2(40))';
+		DBMS_OUTPUT.PUT_LINE('Table T_AAA_DEEL created');
+	ELSE
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_AAA_DEEL' AND column_name = 'CUBE_ID';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_aaa_deel ADD cube_id VARCHAR2(16)';
+			DBMS_OUTPUT.PUT_LINE('Column T_AAA_DEEL.CUBE_ID created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_AAA_DEEL' AND column_name = 'FK_AAA_NAAM';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_aaa_deel ADD fk_aaa_naam VARCHAR2(40)';
+			DBMS_OUTPUT.PUT_LINE('Column T_AAA_DEEL.FK_AAA_NAAM created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_AAA_DEEL' AND column_name = 'NAAM';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_aaa_deel ADD naam VARCHAR2(40)';
+			DBMS_OUTPUT.PUT_LINE('Column T_AAA_DEEL.NAAM created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_AAA_DEEL' AND column_name = 'XK_AAA_NAAM';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_aaa_deel ADD xk_aaa_naam VARCHAR2(40)';
+			DBMS_OUTPUT.PUT_LINE('Column T_AAA_DEEL.XK_AAA_NAAM created');
+		END IF;
+
+		FOR r_key IN (SELECT constraint_name FROM all_constraints WHERE owner = 'CUBETEST' AND table_name = 'T_AAA_DEEL' AND constraint_type IN ('P','U','R') ORDER BY constraint_type DESC)
+		LOOP
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_aaa_deel DROP CONSTRAINT ' || r_key.constraint_name || ' CASCADE';
+			DBMS_OUTPUT.PUT_LINE('Primary Key T_AAA_DEEL.' || UPPER(r_key.constraint_name) || ' dropped');
+		END LOOP;
+
+		FOR r_index IN (SELECT index_name FROM all_indexes WHERE owner = 'CUBETEST' AND table_name = 'T_AAA_DEEL')
+		LOOP
+			EXECUTE IMMEDIATE
+			'DROP INDEX ' || r_index.index_name;
+			DBMS_OUTPUT.PUT_LINE('Index T_AAA_DEEL.' || UPPER(r_index.index_name) || ' dropped');
+		END LOOP;
+	END IF;
+END;
+/
+DECLARE
+	l_count NUMBER(4);
+BEGIN
 	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = 'CUBETEST' AND table_name = 'T_BBB';
 	IF l_count = 0 THEN
 		EXECUTE IMMEDIATE
@@ -173,6 +244,7 @@ BEGIN
 				  AND t.owner = 'CUBETEST'
 				  AND t.table_name NOT IN (
 							'T_AAA',
+							'T_AAA_DEEL',
 							'T_BBB')
 				  AND SUBSTR(t.table_name,1,7) <> 'T_CUBE_')
 	LOOP
@@ -245,6 +317,67 @@ BEGIN
 		EXECUTE IMMEDIATE
 		'ALTER TABLE t_aaa DROP COLUMN ' || r_field.column_name;
 		DBMS_OUTPUT.PUT_LINE('Field T_AAA.' || UPPER(r_field.column_name) || ' dropped');
+	END LOOP;
+END;
+/
+BEGIN
+	FOR r_field IN (SELECT column_name,
+		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
+		data_default old_default_value,
+  		DECODE(column_name,
+			'CUBE_ID','VARCHAR2(16)',
+			'FK_AAA_NAAM','VARCHAR2(40)',
+			'NAAM','VARCHAR2(40)',
+			'XK_AAA_NAAM','VARCHAR2(40)',NULL) new_domain,
+		DECODE(column_name,
+			'CUBE_ID',NULL,
+			'FK_AAA_NAAM',NULL,
+			'NAAM',NULL,
+			'XK_AAA_NAAM',NULL,NULL) new_default_value
+  		FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_AAA_DEEL')
+	LOOP
+		IF r_field.old_domain <> r_field.new_domain THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_aaa_deel RENAME COLUMN ' || r_field.column_name || ' TO old#domain#field';
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_aaa_deel ADD ' || r_field.column_name || ' ' || r_field.new_domain;
+ 			IF r_field.new_domain = 'VARCHAR2' THEN  
+				EXECUTE IMMEDIATE
+				'UPDATE t_aaa_deel SET ' || r_field.column_name || '= TRIM(old#domain#field)';
+			ELSE
+				EXECUTE IMMEDIATE
+				'UPDATE t_aaa_deel SET ' || r_field.column_name || '= old#domain#field';
+			END IF;
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_aaa_deel DROP COLUMN old#domain#field';
+			DBMS_OUTPUT.PUT_LINE('Field T_AAA_DEEL.' || UPPER(r_field.column_name) || ' converted from ' || r_field.old_domain || ' to ' || r_field.new_domain);
+		END IF;
+		IF NOT((r_field.old_default_value IS NULL AND r_field.new_default_value IS NULL) OR r_field.old_default_value = r_field.new_default_value) THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_aaa_deel MODIFY (' || r_field.column_name || ' DEFAULT ' || NVL(r_field.new_default_value,'NULL') || ')';
+			DBMS_OUTPUT.PUT_LINE('Field T_AAA_DEEL.' || UPPER(r_field.column_name) || ' default value set to ' || NVL(r_field.new_default_value,'NULL'));
+		END IF;
+	END LOOP;
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_aaa_deel ADD CONSTRAINT aad_pk
+		PRIMARY KEY (
+			fk_aaa_naam,
+			naam )';
+	DBMS_OUTPUT.PUT_LINE('Primary Key T_AAA_DEEL.AAD_PK created');
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_aaa_deel ADD CONSTRAINT aad_aaa_fk
+		FOREIGN KEY (fk_aaa_naam)
+		REFERENCES t_aaa (naam)
+		ON DELETE CASCADE';
+	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_AAA_DEEL' AND column_name NOT IN (
+							'CUBE_ID',
+							'FK_AAA_NAAM',
+							'NAAM',
+							'XK_AAA_NAAM'))
+	LOOP
+		EXECUTE IMMEDIATE
+		'ALTER TABLE t_aaa_deel DROP COLUMN ' || r_field.column_name;
+		DBMS_OUTPUT.PUT_LINE('Field T_AAA_DEEL.' || UPPER(r_field.column_name) || ' dropped');
 	END LOOP;
 END;
 /

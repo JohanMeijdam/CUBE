@@ -285,12 +285,14 @@ function UpdateForeignKey(p_obj) {
 function StartSelect<<REFERENCE:S>>(p_event) {
 	document.body._SelectLeft = p_event.clientX;
 	document.body._SelectTop = p_event.clientY;
-	document.body._ListBoxCode = 'Ref<<REFERENCE:S>>';[[LOOP,REFERENCE_TYPE]][[IF:3=Y[AND]!REFERENCE.4=ALL[AND]REFERENCE.PARENT(TYPE:0=<<REFERENCE_TYPE>>)]]
-	var l_parameters = [[IF,REFERENCE:4=ENC]][[LOOP,ATTRIBUTE:3=F[AND]CHILD(ATTRIBUTE_SOURCE:1=Y)]]
-		document.getElementById("Input<<ATTRIBUTE:C>>").value[[IF:!LAST]]+'<|>'+[[ENDIF]][[ENDLOOP,ATTRIBUTE]][[ELSIF,REFERENCE_TYPE:0=<<TYPE>>]]<<TEXT,DETAIL_RECURSIVE_PARMS>>[[LOOP,ATTRIBUTE:1=Y]]
-		document.getElementById("Input<<ATTRIBUTE:C>>").value[[IF:!LAST]]+'<|>'+[[ENDIF]][[ENDLOOP,ATTRIBUTE]][[ELSE]]<<TEXT,DETAIL_RECURSIVE_PARMS>>[[FOR,TYPE:N>N]][[LOOP,ATTRIBUTE:3=F[AND]CHILD(ATTRIBUTE_KEY_TYPE:0=<<REFERENCE_TYPE>>)]]
+	document.body._ListBoxCode = 'Ref<<REFERENCE:S>>';[[LOOP,REFERENCE_TYPE]][[IF:3=Y[AND]!8=Y[AND]!REFERENCE.4=ALL[AND]REFERENCE.PARENT(TYPE:0=<<REFERENCE_TYPE>>)]][[EVAL:($myFlag=0)]][[IF,REFERENCE:4=ENC]][[LOOP,ATTRIBUTE:3=F[AND]CHILD(ATTRIBUTE_SOURCE:1=Y)]][[IF:FIRST]]
+	var l_parameters = [[EVAL:($myFlag=1)]][[ENDIF]]
+		document.getElementById("Input<<ATTRIBUTE:C>>").value[[IF:!LAST]]+'<|>'+[[ENDIF]][[ENDLOOP,ATTRIBUTE]][[ELSIF,REFERENCE_TYPE:0=<<TYPE>>]]
+	var l_parameters = [[EVAL:($myFlag=1)]]<<TEXT,DETAIL_RECURSIVE_PARMS>>[[LOOP,ATTRIBUTE:1=Y]]
+		document.getElementById("Input<<ATTRIBUTE:C>>").value[[IF:!LAST]]+'<|>'+[[ENDIF]][[ENDLOOP,ATTRIBUTE]][[ELSE]]
+	var l_parameters = [[EVAL:($myFlag=1)]]<<TEXT,DETAIL_RECURSIVE_PARMS>>[[FOR,TYPE:N>N]][[LOOP,ATTRIBUTE:3=F[AND]CHILD(ATTRIBUTE_KEY_TYPE:0=<<REFERENCE_TYPE>>)]]
 		document.getElementById("Input<<ATTRIBUTE:C>>").value[[IF:!LAST]]+'<|>'+[[ENDIF]][[ENDLOOP,ATTRIBUTE]][[ENDFOR]][[ENDIF]];
-	performTrans('<<TEXT,DETAIL_GET_LIST_NAME>>[[IF,REFERENCE:4=ENC]]Encapsulated[[ELSE]]Recursive[[ENDIF]]<|||>'+l_parameters);[[ELSE]][[IF,REFERENCE:4=ALL[AND]CHILD(REFERENCE_SCOPE_ATTRIBUTE)]]
+	performTrans('<<TEXT,DETAIL_GET_LIST_NAME>>[[IF,REFERENCE:4=ENC]]Encapsulated[[ELSE]]Recursive[[ENDIF]]<|||>'[[IF:EVAL:$myFlag]]+l_parameters[[ENDIF]]);[[ELSE]][[IF,REFERENCE:4=ALL[AND]CHILD(REFERENCE_SCOPE_ATTRIBUTE)]]
 	var l_parameters = [[IF,REFERENCE:CHILD(REFERENCE_TYPE_WITHIN_SCOPE_OF:3=Y)]]'<<REFERENCE6>><|>'+[[ENDIF]][[FOR,REFERENCE:N>N]][[LOOP,REFERENCE_SCOPE_ATTRIBUTE]]document.getElementById("Input<<REFERENCE_SCOPE_ATTRIBUTE:C>>").value[[IF:!LAST]]+'<|>'+[[ENDIF]][[ENDLOOP,REFERENCE_SCOPE_ATTRIBUTE]][[ENDFOR[[ENDIF]]
 	performTrans('<<TEXT,DETAIL_GET_LIST_NAME>>[[IF:3=Y]]All[[ENDIF]][[IF,REFERENCE:4=ALL[AND]CHILD(REFERENCE_SCOPE_ATTRIBUTE)]]<|||>'+l_parameters[[ELSE]]'[[ENDIF]]);[[ENDIF]][[ENDLOOP,REFERENCE_TYPE]]
 }[[ENDLOOP,REFERENCE]]

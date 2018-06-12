@@ -21,6 +21,7 @@ g_xmlhttp.onreadystatechange = function(){
 			case '': break;
 			case 'LIST_AAA': AddTreeviewChildren(l_rows,'TYP_AAA','icons/produkt.bmp'); break;
 			case 'CHANGE_PARENT_AAA': ChangeParent (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.getElementById('TYP_AAA<||>'+l_rows[1])); break;
+			case 'LIST_AAD': AddTreeviewChildren(l_rows,'TYP_AAD','icons/attrib.bmp'); break;
 			case 'LIST_BBB': AddTreeviewChildren(l_rows,'TYP_BBB','icons/part.bmp'); break;
 			case "ERROR": alert ('Error: '+l_rows[1]); break;
 			default: alert ('Unknown reply: '+l_rows[0]);
@@ -83,8 +84,8 @@ function DefineTypePosition (p_parentType, p_type, p_switch) {
 	var l_index = 0;
 	switch (p_parentType) {
 	case 'TYP_AAA':
-		switch (p_type) {case 'TYP_AAA': l_index = 2; break;}
-		var l_count = 1; break;
+		switch (p_type) { case 'TYP_AAD': l_index = 2; break;case 'TYP_AAA': l_index = 3; break;}
+		var l_count = 2; break;
 	default: var l_count = 0;
 	}
 	if (p_switch == 'C') {
@@ -431,10 +432,8 @@ function OpenMenu(p_obj) {
 		AddMenuItem(g_objMenuList, 'add aaa', 'icons/produkt.bmp','DetailAAA','N','TYP_AAA',0,'N',2);
 		break;
  	case 'TYP_AAA':
-		if (l_childCount > 1 || l_type_id[0] == p_obj.parentNode.parentNode.parentNode.id.split("<||>")[0]) {
-			AddMenuItem(g_objMenuList, 'change parent', 'icons/cube_change_par.bmp','CubeChangePar','','CUBE_P_AAA',0,'N',0);
-		}
-		AddMenuItem(g_objMenuList, 'add aaa', 'icons/produkt.bmp','DetailAAA','R','TYP_AAA',0,'N',2);
+		AddMenuItem(g_objMenuList, 'add aaa_deel', 'icons/attrib.bmp','DetailAAD','N','TYP_AAD',0,'N',2);
+		AddMenuItem(g_objMenuList, 'add aaa', 'icons/produkt.bmp','DetailAAA','R','TYP_AAA',0,'N',3);
 		break;
  	case 'DIR_BBB':
 		AddMenuItem(g_objMenuList, 'add bbb', 'icons/part.bmp','DetailBBB','N','TYP_BBB',0,'N',2);
