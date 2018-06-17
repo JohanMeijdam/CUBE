@@ -80,7 +80,7 @@ Change log:
 	-<<*TAG>>:;[[ENDLOOP,*]][[LOOP,TYPE]][[IF:ROOT]]
 	+SERVICE[CUBE-SRV-[[EVAL:$mySrvCount++]]]:get_dir_<<TYPE1:L>>_items|list|N|E;
 		>SERVICE_TYPE:<<TYPE:I>>;
-		+OPERATION:get_<<TYPE1:L>>_root_items|all|#|Y|N|N;<<TEXT,SPEC_EXPORT_LIST[|]!2=N[OR](3=F[AND]1=Y)[|]>>
+		+OPERATION:get_<<TYPE1:L>>_root_items|[[IF:3=Y]]root[[ELSE]]all[[ENDIF]]|#|Y|N|N;<<TEXT,SPEC_EXPORT_LIST[|]!2=N[OR](3=F[AND]1=Y)[|]>>
 		-OPERATION:;
 	-SERVICE:;[[ENDIF]][[LOOP,TYPE_LIST]]
 	+SERVICE[CUBE-SRV-[[EVAL:$mySrvCount++]]]:get_<<TYPE1:L>>_[[LOOP,TYPE_LIST_SCOPE]]for_<<TYPE_LIST_SCOPE1:L>>_[[ENDLOOP,TYPE_LIST_SCOPE]]list[[IF,TYPE:3=Y]]_<<TYPE_LIST:L>>[[ENDIF]]|list|N|E;
@@ -97,7 +97,7 @@ Change log:
 	-SERVICE:;[[ENDLOOP,TYPE_LIST]][[IF:ROOT[AND]!5=N]]
 	+SERVICE[CUBE-SRV-[[EVAL:$mySrvCount++]]]:count_<<TYPE1:L>>|count|N|E;
 		>SERVICE_TYPE:<<TYPE:I>>;
-		+OPERATION:count_<<TYPE1:L>>|all|#|N|N|N;
+		+OPERATION:count_<<TYPE1:L>>|[[IF:3=Y]]root[[ELSE]]all[[ENDIF]]|#|N|N|N;
 			>OPERATION_TYPE:<<TYPE:I>>;
 			+EXPORT:data|Y;
 				=ARGUMENT:type_count|;

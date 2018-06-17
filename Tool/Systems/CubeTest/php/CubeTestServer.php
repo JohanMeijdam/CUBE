@@ -43,29 +43,6 @@ case 'GetAaaListEncapsulated':
 	}
 	break;
 
-case 'GetAaaListRecursive':
-
-	list($p_cube_up_or_down, $p_cube_x_level, $p_naam) = explode("<|>", $import[1]);
-
-	$stid = oci_parse($conn, "BEGIN pkg_aaa.get_aaa_list_recursive (
-		:p_cube_row,
-		:p_cube_up_or_down,
-		:p_cube_x_level,
-		:p_naam);
-	END;");
-	oci_bind_by_name($stid,":p_cube_up_or_down",$p_cube_up_or_down);
-	oci_bind_by_name($stid,":p_cube_x_level",$p_cube_x_level);
-	oci_bind_by_name($stid,":p_naam",$p_naam);
-
-	$r = perform_db_request();
-	if (!$r) { return; }
-	echo "LIST_AAA";
-	while ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["NAAM"];
-		echo "<||>".$row["NAAM"];
-	}
-	break;
-
 case 'GetAaa':
 
 	list($p_naam) = explode("<|>", $import[1]);
@@ -388,6 +365,185 @@ case 'DeleteBbb':
 		return;
 	}
 	echo "DELETE_BBB";
+	break;
+
+case 'GetDirCccItems':
+
+	$stid = oci_parse($conn, "BEGIN pkg_ccc.get_ccc_root_items (:p_cube_row); END;");
+	$r = perform_db_request();
+	if (!$r) { return; }
+	echo "LIST_CCC";
+	while ($row = oci_fetch_assoc($curs)) {
+		echo "<|||>".$row["CODE"]."<|>".$row["NAAM"];
+		echo "<||>".$row["CODE"]." ".$row["NAAM"];
+	}
+	break;
+
+case 'CountCcc':
+
+	$stid = oci_parse($conn, "BEGIN pkg_ccc.count_ccc (:p_cube_row); END;");
+	$r = perform_db_request();
+	if (!$r) { return; }
+	echo "COUNT_CCC";
+	if ($row = oci_fetch_assoc($curs)) {
+		echo "<|||>".$row["TYPE_COUNT"];
+	}
+	break;
+
+case 'GetCcc':
+
+	list($p_code, $p_naam) = explode("<|>", $import[1]);
+
+	$stid = oci_parse($conn, "BEGIN pkg_ccc.get_ccc (
+		:p_cube_row,
+		:p_code,
+		:p_naam);
+	END;");
+	oci_bind_by_name($stid,":p_code",$p_code);
+	oci_bind_by_name($stid,":p_naam",$p_naam);
+
+	$r = perform_db_request();
+	if (!$r) { return; }
+	echo "SELECT_CCC";
+	if ($row = oci_fetch_assoc($curs)) {
+		echo "<|||>".$row["FK_CCC_CODE"]."<|>".$row["FK_CCC_NAAM"]."<|>".$row["OMSCHRJVING"];
+	}
+	break;
+
+case 'GetCccItems':
+
+	list($p_code, $p_naam) = explode("<|>", $import[1]);
+
+	$stid = oci_parse($conn, "BEGIN pkg_ccc.get_ccc_ccc_items (
+		:p_cube_row,
+		:p_code,
+		:p_naam);
+	END;");
+	oci_bind_by_name($stid,":p_code",$p_code);
+	oci_bind_by_name($stid,":p_naam",$p_naam);
+
+	$r = perform_db_request();
+	if (!$r) { return; }
+	$first = True;
+	while ($row = oci_fetch_assoc($curs)) {
+		if ($first) { $first = False; echo "LIST_CCC";}
+		echo "<|||>".$row["CODE"]."<|>".$row["NAAM"];
+		echo "<||>".$row["CODE"]." ".$row["NAAM"];
+	}
+	break;
+
+case 'CountCccRestrictedItems':
+
+	list($p_code, $p_naam) = explode("<|>", $import[1]);
+
+	$stid = oci_parse($conn, "BEGIN pkg_ccc.count_ccc_ccc (
+		:p_cube_row,
+		:p_code,
+		:p_naam);
+	END;");
+	oci_bind_by_name($stid,":p_code",$p_code);
+	oci_bind_by_name($stid,":p_naam",$p_naam);
+
+	$r = perform_db_request();
+	if (!$r) { return; }
+	echo "COUNT_CCC";
+	if ($row = oci_fetch_assoc($curs)) {
+		echo "<|||>".$row["TYPE_COUNT"];
+	}
+	break;
+
+case 'ChangeParentCcc':
+
+	list($p_cube_flag_root, $p_code, $p_naam, $x_code, $x_naam) = explode("<|>", $import[1]);
+
+	$stid = oci_parse($conn, "BEGIN pkg_ccc.change_parent_ccc (
+		:p_cube_flag_root,
+		:p_code,
+		:p_naam,
+		:x_code,
+		:x_naam);
+	END;");
+	oci_bind_by_name($stid,":p_cube_flag_root",$p_cube_flag_root);
+	oci_bind_by_name($stid,":p_code",$p_code);
+	oci_bind_by_name($stid,":p_naam",$p_naam);
+	oci_bind_by_name($stid,":x_code",$x_code);
+	oci_bind_by_name($stid,":x_naam",$x_naam);
+
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		return;
+	}
+	echo "CHANGE_PARENT_CCC";
+	break;
+
+case 'CreateCcc':
+
+	list($p_fk_ccc_code, $p_fk_ccc_naam, $p_code, $p_naam, $p_omschrjving) = explode("<|>", $import[1]);
+
+	$stid = oci_parse($conn, "BEGIN pkg_ccc.insert_ccc (
+		:p_fk_ccc_code,
+		:p_fk_ccc_naam,
+		:p_code,
+		:p_naam,
+		:p_omschrjving);
+	END;");
+	oci_bind_by_name($stid,":p_fk_ccc_code",$p_fk_ccc_code);
+	oci_bind_by_name($stid,":p_fk_ccc_naam",$p_fk_ccc_naam);
+	oci_bind_by_name($stid,":p_code",$p_code);
+	oci_bind_by_name($stid,":p_naam",$p_naam);
+	oci_bind_by_name($stid,":p_omschrjving",$p_omschrjving);
+
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		return;
+	}
+	echo "CREATE_CCC";
+	break;
+
+case 'UpdateCcc':
+
+	list($p_fk_ccc_code, $p_fk_ccc_naam, $p_code, $p_naam, $p_omschrjving) = explode("<|>", $import[1]);
+
+	$stid = oci_parse($conn, "BEGIN pkg_ccc.update_ccc (
+		:p_fk_ccc_code,
+		:p_fk_ccc_naam,
+		:p_code,
+		:p_naam,
+		:p_omschrjving);
+	END;");
+	oci_bind_by_name($stid,":p_fk_ccc_code",$p_fk_ccc_code);
+	oci_bind_by_name($stid,":p_fk_ccc_naam",$p_fk_ccc_naam);
+	oci_bind_by_name($stid,":p_code",$p_code);
+	oci_bind_by_name($stid,":p_naam",$p_naam);
+	oci_bind_by_name($stid,":p_omschrjving",$p_omschrjving);
+
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		return;
+	}
+	echo "UPDATE_CCC";
+	break;
+
+case 'DeleteCcc':
+
+	list($p_code, $p_naam) = explode("<|>", $import[1]);
+
+	$stid = oci_parse($conn, "BEGIN pkg_ccc.delete_ccc (
+		:p_code,
+		:p_naam);
+	END;");
+	oci_bind_by_name($stid,":p_code",$p_code);
+	oci_bind_by_name($stid,":p_naam",$p_naam);
+
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		return;
+	}
+	echo "DELETE_CCC";
 	break;
 
 default:

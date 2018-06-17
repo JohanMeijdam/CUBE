@@ -43,6 +43,19 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
+	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBETEST' AND sequence_name = 'CCC_SEQ';
+	IF l_count = 0 THEN
+
+		EXECUTE IMMEDIATE 
+		'CREATE SEQUENCE ccc_seq START WITH 100000';
+		DBMS_OUTPUT.PUT_LINE('Sequence CCC_SEQ created');
+
+	END IF;
+END;
+/
+DECLARE
+	l_count NUMBER(4);
+BEGIN
 	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = 'CUBETEST' AND table_name = 'T_AAA';
 	IF l_count = 0 THEN
 		EXECUTE IMMEDIATE
@@ -238,6 +251,88 @@ BEGIN
 	END IF;
 END;
 /
+DECLARE
+	l_count NUMBER(4);
+BEGIN
+	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = 'CUBETEST' AND table_name = 'T_CCC';
+	IF l_count = 0 THEN
+		EXECUTE IMMEDIATE
+		'CREATE TABLE t_ccc (
+			cube_id VARCHAR2(16),
+			cube_level NUMBER(8) DEFAULT ''1'',
+			fk_ccc_code VARCHAR2(8),
+			fk_ccc_naam VARCHAR2(40),
+			code VARCHAR2(8),
+			naam VARCHAR2(40),
+			omschrjving VARCHAR2(120))';
+		DBMS_OUTPUT.PUT_LINE('Table T_CCC created');
+	ELSE
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_CCC' AND column_name = 'CUBE_ID';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_ccc ADD cube_id VARCHAR2(16)';
+			DBMS_OUTPUT.PUT_LINE('Column T_CCC.CUBE_ID created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_CCC' AND column_name = 'CUBE_LEVEL';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_ccc ADD cube_level NUMBER(8) DEFAULT ''1''';
+			DBMS_OUTPUT.PUT_LINE('Column T_CCC.CUBE_LEVEL created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_CCC' AND column_name = 'FK_CCC_CODE';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_ccc ADD fk_ccc_code VARCHAR2(8)';
+			DBMS_OUTPUT.PUT_LINE('Column T_CCC.FK_CCC_CODE created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_CCC' AND column_name = 'FK_CCC_NAAM';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_ccc ADD fk_ccc_naam VARCHAR2(40)';
+			DBMS_OUTPUT.PUT_LINE('Column T_CCC.FK_CCC_NAAM created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_CCC' AND column_name = 'CODE';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_ccc ADD code VARCHAR2(8)';
+			DBMS_OUTPUT.PUT_LINE('Column T_CCC.CODE created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_CCC' AND column_name = 'NAAM';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_ccc ADD naam VARCHAR2(40)';
+			DBMS_OUTPUT.PUT_LINE('Column T_CCC.NAAM created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_CCC' AND column_name = 'OMSCHRJVING';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_ccc ADD omschrjving VARCHAR2(120)';
+			DBMS_OUTPUT.PUT_LINE('Column T_CCC.OMSCHRJVING created');
+		END IF;
+
+		FOR r_key IN (SELECT constraint_name FROM all_constraints WHERE owner = 'CUBETEST' AND table_name = 'T_CCC' AND constraint_type IN ('P','U','R') ORDER BY constraint_type DESC)
+		LOOP
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_ccc DROP CONSTRAINT ' || r_key.constraint_name || ' CASCADE';
+			DBMS_OUTPUT.PUT_LINE('Primary Key T_CCC.' || UPPER(r_key.constraint_name) || ' dropped');
+		END LOOP;
+
+		FOR r_index IN (SELECT index_name FROM all_indexes WHERE owner = 'CUBETEST' AND table_name = 'T_CCC')
+		LOOP
+			EXECUTE IMMEDIATE
+			'DROP INDEX ' || r_index.index_name;
+			DBMS_OUTPUT.PUT_LINE('Index T_CCC.' || UPPER(r_index.index_name) || ' dropped');
+		END LOOP;
+	END IF;
+END;
+/
 BEGIN
 	FOR r_table IN (SELECT t.table_name FROM all_tables t, all_tab_comments c
 				WHERE t.table_name = c.table_name
@@ -245,7 +340,8 @@ BEGIN
 				  AND t.table_name NOT IN (
 							'T_AAA',
 							'T_AAA_DEEL',
-							'T_BBB')
+							'T_BBB',
+							'T_CCC')
 				  AND SUBSTR(t.table_name,1,7) <> 'T_CUBE_')
 	LOOP
 		EXECUTE IMMEDIATE
@@ -436,6 +532,76 @@ BEGIN
 		EXECUTE IMMEDIATE
 		'ALTER TABLE t_bbb DROP COLUMN ' || r_field.column_name;
 		DBMS_OUTPUT.PUT_LINE('Field T_BBB.' || UPPER(r_field.column_name) || ' dropped');
+	END LOOP;
+END;
+/
+BEGIN
+	FOR r_field IN (SELECT column_name,
+		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
+		data_default old_default_value,
+  		DECODE(column_name,
+			'CUBE_ID','VARCHAR2(16)',
+			'CUBE_LEVEL','NUMBER(8)',
+			'FK_CCC_CODE','VARCHAR2(8)',
+			'FK_CCC_NAAM','VARCHAR2(40)',
+			'CODE','VARCHAR2(8)',
+			'NAAM','VARCHAR2(40)',
+			'OMSCHRJVING','VARCHAR2(120)',NULL) new_domain,
+		DECODE(column_name,
+			'CUBE_ID',NULL,
+			'CUBE_LEVEL','''1''',
+			'FK_CCC_CODE',NULL,
+			'FK_CCC_NAAM',NULL,
+			'CODE',NULL,
+			'NAAM',NULL,
+			'OMSCHRJVING',NULL,NULL) new_default_value
+  		FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_CCC')
+	LOOP
+		IF r_field.old_domain <> r_field.new_domain THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_ccc RENAME COLUMN ' || r_field.column_name || ' TO old#domain#field';
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_ccc ADD ' || r_field.column_name || ' ' || r_field.new_domain;
+ 			IF r_field.new_domain = 'VARCHAR2' THEN  
+				EXECUTE IMMEDIATE
+				'UPDATE t_ccc SET ' || r_field.column_name || '= TRIM(old#domain#field)';
+			ELSE
+				EXECUTE IMMEDIATE
+				'UPDATE t_ccc SET ' || r_field.column_name || '= old#domain#field';
+			END IF;
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_ccc DROP COLUMN old#domain#field';
+			DBMS_OUTPUT.PUT_LINE('Field T_CCC.' || UPPER(r_field.column_name) || ' converted from ' || r_field.old_domain || ' to ' || r_field.new_domain);
+		END IF;
+		IF NOT((r_field.old_default_value IS NULL AND r_field.new_default_value IS NULL) OR r_field.old_default_value = r_field.new_default_value) THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_ccc MODIFY (' || r_field.column_name || ' DEFAULT ' || NVL(r_field.new_default_value,'NULL') || ')';
+			DBMS_OUTPUT.PUT_LINE('Field T_CCC.' || UPPER(r_field.column_name) || ' default value set to ' || NVL(r_field.new_default_value,'NULL'));
+		END IF;
+	END LOOP;
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_ccc ADD CONSTRAINT ccc_pk
+		PRIMARY KEY (
+			code,
+			naam )';
+	DBMS_OUTPUT.PUT_LINE('Primary Key T_CCC.CCC_PK created');
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_ccc ADD CONSTRAINT ccc_ccc_fk
+		FOREIGN KEY (fk_ccc_code, fk_ccc_naam)
+		REFERENCES t_ccc (code, naam)
+		ON DELETE CASCADE';
+	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_CCC' AND column_name NOT IN (
+							'CUBE_ID',
+							'CUBE_LEVEL',
+							'FK_CCC_CODE',
+							'FK_CCC_NAAM',
+							'CODE',
+							'NAAM',
+							'OMSCHRJVING'))
+	LOOP
+		EXECUTE IMMEDIATE
+		'ALTER TABLE t_ccc DROP COLUMN ' || r_field.column_name;
+		DBMS_OUTPUT.PUT_LINE('Field T_CCC.' || UPPER(r_field.column_name) || ' dropped');
 	END LOOP;
 END;
 /

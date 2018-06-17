@@ -320,4 +320,169 @@ END;
 /
 SHOW ERRORS
 
+CREATE OR REPLACE VIEW v_ccc AS 
+	SELECT
+		cube_id,
+		cube_level,
+		fk_ccc_code,
+		fk_ccc_naam,
+		code,
+		naam,
+		omschrjving
+	FROM t_ccc
+/
+
+CREATE OR REPLACE PACKAGE pkg_ccc_trg IS
+	PROCEDURE insert_ccc (p_ccc IN OUT NOCOPY v_ccc%ROWTYPE);
+	PROCEDURE update_ccc (p_cube_rowid IN UROWID, p_ccc_old IN OUT NOCOPY v_ccc%ROWTYPE, p_ccc_new IN OUT NOCOPY v_ccc%ROWTYPE);
+	PROCEDURE delete_ccc (p_cube_rowid IN UROWID, p_ccc IN OUT NOCOPY v_ccc%ROWTYPE);
+	PROCEDURE denorm_ccc_ccc (p_ccc IN OUT NOCOPY v_ccc%ROWTYPE, p_ccc_in IN v_ccc%ROWTYPE);
+	PROCEDURE get_denorm_ccc_ccc (p_ccc IN OUT NOCOPY v_ccc%ROWTYPE);
+END;
+/
+SHOW ERRORS;
+
+CREATE OR REPLACE PACKAGE BODY pkg_ccc_trg IS
+
+	PROCEDURE insert_ccc (p_ccc IN OUT NOCOPY v_ccc%ROWTYPE) IS
+	BEGIN
+		p_ccc.cube_id := 'CCC-' || TO_CHAR(ccc_seq.NEXTVAL,'FM000000000000');
+		get_denorm_ccc_ccc (p_ccc);
+		INSERT INTO t_ccc (
+			cube_id,
+			cube_level,
+			fk_ccc_code,
+			fk_ccc_naam,
+			code,
+			naam,
+			omschrjving)
+		VALUES (
+			p_ccc.cube_id,
+			p_ccc.cube_level,
+			p_ccc.fk_ccc_code,
+			p_ccc.fk_ccc_naam,
+			p_ccc.code,
+			p_ccc.naam,
+			p_ccc.omschrjving);
+	END;
+
+	PROCEDURE update_ccc (p_cube_rowid UROWID, p_ccc_old IN OUT NOCOPY v_ccc%ROWTYPE, p_ccc_new IN OUT NOCOPY v_ccc%ROWTYPE) IS
+
+		CURSOR c_ccc IS
+			SELECT ROWID cube_row_id, ccc.* FROM v_ccc ccc
+			WHERE fk_ccc_code = p_ccc_old.code
+			  AND fk_ccc_naam = p_ccc_old.naam;
+		
+		l_ccc_rowid UROWID;
+		r_ccc_old v_ccc%ROWTYPE;
+		r_ccc_new v_ccc%ROWTYPE;
+	BEGIN
+		IF NVL(p_ccc_old.fk_ccc_code,' ') <> NVL(p_ccc_new.fk_ccc_code,' ') 
+		OR NVL(p_ccc_old.fk_ccc_naam,' ') <> NVL(p_ccc_new.fk_ccc_naam,' ')  THEN
+			get_denorm_ccc_ccc (p_ccc_new);
+		END IF;
+		UPDATE t_ccc SET 
+			cube_level = p_ccc_new.cube_level,
+			fk_ccc_code = p_ccc_new.fk_ccc_code,
+			fk_ccc_naam = p_ccc_new.fk_ccc_naam,
+			omschrjving = p_ccc_new.omschrjving
+		WHERE rowid = p_cube_rowid;
+		IF NVL(p_ccc_old.cube_level,0) <> NVL(p_ccc_new.cube_level,0) THEN
+			OPEN c_ccc;
+			LOOP
+				FETCH c_ccc INTO
+					l_ccc_rowid,
+					r_ccc_old.cube_id,
+					r_ccc_old.cube_level,
+					r_ccc_old.fk_ccc_code,
+					r_ccc_old.fk_ccc_naam,
+					r_ccc_old.code,
+					r_ccc_old.naam,
+					r_ccc_old.omschrjving;
+				EXIT WHEN c_ccc%NOTFOUND;
+				r_ccc_new := r_ccc_old;
+				denorm_ccc_ccc (r_ccc_new, p_ccc_new);
+				update_ccc (l_ccc_rowid, r_ccc_old, r_ccc_new);
+			END LOOP;
+			CLOSE c_ccc;
+		END IF;
+	END;
+
+	PROCEDURE delete_ccc (p_cube_rowid UROWID, p_ccc IN OUT NOCOPY v_ccc%ROWTYPE) IS
+	BEGIN
+		DELETE t_ccc 
+		WHERE rowid = p_cube_rowid;
+	END;
+
+	PROCEDURE denorm_ccc_ccc (p_ccc IN OUT NOCOPY v_ccc%ROWTYPE, p_ccc_in IN v_ccc%ROWTYPE) IS
+	BEGIN
+		p_ccc.cube_level := NVL (p_ccc_in.cube_level, 0) + 1;
+	END;
+
+	PROCEDURE get_denorm_ccc_ccc (p_ccc IN OUT NOCOPY v_ccc%ROWTYPE) IS
+
+		CURSOR c_ccc IS 
+			SELECT * FROM v_ccc
+			WHERE code = p_ccc.fk_ccc_code
+			  AND naam = p_ccc.fk_ccc_naam;
+		
+		r_ccc v_ccc%ROWTYPE;
+	BEGIN
+		IF p_ccc.fk_ccc_code IS NOT NULL AND p_ccc.fk_ccc_naam IS NOT NULL THEN
+			OPEN c_ccc;
+			FETCH c_ccc INTO r_ccc;
+			IF c_ccc%NOTFOUND THEN
+				r_ccc := NULL;
+			END IF;
+			CLOSE c_ccc;
+		ELSE
+			r_ccc := NULL;
+		END IF;
+		denorm_ccc_ccc (p_ccc, r_ccc);
+	END;
+END;
+/
+SHOW ERRORS;
+
+CREATE OR REPLACE TRIGGER trg_ccc
+INSTEAD OF INSERT OR DELETE OR UPDATE ON v_ccc
+FOR EACH ROW
+DECLARE
+	l_cube_rowid UROWID;
+	r_ccc_new v_ccc%ROWTYPE;
+	r_ccc_old v_ccc%ROWTYPE;
+BEGIN
+	IF INSERTING OR UPDATING THEN
+		r_ccc_new.fk_ccc_code := REPLACE(:NEW.fk_ccc_code,' ','_');
+		r_ccc_new.fk_ccc_naam := :NEW.fk_ccc_naam;
+		r_ccc_new.code := REPLACE(:NEW.code,' ','_');
+		r_ccc_new.naam := :NEW.naam;
+		r_ccc_new.omschrjving := :NEW.omschrjving;
+	END IF;
+	IF UPDATING THEN
+		r_ccc_new.cube_id := :OLD.cube_id;
+		r_ccc_new.cube_level := :OLD.cube_level;
+	END IF;
+	IF UPDATING OR DELETING THEN
+		SELECT rowid INTO l_cube_rowid FROM t_ccc
+		WHERE code = :OLD.code
+		  AND naam = :OLD.naam;
+		r_ccc_old.fk_ccc_code := :OLD.fk_ccc_code;
+		r_ccc_old.fk_ccc_naam := :OLD.fk_ccc_naam;
+		r_ccc_old.code := :OLD.code;
+		r_ccc_old.naam := :OLD.naam;
+		r_ccc_old.omschrjving := :OLD.omschrjving;
+	END IF;
+
+	IF INSERTING THEN 
+		pkg_ccc_trg.insert_ccc (r_ccc_new);
+	ELSIF UPDATING THEN
+		pkg_ccc_trg.update_ccc (l_cube_rowid, r_ccc_old, r_ccc_new);
+	ELSIF DELETING THEN
+		pkg_ccc_trg.delete_ccc (l_cube_rowid, r_ccc_old);
+	END IF;
+END;
+/
+SHOW ERRORS
+
 EXIT;

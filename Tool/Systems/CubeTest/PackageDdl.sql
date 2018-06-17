@@ -47,11 +47,6 @@ CREATE OR REPLACE PACKAGE pkg_aaa IS
 			p_cube_row IN OUT c_cube_row);
 	PROCEDURE get_aaa_list_encapsulated (
 			p_cube_row IN OUT c_cube_row);
-	PROCEDURE get_aaa_list_recursive (
-			p_cube_row IN OUT c_cube_row,
-			p_cube_up_or_down IN VARCHAR2,
-			p_cube_x_level IN NUMBER,
-			p_naam IN VARCHAR2);
 	PROCEDURE get_aaa (
 			p_cube_row IN OUT c_cube_row,
 			p_naam IN VARCHAR2);
@@ -109,6 +104,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_aaa IS
 			SELECT
 			  naam
 			FROM v_aaa
+			WHERE fk_aaa_naam IS NULL
 			ORDER BY naam;
 	END;
 
@@ -130,46 +126,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_aaa IS
 			  naam
 			FROM v_aaa
 			WHERE fk_aaa_naam IS NULL
-			ORDER BY naam;
-	END;
-
-	PROCEDURE get_aaa_list_recursive (
-			p_cube_row IN OUT c_cube_row,
-			p_cube_up_or_down IN VARCHAR2,
-			p_cube_x_level IN NUMBER,
-			p_naam IN VARCHAR2) IS
-	BEGIN
-		OPEN p_cube_row FOR
-			WITH anchor (
-				naam,
-				fk_aaa_naam,
-				xk_aaa_naam,
-				cube_x_level) AS (
-				SELECT
-					naam,
-					fk_aaa_naam,
-					xk_aaa_naam,
-					0 
-				FROM v_aaa
-				WHERE naam = p_naam
-				UNION ALL
-				SELECT
-					recursive.naam,
-					recursive.fk_aaa_naam,
-					recursive.xk_aaa_naam,
-					anchor.cube_x_level+1
-				FROM v_aaa recursive, anchor
-				WHERE 	    ( 	    ( p_cube_up_or_down = 'D'
-						  AND 	    ( anchor.naam = recursive.fk_aaa_naam
-							   OR anchor.naam = recursive.xk_aaa_naam ) )
-					   OR 	    ( p_cube_up_or_down = 'U'
-						  AND 	    ( anchor.fk_aaa_naam = recursive.naam
-							   OR anchor.xk_aaa_naam = recursive.naam ) ) )
-				  AND anchor.cube_x_level < p_cube_x_level
-				)
-			SELECT DISTINCT naam
-			FROM anchor
-			WHERE cube_x_level > 0
 			ORDER BY naam;
 	END;
 
@@ -462,6 +418,237 @@ CREATE OR REPLACE PACKAGE BODY pkg_bbb IS
 	BEGIN
 		DELETE v_bbb
 		WHERE naam = p_naam;
+	END;
+END;
+/
+SHOW ERRORS;
+
+CREATE OR REPLACE PACKAGE pkg_ccc IS
+
+	TYPE c_cube_row IS REF CURSOR;
+	FUNCTION cube_package RETURN VARCHAR2;
+	PROCEDURE get_ccc_root_items (
+			p_cube_row IN OUT c_cube_row);
+	PROCEDURE count_ccc (
+			p_cube_row IN OUT c_cube_row);
+	PROCEDURE get_ccc (
+			p_cube_row IN OUT c_cube_row,
+			p_code IN VARCHAR2,
+			p_naam IN VARCHAR2);
+	PROCEDURE get_ccc_ccc_items (
+			p_cube_row IN OUT c_cube_row,
+			p_code IN VARCHAR2,
+			p_naam IN VARCHAR2);
+	PROCEDURE count_ccc_ccc (
+			p_cube_row IN OUT c_cube_row,
+			p_code IN VARCHAR2,
+			p_naam IN VARCHAR2);
+	PROCEDURE change_parent_ccc (
+			p_cube_flag_root IN VARCHAR2,
+			p_code IN VARCHAR2,
+			p_naam IN VARCHAR2,
+			x_code IN VARCHAR2,
+			x_naam IN VARCHAR2);
+	PROCEDURE insert_ccc (
+			p_fk_ccc_code IN VARCHAR2,
+			p_fk_ccc_naam IN VARCHAR2,
+			p_code IN VARCHAR2,
+			p_naam IN VARCHAR2,
+			p_omschrjving IN VARCHAR2);
+	PROCEDURE update_ccc (
+			p_fk_ccc_code IN VARCHAR2,
+			p_fk_ccc_naam IN VARCHAR2,
+			p_code IN VARCHAR2,
+			p_naam IN VARCHAR2,
+			p_omschrjving IN VARCHAR2);
+	PROCEDURE delete_ccc (
+			p_code IN VARCHAR2,
+			p_naam IN VARCHAR2);
+END;
+/
+SHOW ERRORS;
+
+CREATE OR REPLACE PACKAGE BODY pkg_ccc IS
+	FUNCTION cube_package RETURN VARCHAR2 IS
+	BEGIN
+		RETURN 'cube_package';
+	END;
+
+	PROCEDURE get_ccc_root_items (
+			p_cube_row IN OUT c_cube_row) IS
+	BEGIN
+		OPEN p_cube_row FOR
+			SELECT
+			  code,
+			  naam
+			FROM v_ccc
+			WHERE fk_ccc_code IS NULL
+			  AND fk_ccc_naam IS NULL
+			ORDER BY code, naam;
+	END;
+
+	PROCEDURE count_ccc (
+			p_cube_row IN OUT c_cube_row) IS
+	BEGIN
+		OPEN p_cube_row FOR
+			SELECT
+			  COUNT(1) type_count
+			FROM v_ccc
+			WHERE fk_ccc_code IS NULL
+			  AND fk_ccc_naam IS NULL;
+	END;
+
+	PROCEDURE get_ccc (
+			p_cube_row IN OUT c_cube_row,
+			p_code IN VARCHAR2,
+			p_naam IN VARCHAR2) IS
+	BEGIN
+		OPEN p_cube_row FOR
+			SELECT
+			  fk_ccc_code,
+			  fk_ccc_naam,
+			  omschrjving
+			FROM v_ccc
+			WHERE code = p_code
+			  AND naam = p_naam;
+	END;
+
+	PROCEDURE get_ccc_ccc_items (
+			p_cube_row IN OUT c_cube_row,
+			p_code IN VARCHAR2,
+			p_naam IN VARCHAR2) IS
+	BEGIN
+		OPEN p_cube_row FOR
+			SELECT
+			  code,
+			  naam
+			FROM v_ccc
+			WHERE fk_ccc_code = p_code
+			  AND fk_ccc_naam = p_naam
+			ORDER BY code, naam;
+	END;
+
+	PROCEDURE count_ccc_ccc (
+			p_cube_row IN OUT c_cube_row,
+			p_code IN VARCHAR2,
+			p_naam IN VARCHAR2) IS
+	BEGIN
+		OPEN p_cube_row FOR
+			SELECT
+			  COUNT(1) type_count
+			FROM v_ccc
+			WHERE fk_ccc_code = p_code
+			  AND fk_ccc_code IS NOT NULL
+			  AND fk_ccc_naam = p_naam
+			  AND fk_ccc_naam IS NOT NULL;
+	END;
+
+	PROCEDURE check_no_part_ccc (
+			p_code IN VARCHAR2,
+			p_naam IN VARCHAR2,
+			x_code IN VARCHAR2,
+			x_naam IN VARCHAR2) IS
+		l_code v_ccc.code%TYPE;
+		l_naam v_ccc.naam%TYPE;
+	BEGIN
+		l_code := x_code;
+		l_naam := x_naam;
+		LOOP
+			IF l_code IS NULL
+			  AND l_naam IS NULL THEN
+				EXIT; -- OK
+			END IF;
+			IF l_code = p_code
+			  AND l_naam = p_naam THEN
+				RAISE_APPLICATION_ERROR (-20003, 'Target Type ccc in hierarchy of moving object');
+			END IF;
+			SELECT fk_ccc_code, fk_ccc_naam
+			INTO l_code, l_naam
+			FROM v_ccc
+			WHERE code = l_code
+			  AND naam = l_naam;
+		END LOOP;
+	END;
+
+	PROCEDURE change_parent_ccc (
+			p_cube_flag_root IN VARCHAR2,
+			p_code IN VARCHAR2,
+			p_naam IN VARCHAR2,
+			x_code IN VARCHAR2,
+			x_naam IN VARCHAR2) IS
+	BEGIN
+		IF p_cube_flag_root = 'Y' THEN
+			UPDATE v_ccc SET
+				fk_ccc_code = NULL,
+				fk_ccc_naam = NULL
+			WHERE code = p_code
+			  AND naam = p_naam;
+			IF SQL%NOTFOUND THEN
+				RAISE_APPLICATION_ERROR (-20002, 'Type ccc not found');
+			END IF;
+		ELSE
+			check_no_part_ccc (p_code, p_naam, x_code, x_naam);
+			UPDATE v_ccc SET
+				fk_ccc_code = x_code,
+				fk_ccc_naam = x_naam
+			WHERE code = p_code
+			  AND naam = p_naam;
+			IF SQL%NOTFOUND THEN
+				RAISE_APPLICATION_ERROR (-20002, 'Type ccc not found');
+			END IF;
+		END IF;
+	END;
+
+	PROCEDURE insert_ccc (
+			p_fk_ccc_code IN VARCHAR2,
+			p_fk_ccc_naam IN VARCHAR2,
+			p_code IN VARCHAR2,
+			p_naam IN VARCHAR2,
+			p_omschrjving IN VARCHAR2) IS
+	BEGIN
+		INSERT INTO v_ccc (
+			cube_id,
+			cube_level,
+			fk_ccc_code,
+			fk_ccc_naam,
+			code,
+			naam,
+			omschrjving)
+		VALUES (
+			NULL,
+			NULL,
+			p_fk_ccc_code,
+			p_fk_ccc_naam,
+			p_code,
+			p_naam,
+			p_omschrjving);
+	EXCEPTION
+		WHEN DUP_VAL_ON_INDEX THEN
+			RAISE_APPLICATION_ERROR (-20001, 'Type ccc already exists');
+	END;
+
+	PROCEDURE update_ccc (
+			p_fk_ccc_code IN VARCHAR2,
+			p_fk_ccc_naam IN VARCHAR2,
+			p_code IN VARCHAR2,
+			p_naam IN VARCHAR2,
+			p_omschrjving IN VARCHAR2) IS
+	BEGIN
+		UPDATE v_ccc SET
+			fk_ccc_code = p_fk_ccc_code,
+			fk_ccc_naam = p_fk_ccc_naam,
+			omschrjving = p_omschrjving
+		WHERE code = p_code
+		  AND naam = p_naam;
+	END;
+
+	PROCEDURE delete_ccc (
+			p_code IN VARCHAR2,
+			p_naam IN VARCHAR2) IS
+	BEGIN
+		DELETE v_ccc
+		WHERE code = p_code
+		  AND naam = p_naam;
 	END;
 END;
 /
