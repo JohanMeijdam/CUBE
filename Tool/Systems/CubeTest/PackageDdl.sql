@@ -654,4 +654,395 @@ END;
 /
 SHOW ERRORS;
 
+CREATE OR REPLACE PACKAGE pkg_prd IS
+
+	TYPE c_cube_row IS REF CURSOR;
+	FUNCTION cube_package RETURN VARCHAR2;
+	PROCEDURE get_prd_root_items (
+			p_cube_row IN OUT c_cube_row);
+	PROCEDURE get_prd (
+			p_cube_row IN OUT c_cube_row,
+			p_code IN VARCHAR2,
+			p_naam IN VARCHAR2);
+	PROCEDURE get_prd_prt_items (
+			p_cube_row IN OUT c_cube_row,
+			p_code IN VARCHAR2,
+			p_naam IN VARCHAR2);
+	PROCEDURE insert_prd (
+			p_code IN VARCHAR2,
+			p_naam IN VARCHAR2,
+			p_omschrijving IN VARCHAR2);
+	PROCEDURE update_prd (
+			p_code IN VARCHAR2,
+			p_naam IN VARCHAR2,
+			p_omschrijving IN VARCHAR2);
+	PROCEDURE delete_prd (
+			p_code IN VARCHAR2,
+			p_naam IN VARCHAR2);
+	PROCEDURE get_prt_for_prd_list_all (
+			p_cube_row IN OUT c_cube_row,
+			x_fk_prd_code IN VARCHAR2,
+			x_fk_prd_naam IN VARCHAR2);
+	PROCEDURE get_prt (
+			p_cube_row IN OUT c_cube_row,
+			p_fk_prd_code IN VARCHAR2,
+			p_fk_prd_naam IN VARCHAR2,
+			p_code IN VARCHAR2,
+			p_naam IN VARCHAR2);
+	PROCEDURE get_prt_prt_items (
+			p_cube_row IN OUT c_cube_row,
+			p_fk_prd_code IN VARCHAR2,
+			p_fk_prd_naam IN VARCHAR2,
+			p_code IN VARCHAR2,
+			p_naam IN VARCHAR2);
+	PROCEDURE change_parent_prt (
+			p_cube_flag_root IN VARCHAR2,
+			p_fk_prd_code IN VARCHAR2,
+			p_fk_prd_naam IN VARCHAR2,
+			p_code IN VARCHAR2,
+			p_naam IN VARCHAR2,
+			x_fk_prd_code IN VARCHAR2,
+			x_fk_prd_naam IN VARCHAR2,
+			x_code IN VARCHAR2,
+			x_naam IN VARCHAR2);
+	PROCEDURE insert_prt (
+			p_fk_prd_code IN VARCHAR2,
+			p_fk_prd_naam IN VARCHAR2,
+			p_fk_prt_code IN VARCHAR2,
+			p_fk_prt_naam IN VARCHAR2,
+			p_code IN VARCHAR2,
+			p_naam IN VARCHAR2,
+			p_omschrijving IN VARCHAR2,
+			p_xf_prt_prd_code IN VARCHAR2,
+			p_xf_prt_prd_naam IN VARCHAR2,
+			p_xk_prt_code IN VARCHAR2,
+			p_xk_prt_naam IN VARCHAR2);
+	PROCEDURE update_prt (
+			p_fk_prd_code IN VARCHAR2,
+			p_fk_prd_naam IN VARCHAR2,
+			p_fk_prt_code IN VARCHAR2,
+			p_fk_prt_naam IN VARCHAR2,
+			p_code IN VARCHAR2,
+			p_naam IN VARCHAR2,
+			p_omschrijving IN VARCHAR2,
+			p_xf_prt_prd_code IN VARCHAR2,
+			p_xf_prt_prd_naam IN VARCHAR2,
+			p_xk_prt_code IN VARCHAR2,
+			p_xk_prt_naam IN VARCHAR2);
+	PROCEDURE delete_prt (
+			p_fk_prd_code IN VARCHAR2,
+			p_fk_prd_naam IN VARCHAR2,
+			p_code IN VARCHAR2,
+			p_naam IN VARCHAR2);
+END;
+/
+SHOW ERRORS;
+
+CREATE OR REPLACE PACKAGE BODY pkg_prd IS
+	FUNCTION cube_package RETURN VARCHAR2 IS
+	BEGIN
+		RETURN 'cube_package';
+	END;
+
+	PROCEDURE get_prd_root_items (
+			p_cube_row IN OUT c_cube_row) IS
+	BEGIN
+		OPEN p_cube_row FOR
+			SELECT
+			  code,
+			  naam
+			FROM v_prod
+			ORDER BY code, naam;
+	END;
+
+	PROCEDURE get_prd (
+			p_cube_row IN OUT c_cube_row,
+			p_code IN VARCHAR2,
+			p_naam IN VARCHAR2) IS
+	BEGIN
+		OPEN p_cube_row FOR
+			SELECT
+			  omschrijving
+			FROM v_prod
+			WHERE code = p_code
+			  AND naam = p_naam;
+	END;
+
+	PROCEDURE get_prd_prt_items (
+			p_cube_row IN OUT c_cube_row,
+			p_code IN VARCHAR2,
+			p_naam IN VARCHAR2) IS
+	BEGIN
+		OPEN p_cube_row FOR
+			SELECT
+			  fk_prd_code,
+			  fk_prd_naam,
+			  code,
+			  naam
+			FROM v_part
+			WHERE fk_prd_code = p_code
+			  AND fk_prd_naam = p_naam
+			  AND fk_prt_code IS NULL
+			  AND fk_prt_naam IS NULL
+			ORDER BY fk_prd_code, fk_prd_naam, code, naam;
+	END;
+
+	PROCEDURE insert_prd (
+			p_code IN VARCHAR2,
+			p_naam IN VARCHAR2,
+			p_omschrijving IN VARCHAR2) IS
+	BEGIN
+		INSERT INTO v_prod (
+			cube_id,
+			code,
+			naam,
+			omschrijving)
+		VALUES (
+			NULL,
+			p_code,
+			p_naam,
+			p_omschrijving);
+	EXCEPTION
+		WHEN DUP_VAL_ON_INDEX THEN
+			RAISE_APPLICATION_ERROR (-20001, 'Type prod already exists');
+	END;
+
+	PROCEDURE update_prd (
+			p_code IN VARCHAR2,
+			p_naam IN VARCHAR2,
+			p_omschrijving IN VARCHAR2) IS
+	BEGIN
+		UPDATE v_prod SET
+			omschrijving = p_omschrijving
+		WHERE code = p_code
+		  AND naam = p_naam;
+	END;
+
+	PROCEDURE delete_prd (
+			p_code IN VARCHAR2,
+			p_naam IN VARCHAR2) IS
+	BEGIN
+		DELETE v_prod
+		WHERE code = p_code
+		  AND naam = p_naam;
+	END;
+
+	PROCEDURE get_prt_for_prd_list_all (
+			p_cube_row IN OUT c_cube_row,
+			x_fk_prd_code IN VARCHAR2,
+			x_fk_prd_naam IN VARCHAR2) IS
+	BEGIN
+		OPEN p_cube_row FOR
+			SELECT
+			  fk_prd_code,
+			  fk_prd_naam,
+			  code,
+			  naam
+			FROM v_part
+			WHERE fk_prd_code = x_fk_prd_code
+			  AND fk_prd_naam = x_fk_prd_naam
+			ORDER BY fk_prd_code, fk_prd_naam, code, naam;
+	END;
+
+	PROCEDURE get_prt (
+			p_cube_row IN OUT c_cube_row,
+			p_fk_prd_code IN VARCHAR2,
+			p_fk_prd_naam IN VARCHAR2,
+			p_code IN VARCHAR2,
+			p_naam IN VARCHAR2) IS
+	BEGIN
+		OPEN p_cube_row FOR
+			SELECT
+			  fk_prt_code,
+			  fk_prt_naam,
+			  omschrijving,
+			  xf_prt_prd_code,
+			  xf_prt_prd_naam,
+			  xk_prt_code,
+			  xk_prt_naam
+			FROM v_part
+			WHERE fk_prd_code = p_fk_prd_code
+			  AND fk_prd_naam = p_fk_prd_naam
+			  AND code = p_code
+			  AND naam = p_naam;
+	END;
+
+	PROCEDURE get_prt_prt_items (
+			p_cube_row IN OUT c_cube_row,
+			p_fk_prd_code IN VARCHAR2,
+			p_fk_prd_naam IN VARCHAR2,
+			p_code IN VARCHAR2,
+			p_naam IN VARCHAR2) IS
+	BEGIN
+		OPEN p_cube_row FOR
+			SELECT
+			  fk_prd_code,
+			  fk_prd_naam,
+			  code,
+			  naam
+			FROM v_part
+			WHERE fk_prd_code = p_fk_prd_code
+			  AND fk_prd_naam = p_fk_prd_naam
+			  AND fk_prt_code = p_code
+			  AND fk_prt_naam = p_naam
+			ORDER BY fk_prd_code, fk_prd_naam, code, naam;
+	END;
+
+	PROCEDURE check_no_part_prt (
+			p_fk_prd_code IN VARCHAR2,
+			p_fk_prd_naam IN VARCHAR2,
+			p_code IN VARCHAR2,
+			p_naam IN VARCHAR2,
+			x_code IN VARCHAR2,
+			x_naam IN VARCHAR2) IS
+		l_code v_part.code%TYPE;
+		l_naam v_part.naam%TYPE;
+	BEGIN
+		l_code := x_code;
+		l_naam := x_naam;
+		LOOP
+			IF l_code IS NULL
+			  AND l_naam IS NULL THEN
+				EXIT; -- OK
+			END IF;
+			IF l_code = p_code
+			  AND l_naam = p_naam THEN
+				RAISE_APPLICATION_ERROR (-20003, 'Target Type part in hierarchy of moving object');
+			END IF;
+			SELECT fk_prt_code, fk_prt_naam
+			INTO l_code, l_naam
+			FROM v_part
+			WHERE fk_prd_code = p_fk_prd_code
+			  AND fk_prd_naam = p_fk_prd_naam
+			  AND code = l_code
+			  AND naam = l_naam;
+		END LOOP;
+	END;
+
+	PROCEDURE change_parent_prt (
+			p_cube_flag_root IN VARCHAR2,
+			p_fk_prd_code IN VARCHAR2,
+			p_fk_prd_naam IN VARCHAR2,
+			p_code IN VARCHAR2,
+			p_naam IN VARCHAR2,
+			x_fk_prd_code IN VARCHAR2,
+			x_fk_prd_naam IN VARCHAR2,
+			x_code IN VARCHAR2,
+			x_naam IN VARCHAR2) IS
+	BEGIN
+		IF p_cube_flag_root = 'Y' THEN
+			UPDATE v_part SET
+				fk_prt_code = NULL,
+				fk_prt_naam = NULL
+			WHERE fk_prd_code = p_fk_prd_code
+			  AND fk_prd_naam = p_fk_prd_naam
+			  AND code = p_code
+			  AND naam = p_naam;
+			IF SQL%NOTFOUND THEN
+				RAISE_APPLICATION_ERROR (-20002, 'Type part not found');
+			END IF;
+		ELSE
+			check_no_part_prt (p_fk_prd_code, p_fk_prd_naam, p_code, p_naam, x_code, x_naam);
+			UPDATE v_part SET
+				fk_prt_code = x_code,
+				fk_prt_naam = x_naam
+			WHERE fk_prd_code = p_fk_prd_code
+			  AND fk_prd_naam = p_fk_prd_naam
+			  AND code = p_code
+			  AND naam = p_naam;
+			IF SQL%NOTFOUND THEN
+				RAISE_APPLICATION_ERROR (-20002, 'Type part not found');
+			END IF;
+		END IF;
+	END;
+
+	PROCEDURE insert_prt (
+			p_fk_prd_code IN VARCHAR2,
+			p_fk_prd_naam IN VARCHAR2,
+			p_fk_prt_code IN VARCHAR2,
+			p_fk_prt_naam IN VARCHAR2,
+			p_code IN VARCHAR2,
+			p_naam IN VARCHAR2,
+			p_omschrijving IN VARCHAR2,
+			p_xf_prt_prd_code IN VARCHAR2,
+			p_xf_prt_prd_naam IN VARCHAR2,
+			p_xk_prt_code IN VARCHAR2,
+			p_xk_prt_naam IN VARCHAR2) IS
+	BEGIN
+		INSERT INTO v_part (
+			cube_id,
+			cube_level,
+			fk_prd_code,
+			fk_prd_naam,
+			fk_prt_code,
+			fk_prt_naam,
+			code,
+			naam,
+			omschrijving,
+			xf_prt_prd_code,
+			xf_prt_prd_naam,
+			xk_prt_code,
+			xk_prt_naam)
+		VALUES (
+			NULL,
+			NULL,
+			p_fk_prd_code,
+			p_fk_prd_naam,
+			p_fk_prt_code,
+			p_fk_prt_naam,
+			p_code,
+			p_naam,
+			p_omschrijving,
+			p_xf_prt_prd_code,
+			p_xf_prt_prd_naam,
+			p_xk_prt_code,
+			p_xk_prt_naam);
+	EXCEPTION
+		WHEN DUP_VAL_ON_INDEX THEN
+			RAISE_APPLICATION_ERROR (-20001, 'Type part already exists');
+	END;
+
+	PROCEDURE update_prt (
+			p_fk_prd_code IN VARCHAR2,
+			p_fk_prd_naam IN VARCHAR2,
+			p_fk_prt_code IN VARCHAR2,
+			p_fk_prt_naam IN VARCHAR2,
+			p_code IN VARCHAR2,
+			p_naam IN VARCHAR2,
+			p_omschrijving IN VARCHAR2,
+			p_xf_prt_prd_code IN VARCHAR2,
+			p_xf_prt_prd_naam IN VARCHAR2,
+			p_xk_prt_code IN VARCHAR2,
+			p_xk_prt_naam IN VARCHAR2) IS
+	BEGIN
+		UPDATE v_part SET
+			fk_prt_code = p_fk_prt_code,
+			fk_prt_naam = p_fk_prt_naam,
+			omschrijving = p_omschrijving,
+			xf_prt_prd_code = p_xf_prt_prd_code,
+			xf_prt_prd_naam = p_xf_prt_prd_naam,
+			xk_prt_code = p_xk_prt_code,
+			xk_prt_naam = p_xk_prt_naam
+		WHERE fk_prd_code = p_fk_prd_code
+		  AND fk_prd_naam = p_fk_prd_naam
+		  AND code = p_code
+		  AND naam = p_naam;
+	END;
+
+	PROCEDURE delete_prt (
+			p_fk_prd_code IN VARCHAR2,
+			p_fk_prd_naam IN VARCHAR2,
+			p_code IN VARCHAR2,
+			p_naam IN VARCHAR2) IS
+	BEGIN
+		DELETE v_part
+		WHERE fk_prd_code = p_fk_prd_code
+		  AND fk_prd_naam = p_fk_prd_naam
+		  AND code = p_code
+		  AND naam = p_naam;
+	END;
+END;
+/
+SHOW ERRORS;
+
 EXIT;
