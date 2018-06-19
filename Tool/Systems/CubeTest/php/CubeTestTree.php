@@ -27,6 +27,9 @@ g_xmlhttp.onreadystatechange = function(){
 			case 'COUNT_CCC': CheckMenuItem('TYP_CCC',l_rows[1]); break;
 			case 'CHANGE_PARENT_CCC': ChangeParent (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.getElementById('TYP_CCC<||>'+l_rows[1])); break;
 			case 'LIST_PRD': AddTreeviewChildren(l_rows,'TYP_PRD','icons/produkt.bmp'); break;
+			case 'LIST_PR2': AddTreeviewChildren(l_rows,'TYP_PR2','icons/produkt.bmp'); break;
+			case 'LIST_PA2': AddTreeviewChildren(l_rows,'TYP_PA2','icons/part.bmp'); break;
+			case 'CHANGE_PARENT_PA2': ChangeParent (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.getElementById('TYP_PA2<||>'+l_rows[1])); break;
 			case 'LIST_PRT': AddTreeviewChildren(l_rows,'TYP_PRT','icons/part.bmp'); break;
 			case 'CHANGE_PARENT_PRT': ChangeParent (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.getElementById('TYP_PRT<||>'+l_rows[1])); break;
 			case "ERROR": alert ('Error: '+l_rows[1]); break;
@@ -98,7 +101,13 @@ function DefineTypePosition (p_parentType, p_type, p_switch) {
 		switch (p_type) {case 'TYP_CCC': l_index = 2; break;}
 		var l_count = 1; break;
 	case 'TYP_PRD':
-		switch (p_type) { case 'TYP_PRT': l_index = 2; break;}
+		switch (p_type) { case 'TYP_PR2': l_index = 2; break; case 'TYP_PRT': l_index = 3; break;}
+		var l_count = 2; break;
+	case 'TYP_PR2':
+		switch (p_type) { case 'TYP_PA2': l_index = 2; break;}
+		var l_count = 1; break;
+	case 'TYP_PA2':
+		switch (p_type) {case 'TYP_PA2': l_index = 2; break;}
 		var l_count = 1; break;
 	case 'TYP_PRT':
 		switch (p_type) {case 'TYP_PRT': l_index = 2; break;}
@@ -324,6 +333,12 @@ function OpenCloseOnClick(p_obj) {
  		case 'TYP_PRD':
 			PerformTrans('GetPrdItems'+'<|||>'+p_obj.parentNode.id.split("<||>")[1]);
 			break;
+ 		case 'TYP_PR2':
+			PerformTrans('GetPr2Items'+'<|||>'+p_obj.parentNode.id.split("<||>")[1]);
+			break;
+ 		case 'TYP_PA2':
+			PerformTrans('GetPa2Items'+'<|||>'+p_obj.parentNode.id.split("<||>")[1]);
+			break;
  		case 'TYP_PRT':
 			PerformTrans('GetPrtItems'+'<|||>'+p_obj.parentNode.id.split("<||>")[1]);
 			break;
@@ -394,6 +409,16 @@ function OpenDetail(p_obj) {
 						break;
 					}
 					PerformTrans('ChangeParentPrd'+'<|||>N<|>'+g_currentObjId.split("<||>")[1]+'<|>'+l_obj.id.split("<||>")[1]);
+					break;
+				case 'TYP_PR2':
+					if (document.body._menuItemType == 'CUBE_P_PA2') {
+						PerformTrans('ChangeParentPa2'+'<|||>Y<|>'+g_currentObjId.split("<||>")[1]+'<|><|><|><|><|><|>');			
+						break;
+					}
+					PerformTrans('ChangeParentPr2'+'<|||>N<|>'+g_currentObjId.split("<||>")[1]+'<|>'+l_obj.id.split("<||>")[1]);
+					break;
+				case 'TYP_PA2':
+					PerformTrans('ChangeParentPa2'+'<|||>N<|>'+g_currentObjId.split("<||>")[1]+'<|>'+l_obj.id.split("<||>")[1]);
 					break;
 				case 'TYP_PRT':
 					PerformTrans('ChangeParentPrt'+'<|||>N<|>'+g_currentObjId.split("<||>")[1]+'<|>'+l_obj.id.split("<||>")[1]);
@@ -491,9 +516,6 @@ function OpenMenu(p_obj) {
 		PerformTrans('CountCcc');
 		break;
  	case 'TYP_CCC':
-		if (l_childCount > 1 || l_type_id[0] == p_obj.parentNode.parentNode.parentNode.id.split("<||>")[0]) {
-			AddMenuItem(g_objMenuList, 'change parent', 'icons/cube_change_par.bmp','CubeChangePar','','CUBE_P_CCC',0,'N',0);
-		}
 		AddMenuItem(g_objMenuList, 'add ccc', 'icons/produkt.bmp','DetailCCC','R','TYP_CCC',3,'N',2);
 		PerformTrans('CountCccRestrictedItems'+'<|||>'+l_type_id[1]);
 		break;
@@ -501,7 +523,14 @@ function OpenMenu(p_obj) {
 		AddMenuItem(g_objMenuList, 'add prod', 'icons/produkt.bmp','DetailPRD','N','TYP_PRD',0,'N',2);
 		break;
  	case 'TYP_PRD':
-		AddMenuItem(g_objMenuList, 'add part', 'icons/part.bmp','DetailPRT','N','TYP_PRT',0,'N',2);
+		AddMenuItem(g_objMenuList, 'add prod2', 'icons/produkt.bmp','DetailPR2','N','TYP_PR2',0,'N',2);
+		AddMenuItem(g_objMenuList, 'add part', 'icons/part.bmp','DetailPRT','N','TYP_PRT',0,'N',3);
+		break;
+ 	case 'TYP_PR2':
+		AddMenuItem(g_objMenuList, 'add part2', 'icons/part.bmp','DetailPA2','N','TYP_PA2',0,'N',2);
+		break;
+ 	case 'TYP_PA2':
+		AddMenuItem(g_objMenuList, 'add part2', 'icons/part.bmp','DetailPA2','R','TYP_PA2',0,'N',2);
 		break;
  	case 'TYP_PRT':
 		AddMenuItem(g_objMenuList, 'add part', 'icons/part.bmp','DetailPRT','R','TYP_PRT',0,'N',2);

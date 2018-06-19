@@ -12,33 +12,41 @@ g_xmlhttp.onreadystatechange = function() {
 	if(g_xmlhttp.readyState == 4) {
 		var l_argument = g_xmlhttp.responseText.split("<|||>");
 		switch (l_argument[0]) {
-		case "SELECT_CCC":
+		case "SELECT_PA2":
 			var l_values = l_argument[1].split("<|>");
-			document.getElementById("InputFkCccCode").value=l_values[0];
-			document.getElementById("InputFkCccNaam").value=l_values[1];
-			document.getElementById("InputOmschrjving").value=l_values[2];
-			document.getElementById("InputXkCccCode").value=l_values[3];
-			document.getElementById("InputXkCccNaam").value=l_values[4];
+			document.getElementById("InputFkPa2Code").value=l_values[0];
+			document.getElementById("InputFkPa2Naam").value=l_values[1];
+			document.getElementById("InputOmschrijving").value=l_values[2];
+			document.getElementById("InputXfPa2PrdCode").value=l_values[3];
+			document.getElementById("InputXfPa2PrdNaam").value=l_values[4];
+			document.getElementById("InputXfPa2Pr2Code").value=l_values[5];
+			document.getElementById("InputXfPa2Pr2Naam").value=l_values[6];
+			document.getElementById("InputXkPa2Code").value=l_values[7];
+			document.getElementById("InputXkPa2Naam").value=l_values[8];
 			break;
-		case "CREATE_CCC":
-			document.getElementById("InputFkCccCode").readOnly=true;
-			document.getElementById("InputFkCccNaam").readOnly=true;
+		case "CREATE_PA2":
+			document.getElementById("InputFkPrdCode").readOnly=true;
+			document.getElementById("InputFkPrdNaam").readOnly=true;
+			document.getElementById("InputFkPr2Code").readOnly=true;
+			document.getElementById("InputFkPr2Naam").readOnly=true;
+			document.getElementById("InputFkPa2Code").readOnly=true;
+			document.getElementById("InputFkPa2Naam").readOnly=true;
 			document.getElementById("InputCode").readOnly=true;
 			document.getElementById("InputNaam").readOnly=true;
 			document.getElementById("ButtonCreate").disabled=true;
 			document.getElementById("ButtonUpdate").disabled=false;
 			document.getElementById("ButtonDelete").disabled=false;
 			l_objNode = parent.TREE.document.getElementById(document._nodeId);
-			document._nodeId = 'TYP_CCC<||>'+document.getElementById("InputCode").value+'<|>'+document.getElementById("InputNaam").value;
+			document._nodeId = 'TYP_PA2<||>'+document.getElementById("InputFkPrdCode").value+'<|>'+document.getElementById("InputFkPrdNaam").value+'<|>'+document.getElementById("InputFkPr2Code").value+'<|>'+document.getElementById("InputFkPr2Naam").value+'<|>'+document.getElementById("InputCode").value+'<|>'+document.getElementById("InputNaam").value;
 			if (l_objNode != null) {
 				if (l_objNode.firstChild._state == 'O') {
 					var l_position = 'L';
 					l_objNodePos = null;
 					parent.TREE.AddTreeviewNode(
 						l_objNode,
-						'TYP_CCC',
+						'TYP_PA2',
 						document._nodeId,
-						'icons/produkt.bmp', 
+						'icons/part.bmp', 
 						document.getElementById("InputCode").value.toLowerCase()+' '+document.getElementById("InputNaam").value.toLowerCase(),
 						'N',
 						l_position,
@@ -46,9 +54,9 @@ g_xmlhttp.onreadystatechange = function() {
 				}
 			}
 			break;
-		case "UPDATE_CCC":
+		case "UPDATE_PA2":
 			break;
-		case "DELETE_CCC":
+		case "DELETE_PA2":
 			document.getElementById("ButtonUpdate").disabled=true;
 			document.getElementById("ButtonDelete").disabled=true;
 			l_objNode = parent.TREE.document.getElementById(document._nodeId);
@@ -57,8 +65,8 @@ g_xmlhttp.onreadystatechange = function() {
 				l_objNode.parentNode.removeChild(l_objNode);
 			}
 			break;
-		case "LIST_CCC":
-			OpenListBox(l_argument,'produkt','Ccc','Y');
+		case "LIST_PA2":
+			OpenListBox(l_argument,'part','Part2','Y');
 			break;
 		case "ERROR":
 			alert ('Error: '+l_argument[1]);
@@ -90,28 +98,52 @@ function InitBody() {
 	}
 	switch (l_argument[1]) {
 	case "D":
-		document.getElementById("InputCode").value=values[0];
-		document.getElementById("InputNaam").value=values[1];
+		document.getElementById("InputFkPrdCode").value=values[0];
+		document.getElementById("InputFkPrdNaam").value=values[1];
+		document.getElementById("InputFkPr2Code").value=values[2];
+		document.getElementById("InputFkPr2Naam").value=values[3];
+		document.getElementById("InputCode").value=values[4];
+		document.getElementById("InputNaam").value=values[5];
 		document.getElementById("ButtonCreate").disabled=true;
-		performTrans('GetCcc'+'<|||>'+document._argument);
-		document.getElementById("InputFkCccCode").readOnly=true;
-		document.getElementById("InputFkCccNaam").readOnly=true;
+		performTrans('GetPa2'+'<|||>'+document._argument);
+		document.getElementById("InputFkPrdCode").readOnly=true;
+		document.getElementById("InputFkPrdNaam").readOnly=true;
+		document.getElementById("InputFkPr2Code").readOnly=true;
+		document.getElementById("InputFkPr2Naam").readOnly=true;
+		document.getElementById("InputFkPa2Code").readOnly=true;
+		document.getElementById("InputFkPa2Naam").readOnly=true;
 		document.getElementById("InputCode").readOnly=true;
 		document.getElementById("InputNaam").readOnly=true;
 		break;
 	case "N":
+		document.getElementById("InputFkPrdCode").value=values[0];
+		document.getElementById("InputFkPrdNaam").value=values[1];
+		document.getElementById("InputFkPr2Code").value=values[2];
+		document.getElementById("InputFkPr2Naam").value=values[3];
 		document.getElementById("ButtonUpdate").disabled=true;
 		document.getElementById("ButtonDelete").disabled=true;
-		document.getElementById("InputFkCccCode").readOnly=true;
-		document.getElementById("InputFkCccNaam").readOnly=true;
+		document.getElementById("InputFkPrdCode").readOnly=true;
+		document.getElementById("InputFkPrdNaam").readOnly=true;
+		document.getElementById("InputFkPr2Code").readOnly=true;
+		document.getElementById("InputFkPr2Naam").readOnly=true;
+		document.getElementById("InputFkPa2Code").readOnly=true;
+		document.getElementById("InputFkPa2Naam").readOnly=true;
 		break;  
 	case "R":
-		document.getElementById("InputFkCccCode").value=values[0];
-		document.getElementById("InputFkCccNaam").value=values[1];
+		document.getElementById("InputFkPrdCode").value=values[0];
+		document.getElementById("InputFkPrdNaam").value=values[1];
+		document.getElementById("InputFkPr2Code").value=values[2];
+		document.getElementById("InputFkPr2Naam").value=values[3];
+		document.getElementById("InputFkPa2Code").value=values[4];
+		document.getElementById("InputFkPa2Naam").value=values[5];
 		document.getElementById("ButtonUpdate").disabled=true;
 		document.getElementById("ButtonDelete").disabled=true;
-		document.getElementById("InputFkCccCode").readOnly=true;
-		document.getElementById("InputFkCccNaam").readOnly=true;
+		document.getElementById("InputFkPrdCode").readOnly=true;
+		document.getElementById("InputFkPrdNaam").readOnly=true;
+		document.getElementById("InputFkPr2Code").readOnly=true;
+		document.getElementById("InputFkPr2Naam").readOnly=true;
+		document.getElementById("InputFkPa2Code").readOnly=true;
+		document.getElementById("InputFkPa2Naam").readOnly=true;
 		break;
 	default:
 		alert ('Error InitBody: '+l_argument[1]);
@@ -119,35 +151,55 @@ function InitBody() {
 	document.getElementById("InputCubeLevel").value='1';
 }
 
-function CreateCcc() {
+function CreatePa2() {
 	var l_parameters = 
-		document.getElementById("InputFkCccCode").value+'<|>'+
-		document.getElementById("InputFkCccNaam").value+'<|>'+
+		document.getElementById("InputFkPrdCode").value+'<|>'+
+		document.getElementById("InputFkPrdNaam").value+'<|>'+
+		document.getElementById("InputFkPr2Code").value+'<|>'+
+		document.getElementById("InputFkPr2Naam").value+'<|>'+
+		document.getElementById("InputFkPa2Code").value+'<|>'+
+		document.getElementById("InputFkPa2Naam").value+'<|>'+
 		document.getElementById("InputCode").value+'<|>'+
 		document.getElementById("InputNaam").value+'<|>'+
-		document.getElementById("InputOmschrjving").value+'<|>'+
-		document.getElementById("InputXkCccCode").value+'<|>'+
-		document.getElementById("InputXkCccNaam").value;
-	performTrans('CreateCcc<|||>'+l_parameters);
+		document.getElementById("InputOmschrijving").value+'<|>'+
+		document.getElementById("InputXfPa2PrdCode").value+'<|>'+
+		document.getElementById("InputXfPa2PrdNaam").value+'<|>'+
+		document.getElementById("InputXfPa2Pr2Code").value+'<|>'+
+		document.getElementById("InputXfPa2Pr2Naam").value+'<|>'+
+		document.getElementById("InputXkPa2Code").value+'<|>'+
+		document.getElementById("InputXkPa2Naam").value;
+	performTrans('CreatePa2<|||>'+l_parameters);
 }
 
-function UpdateCcc() {
+function UpdatePa2() {
 	var l_parameters = 
-		document.getElementById("InputFkCccCode").value+'<|>'+
-		document.getElementById("InputFkCccNaam").value+'<|>'+
+		document.getElementById("InputFkPrdCode").value+'<|>'+
+		document.getElementById("InputFkPrdNaam").value+'<|>'+
+		document.getElementById("InputFkPr2Code").value+'<|>'+
+		document.getElementById("InputFkPr2Naam").value+'<|>'+
+		document.getElementById("InputFkPa2Code").value+'<|>'+
+		document.getElementById("InputFkPa2Naam").value+'<|>'+
 		document.getElementById("InputCode").value+'<|>'+
 		document.getElementById("InputNaam").value+'<|>'+
-		document.getElementById("InputOmschrjving").value+'<|>'+
-		document.getElementById("InputXkCccCode").value+'<|>'+
-		document.getElementById("InputXkCccNaam").value;
-	performTrans('UpdateCcc<|||>'+l_parameters);
+		document.getElementById("InputOmschrijving").value+'<|>'+
+		document.getElementById("InputXfPa2PrdCode").value+'<|>'+
+		document.getElementById("InputXfPa2PrdNaam").value+'<|>'+
+		document.getElementById("InputXfPa2Pr2Code").value+'<|>'+
+		document.getElementById("InputXfPa2Pr2Naam").value+'<|>'+
+		document.getElementById("InputXkPa2Code").value+'<|>'+
+		document.getElementById("InputXkPa2Naam").value;
+	performTrans('UpdatePa2<|||>'+l_parameters);
 }
 
-function DeleteCcc() {
+function DeletePa2() {
 	var l_parameters = 
+		document.getElementById("InputFkPrdCode").value+'<|>'+
+		document.getElementById("InputFkPrdNaam").value+'<|>'+
+		document.getElementById("InputFkPr2Code").value+'<|>'+
+		document.getElementById("InputFkPr2Naam").value+'<|>'+
 		document.getElementById("InputCode").value+'<|>'+
 		document.getElementById("InputNaam").value;
-	performTrans('DeleteCcc<|||>'+l_parameters);
+	performTrans('DeletePa2<|||>'+l_parameters);
 }
 
 function OpenListBox(p_rows,p_icon,p_header,p_optional) {
@@ -231,14 +283,34 @@ function UpdateForeignKey(p_obj) {
 	switch (document.body._ListBoxCode){
 	case "Ref001":
 		if (l_obj_option.value == '') {
-			document.getElementById("InputXkCccCode").value = '';
+			document.getElementById("InputXfPa2PrdCode").value = '';
 		} else {
-			document.getElementById("InputXkCccCode").value = l_values[0];
+			document.getElementById("InputXfPa2PrdCode").value = l_values[0];
 		}
 		if (l_obj_option.value == '') {
-			document.getElementById("InputXkCccNaam").value = '';
+			document.getElementById("InputXfPa2PrdNaam").value = '';
 		} else {
-			document.getElementById("InputXkCccNaam").value = l_values[1];
+			document.getElementById("InputXfPa2PrdNaam").value = l_values[1];
+		}
+		if (l_obj_option.value == '') {
+			document.getElementById("InputXfPa2Pr2Code").value = '';
+		} else {
+			document.getElementById("InputXfPa2Pr2Code").value = l_values[2];
+		}
+		if (l_obj_option.value == '') {
+			document.getElementById("InputXfPa2Pr2Naam").value = '';
+		} else {
+			document.getElementById("InputXfPa2Pr2Naam").value = l_values[3];
+		}
+		if (l_obj_option.value == '') {
+			document.getElementById("InputXkPa2Code").value = '';
+		} else {
+			document.getElementById("InputXkPa2Code").value = l_values[4];
+		}
+		if (l_obj_option.value == '') {
+			document.getElementById("InputXkPa2Naam").value = '';
+		} else {
+			document.getElementById("InputXkPa2Naam").value = l_values[5];
 		}
 		break;
 	default:
@@ -250,8 +322,13 @@ function UpdateForeignKey(p_obj) {
 function StartSelect001(p_event) {
 	document.body._SelectLeft = p_event.clientX;
 	document.body._SelectTop = p_event.clientY;
-	document.body._ListBoxCode = 'Ref001';;
-	performTrans('GetCccListEncapsulated<|||>');
+	document.body._ListBoxCode = 'Ref001';
+	var l_parameters = 
+		document.getElementById("InputFkPrdCode").value+'<|>'+
+		document.getElementById("InputFkPrdNaam").value+'<|>'+
+		document.getElementById("InputFkPr2Code").value+'<|>'+
+		document.getElementById("InputFkPr2Naam").value;
+	performTrans('GetPa2ListEncapsulated<|||>'+l_parameters);
 }
 
 function OpenDescBox(p_icon,p_name,p_type,p_attribute_type,p_sequence) {
@@ -358,32 +435,48 @@ function drop(p_event) {
 -->
 </script>
 </head><body oncontextmenu="return false;" onload="InitBody()" ondrop="drop(event)" ondragover="allowDrop(event)">
-<div><img src="icons/produkt_large.bmp" /><span> CCC</span></div>
+<div><img src="icons/part_large.bmp" /><span> PART2</span></div>
 <hr/>
 <table>
-<tr><td>Ccc.Code</td><td><div style="max-width:8em;">
-<input id="InputFkCccCode" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td>Ccc.Naam</td><td><div style="max-width:40em;">
-<input id="InputFkCccNaam" type="text" maxlength="40" style="width:100%;"></input></div></td></tr>
+<tr><td><u>Prod.Code</u></td><td><div style="max-width:8em;">
+<input id="InputFkPrdCode" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr><td><u>Prod.Naam</u></td><td><div style="max-width:40em;">
+<input id="InputFkPrdNaam" type="text" maxlength="40" style="width:100%;"></input></div></td></tr>
+<tr><td><u>Prod2.Code</u></td><td><div style="max-width:8em;">
+<input id="InputFkPr2Code" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr><td><u>Prod2.Naam</u></td><td><div style="max-width:40em;">
+<input id="InputFkPr2Naam" type="text" maxlength="40" style="width:100%;"></input></div></td></tr>
+<tr><td>Part2.Code</td><td><div style="max-width:8em;">
+<input id="InputFkPa2Code" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr><td>Part2.Naam</td><td><div style="max-width:40em;">
+<input id="InputFkPa2Naam" type="text" maxlength="40" style="width:100%;"></input></div></td></tr>
 <tr><td><u>Code</u></td><td><div style="max-width:8em;">
 <input id="InputCode" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
 <tr><td><u>Naam</u></td><td><div style="max-width:40em;">
 <input id="InputNaam" type="text" maxlength="40" style="width:100%;"></input></div></td></tr>
-<tr><td>Omschrjving</td><td><div style="max-width:120em;">
-<input id="InputOmschrjving" type="text" maxlength="120" style="width:100%;"></input></div></td></tr>
-<tr><td height=6></td></tr><tr><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/produkt.bmp"/> Ccc (Concerns)</legend>
+<tr><td>Omschrijving</td><td><div style="max-width:120em;">
+<input id="InputOmschrijving" type="text" maxlength="120" style="width:100%;"></input></div></td></tr>
+<tr><td height=6></td></tr><tr><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/part.bmp"/> Part2 (Concerns)</legend>
 <table style="width:100%;">
-<tr><td>Ccc.Code</td><td style="width:100%;"><div style="max-width:8em;">
-<input id="InputXkCccCode" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" readonly></input></div></td>
+<tr><td>Prod.Code</td><td style="width:100%;"><div style="max-width:8em;">
+<input id="InputXfPa2PrdCode" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" readonly></input></div></td>
 <td><button id="RefSelect001" type="button" onclick="StartSelect001(event)">Select</button></td></tr>
-<tr><td>Ccc.Naam</td><td style="width:100%;"><div style="max-width:40em;">
-<input id="InputXkCccNaam" type="text" maxlength="40" style="width:100%;" readonly></input></div></td></tr>
+<tr><td>Prod.Naam</td><td style="width:100%;"><div style="max-width:40em;">
+<input id="InputXfPa2PrdNaam" type="text" maxlength="40" style="width:100%;" readonly></input></div></td></tr>
+<tr><td>Prod2.Code</td><td style="width:100%;"><div style="max-width:8em;">
+<input id="InputXfPa2Pr2Code" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" readonly></input></div></td></tr>
+<tr><td>Prod2.Naam</td><td style="width:100%;"><div style="max-width:40em;">
+<input id="InputXfPa2Pr2Naam" type="text" maxlength="40" style="width:100%;" readonly></input></div></td></tr>
+<tr><td>Part2.Code</td><td style="width:100%;"><div style="max-width:8em;">
+<input id="InputXkPa2Code" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" readonly></input></div></td></tr>
+<tr><td>Part2.Naam</td><td style="width:100%;"><div style="max-width:40em;">
+<input id="InputXkPa2Naam" type="text" maxlength="40" style="width:100%;" readonly></input></div></td></tr>
 </table></fieldset></td></tr>
 <tr><td><br></td><td style="width:100%;"></td></tr>
 <tr><td/><td>
-<button id="ButtonCreate" type="button" onclick="CreateCcc()">Create</button>&nbsp;&nbsp;&nbsp;
-<button id="ButtonUpdate" type="button" onclick="UpdateCcc()">Update</button>&nbsp;&nbsp;&nbsp;
-<button id="ButtonDelete" type="button" onclick="DeleteCcc()">Delete</button></td></tr>
+<button id="ButtonCreate" type="button" onclick="CreatePa2()">Create</button>&nbsp;&nbsp;&nbsp;
+<button id="ButtonUpdate" type="button" onclick="UpdatePa2()">Update</button>&nbsp;&nbsp;&nbsp;
+<button id="ButtonDelete" type="button" onclick="DeletePa2()">Delete</button></td></tr>
 </table>
 <input id="InputCubeId" type="hidden"></input>
 <input id="InputCubeLevel" type="hidden"></input>

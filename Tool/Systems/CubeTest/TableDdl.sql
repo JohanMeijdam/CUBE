@@ -20,6 +20,14 @@ DROP SEQUENCE prd_seq
 /
 CREATE SEQUENCE prd_seq START WITH 100000
 /
+DROP SEQUENCE pr2_seq
+/
+CREATE SEQUENCE pr2_seq START WITH 100000
+/
+DROP SEQUENCE pa2_seq
+/
+CREATE SEQUENCE pa2_seq START WITH 100000
+/
 DROP SEQUENCE prt_seq
 /
 CREATE SEQUENCE prt_seq START WITH 100000
@@ -29,6 +37,12 @@ ALTER TABLE t_aaa DROP CONSTRAINT aaa_aaa_fk
 ALTER TABLE t_aaa_deel DROP CONSTRAINT aad_aaa_fk
 /
 ALTER TABLE t_ccc DROP CONSTRAINT ccc_ccc_fk
+/
+ALTER TABLE t_prod2 DROP CONSTRAINT pr2_prd_fk
+/
+ALTER TABLE t_part2 DROP CONSTRAINT pa2_pr2_fk
+/
+ALTER TABLE t_part2 DROP CONSTRAINT pa2_pa2_fk
 /
 ALTER TABLE t_part DROP CONSTRAINT prt_prd_fk
 /
@@ -43,6 +57,10 @@ DROP TABLE t_bbb
 DROP TABLE t_ccc
 /
 DROP TABLE t_prod
+/
+DROP TABLE t_prod2
+/
+DROP TABLE t_part2
 /
 DROP TABLE t_part
 /
@@ -89,6 +107,8 @@ CREATE TABLE t_ccc (
 	code VARCHAR2(8),
 	naam VARCHAR2(40),
 	omschrjving VARCHAR2(120),
+	xk_ccc_code VARCHAR2(8),
+	xk_ccc_naam VARCHAR2(40),
 	CONSTRAINT ccc_pk
 		PRIMARY KEY (code, naam),
 	CONSTRAINT ccc_ccc_fk
@@ -103,6 +123,49 @@ CREATE TABLE t_prod (
 	omschrijving VARCHAR2(120),
 	CONSTRAINT prd_pk
 		PRIMARY KEY (code, naam) )
+/
+CREATE TABLE t_prod2 (
+	cube_id VARCHAR2(16),
+	fk_prd_code VARCHAR2(8),
+	fk_prd_naam VARCHAR2(40),
+	code VARCHAR2(8),
+	naam VARCHAR2(40),
+	omschrijving VARCHAR2(120),
+	CONSTRAINT pr2_pk
+		PRIMARY KEY (fk_prd_code, fk_prd_naam, code, naam),
+	CONSTRAINT pr2_prd_fk
+		FOREIGN KEY (fk_prd_code, fk_prd_naam)
+		REFERENCES t_prod (code, naam)
+		ON DELETE CASCADE )
+/
+CREATE TABLE t_part2 (
+	cube_id VARCHAR2(16),
+	cube_level NUMBER(8) DEFAULT '1',
+	fk_prd_code VARCHAR2(8),
+	fk_prd_naam VARCHAR2(40),
+	fk_pr2_code VARCHAR2(8),
+	fk_pr2_naam VARCHAR2(40),
+	fk_pa2_code VARCHAR2(8),
+	fk_pa2_naam VARCHAR2(40),
+	code VARCHAR2(8),
+	naam VARCHAR2(40),
+	omschrijving VARCHAR2(120),
+	xf_pa2_prd_code VARCHAR2(8),
+	xf_pa2_prd_naam VARCHAR2(40),
+	xf_pa2_pr2_code VARCHAR2(8),
+	xf_pa2_pr2_naam VARCHAR2(40),
+	xk_pa2_code VARCHAR2(8),
+	xk_pa2_naam VARCHAR2(40),
+	CONSTRAINT pa2_pk
+		PRIMARY KEY (fk_prd_code, fk_prd_naam, fk_pr2_code, fk_pr2_naam, code, naam),
+	CONSTRAINT pa2_pr2_fk
+		FOREIGN KEY (fk_prd_code, fk_prd_naam, fk_pr2_code, fk_pr2_naam)
+		REFERENCES t_prod2 (fk_prd_code, fk_prd_naam, code, naam)
+		ON DELETE CASCADE,
+	CONSTRAINT pa2_pa2_fk
+		FOREIGN KEY (fk_prd_code, fk_prd_naam, fk_pr2_code, fk_pr2_naam, fk_pa2_code, fk_pa2_naam)
+		REFERENCES t_part2 (fk_prd_code, fk_prd_naam, fk_pr2_code, fk_pr2_naam, code, naam)
+		ON DELETE CASCADE )
 /
 CREATE TABLE t_part (
 	cube_id VARCHAR2(16),

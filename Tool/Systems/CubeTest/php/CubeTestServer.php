@@ -379,6 +379,18 @@ case 'GetDirCccItems':
 	}
 	break;
 
+case 'GetCccListEncapsulated':
+
+	$stid = oci_parse($conn, "BEGIN pkg_ccc.get_ccc_list_encapsulated (:p_cube_row); END;");
+	$r = perform_db_request();
+	if (!$r) { return; }
+	echo "LIST_CCC";
+	while ($row = oci_fetch_assoc($curs)) {
+		echo "<|||>".$row["CODE"]."<|>".$row["NAAM"];
+		echo "<||>".$row["CODE"]." ".$row["NAAM"];
+	}
+	break;
+
 case 'CountCcc':
 
 	$stid = oci_parse($conn, "BEGIN pkg_ccc.count_ccc (:p_cube_row); END;");
@@ -406,7 +418,7 @@ case 'GetCcc':
 	if (!$r) { return; }
 	echo "SELECT_CCC";
 	if ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["FK_CCC_CODE"]."<|>".$row["FK_CCC_NAAM"]."<|>".$row["OMSCHRJVING"];
+		echo "<|||>".$row["FK_CCC_CODE"]."<|>".$row["FK_CCC_NAAM"]."<|>".$row["OMSCHRJVING"]."<|>".$row["XK_CCC_CODE"]."<|>".$row["XK_CCC_NAAM"];
 	}
 	break;
 
@@ -479,20 +491,24 @@ case 'ChangeParentCcc':
 
 case 'CreateCcc':
 
-	list($p_fk_ccc_code, $p_fk_ccc_naam, $p_code, $p_naam, $p_omschrjving) = explode("<|>", $import[1]);
+	list($p_fk_ccc_code, $p_fk_ccc_naam, $p_code, $p_naam, $p_omschrjving, $p_xk_ccc_code, $p_xk_ccc_naam) = explode("<|>", $import[1]);
 
 	$stid = oci_parse($conn, "BEGIN pkg_ccc.insert_ccc (
 		:p_fk_ccc_code,
 		:p_fk_ccc_naam,
 		:p_code,
 		:p_naam,
-		:p_omschrjving);
+		:p_omschrjving,
+		:p_xk_ccc_code,
+		:p_xk_ccc_naam);
 	END;");
 	oci_bind_by_name($stid,":p_fk_ccc_code",$p_fk_ccc_code);
 	oci_bind_by_name($stid,":p_fk_ccc_naam",$p_fk_ccc_naam);
 	oci_bind_by_name($stid,":p_code",$p_code);
 	oci_bind_by_name($stid,":p_naam",$p_naam);
 	oci_bind_by_name($stid,":p_omschrjving",$p_omschrjving);
+	oci_bind_by_name($stid,":p_xk_ccc_code",$p_xk_ccc_code);
+	oci_bind_by_name($stid,":p_xk_ccc_naam",$p_xk_ccc_naam);
 
 	$r = oci_execute($stid);
 	if (!$r) {
@@ -504,20 +520,24 @@ case 'CreateCcc':
 
 case 'UpdateCcc':
 
-	list($p_fk_ccc_code, $p_fk_ccc_naam, $p_code, $p_naam, $p_omschrjving) = explode("<|>", $import[1]);
+	list($p_fk_ccc_code, $p_fk_ccc_naam, $p_code, $p_naam, $p_omschrjving, $p_xk_ccc_code, $p_xk_ccc_naam) = explode("<|>", $import[1]);
 
 	$stid = oci_parse($conn, "BEGIN pkg_ccc.update_ccc (
 		:p_fk_ccc_code,
 		:p_fk_ccc_naam,
 		:p_code,
 		:p_naam,
-		:p_omschrjving);
+		:p_omschrjving,
+		:p_xk_ccc_code,
+		:p_xk_ccc_naam);
 	END;");
 	oci_bind_by_name($stid,":p_fk_ccc_code",$p_fk_ccc_code);
 	oci_bind_by_name($stid,":p_fk_ccc_naam",$p_fk_ccc_naam);
 	oci_bind_by_name($stid,":p_code",$p_code);
 	oci_bind_by_name($stid,":p_naam",$p_naam);
 	oci_bind_by_name($stid,":p_omschrjving",$p_omschrjving);
+	oci_bind_by_name($stid,":p_xk_ccc_code",$p_xk_ccc_code);
+	oci_bind_by_name($stid,":p_xk_ccc_naam",$p_xk_ccc_naam);
 
 	$r = oci_execute($stid);
 	if (!$r) {
@@ -581,6 +601,24 @@ case 'GetPrd':
 case 'GetPrdItems':
 
 	list($p_code, $p_naam) = explode("<|>", $import[1]);
+
+	$stid = oci_parse($conn, "BEGIN pkg_prd.get_prd_pr2_items (
+		:p_cube_row,
+		:p_code,
+		:p_naam);
+	END;");
+	oci_bind_by_name($stid,":p_code",$p_code);
+	oci_bind_by_name($stid,":p_naam",$p_naam);
+
+	$r = perform_db_request();
+	if (!$r) { return; }
+	$first = True;
+	while ($row = oci_fetch_assoc($curs)) {
+		if ($first) { $first = False; echo "LIST_PR2";}
+		echo "<|||>".$row["FK_PRD_CODE"]."<|>".$row["FK_PRD_NAAM"]."<|>".$row["CODE"]."<|>".$row["NAAM"];
+		echo "<||>".$row["CODE"]." ".$row["NAAM"];
+	}
+	echo "<||||>";
 
 	$stid = oci_parse($conn, "BEGIN pkg_prd.get_prd_prt_items (
 		:p_cube_row,
@@ -661,15 +699,383 @@ case 'DeletePrd':
 	echo "DELETE_PRD";
 	break;
 
-case 'GetPrtForPrdListAll':
+case 'GetPr2':
 
-	list($x_fk_prd_code, $x_fk_prd_naam) = explode("<|>", $import[1]);
+	list($p_fk_prd_code, $p_fk_prd_naam, $p_code, $p_naam) = explode("<|>", $import[1]);
 
-	$stid = oci_parse($conn, "BEGIN pkg_prd.get_prt_for_prd_list_all (
+	$stid = oci_parse($conn, "BEGIN pkg_prd.get_pr2 (
 		:p_cube_row,
+		:p_fk_prd_code,
+		:p_fk_prd_naam,
+		:p_code,
+		:p_naam);
+	END;");
+	oci_bind_by_name($stid,":p_fk_prd_code",$p_fk_prd_code);
+	oci_bind_by_name($stid,":p_fk_prd_naam",$p_fk_prd_naam);
+	oci_bind_by_name($stid,":p_code",$p_code);
+	oci_bind_by_name($stid,":p_naam",$p_naam);
+
+	$r = perform_db_request();
+	if (!$r) { return; }
+	echo "SELECT_PR2";
+	if ($row = oci_fetch_assoc($curs)) {
+		echo "<|||>".$row["OMSCHRIJVING"];
+	}
+	break;
+
+case 'GetPr2Items':
+
+	list($p_fk_prd_code, $p_fk_prd_naam, $p_code, $p_naam) = explode("<|>", $import[1]);
+
+	$stid = oci_parse($conn, "BEGIN pkg_prd.get_pr2_pa2_items (
+		:p_cube_row,
+		:p_fk_prd_code,
+		:p_fk_prd_naam,
+		:p_code,
+		:p_naam);
+	END;");
+	oci_bind_by_name($stid,":p_fk_prd_code",$p_fk_prd_code);
+	oci_bind_by_name($stid,":p_fk_prd_naam",$p_fk_prd_naam);
+	oci_bind_by_name($stid,":p_code",$p_code);
+	oci_bind_by_name($stid,":p_naam",$p_naam);
+
+	$r = perform_db_request();
+	if (!$r) { return; }
+	$first = True;
+	while ($row = oci_fetch_assoc($curs)) {
+		if ($first) { $first = False; echo "LIST_PA2";}
+		echo "<|||>".$row["FK_PRD_CODE"]."<|>".$row["FK_PRD_NAAM"]."<|>".$row["FK_PR2_CODE"]."<|>".$row["FK_PR2_NAAM"]."<|>".$row["CODE"]."<|>".$row["NAAM"];
+		echo "<||>".$row["CODE"]." ".$row["NAAM"];
+	}
+	break;
+
+case 'CreatePr2':
+
+	list($p_fk_prd_code, $p_fk_prd_naam, $p_code, $p_naam, $p_omschrijving) = explode("<|>", $import[1]);
+
+	$stid = oci_parse($conn, "BEGIN pkg_prd.insert_pr2 (
+		:p_fk_prd_code,
+		:p_fk_prd_naam,
+		:p_code,
+		:p_naam,
+		:p_omschrijving);
+	END;");
+	oci_bind_by_name($stid,":p_fk_prd_code",$p_fk_prd_code);
+	oci_bind_by_name($stid,":p_fk_prd_naam",$p_fk_prd_naam);
+	oci_bind_by_name($stid,":p_code",$p_code);
+	oci_bind_by_name($stid,":p_naam",$p_naam);
+	oci_bind_by_name($stid,":p_omschrijving",$p_omschrijving);
+
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		return;
+	}
+	echo "CREATE_PR2";
+	break;
+
+case 'UpdatePr2':
+
+	list($p_fk_prd_code, $p_fk_prd_naam, $p_code, $p_naam, $p_omschrijving) = explode("<|>", $import[1]);
+
+	$stid = oci_parse($conn, "BEGIN pkg_prd.update_pr2 (
+		:p_fk_prd_code,
+		:p_fk_prd_naam,
+		:p_code,
+		:p_naam,
+		:p_omschrijving);
+	END;");
+	oci_bind_by_name($stid,":p_fk_prd_code",$p_fk_prd_code);
+	oci_bind_by_name($stid,":p_fk_prd_naam",$p_fk_prd_naam);
+	oci_bind_by_name($stid,":p_code",$p_code);
+	oci_bind_by_name($stid,":p_naam",$p_naam);
+	oci_bind_by_name($stid,":p_omschrijving",$p_omschrijving);
+
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		return;
+	}
+	echo "UPDATE_PR2";
+	break;
+
+case 'DeletePr2':
+
+	list($p_fk_prd_code, $p_fk_prd_naam, $p_code, $p_naam) = explode("<|>", $import[1]);
+
+	$stid = oci_parse($conn, "BEGIN pkg_prd.delete_pr2 (
+		:p_fk_prd_code,
+		:p_fk_prd_naam,
+		:p_code,
+		:p_naam);
+	END;");
+	oci_bind_by_name($stid,":p_fk_prd_code",$p_fk_prd_code);
+	oci_bind_by_name($stid,":p_fk_prd_naam",$p_fk_prd_naam);
+	oci_bind_by_name($stid,":p_code",$p_code);
+	oci_bind_by_name($stid,":p_naam",$p_naam);
+
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		return;
+	}
+	echo "DELETE_PR2";
+	break;
+
+case 'GetPa2ListEncapsulated':
+
+	list($p_fk_prd_code, $p_fk_prd_naam, $p_code, $p_naam) = explode("<|>", $import[1]);
+
+	$stid = oci_parse($conn, "BEGIN pkg_prd.get_pa2_list_encapsulated (
+		:p_cube_row,
+		:p_fk_prd_code,
+		:p_fk_prd_naam,
+		:p_code,
+		:p_naam);
+	END;");
+	oci_bind_by_name($stid,":p_fk_prd_code",$p_fk_prd_code);
+	oci_bind_by_name($stid,":p_fk_prd_naam",$p_fk_prd_naam);
+	oci_bind_by_name($stid,":p_code",$p_code);
+	oci_bind_by_name($stid,":p_naam",$p_naam);
+
+	$r = perform_db_request();
+	if (!$r) { return; }
+	echo "LIST_PA2";
+	while ($row = oci_fetch_assoc($curs)) {
+		echo "<|||>".$row["FK_PRD_CODE"]."<|>".$row["FK_PRD_NAAM"]."<|>".$row["FK_PR2_CODE"]."<|>".$row["FK_PR2_NAAM"]."<|>".$row["CODE"]."<|>".$row["NAAM"];
+		echo "<||>".$row["FK_PRD_CODE"]." ".$row["FK_PRD_NAAM"]." ".$row["FK_PR2_CODE"]." ".$row["FK_PR2_NAAM"]." ".$row["CODE"]." ".$row["NAAM"];
+	}
+	break;
+
+case 'GetPa2':
+
+	list($p_fk_prd_code, $p_fk_prd_naam, $p_fk_pr2_code, $p_fk_pr2_naam, $p_code, $p_naam) = explode("<|>", $import[1]);
+
+	$stid = oci_parse($conn, "BEGIN pkg_prd.get_pa2 (
+		:p_cube_row,
+		:p_fk_prd_code,
+		:p_fk_prd_naam,
+		:p_fk_pr2_code,
+		:p_fk_pr2_naam,
+		:p_code,
+		:p_naam);
+	END;");
+	oci_bind_by_name($stid,":p_fk_prd_code",$p_fk_prd_code);
+	oci_bind_by_name($stid,":p_fk_prd_naam",$p_fk_prd_naam);
+	oci_bind_by_name($stid,":p_fk_pr2_code",$p_fk_pr2_code);
+	oci_bind_by_name($stid,":p_fk_pr2_naam",$p_fk_pr2_naam);
+	oci_bind_by_name($stid,":p_code",$p_code);
+	oci_bind_by_name($stid,":p_naam",$p_naam);
+
+	$r = perform_db_request();
+	if (!$r) { return; }
+	echo "SELECT_PA2";
+	if ($row = oci_fetch_assoc($curs)) {
+		echo "<|||>".$row["FK_PA2_CODE"]."<|>".$row["FK_PA2_NAAM"]."<|>".$row["OMSCHRIJVING"]."<|>".$row["XF_PA2_PRD_CODE"]."<|>".$row["XF_PA2_PRD_NAAM"]."<|>".$row["XF_PA2_PR2_CODE"]."<|>".$row["XF_PA2_PR2_NAAM"]."<|>".$row["XK_PA2_CODE"]."<|>".$row["XK_PA2_NAAM"];
+	}
+	break;
+
+case 'GetPa2Items':
+
+	list($p_fk_prd_code, $p_fk_prd_naam, $p_fk_pr2_code, $p_fk_pr2_naam, $p_code, $p_naam) = explode("<|>", $import[1]);
+
+	$stid = oci_parse($conn, "BEGIN pkg_prd.get_pa2_pa2_items (
+		:p_cube_row,
+		:p_fk_prd_code,
+		:p_fk_prd_naam,
+		:p_fk_pr2_code,
+		:p_fk_pr2_naam,
+		:p_code,
+		:p_naam);
+	END;");
+	oci_bind_by_name($stid,":p_fk_prd_code",$p_fk_prd_code);
+	oci_bind_by_name($stid,":p_fk_prd_naam",$p_fk_prd_naam);
+	oci_bind_by_name($stid,":p_fk_pr2_code",$p_fk_pr2_code);
+	oci_bind_by_name($stid,":p_fk_pr2_naam",$p_fk_pr2_naam);
+	oci_bind_by_name($stid,":p_code",$p_code);
+	oci_bind_by_name($stid,":p_naam",$p_naam);
+
+	$r = perform_db_request();
+	if (!$r) { return; }
+	$first = True;
+	while ($row = oci_fetch_assoc($curs)) {
+		if ($first) { $first = False; echo "LIST_PA2";}
+		echo "<|||>".$row["FK_PRD_CODE"]."<|>".$row["FK_PRD_NAAM"]."<|>".$row["FK_PR2_CODE"]."<|>".$row["FK_PR2_NAAM"]."<|>".$row["CODE"]."<|>".$row["NAAM"];
+		echo "<||>".$row["CODE"]." ".$row["NAAM"];
+	}
+	break;
+
+case 'ChangeParentPa2':
+
+	list($p_cube_flag_root, $p_fk_prd_code, $p_fk_prd_naam, $p_fk_pr2_code, $p_fk_pr2_naam, $p_code, $p_naam, $x_fk_prd_code, $x_fk_prd_naam, $x_fk_pr2_code, $x_fk_pr2_naam, $x_code, $x_naam) = explode("<|>", $import[1]);
+
+	$stid = oci_parse($conn, "BEGIN pkg_prd.change_parent_pa2 (
+		:p_cube_flag_root,
+		:p_fk_prd_code,
+		:p_fk_prd_naam,
+		:p_fk_pr2_code,
+		:p_fk_pr2_naam,
+		:p_code,
+		:p_naam,
+		:x_fk_prd_code,
+		:x_fk_prd_naam,
+		:x_fk_pr2_code,
+		:x_fk_pr2_naam,
+		:x_code,
+		:x_naam);
+	END;");
+	oci_bind_by_name($stid,":p_cube_flag_root",$p_cube_flag_root);
+	oci_bind_by_name($stid,":p_fk_prd_code",$p_fk_prd_code);
+	oci_bind_by_name($stid,":p_fk_prd_naam",$p_fk_prd_naam);
+	oci_bind_by_name($stid,":p_fk_pr2_code",$p_fk_pr2_code);
+	oci_bind_by_name($stid,":p_fk_pr2_naam",$p_fk_pr2_naam);
+	oci_bind_by_name($stid,":p_code",$p_code);
+	oci_bind_by_name($stid,":p_naam",$p_naam);
+	oci_bind_by_name($stid,":x_fk_prd_code",$x_fk_prd_code);
+	oci_bind_by_name($stid,":x_fk_prd_naam",$x_fk_prd_naam);
+	oci_bind_by_name($stid,":x_fk_pr2_code",$x_fk_pr2_code);
+	oci_bind_by_name($stid,":x_fk_pr2_naam",$x_fk_pr2_naam);
+	oci_bind_by_name($stid,":x_code",$x_code);
+	oci_bind_by_name($stid,":x_naam",$x_naam);
+
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		return;
+	}
+	echo "CHANGE_PARENT_PA2";
+	break;
+
+case 'CreatePa2':
+
+	list($p_fk_prd_code, $p_fk_prd_naam, $p_fk_pr2_code, $p_fk_pr2_naam, $p_fk_pa2_code, $p_fk_pa2_naam, $p_code, $p_naam, $p_omschrijving, $p_xf_pa2_prd_code, $p_xf_pa2_prd_naam, $p_xf_pa2_pr2_code, $p_xf_pa2_pr2_naam, $p_xk_pa2_code, $p_xk_pa2_naam) = explode("<|>", $import[1]);
+
+	$stid = oci_parse($conn, "BEGIN pkg_prd.insert_pa2 (
+		:p_fk_prd_code,
+		:p_fk_prd_naam,
+		:p_fk_pr2_code,
+		:p_fk_pr2_naam,
+		:p_fk_pa2_code,
+		:p_fk_pa2_naam,
+		:p_code,
+		:p_naam,
+		:p_omschrijving,
+		:p_xf_pa2_prd_code,
+		:p_xf_pa2_prd_naam,
+		:p_xf_pa2_pr2_code,
+		:p_xf_pa2_pr2_naam,
+		:p_xk_pa2_code,
+		:p_xk_pa2_naam);
+	END;");
+	oci_bind_by_name($stid,":p_fk_prd_code",$p_fk_prd_code);
+	oci_bind_by_name($stid,":p_fk_prd_naam",$p_fk_prd_naam);
+	oci_bind_by_name($stid,":p_fk_pr2_code",$p_fk_pr2_code);
+	oci_bind_by_name($stid,":p_fk_pr2_naam",$p_fk_pr2_naam);
+	oci_bind_by_name($stid,":p_fk_pa2_code",$p_fk_pa2_code);
+	oci_bind_by_name($stid,":p_fk_pa2_naam",$p_fk_pa2_naam);
+	oci_bind_by_name($stid,":p_code",$p_code);
+	oci_bind_by_name($stid,":p_naam",$p_naam);
+	oci_bind_by_name($stid,":p_omschrijving",$p_omschrijving);
+	oci_bind_by_name($stid,":p_xf_pa2_prd_code",$p_xf_pa2_prd_code);
+	oci_bind_by_name($stid,":p_xf_pa2_prd_naam",$p_xf_pa2_prd_naam);
+	oci_bind_by_name($stid,":p_xf_pa2_pr2_code",$p_xf_pa2_pr2_code);
+	oci_bind_by_name($stid,":p_xf_pa2_pr2_naam",$p_xf_pa2_pr2_naam);
+	oci_bind_by_name($stid,":p_xk_pa2_code",$p_xk_pa2_code);
+	oci_bind_by_name($stid,":p_xk_pa2_naam",$p_xk_pa2_naam);
+
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		return;
+	}
+	echo "CREATE_PA2";
+	break;
+
+case 'UpdatePa2':
+
+	list($p_fk_prd_code, $p_fk_prd_naam, $p_fk_pr2_code, $p_fk_pr2_naam, $p_fk_pa2_code, $p_fk_pa2_naam, $p_code, $p_naam, $p_omschrijving, $p_xf_pa2_prd_code, $p_xf_pa2_prd_naam, $p_xf_pa2_pr2_code, $p_xf_pa2_pr2_naam, $p_xk_pa2_code, $p_xk_pa2_naam) = explode("<|>", $import[1]);
+
+	$stid = oci_parse($conn, "BEGIN pkg_prd.update_pa2 (
+		:p_fk_prd_code,
+		:p_fk_prd_naam,
+		:p_fk_pr2_code,
+		:p_fk_pr2_naam,
+		:p_fk_pa2_code,
+		:p_fk_pa2_naam,
+		:p_code,
+		:p_naam,
+		:p_omschrijving,
+		:p_xf_pa2_prd_code,
+		:p_xf_pa2_prd_naam,
+		:p_xf_pa2_pr2_code,
+		:p_xf_pa2_pr2_naam,
+		:p_xk_pa2_code,
+		:p_xk_pa2_naam);
+	END;");
+	oci_bind_by_name($stid,":p_fk_prd_code",$p_fk_prd_code);
+	oci_bind_by_name($stid,":p_fk_prd_naam",$p_fk_prd_naam);
+	oci_bind_by_name($stid,":p_fk_pr2_code",$p_fk_pr2_code);
+	oci_bind_by_name($stid,":p_fk_pr2_naam",$p_fk_pr2_naam);
+	oci_bind_by_name($stid,":p_fk_pa2_code",$p_fk_pa2_code);
+	oci_bind_by_name($stid,":p_fk_pa2_naam",$p_fk_pa2_naam);
+	oci_bind_by_name($stid,":p_code",$p_code);
+	oci_bind_by_name($stid,":p_naam",$p_naam);
+	oci_bind_by_name($stid,":p_omschrijving",$p_omschrijving);
+	oci_bind_by_name($stid,":p_xf_pa2_prd_code",$p_xf_pa2_prd_code);
+	oci_bind_by_name($stid,":p_xf_pa2_prd_naam",$p_xf_pa2_prd_naam);
+	oci_bind_by_name($stid,":p_xf_pa2_pr2_code",$p_xf_pa2_pr2_code);
+	oci_bind_by_name($stid,":p_xf_pa2_pr2_naam",$p_xf_pa2_pr2_naam);
+	oci_bind_by_name($stid,":p_xk_pa2_code",$p_xk_pa2_code);
+	oci_bind_by_name($stid,":p_xk_pa2_naam",$p_xk_pa2_naam);
+
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		return;
+	}
+	echo "UPDATE_PA2";
+	break;
+
+case 'DeletePa2':
+
+	list($p_fk_prd_code, $p_fk_prd_naam, $p_fk_pr2_code, $p_fk_pr2_naam, $p_code, $p_naam) = explode("<|>", $import[1]);
+
+	$stid = oci_parse($conn, "BEGIN pkg_prd.delete_pa2 (
+		:p_fk_prd_code,
+		:p_fk_prd_naam,
+		:p_fk_pr2_code,
+		:p_fk_pr2_naam,
+		:p_code,
+		:p_naam);
+	END;");
+	oci_bind_by_name($stid,":p_fk_prd_code",$p_fk_prd_code);
+	oci_bind_by_name($stid,":p_fk_prd_naam",$p_fk_prd_naam);
+	oci_bind_by_name($stid,":p_fk_pr2_code",$p_fk_pr2_code);
+	oci_bind_by_name($stid,":p_fk_pr2_naam",$p_fk_pr2_naam);
+	oci_bind_by_name($stid,":p_code",$p_code);
+	oci_bind_by_name($stid,":p_naam",$p_naam);
+
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		return;
+	}
+	echo "DELETE_PA2";
+	break;
+
+case 'GetPrtForPrdListEncapsulated':
+
+	list($p_code, $p_naam, $x_fk_prd_code, $x_fk_prd_naam) = explode("<|>", $import[1]);
+
+	$stid = oci_parse($conn, "BEGIN pkg_prd.get_prt_for_prd_list_encapsulated (
+		:p_cube_row,
+		:p_code,
+		:p_naam,
 		:x_fk_prd_code,
 		:x_fk_prd_naam);
 	END;");
+	oci_bind_by_name($stid,":p_code",$p_code);
+	oci_bind_by_name($stid,":p_naam",$p_naam);
 	oci_bind_by_name($stid,":x_fk_prd_code",$x_fk_prd_code);
 	oci_bind_by_name($stid,":x_fk_prd_naam",$x_fk_prd_naam);
 

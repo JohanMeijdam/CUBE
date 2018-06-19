@@ -69,6 +69,32 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
+	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBETEST' AND sequence_name = 'PR2_SEQ';
+	IF l_count = 0 THEN
+
+		EXECUTE IMMEDIATE 
+		'CREATE SEQUENCE pr2_seq START WITH 100000';
+		DBMS_OUTPUT.PUT_LINE('Sequence PR2_SEQ created');
+
+	END IF;
+END;
+/
+DECLARE
+	l_count NUMBER(4);
+BEGIN
+	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBETEST' AND sequence_name = 'PA2_SEQ';
+	IF l_count = 0 THEN
+
+		EXECUTE IMMEDIATE 
+		'CREATE SEQUENCE pa2_seq START WITH 100000';
+		DBMS_OUTPUT.PUT_LINE('Sequence PA2_SEQ created');
+
+	END IF;
+END;
+/
+DECLARE
+	l_count NUMBER(4);
+BEGIN
 	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBETEST' AND sequence_name = 'PRT_SEQ';
 	IF l_count = 0 THEN
 
@@ -290,7 +316,9 @@ BEGIN
 			fk_ccc_naam VARCHAR2(40),
 			code VARCHAR2(8),
 			naam VARCHAR2(40),
-			omschrjving VARCHAR2(120))';
+			omschrjving VARCHAR2(120),
+			xk_ccc_code VARCHAR2(8),
+			xk_ccc_naam VARCHAR2(40))';
 		DBMS_OUTPUT.PUT_LINE('Table T_CCC created');
 	ELSE
 
@@ -341,6 +369,20 @@ BEGIN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_ccc ADD omschrjving VARCHAR2(120)';
 			DBMS_OUTPUT.PUT_LINE('Column T_CCC.OMSCHRJVING created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_CCC' AND column_name = 'XK_CCC_CODE';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_ccc ADD xk_ccc_code VARCHAR2(8)';
+			DBMS_OUTPUT.PUT_LINE('Column T_CCC.XK_CCC_CODE created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_CCC' AND column_name = 'XK_CCC_NAAM';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_ccc ADD xk_ccc_naam VARCHAR2(40)';
+			DBMS_OUTPUT.PUT_LINE('Column T_CCC.XK_CCC_NAAM created');
 		END IF;
 
 		FOR r_key IN (SELECT constraint_name FROM all_constraints WHERE owner = 'CUBETEST' AND table_name = 'T_CCC' AND constraint_type IN ('P','U','R') ORDER BY constraint_type DESC)
@@ -413,6 +455,242 @@ BEGIN
 			EXECUTE IMMEDIATE
 			'DROP INDEX ' || r_index.index_name;
 			DBMS_OUTPUT.PUT_LINE('Index T_PROD.' || UPPER(r_index.index_name) || ' dropped');
+		END LOOP;
+	END IF;
+END;
+/
+DECLARE
+	l_count NUMBER(4);
+BEGIN
+	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = 'CUBETEST' AND table_name = 'T_PROD2';
+	IF l_count = 0 THEN
+		EXECUTE IMMEDIATE
+		'CREATE TABLE t_prod2 (
+			cube_id VARCHAR2(16),
+			fk_prd_code VARCHAR2(8),
+			fk_prd_naam VARCHAR2(40),
+			code VARCHAR2(8),
+			naam VARCHAR2(40),
+			omschrijving VARCHAR2(120))';
+		DBMS_OUTPUT.PUT_LINE('Table T_PROD2 created');
+	ELSE
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_PROD2' AND column_name = 'CUBE_ID';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_prod2 ADD cube_id VARCHAR2(16)';
+			DBMS_OUTPUT.PUT_LINE('Column T_PROD2.CUBE_ID created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_PROD2' AND column_name = 'FK_PRD_CODE';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_prod2 ADD fk_prd_code VARCHAR2(8)';
+			DBMS_OUTPUT.PUT_LINE('Column T_PROD2.FK_PRD_CODE created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_PROD2' AND column_name = 'FK_PRD_NAAM';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_prod2 ADD fk_prd_naam VARCHAR2(40)';
+			DBMS_OUTPUT.PUT_LINE('Column T_PROD2.FK_PRD_NAAM created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_PROD2' AND column_name = 'CODE';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_prod2 ADD code VARCHAR2(8)';
+			DBMS_OUTPUT.PUT_LINE('Column T_PROD2.CODE created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_PROD2' AND column_name = 'NAAM';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_prod2 ADD naam VARCHAR2(40)';
+			DBMS_OUTPUT.PUT_LINE('Column T_PROD2.NAAM created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_PROD2' AND column_name = 'OMSCHRIJVING';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_prod2 ADD omschrijving VARCHAR2(120)';
+			DBMS_OUTPUT.PUT_LINE('Column T_PROD2.OMSCHRIJVING created');
+		END IF;
+
+		FOR r_key IN (SELECT constraint_name FROM all_constraints WHERE owner = 'CUBETEST' AND table_name = 'T_PROD2' AND constraint_type IN ('P','U','R') ORDER BY constraint_type DESC)
+		LOOP
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_prod2 DROP CONSTRAINT ' || r_key.constraint_name || ' CASCADE';
+			DBMS_OUTPUT.PUT_LINE('Primary Key T_PROD2.' || UPPER(r_key.constraint_name) || ' dropped');
+		END LOOP;
+
+		FOR r_index IN (SELECT index_name FROM all_indexes WHERE owner = 'CUBETEST' AND table_name = 'T_PROD2')
+		LOOP
+			EXECUTE IMMEDIATE
+			'DROP INDEX ' || r_index.index_name;
+			DBMS_OUTPUT.PUT_LINE('Index T_PROD2.' || UPPER(r_index.index_name) || ' dropped');
+		END LOOP;
+	END IF;
+END;
+/
+DECLARE
+	l_count NUMBER(4);
+BEGIN
+	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = 'CUBETEST' AND table_name = 'T_PART2';
+	IF l_count = 0 THEN
+		EXECUTE IMMEDIATE
+		'CREATE TABLE t_part2 (
+			cube_id VARCHAR2(16),
+			cube_level NUMBER(8) DEFAULT ''1'',
+			fk_prd_code VARCHAR2(8),
+			fk_prd_naam VARCHAR2(40),
+			fk_pr2_code VARCHAR2(8),
+			fk_pr2_naam VARCHAR2(40),
+			fk_pa2_code VARCHAR2(8),
+			fk_pa2_naam VARCHAR2(40),
+			code VARCHAR2(8),
+			naam VARCHAR2(40),
+			omschrijving VARCHAR2(120),
+			xf_pa2_prd_code VARCHAR2(8),
+			xf_pa2_prd_naam VARCHAR2(40),
+			xf_pa2_pr2_code VARCHAR2(8),
+			xf_pa2_pr2_naam VARCHAR2(40),
+			xk_pa2_code VARCHAR2(8),
+			xk_pa2_naam VARCHAR2(40))';
+		DBMS_OUTPUT.PUT_LINE('Table T_PART2 created');
+	ELSE
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_PART2' AND column_name = 'CUBE_ID';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_part2 ADD cube_id VARCHAR2(16)';
+			DBMS_OUTPUT.PUT_LINE('Column T_PART2.CUBE_ID created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_PART2' AND column_name = 'CUBE_LEVEL';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_part2 ADD cube_level NUMBER(8) DEFAULT ''1''';
+			DBMS_OUTPUT.PUT_LINE('Column T_PART2.CUBE_LEVEL created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_PART2' AND column_name = 'FK_PRD_CODE';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_part2 ADD fk_prd_code VARCHAR2(8)';
+			DBMS_OUTPUT.PUT_LINE('Column T_PART2.FK_PRD_CODE created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_PART2' AND column_name = 'FK_PRD_NAAM';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_part2 ADD fk_prd_naam VARCHAR2(40)';
+			DBMS_OUTPUT.PUT_LINE('Column T_PART2.FK_PRD_NAAM created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_PART2' AND column_name = 'FK_PR2_CODE';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_part2 ADD fk_pr2_code VARCHAR2(8)';
+			DBMS_OUTPUT.PUT_LINE('Column T_PART2.FK_PR2_CODE created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_PART2' AND column_name = 'FK_PR2_NAAM';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_part2 ADD fk_pr2_naam VARCHAR2(40)';
+			DBMS_OUTPUT.PUT_LINE('Column T_PART2.FK_PR2_NAAM created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_PART2' AND column_name = 'FK_PA2_CODE';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_part2 ADD fk_pa2_code VARCHAR2(8)';
+			DBMS_OUTPUT.PUT_LINE('Column T_PART2.FK_PA2_CODE created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_PART2' AND column_name = 'FK_PA2_NAAM';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_part2 ADD fk_pa2_naam VARCHAR2(40)';
+			DBMS_OUTPUT.PUT_LINE('Column T_PART2.FK_PA2_NAAM created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_PART2' AND column_name = 'CODE';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_part2 ADD code VARCHAR2(8)';
+			DBMS_OUTPUT.PUT_LINE('Column T_PART2.CODE created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_PART2' AND column_name = 'NAAM';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_part2 ADD naam VARCHAR2(40)';
+			DBMS_OUTPUT.PUT_LINE('Column T_PART2.NAAM created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_PART2' AND column_name = 'OMSCHRIJVING';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_part2 ADD omschrijving VARCHAR2(120)';
+			DBMS_OUTPUT.PUT_LINE('Column T_PART2.OMSCHRIJVING created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_PART2' AND column_name = 'XF_PA2_PRD_CODE';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_part2 ADD xf_pa2_prd_code VARCHAR2(8)';
+			DBMS_OUTPUT.PUT_LINE('Column T_PART2.XF_PA2_PRD_CODE created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_PART2' AND column_name = 'XF_PA2_PRD_NAAM';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_part2 ADD xf_pa2_prd_naam VARCHAR2(40)';
+			DBMS_OUTPUT.PUT_LINE('Column T_PART2.XF_PA2_PRD_NAAM created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_PART2' AND column_name = 'XF_PA2_PR2_CODE';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_part2 ADD xf_pa2_pr2_code VARCHAR2(8)';
+			DBMS_OUTPUT.PUT_LINE('Column T_PART2.XF_PA2_PR2_CODE created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_PART2' AND column_name = 'XF_PA2_PR2_NAAM';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_part2 ADD xf_pa2_pr2_naam VARCHAR2(40)';
+			DBMS_OUTPUT.PUT_LINE('Column T_PART2.XF_PA2_PR2_NAAM created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_PART2' AND column_name = 'XK_PA2_CODE';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_part2 ADD xk_pa2_code VARCHAR2(8)';
+			DBMS_OUTPUT.PUT_LINE('Column T_PART2.XK_PA2_CODE created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_PART2' AND column_name = 'XK_PA2_NAAM';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_part2 ADD xk_pa2_naam VARCHAR2(40)';
+			DBMS_OUTPUT.PUT_LINE('Column T_PART2.XK_PA2_NAAM created');
+		END IF;
+
+		FOR r_key IN (SELECT constraint_name FROM all_constraints WHERE owner = 'CUBETEST' AND table_name = 'T_PART2' AND constraint_type IN ('P','U','R') ORDER BY constraint_type DESC)
+		LOOP
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_part2 DROP CONSTRAINT ' || r_key.constraint_name || ' CASCADE';
+			DBMS_OUTPUT.PUT_LINE('Primary Key T_PART2.' || UPPER(r_key.constraint_name) || ' dropped');
+		END LOOP;
+
+		FOR r_index IN (SELECT index_name FROM all_indexes WHERE owner = 'CUBETEST' AND table_name = 'T_PART2')
+		LOOP
+			EXECUTE IMMEDIATE
+			'DROP INDEX ' || r_index.index_name;
+			DBMS_OUTPUT.PUT_LINE('Index T_PART2.' || UPPER(r_index.index_name) || ' dropped');
 		END LOOP;
 	END IF;
 END;
@@ -557,6 +835,8 @@ BEGIN
 							'T_BBB',
 							'T_CCC',
 							'T_PROD',
+							'T_PROD2',
+							'T_PART2',
 							'T_PART')
 				  AND SUBSTR(t.table_name,1,7) <> 'T_CUBE_')
 	LOOP
@@ -762,7 +1042,9 @@ BEGIN
 			'FK_CCC_NAAM','VARCHAR2(40)',
 			'CODE','VARCHAR2(8)',
 			'NAAM','VARCHAR2(40)',
-			'OMSCHRJVING','VARCHAR2(120)',NULL) new_domain,
+			'OMSCHRJVING','VARCHAR2(120)',
+			'XK_CCC_CODE','VARCHAR2(8)',
+			'XK_CCC_NAAM','VARCHAR2(40)',NULL) new_domain,
 		DECODE(column_name,
 			'CUBE_ID',NULL,
 			'CUBE_LEVEL','''1''',
@@ -770,7 +1052,9 @@ BEGIN
 			'FK_CCC_NAAM',NULL,
 			'CODE',NULL,
 			'NAAM',NULL,
-			'OMSCHRJVING',NULL,NULL) new_default_value
+			'OMSCHRJVING',NULL,
+			'XK_CCC_CODE',NULL,
+			'XK_CCC_NAAM',NULL,NULL) new_default_value
   		FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_CCC')
 	LOOP
 		IF r_field.old_domain <> r_field.new_domain THEN
@@ -813,7 +1097,9 @@ BEGIN
 							'FK_CCC_NAAM',
 							'CODE',
 							'NAAM',
-							'OMSCHRJVING'))
+							'OMSCHRJVING',
+							'XK_CCC_CODE',
+							'XK_CCC_NAAM'))
 	LOOP
 		EXECUTE IMMEDIATE
 		'ALTER TABLE t_ccc DROP COLUMN ' || r_field.column_name;
@@ -874,6 +1160,184 @@ BEGIN
 		EXECUTE IMMEDIATE
 		'ALTER TABLE t_prod DROP COLUMN ' || r_field.column_name;
 		DBMS_OUTPUT.PUT_LINE('Field T_PROD.' || UPPER(r_field.column_name) || ' dropped');
+	END LOOP;
+END;
+/
+BEGIN
+	FOR r_field IN (SELECT column_name,
+		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
+		data_default old_default_value,
+  		DECODE(column_name,
+			'CUBE_ID','VARCHAR2(16)',
+			'FK_PRD_CODE','VARCHAR2(8)',
+			'FK_PRD_NAAM','VARCHAR2(40)',
+			'CODE','VARCHAR2(8)',
+			'NAAM','VARCHAR2(40)',
+			'OMSCHRIJVING','VARCHAR2(120)',NULL) new_domain,
+		DECODE(column_name,
+			'CUBE_ID',NULL,
+			'FK_PRD_CODE',NULL,
+			'FK_PRD_NAAM',NULL,
+			'CODE',NULL,
+			'NAAM',NULL,
+			'OMSCHRIJVING',NULL,NULL) new_default_value
+  		FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_PROD2')
+	LOOP
+		IF r_field.old_domain <> r_field.new_domain THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_prod2 RENAME COLUMN ' || r_field.column_name || ' TO old#domain#field';
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_prod2 ADD ' || r_field.column_name || ' ' || r_field.new_domain;
+ 			IF r_field.new_domain = 'VARCHAR2' THEN  
+				EXECUTE IMMEDIATE
+				'UPDATE t_prod2 SET ' || r_field.column_name || '= TRIM(old#domain#field)';
+			ELSE
+				EXECUTE IMMEDIATE
+				'UPDATE t_prod2 SET ' || r_field.column_name || '= old#domain#field';
+			END IF;
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_prod2 DROP COLUMN old#domain#field';
+			DBMS_OUTPUT.PUT_LINE('Field T_PROD2.' || UPPER(r_field.column_name) || ' converted from ' || r_field.old_domain || ' to ' || r_field.new_domain);
+		END IF;
+		IF NOT((r_field.old_default_value IS NULL AND r_field.new_default_value IS NULL) OR r_field.old_default_value = r_field.new_default_value) THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_prod2 MODIFY (' || r_field.column_name || ' DEFAULT ' || NVL(r_field.new_default_value,'NULL') || ')';
+			DBMS_OUTPUT.PUT_LINE('Field T_PROD2.' || UPPER(r_field.column_name) || ' default value set to ' || NVL(r_field.new_default_value,'NULL'));
+		END IF;
+	END LOOP;
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_prod2 ADD CONSTRAINT pr2_pk
+		PRIMARY KEY (
+			fk_prd_code,
+			fk_prd_naam,
+			code,
+			naam )';
+	DBMS_OUTPUT.PUT_LINE('Primary Key T_PROD2.PR2_PK created');
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_prod2 ADD CONSTRAINT pr2_prd_fk
+		FOREIGN KEY (fk_prd_code, fk_prd_naam)
+		REFERENCES t_prod (code, naam)
+		ON DELETE CASCADE';
+	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_PROD2' AND column_name NOT IN (
+							'CUBE_ID',
+							'FK_PRD_CODE',
+							'FK_PRD_NAAM',
+							'CODE',
+							'NAAM',
+							'OMSCHRIJVING'))
+	LOOP
+		EXECUTE IMMEDIATE
+		'ALTER TABLE t_prod2 DROP COLUMN ' || r_field.column_name;
+		DBMS_OUTPUT.PUT_LINE('Field T_PROD2.' || UPPER(r_field.column_name) || ' dropped');
+	END LOOP;
+END;
+/
+BEGIN
+	FOR r_field IN (SELECT column_name,
+		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
+		data_default old_default_value,
+  		DECODE(column_name,
+			'CUBE_ID','VARCHAR2(16)',
+			'CUBE_LEVEL','NUMBER(8)',
+			'FK_PRD_CODE','VARCHAR2(8)',
+			'FK_PRD_NAAM','VARCHAR2(40)',
+			'FK_PR2_CODE','VARCHAR2(8)',
+			'FK_PR2_NAAM','VARCHAR2(40)',
+			'FK_PA2_CODE','VARCHAR2(8)',
+			'FK_PA2_NAAM','VARCHAR2(40)',
+			'CODE','VARCHAR2(8)',
+			'NAAM','VARCHAR2(40)',
+			'OMSCHRIJVING','VARCHAR2(120)',
+			'XF_PA2_PRD_CODE','VARCHAR2(8)',
+			'XF_PA2_PRD_NAAM','VARCHAR2(40)',
+			'XF_PA2_PR2_CODE','VARCHAR2(8)',
+			'XF_PA2_PR2_NAAM','VARCHAR2(40)',
+			'XK_PA2_CODE','VARCHAR2(8)',
+			'XK_PA2_NAAM','VARCHAR2(40)',NULL) new_domain,
+		DECODE(column_name,
+			'CUBE_ID',NULL,
+			'CUBE_LEVEL','''1''',
+			'FK_PRD_CODE',NULL,
+			'FK_PRD_NAAM',NULL,
+			'FK_PR2_CODE',NULL,
+			'FK_PR2_NAAM',NULL,
+			'FK_PA2_CODE',NULL,
+			'FK_PA2_NAAM',NULL,
+			'CODE',NULL,
+			'NAAM',NULL,
+			'OMSCHRIJVING',NULL,
+			'XF_PA2_PRD_CODE',NULL,
+			'XF_PA2_PRD_NAAM',NULL,
+			'XF_PA2_PR2_CODE',NULL,
+			'XF_PA2_PR2_NAAM',NULL,
+			'XK_PA2_CODE',NULL,
+			'XK_PA2_NAAM',NULL,NULL) new_default_value
+  		FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_PART2')
+	LOOP
+		IF r_field.old_domain <> r_field.new_domain THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_part2 RENAME COLUMN ' || r_field.column_name || ' TO old#domain#field';
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_part2 ADD ' || r_field.column_name || ' ' || r_field.new_domain;
+ 			IF r_field.new_domain = 'VARCHAR2' THEN  
+				EXECUTE IMMEDIATE
+				'UPDATE t_part2 SET ' || r_field.column_name || '= TRIM(old#domain#field)';
+			ELSE
+				EXECUTE IMMEDIATE
+				'UPDATE t_part2 SET ' || r_field.column_name || '= old#domain#field';
+			END IF;
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_part2 DROP COLUMN old#domain#field';
+			DBMS_OUTPUT.PUT_LINE('Field T_PART2.' || UPPER(r_field.column_name) || ' converted from ' || r_field.old_domain || ' to ' || r_field.new_domain);
+		END IF;
+		IF NOT((r_field.old_default_value IS NULL AND r_field.new_default_value IS NULL) OR r_field.old_default_value = r_field.new_default_value) THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_part2 MODIFY (' || r_field.column_name || ' DEFAULT ' || NVL(r_field.new_default_value,'NULL') || ')';
+			DBMS_OUTPUT.PUT_LINE('Field T_PART2.' || UPPER(r_field.column_name) || ' default value set to ' || NVL(r_field.new_default_value,'NULL'));
+		END IF;
+	END LOOP;
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_part2 ADD CONSTRAINT pa2_pk
+		PRIMARY KEY (
+			fk_prd_code,
+			fk_prd_naam,
+			fk_pr2_code,
+			fk_pr2_naam,
+			code,
+			naam )';
+	DBMS_OUTPUT.PUT_LINE('Primary Key T_PART2.PA2_PK created');
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_part2 ADD CONSTRAINT pa2_pr2_fk
+		FOREIGN KEY (fk_prd_code, fk_prd_naam, fk_pr2_code, fk_pr2_naam)
+		REFERENCES t_prod2 (fk_prd_code, fk_prd_naam, code, naam)
+		ON DELETE CASCADE';
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_part2 ADD CONSTRAINT pa2_pa2_fk
+		FOREIGN KEY (fk_prd_code, fk_prd_naam, fk_pr2_code, fk_pr2_naam, fk_pa2_code, fk_pa2_naam)
+		REFERENCES t_part2 (fk_prd_code, fk_prd_naam, fk_pr2_code, fk_pr2_naam, code, naam)
+		ON DELETE CASCADE';
+	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_PART2' AND column_name NOT IN (
+							'CUBE_ID',
+							'CUBE_LEVEL',
+							'FK_PRD_CODE',
+							'FK_PRD_NAAM',
+							'FK_PR2_CODE',
+							'FK_PR2_NAAM',
+							'FK_PA2_CODE',
+							'FK_PA2_NAAM',
+							'CODE',
+							'NAAM',
+							'OMSCHRIJVING',
+							'XF_PA2_PRD_CODE',
+							'XF_PA2_PRD_NAAM',
+							'XF_PA2_PR2_CODE',
+							'XF_PA2_PR2_NAAM',
+							'XK_PA2_CODE',
+							'XK_PA2_NAAM'))
+	LOOP
+		EXECUTE IMMEDIATE
+		'ALTER TABLE t_part2 DROP COLUMN ' || r_field.column_name;
+		DBMS_OUTPUT.PUT_LINE('Field T_PART2.' || UPPER(r_field.column_name) || ' dropped');
 	END LOOP;
 END;
 /
