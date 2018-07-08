@@ -287,7 +287,8 @@ function StartSelect<<REFERENCE:S>>(p_event) {
 	document.body._SelectTop = p_event.clientY;
 	document.body._ListBoxCode = 'Ref<<REFERENCE:S>>';[[LOOP,REFERENCE_TYPE]][[IF:3=Y[AND]!8=Y[AND]!REFERENCE.4=ALL[AND]REFERENCE.PARENT(TYPE:0=<<REFERENCE_TYPE>>)]][[EVAL:($myFlag=0)]][[IF,REFERENCE:4=ENC]][[LOOP,ATTRIBUTE:3=F[AND]CHILD(ATTRIBUTE_SOURCE:1=Y)]][[IF:FIRST]]
 	var l_parameters = [[EVAL:($myFlag=1)]][[ENDIF]]
-		document.getElementById("Input<<ATTRIBUTE:C>>").value[[IF:!LAST]]+'<|>'+[[ENDIF]][[ENDLOOP,ATTRIBUTE]][[ELSIF,REFERENCE_TYPE:0=<<TYPE>>]]
+		document.getElementById("Input<<ATTRIBUTE:C>>").value[[IF:!LAST[OR]REFERENCE.CHILD(REFERENCE_SCOPE_ATTRIBUTE)]]+'<|>'+[[ENDIF]][[ENDLOOP,ATTRIBUTE]][[FOR,REFERENCE:N>N]][[LOOP,REFERENCE_SCOPE_ATTRIBUTE]]
+		document.getElementById("Input<<REFERENCE_SCOPE_ATTRIBUTE:C>>").value[[IF:!LAST]]+'<|>'+[[ENDIF]][[ENDLOOP,REFERENCE_SCOPE_ATTRIBUTE]][[ENDFOR]][[ELSIF,REFERENCE_TYPE:0=<<TYPE>>]]
 	var l_parameters = [[EVAL:($myFlag=1)]]<<TEXT,DETAIL_RECURSIVE_PARMS>>[[LOOP,ATTRIBUTE:1=Y]]
 		document.getElementById("Input<<ATTRIBUTE:C>>").value[[IF:!LAST]]+'<|>'+[[ENDIF]][[ENDLOOP,ATTRIBUTE]][[ELSE]]
 	var l_parameters = [[EVAL:($myFlag=1)]]<<TEXT,DETAIL_RECURSIVE_PARMS>>[[FOR,TYPE:N>N]][[LOOP,ATTRIBUTE:3=F[AND]CHILD(ATTRIBUTE_KEY_TYPE:0=<<REFERENCE_TYPE>>)]]

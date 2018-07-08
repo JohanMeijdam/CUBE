@@ -289,6 +289,8 @@ function StartSelect001(p_event) {
 	document.body._ListBoxCode = 'Ref001';
 	var l_parameters = 
 		document.getElementById("InputFkPrdCode").value+'<|>'+
+		document.getElementById("InputFkPrdNaam").value+'<|>'+
+		document.getElementById("InputFkPrdCode").value+'<|>'+
 		document.getElementById("InputFkPrdNaam").value;
 	performTrans('GetPrtForPrdListEncapsulated<|||>'+l_parameters);
 }

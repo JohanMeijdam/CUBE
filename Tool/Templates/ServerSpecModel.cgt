@@ -43,14 +43,6 @@ Change log:
 !				>ARGUMENT_ATTRIBUTE: ATTRIBUTE
 !			OPERATION: 0=Name 1=SelectionType 2=ResultNameExtension 3=FlagMultipleExport 4=FlagMultipleList
 !				>OPERATION_TYPE: TYPE
-!				LOCAL:
-!					>LOCAL_FIELD: FIELD
-!				SELECTION:
-!					EXPRESSION: 0=Class 1=Domain
-!						EXPRESSION: 
-!						EXPRESSION: 0=Class
-!				SORT_ORDER:
-!					>SORT_ORDER_FIELD: FIELD 
 !				EXPORT: 0=Type 1=FlagSeparated
 !					ARGUMENT: 0=Name 1=Type
 ![[LOOP,INFORMATION_TYPE]]

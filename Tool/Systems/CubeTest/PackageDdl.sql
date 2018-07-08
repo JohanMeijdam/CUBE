@@ -743,12 +743,14 @@ CREATE OR REPLACE PACKAGE pkg_prd IS
 			p_fk_prd_naam IN VARCHAR2,
 			p_code IN VARCHAR2,
 			p_naam IN VARCHAR2);
-	PROCEDURE get_pa2_list_encapsulated (
+	PROCEDURE get_pa2_for_prd_list_encapsulated (
 			p_cube_row IN OUT c_cube_row,
 			p_fk_prd_code IN VARCHAR2,
 			p_fk_prd_naam IN VARCHAR2,
 			p_code IN VARCHAR2,
-			p_naam IN VARCHAR2);
+			p_naam IN VARCHAR2,
+			x_fk_prd_code IN VARCHAR2,
+			x_fk_prd_naam IN VARCHAR2);
 	PROCEDURE get_pa2 (
 			p_cube_row IN OUT c_cube_row,
 			p_fk_prd_code IN VARCHAR2,
@@ -1081,12 +1083,14 @@ CREATE OR REPLACE PACKAGE BODY pkg_prd IS
 		  AND naam = p_naam;
 	END;
 
-	PROCEDURE get_pa2_list_encapsulated (
+	PROCEDURE get_pa2_for_prd_list_encapsulated (
 			p_cube_row IN OUT c_cube_row,
 			p_fk_prd_code IN VARCHAR2,
 			p_fk_prd_naam IN VARCHAR2,
 			p_code IN VARCHAR2,
-			p_naam IN VARCHAR2) IS
+			p_naam IN VARCHAR2,
+			x_fk_prd_code IN VARCHAR2,
+			x_fk_prd_naam IN VARCHAR2) IS
 	BEGIN
 		OPEN p_cube_row FOR
 			SELECT
@@ -1110,7 +1114,9 @@ CREATE OR REPLACE PACKAGE BODY pkg_prd IS
 					  AND fk_pr2_naam = p_naam
 					  AND p_naam IS NOT NULL )
 				  AND fk_pa2_code IS NULL
-				  AND fk_pa2_naam IS NULL )
+				  AND fk_pa2_naam IS NULL
+				  AND fk_prd_code = x_fk_prd_code
+				  AND fk_prd_naam = x_fk_prd_naam )
 			ORDER BY fk_prd_code, fk_prd_naam, fk_pr2_code, fk_pr2_naam, code, naam;
 	END;
 
@@ -1381,7 +1387,9 @@ CREATE OR REPLACE PACKAGE BODY pkg_prd IS
 					  AND fk_prd_naam = p_naam
 					  AND p_naam IS NOT NULL )
 				  AND fk_prt_code IS NULL
-				  AND fk_prt_naam IS NULL )
+				  AND fk_prt_naam IS NULL
+				  AND fk_prd_code = x_fk_prd_code
+				  AND fk_prd_naam = x_fk_prd_naam )
 			ORDER BY fk_prd_code, fk_prd_naam, code, naam;
 	END;
 

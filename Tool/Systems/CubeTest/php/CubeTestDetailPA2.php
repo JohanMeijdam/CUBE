@@ -327,8 +327,10 @@ function StartSelect001(p_event) {
 		document.getElementById("InputFkPrdCode").value+'<|>'+
 		document.getElementById("InputFkPrdNaam").value+'<|>'+
 		document.getElementById("InputFkPr2Code").value+'<|>'+
-		document.getElementById("InputFkPr2Naam").value;
-	performTrans('GetPa2ListEncapsulated<|||>'+l_parameters);
+		document.getElementById("InputFkPr2Naam").value+'<|>'+
+		document.getElementById("InputFkPrdCode").value+'<|>'+
+		document.getElementById("InputFkPrdNaam").value;
+	performTrans('GetPa2ForPrdListEncapsulated<|||>'+l_parameters);
 }
 
 function OpenDescBox(p_icon,p_name,p_type,p_attribute_type,p_sequence) {

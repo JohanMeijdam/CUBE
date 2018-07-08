@@ -822,21 +822,25 @@ case 'DeletePr2':
 	echo "DELETE_PR2";
 	break;
 
-case 'GetPa2ListEncapsulated':
+case 'GetPa2ForPrdListEncapsulated':
 
-	list($p_fk_prd_code, $p_fk_prd_naam, $p_code, $p_naam) = explode("<|>", $import[1]);
+	list($p_fk_prd_code, $p_fk_prd_naam, $p_code, $p_naam, $x_fk_prd_code, $x_fk_prd_naam) = explode("<|>", $import[1]);
 
-	$stid = oci_parse($conn, "BEGIN pkg_prd.get_pa2_list_encapsulated (
+	$stid = oci_parse($conn, "BEGIN pkg_prd.get_pa2_for_prd_list_encapsulated (
 		:p_cube_row,
 		:p_fk_prd_code,
 		:p_fk_prd_naam,
 		:p_code,
-		:p_naam);
+		:p_naam,
+		:x_fk_prd_code,
+		:x_fk_prd_naam);
 	END;");
 	oci_bind_by_name($stid,":p_fk_prd_code",$p_fk_prd_code);
 	oci_bind_by_name($stid,":p_fk_prd_naam",$p_fk_prd_naam);
 	oci_bind_by_name($stid,":p_code",$p_code);
 	oci_bind_by_name($stid,":p_naam",$p_naam);
+	oci_bind_by_name($stid,":x_fk_prd_code",$x_fk_prd_code);
+	oci_bind_by_name($stid,":x_fk_prd_naam",$x_fk_prd_naam);
 
 	$r = perform_db_request();
 	if (!$r) { return; }
