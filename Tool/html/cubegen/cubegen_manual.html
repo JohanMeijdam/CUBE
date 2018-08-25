@@ -80,6 +80,7 @@ INDEX</div>
 <div><a href="#F_LOOP-N" class="indent2">LOOP</a></div>
 <div><a href="#F_REPEAT-N" class="indent2">REPEAT</a></div>
 <div><a href="#F_SEQUENCE-N" class="indent2">SEQUENCE</a></div>
+<div><a href="#F_TABS-N" class="indent2">TABS</a></div>
 <div><a href="#F_TEMPLATE-N" class="indent2">TEMPLATE</a></div>
 <div><a href="#F_TEXT-N" class="indent2">TEXT</a></div>
 <div><a href="#F_VALUE-N" class="indent2">VALUE</a></div>
@@ -338,17 +339,20 @@ CUBEGEN MANUAL</div>
 ><div>Export the template segment for the model elements that (optionally) meet the logical expression for the specified tag in sequential order .</div><!
 ><div><span style="display:block;" class="template code">&#91;&#91;LOOP,&lt;tag&gt;&#93;&#93; ... &#91;&#91;ENDLOOP,&lt;tag&gt;&#93;&#93;<br>&#91;&#91;LOOP,&lt;tag&gt;:&lt;(logical_expression&gt;&#93;&#93; ... &#91;&#91;ENDLOOP,&lt;tag&gt;&#93;&#93;</span></div><!
 ><div id="F_REPEAT-N" class="header3">REPEAT</a></div><!
-><div>Repeat the LOOP function for all underlying model elements of the specified type.</div><!
-><div><span style="display:block;" class="template code">&#91;&#91;LOOP,&lt;tag&gt;&#93;&#93; ... &#91;&#91;REPEAT&#93;&#93; ... &#91;&#91;ENDLOOP,&lt;tag&gt;&#93;&#93;<br>&#91;&#91;LOOP,&lt;tag&gt;&#93;&#93; ... &#91;&#91;REPEAT:TAB&#93;&#93; ... &#91;&#91;ENDLOOP,&lt;tag&gt;&#93;&#93;<br>&#91;&#91;LOOP,&lt;tag&gt;&#93;&#93; ... &#91;&#91;LOOP...&#93;&#93; ... &#91;&#91;REPEAT,&lt;tag&gt;&#93;&#93; ... &#91;&#91;ENDLOOP...&#93;&#93; ... &#91;&#91;ENDLOOP,&lt;tag&gt;&#93;&#93;<br>&#91;&#91;LOOP,&lt;tag&gt;&#93;&#93; ... &#91;&#91;LOOP...&#93;&#93; ... &#91;&#91;REPEAT,&lt;tag&gt;:TAB&#93;&#93; ... &#91;&#91;ENDLOOP...&#93;&#93; ... &#91;&#91;ENDLOOP,&lt;tag&gt;&#93;&#93;</span></div><!
+><div>Repeat the LOOP function for all underlying model elements of the specified type. The indentation of the exported text can be increased by one or more tabs. (eg. TAB, 2TAB, 3TAB, ...)</div><!
+><div><span style="display:block;" class="template code">&#91;&#91;LOOP,&lt;tag&gt;&#93;&#93; ... &#91;&#91;REPEAT&#93;&#93; ... &#91;&#91;ENDLOOP,&lt;tag&gt;&#93;&#93;<br>&#91;&#91;LOOP,&lt;tag&gt;&#93;&#93; ... &#91;&#91;REPEAT:nTAB&#93;&#93; ... &#91;&#91;ENDLOOP,&lt;tag&gt;&#93;&#93;<br>&#91;&#91;LOOP,&lt;tag&gt;&#93;&#93; ... &#91;&#91;LOOP...&#93;&#93; ... &#91;&#91;REPEAT,&lt;tag&gt;&#93;&#93; ... &#91;&#91;ENDLOOP...&#93;&#93; ... &#91;&#91;ENDLOOP,&lt;tag&gt;&#93;&#93;<br>&#91;&#91;LOOP,&lt;tag&gt;&#93;&#93; ... &#91;&#91;LOOP...&#93;&#93; ... &#91;&#91;REPEAT,&lt;tag&gt;:nTAB&#93;&#93; ... &#91;&#91;ENDLOOP...&#93;&#93; ... &#91;&#91;ENDLOOP,&lt;tag&gt;&#93;&#93;</span></div><!
 ><div id="F_SEQUENCE-N" class="header3">SEQUENCE</a></div><!
 ><div>The model elements referenced by the LOOP functions nested in the SEQUENCE function are exported in the order as they appear in the Cube model. The text within the SEQUENCE function and outside the nested LOOP function is ignored, and will not be exported. </div><!
 ><div><span style="display:block;" class="template code">&#91;&#91;SEQUENCE&#93;&#93;<br>&#91;&#91;LOOP,&lt;tag1&gt;&#93;&#93; ... &#91;&#91;ENDLOOP,&lt;tag1&gt;&#93;&#93;<br>&#91;&#91;LOOP,&lt;tag2&gt;&#93;&#93; ... &#91;&#91;ENDLOOP,&lt;tag2&gt;&#93;&#93;<br>...<br>&#91;&#91;LOOP,&lt;tagN&gt;&#93;&#93; ... &#91;&#91;ENDLOOP,&lt;tagN&gt;&#93;&#93;<br>&#91;&#91;ENDSEQUENCE&#93;&#93;</span></div><!
+><div id="F_TABS-N" class="header3">TABS</a></div><!
+><div>Increase or decrease indentation of the current and following text segments. To decrease indentation specify a negative increment.</div><!
+><div><span style="display:block;" class="template code">&#91;&#91;TABS:&lt;increment&gt;&#93;&#93;</span></div><!
 ><div id="F_TEMPLATE-N" class="header3">TEMPLATE</a></div><!
 ><div>Process a model element property as a template segment.</div><!
 ><div><span style="display:block;" class="template code">&#91;&#91;TEMPLATE:&lt;tag&gt;&#93;&#93;<br>&#91;&#91;TEMPLATE:&lt;tag&gt;(&lt;location&gt;)&#93;&#93;<br>&#91;&#91;TEMPLATE:&lt;tag&gt;(&lt;location&gt;)&lt;property&gt;&#93;&#93;<br>&#91;&#91;TEMPLATE:&lt;tag&gt;:&lt;function&gt;&#93;&#93;<br>&#91;&#91;TEMPLATE:&lt;tag&gt;(&lt;location&gt;):&lt;function&gt;&#93;&#93;<br>&#91;&#91;TEMPLATE:&lt;tag&gt;(&lt;location&gt;)&lt;property&gt;:&lt;function&gt;&#93;&#93;</span></div><!
 ><div id="F_TEXT-N" class="header3">TEXT</a></div><!
-><div>Text blocks are defined for reuse of template segments. The text may contain labels that are replaced with arguments that are defined at the place where the text is applied. The optional list of arguments starts and ends with the separator &quot;&#91;|&#93;&quot;. The text is only exported at the location of the text labels. The text blocks themselves are not exported.</div><!
-><div><span style="display:block;" class="template code">&#91;&#91;TEXT,&lt;name&gt;&#93;&#93; ... &#91;&#91;ENDTEXT&#93;&#93;<br>&lt;&lt;TEXT,&lt;name&gt;&gt;&gt;<br><br>&#91;&#91;TEXT,&lt;name&gt;&#93;&#93; ... &lt;&lt;T1&gt;&gt; ... &lt;&lt;T2&gt;&gt; ... &#91;&#91;ENDTEXT&#93;&#93;<br>&lt;&lt;TEXT,&lt;name&gt;&#91;|&#93;&lt;parm1&gt;&#91;|&#93;&lt;parm2&gt;&#91;|&#93;&gt;&gt;</span></div><!
+><div>Text blocks are defined for reuse of template segments. The text may contain labels that are replaced with arguments that are defined at the place where the text is applied. The optional list of arguments starts and ends with the separator &quot;&#91;|&#93;&quot;. The text is only exported at the location of the text labels. The text blocks themselves are not exported.<br>The indentation of the exported text can be increased by one or more tabs. (eg. TAB, 2TAB, 3TAB, ...)</div><!
+><div><span style="display:block;" class="template code">&#91;&#91;TEXT,&lt;name&gt;&#93;&#93; ... &#91;&#91;ENDTEXT&#93;&#93;<br>&lt;&lt;TEXT,&lt;name&gt;&gt;&gt;<br>&lt;&lt;TEXT:nTAB,&lt;name&gt;&gt;&gt;<br><br>&#91;&#91;TEXT,&lt;name&gt;&#93;&#93; ... &lt;&lt;T1&gt;&gt; ... &lt;&lt;T2&gt;&gt; ... &#91;&#91;ENDTEXT&#93;&#93;<br>&lt;&lt;TEXT,&lt;name&gt;&#91;|&#93;&lt;parm1&gt;&#91;|&#93;&lt;parm2&gt;&#91;|&#93;&gt;&gt;<br>&lt;&lt;TEXT:nTAB,&lt;name&gt;&#91;|&#93;&lt;parm1&gt;&#91;|&#93;&lt;parm2&gt;&#91;|&#93;&gt;&gt;</span></div><!
 ><div id="F_VALUE-N" class="header3">VALUE</a></div><!
 ><div>Export the properties of a model element.</div><!
 ><div><span style="display:block;" class="template code">&#91;&#91;VALUE,&lt;tag&gt;:&lt;loop_spec&gt;:&lt;separator&gt;&#93;&#93;</span></div><!
