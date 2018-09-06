@@ -282,18 +282,14 @@ function StartSelect001(p_event) {
 	document.body._SelectLeft = p_event.clientX;
 	document.body._SelectTop = p_event.clientY;
 	document.body._ListBoxCode = 'Ref001';
-	var l_parameters = 
-		document.getElementById("InputFkBotName").value;
-	performTrans('GetTypListEncapsulated<|||>'+l_parameters);
+	performTrans('GetTypListAll');
 }
 
 function StartSelect002(p_event) {
 	document.body._SelectLeft = p_event.clientX;
 	document.body._SelectTop = p_event.clientY;
 	document.body._ListBoxCode = 'Ref002';
-	var l_parameters = 'U<|>9999<|>'+
-		document.getElementById("InputFkTypName").value;
-	performTrans('GetTypListRecursive<|||>'+l_parameters);
+	performTrans('GetTypListAll');
 }
 
 function OpenDescBox(p_icon,p_name,p_type,p_attribute_type,p_sequence) {

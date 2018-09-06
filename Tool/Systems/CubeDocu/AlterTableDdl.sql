@@ -160,6 +160,19 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
+	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBEDOCU' AND sequence_name = 'RTT_SEQ';
+	IF l_count = 0 THEN
+
+		EXECUTE IMMEDIATE 
+		'CREATE SEQUENCE rtt_seq START WITH 100000';
+		DBMS_OUTPUT.PUT_LINE('Sequence RTT_SEQ created');
+
+	END IF;
+END;
+/
+DECLARE
+	l_count NUMBER(4);
+BEGIN
 	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBEDOCU' AND sequence_name = 'TYR_SEQ';
 	IF l_count = 0 THEN
 
@@ -579,7 +592,7 @@ BEGIN
 			cube_id VARCHAR2(16),
 			cube_sequence NUMBER(8),
 			name VARCHAR2(30),
-			cube_tsg_int_ext VARCHAR2(8) DEFAULT ''INT'',
+			cube_tsg_type VARCHAR2(8) DEFAULT ''INT'',
 			directory VARCHAR2(80),
 			api_url VARCHAR2(300))';
 		DBMS_OUTPUT.PUT_LINE('Table T_BUSINESS_OBJECT_TYPE created');
@@ -606,11 +619,11 @@ BEGIN
 			DBMS_OUTPUT.PUT_LINE('Column T_BUSINESS_OBJECT_TYPE.NAME created');
 		END IF;
 
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_BUSINESS_OBJECT_TYPE' AND column_name = 'CUBE_TSG_INT_EXT';
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_BUSINESS_OBJECT_TYPE' AND column_name = 'CUBE_TSG_TYPE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
-			'ALTER TABLE t_business_object_type ADD cube_tsg_int_ext VARCHAR2(8) DEFAULT ''INT''';
-			DBMS_OUTPUT.PUT_LINE('Column T_BUSINESS_OBJECT_TYPE.CUBE_TSG_INT_EXT created');
+			'ALTER TABLE t_business_object_type ADD cube_tsg_type VARCHAR2(8) DEFAULT ''INT''';
+			DBMS_OUTPUT.PUT_LINE('Column T_BUSINESS_OBJECT_TYPE.CUBE_TSG_TYPE created');
 		END IF;
 
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_BUSINESS_OBJECT_TYPE' AND column_name = 'DIRECTORY';
@@ -657,7 +670,7 @@ BEGIN
 			fk_typ_name VARCHAR2(30),
 			name VARCHAR2(30),
 			code VARCHAR2(3),
-			flag_partial_key CHAR(1) DEFAULT ''N'',
+			flag_partial_key CHAR(1) DEFAULT ''Y'',
 			flag_recursive CHAR(1) DEFAULT ''N'',
 			recursive_cardinality CHAR(1) DEFAULT ''N'',
 			cardinality CHAR(1) DEFAULT ''N'',
@@ -719,7 +732,7 @@ BEGIN
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_TYPE' AND column_name = 'FLAG_PARTIAL_KEY';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
-			'ALTER TABLE t_type ADD flag_partial_key CHAR(1) DEFAULT ''N''';
+			'ALTER TABLE t_type ADD flag_partial_key CHAR(1) DEFAULT ''Y''';
 			DBMS_OUTPUT.PUT_LINE('Column T_TYPE.FLAG_PARTIAL_KEY created');
 		END IF;
 
@@ -1447,6 +1460,88 @@ BEGIN
 			EXECUTE IMMEDIATE
 			'DROP INDEX ' || r_index.index_name;
 			DBMS_OUTPUT.PUT_LINE('Index T_RESTRICTION_TYPE_SPEC_REF.' || UPPER(r_index.index_name) || ' dropped');
+		END LOOP;
+	END IF;
+END;
+/
+DECLARE
+	l_count NUMBER(4);
+BEGIN
+	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = 'CUBEDOCU' AND table_name = 'T_RESTRICTION_TYPE_SPEC_TYP';
+	IF l_count = 0 THEN
+		EXECUTE IMMEDIATE
+		'CREATE TABLE t_restriction_type_spec_typ (
+			cube_id VARCHAR2(16),
+			fk_bot_name VARCHAR2(30),
+			fk_typ_name VARCHAR2(30),
+			include_or_exclude CHAR(2) DEFAULT ''IN'',
+			xf_tsp_typ_name VARCHAR2(30),
+			xf_tsp_tsg_code VARCHAR2(16),
+			xk_tsp_code VARCHAR2(16))';
+		DBMS_OUTPUT.PUT_LINE('Table T_RESTRICTION_TYPE_SPEC_TYP created');
+	ELSE
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_RESTRICTION_TYPE_SPEC_TYP' AND column_name = 'CUBE_ID';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_restriction_type_spec_typ ADD cube_id VARCHAR2(16)';
+			DBMS_OUTPUT.PUT_LINE('Column T_RESTRICTION_TYPE_SPEC_TYP.CUBE_ID created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_RESTRICTION_TYPE_SPEC_TYP' AND column_name = 'FK_BOT_NAME';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_restriction_type_spec_typ ADD fk_bot_name VARCHAR2(30)';
+			DBMS_OUTPUT.PUT_LINE('Column T_RESTRICTION_TYPE_SPEC_TYP.FK_BOT_NAME created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_RESTRICTION_TYPE_SPEC_TYP' AND column_name = 'FK_TYP_NAME';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_restriction_type_spec_typ ADD fk_typ_name VARCHAR2(30)';
+			DBMS_OUTPUT.PUT_LINE('Column T_RESTRICTION_TYPE_SPEC_TYP.FK_TYP_NAME created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_RESTRICTION_TYPE_SPEC_TYP' AND column_name = 'INCLUDE_OR_EXCLUDE';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_restriction_type_spec_typ ADD include_or_exclude CHAR(2) DEFAULT ''IN''';
+			DBMS_OUTPUT.PUT_LINE('Column T_RESTRICTION_TYPE_SPEC_TYP.INCLUDE_OR_EXCLUDE created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_RESTRICTION_TYPE_SPEC_TYP' AND column_name = 'XF_TSP_TYP_NAME';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_restriction_type_spec_typ ADD xf_tsp_typ_name VARCHAR2(30)';
+			DBMS_OUTPUT.PUT_LINE('Column T_RESTRICTION_TYPE_SPEC_TYP.XF_TSP_TYP_NAME created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_RESTRICTION_TYPE_SPEC_TYP' AND column_name = 'XF_TSP_TSG_CODE';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_restriction_type_spec_typ ADD xf_tsp_tsg_code VARCHAR2(16)';
+			DBMS_OUTPUT.PUT_LINE('Column T_RESTRICTION_TYPE_SPEC_TYP.XF_TSP_TSG_CODE created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_RESTRICTION_TYPE_SPEC_TYP' AND column_name = 'XK_TSP_CODE';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_restriction_type_spec_typ ADD xk_tsp_code VARCHAR2(16)';
+			DBMS_OUTPUT.PUT_LINE('Column T_RESTRICTION_TYPE_SPEC_TYP.XK_TSP_CODE created');
+		END IF;
+
+		FOR r_key IN (SELECT constraint_name FROM all_constraints WHERE owner = 'CUBEDOCU' AND table_name = 'T_RESTRICTION_TYPE_SPEC_TYP' AND constraint_type IN ('P','U','R') ORDER BY constraint_type DESC)
+		LOOP
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_restriction_type_spec_typ DROP CONSTRAINT ' || r_key.constraint_name || ' CASCADE';
+			DBMS_OUTPUT.PUT_LINE('Primary Key T_RESTRICTION_TYPE_SPEC_TYP.' || UPPER(r_key.constraint_name) || ' dropped');
+		END LOOP;
+
+		FOR r_index IN (SELECT index_name FROM all_indexes WHERE owner = 'CUBEDOCU' AND table_name = 'T_RESTRICTION_TYPE_SPEC_TYP')
+		LOOP
+			EXECUTE IMMEDIATE
+			'DROP INDEX ' || r_index.index_name;
+			DBMS_OUTPUT.PUT_LINE('Index T_RESTRICTION_TYPE_SPEC_TYP.' || UPPER(r_index.index_name) || ' dropped');
 		END LOOP;
 	END IF;
 END;
@@ -2528,6 +2623,7 @@ BEGIN
 							'T_REFERENCE',
 							'T_DESCRIPTION_REFERENCE',
 							'T_RESTRICTION_TYPE_SPEC_REF',
+							'T_RESTRICTION_TYPE_SPEC_TYP',
 							'T_TYPE_REUSE',
 							'T_PARTITION',
 							'T_SUBTYPE',
@@ -2757,14 +2853,14 @@ BEGIN
 			'CUBE_ID','VARCHAR2(16)',
 			'CUBE_SEQUENCE','NUMBER(8)',
 			'NAME','VARCHAR2(30)',
-			'CUBE_TSG_INT_EXT','VARCHAR2(8)',
+			'CUBE_TSG_TYPE','VARCHAR2(8)',
 			'DIRECTORY','VARCHAR2(80)',
 			'API_URL','VARCHAR2(300)',NULL) new_domain,
 		DECODE(column_name,
 			'CUBE_ID',NULL,
 			'CUBE_SEQUENCE',NULL,
 			'NAME',NULL,
-			'CUBE_TSG_INT_EXT','''INT''',
+			'CUBE_TSG_TYPE','''INT''',
 			'DIRECTORY',NULL,
 			'API_URL',NULL,NULL) new_default_value
   		FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_BUSINESS_OBJECT_TYPE')
@@ -2800,7 +2896,7 @@ BEGIN
 							'CUBE_ID',
 							'CUBE_SEQUENCE',
 							'NAME',
-							'CUBE_TSG_INT_EXT',
+							'CUBE_TSG_TYPE',
 							'DIRECTORY',
 							'API_URL'))
 	LOOP
@@ -2837,7 +2933,7 @@ BEGIN
 			'FK_TYP_NAME',NULL,
 			'NAME',NULL,
 			'CODE',NULL,
-			'FLAG_PARTIAL_KEY','''N''',
+			'FLAG_PARTIAL_KEY','''Y''',
 			'FLAG_RECURSIVE','''N''',
 			'RECURSIVE_CARDINALITY','''N''',
 			'CARDINALITY','''N''',
@@ -3437,6 +3533,78 @@ BEGIN
 		EXECUTE IMMEDIATE
 		'ALTER TABLE t_restriction_type_spec_ref DROP COLUMN ' || r_field.column_name;
 		DBMS_OUTPUT.PUT_LINE('Field T_RESTRICTION_TYPE_SPEC_REF.' || UPPER(r_field.column_name) || ' dropped');
+	END LOOP;
+END;
+/
+BEGIN
+	FOR r_field IN (SELECT column_name,
+		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
+		data_default old_default_value,
+  		DECODE(column_name,
+			'CUBE_ID','VARCHAR2(16)',
+			'FK_BOT_NAME','VARCHAR2(30)',
+			'FK_TYP_NAME','VARCHAR2(30)',
+			'INCLUDE_OR_EXCLUDE','CHAR(2)',
+			'XF_TSP_TYP_NAME','VARCHAR2(30)',
+			'XF_TSP_TSG_CODE','VARCHAR2(16)',
+			'XK_TSP_CODE','VARCHAR2(16)',NULL) new_domain,
+		DECODE(column_name,
+			'CUBE_ID',NULL,
+			'FK_BOT_NAME',NULL,
+			'FK_TYP_NAME',NULL,
+			'INCLUDE_OR_EXCLUDE','''IN''',
+			'XF_TSP_TYP_NAME',NULL,
+			'XF_TSP_TSG_CODE',NULL,
+			'XK_TSP_CODE',NULL,NULL) new_default_value
+  		FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_RESTRICTION_TYPE_SPEC_TYP')
+	LOOP
+		IF r_field.old_domain <> r_field.new_domain THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_restriction_type_spec_typ RENAME COLUMN ' || r_field.column_name || ' TO old#domain#field';
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_restriction_type_spec_typ ADD ' || r_field.column_name || ' ' || r_field.new_domain;
+ 			IF r_field.new_domain = 'VARCHAR2' THEN  
+				EXECUTE IMMEDIATE
+				'UPDATE t_restriction_type_spec_typ SET ' || r_field.column_name || '= TRIM(old#domain#field)';
+			ELSE
+				EXECUTE IMMEDIATE
+				'UPDATE t_restriction_type_spec_typ SET ' || r_field.column_name || '= old#domain#field';
+			END IF;
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_restriction_type_spec_typ DROP COLUMN old#domain#field';
+			DBMS_OUTPUT.PUT_LINE('Field T_RESTRICTION_TYPE_SPEC_TYP.' || UPPER(r_field.column_name) || ' converted from ' || r_field.old_domain || ' to ' || r_field.new_domain);
+		END IF;
+		IF NOT((r_field.old_default_value IS NULL AND r_field.new_default_value IS NULL) OR r_field.old_default_value = r_field.new_default_value) THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_restriction_type_spec_typ MODIFY (' || r_field.column_name || ' DEFAULT ' || NVL(r_field.new_default_value,'NULL') || ')';
+			DBMS_OUTPUT.PUT_LINE('Field T_RESTRICTION_TYPE_SPEC_TYP.' || UPPER(r_field.column_name) || ' default value set to ' || NVL(r_field.new_default_value,'NULL'));
+		END IF;
+	END LOOP;
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_restriction_type_spec_typ ADD CONSTRAINT rtt_pk
+		PRIMARY KEY (
+			fk_typ_name,
+			xf_tsp_typ_name,
+			xf_tsp_tsg_code,
+			xk_tsp_code )';
+	DBMS_OUTPUT.PUT_LINE('Primary Key T_RESTRICTION_TYPE_SPEC_TYP.RTT_PK created');
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_restriction_type_spec_typ ADD CONSTRAINT rtt_typ_fk
+		FOREIGN KEY (fk_typ_name)
+		REFERENCES t_type (name)
+		ON DELETE CASCADE';
+	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBEDOCU' AND table_name = 'T_RESTRICTION_TYPE_SPEC_TYP' AND column_name NOT IN (
+							'CUBE_ID',
+							'FK_BOT_NAME',
+							'FK_TYP_NAME',
+							'INCLUDE_OR_EXCLUDE',
+							'XF_TSP_TYP_NAME',
+							'XF_TSP_TSG_CODE',
+							'XK_TSP_CODE'))
+	LOOP
+		EXECUTE IMMEDIATE
+		'ALTER TABLE t_restriction_type_spec_typ DROP COLUMN ' || r_field.column_name;
+		DBMS_OUTPUT.PUT_LINE('Field T_RESTRICTION_TYPE_SPEC_TYP.' || UPPER(r_field.column_name) || ' dropped');
 	END LOOP;
 END;
 /

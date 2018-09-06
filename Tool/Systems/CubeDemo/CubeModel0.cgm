@@ -83,6 +83,10 @@
 					=ASSOCIATION:TYPE_SPECIALISATION|IsValidFor|TYPE_SPECIALISATION|;
 				-META_TYPE:;
 			-META_TYPE:;
+			+META_TYPE:RESTRICTION_TYPE_SPEC_TYP|;
+				=PROPERTY:0|IncludeOrExclude|Indication that the child type is valid (included) or invalid (excluded) for the concerning type specialisation. Values: IN(Include), EX(Exclude);
+				=ASSOCIATION:TYPE_SPECIALISATION|IsValidFor|TYPE_SPECIALISATION|;
+			-META_TYPE:;
 			+META_TYPE:TYPE_REUSE|;
 				=PROPERTY:0|Cardinality| Values: 1(1), 2(2), 3(3), 4(4), 5(5), N(Many);
 				=ASSOCIATION:TYPE_REUSE_TYPE|Refer|TYPE|;
@@ -102,6 +106,13 @@
 					=PROPERTY:0|Code|;
 					=PROPERTY:1|Name|;
 					=ASSOCIATION:TYPE_SPECIALISATION|Specialise|TYPE_SPECIALISATION|;
+				-META_TYPE:;
+			-META_TYPE:;
+			+META_TYPE:JSON_OBJECT|;
+				=PROPERTY:0|CubeTsgGroupOrElement| Values: GR(GROUP), EL(ELEMENT);
+				=ASSOCIATION:BUSINESS_OBJECT_TYPE|Test|BUSINESS_OBJECT_TYPE|;
+				+META_TYPE:JSON_ATTRIBUTE_REFERENCE|;
+					=ASSOCIATION:ATTRIBUTE|Concerns|ATTRIBUTE|;
 				-META_TYPE:;
 			-META_TYPE:;
 			+META_TYPE:DESCRIPTION_TYPE|Test%0D%0AMet LF en %22 en '  en %25    %25%0D%0AEInde;

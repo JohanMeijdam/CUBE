@@ -521,27 +521,19 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 	PROCEDURE insert_bot (
 			p_cube_pos_action IN VARCHAR2,
 			p_name IN VARCHAR2,
-			p_cube_tsg_int_ext IN VARCHAR2,
+			p_cube_tsg_type IN VARCHAR2,
 			p_directory IN VARCHAR2,
 			p_api_url IN VARCHAR2,
 			x_name IN VARCHAR2);
 	PROCEDURE update_bot (
 			p_name IN VARCHAR2,
-			p_cube_tsg_int_ext IN VARCHAR2,
+			p_cube_tsg_type IN VARCHAR2,
 			p_directory IN VARCHAR2,
 			p_api_url IN VARCHAR2);
 	PROCEDURE delete_bot (
 			p_name IN VARCHAR2);
 	PROCEDURE get_typ_list_all (
 			p_cube_row IN OUT c_cube_row);
-	PROCEDURE get_typ_list_encapsulated (
-			p_cube_row IN OUT c_cube_row,
-			p_name IN VARCHAR2);
-	PROCEDURE get_typ_list_recursive (
-			p_cube_row IN OUT c_cube_row,
-			p_cube_up_or_down IN VARCHAR2,
-			p_cube_x_level IN NUMBER,
-			p_name IN VARCHAR2);
 	PROCEDURE get_typ (
 			p_cube_row IN OUT c_cube_row,
 			p_name IN VARCHAR2);
@@ -552,6 +544,9 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_cube_row IN OUT c_cube_row,
 			p_name IN VARCHAR2);
 	PROCEDURE get_typ_ref_items (
+			p_cube_row IN OUT c_cube_row,
+			p_name IN VARCHAR2);
+	PROCEDURE get_typ_rtt_items (
 			p_cube_row IN OUT c_cube_row,
 			p_name IN VARCHAR2);
 	PROCEDURE get_typ_tyr_items (
@@ -860,6 +855,32 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_xf_tsp_typ_name IN VARCHAR2,
 			p_xf_tsp_tsg_code IN VARCHAR2,
 			p_xk_tsp_code IN VARCHAR2);
+	PROCEDURE get_rtt (
+			p_cube_row IN OUT c_cube_row,
+			p_fk_typ_name IN VARCHAR2,
+			p_xf_tsp_typ_name IN VARCHAR2,
+			p_xf_tsp_tsg_code IN VARCHAR2,
+			p_xk_tsp_code IN VARCHAR2);
+	PROCEDURE insert_rtt (
+			p_fk_bot_name IN VARCHAR2,
+			p_fk_typ_name IN VARCHAR2,
+			p_include_or_exclude IN CHAR,
+			p_xf_tsp_typ_name IN VARCHAR2,
+			p_xf_tsp_tsg_code IN VARCHAR2,
+			p_xk_tsp_code IN VARCHAR2,
+			p_cube_row IN OUT c_cube_row);
+	PROCEDURE update_rtt (
+			p_fk_bot_name IN VARCHAR2,
+			p_fk_typ_name IN VARCHAR2,
+			p_include_or_exclude IN CHAR,
+			p_xf_tsp_typ_name IN VARCHAR2,
+			p_xf_tsp_tsg_code IN VARCHAR2,
+			p_xk_tsp_code IN VARCHAR2);
+	PROCEDURE delete_rtt (
+			p_fk_typ_name IN VARCHAR2,
+			p_xf_tsp_typ_name IN VARCHAR2,
+			p_xf_tsp_tsg_code IN VARCHAR2,
+			p_xk_tsp_code IN VARCHAR2);
 	PROCEDURE get_tyr (
 			p_cube_row IN OUT c_cube_row,
 			p_fk_typ_name IN VARCHAR2,
@@ -1081,7 +1102,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 	BEGIN
 		OPEN p_cube_row FOR
 			SELECT
-			  cube_tsg_int_ext,
+			  cube_tsg_type,
 			  directory,
 			  api_url
 			FROM v_business_object_type
@@ -1193,7 +1214,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 	PROCEDURE insert_bot (
 			p_cube_pos_action IN VARCHAR2,
 			p_name IN VARCHAR2,
-			p_cube_tsg_int_ext IN VARCHAR2,
+			p_cube_tsg_type IN VARCHAR2,
 			p_directory IN VARCHAR2,
 			p_api_url IN VARCHAR2,
 			x_name IN VARCHAR2) IS
@@ -1208,14 +1229,14 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			cube_id,
 			cube_sequence,
 			name,
-			cube_tsg_int_ext,
+			cube_tsg_type,
 			directory,
 			api_url)
 		VALUES (
 			NULL,
 			l_cube_sequence,
 			p_name,
-			p_cube_tsg_int_ext,
+			p_cube_tsg_type,
 			p_directory,
 			p_api_url);
 	EXCEPTION
@@ -1225,12 +1246,12 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 
 	PROCEDURE update_bot (
 			p_name IN VARCHAR2,
-			p_cube_tsg_int_ext IN VARCHAR2,
+			p_cube_tsg_type IN VARCHAR2,
 			p_directory IN VARCHAR2,
 			p_api_url IN VARCHAR2) IS
 	BEGIN
 		UPDATE v_business_object_type SET
-			cube_tsg_int_ext = p_cube_tsg_int_ext,
+			cube_tsg_type = p_cube_tsg_type,
 			directory = p_directory,
 			api_url = p_api_url
 		WHERE name = p_name;
@@ -1252,64 +1273,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			  name,
 			  code
 			FROM v_type
-			ORDER BY cube_sequence;
-	END;
-
-	PROCEDURE get_typ_list_encapsulated (
-			p_cube_row IN OUT c_cube_row,
-			p_name IN VARCHAR2) IS
-	BEGIN
-		OPEN p_cube_row FOR
-			SELECT
-			  cube_sequence,
-			  name,
-			  code
-			FROM v_type
-			WHERE fk_bot_name = p_name
-			   OR 	    ( 	NOT ( fk_bot_name = p_name
-					  AND p_name IS NOT NULL )
-				  AND fk_typ_name IS NULL )
-			ORDER BY cube_sequence;
-	END;
-
-	PROCEDURE get_typ_list_recursive (
-			p_cube_row IN OUT c_cube_row,
-			p_cube_up_or_down IN VARCHAR2,
-			p_cube_x_level IN NUMBER,
-			p_name IN VARCHAR2) IS
-	BEGIN
-		OPEN p_cube_row FOR
-			WITH anchor (
-				cube_sequence,
-				name,
-				code,
-				fk_typ_name,
-				cube_x_level) AS (
-				SELECT
-					cube_sequence,
-					name,
-					code,
-					fk_typ_name,
-					0 
-				FROM v_type
-				WHERE name = p_name
-				UNION ALL
-				SELECT
-					recursive.cube_sequence,
-					recursive.name,
-					recursive.code,
-					recursive.fk_typ_name,
-					anchor.cube_x_level+1
-				FROM v_type recursive, anchor
-				WHERE 	    ( 	    ( p_cube_up_or_down = 'D'
-						  AND anchor.name = recursive.fk_typ_name )
-					   OR 	    ( p_cube_up_or_down = 'U'
-						  AND anchor.fk_typ_name = recursive.name ) )
-				  AND anchor.cube_x_level < p_cube_x_level
-				)
-			SELECT DISTINCT cube_sequence, name, code
-			FROM anchor
-			WHERE cube_x_level > 0
 			ORDER BY cube_sequence;
 	END;
 
@@ -1372,6 +1335,21 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			FROM v_reference
 			WHERE fk_typ_name = p_name
 			ORDER BY fk_typ_name, cube_sequence;
+	END;
+
+	PROCEDURE get_typ_rtt_items (
+			p_cube_row IN OUT c_cube_row,
+			p_name IN VARCHAR2) IS
+	BEGIN
+		OPEN p_cube_row FOR
+			SELECT
+			  fk_typ_name,
+			  xf_tsp_typ_name,
+			  xf_tsp_tsg_code,
+			  xk_tsp_code
+			FROM v_restriction_type_spec_typ
+			WHERE fk_typ_name = p_name
+			ORDER BY fk_typ_name, xf_tsp_typ_name, xf_tsp_tsg_code, xk_tsp_code;
 	END;
 
 	PROCEDURE get_typ_tyr_items (
@@ -2716,6 +2694,113 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 		WHERE fk_typ_name = p_fk_typ_name
 		  AND fk_ref_sequence = p_fk_ref_sequence
 		  AND fk_ref_typ_name = p_fk_ref_typ_name
+		  AND xf_tsp_typ_name = p_xf_tsp_typ_name
+		  AND xf_tsp_tsg_code = p_xf_tsp_tsg_code
+		  AND xk_tsp_code = p_xk_tsp_code;
+	END;
+
+	PROCEDURE get_rtt (
+			p_cube_row IN OUT c_cube_row,
+			p_fk_typ_name IN VARCHAR2,
+			p_xf_tsp_typ_name IN VARCHAR2,
+			p_xf_tsp_tsg_code IN VARCHAR2,
+			p_xk_tsp_code IN VARCHAR2) IS
+	BEGIN
+		OPEN p_cube_row FOR
+			SELECT
+			  fk_bot_name,
+			  include_or_exclude
+			FROM v_restriction_type_spec_typ
+			WHERE fk_typ_name = p_fk_typ_name
+			  AND xf_tsp_typ_name = p_xf_tsp_typ_name
+			  AND xf_tsp_tsg_code = p_xf_tsp_tsg_code
+			  AND xk_tsp_code = p_xk_tsp_code;
+	END;
+
+	PROCEDURE get_next_rtt (
+			p_cube_row IN OUT c_cube_row,
+			p_fk_typ_name IN VARCHAR2,
+			p_xf_tsp_typ_name IN VARCHAR2,
+			p_xf_tsp_tsg_code IN VARCHAR2,
+			p_xk_tsp_code IN VARCHAR2) IS
+	BEGIN
+		OPEN p_cube_row FOR
+			SELECT
+			  fk_typ_name,
+			  xf_tsp_typ_name,
+			  xf_tsp_tsg_code,
+			  xk_tsp_code
+			FROM v_restriction_type_spec_typ
+			WHERE fk_typ_name > p_fk_typ_name
+			   OR 	    ( fk_typ_name = p_fk_typ_name
+				  AND xf_tsp_typ_name > p_xf_tsp_typ_name )
+			   OR 	    ( fk_typ_name = p_fk_typ_name
+				  AND xf_tsp_typ_name = p_xf_tsp_typ_name
+				  AND xf_tsp_tsg_code > p_xf_tsp_tsg_code )
+			   OR 	    ( fk_typ_name = p_fk_typ_name
+				  AND xf_tsp_typ_name = p_xf_tsp_typ_name
+				  AND xf_tsp_tsg_code = p_xf_tsp_tsg_code
+				  AND xk_tsp_code > p_xk_tsp_code )
+			ORDER BY fk_typ_name, xf_tsp_typ_name, xf_tsp_tsg_code, xk_tsp_code;
+	END;
+
+	PROCEDURE insert_rtt (
+			p_fk_bot_name IN VARCHAR2,
+			p_fk_typ_name IN VARCHAR2,
+			p_include_or_exclude IN CHAR,
+			p_xf_tsp_typ_name IN VARCHAR2,
+			p_xf_tsp_tsg_code IN VARCHAR2,
+			p_xk_tsp_code IN VARCHAR2,
+			p_cube_row IN OUT c_cube_row) IS
+	BEGIN
+		INSERT INTO v_restriction_type_spec_typ (
+			cube_id,
+			fk_bot_name,
+			fk_typ_name,
+			include_or_exclude,
+			xf_tsp_typ_name,
+			xf_tsp_tsg_code,
+			xk_tsp_code)
+		VALUES (
+			NULL,
+			p_fk_bot_name,
+			p_fk_typ_name,
+			p_include_or_exclude,
+			p_xf_tsp_typ_name,
+			p_xf_tsp_tsg_code,
+			p_xk_tsp_code);
+
+		get_next_rtt (p_cube_row, p_fk_typ_name, p_xf_tsp_typ_name, p_xf_tsp_tsg_code, p_xk_tsp_code);
+	EXCEPTION
+		WHEN DUP_VAL_ON_INDEX THEN
+			RAISE_APPLICATION_ERROR (-20001, 'Type restriction_type_spec_typ already exists');
+	END;
+
+	PROCEDURE update_rtt (
+			p_fk_bot_name IN VARCHAR2,
+			p_fk_typ_name IN VARCHAR2,
+			p_include_or_exclude IN CHAR,
+			p_xf_tsp_typ_name IN VARCHAR2,
+			p_xf_tsp_tsg_code IN VARCHAR2,
+			p_xk_tsp_code IN VARCHAR2) IS
+	BEGIN
+		UPDATE v_restriction_type_spec_typ SET
+			fk_bot_name = p_fk_bot_name,
+			include_or_exclude = p_include_or_exclude
+		WHERE fk_typ_name = p_fk_typ_name
+		  AND xf_tsp_typ_name = p_xf_tsp_typ_name
+		  AND xf_tsp_tsg_code = p_xf_tsp_tsg_code
+		  AND xk_tsp_code = p_xk_tsp_code;
+	END;
+
+	PROCEDURE delete_rtt (
+			p_fk_typ_name IN VARCHAR2,
+			p_xf_tsp_typ_name IN VARCHAR2,
+			p_xf_tsp_tsg_code IN VARCHAR2,
+			p_xk_tsp_code IN VARCHAR2) IS
+	BEGIN
+		DELETE v_restriction_type_spec_typ
+		WHERE fk_typ_name = p_fk_typ_name
 		  AND xf_tsp_typ_name = p_xf_tsp_typ_name
 		  AND xf_tsp_tsg_code = p_xf_tsp_tsg_code
 		  AND xk_tsp_code = p_xk_tsp_code;

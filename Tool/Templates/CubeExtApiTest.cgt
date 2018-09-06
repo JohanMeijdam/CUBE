@@ -21,7 +21,7 @@ CUBE EXTERNAL JSON API TEST</div>
 <div align="center" style="padding:15px;font-size:16pt;">Test the CUBE model API specifications of the External Business Object Types in a separate generated page.</div>
 <pre><!
 ><div id="INTRO" class="header1">Introduction</div><!
-><div>For each External Business Object Types there is a chapter to test the JSON API call.</div><![[LOOP,SYSTEM_BO_TYPE]][[LOOP,BUSINESS_OBJECT_TYPE:1=EXT]][[LOOP,TYPE]]
+><div>For each External Business Object Type there is a chapter to test the JSON API call.</div><![[LOOP,SYSTEM_BO_TYPE]][[LOOP,BUSINESS_OBJECT_TYPE:1=EXT]][[LOOP,TYPE]]
 ><div id="<<TYPE:I>>" class="header1"><<TYPE:C>></div><!
 ><div>Test the "<<BUSINESS_OBJECT_TYPE3>>" API.</div><!
 ><iframe src="test_<<TYPE:L>>_api.html" style="width:100%;" onload="this.style.height=this.contentDocument.body.scrollHeight + 'px';"></iframe><![[ENDLOOP,TYPE]][[ENDLOOP,BUSINESS_OBJECT_TYPE]][[ENDLOOP,SYSTEM_BO_TYPE]]

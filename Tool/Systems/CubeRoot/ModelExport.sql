@@ -453,51 +453,6 @@ DECLARE
 	END;
 
 
-	PROCEDURE report_jar (p_job IN t_json_object%ROWTYPE) IS
-	BEGIN
-		FOR r_jar IN (
-			SELECT *				
-			FROM t_json_attribute_reference
-			WHERE fk_bot_name = p_job.fk_bot_name
-			  AND fk_typ_name = p_job.fk_typ_name
-			ORDER BY cube_id )
-		LOOP
-			DBMS_OUTPUT.PUT_LINE (ftabs || '+JSON_ATTRIBUTE_REFERENCE[' || r_jar.cube_id || ']:' || ';');
-				l_level := l_level + 1;
-				BEGIN
-					SELECT cube_id INTO l_cube_id FROM t_attribute
-					WHERE fk_typ_name = r_jar.xf_atb_typ_name
-					  AND name = r_jar.xk_atb_name;
-
-					DBMS_OUTPUT.PUT_LINE (ftabs || '>ATTRIBUTE:' || l_cube_id || ';');
-				EXCEPTION
-					WHEN NO_DATA_FOUND THEN
-						NULL; 
-				END;
-				l_level := l_level - 1;
-			DBMS_OUTPUT.PUT_LINE (ftabs || '-JSON_ATTRIBUTE_REFERENCE:' || ';');
-		END LOOP;
-	END;
-
-
-	PROCEDURE report_job (p_typ IN t_type%ROWTYPE) IS
-	BEGIN
-		FOR r_job IN (
-			SELECT *				
-			FROM t_json_object
-			WHERE fk_bot_name = p_typ.fk_bot_name
-			  AND fk_typ_name = p_typ.name
-			ORDER BY cube_sequence )
-		LOOP
-			DBMS_OUTPUT.PUT_LINE (ftabs || '+JSON_OBJECT[' || r_job.cube_id || ']:' || fenperc(r_job.cube_tsg_group_or_element) || ';');
-				l_level := l_level + 1;
-				report_jar (r_job);
-				l_level := l_level - 1;
-			DBMS_OUTPUT.PUT_LINE (ftabs || '-JSON_OBJECT:' || r_job.cube_tsg_group_or_element || ';');
-		END LOOP;
-	END;
-
-
 	PROCEDURE report_dct (p_typ IN t_type%ROWTYPE) IS
 	BEGIN
 		FOR r_dct IN (
@@ -531,7 +486,6 @@ DECLARE
 				report_tyr (r_typ);
 				report_par (r_typ);
 				report_tsg (r_typ);
-				report_job (r_typ);
 				report_dct (r_typ);
 				report_typ_recursive (r_typ);
 				l_level := l_level - 1;
@@ -557,7 +511,6 @@ DECLARE
 				report_tyr (r_typ);
 				report_par (r_typ);
 				report_tsg (r_typ);
-				report_job (r_typ);
 				report_dct (r_typ);
 				report_typ_recursive (r_typ);
 				l_level := l_level - 1;
@@ -574,7 +527,7 @@ DECLARE
 			WHERE (g_system_name = 'ALL' OR name in (SELECT xk_bot_name FROM t_system_bo_type WHERE fk_sys_name = g_system_name ))
 			ORDER BY cube_sequence )
 		LOOP
-			DBMS_OUTPUT.PUT_LINE (ftabs || '+BUSINESS_OBJECT_TYPE[' || r_bot.cube_id || ']:' || fenperc(r_bot.name) || '|' || fenperc(r_bot.cube_tsg_int_ext) || '|' || fenperc(r_bot.directory) || '|' || fenperc(r_bot.api_url) || ';');
+			DBMS_OUTPUT.PUT_LINE (ftabs || '+BUSINESS_OBJECT_TYPE[' || r_bot.cube_id || ']:' || fenperc(r_bot.name) || '|' || fenperc(r_bot.cube_tsg_type) || '|' || fenperc(r_bot.directory) || '|' || fenperc(r_bot.api_url) || ';');
 				l_level := l_level + 1;
 				report_typ (r_bot);
 				l_level := l_level - 1;
@@ -647,7 +600,7 @@ BEGIN
 	DBMS_OUTPUT.PUT_LINE ('	-META_TYPE:INFORMATION_TYPE;');
 	DBMS_OUTPUT.PUT_LINE ('	+META_TYPE:BUSINESS_OBJECT_TYPE|'||REPLACE('An%20object%20type%20related%20to%20the%20business%20supported%20by%20the%20system.','%20',' ')||';');
 	DBMS_OUTPUT.PUT_LINE ('		=PROPERTY:0|Name|;');
-	DBMS_OUTPUT.PUT_LINE ('		=PROPERTY:1|CubeTsgIntExt| Values: INT(INTERNAL), EXT(EXTERNAL);');
+	DBMS_OUTPUT.PUT_LINE ('		=PROPERTY:1|CubeTsgType| Values: INT(INTERNAL), EXT(EXTERNAL);');
 	DBMS_OUTPUT.PUT_LINE ('		=PROPERTY:2|Directory|;');
 	DBMS_OUTPUT.PUT_LINE ('		=PROPERTY:3|ApiUrl|'||REPLACE('The%20basic%20URL%20for%20calling%20the%20API.','%20',' ')||';');
 	DBMS_OUTPUT.PUT_LINE ('		+META_TYPE:TYPE|'||REPLACE('An%20entity%20type%20related%20to%20the%20business%20that%20is%20supported%20by%20the%20system.','%20',' ')||';');
@@ -690,7 +643,7 @@ BEGIN
 	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:3|Sequence|;');
 	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:4|Scope|'||REPLACE('In%20case%20of%20a%20recursive%20target%2C%20the%20definition%20of%20the%20collection%20of%20the%20types%20to%20select.','%20',' ')||' Values: ALL(All), ENC(Encapsulated), PRA(Parents all), PR1(Parents first level), CHA(Children all), CH1(Children first level);');
 	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:5|Unchangeable|'||REPLACE('Indication%20that%20after%20the%20creation%20of%20the%20type%20the%20reference%20can%20not%20be%20changed.%20So%20in%20case%20of%20a%20recursive%20reference%20the%20indication%20too%20that%20the%20relation%20is%20used%20to%20select%20the%20parents%20or%20children%20in%20the%20hierarchy.','%20',' ')||' Values: Y(Yes), N(No);');
-	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:6|WithinScopeLevel|'||REPLACE('In%20case%20of%20recursive%20%22wihin%20scope%20of%22%20type%20the%20relative%20level%20in%20the%20hierarchy%2C%20Positive%20numbers%20are%20the%20parent%20levels%2C%20Negative%20numbers%20are%20the%20child%20levels.','%20',' ')||';');
+	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:6|WithinScopeLevel|'||REPLACE('In%20case%20of%20recursive%20%22within%20scope%20of%22%20type%20the%20relative%20level%20in%20the%20hierarchy%2C%20Positive%20numbers%20are%20the%20parent%20levels%2C%20Negative%20numbers%20are%20the%20child%20levels.','%20',' ')||';');
 	DBMS_OUTPUT.PUT_LINE ('				=ASSOCIATION:REFERENCE_TYPE|Refer|TYPE|'||REPLACE('The%20target%20entity%20type%20of%20the%20reference.','%20',' ')||';');
 	DBMS_OUTPUT.PUT_LINE ('				=ASSOCIATION:REFERENCE_TYPE_WITHIN_SCOPE_OF|WithinScopeOf|TYPE|'||REPLACE('In%20case%20of%20non%20recursive%20target%20or%20a%20scope%20all%20recursive%20target%20the%20common%20type%20for%20the%20selection.','%20',' ')||';');
 	DBMS_OUTPUT.PUT_LINE ('				+META_TYPE:DESCRIPTION_REFERENCE|;');
@@ -726,12 +679,6 @@ BEGIN
 	DBMS_OUTPUT.PUT_LINE ('					=ASSOCIATION:TYPE_SPECIALISATION|Specialise|TYPE_SPECIALISATION|;');
 	DBMS_OUTPUT.PUT_LINE ('				-META_TYPE:TYPE_SPECIALISATION;');
 	DBMS_OUTPUT.PUT_LINE ('			-META_TYPE:TYPE_SPECIALISATION_GROUP;');
-	DBMS_OUTPUT.PUT_LINE ('			+META_TYPE:JSON_OBJECT|;');
-	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:0|CubeTsgGroupOrElement| Values: GR(GROUP), EL(ELEMENT);');
-	DBMS_OUTPUT.PUT_LINE ('				+META_TYPE:JSON_ATTRIBUTE_REFERENCE|;');
-	DBMS_OUTPUT.PUT_LINE ('					=ASSOCIATION:ATTRIBUTE|Concerns|ATTRIBUTE|;');
-	DBMS_OUTPUT.PUT_LINE ('				-META_TYPE:JSON_ATTRIBUTE_REFERENCE;');
-	DBMS_OUTPUT.PUT_LINE ('			-META_TYPE:JSON_OBJECT;');
 	DBMS_OUTPUT.PUT_LINE ('			+META_TYPE:DESCRIPTION_TYPE|'||REPLACE('Test%0D%0AMet%20LF%20en%20%22%20en%20%27%20%20en%20%25%20%20%20%20%25%0D%0AEInde','%20',' ')||';');
 	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:0|Text|;');
 	DBMS_OUTPUT.PUT_LINE ('			-META_TYPE:DESCRIPTION_TYPE;');

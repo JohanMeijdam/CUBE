@@ -20,7 +20,7 @@
 	-META_TYPE:INFORMATION_TYPE;
 	+META_TYPE:BUSINESS_OBJECT_TYPE|An object type related to the business supported by the system.;
 		=PROPERTY:0|Name|;
-		=PROPERTY:1|CubeTsgIntExt| Values: INT(INTERNAL), EXT(EXTERNAL);
+		=PROPERTY:1|CubeTsgType| Values: INT(INTERNAL), EXT(EXTERNAL), RET(REUSABLE_TYPE);
 		=PROPERTY:2|Directory|;
 		=PROPERTY:3|ApiUrl|The basic URL for calling the API.;
 		+META_TYPE:TYPE|An entity type related to the business that is supported by the system.;
@@ -63,7 +63,7 @@
 				=PROPERTY:3|Sequence|;
 				=PROPERTY:4|Scope|In case of a recursive target%2C the definition of the collection of the types to select. Values: ALL(All), ENC(Encapsulated), PRA(Parents all), PR1(Parents first level), CHA(Children all), CH1(Children first level);
 				=PROPERTY:5|Unchangeable|Indication that after the creation of the type the reference can not be changed. So in case of a recursive reference the indication too that the relation is used to select the parents or children in the hierarchy. Values: Y(Yes), N(No);
-				=PROPERTY:6|WithinScopeLevel|In case of recursive %22wihin scope of%22 type the relative level in the hierarchy%2C Positive numbers are the parent levels%2C Negative numbers are the child levels.;
+				=PROPERTY:6|WithinScopeLevel|In case of recursive %22within scope of%22 type the relative level in the hierarchy%2C Positive numbers are the parent levels%2C Negative numbers are the child levels.;
 				=ASSOCIATION:REFERENCE_TYPE|Refer|TYPE|The target entity type of the reference.;
 				=ASSOCIATION:REFERENCE_TYPE_WITHIN_SCOPE_OF|WithinScopeOf|TYPE|In case of non recursive target or a scope all recursive target the common type for the selection.;
 				+META_TYPE:DESCRIPTION_REFERENCE|;
@@ -99,13 +99,6 @@
 					=ASSOCIATION:TYPE_SPECIALISATION|Specialise|TYPE_SPECIALISATION|;
 				-META_TYPE:TYPE_SPECIALISATION;
 			-META_TYPE:TYPE_SPECIALISATION_GROUP;
-			+META_TYPE:JSON_OBJECT|;
-				=PROPERTY:0|CubeTsgGroupOrElement| Values: GR(GROUP), EL(ELEMENT);
-				=ASSOCIATION:BUSINESS_OBJECT_TYPE|Test|BUSINESS_OBJECT_TYPE|;
-				+META_TYPE:JSON_ATTRIBUTE_REFERENCE|;
-					=ASSOCIATION:ATTRIBUTE|Concerns|ATTRIBUTE|;
-				-META_TYPE:JSON_ATTRIBUTE_REFERENCE;
-			-META_TYPE:JSON_OBJECT;
 			+META_TYPE:DESCRIPTION_TYPE|Test%0D%0AMet LF en %22 en %27  en %25    %25%0D%0AEInde;
 				=PROPERTY:0|Text|;
 			-META_TYPE:DESCRIPTION_TYPE;

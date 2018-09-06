@@ -238,32 +238,6 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
-	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBEROOT' AND sequence_name = 'JOB_SEQ';
-	IF l_count = 0 THEN
-
-		EXECUTE IMMEDIATE 
-		'CREATE SEQUENCE job_seq START WITH 100000';
-		DBMS_OUTPUT.PUT_LINE('Sequence JOB_SEQ created');
-
-	END IF;
-END;
-/
-DECLARE
-	l_count NUMBER(4);
-BEGIN
-	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBEROOT' AND sequence_name = 'JAR_SEQ';
-	IF l_count = 0 THEN
-
-		EXECUTE IMMEDIATE 
-		'CREATE SEQUENCE jar_seq START WITH 100000';
-		DBMS_OUTPUT.PUT_LINE('Sequence JAR_SEQ created');
-
-	END IF;
-END;
-/
-DECLARE
-	l_count NUMBER(4);
-BEGIN
 	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBEROOT' AND sequence_name = 'DCT_SEQ';
 	IF l_count = 0 THEN
 
@@ -540,7 +514,7 @@ BEGIN
 			cube_id VARCHAR2(16),
 			cube_sequence NUMBER(8),
 			name VARCHAR2(30),
-			cube_tsg_int_ext VARCHAR2(8) DEFAULT ''INT'',
+			cube_tsg_type VARCHAR2(8) DEFAULT ''INT'',
 			directory VARCHAR2(80),
 			api_url VARCHAR2(300))';
 		DBMS_OUTPUT.PUT_LINE('Table T_BUSINESS_OBJECT_TYPE created');
@@ -567,11 +541,11 @@ BEGIN
 			DBMS_OUTPUT.PUT_LINE('Column T_BUSINESS_OBJECT_TYPE.NAME created');
 		END IF;
 
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_BUSINESS_OBJECT_TYPE' AND column_name = 'CUBE_TSG_INT_EXT';
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_BUSINESS_OBJECT_TYPE' AND column_name = 'CUBE_TSG_TYPE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
-			'ALTER TABLE t_business_object_type ADD cube_tsg_int_ext VARCHAR2(8) DEFAULT ''INT''';
-			DBMS_OUTPUT.PUT_LINE('Column T_BUSINESS_OBJECT_TYPE.CUBE_TSG_INT_EXT created');
+			'ALTER TABLE t_business_object_type ADD cube_tsg_type VARCHAR2(8) DEFAULT ''INT''';
+			DBMS_OUTPUT.PUT_LINE('Column T_BUSINESS_OBJECT_TYPE.CUBE_TSG_TYPE created');
 		END IF;
 
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_BUSINESS_OBJECT_TYPE' AND column_name = 'DIRECTORY';
@@ -1915,138 +1889,6 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
-	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = 'CUBEROOT' AND table_name = 'T_JSON_OBJECT';
-	IF l_count = 0 THEN
-		EXECUTE IMMEDIATE
-		'CREATE TABLE t_json_object (
-			cube_id VARCHAR2(16),
-			cube_sequence NUMBER(8),
-			fk_bot_name VARCHAR2(30),
-			fk_typ_name VARCHAR2(30),
-			cube_tsg_group_or_element VARCHAR2(8) DEFAULT ''GR'')';
-		DBMS_OUTPUT.PUT_LINE('Table T_JSON_OBJECT created');
-	ELSE
-
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_JSON_OBJECT' AND column_name = 'CUBE_ID';
-		IF l_count = 0 THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_json_object ADD cube_id VARCHAR2(16)';
-			DBMS_OUTPUT.PUT_LINE('Column T_JSON_OBJECT.CUBE_ID created');
-		END IF;
-
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_JSON_OBJECT' AND column_name = 'CUBE_SEQUENCE';
-		IF l_count = 0 THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_json_object ADD cube_sequence NUMBER(8)';
-			DBMS_OUTPUT.PUT_LINE('Column T_JSON_OBJECT.CUBE_SEQUENCE created');
-		END IF;
-
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_JSON_OBJECT' AND column_name = 'FK_BOT_NAME';
-		IF l_count = 0 THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_json_object ADD fk_bot_name VARCHAR2(30)';
-			DBMS_OUTPUT.PUT_LINE('Column T_JSON_OBJECT.FK_BOT_NAME created');
-		END IF;
-
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_JSON_OBJECT' AND column_name = 'FK_TYP_NAME';
-		IF l_count = 0 THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_json_object ADD fk_typ_name VARCHAR2(30)';
-			DBMS_OUTPUT.PUT_LINE('Column T_JSON_OBJECT.FK_TYP_NAME created');
-		END IF;
-
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_JSON_OBJECT' AND column_name = 'CUBE_TSG_GROUP_OR_ELEMENT';
-		IF l_count = 0 THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_json_object ADD cube_tsg_group_or_element VARCHAR2(8) DEFAULT ''GR''';
-			DBMS_OUTPUT.PUT_LINE('Column T_JSON_OBJECT.CUBE_TSG_GROUP_OR_ELEMENT created');
-		END IF;
-
-		FOR r_key IN (SELECT constraint_name FROM all_constraints WHERE owner = 'CUBEROOT' AND table_name = 'T_JSON_OBJECT' AND constraint_type IN ('P','U','R') ORDER BY constraint_type DESC)
-		LOOP
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_json_object DROP CONSTRAINT ' || r_key.constraint_name || ' CASCADE';
-			DBMS_OUTPUT.PUT_LINE('Primary Key T_JSON_OBJECT.' || UPPER(r_key.constraint_name) || ' dropped');
-		END LOOP;
-
-		FOR r_index IN (SELECT index_name FROM all_indexes WHERE owner = 'CUBEROOT' AND table_name = 'T_JSON_OBJECT')
-		LOOP
-			EXECUTE IMMEDIATE
-			'DROP INDEX ' || r_index.index_name;
-			DBMS_OUTPUT.PUT_LINE('Index T_JSON_OBJECT.' || UPPER(r_index.index_name) || ' dropped');
-		END LOOP;
-	END IF;
-END;
-/
-DECLARE
-	l_count NUMBER(4);
-BEGIN
-	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = 'CUBEROOT' AND table_name = 'T_JSON_ATTRIBUTE_REFERENCE';
-	IF l_count = 0 THEN
-		EXECUTE IMMEDIATE
-		'CREATE TABLE t_json_attribute_reference (
-			cube_id VARCHAR2(16),
-			fk_bot_name VARCHAR2(30),
-			fk_typ_name VARCHAR2(30),
-			xf_atb_typ_name VARCHAR2(30),
-			xk_atb_name VARCHAR2(30))';
-		DBMS_OUTPUT.PUT_LINE('Table T_JSON_ATTRIBUTE_REFERENCE created');
-	ELSE
-
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_JSON_ATTRIBUTE_REFERENCE' AND column_name = 'CUBE_ID';
-		IF l_count = 0 THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_json_attribute_reference ADD cube_id VARCHAR2(16)';
-			DBMS_OUTPUT.PUT_LINE('Column T_JSON_ATTRIBUTE_REFERENCE.CUBE_ID created');
-		END IF;
-
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_JSON_ATTRIBUTE_REFERENCE' AND column_name = 'FK_BOT_NAME';
-		IF l_count = 0 THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_json_attribute_reference ADD fk_bot_name VARCHAR2(30)';
-			DBMS_OUTPUT.PUT_LINE('Column T_JSON_ATTRIBUTE_REFERENCE.FK_BOT_NAME created');
-		END IF;
-
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_JSON_ATTRIBUTE_REFERENCE' AND column_name = 'FK_TYP_NAME';
-		IF l_count = 0 THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_json_attribute_reference ADD fk_typ_name VARCHAR2(30)';
-			DBMS_OUTPUT.PUT_LINE('Column T_JSON_ATTRIBUTE_REFERENCE.FK_TYP_NAME created');
-		END IF;
-
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_JSON_ATTRIBUTE_REFERENCE' AND column_name = 'XF_ATB_TYP_NAME';
-		IF l_count = 0 THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_json_attribute_reference ADD xf_atb_typ_name VARCHAR2(30)';
-			DBMS_OUTPUT.PUT_LINE('Column T_JSON_ATTRIBUTE_REFERENCE.XF_ATB_TYP_NAME created');
-		END IF;
-
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_JSON_ATTRIBUTE_REFERENCE' AND column_name = 'XK_ATB_NAME';
-		IF l_count = 0 THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_json_attribute_reference ADD xk_atb_name VARCHAR2(30)';
-			DBMS_OUTPUT.PUT_LINE('Column T_JSON_ATTRIBUTE_REFERENCE.XK_ATB_NAME created');
-		END IF;
-
-		FOR r_key IN (SELECT constraint_name FROM all_constraints WHERE owner = 'CUBEROOT' AND table_name = 'T_JSON_ATTRIBUTE_REFERENCE' AND constraint_type IN ('P','U','R') ORDER BY constraint_type DESC)
-		LOOP
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_json_attribute_reference DROP CONSTRAINT ' || r_key.constraint_name || ' CASCADE';
-			DBMS_OUTPUT.PUT_LINE('Primary Key T_JSON_ATTRIBUTE_REFERENCE.' || UPPER(r_key.constraint_name) || ' dropped');
-		END LOOP;
-
-		FOR r_index IN (SELECT index_name FROM all_indexes WHERE owner = 'CUBEROOT' AND table_name = 'T_JSON_ATTRIBUTE_REFERENCE')
-		LOOP
-			EXECUTE IMMEDIATE
-			'DROP INDEX ' || r_index.index_name;
-			DBMS_OUTPUT.PUT_LINE('Index T_JSON_ATTRIBUTE_REFERENCE.' || UPPER(r_index.index_name) || ' dropped');
-		END LOOP;
-	END IF;
-END;
-/
-DECLARE
-	l_count NUMBER(4);
-BEGIN
 	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = 'CUBEROOT' AND table_name = 'T_DESCRIPTION_TYPE';
 	IF l_count = 0 THEN
 		EXECUTE IMMEDIATE
@@ -2249,8 +2091,6 @@ BEGIN
 							'T_SUBTYPE',
 							'T_TYPE_SPECIALISATION_GROUP',
 							'T_TYPE_SPECIALISATION',
-							'T_JSON_OBJECT',
-							'T_JSON_ATTRIBUTE_REFERENCE',
 							'T_DESCRIPTION_TYPE',
 							'T_SYSTEM',
 							'T_SYSTEM_BO_TYPE')
@@ -2469,14 +2309,14 @@ BEGIN
 			'CUBE_ID','VARCHAR2(16)',
 			'CUBE_SEQUENCE','NUMBER(8)',
 			'NAME','VARCHAR2(30)',
-			'CUBE_TSG_INT_EXT','VARCHAR2(8)',
+			'CUBE_TSG_TYPE','VARCHAR2(8)',
 			'DIRECTORY','VARCHAR2(80)',
 			'API_URL','VARCHAR2(300)',NULL) new_domain,
 		DECODE(column_name,
 			'CUBE_ID',NULL,
 			'CUBE_SEQUENCE',NULL,
 			'NAME',NULL,
-			'CUBE_TSG_INT_EXT','''INT''',
+			'CUBE_TSG_TYPE','''INT''',
 			'DIRECTORY',NULL,
 			'API_URL',NULL,NULL) new_default_value
   		FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_BUSINESS_OBJECT_TYPE')
@@ -2512,7 +2352,7 @@ BEGIN
 							'CUBE_ID',
 							'CUBE_SEQUENCE',
 							'NAME',
-							'CUBE_TSG_INT_EXT',
+							'CUBE_TSG_TYPE',
 							'DIRECTORY',
 							'API_URL'))
 	LOOP
@@ -3581,134 +3421,6 @@ BEGIN
 		EXECUTE IMMEDIATE
 		'ALTER TABLE t_type_specialisation DROP COLUMN ' || r_field.column_name;
 		DBMS_OUTPUT.PUT_LINE('Field T_TYPE_SPECIALISATION.' || UPPER(r_field.column_name) || ' dropped');
-	END LOOP;
-END;
-/
-BEGIN
-	FOR r_field IN (SELECT column_name,
-		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
-		data_default old_default_value,
-  		DECODE(column_name,
-			'CUBE_ID','VARCHAR2(16)',
-			'CUBE_SEQUENCE','NUMBER(8)',
-			'FK_BOT_NAME','VARCHAR2(30)',
-			'FK_TYP_NAME','VARCHAR2(30)',
-			'CUBE_TSG_GROUP_OR_ELEMENT','VARCHAR2(8)',NULL) new_domain,
-		DECODE(column_name,
-			'CUBE_ID',NULL,
-			'CUBE_SEQUENCE',NULL,
-			'FK_BOT_NAME',NULL,
-			'FK_TYP_NAME',NULL,
-			'CUBE_TSG_GROUP_OR_ELEMENT','''GR''',NULL) new_default_value
-  		FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_JSON_OBJECT')
-	LOOP
-		IF r_field.old_domain <> r_field.new_domain THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_json_object RENAME COLUMN ' || r_field.column_name || ' TO old#domain#field';
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_json_object ADD ' || r_field.column_name || ' ' || r_field.new_domain;
- 			IF r_field.new_domain = 'VARCHAR2' THEN  
-				EXECUTE IMMEDIATE
-				'UPDATE t_json_object SET ' || r_field.column_name || '= TRIM(old#domain#field)';
-			ELSE
-				EXECUTE IMMEDIATE
-				'UPDATE t_json_object SET ' || r_field.column_name || '= old#domain#field';
-			END IF;
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_json_object DROP COLUMN old#domain#field';
-			DBMS_OUTPUT.PUT_LINE('Field T_JSON_OBJECT.' || UPPER(r_field.column_name) || ' converted from ' || r_field.old_domain || ' to ' || r_field.new_domain);
-		END IF;
-		IF NOT((r_field.old_default_value IS NULL AND r_field.new_default_value IS NULL) OR r_field.old_default_value = r_field.new_default_value) THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_json_object MODIFY (' || r_field.column_name || ' DEFAULT ' || NVL(r_field.new_default_value,'NULL') || ')';
-			DBMS_OUTPUT.PUT_LINE('Field T_JSON_OBJECT.' || UPPER(r_field.column_name) || ' default value set to ' || NVL(r_field.new_default_value,'NULL'));
-		END IF;
-	END LOOP;
-	EXECUTE IMMEDIATE
-	'ALTER TABLE t_json_object ADD CONSTRAINT job_pk
-		PRIMARY KEY (
-			fk_typ_name )';
-	DBMS_OUTPUT.PUT_LINE('Primary Key T_JSON_OBJECT.JOB_PK created');
-	EXECUTE IMMEDIATE
-	'ALTER TABLE t_json_object ADD CONSTRAINT job_typ_fk
-		FOREIGN KEY (fk_typ_name)
-		REFERENCES t_type (name)
-		ON DELETE CASCADE';
-	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_JSON_OBJECT' AND column_name NOT IN (
-							'CUBE_ID',
-							'CUBE_SEQUENCE',
-							'FK_BOT_NAME',
-							'FK_TYP_NAME',
-							'CUBE_TSG_GROUP_OR_ELEMENT'))
-	LOOP
-		EXECUTE IMMEDIATE
-		'ALTER TABLE t_json_object DROP COLUMN ' || r_field.column_name;
-		DBMS_OUTPUT.PUT_LINE('Field T_JSON_OBJECT.' || UPPER(r_field.column_name) || ' dropped');
-	END LOOP;
-END;
-/
-BEGIN
-	FOR r_field IN (SELECT column_name,
-		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
-		data_default old_default_value,
-  		DECODE(column_name,
-			'CUBE_ID','VARCHAR2(16)',
-			'FK_BOT_NAME','VARCHAR2(30)',
-			'FK_TYP_NAME','VARCHAR2(30)',
-			'XF_ATB_TYP_NAME','VARCHAR2(30)',
-			'XK_ATB_NAME','VARCHAR2(30)',NULL) new_domain,
-		DECODE(column_name,
-			'CUBE_ID',NULL,
-			'FK_BOT_NAME',NULL,
-			'FK_TYP_NAME',NULL,
-			'XF_ATB_TYP_NAME',NULL,
-			'XK_ATB_NAME',NULL,NULL) new_default_value
-  		FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_JSON_ATTRIBUTE_REFERENCE')
-	LOOP
-		IF r_field.old_domain <> r_field.new_domain THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_json_attribute_reference RENAME COLUMN ' || r_field.column_name || ' TO old#domain#field';
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_json_attribute_reference ADD ' || r_field.column_name || ' ' || r_field.new_domain;
- 			IF r_field.new_domain = 'VARCHAR2' THEN  
-				EXECUTE IMMEDIATE
-				'UPDATE t_json_attribute_reference SET ' || r_field.column_name || '= TRIM(old#domain#field)';
-			ELSE
-				EXECUTE IMMEDIATE
-				'UPDATE t_json_attribute_reference SET ' || r_field.column_name || '= old#domain#field';
-			END IF;
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_json_attribute_reference DROP COLUMN old#domain#field';
-			DBMS_OUTPUT.PUT_LINE('Field T_JSON_ATTRIBUTE_REFERENCE.' || UPPER(r_field.column_name) || ' converted from ' || r_field.old_domain || ' to ' || r_field.new_domain);
-		END IF;
-		IF NOT((r_field.old_default_value IS NULL AND r_field.new_default_value IS NULL) OR r_field.old_default_value = r_field.new_default_value) THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_json_attribute_reference MODIFY (' || r_field.column_name || ' DEFAULT ' || NVL(r_field.new_default_value,'NULL') || ')';
-			DBMS_OUTPUT.PUT_LINE('Field T_JSON_ATTRIBUTE_REFERENCE.' || UPPER(r_field.column_name) || ' default value set to ' || NVL(r_field.new_default_value,'NULL'));
-		END IF;
-	END LOOP;
-	EXECUTE IMMEDIATE
-	'ALTER TABLE t_json_attribute_reference ADD CONSTRAINT jar_pk
-		PRIMARY KEY (
-			fk_typ_name,
-			xf_atb_typ_name,
-			xk_atb_name )';
-	DBMS_OUTPUT.PUT_LINE('Primary Key T_JSON_ATTRIBUTE_REFERENCE.JAR_PK created');
-	EXECUTE IMMEDIATE
-	'ALTER TABLE t_json_attribute_reference ADD CONSTRAINT jar_job_fk
-		FOREIGN KEY (fk_typ_name)
-		REFERENCES t_json_object (fk_typ_name)
-		ON DELETE CASCADE';
-	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_JSON_ATTRIBUTE_REFERENCE' AND column_name NOT IN (
-							'CUBE_ID',
-							'FK_BOT_NAME',
-							'FK_TYP_NAME',
-							'XF_ATB_TYP_NAME',
-							'XK_ATB_NAME'))
-	LOOP
-		EXECUTE IMMEDIATE
-		'ALTER TABLE t_json_attribute_reference DROP COLUMN ' || r_field.column_name;
-		DBMS_OUTPUT.PUT_LINE('Field T_JSON_ATTRIBUTE_REFERENCE.' || UPPER(r_field.column_name) || ' dropped');
 	END LOOP;
 END;
 /

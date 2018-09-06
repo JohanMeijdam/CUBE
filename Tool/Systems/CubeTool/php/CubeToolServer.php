@@ -382,7 +382,7 @@ case 'GetBot':
 	if (!$r) { return; }
 	echo "SELECT_BOT";
 	if ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["CUBE_TSG_INT_EXT"]."<|>".$row["DIRECTORY"]."<|>".$row["API_URL"];
+		echo "<|||>".$row["CUBE_TSG_TYPE"]."<|>".$row["DIRECTORY"]."<|>".$row["API_URL"];
 	}
 	break;
 
@@ -447,19 +447,19 @@ case 'MoveBot':
 
 case 'CreateBot':
 
-	list($p_cube_pos_action, $p_name, $p_cube_tsg_int_ext, $p_directory, $p_api_url, $x_name) = explode("<|>", $import[1]."<|>");
+	list($p_cube_pos_action, $p_name, $p_cube_tsg_type, $p_directory, $p_api_url, $x_name) = explode("<|>", $import[1]."<|>");
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.insert_bot (
 		:p_cube_pos_action,
 		:p_name,
-		:p_cube_tsg_int_ext,
+		:p_cube_tsg_type,
 		:p_directory,
 		:p_api_url,
 		:x_name);
 	END;");
 	oci_bind_by_name($stid,":p_cube_pos_action",$p_cube_pos_action);
 	oci_bind_by_name($stid,":p_name",$p_name);
-	oci_bind_by_name($stid,":p_cube_tsg_int_ext",$p_cube_tsg_int_ext);
+	oci_bind_by_name($stid,":p_cube_tsg_type",$p_cube_tsg_type);
 	oci_bind_by_name($stid,":p_directory",$p_directory);
 	oci_bind_by_name($stid,":p_api_url",$p_api_url);
 	oci_bind_by_name($stid,":x_name",$x_name);
@@ -474,16 +474,16 @@ case 'CreateBot':
 
 case 'UpdateBot':
 
-	list($p_name, $p_cube_tsg_int_ext, $p_directory, $p_api_url) = explode("<|>", $import[1]);
+	list($p_name, $p_cube_tsg_type, $p_directory, $p_api_url) = explode("<|>", $import[1]);
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.update_bot (
 		:p_name,
-		:p_cube_tsg_int_ext,
+		:p_cube_tsg_type,
 		:p_directory,
 		:p_api_url);
 	END;");
 	oci_bind_by_name($stid,":p_name",$p_name);
-	oci_bind_by_name($stid,":p_cube_tsg_int_ext",$p_cube_tsg_int_ext);
+	oci_bind_by_name($stid,":p_cube_tsg_type",$p_cube_tsg_type);
 	oci_bind_by_name($stid,":p_directory",$p_directory);
 	oci_bind_by_name($stid,":p_api_url",$p_api_url);
 
@@ -515,48 +515,6 @@ case 'DeleteBot':
 case 'GetTypListAll':
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.get_typ_list_all (:p_cube_row); END;");
-	$r = perform_db_request();
-	if (!$r) { return; }
-	echo "LIST_TYP";
-	while ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["NAME"];
-		echo "<||>".$row["NAME"]." (".$row["CODE"].")";
-	}
-	break;
-
-case 'GetTypListEncapsulated':
-
-	list($p_name) = explode("<|>", $import[1]);
-
-	$stid = oci_parse($conn, "BEGIN pkg_bot.get_typ_list_encapsulated (
-		:p_cube_row,
-		:p_name);
-	END;");
-	oci_bind_by_name($stid,":p_name",$p_name);
-
-	$r = perform_db_request();
-	if (!$r) { return; }
-	echo "LIST_TYP";
-	while ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["NAME"];
-		echo "<||>".$row["NAME"]." (".$row["CODE"].")";
-	}
-	break;
-
-case 'GetTypListRecursive':
-
-	list($p_cube_up_or_down, $p_cube_x_level, $p_name) = explode("<|>", $import[1]);
-
-	$stid = oci_parse($conn, "BEGIN pkg_bot.get_typ_list_recursive (
-		:p_cube_row,
-		:p_cube_up_or_down,
-		:p_cube_x_level,
-		:p_name);
-	END;");
-	oci_bind_by_name($stid,":p_cube_up_or_down",$p_cube_up_or_down);
-	oci_bind_by_name($stid,":p_cube_x_level",$p_cube_x_level);
-	oci_bind_by_name($stid,":p_name",$p_name);
-
 	$r = perform_db_request();
 	if (!$r) { return; }
 	echo "LIST_TYP";
@@ -699,22 +657,6 @@ case 'GetTypItems':
 		if ($first) { $first = False; echo "LIST_TSG";}
 		echo "<|||>".$row["FK_TYP_NAME"]."<|>".$row["CODE"];
 		echo "<||>"."(".$row["CODE"].")"." ".$row["NAME"];
-	}
-	echo "<||||>";
-
-	$stid = oci_parse($conn, "BEGIN pkg_bot.get_typ_job_items (
-		:p_cube_row,
-		:p_name);
-	END;");
-	oci_bind_by_name($stid,":p_name",$p_name);
-
-	$r = perform_db_request();
-	if (!$r) { return; }
-	$first = True;
-	while ($row = oci_fetch_assoc($curs)) {
-		if ($first) { $first = False; echo "LIST_JOB";}
-		echo "<|||>".$row["FK_TYP_NAME"];
-		echo "<||>";
 	}
 	echo "<||||>";
 
@@ -2737,218 +2679,6 @@ case 'DeleteTsp':
 		return;
 	}
 	echo "DELETE_TSP";
-	break;
-
-case 'GetJob':
-
-	list($p_fk_typ_name) = explode("<|>", $import[1]);
-
-	$stid = oci_parse($conn, "BEGIN pkg_bot.get_job (
-		:p_cube_row,
-		:p_fk_typ_name);
-	END;");
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-
-	$r = perform_db_request();
-	if (!$r) { return; }
-	echo "SELECT_JOB";
-	if ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["FK_BOT_NAME"]."<|>".$row["CUBE_TSG_GROUP_OR_ELEMENT"]."<|>".$row["XK_BOT_NAME"];
-	}
-	break;
-
-case 'GetJobFkey':
-
-	list($p_fk_typ_name) = explode("<|>", $import[1]);
-
-	$stid = oci_parse($conn, "BEGIN pkg_bot.get_job_fkey (
-		:p_cube_row,
-		:p_fk_typ_name);
-	END;");
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-
-	$r = perform_db_request();
-	if (!$r) { return; }
-	echo "SELECT_FKEY_JOB";
-	if ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["FK_BOT_NAME"];
-	}
-	break;
-
-case 'GetJobItems':
-
-	list($p_fk_typ_name) = explode("<|>", $import[1]);
-
-	$stid = oci_parse($conn, "BEGIN pkg_bot.get_job_jar_items (
-		:p_cube_row,
-		:p_fk_typ_name);
-	END;");
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-
-	$r = perform_db_request();
-	if (!$r) { return; }
-	$first = True;
-	while ($row = oci_fetch_assoc($curs)) {
-		if ($first) { $first = False; echo "LIST_JAR";}
-		echo "<|||>".$row["FK_TYP_NAME"]."<|>".$row["XF_ATB_TYP_NAME"]."<|>".$row["XK_ATB_NAME"];
-		echo "<||>";
-	}
-	break;
-
-case 'CreateJob':
-
-	list($p_cube_pos_action, $p_fk_bot_name, $p_fk_typ_name, $p_cube_tsg_group_or_element, $p_xk_bot_name, $x_fk_typ_name) = explode("<|>", $import[1]."<|>");
-
-	$stid = oci_parse($conn, "BEGIN pkg_bot.insert_job (
-		:p_cube_pos_action,
-		:p_fk_bot_name,
-		:p_fk_typ_name,
-		:p_cube_tsg_group_or_element,
-		:p_xk_bot_name,
-		:x_fk_typ_name);
-	END;");
-	oci_bind_by_name($stid,":p_cube_pos_action",$p_cube_pos_action);
-	oci_bind_by_name($stid,":p_fk_bot_name",$p_fk_bot_name);
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-	oci_bind_by_name($stid,":p_cube_tsg_group_or_element",$p_cube_tsg_group_or_element);
-	oci_bind_by_name($stid,":p_xk_bot_name",$p_xk_bot_name);
-	oci_bind_by_name($stid,":x_fk_typ_name",$x_fk_typ_name);
-
-	$r = oci_execute($stid);
-	if (!$r) {
-		ProcessDbError($stid);
-		return;
-	}
-	echo "CREATE_JOB";
-	break;
-
-case 'UpdateJob':
-
-	list($p_fk_bot_name, $p_fk_typ_name, $p_cube_tsg_group_or_element, $p_xk_bot_name) = explode("<|>", $import[1]);
-
-	$stid = oci_parse($conn, "BEGIN pkg_bot.update_job (
-		:p_fk_bot_name,
-		:p_fk_typ_name,
-		:p_cube_tsg_group_or_element,
-		:p_xk_bot_name);
-	END;");
-	oci_bind_by_name($stid,":p_fk_bot_name",$p_fk_bot_name);
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-	oci_bind_by_name($stid,":p_cube_tsg_group_or_element",$p_cube_tsg_group_or_element);
-	oci_bind_by_name($stid,":p_xk_bot_name",$p_xk_bot_name);
-
-	$r = oci_execute($stid);
-	if (!$r) {
-		ProcessDbError($stid);
-		return;
-	}
-	echo "UPDATE_JOB";
-	break;
-
-case 'DeleteJob':
-
-	list($p_fk_typ_name) = explode("<|>", $import[1]);
-
-	$stid = oci_parse($conn, "BEGIN pkg_bot.delete_job (
-		:p_fk_typ_name);
-	END;");
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-
-	$r = oci_execute($stid);
-	if (!$r) {
-		ProcessDbError($stid);
-		return;
-	}
-	echo "DELETE_JOB";
-	break;
-
-case 'GetJar':
-
-	list($p_fk_typ_name, $p_xf_atb_typ_name, $p_xk_atb_name) = explode("<|>", $import[1]);
-
-	$stid = oci_parse($conn, "BEGIN pkg_bot.get_jar (
-		:p_cube_row,
-		:p_fk_typ_name,
-		:p_xf_atb_typ_name,
-		:p_xk_atb_name);
-	END;");
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-	oci_bind_by_name($stid,":p_xf_atb_typ_name",$p_xf_atb_typ_name);
-	oci_bind_by_name($stid,":p_xk_atb_name",$p_xk_atb_name);
-
-	$r = perform_db_request();
-	if (!$r) { return; }
-	echo "SELECT_JAR";
-	if ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["FK_BOT_NAME"];
-	}
-	break;
-
-case 'CreateJar':
-
-	list($p_fk_bot_name, $p_fk_typ_name, $p_xf_atb_typ_name, $p_xk_atb_name) = explode("<|>", $import[1]);
-
-	$stid = oci_parse($conn, "BEGIN pkg_bot.insert_jar (
-		:p_fk_bot_name,
-		:p_fk_typ_name,
-		:p_xf_atb_typ_name,
-		:p_xk_atb_name);
-	END;");
-	oci_bind_by_name($stid,":p_fk_bot_name",$p_fk_bot_name);
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-	oci_bind_by_name($stid,":p_xf_atb_typ_name",$p_xf_atb_typ_name);
-	oci_bind_by_name($stid,":p_xk_atb_name",$p_xk_atb_name);
-
-	$r = oci_execute($stid);
-	if (!$r) {
-		ProcessDbError($stid);
-		return;
-	}
-	echo "CREATE_JAR";
-	break;
-
-case 'UpdateJar':
-
-	list($p_fk_bot_name, $p_fk_typ_name, $p_xf_atb_typ_name, $p_xk_atb_name) = explode("<|>", $import[1]);
-
-	$stid = oci_parse($conn, "BEGIN pkg_bot.update_jar (
-		:p_fk_bot_name,
-		:p_fk_typ_name,
-		:p_xf_atb_typ_name,
-		:p_xk_atb_name);
-	END;");
-	oci_bind_by_name($stid,":p_fk_bot_name",$p_fk_bot_name);
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-	oci_bind_by_name($stid,":p_xf_atb_typ_name",$p_xf_atb_typ_name);
-	oci_bind_by_name($stid,":p_xk_atb_name",$p_xk_atb_name);
-
-	$r = oci_execute($stid);
-	if (!$r) {
-		ProcessDbError($stid);
-		return;
-	}
-	echo "UPDATE_JAR";
-	break;
-
-case 'DeleteJar':
-
-	list($p_fk_typ_name, $p_xf_atb_typ_name, $p_xk_atb_name) = explode("<|>", $import[1]);
-
-	$stid = oci_parse($conn, "BEGIN pkg_bot.delete_jar (
-		:p_fk_typ_name,
-		:p_xf_atb_typ_name,
-		:p_xk_atb_name);
-	END;");
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-	oci_bind_by_name($stid,":p_xf_atb_typ_name",$p_xf_atb_typ_name);
-	oci_bind_by_name($stid,":p_xk_atb_name",$p_xk_atb_name);
-
-	$r = oci_execute($stid);
-	if (!$r) {
-		ProcessDbError($stid);
-		return;
-	}
-	echo "DELETE_JAR";
 	break;
 
 case 'GetDct':

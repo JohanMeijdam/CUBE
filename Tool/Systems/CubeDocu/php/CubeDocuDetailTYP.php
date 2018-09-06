@@ -126,7 +126,7 @@ function InitBody() {
 		alert ('Error InitBody: '+l_argument[1]);
 	}
 	document.getElementById("InputCubeLevel").value='1';
-	document.getElementById("InputFlagPartialKey").value='N';
+	document.getElementById("InputFlagPartialKey").value='Y';
 	document.getElementById("InputFlagRecursive").value='N';
 	document.getElementById("InputRecursiveCardinality").value='N';
 	document.getElementById("InputCardinality").value='N';

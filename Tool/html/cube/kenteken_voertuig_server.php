@@ -23,7 +23,7 @@ curl_close($curl);
 
 $obj = json_decode($response, false)[0];
 $responseObj = new \stdClass();
-$responseObj->merk = $obj->merk;
+$responseObj->{'merk'} = $obj->{'merk'};
 $responseObj->handelsbenaming = $obj->handelsbenaming;
 $responseObj->aantal_cilinders = $obj->aantal_cilinders;
 $responseObj->aantal_deuren = $obj->aantal_deuren;
