@@ -12,29 +12,35 @@ g_xmlhttp.onreadystatechange = function() {
 	if(g_xmlhttp.readyState == 4) {
 		var l_argument = g_xmlhttp.responseText.split("<|||>");
 		switch (l_argument[0]) {
-		case "SELECT_BOT":
+		case "SELECT_JSN":
 			var l_values = l_argument[1].split("<|>");
-			document.getElementById("InputCubeTsgType").value=l_values[0];
-			document.getElementById("InputDirectory").value=l_values[1];
-			document.getElementById("InputApiUrl").value=l_values[2];
+			document.getElementById("InputFkBotName").value=l_values[0];
+			document.getElementById("InputFkJsnName").value=l_values[1];
+			document.getElementById("InputFkJsnLocation").value=l_values[2];
+			document.getElementById("InputCubeTsgType").value=l_values[3];
 			ProcessTypeSpecialisation();
 			break;
-		case "CREATE_BOT":
+		case "CREATE_JSN":
+			document.getElementById("InputFkBotName").readOnly=true;
+			document.getElementById("InputFkTypName").readOnly=true;
+			document.getElementById("InputFkJsnName").readOnly=true;
+			document.getElementById("InputFkJsnLocation").readOnly=true;
 			document.getElementById("InputName").readOnly=true;
+			document.getElementById("InputLocation").readOnly=true;
 			document.getElementById("ButtonCreate").disabled=true;
 			document.getElementById("ButtonUpdate").disabled=false;
 			document.getElementById("ButtonDelete").disabled=false;
 			l_objNode = parent.TREE.document.getElementById(document._nodeId);
-			document._nodeId = 'TYP_BOT<||>'+document.getElementById("InputName").value;
+			document._nodeId = 'TYP_JSN<||>'+document.getElementById("InputFkTypName").value+'<|>'+document.getElementById("InputName").value+'<|>'+document.getElementById("InputLocation").value;
 			if (l_objNode != null) {
 				if (l_objNode.firstChild._state == 'O') {
 					var l_position = g_option[0];
-					l_objNodePos = parent.TREE.document.getElementById('TYP_BOT<||>'+g_option[1]);
+					l_objNodePos = parent.TREE.document.getElementById('TYP_JSN<||>'+g_option[1]);
 					parent.TREE.AddTreeviewNode(
 						l_objNode,
-						'TYP_BOT',
+						'TYP_JSN',
 						document._nodeId,
-						'icons/botype.bmp', 
+						'icons/braces.bmp', 
 						document.getElementById("InputName").value.toLowerCase(),
 						'N',
 						l_position,
@@ -42,9 +48,9 @@ g_xmlhttp.onreadystatechange = function() {
 				}
 			}
 			break;
-		case "UPDATE_BOT":
+		case "UPDATE_JSN":
 			break;
-		case "DELETE_BOT":
+		case "DELETE_JSN":
 			document.getElementById("ButtonUpdate").disabled=true;
 			document.getElementById("ButtonDelete").disabled=true;
 			l_objNode = parent.TREE.document.getElementById(document._nodeId);
@@ -52,6 +58,14 @@ g_xmlhttp.onreadystatechange = function() {
 				l_objNode = l_objNode;
 				l_objNode.parentNode.removeChild(l_objNode);
 			}
+			break;
+		case "SELECT_FKEY_TYP":
+			var l_values = l_argument[1].split("<|>");
+			document.getElementById("InputFkBotName").value=l_values[0];
+			break;
+		case "SELECT_FKEY_JSN":
+			var l_values = l_argument[1].split("<|>");
+			document.getElementById("InputFkBotName").value=l_values[0];
 			break;
 		case "ERROR":
 			alert ('Error: '+l_argument[1]);
@@ -66,7 +80,7 @@ g_xmlhttp.onreadystatechange = function() {
 }
 
 function performTrans(p_message) {
-	g_xmlhttp.open('POST','CubeRootServer.php',true);
+	g_xmlhttp.open('POST','CubeToolServer.php',true);
 	g_xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 	g_xmlhttp.send(p_message);
 }
@@ -84,47 +98,81 @@ function InitBody() {
 	}
 	switch (l_argument[1]) {
 	case "D":
-		document.getElementById("InputName").value=values[0];
+		document.getElementById("InputFkTypName").value=values[0];
+		document.getElementById("InputName").value=values[1];
+		document.getElementById("InputLocation").value=values[2];
 		document.getElementById("ButtonCreate").disabled=true;
-		performTrans('GetBot'+'<|||>'+document._argument);
-		document.getElementById("InputName").readOnly=true;
+		performTrans('GetJsn'+'<|||>'+document._argument);
+		document.getElementById("InputFkBotName").readOnly=true;
+		document.getElementById("InputFkTypName").readOnly=true;
+		document.getElementById("InputFkJsnName").readOnly=true;
+		document.getElementById("InputFkJsnLocation").readOnly=true;
 		document.getElementById("InputCubeTsgType").readOnly=true;
+		document.getElementById("InputName").readOnly=true;
+		document.getElementById("InputLocation").readOnly=true;
 		break;
 	case "N":
+		document.getElementById("InputFkTypName").value=values[0];
 		document.getElementById("ButtonUpdate").disabled=true;
 		document.getElementById("ButtonDelete").disabled=true;
+		performTrans('GetTypFkey'+'<|||>'+document._argument);
+		document.getElementById("InputFkBotName").readOnly=true;
+		document.getElementById("InputFkTypName").readOnly=true;
+		document.getElementById("InputFkJsnName").readOnly=true;
+		document.getElementById("InputFkJsnLocation").readOnly=true;
+		break;  
+	case "R":
+		document.getElementById("InputFkTypName").value=values[0];
+		document.getElementById("InputFkJsnName").value=values[1];
+		document.getElementById("InputFkJsnLocation").value=values[2];
+		document.getElementById("ButtonUpdate").disabled=true;
+		document.getElementById("ButtonDelete").disabled=true;
+		performTrans('GetJsnFkey'+'<|||>'+document._argument);
+		document.getElementById("InputFkBotName").readOnly=true;
+		document.getElementById("InputFkTypName").readOnly=true;
+		document.getElementById("InputFkJsnName").readOnly=true;
+		document.getElementById("InputFkJsnLocation").readOnly=true;
 		break;
 	default:
 		alert ('Error InitBody: '+l_argument[1]);
 	}
+	document.getElementById("InputCubeLevel").value='1';
 }
 
-function CreateBot() {
+function CreateJsn() {
 	var l_parameters = 
-		document.getElementById("InputName").value+'<|>'+
+		document.getElementById("InputFkBotName").value+'<|>'+
+		document.getElementById("InputFkTypName").value+'<|>'+
+		document.getElementById("InputFkJsnName").value+'<|>'+
+		document.getElementById("InputFkJsnLocation").value+'<|>'+
 		document.getElementById("InputCubeTsgType").value+'<|>'+
-		document.getElementById("InputDirectory").value+'<|>'+
-		document.getElementById("InputApiUrl").value;
+		document.getElementById("InputName").value+'<|>'+
+		document.getElementById("InputLocation").value;
 	if (g_option[0] == 'F' || g_option[0] == 'L') {
-		performTrans('CreateBot<|||>'+g_option[0]+'<|>'+l_parameters);
+		performTrans('CreateJsn<|||>'+g_option[0]+'<|>'+l_parameters);
 	} else {
-		performTrans('CreateBot<|||>'+g_option[0]+'<|>'+l_parameters+'<|>'+g_option[1]);
+		performTrans('CreateJsn<|||>'+g_option[0]+'<|>'+l_parameters+'<|>'+g_option[1]);
 	}
 }
 
-function UpdateBot() {
+function UpdateJsn() {
 	var l_parameters = 
-		document.getElementById("InputName").value+'<|>'+
+		document.getElementById("InputFkBotName").value+'<|>'+
+		document.getElementById("InputFkTypName").value+'<|>'+
+		document.getElementById("InputFkJsnName").value+'<|>'+
+		document.getElementById("InputFkJsnLocation").value+'<|>'+
 		document.getElementById("InputCubeTsgType").value+'<|>'+
-		document.getElementById("InputDirectory").value+'<|>'+
-		document.getElementById("InputApiUrl").value;
-	performTrans('UpdateBot<|||>'+l_parameters);
+		document.getElementById("InputName").value+'<|>'+
+		document.getElementById("InputLocation").value;
+	performTrans('UpdateJsn<|||>'+l_parameters);
 }
 
-function DeleteBot() {
+function DeleteJsn() {
 	var l_parameters = 
-		document.getElementById("InputName").value;
-	performTrans('DeleteBot<|||>'+l_parameters);
+		document.getElementById("InputFkTypName").value+'<|>'+
+		document.getElementById("InputName").value+'<|>'+
+		document.getElementById("InputLocation").value;
+	performTrans('DeleteJsn<|||>'+l_parameters);
 }
 
 function OpenDescBox(p_icon,p_name,p_type,p_attribute_type,p_sequence) {
@@ -233,12 +281,14 @@ function ProcessTypeSpecialisation() {
 	if (document.getElementById("InputCubeTsgType").value != ' ') {
 		document.getElementById("InputCubeTsgType").disabled=true;
 		switch (document.getElementById("InputCubeTsgType").value) {
-		case "INT":
-			document.getElementById("RowAtbApiUrl").style.display="none";
+		case "OBJECT":
+			document.getElementById("RowAtbLocation").style.display="none";
 			break;
-		case "RET":
-			document.getElementById("RowAtbDirectory").style.display="none";
-			document.getElementById("RowAtbApiUrl").style.display="none";
+		case "ARRAY":
+			document.getElementById("RowAtbName").style.display="none";
+			break;
+		case "ATRIBREF":
+			document.getElementById("RowAtbLocation").style.display="none";
 			break;
 		}
 		document.getElementById("TableMain").style.display="inline";
@@ -247,28 +297,35 @@ function ProcessTypeSpecialisation() {
 -->
 </script>
 </head><body oncontextmenu="return false;" onload="InitBody()" ondrop="drop(event)" ondragover="allowDrop(event)">
-<div><img src="icons/botype_large.bmp" /><span style="cursor:help" oncontextmenu="OpenDescBox('BOTYPE','BusinessObjectType','BUSINESS_OBJECT_TYPE','_',-1)"> BUSINESS_OBJECT_TYPE /
+<div><img src="icons/braces_large.bmp" /><span> JSON_OBJECT /
 <select id="InputCubeTsgType" type="text" onchange="ProcessTypeSpecialisation()">
 	<option value=" " selected>&lt;type&gt;</option>
-	<option value="INT">INTERNAL</option>
-	<option value="EXT">EXTERNAL</option>
-	<option value="RET">REUSABLE_TYPE</option>
+	<option value="OBJECT">OBJECT</option>
+	<option value="ARRAY">ARRAY</option>
+	<option value="ATRIBREF">ATTRIBUTE_REFERENCE</option>
 </select></span></div>
 <hr/>
 <table id="TableMain" style="display:none">
-<tr><td><u>Name</u></td><td><div style="max-width:30em;">
-<input id="InputName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr id="RowAtbDirectory"><td>Directory</td><td><div style="max-width:80em;">
-<input id="InputDirectory" type="text" maxlength="80" style="width:100%;" onchange="ReplaceSpaces(this);"></input></div></td></tr>
-<tr id="RowAtbApiUrl"><td style="cursor:help;" oncontextmenu="OpenDescBox('BOTYPE','BusinessObjectType.ApiUrl','BUSINESS_OBJECT_TYPE','API_URL',-1)">ApiUrl</td><td><div style="max-width:300em;">
-<input id="InputApiUrl" type="text" maxlength="300" style="width:100%;" onchange="ReplaceSpaces(this);"></input></div></td></tr>
+<tr><td>BusinessObjectType.Name</td><td><div style="max-width:30em;">
+<input id="InputFkBotName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr><td><u>Type.Name</u></td><td><div style="max-width:30em;">
+<input id="InputFkTypName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr><td>JsonObject.Name</td><td><div style="max-width:32em;">
+<input id="InputFkJsnName" type="text" maxlength="32" style="width:100%;"></input></div></td></tr>
+<tr><td>JsonObject.Location</td><td><div style="max-width:9em;">
+<input id="InputFkJsnLocation" type="text" maxlength="9" style="width:100%;"></input></div></td></tr>
+<tr id="RowAtbName"><td style="cursor:help;" oncontextmenu="OpenDescBox('BRACES','JsonObject.Name','JSON_OBJECT','NAME',-1)"><u>Name</u></td><td><div style="max-width:32em;">
+<input id="InputName" type="text" maxlength="32" style="width:100%;"></input></div></td></tr>
+<tr id="RowAtbLocation"><td style="cursor:help;" oncontextmenu="OpenDescBox('BRACES','JsonObject.Location','JSON_OBJECT','LOCATION',-1)"><u>Location</u></td><td><div style="max-width:9em;">
+<input id="InputLocation" type="text" maxlength="9" style="width:100%;"></input></div></td></tr>
 <tr><td><br></td><td style="width:100%;"></td></tr>
 <tr><td/><td>
-<button id="ButtonCreate" type="button" onclick="CreateBot()">Create</button>&nbsp;&nbsp;&nbsp;
-<button id="ButtonUpdate" type="button" onclick="UpdateBot()">Update</button>&nbsp;&nbsp;&nbsp;
-<button id="ButtonDelete" type="button" onclick="DeleteBot()">Delete</button></td></tr>
+<button id="ButtonCreate" type="button" onclick="CreateJsn()">Create</button>&nbsp;&nbsp;&nbsp;
+<button id="ButtonUpdate" type="button" onclick="UpdateJsn()">Update</button>&nbsp;&nbsp;&nbsp;
+<button id="ButtonDelete" type="button" onclick="DeleteJsn()">Delete</button></td></tr>
 </table>
 <input id="InputCubeId" type="hidden"></input>
 <input id="InputCubeSequence" type="hidden"></input>
+<input id="InputCubeLevel" type="hidden"></input>
 </body>
 </html>

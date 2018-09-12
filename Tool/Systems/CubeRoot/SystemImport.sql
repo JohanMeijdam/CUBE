@@ -43,11 +43,11 @@ INSERT INTO v_cube_description (CUBE_ID, TYPE_NAME, ATTRIBUTE_TYPE_NAME, SEQUENC
 INSERT INTO v_cube_description (CUBE_ID, TYPE_NAME, ATTRIBUTE_TYPE_NAME, SEQUENCE, VALUE)
 	VALUES ( 'CUBE-DCA-0100012','RESTRICTION_TYPE_SPEC_REF','INCLUDE_OR_EXCLUDE',-1,UTL_URL.UNESCAPE('Indication%20that%20the%20reference%20is%20valid%20(included)%20or%20invalid%20(excluded)%20for%20the%20concerning%20type%20specialisation.'));
 INSERT INTO v_cube_description (CUBE_ID, TYPE_NAME, ATTRIBUTE_TYPE_NAME, SEQUENCE, VALUE)
-	VALUES ( 'CUBE-DCA-0100040','RESTRICTION_TYPE_SPEC_TYP','INCLUDE_OR_EXCLUDE',-1,UTL_URL.UNESCAPE('Indication%20that%20the%20child%20type%20is%20valid%20(included)%20or%20invalid%20(excluded)%20for%20the%20concerning%20type%20specialisation.'));
+	VALUES ( 'CUBE-DCA-0100013','RESTRICTION_TYPE_SPEC_TYP','INCLUDE_OR_EXCLUDE',-1,UTL_URL.UNESCAPE('Indication%20that%20the%20child%20type%20is%20valid%20(included)%20or%20invalid%20(excluded)%20for%20the%20concerning%20type%20specialisation.'));
 INSERT INTO v_cube_description (CUBE_ID, TYPE_NAME, ATTRIBUTE_TYPE_NAME, SEQUENCE, VALUE)
 	VALUES ( 'CUBE-DCT-0100002','TYPE_SPECIALISATION_GROUP','_',-1,UTL_URL.UNESCAPE('A%20group%20of%20classifications%20of%20the%20type.'));
 INSERT INTO v_cube_description (CUBE_ID, TYPE_NAME, ATTRIBUTE_TYPE_NAME, SEQUENCE, VALUE)
-	VALUES ( 'CUBE-DCA-0100013','TYPE_SPECIALISATION_GROUP','PRIMARY_KEY',-1,UTL_URL.UNESCAPE('Indication%20that%20the%20type%20specification%20group%20is%20part%20of%20the%20unique%20identification%20of%20the%20type.'));
+	VALUES ( 'CUBE-DCA-0100014','TYPE_SPECIALISATION_GROUP','PRIMARY_KEY',-1,UTL_URL.UNESCAPE('Indication%20that%20the%20type%20specification%20group%20is%20part%20of%20the%20unique%20identification%20of%20the%20type.'));
 INSERT INTO v_cube_description (CUBE_ID, TYPE_NAME, ATTRIBUTE_TYPE_NAME, SEQUENCE, VALUE)
 	VALUES ( 'CUBE-DCR-0100002','TYPE_SPECIALISATION_GROUP','ATTRIBUTE',0,UTL_URL.UNESCAPE('Defines%20the%20location%20of%20the%20classifying%20attribute%20within%20the%20type.'));
 INSERT INTO v_cube_description (CUBE_ID, TYPE_NAME, ATTRIBUTE_TYPE_NAME, SEQUENCE, VALUE)

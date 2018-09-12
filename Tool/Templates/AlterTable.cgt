@@ -19,6 +19,7 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Prepare table <<TABLE:U>>');
 	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = '<<DATABASE1:U>>' AND table_name = '<<TABLE:U>>';
 	IF l_count = 0 THEN
 		EXECUTE IMMEDIATE
@@ -65,6 +66,7 @@ BEGIN
 END;
 /[[LOOP,TABLE]]
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Maintain table <<TABLE:U>>');
 	FOR r_field IN (SELECT column_name,
 		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
 		data_default old_default_value,

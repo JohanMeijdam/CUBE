@@ -612,6 +612,22 @@ case 'GetTypItems':
 	}
 	echo "<||||>";
 
+	$stid = oci_parse($conn, "BEGIN pkg_bot.get_typ_jsn_items (
+		:p_cube_row,
+		:p_name);
+	END;");
+	oci_bind_by_name($stid,":p_name",$p_name);
+
+	$r = perform_db_request();
+	if (!$r) { return; }
+	$first = True;
+	while ($row = oci_fetch_assoc($curs)) {
+		if ($first) { $first = False; echo "LIST_JSN";}
+		echo "<|||>".$row["FK_TYP_NAME"]."<|>".$row["NAME"]."<|>".$row["LOCATION"];
+		echo "<||>".$row["NAME"];
+	}
+	echo "<||||>";
+
 	$stid = oci_parse($conn, "BEGIN pkg_bot.get_typ_tyr_items (
 		:p_cube_row,
 		:p_name);
@@ -695,6 +711,20 @@ case 'GetTypItems':
 case 'CountTypRestrictedItems':
 
 	list($p_name) = explode("<|>", $import[1]);
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.count_typ_jsn (
+		:p_cube_row,
+		:p_name);
+	END;");
+	oci_bind_by_name($stid,":p_name",$p_name);
+
+	$r = perform_db_request();
+	if (!$r) { return; }
+	echo "COUNT_JSN";
+	if ($row = oci_fetch_assoc($curs)) {
+		echo "<|||>".$row["TYPE_COUNT"];
+	}
+	echo "<||||>";
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.count_typ_dct (
 		:p_cube_row,
@@ -1946,6 +1976,307 @@ case 'DeleteRtt':
 		return;
 	}
 	echo "DELETE_RTT";
+	break;
+
+case 'GetJsn':
+
+	list($p_fk_typ_name, $p_name, $p_location) = explode("<|>", $import[1]);
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.get_jsn (
+		:p_cube_row,
+		:p_fk_typ_name,
+		:p_name,
+		:p_location);
+	END;");
+	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
+	oci_bind_by_name($stid,":p_name",$p_name);
+	oci_bind_by_name($stid,":p_location",$p_location);
+
+	$r = perform_db_request();
+	if (!$r) { return; }
+	echo "SELECT_JSN";
+	if ($row = oci_fetch_assoc($curs)) {
+		echo "<|||>".$row["FK_BOT_NAME"]."<|>".$row["FK_JSN_NAME"]."<|>".$row["FK_JSN_LOCATION"]."<|>".$row["CUBE_TSG_TYPE"];
+	}
+	break;
+
+case 'GetJsnFkey':
+
+	list($p_fk_typ_name, $p_name, $p_location) = explode("<|>", $import[1]);
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.get_jsn_fkey (
+		:p_cube_row,
+		:p_fk_typ_name,
+		:p_name,
+		:p_location);
+	END;");
+	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
+	oci_bind_by_name($stid,":p_name",$p_name);
+	oci_bind_by_name($stid,":p_location",$p_location);
+
+	$r = perform_db_request();
+	if (!$r) { return; }
+	echo "SELECT_FKEY_JSN";
+	if ($row = oci_fetch_assoc($curs)) {
+		echo "<|||>".$row["FK_BOT_NAME"];
+	}
+	break;
+
+case 'GetJsnItems':
+
+	list($p_fk_typ_name, $p_name, $p_location) = explode("<|>", $import[1]);
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.get_jsn_joa_items (
+		:p_cube_row,
+		:p_fk_typ_name,
+		:p_name,
+		:p_location);
+	END;");
+	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
+	oci_bind_by_name($stid,":p_name",$p_name);
+	oci_bind_by_name($stid,":p_location",$p_location);
+
+	$r = perform_db_request();
+	if (!$r) { return; }
+	$first = True;
+	while ($row = oci_fetch_assoc($curs)) {
+		if ($first) { $first = False; echo "LIST_JOA";}
+		echo "<|||>".$row["FK_TYP_NAME"]."<|>".$row["FK_JSN_NAME"]."<|>".$row["FK_JSN_LOCATION"];
+		echo "<||>";
+	}
+	echo "<||||>";
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.get_jsn_jsn_items (
+		:p_cube_row,
+		:p_fk_typ_name,
+		:p_name,
+		:p_location);
+	END;");
+	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
+	oci_bind_by_name($stid,":p_name",$p_name);
+	oci_bind_by_name($stid,":p_location",$p_location);
+
+	$r = perform_db_request();
+	if (!$r) { return; }
+	$first = True;
+	while ($row = oci_fetch_assoc($curs)) {
+		if ($first) { $first = False; echo "LIST_JSN";}
+		echo "<|||>".$row["FK_TYP_NAME"]."<|>".$row["NAME"]."<|>".$row["LOCATION"];
+		echo "<||>".$row["NAME"];
+	}
+	break;
+
+case 'MoveJsn':
+
+	list($p_cube_pos_action, $p_fk_typ_name, $p_name, $p_location, $x_fk_typ_name, $x_name, $x_location) = explode("<|>", $import[1]);
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.move_jsn (
+		:p_cube_pos_action,
+		:p_fk_typ_name,
+		:p_name,
+		:p_location,
+		:x_fk_typ_name,
+		:x_name,
+		:x_location);
+	END;");
+	oci_bind_by_name($stid,":p_cube_pos_action",$p_cube_pos_action);
+	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
+	oci_bind_by_name($stid,":p_name",$p_name);
+	oci_bind_by_name($stid,":p_location",$p_location);
+	oci_bind_by_name($stid,":x_fk_typ_name",$x_fk_typ_name);
+	oci_bind_by_name($stid,":x_name",$x_name);
+	oci_bind_by_name($stid,":x_location",$x_location);
+
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		return;
+	}
+	echo "MOVE_JSN";
+	break;
+
+case 'CreateJsn':
+
+	list($p_cube_pos_action, $p_fk_bot_name, $p_fk_typ_name, $p_fk_jsn_name, $p_fk_jsn_location, $p_cube_tsg_type, $p_name, $p_location, $x_fk_typ_name, $x_name, $x_location) = explode("<|>", $import[1]."<|><|><|>");
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.insert_jsn (
+		:p_cube_pos_action,
+		:p_fk_bot_name,
+		:p_fk_typ_name,
+		:p_fk_jsn_name,
+		:p_fk_jsn_location,
+		:p_cube_tsg_type,
+		:p_name,
+		:p_location,
+		:x_fk_typ_name,
+		:x_name,
+		:x_location);
+	END;");
+	oci_bind_by_name($stid,":p_cube_pos_action",$p_cube_pos_action);
+	oci_bind_by_name($stid,":p_fk_bot_name",$p_fk_bot_name);
+	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
+	oci_bind_by_name($stid,":p_fk_jsn_name",$p_fk_jsn_name);
+	oci_bind_by_name($stid,":p_fk_jsn_location",$p_fk_jsn_location);
+	oci_bind_by_name($stid,":p_cube_tsg_type",$p_cube_tsg_type);
+	oci_bind_by_name($stid,":p_name",$p_name);
+	oci_bind_by_name($stid,":p_location",$p_location);
+	oci_bind_by_name($stid,":x_fk_typ_name",$x_fk_typ_name);
+	oci_bind_by_name($stid,":x_name",$x_name);
+	oci_bind_by_name($stid,":x_location",$x_location);
+
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		return;
+	}
+	echo "CREATE_JSN";
+	break;
+
+case 'UpdateJsn':
+
+	list($p_fk_bot_name, $p_fk_typ_name, $p_fk_jsn_name, $p_fk_jsn_location, $p_cube_tsg_type, $p_name, $p_location) = explode("<|>", $import[1]);
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.update_jsn (
+		:p_fk_bot_name,
+		:p_fk_typ_name,
+		:p_fk_jsn_name,
+		:p_fk_jsn_location,
+		:p_cube_tsg_type,
+		:p_name,
+		:p_location);
+	END;");
+	oci_bind_by_name($stid,":p_fk_bot_name",$p_fk_bot_name);
+	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
+	oci_bind_by_name($stid,":p_fk_jsn_name",$p_fk_jsn_name);
+	oci_bind_by_name($stid,":p_fk_jsn_location",$p_fk_jsn_location);
+	oci_bind_by_name($stid,":p_cube_tsg_type",$p_cube_tsg_type);
+	oci_bind_by_name($stid,":p_name",$p_name);
+	oci_bind_by_name($stid,":p_location",$p_location);
+
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		return;
+	}
+	echo "UPDATE_JSN";
+	break;
+
+case 'DeleteJsn':
+
+	list($p_fk_typ_name, $p_name, $p_location) = explode("<|>", $import[1]);
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.delete_jsn (
+		:p_fk_typ_name,
+		:p_name,
+		:p_location);
+	END;");
+	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
+	oci_bind_by_name($stid,":p_name",$p_name);
+	oci_bind_by_name($stid,":p_location",$p_location);
+
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		return;
+	}
+	echo "DELETE_JSN";
+	break;
+
+case 'GetJoa':
+
+	list($p_fk_typ_name, $p_fk_jsn_name, $p_fk_jsn_location) = explode("<|>", $import[1]);
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.get_joa (
+		:p_cube_row,
+		:p_fk_typ_name,
+		:p_fk_jsn_name,
+		:p_fk_jsn_location);
+	END;");
+	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
+	oci_bind_by_name($stid,":p_fk_jsn_name",$p_fk_jsn_name);
+	oci_bind_by_name($stid,":p_fk_jsn_location",$p_fk_jsn_location);
+
+	$r = perform_db_request();
+	if (!$r) { return; }
+	echo "SELECT_JOA";
+	if ($row = oci_fetch_assoc($curs)) {
+		echo "<|||>".$row["FK_BOT_NAME"]."<|>".$row["XF_ATB_TYP_NAME"]."<|>".$row["XK_ATB_NAME"];
+	}
+	break;
+
+case 'CreateJoa':
+
+	list($p_fk_bot_name, $p_fk_typ_name, $p_fk_jsn_name, $p_fk_jsn_location, $p_xf_atb_typ_name, $p_xk_atb_name) = explode("<|>", $import[1]);
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.insert_joa (
+		:p_fk_bot_name,
+		:p_fk_typ_name,
+		:p_fk_jsn_name,
+		:p_fk_jsn_location,
+		:p_xf_atb_typ_name,
+		:p_xk_atb_name);
+	END;");
+	oci_bind_by_name($stid,":p_fk_bot_name",$p_fk_bot_name);
+	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
+	oci_bind_by_name($stid,":p_fk_jsn_name",$p_fk_jsn_name);
+	oci_bind_by_name($stid,":p_fk_jsn_location",$p_fk_jsn_location);
+	oci_bind_by_name($stid,":p_xf_atb_typ_name",$p_xf_atb_typ_name);
+	oci_bind_by_name($stid,":p_xk_atb_name",$p_xk_atb_name);
+
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		return;
+	}
+	echo "CREATE_JOA";
+	break;
+
+case 'UpdateJoa':
+
+	list($p_fk_bot_name, $p_fk_typ_name, $p_fk_jsn_name, $p_fk_jsn_location, $p_xf_atb_typ_name, $p_xk_atb_name) = explode("<|>", $import[1]);
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.update_joa (
+		:p_fk_bot_name,
+		:p_fk_typ_name,
+		:p_fk_jsn_name,
+		:p_fk_jsn_location,
+		:p_xf_atb_typ_name,
+		:p_xk_atb_name);
+	END;");
+	oci_bind_by_name($stid,":p_fk_bot_name",$p_fk_bot_name);
+	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
+	oci_bind_by_name($stid,":p_fk_jsn_name",$p_fk_jsn_name);
+	oci_bind_by_name($stid,":p_fk_jsn_location",$p_fk_jsn_location);
+	oci_bind_by_name($stid,":p_xf_atb_typ_name",$p_xf_atb_typ_name);
+	oci_bind_by_name($stid,":p_xk_atb_name",$p_xk_atb_name);
+
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		return;
+	}
+	echo "UPDATE_JOA";
+	break;
+
+case 'DeleteJoa':
+
+	list($p_fk_typ_name, $p_fk_jsn_name, $p_fk_jsn_location) = explode("<|>", $import[1]);
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.delete_joa (
+		:p_fk_typ_name,
+		:p_fk_jsn_name,
+		:p_fk_jsn_location);
+	END;");
+	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
+	oci_bind_by_name($stid,":p_fk_jsn_name",$p_fk_jsn_name);
+	oci_bind_by_name($stid,":p_fk_jsn_location",$p_fk_jsn_location);
+
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		return;
+	}
+	echo "DELETE_JOA";
 	break;
 
 case 'GetTyr':

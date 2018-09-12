@@ -1,7 +1,9 @@
 -	Templates ontwikkelen voor testen van external Objecten (Json API)
 	-	Cube metamodel uitbreiden met Json Objecten
-		-	JSON_PATH voor TYPE en ATTRIBUTE
-			-	Hoe hergebruik van object modelleren?
-				-	BO type REUSABLE_TYPE toevoegen.
-					-	BO INT_EXT vervangen door TYPE
-				
+		-	Json Object modelleren
+-	Hoe hergebruik van object modelleren?
+	-	BO type REUSABLE_TYPE toevoegen.
+		OK	BO INT_EXT vervangen door TYPE
+			-	REUSABLE_TYPE BO niet in root van treeview tonen. 
+
+-	Reserved names in Oracle e.d. 				

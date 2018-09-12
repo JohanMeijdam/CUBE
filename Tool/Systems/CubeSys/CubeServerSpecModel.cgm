@@ -24,7 +24,7 @@
 	-META_TYPE:;
 	+META_TYPE:BUSINESS_OBJECT_TYPE|An object type related to the business supported by the system.;
 		=PROPERTY:0|Name|;
-		=PROPERTY:1|CubeTsgType| Values: INT(INTERNAL), EXT(EXTERNAL);
+		=PROPERTY:1|CubeTsgType| Values: INT(INTERNAL), EXT(EXTERNAL), RET(REUSABLE_TYPE);
 		=PROPERTY:2|Directory|;
 		=PROPERTY:3|ApiUrl|The basic URL for calling the API.;
 		+META_TYPE:TYPE|An entity type related to the business that is supported by the system.;

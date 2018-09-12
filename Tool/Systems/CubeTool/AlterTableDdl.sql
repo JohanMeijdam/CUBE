@@ -173,6 +173,32 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
+	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBETOOL' AND sequence_name = 'JSN_SEQ';
+	IF l_count = 0 THEN
+
+		EXECUTE IMMEDIATE 
+		'CREATE SEQUENCE jsn_seq START WITH 100000';
+		DBMS_OUTPUT.PUT_LINE('Sequence JSN_SEQ created');
+
+	END IF;
+END;
+/
+DECLARE
+	l_count NUMBER(4);
+BEGIN
+	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBETOOL' AND sequence_name = 'JOA_SEQ';
+	IF l_count = 0 THEN
+
+		EXECUTE IMMEDIATE 
+		'CREATE SEQUENCE joa_seq START WITH 100000';
+		DBMS_OUTPUT.PUT_LINE('Sequence JOA_SEQ created');
+
+	END IF;
+END;
+/
+DECLARE
+	l_count NUMBER(4);
+BEGIN
 	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBETOOL' AND sequence_name = 'TYR_SEQ';
 	IF l_count = 0 THEN
 
@@ -303,6 +329,7 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Prepare table T_INFORMATION_TYPE');
 	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = 'CUBETOOL' AND table_name = 'T_INFORMATION_TYPE';
 	IF l_count = 0 THEN
 		EXECUTE IMMEDIATE
@@ -345,6 +372,7 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Prepare table T_INFORMATION_TYPE_ELEMENT');
 	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = 'CUBETOOL' AND table_name = 'T_INFORMATION_TYPE_ELEMENT';
 	IF l_count = 0 THEN
 		EXECUTE IMMEDIATE
@@ -459,6 +487,7 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Prepare table T_PERMITTED_VALUE');
 	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = 'CUBETOOL' AND table_name = 'T_PERMITTED_VALUE';
 	IF l_count = 0 THEN
 		EXECUTE IMMEDIATE
@@ -533,6 +562,7 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Prepare table T_BUSINESS_OBJECT_TYPE');
 	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = 'CUBETOOL' AND table_name = 'T_BUSINESS_OBJECT_TYPE';
 	IF l_count = 0 THEN
 		EXECUTE IMMEDIATE
@@ -607,6 +637,7 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Prepare table T_TYPE');
 	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = 'CUBETOOL' AND table_name = 'T_TYPE';
 	IF l_count = 0 THEN
 		EXECUTE IMMEDIATE
@@ -745,6 +776,7 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Prepare table T_ATTRIBUTE');
 	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = 'CUBETOOL' AND table_name = 'T_ATTRIBUTE';
 	IF l_count = 0 THEN
 		EXECUTE IMMEDIATE
@@ -867,6 +899,7 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Prepare table T_DERIVATION');
 	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = 'CUBETOOL' AND table_name = 'T_DERIVATION';
 	IF l_count = 0 THEN
 		EXECUTE IMMEDIATE
@@ -957,6 +990,7 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Prepare table T_DESCRIPTION_ATTRIBUTE');
 	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = 'CUBETOOL' AND table_name = 'T_DESCRIPTION_ATTRIBUTE';
 	IF l_count = 0 THEN
 		EXECUTE IMMEDIATE
@@ -1023,6 +1057,7 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Prepare table T_RESTRICTION_TYPE_SPEC_ATB');
 	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = 'CUBETOOL' AND table_name = 'T_RESTRICTION_TYPE_SPEC_ATB';
 	IF l_count = 0 THEN
 		EXECUTE IMMEDIATE
@@ -1113,6 +1148,7 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Prepare table T_REFERENCE');
 	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = 'CUBETOOL' AND table_name = 'T_REFERENCE';
 	IF l_count = 0 THEN
 		EXECUTE IMMEDIATE
@@ -1243,6 +1279,7 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Prepare table T_DESCRIPTION_REFERENCE');
 	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = 'CUBETOOL' AND table_name = 'T_DESCRIPTION_REFERENCE';
 	IF l_count = 0 THEN
 		EXECUTE IMMEDIATE
@@ -1317,6 +1354,7 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Prepare table T_RESTRICTION_TYPE_SPEC_REF');
 	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = 'CUBETOOL' AND table_name = 'T_RESTRICTION_TYPE_SPEC_REF';
 	IF l_count = 0 THEN
 		EXECUTE IMMEDIATE
@@ -1415,6 +1453,7 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Prepare table T_RESTRICTION_TYPE_SPEC_TYP');
 	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = 'CUBETOOL' AND table_name = 'T_RESTRICTION_TYPE_SPEC_TYP';
 	IF l_count = 0 THEN
 		EXECUTE IMMEDIATE
@@ -1497,6 +1536,197 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Prepare table T_JSON_OBJECT');
+	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = 'CUBETOOL' AND table_name = 'T_JSON_OBJECT';
+	IF l_count = 0 THEN
+		EXECUTE IMMEDIATE
+		'CREATE TABLE t_json_object (
+			cube_id VARCHAR2(16),
+			cube_sequence NUMBER(8),
+			cube_level NUMBER(8) DEFAULT ''1'',
+			fk_bot_name VARCHAR2(30),
+			fk_typ_name VARCHAR2(30),
+			fk_jsn_name VARCHAR2(32),
+			fk_jsn_location NUMBER(8) DEFAULT ''0'',
+			cube_tsg_type VARCHAR2(8) DEFAULT ''OBJECT'',
+			name VARCHAR2(32),
+			location NUMBER(8) DEFAULT ''0'')';
+		DBMS_OUTPUT.PUT_LINE('Table T_JSON_OBJECT created');
+	ELSE
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_JSON_OBJECT' AND column_name = 'CUBE_ID';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_json_object ADD cube_id VARCHAR2(16)';
+			DBMS_OUTPUT.PUT_LINE('Column T_JSON_OBJECT.CUBE_ID created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_JSON_OBJECT' AND column_name = 'CUBE_SEQUENCE';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_json_object ADD cube_sequence NUMBER(8)';
+			DBMS_OUTPUT.PUT_LINE('Column T_JSON_OBJECT.CUBE_SEQUENCE created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_JSON_OBJECT' AND column_name = 'CUBE_LEVEL';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_json_object ADD cube_level NUMBER(8) DEFAULT ''1''';
+			DBMS_OUTPUT.PUT_LINE('Column T_JSON_OBJECT.CUBE_LEVEL created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_JSON_OBJECT' AND column_name = 'FK_BOT_NAME';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_json_object ADD fk_bot_name VARCHAR2(30)';
+			DBMS_OUTPUT.PUT_LINE('Column T_JSON_OBJECT.FK_BOT_NAME created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_JSON_OBJECT' AND column_name = 'FK_TYP_NAME';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_json_object ADD fk_typ_name VARCHAR2(30)';
+			DBMS_OUTPUT.PUT_LINE('Column T_JSON_OBJECT.FK_TYP_NAME created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_JSON_OBJECT' AND column_name = 'FK_JSN_NAME';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_json_object ADD fk_jsn_name VARCHAR2(32)';
+			DBMS_OUTPUT.PUT_LINE('Column T_JSON_OBJECT.FK_JSN_NAME created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_JSON_OBJECT' AND column_name = 'FK_JSN_LOCATION';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_json_object ADD fk_jsn_location NUMBER(8) DEFAULT ''0''';
+			DBMS_OUTPUT.PUT_LINE('Column T_JSON_OBJECT.FK_JSN_LOCATION created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_JSON_OBJECT' AND column_name = 'CUBE_TSG_TYPE';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_json_object ADD cube_tsg_type VARCHAR2(8) DEFAULT ''OBJECT''';
+			DBMS_OUTPUT.PUT_LINE('Column T_JSON_OBJECT.CUBE_TSG_TYPE created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_JSON_OBJECT' AND column_name = 'NAME';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_json_object ADD name VARCHAR2(32)';
+			DBMS_OUTPUT.PUT_LINE('Column T_JSON_OBJECT.NAME created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_JSON_OBJECT' AND column_name = 'LOCATION';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_json_object ADD location NUMBER(8) DEFAULT ''0''';
+			DBMS_OUTPUT.PUT_LINE('Column T_JSON_OBJECT.LOCATION created');
+		END IF;
+
+		FOR r_key IN (SELECT constraint_name FROM all_constraints WHERE owner = 'CUBETOOL' AND table_name = 'T_JSON_OBJECT' AND constraint_type IN ('P','U','R') ORDER BY constraint_type DESC)
+		LOOP
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_json_object DROP CONSTRAINT ' || r_key.constraint_name || ' CASCADE';
+			DBMS_OUTPUT.PUT_LINE('Primary Key T_JSON_OBJECT.' || UPPER(r_key.constraint_name) || ' dropped');
+		END LOOP;
+
+		FOR r_index IN (SELECT index_name FROM all_indexes WHERE owner = 'CUBETOOL' AND table_name = 'T_JSON_OBJECT')
+		LOOP
+			EXECUTE IMMEDIATE
+			'DROP INDEX ' || r_index.index_name;
+			DBMS_OUTPUT.PUT_LINE('Index T_JSON_OBJECT.' || UPPER(r_index.index_name) || ' dropped');
+		END LOOP;
+	END IF;
+END;
+/
+DECLARE
+	l_count NUMBER(4);
+BEGIN
+	DBMS_OUTPUT.PUT_LINE('Prepare table T_JSON_OBJECT_ATTRIBUTE');
+	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = 'CUBETOOL' AND table_name = 'T_JSON_OBJECT_ATTRIBUTE';
+	IF l_count = 0 THEN
+		EXECUTE IMMEDIATE
+		'CREATE TABLE t_json_object_attribute (
+			cube_id VARCHAR2(16),
+			fk_bot_name VARCHAR2(30),
+			fk_typ_name VARCHAR2(30),
+			fk_jsn_name VARCHAR2(32),
+			fk_jsn_location NUMBER(8) DEFAULT ''0'',
+			xf_atb_typ_name VARCHAR2(30),
+			xk_atb_name VARCHAR2(30))';
+		DBMS_OUTPUT.PUT_LINE('Table T_JSON_OBJECT_ATTRIBUTE created');
+	ELSE
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_JSON_OBJECT_ATTRIBUTE' AND column_name = 'CUBE_ID';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_json_object_attribute ADD cube_id VARCHAR2(16)';
+			DBMS_OUTPUT.PUT_LINE('Column T_JSON_OBJECT_ATTRIBUTE.CUBE_ID created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_JSON_OBJECT_ATTRIBUTE' AND column_name = 'FK_BOT_NAME';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_json_object_attribute ADD fk_bot_name VARCHAR2(30)';
+			DBMS_OUTPUT.PUT_LINE('Column T_JSON_OBJECT_ATTRIBUTE.FK_BOT_NAME created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_JSON_OBJECT_ATTRIBUTE' AND column_name = 'FK_TYP_NAME';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_json_object_attribute ADD fk_typ_name VARCHAR2(30)';
+			DBMS_OUTPUT.PUT_LINE('Column T_JSON_OBJECT_ATTRIBUTE.FK_TYP_NAME created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_JSON_OBJECT_ATTRIBUTE' AND column_name = 'FK_JSN_NAME';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_json_object_attribute ADD fk_jsn_name VARCHAR2(32)';
+			DBMS_OUTPUT.PUT_LINE('Column T_JSON_OBJECT_ATTRIBUTE.FK_JSN_NAME created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_JSON_OBJECT_ATTRIBUTE' AND column_name = 'FK_JSN_LOCATION';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_json_object_attribute ADD fk_jsn_location NUMBER(8) DEFAULT ''0''';
+			DBMS_OUTPUT.PUT_LINE('Column T_JSON_OBJECT_ATTRIBUTE.FK_JSN_LOCATION created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_JSON_OBJECT_ATTRIBUTE' AND column_name = 'XF_ATB_TYP_NAME';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_json_object_attribute ADD xf_atb_typ_name VARCHAR2(30)';
+			DBMS_OUTPUT.PUT_LINE('Column T_JSON_OBJECT_ATTRIBUTE.XF_ATB_TYP_NAME created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_JSON_OBJECT_ATTRIBUTE' AND column_name = 'XK_ATB_NAME';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_json_object_attribute ADD xk_atb_name VARCHAR2(30)';
+			DBMS_OUTPUT.PUT_LINE('Column T_JSON_OBJECT_ATTRIBUTE.XK_ATB_NAME created');
+		END IF;
+
+		FOR r_key IN (SELECT constraint_name FROM all_constraints WHERE owner = 'CUBETOOL' AND table_name = 'T_JSON_OBJECT_ATTRIBUTE' AND constraint_type IN ('P','U','R') ORDER BY constraint_type DESC)
+		LOOP
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_json_object_attribute DROP CONSTRAINT ' || r_key.constraint_name || ' CASCADE';
+			DBMS_OUTPUT.PUT_LINE('Primary Key T_JSON_OBJECT_ATTRIBUTE.' || UPPER(r_key.constraint_name) || ' dropped');
+		END LOOP;
+
+		FOR r_index IN (SELECT index_name FROM all_indexes WHERE owner = 'CUBETOOL' AND table_name = 'T_JSON_OBJECT_ATTRIBUTE')
+		LOOP
+			EXECUTE IMMEDIATE
+			'DROP INDEX ' || r_index.index_name;
+			DBMS_OUTPUT.PUT_LINE('Index T_JSON_OBJECT_ATTRIBUTE.' || UPPER(r_index.index_name) || ' dropped');
+		END LOOP;
+	END IF;
+END;
+/
+DECLARE
+	l_count NUMBER(4);
+BEGIN
+	DBMS_OUTPUT.PUT_LINE('Prepare table T_TYPE_REUSE');
 	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = 'CUBETOOL' AND table_name = 'T_TYPE_REUSE';
 	IF l_count = 0 THEN
 		EXECUTE IMMEDIATE
@@ -1563,6 +1793,7 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Prepare table T_PARTITION');
 	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = 'CUBETOOL' AND table_name = 'T_PARTITION';
 	IF l_count = 0 THEN
 		EXECUTE IMMEDIATE
@@ -1621,6 +1852,7 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Prepare table T_SUBTYPE');
 	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = 'CUBETOOL' AND table_name = 'T_SUBTYPE';
 	IF l_count = 0 THEN
 		EXECUTE IMMEDIATE
@@ -1695,6 +1927,7 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Prepare table T_TYPE_SPECIALISATION_GROUP');
 	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = 'CUBETOOL' AND table_name = 'T_TYPE_SPECIALISATION_GROUP';
 	IF l_count = 0 THEN
 		EXECUTE IMMEDIATE
@@ -1809,6 +2042,7 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Prepare table T_TYPE_SPECIALISATION');
 	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = 'CUBETOOL' AND table_name = 'T_TYPE_SPECIALISATION';
 	IF l_count = 0 THEN
 		EXECUTE IMMEDIATE
@@ -1915,6 +2149,7 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Prepare table T_DESCRIPTION_TYPE');
 	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = 'CUBETOOL' AND table_name = 'T_DESCRIPTION_TYPE';
 	IF l_count = 0 THEN
 		EXECUTE IMMEDIATE
@@ -1973,6 +2208,7 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Prepare table T_SYSTEM');
 	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = 'CUBETOOL' AND table_name = 'T_SYSTEM';
 	IF l_count = 0 THEN
 		EXECUTE IMMEDIATE
@@ -2039,6 +2275,7 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Prepare table T_SYSTEM_BO_TYPE');
 	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = 'CUBETOOL' AND table_name = 'T_SYSTEM_BO_TYPE';
 	IF l_count = 0 THEN
 		EXECUTE IMMEDIATE
@@ -2097,6 +2334,7 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Prepare table T_FUNCTION');
 	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = 'CUBETOOL' AND table_name = 'T_FUNCTION';
 	IF l_count = 0 THEN
 		EXECUTE IMMEDIATE
@@ -2139,6 +2377,7 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Prepare table T_ARGUMENT');
 	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = 'CUBETOOL' AND table_name = 'T_ARGUMENT';
 	IF l_count = 0 THEN
 		EXECUTE IMMEDIATE
@@ -2212,6 +2451,8 @@ BEGIN
 							'T_DESCRIPTION_REFERENCE',
 							'T_RESTRICTION_TYPE_SPEC_REF',
 							'T_RESTRICTION_TYPE_SPEC_TYP',
+							'T_JSON_OBJECT',
+							'T_JSON_OBJECT_ATTRIBUTE',
 							'T_TYPE_REUSE',
 							'T_PARTITION',
 							'T_SUBTYPE',
@@ -2231,6 +2472,7 @@ BEGIN
 END;
 /
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Maintain table T_INFORMATION_TYPE');
 	FOR r_field IN (SELECT column_name,
 		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
 		data_default old_default_value,
@@ -2280,6 +2522,7 @@ BEGIN
 END;
 /
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Maintain table T_INFORMATION_TYPE_ELEMENT');
 	FOR r_field IN (SELECT column_name,
 		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
 		data_default old_default_value,
@@ -2362,6 +2605,7 @@ BEGIN
 END;
 /
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Maintain table T_PERMITTED_VALUE');
 	FOR r_field IN (SELECT column_name,
 		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
 		data_default old_default_value,
@@ -2430,6 +2674,7 @@ BEGIN
 END;
 /
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Maintain table T_BUSINESS_OBJECT_TYPE');
 	FOR r_field IN (SELECT column_name,
 		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
 		data_default old_default_value,
@@ -2491,6 +2736,7 @@ BEGIN
 END;
 /
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Maintain table T_TYPE');
 	FOR r_field IN (SELECT column_name,
 		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
 		data_default old_default_value,
@@ -2586,6 +2832,7 @@ BEGIN
 END;
 /
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Maintain table T_ATTRIBUTE');
 	FOR r_field IN (SELECT column_name,
 		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
 		data_default old_default_value,
@@ -2671,6 +2918,7 @@ BEGIN
 END;
 /
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Maintain table T_DERIVATION');
 	FOR r_field IN (SELECT column_name,
 		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
 		data_default old_default_value,
@@ -2744,6 +2992,7 @@ BEGIN
 END;
 /
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Maintain table T_DESCRIPTION_ATTRIBUTE');
 	FOR r_field IN (SELECT column_name,
 		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
 		data_default old_default_value,
@@ -2808,6 +3057,7 @@ BEGIN
 END;
 /
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Maintain table T_RESTRICTION_TYPE_SPEC_ATB');
 	FOR r_field IN (SELECT column_name,
 		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
 		data_default old_default_value,
@@ -2884,6 +3134,7 @@ BEGIN
 END;
 /
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Maintain table T_REFERENCE');
 	FOR r_field IN (SELECT column_name,
 		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
 		data_default old_default_value,
@@ -2973,6 +3224,7 @@ BEGIN
 END;
 /
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Maintain table T_DESCRIPTION_REFERENCE');
 	FOR r_field IN (SELECT column_name,
 		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
 		data_default old_default_value,
@@ -3041,6 +3293,7 @@ BEGIN
 END;
 /
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Maintain table T_RESTRICTION_TYPE_SPEC_REF');
 	FOR r_field IN (SELECT column_name,
 		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
 		data_default old_default_value,
@@ -3121,6 +3374,7 @@ BEGIN
 END;
 /
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Maintain table T_RESTRICTION_TYPE_SPEC_TYP');
 	FOR r_field IN (SELECT column_name,
 		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
 		data_default old_default_value,
@@ -3193,6 +3447,165 @@ BEGIN
 END;
 /
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Maintain table T_JSON_OBJECT');
+	FOR r_field IN (SELECT column_name,
+		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
+		data_default old_default_value,
+  		DECODE(column_name,
+			'CUBE_ID','VARCHAR2(16)',
+			'CUBE_SEQUENCE','NUMBER(8)',
+			'CUBE_LEVEL','NUMBER(8)',
+			'FK_BOT_NAME','VARCHAR2(30)',
+			'FK_TYP_NAME','VARCHAR2(30)',
+			'FK_JSN_NAME','VARCHAR2(32)',
+			'FK_JSN_LOCATION','NUMBER(8)',
+			'CUBE_TSG_TYPE','VARCHAR2(8)',
+			'NAME','VARCHAR2(32)',
+			'LOCATION','NUMBER(8)',NULL) new_domain,
+		DECODE(column_name,
+			'CUBE_ID',NULL,
+			'CUBE_SEQUENCE',NULL,
+			'CUBE_LEVEL','''1''',
+			'FK_BOT_NAME',NULL,
+			'FK_TYP_NAME',NULL,
+			'FK_JSN_NAME',NULL,
+			'FK_JSN_LOCATION','''0''',
+			'CUBE_TSG_TYPE','''OBJECT''',
+			'NAME',NULL,
+			'LOCATION','''0''',NULL) new_default_value
+  		FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_JSON_OBJECT')
+	LOOP
+		IF r_field.old_domain <> r_field.new_domain THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_json_object RENAME COLUMN ' || r_field.column_name || ' TO old#domain#field';
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_json_object ADD ' || r_field.column_name || ' ' || r_field.new_domain;
+ 			IF r_field.new_domain = 'VARCHAR2' THEN  
+				EXECUTE IMMEDIATE
+				'UPDATE t_json_object SET ' || r_field.column_name || '= TRIM(old#domain#field)';
+			ELSE
+				EXECUTE IMMEDIATE
+				'UPDATE t_json_object SET ' || r_field.column_name || '= old#domain#field';
+			END IF;
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_json_object DROP COLUMN old#domain#field';
+			DBMS_OUTPUT.PUT_LINE('Field T_JSON_OBJECT.' || UPPER(r_field.column_name) || ' converted from ' || r_field.old_domain || ' to ' || r_field.new_domain);
+		END IF;
+		IF NOT((r_field.old_default_value IS NULL AND r_field.new_default_value IS NULL) OR r_field.old_default_value = r_field.new_default_value) THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_json_object MODIFY (' || r_field.column_name || ' DEFAULT ' || NVL(r_field.new_default_value,'NULL') || ')';
+			DBMS_OUTPUT.PUT_LINE('Field T_JSON_OBJECT.' || UPPER(r_field.column_name) || ' default value set to ' || NVL(r_field.new_default_value,'NULL'));
+		END IF;
+	END LOOP;
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_json_object ADD CONSTRAINT jsn_pk
+		PRIMARY KEY (
+			fk_typ_name,
+			name,
+			location )';
+	DBMS_OUTPUT.PUT_LINE('Primary Key T_JSON_OBJECT.JSN_PK created');
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_json_object ADD CONSTRAINT jsn_typ_fk
+		FOREIGN KEY (fk_typ_name)
+		REFERENCES t_type (name)
+		ON DELETE CASCADE';
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_json_object ADD CONSTRAINT jsn_jsn_fk
+		FOREIGN KEY (fk_typ_name, fk_jsn_name, fk_jsn_location)
+		REFERENCES t_json_object (fk_typ_name, name, location)
+		ON DELETE CASCADE';
+	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_JSON_OBJECT' AND column_name NOT IN (
+							'CUBE_ID',
+							'CUBE_SEQUENCE',
+							'CUBE_LEVEL',
+							'FK_BOT_NAME',
+							'FK_TYP_NAME',
+							'FK_JSN_NAME',
+							'FK_JSN_LOCATION',
+							'CUBE_TSG_TYPE',
+							'NAME',
+							'LOCATION'))
+	LOOP
+		EXECUTE IMMEDIATE
+		'ALTER TABLE t_json_object DROP COLUMN ' || r_field.column_name;
+		DBMS_OUTPUT.PUT_LINE('Field T_JSON_OBJECT.' || UPPER(r_field.column_name) || ' dropped');
+	END LOOP;
+END;
+/
+BEGIN
+	DBMS_OUTPUT.PUT_LINE('Maintain table T_JSON_OBJECT_ATTRIBUTE');
+	FOR r_field IN (SELECT column_name,
+		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
+		data_default old_default_value,
+  		DECODE(column_name,
+			'CUBE_ID','VARCHAR2(16)',
+			'FK_BOT_NAME','VARCHAR2(30)',
+			'FK_TYP_NAME','VARCHAR2(30)',
+			'FK_JSN_NAME','VARCHAR2(32)',
+			'FK_JSN_LOCATION','NUMBER(8)',
+			'XF_ATB_TYP_NAME','VARCHAR2(30)',
+			'XK_ATB_NAME','VARCHAR2(30)',NULL) new_domain,
+		DECODE(column_name,
+			'CUBE_ID',NULL,
+			'FK_BOT_NAME',NULL,
+			'FK_TYP_NAME',NULL,
+			'FK_JSN_NAME',NULL,
+			'FK_JSN_LOCATION','''0''',
+			'XF_ATB_TYP_NAME',NULL,
+			'XK_ATB_NAME',NULL,NULL) new_default_value
+  		FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_JSON_OBJECT_ATTRIBUTE')
+	LOOP
+		IF r_field.old_domain <> r_field.new_domain THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_json_object_attribute RENAME COLUMN ' || r_field.column_name || ' TO old#domain#field';
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_json_object_attribute ADD ' || r_field.column_name || ' ' || r_field.new_domain;
+ 			IF r_field.new_domain = 'VARCHAR2' THEN  
+				EXECUTE IMMEDIATE
+				'UPDATE t_json_object_attribute SET ' || r_field.column_name || '= TRIM(old#domain#field)';
+			ELSE
+				EXECUTE IMMEDIATE
+				'UPDATE t_json_object_attribute SET ' || r_field.column_name || '= old#domain#field';
+			END IF;
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_json_object_attribute DROP COLUMN old#domain#field';
+			DBMS_OUTPUT.PUT_LINE('Field T_JSON_OBJECT_ATTRIBUTE.' || UPPER(r_field.column_name) || ' converted from ' || r_field.old_domain || ' to ' || r_field.new_domain);
+		END IF;
+		IF NOT((r_field.old_default_value IS NULL AND r_field.new_default_value IS NULL) OR r_field.old_default_value = r_field.new_default_value) THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_json_object_attribute MODIFY (' || r_field.column_name || ' DEFAULT ' || NVL(r_field.new_default_value,'NULL') || ')';
+			DBMS_OUTPUT.PUT_LINE('Field T_JSON_OBJECT_ATTRIBUTE.' || UPPER(r_field.column_name) || ' default value set to ' || NVL(r_field.new_default_value,'NULL'));
+		END IF;
+	END LOOP;
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_json_object_attribute ADD CONSTRAINT joa_pk
+		PRIMARY KEY (
+			fk_typ_name,
+			fk_jsn_name,
+			fk_jsn_location )';
+	DBMS_OUTPUT.PUT_LINE('Primary Key T_JSON_OBJECT_ATTRIBUTE.JOA_PK created');
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_json_object_attribute ADD CONSTRAINT joa_jsn_fk
+		FOREIGN KEY (fk_typ_name, fk_jsn_name, fk_jsn_location)
+		REFERENCES t_json_object (fk_typ_name, name, location)
+		ON DELETE CASCADE';
+	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_JSON_OBJECT_ATTRIBUTE' AND column_name NOT IN (
+							'CUBE_ID',
+							'FK_BOT_NAME',
+							'FK_TYP_NAME',
+							'FK_JSN_NAME',
+							'FK_JSN_LOCATION',
+							'XF_ATB_TYP_NAME',
+							'XK_ATB_NAME'))
+	LOOP
+		EXECUTE IMMEDIATE
+		'ALTER TABLE t_json_object_attribute DROP COLUMN ' || r_field.column_name;
+		DBMS_OUTPUT.PUT_LINE('Field T_JSON_OBJECT_ATTRIBUTE.' || UPPER(r_field.column_name) || ' dropped');
+	END LOOP;
+END;
+/
+BEGIN
+	DBMS_OUTPUT.PUT_LINE('Maintain table T_TYPE_REUSE');
 	FOR r_field IN (SELECT column_name,
 		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
 		data_default old_default_value,
@@ -3257,6 +3670,7 @@ BEGIN
 END;
 /
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Maintain table T_PARTITION');
 	FOR r_field IN (SELECT column_name,
 		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
 		data_default old_default_value,
@@ -3318,6 +3732,7 @@ BEGIN
 END;
 /
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Maintain table T_SUBTYPE');
 	FOR r_field IN (SELECT column_name,
 		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
 		data_default old_default_value,
@@ -3386,6 +3801,7 @@ BEGIN
 END;
 /
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Maintain table T_TYPE_SPECIALISATION_GROUP');
 	FOR r_field IN (SELECT column_name,
 		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
 		data_default old_default_value,
@@ -3473,6 +3889,7 @@ BEGIN
 END;
 /
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Maintain table T_TYPE_SPECIALISATION');
 	FOR r_field IN (SELECT column_name,
 		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
 		data_default old_default_value,
@@ -3553,6 +3970,7 @@ BEGIN
 END;
 /
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Maintain table T_DESCRIPTION_TYPE');
 	FOR r_field IN (SELECT column_name,
 		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
 		data_default old_default_value,
@@ -3613,6 +4031,7 @@ BEGIN
 END;
 /
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Maintain table T_SYSTEM');
 	FOR r_field IN (SELECT column_name,
 		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
 		data_default old_default_value,
@@ -3671,6 +4090,7 @@ BEGIN
 END;
 /
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Maintain table T_SYSTEM_BO_TYPE');
 	FOR r_field IN (SELECT column_name,
 		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
 		data_default old_default_value,
@@ -3732,6 +4152,7 @@ BEGIN
 END;
 /
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Maintain table T_FUNCTION');
 	FOR r_field IN (SELECT column_name,
 		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
 		data_default old_default_value,
@@ -3781,6 +4202,7 @@ BEGIN
 END;
 /
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Maintain table T_ARGUMENT');
 	FOR r_field IN (SELECT column_name,
 		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
 		data_default old_default_value,

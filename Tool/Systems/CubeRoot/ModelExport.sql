@@ -600,7 +600,7 @@ BEGIN
 	DBMS_OUTPUT.PUT_LINE ('	-META_TYPE:INFORMATION_TYPE;');
 	DBMS_OUTPUT.PUT_LINE ('	+META_TYPE:BUSINESS_OBJECT_TYPE|'||REPLACE('An%20object%20type%20related%20to%20the%20business%20supported%20by%20the%20system.','%20',' ')||';');
 	DBMS_OUTPUT.PUT_LINE ('		=PROPERTY:0|Name|;');
-	DBMS_OUTPUT.PUT_LINE ('		=PROPERTY:1|CubeTsgType| Values: INT(INTERNAL), EXT(EXTERNAL);');
+	DBMS_OUTPUT.PUT_LINE ('		=PROPERTY:1|CubeTsgType| Values: INT(INTERNAL), EXT(EXTERNAL), RET(REUSABLE_TYPE);');
 	DBMS_OUTPUT.PUT_LINE ('		=PROPERTY:2|Directory|;');
 	DBMS_OUTPUT.PUT_LINE ('		=PROPERTY:3|ApiUrl|'||REPLACE('The%20basic%20URL%20for%20calling%20the%20API.','%20',' ')||';');
 	DBMS_OUTPUT.PUT_LINE ('		+META_TYPE:TYPE|'||REPLACE('An%20entity%20type%20related%20to%20the%20business%20that%20is%20supported%20by%20the%20system.','%20',' ')||';');
