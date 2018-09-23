@@ -80,6 +80,7 @@ CREATE TABLE t_aaa (
 /
 CREATE TABLE t_aaa_deel (
 	cube_id VARCHAR2(16),
+	cube_sequence NUMBER(8),
 	fk_aaa_naam VARCHAR2(40),
 	naam VARCHAR2(40),
 	xk_aaa_naam VARCHAR2(40),
@@ -101,6 +102,7 @@ CREATE TABLE t_bbb (
 /
 CREATE TABLE t_ccc (
 	cube_id VARCHAR2(16),
+	cube_sequence NUMBER(8),
 	cube_level NUMBER(8) DEFAULT '1',
 	fk_ccc_code VARCHAR2(8),
 	fk_ccc_naam VARCHAR2(40),
@@ -118,8 +120,11 @@ CREATE TABLE t_ccc (
 /
 CREATE TABLE t_prod (
 	cube_id VARCHAR2(16),
+	cube_tsg_zzz VARCHAR2(8) DEFAULT 'QQQ',
+	cube_tsg_yyy VARCHAR2(8) DEFAULT 'QQQ',
 	code VARCHAR2(8),
 	naam VARCHAR2(40),
+	datum DATE,
 	omschrijving VARCHAR2(120),
 	CONSTRAINT prd_pk
 		PRIMARY KEY (code, naam) )

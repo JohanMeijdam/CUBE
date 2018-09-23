@@ -14,7 +14,11 @@ g_xmlhttp.onreadystatechange = function() {
 		switch (l_argument[0]) {
 		case "SELECT_PRD":
 			var l_values = l_argument[1].split("<|>");
-			document.getElementById("InputOmschrijving").value=l_values[0];
+			document.getElementById("InputCubeTsgZzz").value=l_values[0];
+			document.getElementById("InputCubeTsgYyy").value=l_values[1];
+			document.getElementById("InputDatum").value=l_values[2];
+			document.getElementById("InputOmschrijving").value=l_values[3];
+			ProcessTypeSpecialisation();
 			break;
 		case "CREATE_PRD":
 			document.getElementById("InputCode").readOnly=true;
@@ -85,6 +89,8 @@ function InitBody() {
 		document.getElementById("InputNaam").value=values[1];
 		document.getElementById("ButtonCreate").disabled=true;
 		performTrans('GetPrd'+'<|||>'+document._argument);
+		document.getElementById("InputCubeTsgZzz").readOnly=true;
+		document.getElementById("InputCubeTsgYyy").readOnly=true;
 		document.getElementById("InputCode").readOnly=true;
 		document.getElementById("InputNaam").readOnly=true;
 		break;
@@ -99,16 +105,22 @@ function InitBody() {
 
 function CreatePrd() {
 	var l_parameters = 
+		document.getElementById("InputCubeTsgZzz").value+'<|>'+
+		document.getElementById("InputCubeTsgYyy").value+'<|>'+
 		document.getElementById("InputCode").value+'<|>'+
 		document.getElementById("InputNaam").value+'<|>'+
+		document.getElementById("InputDatum").value+'<|>'+
 		document.getElementById("InputOmschrijving").value;
 	performTrans('CreatePrd<|||>'+l_parameters);
 }
 
 function UpdatePrd() {
 	var l_parameters = 
+		document.getElementById("InputCubeTsgZzz").value+'<|>'+
+		document.getElementById("InputCubeTsgYyy").value+'<|>'+
 		document.getElementById("InputCode").value+'<|>'+
 		document.getElementById("InputNaam").value+'<|>'+
+		document.getElementById("InputDatum").value+'<|>'+
 		document.getElementById("InputOmschrijving").value;
 	performTrans('UpdatePrd<|||>'+l_parameters);
 }
@@ -221,16 +233,42 @@ function drop(p_event) {
 		l_obj.style.top = l_y + 'px';
 	}
 }
+
+function ProcessTypeSpecialisation() {
+	if (document.getElementById("InputCubeTsgZzz").value != ' ' && document.getElementById("InputCubeTsgYyy").value != ' ') {
+		document.getElementById("InputCubeTsgZzz").disabled=true;
+		document.getElementById("InputCubeTsgYyy").disabled=true;
+		document.getElementById("TableMain").style.display="inline";
+	}
+}
+
+function ResetFieldCubeTsgYyy(p_field_id) {
+	document.getElementById("InputCubeTsgYyy").value=' ';
+	switch (document.getElementById(p_field_id).value){
+	case "QQQ":
+		break;
+	}
+}
 -->
 </script>
 </head><body oncontextmenu="return false;" onload="InitBody()" ondrop="drop(event)" ondragover="allowDrop(event)">
-<div><img src="icons/produkt_large.bmp" /><span> PROD</span></div>
+<div><img src="icons/produkt_large.bmp" /><span> PROD /
+<select id="InputCubeTsgZzz" type="text" onchange="ResetFieldCubeTsgYyy('InputCubeTsgZzz')">
+	<option value=" " selected>&lt;zzz&gt;</option>
+	<option value="QQQ"></option>
+</select> <b>.</b>
+<select id="InputCubeTsgYyy" type="text" onchange="ProcessTypeSpecialisation()">
+	<option value=" " selected>&lt;yyy&gt;</option>
+	<option id="ValCubeTsgYyy-QQQ" style="display:none" value="QQQ">QQQ</option>
+</select></span></div>
 <hr/>
-<table>
+<table id="TableMain" style="display:none">
 <tr><td><u>Code</u></td><td><div style="max-width:8em;">
 <input id="InputCode" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
 <tr><td><u>Naam</u></td><td><div style="max-width:40em;">
 <input id="InputNaam" type="text" maxlength="40" style="width:100%;"></input></div></td></tr>
+<tr><td>Datum</td><td><div style="max-width:12ch;">
+<input id="InputDatum" type="text" maxlength="10" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
 <tr><td>Omschrijving</td><td><div style="max-width:120em;">
 <input id="InputOmschrijving" type="text" maxlength="120" style="width:100%;"></input></div></td></tr>
 <tr><td><br></td><td style="width:100%;"></td></tr>

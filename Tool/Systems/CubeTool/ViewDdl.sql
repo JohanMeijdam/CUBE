@@ -1115,8 +1115,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			p_jsn.fk_jsn_name,
 			p_jsn.fk_jsn_location,
 			p_jsn.cube_tsg_type,
-			p_jsn.name,
-			p_jsn.location);
+			NVL(p_jsn.name,' '),
+			NVL(p_jsn.location,0));
 	END;
 
 	PROCEDURE update_jsn (p_cube_rowid UROWID, p_jsn_old IN OUT NOCOPY v_json_object%ROWTYPE, p_jsn_new IN OUT NOCOPY v_json_object%ROWTYPE) IS
@@ -1228,10 +1228,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 
 	PROCEDURE update_joa (p_cube_rowid UROWID, p_joa_old IN OUT NOCOPY v_json_object_attribute%ROWTYPE, p_joa_new IN OUT NOCOPY v_json_object_attribute%ROWTYPE) IS
 	BEGIN
-		UPDATE t_json_object_attribute SET 
-			xf_atb_typ_name = p_joa_new.xf_atb_typ_name,
-			xk_atb_name = p_joa_new.xk_atb_name
-		WHERE rowid = p_cube_rowid;
+		NULL;
 	END;
 
 	PROCEDURE delete_joa (p_cube_rowid UROWID, p_joa IN OUT NOCOPY v_json_object_attribute%ROWTYPE) IS
@@ -2085,7 +2082,9 @@ BEGIN
 		SELECT rowid INTO l_cube_rowid FROM t_json_object_attribute
 		WHERE fk_typ_name = :OLD.fk_typ_name
 		  AND fk_jsn_name = :OLD.fk_jsn_name
-		  AND fk_jsn_location = :OLD.fk_jsn_location;
+		  AND fk_jsn_location = :OLD.fk_jsn_location
+		  AND xf_atb_typ_name = :OLD.xf_atb_typ_name
+		  AND xk_atb_name = :OLD.xk_atb_name;
 		r_joa_old.fk_bot_name := :OLD.fk_bot_name;
 		r_joa_old.fk_typ_name := :OLD.fk_typ_name;
 		r_joa_old.fk_jsn_name := :OLD.fk_jsn_name;

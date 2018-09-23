@@ -22,10 +22,11 @@ g_xmlhttp.onreadystatechange = function(){
 			case 'LIST_AAA': AddTreeviewChildren(l_rows,'TYP_AAA','icons/produkt.bmp'); break;
 			case 'CHANGE_PARENT_AAA': ChangeParent (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.getElementById('TYP_AAA<||>'+l_rows[1])); break;
 			case 'LIST_AAD': AddTreeviewChildren(l_rows,'TYP_AAD','icons/attrib.bmp'); break;
+			case 'MOVE_AAD': MoveNode (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.body._moveAction); break;
 			case 'LIST_BBB': AddTreeviewChildren(l_rows,'TYP_BBB','icons/part.bmp'); break;
 			case 'LIST_CCC': AddTreeviewChildren(l_rows,'TYP_CCC','icons/produkt.bmp'); break;
 			case 'COUNT_CCC': CheckMenuItem('TYP_CCC',l_rows[1]); break;
-			case 'CHANGE_PARENT_CCC': ChangeParent (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.getElementById('TYP_CCC<||>'+l_rows[1])); break;
+			case 'MOVE_CCC': MoveNode (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.body._moveAction); break;
 			case 'LIST_PRD': AddTreeviewChildren(l_rows,'TYP_PRD','icons/produkt.bmp'); break;
 			case 'LIST_PR2': AddTreeviewChildren(l_rows,'TYP_PR2','icons/produkt.bmp'); break;
 			case 'LIST_PA2': AddTreeviewChildren(l_rows,'TYP_PA2','icons/part.bmp'); break;
@@ -371,6 +372,12 @@ function OpenDetail(p_obj) {
 			document.body._objNodePosId = l_obj.id;
 			ResetState();
 			switch (l_obj._type) {
+			case 'TYP_AAD':
+				PerformTrans('MoveAad'+'<|||>'+document.body._moveAction+'<|>'+g_currentObjId.split("<||>")[1]+'<|>'+document.body._objNodePosId.split("<||>")[1]);
+				break;
+			case 'TYP_CCC':
+				PerformTrans('MoveCcc'+'<|||>'+document.body._moveAction+'<|>'+g_currentObjId.split("<||>")[1]+'<|>'+document.body._objNodePosId.split("<||>")[1]);
+				break;
 			}
 		}
 		break;
@@ -397,11 +404,8 @@ function OpenDetail(p_obj) {
 				case 'TYP_AAA':
 					PerformTrans('ChangeParentAaa'+'<|||>N<|>'+g_currentObjId.split("<||>")[1]+'<|>'+l_obj.id.split("<||>")[1]);
 					break;
-				case 'DIR_CCC':
-					PerformTrans('ChangeParentCcc'+'<|||>Y<|>'+g_currentObjId.split("<||>")[1]+'<|><|>');
-					break;
 				case 'TYP_CCC':
-					PerformTrans('ChangeParentCcc'+'<|||>N<|>'+g_currentObjId.split("<||>")[1]+'<|>'+l_obj.id.split("<||>")[1]);
+					PerformTrans('MoveCcc'+'<|||>'+document.body._moveAction+'<|>'+g_currentObjId.split("<||>")[1]+'<|>'+l_obj.id.split("<||>")[1]);
 					break;
 				case 'TYP_PRD':
 					if (document.body._menuItemType == 'CUBE_P_PRT') {
@@ -505,18 +509,26 @@ function OpenMenu(p_obj) {
 		AddMenuItem(g_objMenuList, 'add aaa', 'icons/produkt.bmp','DetailAAA','N','TYP_AAA',0,'N',2);
 		break;
  	case 'TYP_AAA':
-		AddMenuItem(g_objMenuList, 'add aaa_deel', 'icons/attrib.bmp','DetailAAD','N','TYP_AAD',0,'N',2);
+		AddMenuItem(g_objMenuList, 'add aaa_deel', 'icons/attrib.bmp','CubeAdd','N','TYP_AAD',0,'N',2);
 		AddMenuItem(g_objMenuList, 'add aaa', 'icons/produkt.bmp','DetailAAA','R','TYP_AAA',0,'N',3);
+		break;
+ 	case 'TYP_AAD':
+		if (l_childCount > 1) {
+			AddMenuItem(g_objMenuList, 'move', 'icons/cube_move.bmp','CubeMove','','CUBE_M_AAD',0,'N',0);
+		}
 		break;
  	case 'DIR_BBB':
 		AddMenuItem(g_objMenuList, 'add bbb', 'icons/part.bmp','DetailBBB','N','TYP_BBB',0,'N',2);
 		break;
  	case 'DIR_CCC':
-		AddMenuItem(g_objMenuList, 'add ccc', 'icons/produkt.bmp','DetailCCC','N','TYP_CCC',2,'N',2);
+		AddMenuItem(g_objMenuList, 'add ccc', 'icons/produkt.bmp','CubeAdd','N','TYP_CCC',2,'N',2);
 		PerformTrans('CountCcc');
 		break;
  	case 'TYP_CCC':
-		AddMenuItem(g_objMenuList, 'add ccc', 'icons/produkt.bmp','DetailCCC','R','TYP_CCC',3,'N',2);
+		if (l_childCount > 1) {
+			AddMenuItem(g_objMenuList, 'move', 'icons/cube_move.bmp','CubeMove','','CUBE_M_CCC',0,'N',0);
+		}
+		AddMenuItem(g_objMenuList, 'add ccc', 'icons/produkt.bmp','CubeAdd','R','TYP_CCC',3,'N',2);
 		PerformTrans('CountCccRestrictedItems'+'<|||>'+l_type_id[1]);
 		break;
  	case 'DIR_PRD':

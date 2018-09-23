@@ -41,7 +41,7 @@ g_xmlhttp.onreadystatechange = function() {
 						'TYP_JSN',
 						document._nodeId,
 						'icons/braces.bmp', 
-						document.getElementById("InputName").value.toLowerCase(),
+						document.getElementById("InputName").value.toLowerCase()+' '+document.getElementById("InputLocation").value.toLowerCase(),
 						'N',
 						l_position,
 						l_objNodePos);

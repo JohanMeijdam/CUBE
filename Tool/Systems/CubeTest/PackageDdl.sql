@@ -76,10 +76,19 @@ CREATE OR REPLACE PACKAGE pkg_aaa IS
 			p_cube_row IN OUT c_cube_row,
 			p_fk_aaa_naam IN VARCHAR2,
 			p_naam IN VARCHAR2);
-	PROCEDURE insert_aad (
+	PROCEDURE move_aad (
+			p_cube_pos_action IN VARCHAR2,
 			p_fk_aaa_naam IN VARCHAR2,
 			p_naam IN VARCHAR2,
-			p_xk_aaa_naam IN VARCHAR2);
+			x_fk_aaa_naam IN VARCHAR2,
+			x_naam IN VARCHAR2);
+	PROCEDURE insert_aad (
+			p_cube_pos_action IN VARCHAR2,
+			p_fk_aaa_naam IN VARCHAR2,
+			p_naam IN VARCHAR2,
+			p_xk_aaa_naam IN VARCHAR2,
+			x_fk_aaa_naam IN VARCHAR2,
+			x_naam IN VARCHAR2);
 	PROCEDURE update_aad (
 			p_fk_aaa_naam IN VARCHAR2,
 			p_naam IN VARCHAR2,
@@ -148,11 +157,12 @@ CREATE OR REPLACE PACKAGE BODY pkg_aaa IS
 	BEGIN
 		OPEN p_cube_row FOR
 			SELECT
+			  cube_sequence,
 			  fk_aaa_naam,
 			  naam
 			FROM v_aaa_deel
 			WHERE fk_aaa_naam = p_naam
-			ORDER BY fk_aaa_naam, naam;
+			ORDER BY fk_aaa_naam, cube_sequence;
 	END;
 
 	PROCEDURE get_aaa_aaa_items (
@@ -268,18 +278,111 @@ CREATE OR REPLACE PACKAGE BODY pkg_aaa IS
 			  AND naam = p_naam;
 	END;
 
-	PROCEDURE insert_aad (
+	PROCEDURE determine_position_aad (
+			p_cube_sequence OUT NUMBER,
+			p_cube_pos_action IN VARCHAR2,
+			p_fk_aaa_naam IN VARCHAR2,
+			p_naam IN VARCHAR2) IS
+		l_cube_pos_action VARCHAR2(1);
+		l_cube_position_sequ NUMBER(8);
+		l_cube_near_sequ NUMBER(8);
+		l_cube_count NUMBER(8) := 1024;
+	BEGIN
+		-- A=After B=Before F=First L=Last
+		CASE p_cube_pos_action
+		WHEN 'F' THEN
+			l_cube_position_sequ := 0;
+			l_cube_pos_action := 'A';
+		WHEN 'L' THEN
+			l_cube_position_sequ := 99999999;
+			l_cube_pos_action := 'B';
+		ELSE
+			l_cube_pos_action := p_cube_pos_action;
+		END CASE;
+		LOOP
+			IF p_cube_pos_action IN ('B', 'A') THEN
+				-- Read sequence number of the target.
+				SELECT NVL (MAX (cube_sequence), DECODE (p_cube_pos_action, 'B', 99999999, 0))
+				INTO l_cube_position_sequ
+				FROM v_aaa_deel
+				WHERE fk_aaa_naam = p_fk_aaa_naam
+				  AND naam = p_naam;
+			END IF;
+			-- read sequence number near the target.
+			SELECT DECODE (l_cube_pos_action, 'B', NVL (MAX (cube_sequence), 0), NVL (MIN (cube_sequence), 99999999))
+			INTO l_cube_near_sequ
+			FROM v_aaa_deel
+			WHERE fk_aaa_naam = p_fk_aaa_naam
+			  AND 	    ( 	    ( l_cube_pos_action = 'B'
+					  AND cube_sequence < l_cube_position_sequ )
+				   OR 	    ( l_cube_pos_action = 'A'
+					  AND cube_sequence > l_cube_position_sequ ) );
+			IF ABS (l_cube_position_sequ - l_cube_near_sequ) > 1 THEN
+				p_cube_sequence := l_cube_position_sequ - (l_cube_position_sequ - l_cube_near_sequ) / 2; -- Formula both directions OK.
+				EXIT;
+			ELSE
+				-- renumber.
+				FOR r_aad IN (
+					SELECT
+					  rowid row_id
+					FROM v_aaa_deel
+					WHERE fk_aaa_naam = p_fk_aaa_naam
+					ORDER BY cube_sequence)
+				LOOP
+					UPDATE v_aaa_deel SET
+						cube_sequence = l_cube_count
+					WHERE rowid = r_aad.row_id;
+					l_cube_count := l_cube_count + 1024;
+				END LOOP;
+			END IF;
+		END LOOP;
+	END;
+
+	PROCEDURE move_aad (
+			p_cube_pos_action IN VARCHAR2,
 			p_fk_aaa_naam IN VARCHAR2,
 			p_naam IN VARCHAR2,
-			p_xk_aaa_naam IN VARCHAR2) IS
+			x_fk_aaa_naam IN VARCHAR2,
+			x_naam IN VARCHAR2) IS
+		l_cube_sequence NUMBER(8);
 	BEGIN
+		-- A=After B=Before F=First L=Last
+		IF p_cube_pos_action NOT IN ('A', 'B', 'F', 'L') THEN
+			RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
+		END IF;
+		determine_position_aad (l_cube_sequence, p_cube_pos_action, x_fk_aaa_naam, x_naam);
+		UPDATE v_aaa_deel SET
+			cube_sequence = l_cube_sequence
+		WHERE fk_aaa_naam = p_fk_aaa_naam
+		  AND naam = p_naam;
+		IF SQL%NOTFOUND THEN
+			RAISE_APPLICATION_ERROR (-20002, 'Type aaa_deel not found');
+		END IF;
+	END;
+
+	PROCEDURE insert_aad (
+			p_cube_pos_action IN VARCHAR2,
+			p_fk_aaa_naam IN VARCHAR2,
+			p_naam IN VARCHAR2,
+			p_xk_aaa_naam IN VARCHAR2,
+			x_fk_aaa_naam IN VARCHAR2,
+			x_naam IN VARCHAR2) IS
+		l_cube_sequence NUMBER(8);
+	BEGIN
+		-- A=After B=Before F=First L=Last
+		IF p_cube_pos_action NOT IN ('A', 'B', 'F', 'L') THEN
+			RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
+		END IF;
+		determine_position_aad (l_cube_sequence, p_cube_pos_action, x_fk_aaa_naam, x_naam);
 		INSERT INTO v_aaa_deel (
 			cube_id,
+			cube_sequence,
 			fk_aaa_naam,
 			naam,
 			xk_aaa_naam)
 		VALUES (
 			NULL,
+			l_cube_sequence,
 			p_fk_aaa_naam,
 			p_naam,
 			p_xk_aaa_naam);
@@ -445,20 +548,23 @@ CREATE OR REPLACE PACKAGE pkg_ccc IS
 			p_cube_row IN OUT c_cube_row,
 			p_code IN VARCHAR2,
 			p_naam IN VARCHAR2);
-	PROCEDURE change_parent_ccc (
-			p_cube_flag_root IN VARCHAR2,
+	PROCEDURE move_ccc (
+			p_cube_pos_action IN VARCHAR2,
 			p_code IN VARCHAR2,
 			p_naam IN VARCHAR2,
 			x_code IN VARCHAR2,
 			x_naam IN VARCHAR2);
 	PROCEDURE insert_ccc (
+			p_cube_pos_action IN VARCHAR2,
 			p_fk_ccc_code IN VARCHAR2,
 			p_fk_ccc_naam IN VARCHAR2,
 			p_code IN VARCHAR2,
 			p_naam IN VARCHAR2,
 			p_omschrjving IN VARCHAR2,
 			p_xk_ccc_code IN VARCHAR2,
-			p_xk_ccc_naam IN VARCHAR2);
+			p_xk_ccc_naam IN VARCHAR2,
+			x_code IN VARCHAR2,
+			x_naam IN VARCHAR2);
 	PROCEDURE update_ccc (
 			p_fk_ccc_code IN VARCHAR2,
 			p_fk_ccc_naam IN VARCHAR2,
@@ -485,12 +591,13 @@ CREATE OR REPLACE PACKAGE BODY pkg_ccc IS
 	BEGIN
 		OPEN p_cube_row FOR
 			SELECT
+			  cube_sequence,
 			  code,
 			  naam
 			FROM v_ccc
 			WHERE fk_ccc_code IS NULL
 			  AND fk_ccc_naam IS NULL
-			ORDER BY code, naam;
+			ORDER BY cube_sequence;
 	END;
 
 	PROCEDURE get_ccc_list_encapsulated (
@@ -498,12 +605,13 @@ CREATE OR REPLACE PACKAGE BODY pkg_ccc IS
 	BEGIN
 		OPEN p_cube_row FOR
 			SELECT
+			  cube_sequence,
 			  code,
 			  naam
 			FROM v_ccc
 			WHERE fk_ccc_code IS NULL
 			  AND fk_ccc_naam IS NULL
-			ORDER BY code, naam;
+			ORDER BY cube_sequence;
 	END;
 
 	PROCEDURE count_ccc (
@@ -541,12 +649,13 @@ CREATE OR REPLACE PACKAGE BODY pkg_ccc IS
 	BEGIN
 		OPEN p_cube_row FOR
 			SELECT
+			  cube_sequence,
 			  code,
 			  naam
 			FROM v_ccc
 			WHERE fk_ccc_code = p_code
 			  AND fk_ccc_naam = p_naam
-			ORDER BY code, naam;
+			ORDER BY cube_sequence;
 	END;
 
 	PROCEDURE count_ccc_ccc (
@@ -591,46 +700,137 @@ CREATE OR REPLACE PACKAGE BODY pkg_ccc IS
 		END LOOP;
 	END;
 
-	PROCEDURE change_parent_ccc (
-			p_cube_flag_root IN VARCHAR2,
+	PROCEDURE determine_position_ccc (
+			p_cube_sequence OUT NUMBER,
+			p_cube_pos_action IN VARCHAR2,
+			p_fk_ccc_code IN VARCHAR2,
+			p_fk_ccc_naam IN VARCHAR2,
+			p_code IN VARCHAR2,
+			p_naam IN VARCHAR2) IS
+		l_cube_pos_action VARCHAR2(1);
+		l_cube_position_sequ NUMBER(8);
+		l_cube_near_sequ NUMBER(8);
+		l_cube_count NUMBER(8) := 1024;
+	BEGIN
+		-- A=After B=Before F=First L=Last
+		CASE p_cube_pos_action
+		WHEN 'F' THEN
+			l_cube_position_sequ := 0;
+			l_cube_pos_action := 'A';
+		WHEN 'L' THEN
+			l_cube_position_sequ := 99999999;
+			l_cube_pos_action := 'B';
+		ELSE
+			l_cube_pos_action := p_cube_pos_action;
+		END CASE;
+		LOOP
+			IF p_cube_pos_action IN ('B', 'A') THEN
+				-- Read sequence number of the target.
+				SELECT NVL (MAX (cube_sequence), DECODE (p_cube_pos_action, 'B', 99999999, 0))
+				INTO l_cube_position_sequ
+				FROM v_ccc
+				WHERE code = p_code
+				  AND naam = p_naam;
+			END IF;
+			-- read sequence number near the target.
+			SELECT DECODE (l_cube_pos_action, 'B', NVL (MAX (cube_sequence), 0), NVL (MIN (cube_sequence), 99999999))
+			INTO l_cube_near_sequ
+			FROM v_ccc
+			WHERE 	    ( 	    ( fk_ccc_code IS NULL
+					  AND p_fk_ccc_code IS NULL )
+				   OR 	    ( fk_ccc_naam IS NULL
+					  AND p_fk_ccc_naam IS NULL )
+				   OR fk_ccc_code = p_fk_ccc_code
+				   OR fk_ccc_naam = p_fk_ccc_naam )
+			  AND 	    ( 	    ( l_cube_pos_action = 'B'
+					  AND cube_sequence < l_cube_position_sequ )
+				   OR 	    ( l_cube_pos_action = 'A'
+					  AND cube_sequence > l_cube_position_sequ ) );
+			IF ABS (l_cube_position_sequ - l_cube_near_sequ) > 1 THEN
+				p_cube_sequence := l_cube_position_sequ - (l_cube_position_sequ - l_cube_near_sequ) / 2; -- Formula both directions OK.
+				EXIT;
+			ELSE
+				-- renumber.
+				FOR r_ccc IN (
+					SELECT
+					  rowid row_id
+					FROM v_ccc
+					WHERE 	    ( fk_ccc_code IS NULL
+						  AND p_fk_ccc_code IS NULL )
+					   OR 	    ( fk_ccc_naam IS NULL
+						  AND p_fk_ccc_naam IS NULL )
+					   OR fk_ccc_code = p_fk_ccc_code
+					   OR fk_ccc_naam = p_fk_ccc_naam
+					ORDER BY cube_sequence)
+				LOOP
+					UPDATE v_ccc SET
+						cube_sequence = l_cube_count
+					WHERE rowid = r_ccc.row_id;
+					l_cube_count := l_cube_count + 1024;
+				END LOOP;
+			END IF;
+		END LOOP;
+	END;
+
+	PROCEDURE move_ccc (
+			p_cube_pos_action IN VARCHAR2,
 			p_code IN VARCHAR2,
 			p_naam IN VARCHAR2,
 			x_code IN VARCHAR2,
 			x_naam IN VARCHAR2) IS
+		l_cube_sequence NUMBER(8);
+		l_fk_ccc_code v_ccc.fk_ccc_code%TYPE;
+		l_fk_ccc_naam v_ccc.fk_ccc_naam%TYPE;
 	BEGIN
-		IF p_cube_flag_root = 'Y' THEN
-			UPDATE v_ccc SET
-				fk_ccc_code = NULL,
-				fk_ccc_naam = NULL
-			WHERE code = p_code
-			  AND naam = p_naam;
-			IF SQL%NOTFOUND THEN
-				RAISE_APPLICATION_ERROR (-20002, 'Type ccc not found');
-			END IF;
+		-- A=After B=Before F=First L=Last
+		IF p_cube_pos_action NOT IN ('A', 'B', 'F', 'L') THEN
+			RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
+		END IF;
+		-- Get parent id of the target.
+		IF p_cube_pos_action IN ('B', 'A') THEN
+			SELECT fk_ccc_code, fk_ccc_naam
+			INTO l_fk_ccc_code, l_fk_ccc_naam
+			FROM v_ccc
+			WHERE code = x_code
+			  AND naam = x_naam;
 		ELSE
-			check_no_part_ccc (p_code, p_naam, x_code, x_naam);
-			UPDATE v_ccc SET
-				fk_ccc_code = x_code,
-				fk_ccc_naam = x_naam
-			WHERE code = p_code
-			  AND naam = p_naam;
-			IF SQL%NOTFOUND THEN
-				RAISE_APPLICATION_ERROR (-20002, 'Type ccc not found');
-			END IF;
+			l_fk_ccc_code := x_code;
+			l_fk_ccc_naam := x_naam;
+		END IF;
+		check_no_part_ccc (p_code, p_naam, l_fk_ccc_code, l_fk_ccc_naam);
+		determine_position_ccc (l_cube_sequence, p_cube_pos_action, l_fk_ccc_code, l_fk_ccc_naam, x_code, x_naam);
+		UPDATE v_ccc SET
+			fk_ccc_code = l_fk_ccc_code,
+			fk_ccc_naam = l_fk_ccc_naam,
+			cube_sequence = l_cube_sequence
+		WHERE code = p_code
+		  AND naam = p_naam;
+		IF SQL%NOTFOUND THEN
+			RAISE_APPLICATION_ERROR (-20002, 'Type ccc not found');
 		END IF;
 	END;
 
 	PROCEDURE insert_ccc (
+			p_cube_pos_action IN VARCHAR2,
 			p_fk_ccc_code IN VARCHAR2,
 			p_fk_ccc_naam IN VARCHAR2,
 			p_code IN VARCHAR2,
 			p_naam IN VARCHAR2,
 			p_omschrjving IN VARCHAR2,
 			p_xk_ccc_code IN VARCHAR2,
-			p_xk_ccc_naam IN VARCHAR2) IS
+			p_xk_ccc_naam IN VARCHAR2,
+			x_code IN VARCHAR2,
+			x_naam IN VARCHAR2) IS
+		l_cube_sequence NUMBER(8);
 	BEGIN
+		-- A=After B=Before F=First L=Last
+		IF p_cube_pos_action NOT IN ('A', 'B', 'F', 'L') THEN
+			RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
+		END IF;
+		determine_position_ccc (l_cube_sequence, p_cube_pos_action, p_fk_ccc_code, p_fk_ccc_naam, x_code, x_naam);
 		INSERT INTO v_ccc (
 			cube_id,
+			cube_sequence,
 			cube_level,
 			fk_ccc_code,
 			fk_ccc_naam,
@@ -641,6 +841,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_ccc IS
 			xk_ccc_naam)
 		VALUES (
 			NULL,
+			l_cube_sequence,
 			NULL,
 			p_fk_ccc_code,
 			p_fk_ccc_naam,
@@ -704,12 +905,18 @@ CREATE OR REPLACE PACKAGE pkg_prd IS
 			p_code IN VARCHAR2,
 			p_naam IN VARCHAR2);
 	PROCEDURE insert_prd (
+			p_cube_tsg_zzz IN VARCHAR2,
+			p_cube_tsg_yyy IN VARCHAR2,
 			p_code IN VARCHAR2,
 			p_naam IN VARCHAR2,
+			p_datum IN DATE,
 			p_omschrijving IN VARCHAR2);
 	PROCEDURE update_prd (
+			p_cube_tsg_zzz IN VARCHAR2,
+			p_cube_tsg_yyy IN VARCHAR2,
 			p_code IN VARCHAR2,
 			p_naam IN VARCHAR2,
+			p_datum IN DATE,
 			p_omschrijving IN VARCHAR2);
 	PROCEDURE delete_prd (
 			p_code IN VARCHAR2,
@@ -905,6 +1112,9 @@ CREATE OR REPLACE PACKAGE BODY pkg_prd IS
 	BEGIN
 		OPEN p_cube_row FOR
 			SELECT
+			  cube_tsg_zzz,
+			  cube_tsg_yyy,
+			  datum,
 			  omschrijving
 			FROM v_prod
 			WHERE code = p_code
@@ -948,19 +1158,28 @@ CREATE OR REPLACE PACKAGE BODY pkg_prd IS
 	END;
 
 	PROCEDURE insert_prd (
+			p_cube_tsg_zzz IN VARCHAR2,
+			p_cube_tsg_yyy IN VARCHAR2,
 			p_code IN VARCHAR2,
 			p_naam IN VARCHAR2,
+			p_datum IN DATE,
 			p_omschrijving IN VARCHAR2) IS
 	BEGIN
 		INSERT INTO v_prod (
 			cube_id,
+			cube_tsg_zzz,
+			cube_tsg_yyy,
 			code,
 			naam,
+			datum,
 			omschrijving)
 		VALUES (
 			NULL,
+			p_cube_tsg_zzz,
+			p_cube_tsg_yyy,
 			p_code,
 			p_naam,
+			p_datum,
 			p_omschrijving);
 	EXCEPTION
 		WHEN DUP_VAL_ON_INDEX THEN
@@ -968,11 +1187,17 @@ CREATE OR REPLACE PACKAGE BODY pkg_prd IS
 	END;
 
 	PROCEDURE update_prd (
+			p_cube_tsg_zzz IN VARCHAR2,
+			p_cube_tsg_yyy IN VARCHAR2,
 			p_code IN VARCHAR2,
 			p_naam IN VARCHAR2,
+			p_datum IN DATE,
 			p_omschrijving IN VARCHAR2) IS
 	BEGIN
 		UPDATE v_prod SET
+			cube_tsg_zzz = p_cube_tsg_zzz,
+			cube_tsg_yyy = p_cube_tsg_yyy,
+			datum = p_datum,
 			omschrijving = p_omschrijving
 		WHERE code = p_code
 		  AND naam = p_naam;

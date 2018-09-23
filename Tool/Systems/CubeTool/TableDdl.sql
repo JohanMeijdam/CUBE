@@ -436,7 +436,7 @@ CREATE TABLE t_json_object_attribute (
 	xf_atb_typ_name VARCHAR2(30),
 	xk_atb_name VARCHAR2(30),
 	CONSTRAINT joa_pk
-		PRIMARY KEY (fk_typ_name, fk_jsn_name, fk_jsn_location),
+		PRIMARY KEY (fk_typ_name, fk_jsn_name, fk_jsn_location, xf_atb_typ_name, xk_atb_name),
 	CONSTRAINT joa_jsn_fk
 		FOREIGN KEY (fk_typ_name, fk_jsn_name, fk_jsn_location)
 		REFERENCES t_json_object (fk_typ_name, name, location)

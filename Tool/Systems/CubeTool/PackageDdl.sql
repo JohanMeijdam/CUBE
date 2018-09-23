@@ -943,7 +943,9 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_cube_row IN OUT c_cube_row,
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_jsn_name IN VARCHAR2,
-			p_fk_jsn_location IN NUMBER);
+			p_fk_jsn_location IN NUMBER,
+			p_xf_atb_typ_name IN VARCHAR2,
+			p_xk_atb_name IN VARCHAR2);
 	PROCEDURE insert_joa (
 			p_fk_bot_name IN VARCHAR2,
 			p_fk_typ_name IN VARCHAR2,
@@ -961,7 +963,9 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 	PROCEDURE delete_joa (
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_jsn_name IN VARCHAR2,
-			p_fk_jsn_location IN NUMBER);
+			p_fk_jsn_location IN NUMBER,
+			p_xf_atb_typ_name IN VARCHAR2,
+			p_xk_atb_name IN VARCHAR2);
 	PROCEDURE get_tyr (
 			p_cube_row IN OUT c_cube_row,
 			p_fk_typ_name IN VARCHAR2,
@@ -2960,12 +2964,14 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			SELECT
 			  fk_typ_name,
 			  fk_jsn_name,
-			  fk_jsn_location
+			  fk_jsn_location,
+			  xf_atb_typ_name,
+			  xk_atb_name
 			FROM v_json_object_attribute
 			WHERE fk_typ_name = p_fk_typ_name
 			  AND fk_jsn_name = p_name
 			  AND fk_jsn_location = p_location
-			ORDER BY fk_typ_name, fk_jsn_name, fk_jsn_location;
+			ORDER BY fk_typ_name, fk_jsn_name, fk_jsn_location, xf_atb_typ_name, xk_atb_name;
 	END;
 
 	PROCEDURE get_jsn_jsn_items (
@@ -3214,17 +3220,19 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_cube_row IN OUT c_cube_row,
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_jsn_name IN VARCHAR2,
-			p_fk_jsn_location IN NUMBER) IS
+			p_fk_jsn_location IN NUMBER,
+			p_xf_atb_typ_name IN VARCHAR2,
+			p_xk_atb_name IN VARCHAR2) IS
 	BEGIN
 		OPEN p_cube_row FOR
 			SELECT
-			  fk_bot_name,
-			  xf_atb_typ_name,
-			  xk_atb_name
+			  fk_bot_name
 			FROM v_json_object_attribute
 			WHERE fk_typ_name = p_fk_typ_name
 			  AND fk_jsn_name = p_fk_jsn_name
-			  AND fk_jsn_location = p_fk_jsn_location;
+			  AND fk_jsn_location = p_fk_jsn_location
+			  AND xf_atb_typ_name = p_xf_atb_typ_name
+			  AND xk_atb_name = p_xk_atb_name;
 	END;
 
 	PROCEDURE insert_joa (
@@ -3265,23 +3273,27 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_xk_atb_name IN VARCHAR2) IS
 	BEGIN
 		UPDATE v_json_object_attribute SET
-			fk_bot_name = p_fk_bot_name,
-			xf_atb_typ_name = p_xf_atb_typ_name,
-			xk_atb_name = p_xk_atb_name
+			fk_bot_name = p_fk_bot_name
 		WHERE fk_typ_name = p_fk_typ_name
 		  AND fk_jsn_name = p_fk_jsn_name
-		  AND fk_jsn_location = p_fk_jsn_location;
+		  AND fk_jsn_location = p_fk_jsn_location
+		  AND xf_atb_typ_name = p_xf_atb_typ_name
+		  AND xk_atb_name = p_xk_atb_name;
 	END;
 
 	PROCEDURE delete_joa (
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_jsn_name IN VARCHAR2,
-			p_fk_jsn_location IN NUMBER) IS
+			p_fk_jsn_location IN NUMBER,
+			p_xf_atb_typ_name IN VARCHAR2,
+			p_xk_atb_name IN VARCHAR2) IS
 	BEGIN
 		DELETE v_json_object_attribute
 		WHERE fk_typ_name = p_fk_typ_name
 		  AND fk_jsn_name = p_fk_jsn_name
-		  AND fk_jsn_location = p_fk_jsn_location;
+		  AND fk_jsn_location = p_fk_jsn_location
+		  AND xf_atb_typ_name = p_xf_atb_typ_name
+		  AND xk_atb_name = p_xk_atb_name;
 	END;
 
 	PROCEDURE get_tyr (

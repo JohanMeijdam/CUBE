@@ -108,6 +108,7 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Prepare table T_AAA');
 	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = 'CUBETEST' AND table_name = 'T_AAA';
 	IF l_count = 0 THEN
 		EXECUTE IMMEDIATE
@@ -182,11 +183,13 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Prepare table T_AAA_DEEL');
 	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = 'CUBETEST' AND table_name = 'T_AAA_DEEL';
 	IF l_count = 0 THEN
 		EXECUTE IMMEDIATE
 		'CREATE TABLE t_aaa_deel (
 			cube_id VARCHAR2(16),
+			cube_sequence NUMBER(8),
 			fk_aaa_naam VARCHAR2(40),
 			naam VARCHAR2(40),
 			xk_aaa_naam VARCHAR2(40))';
@@ -198,6 +201,13 @@ BEGIN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_aaa_deel ADD cube_id VARCHAR2(16)';
 			DBMS_OUTPUT.PUT_LINE('Column T_AAA_DEEL.CUBE_ID created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_AAA_DEEL' AND column_name = 'CUBE_SEQUENCE';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_aaa_deel ADD cube_sequence NUMBER(8)';
+			DBMS_OUTPUT.PUT_LINE('Column T_AAA_DEEL.CUBE_SEQUENCE created');
 		END IF;
 
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_AAA_DEEL' AND column_name = 'FK_AAA_NAAM';
@@ -240,6 +250,7 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Prepare table T_BBB');
 	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = 'CUBETEST' AND table_name = 'T_BBB';
 	IF l_count = 0 THEN
 		EXECUTE IMMEDIATE
@@ -306,11 +317,13 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Prepare table T_CCC');
 	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = 'CUBETEST' AND table_name = 'T_CCC';
 	IF l_count = 0 THEN
 		EXECUTE IMMEDIATE
 		'CREATE TABLE t_ccc (
 			cube_id VARCHAR2(16),
+			cube_sequence NUMBER(8),
 			cube_level NUMBER(8) DEFAULT ''1'',
 			fk_ccc_code VARCHAR2(8),
 			fk_ccc_naam VARCHAR2(40),
@@ -327,6 +340,13 @@ BEGIN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_ccc ADD cube_id VARCHAR2(16)';
 			DBMS_OUTPUT.PUT_LINE('Column T_CCC.CUBE_ID created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_CCC' AND column_name = 'CUBE_SEQUENCE';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_ccc ADD cube_sequence NUMBER(8)';
+			DBMS_OUTPUT.PUT_LINE('Column T_CCC.CUBE_SEQUENCE created');
 		END IF;
 
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_CCC' AND column_name = 'CUBE_LEVEL';
@@ -404,13 +424,17 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Prepare table T_PROD');
 	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = 'CUBETEST' AND table_name = 'T_PROD';
 	IF l_count = 0 THEN
 		EXECUTE IMMEDIATE
 		'CREATE TABLE t_prod (
 			cube_id VARCHAR2(16),
+			cube_tsg_zzz VARCHAR2(8) DEFAULT ''QQQ'',
+			cube_tsg_yyy VARCHAR2(8) DEFAULT ''QQQ'',
 			code VARCHAR2(8),
 			naam VARCHAR2(40),
+			datum DATE,
 			omschrijving VARCHAR2(120))';
 		DBMS_OUTPUT.PUT_LINE('Table T_PROD created');
 	ELSE
@@ -420,6 +444,20 @@ BEGIN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_prod ADD cube_id VARCHAR2(16)';
 			DBMS_OUTPUT.PUT_LINE('Column T_PROD.CUBE_ID created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_PROD' AND column_name = 'CUBE_TSG_ZZZ';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_prod ADD cube_tsg_zzz VARCHAR2(8) DEFAULT ''QQQ''';
+			DBMS_OUTPUT.PUT_LINE('Column T_PROD.CUBE_TSG_ZZZ created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_PROD' AND column_name = 'CUBE_TSG_YYY';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_prod ADD cube_tsg_yyy VARCHAR2(8) DEFAULT ''QQQ''';
+			DBMS_OUTPUT.PUT_LINE('Column T_PROD.CUBE_TSG_YYY created');
 		END IF;
 
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_PROD' AND column_name = 'CODE';
@@ -434,6 +472,13 @@ BEGIN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_prod ADD naam VARCHAR2(40)';
 			DBMS_OUTPUT.PUT_LINE('Column T_PROD.NAAM created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_PROD' AND column_name = 'DATUM';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_prod ADD datum DATE';
+			DBMS_OUTPUT.PUT_LINE('Column T_PROD.DATUM created');
 		END IF;
 
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_PROD' AND column_name = 'OMSCHRIJVING';
@@ -462,6 +507,7 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Prepare table T_PROD2');
 	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = 'CUBETEST' AND table_name = 'T_PROD2';
 	IF l_count = 0 THEN
 		EXECUTE IMMEDIATE
@@ -536,6 +582,7 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Prepare table T_PART2');
 	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = 'CUBETEST' AND table_name = 'T_PART2';
 	IF l_count = 0 THEN
 		EXECUTE IMMEDIATE
@@ -698,6 +745,7 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Prepare table T_PART');
 	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = 'CUBETEST' AND table_name = 'T_PART';
 	IF l_count = 0 THEN
 		EXECUTE IMMEDIATE
@@ -847,6 +895,7 @@ BEGIN
 END;
 /
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Maintain table T_AAA');
 	FOR r_field IN (SELECT column_name,
 		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
 		data_default old_default_value,
@@ -913,16 +962,19 @@ BEGIN
 END;
 /
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Maintain table T_AAA_DEEL');
 	FOR r_field IN (SELECT column_name,
 		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
 		data_default old_default_value,
   		DECODE(column_name,
 			'CUBE_ID','VARCHAR2(16)',
+			'CUBE_SEQUENCE','NUMBER(8)',
 			'FK_AAA_NAAM','VARCHAR2(40)',
 			'NAAM','VARCHAR2(40)',
 			'XK_AAA_NAAM','VARCHAR2(40)',NULL) new_domain,
 		DECODE(column_name,
 			'CUBE_ID',NULL,
+			'CUBE_SEQUENCE',NULL,
 			'FK_AAA_NAAM',NULL,
 			'NAAM',NULL,
 			'XK_AAA_NAAM',NULL,NULL) new_default_value
@@ -963,6 +1015,7 @@ BEGIN
 		ON DELETE CASCADE';
 	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_AAA_DEEL' AND column_name NOT IN (
 							'CUBE_ID',
+							'CUBE_SEQUENCE',
 							'FK_AAA_NAAM',
 							'NAAM',
 							'XK_AAA_NAAM'))
@@ -974,6 +1027,7 @@ BEGIN
 END;
 /
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Maintain table T_BBB');
 	FOR r_field IN (SELECT column_name,
 		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
 		data_default old_default_value,
@@ -1032,11 +1086,13 @@ BEGIN
 END;
 /
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Maintain table T_CCC');
 	FOR r_field IN (SELECT column_name,
 		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
 		data_default old_default_value,
   		DECODE(column_name,
 			'CUBE_ID','VARCHAR2(16)',
+			'CUBE_SEQUENCE','NUMBER(8)',
 			'CUBE_LEVEL','NUMBER(8)',
 			'FK_CCC_CODE','VARCHAR2(8)',
 			'FK_CCC_NAAM','VARCHAR2(40)',
@@ -1047,6 +1103,7 @@ BEGIN
 			'XK_CCC_NAAM','VARCHAR2(40)',NULL) new_domain,
 		DECODE(column_name,
 			'CUBE_ID',NULL,
+			'CUBE_SEQUENCE',NULL,
 			'CUBE_LEVEL','''1''',
 			'FK_CCC_CODE',NULL,
 			'FK_CCC_NAAM',NULL,
@@ -1092,6 +1149,7 @@ BEGIN
 		ON DELETE CASCADE';
 	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_CCC' AND column_name NOT IN (
 							'CUBE_ID',
+							'CUBE_SEQUENCE',
 							'CUBE_LEVEL',
 							'FK_CCC_CODE',
 							'FK_CCC_NAAM',
@@ -1108,18 +1166,25 @@ BEGIN
 END;
 /
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Maintain table T_PROD');
 	FOR r_field IN (SELECT column_name,
 		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
 		data_default old_default_value,
   		DECODE(column_name,
 			'CUBE_ID','VARCHAR2(16)',
+			'CUBE_TSG_ZZZ','VARCHAR2(8)',
+			'CUBE_TSG_YYY','VARCHAR2(8)',
 			'CODE','VARCHAR2(8)',
 			'NAAM','VARCHAR2(40)',
+			'DATUM','DATE',
 			'OMSCHRIJVING','VARCHAR2(120)',NULL) new_domain,
 		DECODE(column_name,
 			'CUBE_ID',NULL,
+			'CUBE_TSG_ZZZ','''QQQ''',
+			'CUBE_TSG_YYY','''QQQ''',
 			'CODE',NULL,
 			'NAAM',NULL,
+			'DATUM',NULL,
 			'OMSCHRIJVING',NULL,NULL) new_default_value
   		FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_PROD')
 	LOOP
@@ -1153,8 +1218,11 @@ BEGIN
 	DBMS_OUTPUT.PUT_LINE('Primary Key T_PROD.PRD_PK created');
 	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_PROD' AND column_name NOT IN (
 							'CUBE_ID',
+							'CUBE_TSG_ZZZ',
+							'CUBE_TSG_YYY',
 							'CODE',
 							'NAAM',
+							'DATUM',
 							'OMSCHRIJVING'))
 	LOOP
 		EXECUTE IMMEDIATE
@@ -1164,6 +1232,7 @@ BEGIN
 END;
 /
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Maintain table T_PROD2');
 	FOR r_field IN (SELECT column_name,
 		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
 		data_default old_default_value,
@@ -1233,6 +1302,7 @@ BEGIN
 END;
 /
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Maintain table T_PART2');
 	FOR r_field IN (SELECT column_name,
 		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
 		data_default old_default_value,
@@ -1342,6 +1412,7 @@ BEGIN
 END;
 /
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Maintain table T_PART');
 	FOR r_field IN (SELECT column_name,
 		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
 		data_default old_default_value,

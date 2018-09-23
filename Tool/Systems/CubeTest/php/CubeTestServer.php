@@ -4,123 +4,167 @@ include 'CubeDbLogon.php';
 
 set_error_handler("CubeError");
 
-$import=explode("<|||>",file_get_contents('php://input'));
-switch ($import[0]) {
+$RequestText = file_get_contents('php://input');
+$RequestObj = json_decode($RequestText, false);
+
+switch ($RequestObj->Service) {
 
 case 'GetDirAaaItems':
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_aaa.get_aaa_root_items (:p_cube_row); END;");
 	$r = perform_db_request();
 	if (!$r) { return; }
-	echo "LIST_AAA";
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'LIST_AAA';
+	$ResponseObj->Rows = array();
 	while ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["NAAM"];
-		echo "<||>".$row["NAAM"];
+		$RowObj = new \stdClass();
+		$RowObj->Key = new \stdClass();
+		$RowObj->Key->Naam = $row["NAAM"];
+		$RowObj->Display = $row["NAAM"];
+		$ResponseObj->Rows[] = $RowObj;
 	}
+	echo ']';
+
 	break;
 
 case 'GetAaaListAll':
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_aaa.get_aaa_list_all (:p_cube_row); END;");
 	$r = perform_db_request();
 	if (!$r) { return; }
-	echo "LIST_AAA";
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'LIST_AAA';
+	$ResponseObj->Rows = array();
 	while ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["NAAM"];
-		echo "<||>".$row["NAAM"];
+		$RowObj = new \stdClass();
+		$RowObj->Key = new \stdClass();
+		$RowObj->Key->Naam = $row["NAAM"];
+		$RowObj->Display = $row["NAAM"];
+		$ResponseObj->Rows[] = $RowObj;
 	}
+	echo ']';
+
 	break;
 
 case 'GetAaaListEncapsulated':
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_aaa.get_aaa_list_encapsulated (:p_cube_row); END;");
 	$r = perform_db_request();
 	if (!$r) { return; }
-	echo "LIST_AAA";
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'LIST_AAA';
+	$ResponseObj->Rows = array();
 	while ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["NAAM"];
-		echo "<||>".$row["NAAM"];
+		$RowObj = new \stdClass();
+		$RowObj->Key = new \stdClass();
+		$RowObj->Key->Naam = $row["NAAM"];
+		$RowObj->Display = $row["NAAM"];
+		$ResponseObj->Rows[] = $RowObj;
 	}
+	echo ']';
+
 	break;
 
 case 'GetAaa':
-
-	list($p_naam) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_aaa.get_aaa (
 		:p_cube_row,
 		:p_naam);
 	END;");
-	oci_bind_by_name($stid,":p_naam",$p_naam);
+	oci_bind_by_name($stid,":p_naam",$RequestObj->Type->Naam);
 
 	$r = perform_db_request();
 	if (!$r) { return; }
-	echo "SELECT_AAA";
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'SELECT_AAA';
+	$ResponseObj->Rows = array();
 	if ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["FK_AAA_NAAM"]."<|>".$row["OMSCHRIJVING"]."<|>".$row["XK_AAA_NAAM"];
+		$RowObj = new \stdClass();
+		$RowObj->Data = new \stdClass();
+		$RowObj->Data->FkAaaNaam = $row["FK_AAA_NAAM"];
+		$RowObj->Data->Omschrijving = $row["OMSCHRIJVING"];
+		$RowObj->Data->XkAaaNaam = $row["XK_AAA_NAAM"];
+		$ResponseObj->Rows[] = $RowObj;
 	}
+	echo ']';
+
 	break;
 
 case 'GetAaaItems':
-
-	list($p_naam) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_aaa.get_aaa_aad_items (
 		:p_cube_row,
 		:p_naam);
 	END;");
-	oci_bind_by_name($stid,":p_naam",$p_naam);
+	oci_bind_by_name($stid,":p_naam",$RequestObj->Type->Naam);
 
 	$r = perform_db_request();
 	if (!$r) { return; }
-	$first = True;
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'LIST_AAD';
+	$ResponseObj->Rows = array();
 	while ($row = oci_fetch_assoc($curs)) {
-		if ($first) { $first = False; echo "LIST_AAD";}
-		echo "<|||>".$row["FK_AAA_NAAM"]."<|>".$row["NAAM"];
-		echo "<||>".$row["NAAM"];
+		$RowObj = new \stdClass();
+		$RowObj->Key = new \stdClass();
+		$RowObj->Key->FkAaaNaam = $row["FK_AAA_NAAM"];
+		$RowObj->Key->Naam = $row["NAAM"];
+		$RowObj->Display = $row["NAAM"];
+		$ResponseObj->Rows[] = $RowObj;
 	}
-	echo "<||||>";
+	echo ',';
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_aaa.get_aaa_aaa_items (
 		:p_cube_row,
 		:p_naam);
 	END;");
-	oci_bind_by_name($stid,":p_naam",$p_naam);
+	oci_bind_by_name($stid,":p_naam",$RequestObj->Type->Naam);
 
 	$r = perform_db_request();
 	if (!$r) { return; }
-	$first = True;
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'LIST_AAA';
+	$ResponseObj->Rows = array();
 	while ($row = oci_fetch_assoc($curs)) {
-		if ($first) { $first = False; echo "LIST_AAA";}
-		echo "<|||>".$row["NAAM"];
-		echo "<||>".$row["NAAM"];
+		$RowObj = new \stdClass();
+		$RowObj->Key = new \stdClass();
+		$RowObj->Key->Naam = $row["NAAM"];
+		$RowObj->Display = $row["NAAM"];
+		$ResponseObj->Rows[] = $RowObj;
 	}
+	echo ']';
+
 	break;
 
 case 'ChangeParentAaa':
-
-	list($p_cube_flag_root, $p_naam, $x_naam) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_aaa.change_parent_aaa (
 		:p_cube_flag_root,
 		:p_naam,
 		:x_naam);
 	END;");
-	oci_bind_by_name($stid,":p_cube_flag_root",$p_cube_flag_root);
-	oci_bind_by_name($stid,":p_naam",$p_naam);
-	oci_bind_by_name($stid,":x_naam",$x_naam);
+	oci_bind_by_name($stid,":p_cube_flag_root",$RequestObj->Option->CubeFlagRoot);
+	oci_bind_by_name($stid,":p_naam",$RequestObj->Type->Naam);
+	oci_bind_by_name($stid,":x_naam",$RequestObj->Ref->Naam);
 
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
 		return;
 	}
-	echo "CHANGE_PARENT_AAA";
+	echo ']';
+
 	break;
 
 case 'CreateAaa':
-
-	list($p_fk_aaa_naam, $p_naam, $p_omschrijving, $p_xk_aaa_naam) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_aaa.insert_aaa (
 		:p_fk_aaa_naam,
@@ -128,22 +172,22 @@ case 'CreateAaa':
 		:p_omschrijving,
 		:p_xk_aaa_naam);
 	END;");
-	oci_bind_by_name($stid,":p_fk_aaa_naam",$p_fk_aaa_naam);
-	oci_bind_by_name($stid,":p_naam",$p_naam);
-	oci_bind_by_name($stid,":p_omschrijving",$p_omschrijving);
-	oci_bind_by_name($stid,":p_xk_aaa_naam",$p_xk_aaa_naam);
+	oci_bind_by_name($stid,":p_fk_aaa_naam",$RequestObj->Type->FkAaaNaam);
+	oci_bind_by_name($stid,":p_naam",$RequestObj->Type->Naam);
+	oci_bind_by_name($stid,":p_omschrijving",$RequestObj->Type->Omschrijving);
+	oci_bind_by_name($stid,":p_xk_aaa_naam",$RequestObj->Type->XkAaaNaam);
 
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
 		return;
 	}
-	echo "CREATE_AAA";
+	echo ']';
+
 	break;
 
 case 'UpdateAaa':
-
-	list($p_fk_aaa_naam, $p_naam, $p_omschrijving, $p_xk_aaa_naam) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_aaa.update_aaa (
 		:p_fk_aaa_naam,
@@ -151,162 +195,223 @@ case 'UpdateAaa':
 		:p_omschrijving,
 		:p_xk_aaa_naam);
 	END;");
-	oci_bind_by_name($stid,":p_fk_aaa_naam",$p_fk_aaa_naam);
-	oci_bind_by_name($stid,":p_naam",$p_naam);
-	oci_bind_by_name($stid,":p_omschrijving",$p_omschrijving);
-	oci_bind_by_name($stid,":p_xk_aaa_naam",$p_xk_aaa_naam);
+	oci_bind_by_name($stid,":p_fk_aaa_naam",$RequestObj->Type->FkAaaNaam);
+	oci_bind_by_name($stid,":p_naam",$RequestObj->Type->Naam);
+	oci_bind_by_name($stid,":p_omschrijving",$RequestObj->Type->Omschrijving);
+	oci_bind_by_name($stid,":p_xk_aaa_naam",$RequestObj->Type->XkAaaNaam);
 
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
 		return;
 	}
-	echo "UPDATE_AAA";
+	echo ']';
+
 	break;
 
 case 'DeleteAaa':
-
-	list($p_naam) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_aaa.delete_aaa (
 		:p_naam);
 	END;");
-	oci_bind_by_name($stid,":p_naam",$p_naam);
+	oci_bind_by_name($stid,":p_naam",$RequestObj->Type->Naam);
 
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
 		return;
 	}
-	echo "DELETE_AAA";
+	echo ']';
+
 	break;
 
 case 'GetAad':
-
-	list($p_fk_aaa_naam, $p_naam) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_aaa.get_aad (
 		:p_cube_row,
 		:p_fk_aaa_naam,
 		:p_naam);
 	END;");
-	oci_bind_by_name($stid,":p_fk_aaa_naam",$p_fk_aaa_naam);
-	oci_bind_by_name($stid,":p_naam",$p_naam);
+	oci_bind_by_name($stid,":p_fk_aaa_naam",$RequestObj->Type->FkAaaNaam);
+	oci_bind_by_name($stid,":p_naam",$RequestObj->Type->Naam);
 
 	$r = perform_db_request();
 	if (!$r) { return; }
-	echo "SELECT_AAD";
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'SELECT_AAD';
+	$ResponseObj->Rows = array();
 	if ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["XK_AAA_NAAM"];
+		$RowObj = new \stdClass();
+		$RowObj->Data = new \stdClass();
+		$RowObj->Data->XkAaaNaam = $row["XK_AAA_NAAM"];
+		$ResponseObj->Rows[] = $RowObj;
 	}
+	echo ']';
+
 	break;
 
-case 'CreateAad':
+case 'MoveAad':
+	echo '[';
 
-	list($p_fk_aaa_naam, $p_naam, $p_xk_aaa_naam) = explode("<|>", $import[1]);
-
-	$stid = oci_parse($conn, "BEGIN pkg_aaa.insert_aad (
+	$stid = oci_parse($conn, "BEGIN pkg_aaa.move_aad (
+		:p_cube_pos_action,
 		:p_fk_aaa_naam,
 		:p_naam,
-		:p_xk_aaa_naam);
+		:x_fk_aaa_naam,
+		:x_naam);
 	END;");
-	oci_bind_by_name($stid,":p_fk_aaa_naam",$p_fk_aaa_naam);
-	oci_bind_by_name($stid,":p_naam",$p_naam);
-	oci_bind_by_name($stid,":p_xk_aaa_naam",$p_xk_aaa_naam);
+	oci_bind_by_name($stid,":p_cube_pos_action",$RequestObj->Option->CubePosAction);
+	oci_bind_by_name($stid,":p_fk_aaa_naam",$RequestObj->Type->FkAaaNaam);
+	oci_bind_by_name($stid,":p_naam",$RequestObj->Type->Naam);
+	oci_bind_by_name($stid,":x_fk_aaa_naam",$RequestObj->Ref->FkAaaNaam);
+	oci_bind_by_name($stid,":x_naam",$RequestObj->Ref->Naam);
 
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
 		return;
 	}
-	echo "CREATE_AAD";
+	echo ']';
+
+	break;
+
+case 'CreateAad':
+	echo '[';
+
+	$stid = oci_parse($conn, "BEGIN pkg_aaa.insert_aad (
+		:p_cube_pos_action,
+		:p_fk_aaa_naam,
+		:p_naam,
+		:p_xk_aaa_naam,
+		:x_fk_aaa_naam,
+		:x_naam);
+	END;");
+	oci_bind_by_name($stid,":p_cube_pos_action",$RequestObj->Option->CubePosAction);
+	oci_bind_by_name($stid,":p_fk_aaa_naam",$RequestObj->Type->FkAaaNaam);
+	oci_bind_by_name($stid,":p_naam",$RequestObj->Type->Naam);
+	oci_bind_by_name($stid,":p_xk_aaa_naam",$RequestObj->Type->XkAaaNaam);
+	oci_bind_by_name($stid,":x_fk_aaa_naam",$RequestObj->Ref->FkAaaNaam);
+	oci_bind_by_name($stid,":x_naam",$RequestObj->Ref->Naam);
+
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		return;
+	}
+	echo ']';
+
 	break;
 
 case 'UpdateAad':
-
-	list($p_fk_aaa_naam, $p_naam, $p_xk_aaa_naam) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_aaa.update_aad (
 		:p_fk_aaa_naam,
 		:p_naam,
 		:p_xk_aaa_naam);
 	END;");
-	oci_bind_by_name($stid,":p_fk_aaa_naam",$p_fk_aaa_naam);
-	oci_bind_by_name($stid,":p_naam",$p_naam);
-	oci_bind_by_name($stid,":p_xk_aaa_naam",$p_xk_aaa_naam);
+	oci_bind_by_name($stid,":p_fk_aaa_naam",$RequestObj->Type->FkAaaNaam);
+	oci_bind_by_name($stid,":p_naam",$RequestObj->Type->Naam);
+	oci_bind_by_name($stid,":p_xk_aaa_naam",$RequestObj->Type->XkAaaNaam);
 
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
 		return;
 	}
-	echo "UPDATE_AAD";
+	echo ']';
+
 	break;
 
 case 'DeleteAad':
-
-	list($p_fk_aaa_naam, $p_naam) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_aaa.delete_aad (
 		:p_fk_aaa_naam,
 		:p_naam);
 	END;");
-	oci_bind_by_name($stid,":p_fk_aaa_naam",$p_fk_aaa_naam);
-	oci_bind_by_name($stid,":p_naam",$p_naam);
+	oci_bind_by_name($stid,":p_fk_aaa_naam",$RequestObj->Type->FkAaaNaam);
+	oci_bind_by_name($stid,":p_naam",$RequestObj->Type->Naam);
 
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
 		return;
 	}
-	echo "DELETE_AAD";
+	echo ']';
+
 	break;
 
 case 'GetDirBbbItems':
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bbb.get_bbb_root_items (:p_cube_row); END;");
 	$r = perform_db_request();
 	if (!$r) { return; }
-	echo "LIST_BBB";
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'LIST_BBB';
+	$ResponseObj->Rows = array();
 	while ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["NAAM"];
-		echo "<||>".$row["NAAM"];
+		$RowObj = new \stdClass();
+		$RowObj->Key = new \stdClass();
+		$RowObj->Key->Naam = $row["NAAM"];
+		$RowObj->Display = $row["NAAM"];
+		$ResponseObj->Rows[] = $RowObj;
 	}
+	echo ']';
+
 	break;
 
 case 'GetBbbList':
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bbb.get_bbb_list (:p_cube_row); END;");
 	$r = perform_db_request();
 	if (!$r) { return; }
-	echo "LIST_BBB";
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'LIST_BBB';
+	$ResponseObj->Rows = array();
 	while ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["NAAM"];
-		echo "<||>".$row["NAAM"];
+		$RowObj = new \stdClass();
+		$RowObj->Key = new \stdClass();
+		$RowObj->Key->Naam = $row["NAAM"];
+		$RowObj->Display = $row["NAAM"];
+		$ResponseObj->Rows[] = $RowObj;
 	}
+	echo ']';
+
 	break;
 
 case 'GetBbb':
-
-	list($p_naam) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bbb.get_bbb (
 		:p_cube_row,
 		:p_naam);
 	END;");
-	oci_bind_by_name($stid,":p_naam",$p_naam);
+	oci_bind_by_name($stid,":p_naam",$RequestObj->Type->Naam);
 
 	$r = perform_db_request();
 	if (!$r) { return; }
-	echo "SELECT_BBB";
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'SELECT_BBB';
+	$ResponseObj->Rows = array();
 	if ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["OMSCHRIJVING"]."<|>".$row["XK_AAA_NAAM"]."<|>".$row["XK_BBB_NAAM_1"];
+		$RowObj = new \stdClass();
+		$RowObj->Data = new \stdClass();
+		$RowObj->Data->Omschrijving = $row["OMSCHRIJVING"];
+		$RowObj->Data->XkAaaNaam = $row["XK_AAA_NAAM"];
+		$RowObj->Data->XkBbbNaam1 = $row["XK_BBB_NAAM_1"];
+		$ResponseObj->Rows[] = $RowObj;
 	}
+	echo ']';
+
 	break;
 
 case 'CreateBbb':
-
-	list($p_naam, $p_omschrijving, $p_xk_aaa_naam, $p_xk_bbb_naam_1) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bbb.insert_bbb (
 		:p_naam,
@@ -314,22 +419,22 @@ case 'CreateBbb':
 		:p_xk_aaa_naam,
 		:p_xk_bbb_naam_1);
 	END;");
-	oci_bind_by_name($stid,":p_naam",$p_naam);
-	oci_bind_by_name($stid,":p_omschrijving",$p_omschrijving);
-	oci_bind_by_name($stid,":p_xk_aaa_naam",$p_xk_aaa_naam);
-	oci_bind_by_name($stid,":p_xk_bbb_naam_1",$p_xk_bbb_naam_1);
+	oci_bind_by_name($stid,":p_naam",$RequestObj->Type->Naam);
+	oci_bind_by_name($stid,":p_omschrijving",$RequestObj->Type->Omschrijving);
+	oci_bind_by_name($stid,":p_xk_aaa_naam",$RequestObj->Type->XkAaaNaam);
+	oci_bind_by_name($stid,":p_xk_bbb_naam_1",$RequestObj->Type->XkBbbNaam1);
 
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
 		return;
 	}
-	echo "CREATE_BBB";
+	echo ']';
+
 	break;
 
 case 'UpdateBbb':
-
-	list($p_naam, $p_omschrijving, $p_xk_aaa_naam, $p_xk_bbb_naam_1) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bbb.update_bbb (
 		:p_naam,
@@ -337,190 +442,244 @@ case 'UpdateBbb':
 		:p_xk_aaa_naam,
 		:p_xk_bbb_naam_1);
 	END;");
-	oci_bind_by_name($stid,":p_naam",$p_naam);
-	oci_bind_by_name($stid,":p_omschrijving",$p_omschrijving);
-	oci_bind_by_name($stid,":p_xk_aaa_naam",$p_xk_aaa_naam);
-	oci_bind_by_name($stid,":p_xk_bbb_naam_1",$p_xk_bbb_naam_1);
+	oci_bind_by_name($stid,":p_naam",$RequestObj->Type->Naam);
+	oci_bind_by_name($stid,":p_omschrijving",$RequestObj->Type->Omschrijving);
+	oci_bind_by_name($stid,":p_xk_aaa_naam",$RequestObj->Type->XkAaaNaam);
+	oci_bind_by_name($stid,":p_xk_bbb_naam_1",$RequestObj->Type->XkBbbNaam1);
 
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
 		return;
 	}
-	echo "UPDATE_BBB";
+	echo ']';
+
 	break;
 
 case 'DeleteBbb':
-
-	list($p_naam) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bbb.delete_bbb (
 		:p_naam);
 	END;");
-	oci_bind_by_name($stid,":p_naam",$p_naam);
+	oci_bind_by_name($stid,":p_naam",$RequestObj->Type->Naam);
 
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
 		return;
 	}
-	echo "DELETE_BBB";
+	echo ']';
+
 	break;
 
 case 'GetDirCccItems':
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_ccc.get_ccc_root_items (:p_cube_row); END;");
 	$r = perform_db_request();
 	if (!$r) { return; }
-	echo "LIST_CCC";
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'LIST_CCC';
+	$ResponseObj->Rows = array();
 	while ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["CODE"]."<|>".$row["NAAM"];
-		echo "<||>".$row["CODE"]." ".$row["NAAM"];
+		$RowObj = new \stdClass();
+		$RowObj->Key = new \stdClass();
+		$RowObj->Key->Code = $row["CODE"];
+		$RowObj->Key->Naam = $row["NAAM"];
+		$RowObj->Display = $row["CODE"]' '.$row["NAAM"];
+		$ResponseObj->Rows[] = $RowObj;
 	}
+	echo ']';
+
 	break;
 
 case 'GetCccListEncapsulated':
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_ccc.get_ccc_list_encapsulated (:p_cube_row); END;");
 	$r = perform_db_request();
 	if (!$r) { return; }
-	echo "LIST_CCC";
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'LIST_CCC';
+	$ResponseObj->Rows = array();
 	while ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["CODE"]."<|>".$row["NAAM"];
-		echo "<||>".$row["CODE"]." ".$row["NAAM"];
+		$RowObj = new \stdClass();
+		$RowObj->Key = new \stdClass();
+		$RowObj->Key->Code = $row["CODE"];
+		$RowObj->Key->Naam = $row["NAAM"];
+		$RowObj->Display = $row["CODE"]' '.$row["NAAM"];
+		$ResponseObj->Rows[] = $RowObj;
 	}
+	echo ']';
+
 	break;
 
 case 'CountCcc':
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_ccc.count_ccc (:p_cube_row); END;");
 	$r = perform_db_request();
 	if (!$r) { return; }
-	echo "COUNT_CCC";
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'COUNT_CCC';
+	$ResponseObj->Rows = array();
 	if ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["TYPE_COUNT"];
+		$RowObj = new \stdClass();
+		$RowObj->Data = new \stdClass();
+		$RowObj->Data->TypeCount = $row["TYPE_COUNT"];
+		$ResponseObj->Rows[] = $RowObj;
 	}
+	echo ']';
+
 	break;
 
 case 'GetCcc':
-
-	list($p_code, $p_naam) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_ccc.get_ccc (
 		:p_cube_row,
 		:p_code,
 		:p_naam);
 	END;");
-	oci_bind_by_name($stid,":p_code",$p_code);
-	oci_bind_by_name($stid,":p_naam",$p_naam);
+	oci_bind_by_name($stid,":p_code",$RequestObj->Type->Code);
+	oci_bind_by_name($stid,":p_naam",$RequestObj->Type->Naam);
 
 	$r = perform_db_request();
 	if (!$r) { return; }
-	echo "SELECT_CCC";
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'SELECT_CCC';
+	$ResponseObj->Rows = array();
 	if ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["FK_CCC_CODE"]."<|>".$row["FK_CCC_NAAM"]."<|>".$row["OMSCHRJVING"]."<|>".$row["XK_CCC_CODE"]."<|>".$row["XK_CCC_NAAM"];
+		$RowObj = new \stdClass();
+		$RowObj->Data = new \stdClass();
+		$RowObj->Data->FkCccCode = $row["FK_CCC_CODE"];
+		$RowObj->Data->FkCccNaam = $row["FK_CCC_NAAM"];
+		$RowObj->Data->Omschrjving = $row["OMSCHRJVING"];
+		$RowObj->Data->XkCccCode = $row["XK_CCC_CODE"];
+		$RowObj->Data->XkCccNaam = $row["XK_CCC_NAAM"];
+		$ResponseObj->Rows[] = $RowObj;
 	}
+	echo ']';
+
 	break;
 
 case 'GetCccItems':
-
-	list($p_code, $p_naam) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_ccc.get_ccc_ccc_items (
 		:p_cube_row,
 		:p_code,
 		:p_naam);
 	END;");
-	oci_bind_by_name($stid,":p_code",$p_code);
-	oci_bind_by_name($stid,":p_naam",$p_naam);
+	oci_bind_by_name($stid,":p_code",$RequestObj->Type->Code);
+	oci_bind_by_name($stid,":p_naam",$RequestObj->Type->Naam);
 
 	$r = perform_db_request();
 	if (!$r) { return; }
-	$first = True;
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'LIST_CCC';
+	$ResponseObj->Rows = array();
 	while ($row = oci_fetch_assoc($curs)) {
-		if ($first) { $first = False; echo "LIST_CCC";}
-		echo "<|||>".$row["CODE"]."<|>".$row["NAAM"];
-		echo "<||>".$row["CODE"]." ".$row["NAAM"];
+		$RowObj = new \stdClass();
+		$RowObj->Key = new \stdClass();
+		$RowObj->Key->Code = $row["CODE"];
+		$RowObj->Key->Naam = $row["NAAM"];
+		$RowObj->Display = $row["CODE"]' '.$row["NAAM"];
+		$ResponseObj->Rows[] = $RowObj;
 	}
+	echo ']';
+
 	break;
 
 case 'CountCccRestrictedItems':
-
-	list($p_code, $p_naam) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_ccc.count_ccc_ccc (
 		:p_cube_row,
 		:p_code,
 		:p_naam);
 	END;");
-	oci_bind_by_name($stid,":p_code",$p_code);
-	oci_bind_by_name($stid,":p_naam",$p_naam);
+	oci_bind_by_name($stid,":p_code",$RequestObj->Type->Code);
+	oci_bind_by_name($stid,":p_naam",$RequestObj->Type->Naam);
 
 	$r = perform_db_request();
 	if (!$r) { return; }
-	echo "COUNT_CCC";
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'COUNT_CCC';
+	$ResponseObj->Rows = array();
 	if ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["TYPE_COUNT"];
+		$RowObj = new \stdClass();
+		$RowObj->Data = new \stdClass();
+		$RowObj->Data->TypeCount = $row["TYPE_COUNT"];
+		$ResponseObj->Rows[] = $RowObj;
 	}
+	echo ']';
+
 	break;
 
-case 'ChangeParentCcc':
+case 'MoveCcc':
+	echo '[';
 
-	list($p_cube_flag_root, $p_code, $p_naam, $x_code, $x_naam) = explode("<|>", $import[1]);
-
-	$stid = oci_parse($conn, "BEGIN pkg_ccc.change_parent_ccc (
-		:p_cube_flag_root,
+	$stid = oci_parse($conn, "BEGIN pkg_ccc.move_ccc (
+		:p_cube_pos_action,
 		:p_code,
 		:p_naam,
 		:x_code,
 		:x_naam);
 	END;");
-	oci_bind_by_name($stid,":p_cube_flag_root",$p_cube_flag_root);
-	oci_bind_by_name($stid,":p_code",$p_code);
-	oci_bind_by_name($stid,":p_naam",$p_naam);
-	oci_bind_by_name($stid,":x_code",$x_code);
-	oci_bind_by_name($stid,":x_naam",$x_naam);
+	oci_bind_by_name($stid,":p_cube_pos_action",$RequestObj->Option->CubePosAction);
+	oci_bind_by_name($stid,":p_code",$RequestObj->Type->Code);
+	oci_bind_by_name($stid,":p_naam",$RequestObj->Type->Naam);
+	oci_bind_by_name($stid,":x_code",$RequestObj->Ref->Code);
+	oci_bind_by_name($stid,":x_naam",$RequestObj->Ref->Naam);
 
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
 		return;
 	}
-	echo "CHANGE_PARENT_CCC";
+	echo ']';
+
 	break;
 
 case 'CreateCcc':
-
-	list($p_fk_ccc_code, $p_fk_ccc_naam, $p_code, $p_naam, $p_omschrjving, $p_xk_ccc_code, $p_xk_ccc_naam) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_ccc.insert_ccc (
+		:p_cube_pos_action,
 		:p_fk_ccc_code,
 		:p_fk_ccc_naam,
 		:p_code,
 		:p_naam,
 		:p_omschrjving,
 		:p_xk_ccc_code,
-		:p_xk_ccc_naam);
+		:p_xk_ccc_naam,
+		:x_code,
+		:x_naam);
 	END;");
-	oci_bind_by_name($stid,":p_fk_ccc_code",$p_fk_ccc_code);
-	oci_bind_by_name($stid,":p_fk_ccc_naam",$p_fk_ccc_naam);
-	oci_bind_by_name($stid,":p_code",$p_code);
-	oci_bind_by_name($stid,":p_naam",$p_naam);
-	oci_bind_by_name($stid,":p_omschrjving",$p_omschrjving);
-	oci_bind_by_name($stid,":p_xk_ccc_code",$p_xk_ccc_code);
-	oci_bind_by_name($stid,":p_xk_ccc_naam",$p_xk_ccc_naam);
+	oci_bind_by_name($stid,":p_cube_pos_action",$RequestObj->Option->CubePosAction);
+	oci_bind_by_name($stid,":p_fk_ccc_code",$RequestObj->Type->FkCccCode);
+	oci_bind_by_name($stid,":p_fk_ccc_naam",$RequestObj->Type->FkCccNaam);
+	oci_bind_by_name($stid,":p_code",$RequestObj->Type->Code);
+	oci_bind_by_name($stid,":p_naam",$RequestObj->Type->Naam);
+	oci_bind_by_name($stid,":p_omschrjving",$RequestObj->Type->Omschrjving);
+	oci_bind_by_name($stid,":p_xk_ccc_code",$RequestObj->Type->XkCccCode);
+	oci_bind_by_name($stid,":p_xk_ccc_naam",$RequestObj->Type->XkCccNaam);
+	oci_bind_by_name($stid,":x_code",$RequestObj->Ref->Code);
+	oci_bind_by_name($stid,":x_naam",$RequestObj->Ref->Naam);
 
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
 		return;
 	}
-	echo "CREATE_CCC";
+	echo ']';
+
 	break;
 
 case 'UpdateCcc':
-
-	list($p_fk_ccc_code, $p_fk_ccc_naam, $p_code, $p_naam, $p_omschrjving, $p_xk_ccc_code, $p_xk_ccc_naam) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_ccc.update_ccc (
 		:p_fk_ccc_code,
@@ -531,177 +690,223 @@ case 'UpdateCcc':
 		:p_xk_ccc_code,
 		:p_xk_ccc_naam);
 	END;");
-	oci_bind_by_name($stid,":p_fk_ccc_code",$p_fk_ccc_code);
-	oci_bind_by_name($stid,":p_fk_ccc_naam",$p_fk_ccc_naam);
-	oci_bind_by_name($stid,":p_code",$p_code);
-	oci_bind_by_name($stid,":p_naam",$p_naam);
-	oci_bind_by_name($stid,":p_omschrjving",$p_omschrjving);
-	oci_bind_by_name($stid,":p_xk_ccc_code",$p_xk_ccc_code);
-	oci_bind_by_name($stid,":p_xk_ccc_naam",$p_xk_ccc_naam);
+	oci_bind_by_name($stid,":p_fk_ccc_code",$RequestObj->Type->FkCccCode);
+	oci_bind_by_name($stid,":p_fk_ccc_naam",$RequestObj->Type->FkCccNaam);
+	oci_bind_by_name($stid,":p_code",$RequestObj->Type->Code);
+	oci_bind_by_name($stid,":p_naam",$RequestObj->Type->Naam);
+	oci_bind_by_name($stid,":p_omschrjving",$RequestObj->Type->Omschrjving);
+	oci_bind_by_name($stid,":p_xk_ccc_code",$RequestObj->Type->XkCccCode);
+	oci_bind_by_name($stid,":p_xk_ccc_naam",$RequestObj->Type->XkCccNaam);
 
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
 		return;
 	}
-	echo "UPDATE_CCC";
+	echo ']';
+
 	break;
 
 case 'DeleteCcc':
-
-	list($p_code, $p_naam) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_ccc.delete_ccc (
 		:p_code,
 		:p_naam);
 	END;");
-	oci_bind_by_name($stid,":p_code",$p_code);
-	oci_bind_by_name($stid,":p_naam",$p_naam);
+	oci_bind_by_name($stid,":p_code",$RequestObj->Type->Code);
+	oci_bind_by_name($stid,":p_naam",$RequestObj->Type->Naam);
 
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
 		return;
 	}
-	echo "DELETE_CCC";
+	echo ']';
+
 	break;
 
 case 'GetDirPrdItems':
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_prd.get_prd_root_items (:p_cube_row); END;");
 	$r = perform_db_request();
 	if (!$r) { return; }
-	echo "LIST_PRD";
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'LIST_PRD';
+	$ResponseObj->Rows = array();
 	while ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["CODE"]."<|>".$row["NAAM"];
-		echo "<||>".$row["CODE"]." ".$row["NAAM"];
+		$RowObj = new \stdClass();
+		$RowObj->Key = new \stdClass();
+		$RowObj->Key->Code = $row["CODE"];
+		$RowObj->Key->Naam = $row["NAAM"];
+		$RowObj->Display = $row["CODE"]' '.$row["NAAM"];
+		$ResponseObj->Rows[] = $RowObj;
 	}
+	echo ']';
+
 	break;
 
 case 'GetPrd':
-
-	list($p_code, $p_naam) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_prd.get_prd (
 		:p_cube_row,
 		:p_code,
 		:p_naam);
 	END;");
-	oci_bind_by_name($stid,":p_code",$p_code);
-	oci_bind_by_name($stid,":p_naam",$p_naam);
+	oci_bind_by_name($stid,":p_code",$RequestObj->Type->Code);
+	oci_bind_by_name($stid,":p_naam",$RequestObj->Type->Naam);
 
 	$r = perform_db_request();
 	if (!$r) { return; }
-	echo "SELECT_PRD";
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'SELECT_PRD';
+	$ResponseObj->Rows = array();
 	if ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["OMSCHRIJVING"];
+		$RowObj = new \stdClass();
+		$RowObj->Data = new \stdClass();
+		$RowObj->Data->CubeTsgZzz = $row["CUBE_TSG_ZZZ"];
+		$RowObj->Data->CubeTsgYyy = $row["CUBE_TSG_YYY"];
+		$RowObj->Data->Datum = $row["DATUM"];
+		$RowObj->Data->Omschrijving = $row["OMSCHRIJVING"];
+		$ResponseObj->Rows[] = $RowObj;
 	}
+	echo ']';
+
 	break;
 
 case 'GetPrdItems':
-
-	list($p_code, $p_naam) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_prd.get_prd_pr2_items (
 		:p_cube_row,
 		:p_code,
 		:p_naam);
 	END;");
-	oci_bind_by_name($stid,":p_code",$p_code);
-	oci_bind_by_name($stid,":p_naam",$p_naam);
+	oci_bind_by_name($stid,":p_code",$RequestObj->Type->Code);
+	oci_bind_by_name($stid,":p_naam",$RequestObj->Type->Naam);
 
 	$r = perform_db_request();
 	if (!$r) { return; }
-	$first = True;
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'LIST_PR2';
+	$ResponseObj->Rows = array();
 	while ($row = oci_fetch_assoc($curs)) {
-		if ($first) { $first = False; echo "LIST_PR2";}
-		echo "<|||>".$row["FK_PRD_CODE"]."<|>".$row["FK_PRD_NAAM"]."<|>".$row["CODE"]."<|>".$row["NAAM"];
-		echo "<||>".$row["CODE"]." ".$row["NAAM"];
+		$RowObj = new \stdClass();
+		$RowObj->Key = new \stdClass();
+		$RowObj->Key->FkPrdCode = $row["FK_PRD_CODE"];
+		$RowObj->Key->FkPrdNaam = $row["FK_PRD_NAAM"];
+		$RowObj->Key->Code = $row["CODE"];
+		$RowObj->Key->Naam = $row["NAAM"];
+		$RowObj->Display = $row["CODE"]' '.$row["NAAM"];
+		$ResponseObj->Rows[] = $RowObj;
 	}
-	echo "<||||>";
+	echo ',';
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_prd.get_prd_prt_items (
 		:p_cube_row,
 		:p_code,
 		:p_naam);
 	END;");
-	oci_bind_by_name($stid,":p_code",$p_code);
-	oci_bind_by_name($stid,":p_naam",$p_naam);
+	oci_bind_by_name($stid,":p_code",$RequestObj->Type->Code);
+	oci_bind_by_name($stid,":p_naam",$RequestObj->Type->Naam);
 
 	$r = perform_db_request();
 	if (!$r) { return; }
-	$first = True;
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'LIST_PRT';
+	$ResponseObj->Rows = array();
 	while ($row = oci_fetch_assoc($curs)) {
-		if ($first) { $first = False; echo "LIST_PRT";}
-		echo "<|||>".$row["FK_PRD_CODE"]."<|>".$row["FK_PRD_NAAM"]."<|>".$row["CODE"]."<|>".$row["NAAM"];
-		echo "<||>".$row["CODE"]." ".$row["NAAM"];
+		$RowObj = new \stdClass();
+		$RowObj->Key = new \stdClass();
+		$RowObj->Key->FkPrdCode = $row["FK_PRD_CODE"];
+		$RowObj->Key->FkPrdNaam = $row["FK_PRD_NAAM"];
+		$RowObj->Key->Code = $row["CODE"];
+		$RowObj->Key->Naam = $row["NAAM"];
+		$RowObj->Display = $row["CODE"]' '.$row["NAAM"];
+		$ResponseObj->Rows[] = $RowObj;
 	}
+	echo ']';
+
 	break;
 
 case 'CreatePrd':
-
-	list($p_code, $p_naam, $p_omschrijving) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_prd.insert_prd (
+		:p_cube_tsg_zzz,
+		:p_cube_tsg_yyy,
 		:p_code,
 		:p_naam,
+		:p_datum,
 		:p_omschrijving);
 	END;");
-	oci_bind_by_name($stid,":p_code",$p_code);
-	oci_bind_by_name($stid,":p_naam",$p_naam);
-	oci_bind_by_name($stid,":p_omschrijving",$p_omschrijving);
+	oci_bind_by_name($stid,":p_cube_tsg_zzz",$RequestObj->Type->CubeTsgZzz);
+	oci_bind_by_name($stid,":p_cube_tsg_yyy",$RequestObj->Type->CubeTsgYyy);
+	oci_bind_by_name($stid,":p_code",$RequestObj->Type->Code);
+	oci_bind_by_name($stid,":p_naam",$RequestObj->Type->Naam);
+	oci_bind_by_name($stid,":p_datum",$RequestObj->Type->Datum);
+	oci_bind_by_name($stid,":p_omschrijving",$RequestObj->Type->Omschrijving);
 
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
 		return;
 	}
-	echo "CREATE_PRD";
+	echo ']';
+
 	break;
 
 case 'UpdatePrd':
-
-	list($p_code, $p_naam, $p_omschrijving) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_prd.update_prd (
+		:p_cube_tsg_zzz,
+		:p_cube_tsg_yyy,
 		:p_code,
 		:p_naam,
+		:p_datum,
 		:p_omschrijving);
 	END;");
-	oci_bind_by_name($stid,":p_code",$p_code);
-	oci_bind_by_name($stid,":p_naam",$p_naam);
-	oci_bind_by_name($stid,":p_omschrijving",$p_omschrijving);
+	oci_bind_by_name($stid,":p_cube_tsg_zzz",$RequestObj->Type->CubeTsgZzz);
+	oci_bind_by_name($stid,":p_cube_tsg_yyy",$RequestObj->Type->CubeTsgYyy);
+	oci_bind_by_name($stid,":p_code",$RequestObj->Type->Code);
+	oci_bind_by_name($stid,":p_naam",$RequestObj->Type->Naam);
+	oci_bind_by_name($stid,":p_datum",$RequestObj->Type->Datum);
+	oci_bind_by_name($stid,":p_omschrijving",$RequestObj->Type->Omschrijving);
 
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
 		return;
 	}
-	echo "UPDATE_PRD";
+	echo ']';
+
 	break;
 
 case 'DeletePrd':
-
-	list($p_code, $p_naam) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_prd.delete_prd (
 		:p_code,
 		:p_naam);
 	END;");
-	oci_bind_by_name($stid,":p_code",$p_code);
-	oci_bind_by_name($stid,":p_naam",$p_naam);
+	oci_bind_by_name($stid,":p_code",$RequestObj->Type->Code);
+	oci_bind_by_name($stid,":p_naam",$RequestObj->Type->Naam);
 
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
 		return;
 	}
-	echo "DELETE_PRD";
+	echo ']';
+
 	break;
 
 case 'GetPr2':
-
-	list($p_fk_prd_code, $p_fk_prd_naam, $p_code, $p_naam) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_prd.get_pr2 (
 		:p_cube_row,
@@ -710,22 +915,28 @@ case 'GetPr2':
 		:p_code,
 		:p_naam);
 	END;");
-	oci_bind_by_name($stid,":p_fk_prd_code",$p_fk_prd_code);
-	oci_bind_by_name($stid,":p_fk_prd_naam",$p_fk_prd_naam);
-	oci_bind_by_name($stid,":p_code",$p_code);
-	oci_bind_by_name($stid,":p_naam",$p_naam);
+	oci_bind_by_name($stid,":p_fk_prd_code",$RequestObj->Type->FkPrdCode);
+	oci_bind_by_name($stid,":p_fk_prd_naam",$RequestObj->Type->FkPrdNaam);
+	oci_bind_by_name($stid,":p_code",$RequestObj->Type->Code);
+	oci_bind_by_name($stid,":p_naam",$RequestObj->Type->Naam);
 
 	$r = perform_db_request();
 	if (!$r) { return; }
-	echo "SELECT_PR2";
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'SELECT_PR2';
+	$ResponseObj->Rows = array();
 	if ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["OMSCHRIJVING"];
+		$RowObj = new \stdClass();
+		$RowObj->Data = new \stdClass();
+		$RowObj->Data->Omschrijving = $row["OMSCHRIJVING"];
+		$ResponseObj->Rows[] = $RowObj;
 	}
+	echo ']';
+
 	break;
 
 case 'GetPr2Items':
-
-	list($p_fk_prd_code, $p_fk_prd_naam, $p_code, $p_naam) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_prd.get_pr2_pa2_items (
 		:p_cube_row,
@@ -734,24 +945,34 @@ case 'GetPr2Items':
 		:p_code,
 		:p_naam);
 	END;");
-	oci_bind_by_name($stid,":p_fk_prd_code",$p_fk_prd_code);
-	oci_bind_by_name($stid,":p_fk_prd_naam",$p_fk_prd_naam);
-	oci_bind_by_name($stid,":p_code",$p_code);
-	oci_bind_by_name($stid,":p_naam",$p_naam);
+	oci_bind_by_name($stid,":p_fk_prd_code",$RequestObj->Type->FkPrdCode);
+	oci_bind_by_name($stid,":p_fk_prd_naam",$RequestObj->Type->FkPrdNaam);
+	oci_bind_by_name($stid,":p_code",$RequestObj->Type->Code);
+	oci_bind_by_name($stid,":p_naam",$RequestObj->Type->Naam);
 
 	$r = perform_db_request();
 	if (!$r) { return; }
-	$first = True;
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'LIST_PA2';
+	$ResponseObj->Rows = array();
 	while ($row = oci_fetch_assoc($curs)) {
-		if ($first) { $first = False; echo "LIST_PA2";}
-		echo "<|||>".$row["FK_PRD_CODE"]."<|>".$row["FK_PRD_NAAM"]."<|>".$row["FK_PR2_CODE"]."<|>".$row["FK_PR2_NAAM"]."<|>".$row["CODE"]."<|>".$row["NAAM"];
-		echo "<||>".$row["CODE"]." ".$row["NAAM"];
+		$RowObj = new \stdClass();
+		$RowObj->Key = new \stdClass();
+		$RowObj->Key->FkPrdCode = $row["FK_PRD_CODE"];
+		$RowObj->Key->FkPrdNaam = $row["FK_PRD_NAAM"];
+		$RowObj->Key->FkPr2Code = $row["FK_PR2_CODE"];
+		$RowObj->Key->FkPr2Naam = $row["FK_PR2_NAAM"];
+		$RowObj->Key->Code = $row["CODE"];
+		$RowObj->Key->Naam = $row["NAAM"];
+		$RowObj->Display = $row["CODE"]' '.$row["NAAM"];
+		$ResponseObj->Rows[] = $RowObj;
 	}
+	echo ']';
+
 	break;
 
 case 'CreatePr2':
-
-	list($p_fk_prd_code, $p_fk_prd_naam, $p_code, $p_naam, $p_omschrijving) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_prd.insert_pr2 (
 		:p_fk_prd_code,
@@ -760,23 +981,23 @@ case 'CreatePr2':
 		:p_naam,
 		:p_omschrijving);
 	END;");
-	oci_bind_by_name($stid,":p_fk_prd_code",$p_fk_prd_code);
-	oci_bind_by_name($stid,":p_fk_prd_naam",$p_fk_prd_naam);
-	oci_bind_by_name($stid,":p_code",$p_code);
-	oci_bind_by_name($stid,":p_naam",$p_naam);
-	oci_bind_by_name($stid,":p_omschrijving",$p_omschrijving);
+	oci_bind_by_name($stid,":p_fk_prd_code",$RequestObj->Type->FkPrdCode);
+	oci_bind_by_name($stid,":p_fk_prd_naam",$RequestObj->Type->FkPrdNaam);
+	oci_bind_by_name($stid,":p_code",$RequestObj->Type->Code);
+	oci_bind_by_name($stid,":p_naam",$RequestObj->Type->Naam);
+	oci_bind_by_name($stid,":p_omschrijving",$RequestObj->Type->Omschrijving);
 
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
 		return;
 	}
-	echo "CREATE_PR2";
+	echo ']';
+
 	break;
 
 case 'UpdatePr2':
-
-	list($p_fk_prd_code, $p_fk_prd_naam, $p_code, $p_naam, $p_omschrijving) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_prd.update_pr2 (
 		:p_fk_prd_code,
@@ -785,23 +1006,23 @@ case 'UpdatePr2':
 		:p_naam,
 		:p_omschrijving);
 	END;");
-	oci_bind_by_name($stid,":p_fk_prd_code",$p_fk_prd_code);
-	oci_bind_by_name($stid,":p_fk_prd_naam",$p_fk_prd_naam);
-	oci_bind_by_name($stid,":p_code",$p_code);
-	oci_bind_by_name($stid,":p_naam",$p_naam);
-	oci_bind_by_name($stid,":p_omschrijving",$p_omschrijving);
+	oci_bind_by_name($stid,":p_fk_prd_code",$RequestObj->Type->FkPrdCode);
+	oci_bind_by_name($stid,":p_fk_prd_naam",$RequestObj->Type->FkPrdNaam);
+	oci_bind_by_name($stid,":p_code",$RequestObj->Type->Code);
+	oci_bind_by_name($stid,":p_naam",$RequestObj->Type->Naam);
+	oci_bind_by_name($stid,":p_omschrijving",$RequestObj->Type->Omschrijving);
 
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
 		return;
 	}
-	echo "UPDATE_PR2";
+	echo ']';
+
 	break;
 
 case 'DeletePr2':
-
-	list($p_fk_prd_code, $p_fk_prd_naam, $p_code, $p_naam) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_prd.delete_pr2 (
 		:p_fk_prd_code,
@@ -809,22 +1030,22 @@ case 'DeletePr2':
 		:p_code,
 		:p_naam);
 	END;");
-	oci_bind_by_name($stid,":p_fk_prd_code",$p_fk_prd_code);
-	oci_bind_by_name($stid,":p_fk_prd_naam",$p_fk_prd_naam);
-	oci_bind_by_name($stid,":p_code",$p_code);
-	oci_bind_by_name($stid,":p_naam",$p_naam);
+	oci_bind_by_name($stid,":p_fk_prd_code",$RequestObj->Type->FkPrdCode);
+	oci_bind_by_name($stid,":p_fk_prd_naam",$RequestObj->Type->FkPrdNaam);
+	oci_bind_by_name($stid,":p_code",$RequestObj->Type->Code);
+	oci_bind_by_name($stid,":p_naam",$RequestObj->Type->Naam);
 
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
 		return;
 	}
-	echo "DELETE_PR2";
+	echo ']';
+
 	break;
 
 case 'GetPa2ForPrdListEncapsulated':
-
-	list($p_fk_prd_code, $p_fk_prd_naam, $p_code, $p_naam, $x_fk_prd_code, $x_fk_prd_naam) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_prd.get_pa2_for_prd_list_encapsulated (
 		:p_cube_row,
@@ -835,25 +1056,36 @@ case 'GetPa2ForPrdListEncapsulated':
 		:x_fk_prd_code,
 		:x_fk_prd_naam);
 	END;");
-	oci_bind_by_name($stid,":p_fk_prd_code",$p_fk_prd_code);
-	oci_bind_by_name($stid,":p_fk_prd_naam",$p_fk_prd_naam);
-	oci_bind_by_name($stid,":p_code",$p_code);
-	oci_bind_by_name($stid,":p_naam",$p_naam);
-	oci_bind_by_name($stid,":x_fk_prd_code",$x_fk_prd_code);
-	oci_bind_by_name($stid,":x_fk_prd_naam",$x_fk_prd_naam);
+	oci_bind_by_name($stid,":p_fk_prd_code",$RequestObj->Type->FkPrdCode);
+	oci_bind_by_name($stid,":p_fk_prd_naam",$RequestObj->Type->FkPrdNaam);
+	oci_bind_by_name($stid,":p_code",$RequestObj->Type->Code);
+	oci_bind_by_name($stid,":p_naam",$RequestObj->Type->Naam);
+	oci_bind_by_name($stid,":x_fk_prd_code",$RequestObj->Ref->FkPrdCode);
+	oci_bind_by_name($stid,":x_fk_prd_naam",$RequestObj->Ref->FkPrdNaam);
 
 	$r = perform_db_request();
 	if (!$r) { return; }
-	echo "LIST_PA2";
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'LIST_PA2';
+	$ResponseObj->Rows = array();
 	while ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["FK_PRD_CODE"]."<|>".$row["FK_PRD_NAAM"]."<|>".$row["FK_PR2_CODE"]."<|>".$row["FK_PR2_NAAM"]."<|>".$row["CODE"]."<|>".$row["NAAM"];
-		echo "<||>".$row["FK_PRD_CODE"]." ".$row["FK_PRD_NAAM"]." ".$row["FK_PR2_CODE"]." ".$row["FK_PR2_NAAM"]." ".$row["CODE"]." ".$row["NAAM"];
+		$RowObj = new \stdClass();
+		$RowObj->Key = new \stdClass();
+		$RowObj->Key->FkPrdCode = $row["FK_PRD_CODE"];
+		$RowObj->Key->FkPrdNaam = $row["FK_PRD_NAAM"];
+		$RowObj->Key->FkPr2Code = $row["FK_PR2_CODE"];
+		$RowObj->Key->FkPr2Naam = $row["FK_PR2_NAAM"];
+		$RowObj->Key->Code = $row["CODE"];
+		$RowObj->Key->Naam = $row["NAAM"];
+		$RowObj->Display = $row["FK_PRD_CODE"]' '.$row["FK_PRD_NAAM"]' '.$row["FK_PR2_CODE"]' '.$row["FK_PR2_NAAM"]' '.$row["CODE"]' '.$row["NAAM"];
+		$ResponseObj->Rows[] = $RowObj;
 	}
+	echo ']';
+
 	break;
 
 case 'GetPa2':
-
-	list($p_fk_prd_code, $p_fk_prd_naam, $p_fk_pr2_code, $p_fk_pr2_naam, $p_code, $p_naam) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_prd.get_pa2 (
 		:p_cube_row,
@@ -864,24 +1096,38 @@ case 'GetPa2':
 		:p_code,
 		:p_naam);
 	END;");
-	oci_bind_by_name($stid,":p_fk_prd_code",$p_fk_prd_code);
-	oci_bind_by_name($stid,":p_fk_prd_naam",$p_fk_prd_naam);
-	oci_bind_by_name($stid,":p_fk_pr2_code",$p_fk_pr2_code);
-	oci_bind_by_name($stid,":p_fk_pr2_naam",$p_fk_pr2_naam);
-	oci_bind_by_name($stid,":p_code",$p_code);
-	oci_bind_by_name($stid,":p_naam",$p_naam);
+	oci_bind_by_name($stid,":p_fk_prd_code",$RequestObj->Type->FkPrdCode);
+	oci_bind_by_name($stid,":p_fk_prd_naam",$RequestObj->Type->FkPrdNaam);
+	oci_bind_by_name($stid,":p_fk_pr2_code",$RequestObj->Type->FkPr2Code);
+	oci_bind_by_name($stid,":p_fk_pr2_naam",$RequestObj->Type->FkPr2Naam);
+	oci_bind_by_name($stid,":p_code",$RequestObj->Type->Code);
+	oci_bind_by_name($stid,":p_naam",$RequestObj->Type->Naam);
 
 	$r = perform_db_request();
 	if (!$r) { return; }
-	echo "SELECT_PA2";
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'SELECT_PA2';
+	$ResponseObj->Rows = array();
 	if ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["FK_PA2_CODE"]."<|>".$row["FK_PA2_NAAM"]."<|>".$row["OMSCHRIJVING"]."<|>".$row["XF_PA2_PRD_CODE"]."<|>".$row["XF_PA2_PRD_NAAM"]."<|>".$row["XF_PA2_PR2_CODE"]."<|>".$row["XF_PA2_PR2_NAAM"]."<|>".$row["XK_PA2_CODE"]."<|>".$row["XK_PA2_NAAM"];
+		$RowObj = new \stdClass();
+		$RowObj->Data = new \stdClass();
+		$RowObj->Data->FkPa2Code = $row["FK_PA2_CODE"];
+		$RowObj->Data->FkPa2Naam = $row["FK_PA2_NAAM"];
+		$RowObj->Data->Omschrijving = $row["OMSCHRIJVING"];
+		$RowObj->Data->XfPa2PrdCode = $row["XF_PA2_PRD_CODE"];
+		$RowObj->Data->XfPa2PrdNaam = $row["XF_PA2_PRD_NAAM"];
+		$RowObj->Data->XfPa2Pr2Code = $row["XF_PA2_PR2_CODE"];
+		$RowObj->Data->XfPa2Pr2Naam = $row["XF_PA2_PR2_NAAM"];
+		$RowObj->Data->XkPa2Code = $row["XK_PA2_CODE"];
+		$RowObj->Data->XkPa2Naam = $row["XK_PA2_NAAM"];
+		$ResponseObj->Rows[] = $RowObj;
 	}
+	echo ']';
+
 	break;
 
 case 'GetPa2Items':
-
-	list($p_fk_prd_code, $p_fk_prd_naam, $p_fk_pr2_code, $p_fk_pr2_naam, $p_code, $p_naam) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_prd.get_pa2_pa2_items (
 		:p_cube_row,
@@ -892,26 +1138,36 @@ case 'GetPa2Items':
 		:p_code,
 		:p_naam);
 	END;");
-	oci_bind_by_name($stid,":p_fk_prd_code",$p_fk_prd_code);
-	oci_bind_by_name($stid,":p_fk_prd_naam",$p_fk_prd_naam);
-	oci_bind_by_name($stid,":p_fk_pr2_code",$p_fk_pr2_code);
-	oci_bind_by_name($stid,":p_fk_pr2_naam",$p_fk_pr2_naam);
-	oci_bind_by_name($stid,":p_code",$p_code);
-	oci_bind_by_name($stid,":p_naam",$p_naam);
+	oci_bind_by_name($stid,":p_fk_prd_code",$RequestObj->Type->FkPrdCode);
+	oci_bind_by_name($stid,":p_fk_prd_naam",$RequestObj->Type->FkPrdNaam);
+	oci_bind_by_name($stid,":p_fk_pr2_code",$RequestObj->Type->FkPr2Code);
+	oci_bind_by_name($stid,":p_fk_pr2_naam",$RequestObj->Type->FkPr2Naam);
+	oci_bind_by_name($stid,":p_code",$RequestObj->Type->Code);
+	oci_bind_by_name($stid,":p_naam",$RequestObj->Type->Naam);
 
 	$r = perform_db_request();
 	if (!$r) { return; }
-	$first = True;
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'LIST_PA2';
+	$ResponseObj->Rows = array();
 	while ($row = oci_fetch_assoc($curs)) {
-		if ($first) { $first = False; echo "LIST_PA2";}
-		echo "<|||>".$row["FK_PRD_CODE"]."<|>".$row["FK_PRD_NAAM"]."<|>".$row["FK_PR2_CODE"]."<|>".$row["FK_PR2_NAAM"]."<|>".$row["CODE"]."<|>".$row["NAAM"];
-		echo "<||>".$row["CODE"]." ".$row["NAAM"];
+		$RowObj = new \stdClass();
+		$RowObj->Key = new \stdClass();
+		$RowObj->Key->FkPrdCode = $row["FK_PRD_CODE"];
+		$RowObj->Key->FkPrdNaam = $row["FK_PRD_NAAM"];
+		$RowObj->Key->FkPr2Code = $row["FK_PR2_CODE"];
+		$RowObj->Key->FkPr2Naam = $row["FK_PR2_NAAM"];
+		$RowObj->Key->Code = $row["CODE"];
+		$RowObj->Key->Naam = $row["NAAM"];
+		$RowObj->Display = $row["CODE"]' '.$row["NAAM"];
+		$ResponseObj->Rows[] = $RowObj;
 	}
+	echo ']';
+
 	break;
 
 case 'ChangeParentPa2':
-
-	list($p_cube_flag_root, $p_fk_prd_code, $p_fk_prd_naam, $p_fk_pr2_code, $p_fk_pr2_naam, $p_code, $p_naam, $x_fk_prd_code, $x_fk_prd_naam, $x_fk_pr2_code, $x_fk_pr2_naam, $x_code, $x_naam) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_prd.change_parent_pa2 (
 		:p_cube_flag_root,
@@ -928,31 +1184,31 @@ case 'ChangeParentPa2':
 		:x_code,
 		:x_naam);
 	END;");
-	oci_bind_by_name($stid,":p_cube_flag_root",$p_cube_flag_root);
-	oci_bind_by_name($stid,":p_fk_prd_code",$p_fk_prd_code);
-	oci_bind_by_name($stid,":p_fk_prd_naam",$p_fk_prd_naam);
-	oci_bind_by_name($stid,":p_fk_pr2_code",$p_fk_pr2_code);
-	oci_bind_by_name($stid,":p_fk_pr2_naam",$p_fk_pr2_naam);
-	oci_bind_by_name($stid,":p_code",$p_code);
-	oci_bind_by_name($stid,":p_naam",$p_naam);
-	oci_bind_by_name($stid,":x_fk_prd_code",$x_fk_prd_code);
-	oci_bind_by_name($stid,":x_fk_prd_naam",$x_fk_prd_naam);
-	oci_bind_by_name($stid,":x_fk_pr2_code",$x_fk_pr2_code);
-	oci_bind_by_name($stid,":x_fk_pr2_naam",$x_fk_pr2_naam);
-	oci_bind_by_name($stid,":x_code",$x_code);
-	oci_bind_by_name($stid,":x_naam",$x_naam);
+	oci_bind_by_name($stid,":p_cube_flag_root",$RequestObj->Option->CubeFlagRoot);
+	oci_bind_by_name($stid,":p_fk_prd_code",$RequestObj->Type->FkPrdCode);
+	oci_bind_by_name($stid,":p_fk_prd_naam",$RequestObj->Type->FkPrdNaam);
+	oci_bind_by_name($stid,":p_fk_pr2_code",$RequestObj->Type->FkPr2Code);
+	oci_bind_by_name($stid,":p_fk_pr2_naam",$RequestObj->Type->FkPr2Naam);
+	oci_bind_by_name($stid,":p_code",$RequestObj->Type->Code);
+	oci_bind_by_name($stid,":p_naam",$RequestObj->Type->Naam);
+	oci_bind_by_name($stid,":x_fk_prd_code",$RequestObj->Ref->FkPrdCode);
+	oci_bind_by_name($stid,":x_fk_prd_naam",$RequestObj->Ref->FkPrdNaam);
+	oci_bind_by_name($stid,":x_fk_pr2_code",$RequestObj->Ref->FkPr2Code);
+	oci_bind_by_name($stid,":x_fk_pr2_naam",$RequestObj->Ref->FkPr2Naam);
+	oci_bind_by_name($stid,":x_code",$RequestObj->Ref->Code);
+	oci_bind_by_name($stid,":x_naam",$RequestObj->Ref->Naam);
 
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
 		return;
 	}
-	echo "CHANGE_PARENT_PA2";
+	echo ']';
+
 	break;
 
 case 'CreatePa2':
-
-	list($p_fk_prd_code, $p_fk_prd_naam, $p_fk_pr2_code, $p_fk_pr2_naam, $p_fk_pa2_code, $p_fk_pa2_naam, $p_code, $p_naam, $p_omschrijving, $p_xf_pa2_prd_code, $p_xf_pa2_prd_naam, $p_xf_pa2_pr2_code, $p_xf_pa2_pr2_naam, $p_xk_pa2_code, $p_xk_pa2_naam) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_prd.insert_pa2 (
 		:p_fk_prd_code,
@@ -971,33 +1227,33 @@ case 'CreatePa2':
 		:p_xk_pa2_code,
 		:p_xk_pa2_naam);
 	END;");
-	oci_bind_by_name($stid,":p_fk_prd_code",$p_fk_prd_code);
-	oci_bind_by_name($stid,":p_fk_prd_naam",$p_fk_prd_naam);
-	oci_bind_by_name($stid,":p_fk_pr2_code",$p_fk_pr2_code);
-	oci_bind_by_name($stid,":p_fk_pr2_naam",$p_fk_pr2_naam);
-	oci_bind_by_name($stid,":p_fk_pa2_code",$p_fk_pa2_code);
-	oci_bind_by_name($stid,":p_fk_pa2_naam",$p_fk_pa2_naam);
-	oci_bind_by_name($stid,":p_code",$p_code);
-	oci_bind_by_name($stid,":p_naam",$p_naam);
-	oci_bind_by_name($stid,":p_omschrijving",$p_omschrijving);
-	oci_bind_by_name($stid,":p_xf_pa2_prd_code",$p_xf_pa2_prd_code);
-	oci_bind_by_name($stid,":p_xf_pa2_prd_naam",$p_xf_pa2_prd_naam);
-	oci_bind_by_name($stid,":p_xf_pa2_pr2_code",$p_xf_pa2_pr2_code);
-	oci_bind_by_name($stid,":p_xf_pa2_pr2_naam",$p_xf_pa2_pr2_naam);
-	oci_bind_by_name($stid,":p_xk_pa2_code",$p_xk_pa2_code);
-	oci_bind_by_name($stid,":p_xk_pa2_naam",$p_xk_pa2_naam);
+	oci_bind_by_name($stid,":p_fk_prd_code",$RequestObj->Type->FkPrdCode);
+	oci_bind_by_name($stid,":p_fk_prd_naam",$RequestObj->Type->FkPrdNaam);
+	oci_bind_by_name($stid,":p_fk_pr2_code",$RequestObj->Type->FkPr2Code);
+	oci_bind_by_name($stid,":p_fk_pr2_naam",$RequestObj->Type->FkPr2Naam);
+	oci_bind_by_name($stid,":p_fk_pa2_code",$RequestObj->Type->FkPa2Code);
+	oci_bind_by_name($stid,":p_fk_pa2_naam",$RequestObj->Type->FkPa2Naam);
+	oci_bind_by_name($stid,":p_code",$RequestObj->Type->Code);
+	oci_bind_by_name($stid,":p_naam",$RequestObj->Type->Naam);
+	oci_bind_by_name($stid,":p_omschrijving",$RequestObj->Type->Omschrijving);
+	oci_bind_by_name($stid,":p_xf_pa2_prd_code",$RequestObj->Type->XfPa2PrdCode);
+	oci_bind_by_name($stid,":p_xf_pa2_prd_naam",$RequestObj->Type->XfPa2PrdNaam);
+	oci_bind_by_name($stid,":p_xf_pa2_pr2_code",$RequestObj->Type->XfPa2Pr2Code);
+	oci_bind_by_name($stid,":p_xf_pa2_pr2_naam",$RequestObj->Type->XfPa2Pr2Naam);
+	oci_bind_by_name($stid,":p_xk_pa2_code",$RequestObj->Type->XkPa2Code);
+	oci_bind_by_name($stid,":p_xk_pa2_naam",$RequestObj->Type->XkPa2Naam);
 
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
 		return;
 	}
-	echo "CREATE_PA2";
+	echo ']';
+
 	break;
 
 case 'UpdatePa2':
-
-	list($p_fk_prd_code, $p_fk_prd_naam, $p_fk_pr2_code, $p_fk_pr2_naam, $p_fk_pa2_code, $p_fk_pa2_naam, $p_code, $p_naam, $p_omschrijving, $p_xf_pa2_prd_code, $p_xf_pa2_prd_naam, $p_xf_pa2_pr2_code, $p_xf_pa2_pr2_naam, $p_xk_pa2_code, $p_xk_pa2_naam) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_prd.update_pa2 (
 		:p_fk_prd_code,
@@ -1016,33 +1272,33 @@ case 'UpdatePa2':
 		:p_xk_pa2_code,
 		:p_xk_pa2_naam);
 	END;");
-	oci_bind_by_name($stid,":p_fk_prd_code",$p_fk_prd_code);
-	oci_bind_by_name($stid,":p_fk_prd_naam",$p_fk_prd_naam);
-	oci_bind_by_name($stid,":p_fk_pr2_code",$p_fk_pr2_code);
-	oci_bind_by_name($stid,":p_fk_pr2_naam",$p_fk_pr2_naam);
-	oci_bind_by_name($stid,":p_fk_pa2_code",$p_fk_pa2_code);
-	oci_bind_by_name($stid,":p_fk_pa2_naam",$p_fk_pa2_naam);
-	oci_bind_by_name($stid,":p_code",$p_code);
-	oci_bind_by_name($stid,":p_naam",$p_naam);
-	oci_bind_by_name($stid,":p_omschrijving",$p_omschrijving);
-	oci_bind_by_name($stid,":p_xf_pa2_prd_code",$p_xf_pa2_prd_code);
-	oci_bind_by_name($stid,":p_xf_pa2_prd_naam",$p_xf_pa2_prd_naam);
-	oci_bind_by_name($stid,":p_xf_pa2_pr2_code",$p_xf_pa2_pr2_code);
-	oci_bind_by_name($stid,":p_xf_pa2_pr2_naam",$p_xf_pa2_pr2_naam);
-	oci_bind_by_name($stid,":p_xk_pa2_code",$p_xk_pa2_code);
-	oci_bind_by_name($stid,":p_xk_pa2_naam",$p_xk_pa2_naam);
+	oci_bind_by_name($stid,":p_fk_prd_code",$RequestObj->Type->FkPrdCode);
+	oci_bind_by_name($stid,":p_fk_prd_naam",$RequestObj->Type->FkPrdNaam);
+	oci_bind_by_name($stid,":p_fk_pr2_code",$RequestObj->Type->FkPr2Code);
+	oci_bind_by_name($stid,":p_fk_pr2_naam",$RequestObj->Type->FkPr2Naam);
+	oci_bind_by_name($stid,":p_fk_pa2_code",$RequestObj->Type->FkPa2Code);
+	oci_bind_by_name($stid,":p_fk_pa2_naam",$RequestObj->Type->FkPa2Naam);
+	oci_bind_by_name($stid,":p_code",$RequestObj->Type->Code);
+	oci_bind_by_name($stid,":p_naam",$RequestObj->Type->Naam);
+	oci_bind_by_name($stid,":p_omschrijving",$RequestObj->Type->Omschrijving);
+	oci_bind_by_name($stid,":p_xf_pa2_prd_code",$RequestObj->Type->XfPa2PrdCode);
+	oci_bind_by_name($stid,":p_xf_pa2_prd_naam",$RequestObj->Type->XfPa2PrdNaam);
+	oci_bind_by_name($stid,":p_xf_pa2_pr2_code",$RequestObj->Type->XfPa2Pr2Code);
+	oci_bind_by_name($stid,":p_xf_pa2_pr2_naam",$RequestObj->Type->XfPa2Pr2Naam);
+	oci_bind_by_name($stid,":p_xk_pa2_code",$RequestObj->Type->XkPa2Code);
+	oci_bind_by_name($stid,":p_xk_pa2_naam",$RequestObj->Type->XkPa2Naam);
 
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
 		return;
 	}
-	echo "UPDATE_PA2";
+	echo ']';
+
 	break;
 
 case 'DeletePa2':
-
-	list($p_fk_prd_code, $p_fk_prd_naam, $p_fk_pr2_code, $p_fk_pr2_naam, $p_code, $p_naam) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_prd.delete_pa2 (
 		:p_fk_prd_code,
@@ -1052,24 +1308,24 @@ case 'DeletePa2':
 		:p_code,
 		:p_naam);
 	END;");
-	oci_bind_by_name($stid,":p_fk_prd_code",$p_fk_prd_code);
-	oci_bind_by_name($stid,":p_fk_prd_naam",$p_fk_prd_naam);
-	oci_bind_by_name($stid,":p_fk_pr2_code",$p_fk_pr2_code);
-	oci_bind_by_name($stid,":p_fk_pr2_naam",$p_fk_pr2_naam);
-	oci_bind_by_name($stid,":p_code",$p_code);
-	oci_bind_by_name($stid,":p_naam",$p_naam);
+	oci_bind_by_name($stid,":p_fk_prd_code",$RequestObj->Type->FkPrdCode);
+	oci_bind_by_name($stid,":p_fk_prd_naam",$RequestObj->Type->FkPrdNaam);
+	oci_bind_by_name($stid,":p_fk_pr2_code",$RequestObj->Type->FkPr2Code);
+	oci_bind_by_name($stid,":p_fk_pr2_naam",$RequestObj->Type->FkPr2Naam);
+	oci_bind_by_name($stid,":p_code",$RequestObj->Type->Code);
+	oci_bind_by_name($stid,":p_naam",$RequestObj->Type->Naam);
 
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
 		return;
 	}
-	echo "DELETE_PA2";
+	echo ']';
+
 	break;
 
 case 'GetPrtForPrdListEncapsulated':
-
-	list($p_code, $p_naam, $x_fk_prd_code, $x_fk_prd_naam) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_prd.get_prt_for_prd_list_encapsulated (
 		:p_cube_row,
@@ -1078,23 +1334,32 @@ case 'GetPrtForPrdListEncapsulated':
 		:x_fk_prd_code,
 		:x_fk_prd_naam);
 	END;");
-	oci_bind_by_name($stid,":p_code",$p_code);
-	oci_bind_by_name($stid,":p_naam",$p_naam);
-	oci_bind_by_name($stid,":x_fk_prd_code",$x_fk_prd_code);
-	oci_bind_by_name($stid,":x_fk_prd_naam",$x_fk_prd_naam);
+	oci_bind_by_name($stid,":p_code",$RequestObj->Type->Code);
+	oci_bind_by_name($stid,":p_naam",$RequestObj->Type->Naam);
+	oci_bind_by_name($stid,":x_fk_prd_code",$RequestObj->Ref->FkPrdCode);
+	oci_bind_by_name($stid,":x_fk_prd_naam",$RequestObj->Ref->FkPrdNaam);
 
 	$r = perform_db_request();
 	if (!$r) { return; }
-	echo "LIST_PRT";
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'LIST_PRT';
+	$ResponseObj->Rows = array();
 	while ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["FK_PRD_CODE"]."<|>".$row["FK_PRD_NAAM"]."<|>".$row["CODE"]."<|>".$row["NAAM"];
-		echo "<||>".$row["FK_PRD_CODE"]." ".$row["FK_PRD_NAAM"]." ".$row["CODE"]." ".$row["NAAM"];
+		$RowObj = new \stdClass();
+		$RowObj->Key = new \stdClass();
+		$RowObj->Key->FkPrdCode = $row["FK_PRD_CODE"];
+		$RowObj->Key->FkPrdNaam = $row["FK_PRD_NAAM"];
+		$RowObj->Key->Code = $row["CODE"];
+		$RowObj->Key->Naam = $row["NAAM"];
+		$RowObj->Display = $row["FK_PRD_CODE"]' '.$row["FK_PRD_NAAM"]' '.$row["CODE"]' '.$row["NAAM"];
+		$ResponseObj->Rows[] = $RowObj;
 	}
+	echo ']';
+
 	break;
 
 case 'GetPrt':
-
-	list($p_fk_prd_code, $p_fk_prd_naam, $p_code, $p_naam) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_prd.get_prt (
 		:p_cube_row,
@@ -1103,22 +1368,34 @@ case 'GetPrt':
 		:p_code,
 		:p_naam);
 	END;");
-	oci_bind_by_name($stid,":p_fk_prd_code",$p_fk_prd_code);
-	oci_bind_by_name($stid,":p_fk_prd_naam",$p_fk_prd_naam);
-	oci_bind_by_name($stid,":p_code",$p_code);
-	oci_bind_by_name($stid,":p_naam",$p_naam);
+	oci_bind_by_name($stid,":p_fk_prd_code",$RequestObj->Type->FkPrdCode);
+	oci_bind_by_name($stid,":p_fk_prd_naam",$RequestObj->Type->FkPrdNaam);
+	oci_bind_by_name($stid,":p_code",$RequestObj->Type->Code);
+	oci_bind_by_name($stid,":p_naam",$RequestObj->Type->Naam);
 
 	$r = perform_db_request();
 	if (!$r) { return; }
-	echo "SELECT_PRT";
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'SELECT_PRT';
+	$ResponseObj->Rows = array();
 	if ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["FK_PRT_CODE"]."<|>".$row["FK_PRT_NAAM"]."<|>".$row["OMSCHRIJVING"]."<|>".$row["XF_PRT_PRD_CODE"]."<|>".$row["XF_PRT_PRD_NAAM"]."<|>".$row["XK_PRT_CODE"]."<|>".$row["XK_PRT_NAAM"];
+		$RowObj = new \stdClass();
+		$RowObj->Data = new \stdClass();
+		$RowObj->Data->FkPrtCode = $row["FK_PRT_CODE"];
+		$RowObj->Data->FkPrtNaam = $row["FK_PRT_NAAM"];
+		$RowObj->Data->Omschrijving = $row["OMSCHRIJVING"];
+		$RowObj->Data->XfPrtPrdCode = $row["XF_PRT_PRD_CODE"];
+		$RowObj->Data->XfPrtPrdNaam = $row["XF_PRT_PRD_NAAM"];
+		$RowObj->Data->XkPrtCode = $row["XK_PRT_CODE"];
+		$RowObj->Data->XkPrtNaam = $row["XK_PRT_NAAM"];
+		$ResponseObj->Rows[] = $RowObj;
 	}
+	echo ']';
+
 	break;
 
 case 'GetPrtItems':
-
-	list($p_fk_prd_code, $p_fk_prd_naam, $p_code, $p_naam) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_prd.get_prt_prt_items (
 		:p_cube_row,
@@ -1127,24 +1404,32 @@ case 'GetPrtItems':
 		:p_code,
 		:p_naam);
 	END;");
-	oci_bind_by_name($stid,":p_fk_prd_code",$p_fk_prd_code);
-	oci_bind_by_name($stid,":p_fk_prd_naam",$p_fk_prd_naam);
-	oci_bind_by_name($stid,":p_code",$p_code);
-	oci_bind_by_name($stid,":p_naam",$p_naam);
+	oci_bind_by_name($stid,":p_fk_prd_code",$RequestObj->Type->FkPrdCode);
+	oci_bind_by_name($stid,":p_fk_prd_naam",$RequestObj->Type->FkPrdNaam);
+	oci_bind_by_name($stid,":p_code",$RequestObj->Type->Code);
+	oci_bind_by_name($stid,":p_naam",$RequestObj->Type->Naam);
 
 	$r = perform_db_request();
 	if (!$r) { return; }
-	$first = True;
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'LIST_PRT';
+	$ResponseObj->Rows = array();
 	while ($row = oci_fetch_assoc($curs)) {
-		if ($first) { $first = False; echo "LIST_PRT";}
-		echo "<|||>".$row["FK_PRD_CODE"]."<|>".$row["FK_PRD_NAAM"]."<|>".$row["CODE"]."<|>".$row["NAAM"];
-		echo "<||>".$row["CODE"]." ".$row["NAAM"];
+		$RowObj = new \stdClass();
+		$RowObj->Key = new \stdClass();
+		$RowObj->Key->FkPrdCode = $row["FK_PRD_CODE"];
+		$RowObj->Key->FkPrdNaam = $row["FK_PRD_NAAM"];
+		$RowObj->Key->Code = $row["CODE"];
+		$RowObj->Key->Naam = $row["NAAM"];
+		$RowObj->Display = $row["CODE"]' '.$row["NAAM"];
+		$ResponseObj->Rows[] = $RowObj;
 	}
+	echo ']';
+
 	break;
 
 case 'ChangeParentPrt':
-
-	list($p_cube_flag_root, $p_fk_prd_code, $p_fk_prd_naam, $p_code, $p_naam, $x_fk_prd_code, $x_fk_prd_naam, $x_code, $x_naam) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_prd.change_parent_prt (
 		:p_cube_flag_root,
@@ -1157,27 +1442,27 @@ case 'ChangeParentPrt':
 		:x_code,
 		:x_naam);
 	END;");
-	oci_bind_by_name($stid,":p_cube_flag_root",$p_cube_flag_root);
-	oci_bind_by_name($stid,":p_fk_prd_code",$p_fk_prd_code);
-	oci_bind_by_name($stid,":p_fk_prd_naam",$p_fk_prd_naam);
-	oci_bind_by_name($stid,":p_code",$p_code);
-	oci_bind_by_name($stid,":p_naam",$p_naam);
-	oci_bind_by_name($stid,":x_fk_prd_code",$x_fk_prd_code);
-	oci_bind_by_name($stid,":x_fk_prd_naam",$x_fk_prd_naam);
-	oci_bind_by_name($stid,":x_code",$x_code);
-	oci_bind_by_name($stid,":x_naam",$x_naam);
+	oci_bind_by_name($stid,":p_cube_flag_root",$RequestObj->Option->CubeFlagRoot);
+	oci_bind_by_name($stid,":p_fk_prd_code",$RequestObj->Type->FkPrdCode);
+	oci_bind_by_name($stid,":p_fk_prd_naam",$RequestObj->Type->FkPrdNaam);
+	oci_bind_by_name($stid,":p_code",$RequestObj->Type->Code);
+	oci_bind_by_name($stid,":p_naam",$RequestObj->Type->Naam);
+	oci_bind_by_name($stid,":x_fk_prd_code",$RequestObj->Ref->FkPrdCode);
+	oci_bind_by_name($stid,":x_fk_prd_naam",$RequestObj->Ref->FkPrdNaam);
+	oci_bind_by_name($stid,":x_code",$RequestObj->Ref->Code);
+	oci_bind_by_name($stid,":x_naam",$RequestObj->Ref->Naam);
 
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
 		return;
 	}
-	echo "CHANGE_PARENT_PRT";
+	echo ']';
+
 	break;
 
 case 'CreatePrt':
-
-	list($p_fk_prd_code, $p_fk_prd_naam, $p_fk_prt_code, $p_fk_prt_naam, $p_code, $p_naam, $p_omschrijving, $p_xf_prt_prd_code, $p_xf_prt_prd_naam, $p_xk_prt_code, $p_xk_prt_naam) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_prd.insert_prt (
 		:p_fk_prd_code,
@@ -1192,29 +1477,29 @@ case 'CreatePrt':
 		:p_xk_prt_code,
 		:p_xk_prt_naam);
 	END;");
-	oci_bind_by_name($stid,":p_fk_prd_code",$p_fk_prd_code);
-	oci_bind_by_name($stid,":p_fk_prd_naam",$p_fk_prd_naam);
-	oci_bind_by_name($stid,":p_fk_prt_code",$p_fk_prt_code);
-	oci_bind_by_name($stid,":p_fk_prt_naam",$p_fk_prt_naam);
-	oci_bind_by_name($stid,":p_code",$p_code);
-	oci_bind_by_name($stid,":p_naam",$p_naam);
-	oci_bind_by_name($stid,":p_omschrijving",$p_omschrijving);
-	oci_bind_by_name($stid,":p_xf_prt_prd_code",$p_xf_prt_prd_code);
-	oci_bind_by_name($stid,":p_xf_prt_prd_naam",$p_xf_prt_prd_naam);
-	oci_bind_by_name($stid,":p_xk_prt_code",$p_xk_prt_code);
-	oci_bind_by_name($stid,":p_xk_prt_naam",$p_xk_prt_naam);
+	oci_bind_by_name($stid,":p_fk_prd_code",$RequestObj->Type->FkPrdCode);
+	oci_bind_by_name($stid,":p_fk_prd_naam",$RequestObj->Type->FkPrdNaam);
+	oci_bind_by_name($stid,":p_fk_prt_code",$RequestObj->Type->FkPrtCode);
+	oci_bind_by_name($stid,":p_fk_prt_naam",$RequestObj->Type->FkPrtNaam);
+	oci_bind_by_name($stid,":p_code",$RequestObj->Type->Code);
+	oci_bind_by_name($stid,":p_naam",$RequestObj->Type->Naam);
+	oci_bind_by_name($stid,":p_omschrijving",$RequestObj->Type->Omschrijving);
+	oci_bind_by_name($stid,":p_xf_prt_prd_code",$RequestObj->Type->XfPrtPrdCode);
+	oci_bind_by_name($stid,":p_xf_prt_prd_naam",$RequestObj->Type->XfPrtPrdNaam);
+	oci_bind_by_name($stid,":p_xk_prt_code",$RequestObj->Type->XkPrtCode);
+	oci_bind_by_name($stid,":p_xk_prt_naam",$RequestObj->Type->XkPrtNaam);
 
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
 		return;
 	}
-	echo "CREATE_PRT";
+	echo ']';
+
 	break;
 
 case 'UpdatePrt':
-
-	list($p_fk_prd_code, $p_fk_prd_naam, $p_fk_prt_code, $p_fk_prt_naam, $p_code, $p_naam, $p_omschrijving, $p_xf_prt_prd_code, $p_xf_prt_prd_naam, $p_xk_prt_code, $p_xk_prt_naam) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_prd.update_prt (
 		:p_fk_prd_code,
@@ -1229,29 +1514,29 @@ case 'UpdatePrt':
 		:p_xk_prt_code,
 		:p_xk_prt_naam);
 	END;");
-	oci_bind_by_name($stid,":p_fk_prd_code",$p_fk_prd_code);
-	oci_bind_by_name($stid,":p_fk_prd_naam",$p_fk_prd_naam);
-	oci_bind_by_name($stid,":p_fk_prt_code",$p_fk_prt_code);
-	oci_bind_by_name($stid,":p_fk_prt_naam",$p_fk_prt_naam);
-	oci_bind_by_name($stid,":p_code",$p_code);
-	oci_bind_by_name($stid,":p_naam",$p_naam);
-	oci_bind_by_name($stid,":p_omschrijving",$p_omschrijving);
-	oci_bind_by_name($stid,":p_xf_prt_prd_code",$p_xf_prt_prd_code);
-	oci_bind_by_name($stid,":p_xf_prt_prd_naam",$p_xf_prt_prd_naam);
-	oci_bind_by_name($stid,":p_xk_prt_code",$p_xk_prt_code);
-	oci_bind_by_name($stid,":p_xk_prt_naam",$p_xk_prt_naam);
+	oci_bind_by_name($stid,":p_fk_prd_code",$RequestObj->Type->FkPrdCode);
+	oci_bind_by_name($stid,":p_fk_prd_naam",$RequestObj->Type->FkPrdNaam);
+	oci_bind_by_name($stid,":p_fk_prt_code",$RequestObj->Type->FkPrtCode);
+	oci_bind_by_name($stid,":p_fk_prt_naam",$RequestObj->Type->FkPrtNaam);
+	oci_bind_by_name($stid,":p_code",$RequestObj->Type->Code);
+	oci_bind_by_name($stid,":p_naam",$RequestObj->Type->Naam);
+	oci_bind_by_name($stid,":p_omschrijving",$RequestObj->Type->Omschrijving);
+	oci_bind_by_name($stid,":p_xf_prt_prd_code",$RequestObj->Type->XfPrtPrdCode);
+	oci_bind_by_name($stid,":p_xf_prt_prd_naam",$RequestObj->Type->XfPrtPrdNaam);
+	oci_bind_by_name($stid,":p_xk_prt_code",$RequestObj->Type->XkPrtCode);
+	oci_bind_by_name($stid,":p_xk_prt_naam",$RequestObj->Type->XkPrtNaam);
 
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
 		return;
 	}
-	echo "UPDATE_PRT";
+	echo ']';
+
 	break;
 
 case 'DeletePrt':
-
-	list($p_fk_prd_code, $p_fk_prd_naam, $p_code, $p_naam) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_prd.delete_prt (
 		:p_fk_prd_code,
@@ -1259,26 +1544,51 @@ case 'DeletePrt':
 		:p_code,
 		:p_naam);
 	END;");
-	oci_bind_by_name($stid,":p_fk_prd_code",$p_fk_prd_code);
-	oci_bind_by_name($stid,":p_fk_prd_naam",$p_fk_prd_naam);
-	oci_bind_by_name($stid,":p_code",$p_code);
-	oci_bind_by_name($stid,":p_naam",$p_naam);
+	oci_bind_by_name($stid,":p_fk_prd_code",$RequestObj->Type->FkPrdCode);
+	oci_bind_by_name($stid,":p_fk_prd_naam",$RequestObj->Type->FkPrdNaam);
+	oci_bind_by_name($stid,":p_code",$RequestObj->Type->Code);
+	oci_bind_by_name($stid,":p_naam",$RequestObj->Type->Naam);
 
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
 		return;
 	}
-	echo "DELETE_PRT";
-	break;
+	echo ']';
 
-default:
-	echo "ERROR<|||>";
-	echo file_get_contents('php://input');
+	break;
+############# VOORBEELDEN
+$responseObj = new \stdClass();
+$responseObj->straat_naam = $obj->street;
+$responseObj->plaats_naam = $obj->city->label;
+$responseObj->gps_locatie = $obj->geo->center->wgs84->coordinates;
+
+$responseObj->cube_api_http_code = $info["http_code"];
+$responseText = json_encode($responseObj);
+echo $responseText;
+
+$comments = new stdClass;
+$comments->data = array();
+
+for ($i = 0; $i < 2; $i++) {
+    $comment = new stdClass;
+    $comment->text = 'Lorem ipsum...';
+    ...
+    $comments->data[] = $comment;
 }
 
-function perform_db_request()
-{
+var_dump($comments);
+#############
+default:
+	$ResponseObj = new \stdClass();
+	$ResponseObj->ResultName = 'ERROR';
+	$ResponseObj->ErrorText = $RequestText;
+	$ResponseText = json_encode($ResponseObj);
+	echo '['.$ResponseText.']';
+}
+
+function perform_db_request() {
+
 	global $conn, $stid, $curs;
 
 	$curs = oci_new_cursor($conn);
@@ -1298,8 +1608,13 @@ function perform_db_request()
 }
 
 function ProcessDbError($stid) {
+
 	$e = oci_error($stid);
-	echo "ERROR<|||>ORA-error: ".$e['code'].": ".$e['message'];
+	$ResponseObj = new \stdClass();
+	$ResponseObj->ResultName = 'ERROR';
+	$ResponseObj->ErrorText = 'ORA-error: '.$e['code'].': '.$e['message'];
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
 }
 
 function CubeError($errno, $errstr) {

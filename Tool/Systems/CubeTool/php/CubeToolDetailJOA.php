@@ -15,19 +15,19 @@ g_xmlhttp.onreadystatechange = function() {
 		case "SELECT_JOA":
 			var l_values = l_argument[1].split("<|>");
 			document.getElementById("InputFkBotName").value=l_values[0];
-			document.getElementById("InputXfAtbTypName").value=l_values[1];
-			document.getElementById("InputXkAtbName").value=l_values[2];
 			break;
 		case "CREATE_JOA":
 			document.getElementById("InputFkBotName").readOnly=true;
 			document.getElementById("InputFkTypName").readOnly=true;
 			document.getElementById("InputFkJsnName").readOnly=true;
 			document.getElementById("InputFkJsnLocation").readOnly=true;
+			document.getElementById("InputXfAtbTypName").readOnly=true;
+			document.getElementById("InputXkAtbName").readOnly=true;
+			document.getElementById("RefSelect001").disabled=true;
 			document.getElementById("ButtonCreate").disabled=true;
-			document.getElementById("ButtonUpdate").disabled=false;
 			document.getElementById("ButtonDelete").disabled=false;
 			l_objNode = parent.TREE.document.getElementById(document._nodeId);
-			document._nodeId = 'TYP_JOA<||>'+document.getElementById("InputFkTypName").value+'<|>'+document.getElementById("InputFkJsnName").value+'<|>'+document.getElementById("InputFkJsnLocation").value;
+			document._nodeId = 'TYP_JOA<||>'+document.getElementById("InputFkTypName").value+'<|>'+document.getElementById("InputFkJsnName").value+'<|>'+document.getElementById("InputFkJsnLocation").value+'<|>'+document.getElementById("InputXfAtbTypName").value+'<|>'+document.getElementById("InputXkAtbName").value;
 			if (l_objNode != null) {
 				if (l_objNode.firstChild._state == 'O') {
 					var l_position = 'L';
@@ -37,7 +37,7 @@ g_xmlhttp.onreadystatechange = function() {
 						'TYP_JOA',
 						document._nodeId,
 						'icons/atb_ref.bmp', 
-						' ',
+						document.getElementById("InputXfAtbTypName").value.toLowerCase()+' '+document.getElementById("InputXkAtbName").value.toLowerCase(),
 						'N',
 						l_position,
 						l_objNodePos);
@@ -95,12 +95,18 @@ function InitBody() {
 		document.getElementById("InputFkTypName").value=values[0];
 		document.getElementById("InputFkJsnName").value=values[1];
 		document.getElementById("InputFkJsnLocation").value=values[2];
+		document.getElementById("InputXfAtbTypName").value=values[3];
+		document.getElementById("InputXkAtbName").value=values[4];
 		document.getElementById("ButtonCreate").disabled=true;
 		performTrans('GetJoa'+'<|||>'+document._argument);
+		document.getElementById("ButtonUpdate").disabled=true;
 		document.getElementById("InputFkBotName").readOnly=true;
 		document.getElementById("InputFkTypName").readOnly=true;
 		document.getElementById("InputFkJsnName").readOnly=true;
 		document.getElementById("InputFkJsnLocation").readOnly=true;
+		document.getElementById("InputXfAtbTypName").readOnly=true;
+		document.getElementById("InputXkAtbName").readOnly=true;
+		document.getElementById("RefSelect001").disabled=true;
 		break;
 	case "N":
 		document.getElementById("InputFkTypName").value=values[0];
@@ -145,7 +151,9 @@ function DeleteJoa() {
 	var l_parameters = 
 		document.getElementById("InputFkTypName").value+'<|>'+
 		document.getElementById("InputFkJsnName").value+'<|>'+
-		document.getElementById("InputFkJsnLocation").value;
+		document.getElementById("InputFkJsnLocation").value+'<|>'+
+		document.getElementById("InputXfAtbTypName").value+'<|>'+
+		document.getElementById("InputXkAtbName").value;
 	performTrans('DeleteJoa<|||>'+l_parameters);
 }
 
@@ -371,10 +379,10 @@ function drop(p_event) {
 <input id="InputFkJsnLocation" type="text" maxlength="9" style="width:100%;"></input></div></td></tr>
 <tr><td height=6></td></tr><tr><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/attrib.bmp"/> Attribute (Concerns)</legend>
 <table style="width:100%;">
-<tr><td>Type.Name</td><td style="width:100%;"><div style="max-width:30em;">
+<tr><td><u>Type.Name</u></td><td style="width:100%;"><div style="max-width:30em;">
 <input id="InputXfAtbTypName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" readonly></input></div></td>
 <td><button id="RefSelect001" type="button" onclick="StartSelect001(event)">Select</button></td></tr>
-<tr><td>Attribute.Name</td><td style="width:100%;"><div style="max-width:30em;">
+<tr><td><u>Attribute.Name</u></td><td style="width:100%;"><div style="max-width:30em;">
 <input id="InputXkAtbName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" readonly></input></div></td></tr>
 </table></fieldset></td></tr>
 <tr><td><br></td><td style="width:100%;"></td></tr>

@@ -5,8 +5,8 @@
 14-01-2017 - Based om server model	
 20-10-2017 - Operation / ResultNameExtension in result name.
 28-02-2018 - TYPE CODE not from BUSINESS_OBJECT_TYPE but from TYPE;
+23-09-2018 - JSON in stead of <|> structure.
 [[INCLUDE,templates\includes\general.cgt]]
-[[TEXT,SERVER_RESULT_NAME]]<<SERVICE1:U>>[[IF:!2=#]]_<<OPERATION2:U>>[[ENDIF]][[LOOP,OPERATION_TYPE]]_<<OPERATION_TYPE1:U>>[[ENDLOOP,OPERATION_TYPE]][[ENDTEXT]]
 [[TEXT,SERVER_ARGUMENT_NAME]]<<ARGUMENT:L>>[[LOOP,ARGUMENT_ATTRIBUTE]]<<ARGUMENT_ATTRIBUTE:L>>[[ENDLOOP,ARGUMENT_ATTRIBUTE]][[ENDTEXT]]
 [[BODY]]<?php
 session_start();
@@ -14,47 +14,76 @@ include 'CubeDbLogon.php';
 
 set_error_handler("CubeError");
 
-$import=explode("<|||>",file_get_contents('php://input'));
-switch ($import[0]) {[[LOOP,BUSINESS_OBJECT_TYPE]][[LOOP,SERVICE:3=E]]
+$RequestText = file_get_contents('php://input');
+$RequestObj = json_decode($RequestText, false);
 
-case '<<SERVICE:C>>':[[IF:CHILD(ARGUMENT)]]
+switch ($RequestObj->Service) {[[LOOP,BUSINESS_OBJECT_TYPE]][[LOOP,SERVICE:3=E]]
 
-	list([[LOOP,ARGUMENT]]$<<TEXT,SERVER_ARGUMENT_NAME>>[[IF:!LAST]], [[ENDIF]][[ENDLOOP,ARGUMENT]]) = explode("<|>", $import[1][[IF,SERVICE:1=create]][[LOOP,ARGUMENT:0=x_]][[IF:FIRST]]."[[ENDIF]]<|>[[IF:LAST]]"[[ENDIF]][[ENDLOOP,ARGUMENT]][[ENDIF]]);[[ENDIF]][[LOOP,OPERATION]][[IF,SERVICE:CHILD(ARGUMENT)]][[FORH,SERVICE:N>N]]
+case '<<SERVICE:C>>':[[LOOP,OPERATION]]
+	echo '[';[[*begin of operations array*]][[IF,SERVICE:CHILD(ARGUMENT)]][[FORH,SERVICE:N>N]]
 
 	$stid = oci_parse($conn, "BEGIN pkg_[[FOR,BUSINESS_OBJECT_TYPE:N>N]][[LOOP,TYPE]]<<TYPE1:L>>[[ENDLOOP,TYPE]][[ENDFOR]].<<OPERATION:L>> ([[IF,SERVICE:2=N]]
 		:p_cube_row,[[ENDIF]][[LOOP,ARGUMENT]]
 		:<<TEXT,SERVER_ARGUMENT_NAME>>[[IF:!LAST]],[[ENDIF]][[ENDLOOP,ARGUMENT]][[IF,SERVICE:2=Y[AND]CHILD(OPERATION:CHILD(EXPORT))]],
 		:p_cube_row[[ENDIF]]);
 	END;");[[LOOP,ARGUMENT]]
-	oci_bind_by_name($stid,":<<TEXT,SERVER_ARGUMENT_NAME>>",$<<TEXT,SERVER_ARGUMENT_NAME>>);[[ENDLOOP,ARGUMENT]][[ENDFOR]]
+	oci_bind_by_name($stid,":<<TEXT,SERVER_ARGUMENT_NAME>>",$RequestObj-><<ARGUMENT2>>->[[LOOP,ARGUMENT_ATTRIBUTE]]<<ARGUMENT_ATTRIBUTE:C>>[[ENDLOOP,ARGUMENT_ATTRIBUTE]]);[[ENDLOOP,ARGUMENT]][[ENDFOR]]
 [[ELSE]]
 
 	$stid = oci_parse($conn, "BEGIN pkg_[[FOR,BUSINESS_OBJECT_TYPE:N>N]][[LOOP,TYPE]]<<TYPE1:L>>[[ENDLOOP,TYPE]][[ENDFOR]].<<OPERATION:L>> (:p_cube_row); END;");[[ENDIF]][[IF:CHILD(EXPORT)]]
 	$r = perform_db_request();
-	if (!$r) { return; }[[IF:4=Y]]
-	$first = True;[[ELSE]]
-	echo "<<TEXT,SERVER_RESULT_NAME>>";[[ENDIF]]
-	[[IF:3=Y]]while[[ELSE]]if[[ENDIF]] ($row = oci_fetch_assoc($curs)) {[[IF:4=Y]]
-		if ($first) { $first = False; echo "<<TEXT,SERVER_RESULT_NAME>>";}[[ENDIF]]
-		echo "<|||>"[[LOOP,EXPORT]][[LOOP,ARGUMENT]].[[IF:1=subscript]][[IF:FIRST]]"(".[[ELSE]]" (".[[ENDIF]][[ELSE]][[IF:!FIRST]]"[[IF,EXPORT:1=Y]]<|>[[ELSE]] [[ENDIF]]".[[ENDIF]][[ENDIF]]$row["<<ARGUMENT:U>>"][[IF:1=subscript]].")"[[ENDIF]][[ENDLOOP,ARGUMENT]];[[IF:!LAST]]
-		echo "<||>"[[ENDIF]][[ENDLOOP,EXPORT]]
-	}[[IF:!LAST]]
-	echo "<||||>";[[ENDIF]][[ELSE]]
+	if (!$r) { return; }
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = '<<SERVICE1:U>>[[IF:!2=#]]_<<OPERATION2:U>>[[ENDIF]][[LOOP,OPERATION_TYPE]]_<<OPERATION_TYPE1:U>>[[ENDLOOP,OPERATION_TYPE]]';
+	$ResponseObj->Rows = array();
+	[[IF:3=Y]]while[[ELSE]]if[[ENDIF]] ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();[[LOOP,EXPORT]][[IF:1=Y]]
+		$RowObj-><<EXPORT:C>> = new \stdClass();[[LOOP,ARGUMENT]]
+		$RowObj-><<EXPORT:C>>-><<ARGUMENT:C>> = $row["<<ARGUMENT:U>>"];[[ENDLOOP,ARGUMENT]][[ELSE]]
+		$RowObj-><<EXPORT:C>> = [[LOOP,ARGUMENT]][[IF:1=subscript]][[IF:FIRST]]'('.[[ELSE]]' ('.[[ENDIF]][[ELSE]][[IF:!FIRST]]' '.[[ENDIF]][[ENDIF]]$row["<<ARGUMENT:U>>"][[IF:1=subscript]].')'[[ENDIF]][[ENDLOOP,ARGUMENT]];[[ENDIF]][[ENDLOOP,EXPORT]]
+		$ResponseObj->Rows[] = $RowObj;
+	}[[ELSE]]
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
 		return;
-	}
-	echo "<<TEXT,SERVER_RESULT_NAME>>";[[ENDIF]][[ENDLOOP,OPERATION]]
-	break;[[ENDLOOP,SERVICE]][[ENDLOOP,BUSINESS_OBJECT_TYPE]]
+	}[[ENDIF]][[IF:!LAST]]
+	echo ',';[[*next in operations array*]][[ELSE]]
+	echo ']';[[*end of operations array*]][[ENDIF]][[ENDLOOP,OPERATION]]
 
-default:
-	echo "ERROR<|||>";
-	echo file_get_contents('php://input');
+	break;[[ENDLOOP,SERVICE]][[ENDLOOP,BUSINESS_OBJECT_TYPE]]
+############# VOORBEELDEN
+$responseObj = new \stdClass();
+$responseObj->straat_naam = $obj->street;
+$responseObj->plaats_naam = $obj->city->label;
+$responseObj->gps_locatie = $obj->geo->center->wgs84->coordinates;
+
+$responseObj->cube_api_http_code = $info["http_code"];
+$responseText = json_encode($responseObj);
+echo $responseText;
+
+$comments = new stdClass;
+$comments->data = array();
+
+for ($i = 0; $i < 2; $i++) {
+    $comment = new stdClass;
+    $comment->text = 'Lorem ipsum...';
+    ...
+    $comments->data[] = $comment;
 }
 
-function perform_db_request()
-{
+var_dump($comments);
+#############
+default:
+	$ResponseObj = new \stdClass();
+	$ResponseObj->ResultName = 'ERROR';
+	$ResponseObj->ErrorText = $RequestText;
+	$ResponseText = json_encode($ResponseObj);
+	echo '['.$ResponseText.']';
+}
+
+function perform_db_request() {
+
 	global $conn, $stid, $curs;
 
 	$curs = oci_new_cursor($conn);
@@ -74,8 +103,13 @@ function perform_db_request()
 }
 
 function ProcessDbError($stid) {
+
 	$e = oci_error($stid);
-	echo "ERROR<|||>ORA-error: ".$e['code'].": ".$e['message'];
+	$ResponseObj = new \stdClass();
+	$ResponseObj->ResultName = 'ERROR';
+	$ResponseObj->ErrorText = 'ORA-error: '.$e['code'].': '.$e['message'];
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
 }
 
 function CubeError($errno, $errstr) {

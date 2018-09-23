@@ -18,7 +18,7 @@ g_xmlhttp.onreadystatechange = function() {
 }
 
 function performTrans() {
-	l_objParm = { "postcode" : document.getElementById("InputPostcode").value , "nummer" : document.getElementById("InputNummer").value };
+	l_objParm = { postcode : document.getElementById('InputPostcode').value , nummer : document.getElementById('InputNummer').value };
 	var l_requestText = JSON.stringify(l_objParm);
 	g_xmlhttp.open('POST','postcode_adres_server.php',true);
 	g_xmlhttp.send(l_requestText);

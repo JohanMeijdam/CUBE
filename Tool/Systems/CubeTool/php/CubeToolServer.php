@@ -624,7 +624,7 @@ case 'GetTypItems':
 	while ($row = oci_fetch_assoc($curs)) {
 		if ($first) { $first = False; echo "LIST_JSN";}
 		echo "<|||>".$row["FK_TYP_NAME"]."<|>".$row["NAME"]."<|>".$row["LOCATION"];
-		echo "<||>".$row["NAME"];
+		echo "<||>".$row["NAME"]." ".$row["LOCATION"];
 	}
 	echo "<||||>";
 
@@ -2041,8 +2041,8 @@ case 'GetJsnItems':
 	$first = True;
 	while ($row = oci_fetch_assoc($curs)) {
 		if ($first) { $first = False; echo "LIST_JOA";}
-		echo "<|||>".$row["FK_TYP_NAME"]."<|>".$row["FK_JSN_NAME"]."<|>".$row["FK_JSN_LOCATION"];
-		echo "<||>";
+		echo "<|||>".$row["FK_TYP_NAME"]."<|>".$row["FK_JSN_NAME"]."<|>".$row["FK_JSN_LOCATION"]."<|>".$row["XF_ATB_TYP_NAME"]."<|>".$row["XK_ATB_NAME"];
+		echo "<||>".$row["XF_ATB_TYP_NAME"]." ".$row["XK_ATB_NAME"];
 	}
 	echo "<||||>";
 
@@ -2062,7 +2062,7 @@ case 'GetJsnItems':
 	while ($row = oci_fetch_assoc($curs)) {
 		if ($first) { $first = False; echo "LIST_JSN";}
 		echo "<|||>".$row["FK_TYP_NAME"]."<|>".$row["NAME"]."<|>".$row["LOCATION"];
-		echo "<||>".$row["NAME"];
+		echo "<||>".$row["NAME"]." ".$row["LOCATION"];
 	}
 	break;
 
@@ -2184,23 +2184,27 @@ case 'DeleteJsn':
 
 case 'GetJoa':
 
-	list($p_fk_typ_name, $p_fk_jsn_name, $p_fk_jsn_location) = explode("<|>", $import[1]);
+	list($p_fk_typ_name, $p_fk_jsn_name, $p_fk_jsn_location, $p_xf_atb_typ_name, $p_xk_atb_name) = explode("<|>", $import[1]);
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.get_joa (
 		:p_cube_row,
 		:p_fk_typ_name,
 		:p_fk_jsn_name,
-		:p_fk_jsn_location);
+		:p_fk_jsn_location,
+		:p_xf_atb_typ_name,
+		:p_xk_atb_name);
 	END;");
 	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
 	oci_bind_by_name($stid,":p_fk_jsn_name",$p_fk_jsn_name);
 	oci_bind_by_name($stid,":p_fk_jsn_location",$p_fk_jsn_location);
+	oci_bind_by_name($stid,":p_xf_atb_typ_name",$p_xf_atb_typ_name);
+	oci_bind_by_name($stid,":p_xk_atb_name",$p_xk_atb_name);
 
 	$r = perform_db_request();
 	if (!$r) { return; }
 	echo "SELECT_JOA";
 	if ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["FK_BOT_NAME"]."<|>".$row["XF_ATB_TYP_NAME"]."<|>".$row["XK_ATB_NAME"];
+		echo "<|||>".$row["FK_BOT_NAME"];
 	}
 	break;
 
@@ -2260,16 +2264,20 @@ case 'UpdateJoa':
 
 case 'DeleteJoa':
 
-	list($p_fk_typ_name, $p_fk_jsn_name, $p_fk_jsn_location) = explode("<|>", $import[1]);
+	list($p_fk_typ_name, $p_fk_jsn_name, $p_fk_jsn_location, $p_xf_atb_typ_name, $p_xk_atb_name) = explode("<|>", $import[1]);
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.delete_joa (
 		:p_fk_typ_name,
 		:p_fk_jsn_name,
-		:p_fk_jsn_location);
+		:p_fk_jsn_location,
+		:p_xf_atb_typ_name,
+		:p_xk_atb_name);
 	END;");
 	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
 	oci_bind_by_name($stid,":p_fk_jsn_name",$p_fk_jsn_name);
 	oci_bind_by_name($stid,":p_fk_jsn_location",$p_fk_jsn_location);
+	oci_bind_by_name($stid,":p_xf_atb_typ_name",$p_xf_atb_typ_name);
+	oci_bind_by_name($stid,":p_xk_atb_name",$p_xk_atb_name);
 
 	$r = oci_execute($stid);
 	if (!$r) {

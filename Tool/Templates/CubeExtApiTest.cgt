@@ -50,7 +50,7 @@ g_xmlhttp.onreadystatechange = function() {
 }
 
 function performTrans() {
-	l_objParm = { [[LOOP,ATTRIBUTE:1=Y]]"<<ATTRIBUTE:L>>" : document.getElementById("Input<<ATTRIBUTE:C>>").value[[IF:!LAST]] , [[ENDIF]][[ENDLOOP,ATTRIBUTE]] };
+	l_objParm = { [[LOOP,ATTRIBUTE:1=Y]]<<ATTRIBUTE:L>> : document.getElementById('Input<<ATTRIBUTE:C>>').value[[IF:!LAST]] , [[ENDIF]][[ENDLOOP,ATTRIBUTE]] };
 	var l_requestText = JSON.stringify(l_objParm);
 	g_xmlhttp.open('POST','<<TYPE:L>>_server.php',true);
 	g_xmlhttp.send(l_requestText);

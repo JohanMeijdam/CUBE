@@ -13,6 +13,7 @@ CREATE OR REPLACE VIEW v_aaa AS
 CREATE OR REPLACE VIEW v_aaa_deel AS 
 	SELECT
 		cube_id,
+		cube_sequence,
 		fk_aaa_naam,
 		naam,
 		xk_aaa_naam
@@ -128,11 +129,13 @@ CREATE OR REPLACE PACKAGE BODY pkg_aaa_trg IS
 		p_aad.cube_id := 'AAD-' || TO_CHAR(aad_seq.NEXTVAL,'FM000000000000');
 		INSERT INTO t_aaa_deel (
 			cube_id,
+			cube_sequence,
 			fk_aaa_naam,
 			naam,
 			xk_aaa_naam)
 		VALUES (
 			p_aad.cube_id,
+			p_aad.cube_sequence,
 			p_aad.fk_aaa_naam,
 			p_aad.naam,
 			p_aad.xk_aaa_naam);
@@ -141,6 +144,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_aaa_trg IS
 	PROCEDURE update_aad (p_cube_rowid UROWID, p_aad_old IN OUT NOCOPY v_aaa_deel%ROWTYPE, p_aad_new IN OUT NOCOPY v_aaa_deel%ROWTYPE) IS
 	BEGIN
 		UPDATE t_aaa_deel SET 
+			cube_sequence = p_aad_new.cube_sequence,
 			xk_aaa_naam = p_aad_new.xk_aaa_naam
 		WHERE rowid = p_cube_rowid;
 	END;
@@ -201,6 +205,7 @@ DECLARE
 	r_aad_old v_aaa_deel%ROWTYPE;
 BEGIN
 	IF INSERTING OR UPDATING THEN
+		r_aad_new.cube_sequence := :NEW.cube_sequence;
 		r_aad_new.fk_aaa_naam := :NEW.fk_aaa_naam;
 		r_aad_new.naam := :NEW.naam;
 		r_aad_new.xk_aaa_naam := :NEW.xk_aaa_naam;
@@ -212,6 +217,7 @@ BEGIN
 		SELECT rowid INTO l_cube_rowid FROM t_aaa_deel
 		WHERE fk_aaa_naam = :OLD.fk_aaa_naam
 		  AND naam = :OLD.naam;
+		r_aad_old.cube_sequence := :OLD.cube_sequence;
 		r_aad_old.fk_aaa_naam := :OLD.fk_aaa_naam;
 		r_aad_old.naam := :OLD.naam;
 		r_aad_old.xk_aaa_naam := :OLD.xk_aaa_naam;
@@ -323,6 +329,7 @@ SHOW ERRORS
 CREATE OR REPLACE VIEW v_ccc AS 
 	SELECT
 		cube_id,
+		cube_sequence,
 		cube_level,
 		fk_ccc_code,
 		fk_ccc_naam,
@@ -352,6 +359,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_ccc_trg IS
 		get_denorm_ccc_ccc (p_ccc);
 		INSERT INTO t_ccc (
 			cube_id,
+			cube_sequence,
 			cube_level,
 			fk_ccc_code,
 			fk_ccc_naam,
@@ -362,6 +370,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_ccc_trg IS
 			xk_ccc_naam)
 		VALUES (
 			p_ccc.cube_id,
+			p_ccc.cube_sequence,
 			p_ccc.cube_level,
 			p_ccc.fk_ccc_code,
 			p_ccc.fk_ccc_naam,
@@ -388,6 +397,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_ccc_trg IS
 			get_denorm_ccc_ccc (p_ccc_new);
 		END IF;
 		UPDATE t_ccc SET 
+			cube_sequence = p_ccc_new.cube_sequence,
 			cube_level = p_ccc_new.cube_level,
 			omschrjving = p_ccc_new.omschrjving,
 			xk_ccc_code = p_ccc_new.xk_ccc_code,
@@ -399,6 +409,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_ccc_trg IS
 				FETCH c_ccc INTO
 					l_ccc_rowid,
 					r_ccc_old.cube_id,
+					r_ccc_old.cube_sequence,
 					r_ccc_old.cube_level,
 					r_ccc_old.fk_ccc_code,
 					r_ccc_old.fk_ccc_naam,
@@ -461,6 +472,7 @@ DECLARE
 	r_ccc_old v_ccc%ROWTYPE;
 BEGIN
 	IF INSERTING OR UPDATING THEN
+		r_ccc_new.cube_sequence := :NEW.cube_sequence;
 		r_ccc_new.fk_ccc_code := REPLACE(:NEW.fk_ccc_code,' ','_');
 		r_ccc_new.fk_ccc_naam := :NEW.fk_ccc_naam;
 		r_ccc_new.code := REPLACE(:NEW.code,' ','_');
@@ -477,6 +489,7 @@ BEGIN
 		SELECT rowid INTO l_cube_rowid FROM t_ccc
 		WHERE code = :OLD.code
 		  AND naam = :OLD.naam;
+		r_ccc_old.cube_sequence := :OLD.cube_sequence;
 		r_ccc_old.fk_ccc_code := :OLD.fk_ccc_code;
 		r_ccc_old.fk_ccc_naam := :OLD.fk_ccc_naam;
 		r_ccc_old.code := :OLD.code;
@@ -500,8 +513,11 @@ SHOW ERRORS
 CREATE OR REPLACE VIEW v_prod AS 
 	SELECT
 		cube_id,
+		cube_tsg_zzz,
+		cube_tsg_yyy,
 		code,
 		naam,
+		datum,
 		omschrijving
 	FROM t_prod
 /
@@ -582,19 +598,26 @@ CREATE OR REPLACE PACKAGE BODY pkg_prd_trg IS
 		p_prd.cube_id := 'PRD-' || TO_CHAR(prd_seq.NEXTVAL,'FM000000000000');
 		INSERT INTO t_prod (
 			cube_id,
+			cube_tsg_zzz,
+			cube_tsg_yyy,
 			code,
 			naam,
+			datum,
 			omschrijving)
 		VALUES (
 			p_prd.cube_id,
+			p_prd.cube_tsg_zzz,
+			p_prd.cube_tsg_yyy,
 			p_prd.code,
 			p_prd.naam,
+			p_prd.datum,
 			p_prd.omschrijving);
 	END;
 
 	PROCEDURE update_prd (p_cube_rowid UROWID, p_prd_old IN OUT NOCOPY v_prod%ROWTYPE, p_prd_new IN OUT NOCOPY v_prod%ROWTYPE) IS
 	BEGIN
 		UPDATE t_prod SET 
+			datum = p_prd_new.datum,
 			omschrijving = p_prd_new.omschrijving
 		WHERE rowid = p_cube_rowid;
 	END;
@@ -909,8 +932,11 @@ DECLARE
 	r_prd_old v_prod%ROWTYPE;
 BEGIN
 	IF INSERTING OR UPDATING THEN
+		r_prd_new.cube_tsg_zzz := :NEW.cube_tsg_zzz;
+		r_prd_new.cube_tsg_yyy := :NEW.cube_tsg_yyy;
 		r_prd_new.code := REPLACE(:NEW.code,' ','_');
 		r_prd_new.naam := :NEW.naam;
+		r_prd_new.datum := :NEW.datum;
 		r_prd_new.omschrijving := :NEW.omschrijving;
 	END IF;
 	IF UPDATING THEN
@@ -920,8 +946,11 @@ BEGIN
 		SELECT rowid INTO l_cube_rowid FROM t_prod
 		WHERE code = :OLD.code
 		  AND naam = :OLD.naam;
+		r_prd_old.cube_tsg_zzz := :OLD.cube_tsg_zzz;
+		r_prd_old.cube_tsg_yyy := :OLD.cube_tsg_yyy;
 		r_prd_old.code := :OLD.code;
 		r_prd_old.naam := :OLD.naam;
+		r_prd_old.datum := :OLD.datum;
 		r_prd_old.omschrijving := :OLD.omschrijving;
 	END IF;
 

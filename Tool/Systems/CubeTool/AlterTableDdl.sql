@@ -3582,7 +3582,9 @@ BEGIN
 		PRIMARY KEY (
 			fk_typ_name,
 			fk_jsn_name,
-			fk_jsn_location )';
+			fk_jsn_location,
+			xf_atb_typ_name,
+			xk_atb_name )';
 	DBMS_OUTPUT.PUT_LINE('Primary Key T_JSON_OBJECT_ATTRIBUTE.JOA_PK created');
 	EXECUTE IMMEDIATE
 	'ALTER TABLE t_json_object_attribute ADD CONSTRAINT joa_jsn_fk
