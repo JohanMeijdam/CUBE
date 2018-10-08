@@ -1557,28 +1557,7 @@ case 'DeletePrt':
 	echo ']';
 
 	break;
-############# VOORBEELDEN
-$responseObj = new \stdClass();
-$responseObj->straat_naam = $obj->street;
-$responseObj->plaats_naam = $obj->city->label;
-$responseObj->gps_locatie = $obj->geo->center->wgs84->coordinates;
 
-$responseObj->cube_api_http_code = $info["http_code"];
-$responseText = json_encode($responseObj);
-echo $responseText;
-
-$comments = new stdClass;
-$comments->data = array();
-
-for ($i = 0; $i < 2; $i++) {
-    $comment = new stdClass;
-    $comment->text = 'Lorem ipsum...';
-    ...
-    $comments->data[] = $comment;
-}
-
-var_dump($comments);
-#############
 default:
 	$ResponseObj = new \stdClass();
 	$ResponseObj->ResultName = 'ERROR';
