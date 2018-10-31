@@ -80,10 +80,11 @@ g_xmlhttp.onreadystatechange = function() {
 	}
 }
 
-function performTrans(p_message) {
+function performTrans(p_objParm) {
+	var l_requestText = JSON.stringify(p_objParm);
 	g_xmlhttp.open('POST','CubeTestServer.php',true);
-	g_xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-	g_xmlhttp.send(p_message);
+//	g_xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+	g_xmlhttp.send(l_requestText);
 }
 
 function InitBody() {
@@ -105,7 +106,8 @@ function InitBody() {
 		document.getElementById("InputCode").value=values[4];
 		document.getElementById("InputNaam").value=values[5];
 		document.getElementById("ButtonCreate").disabled=true;
-		performTrans('GetPa2'+'<|||>'+document._argument);
+		l_objParm = { service : "GetPa2", parameters : HIER _ARGUMENT VULLEN ALS OBJECT };
+		performTrans(l_objParm);
 		document.getElementById("InputFkPrdCode").readOnly=true;
 		document.getElementById("InputFkPrdNaam").readOnly=true;
 		document.getElementById("InputFkPr2Code").readOnly=true;

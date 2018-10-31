@@ -27,7 +27,7 @@ case '<<SERVICE:C>>':[[LOOP,OPERATION]]
 		:<<TEXT,SERVER_ARGUMENT_NAME>>[[IF:!LAST]],[[ENDIF]][[ENDLOOP,ARGUMENT]][[IF,SERVICE:2=Y[AND]CHILD(OPERATION:CHILD(EXPORT))]],
 		:p_cube_row[[ENDIF]]);
 	END;");[[LOOP,ARGUMENT]]
-	oci_bind_by_name($stid,":<<TEXT,SERVER_ARGUMENT_NAME>>",$RequestObj->Parameters-><<ARGUMENT3>>->[[LOOP,ARGUMENT_ATTRIBUTE]]<<ARGUMENT_ATTRIBUTE:C>>[[ENDLOOP,ARGUMENT_ATTRIBUTE]]);[[ENDLOOP,ARGUMENT]][[ENDFOR]]
+	oci_bind_by_name($stid,":<<TEXT,SERVER_ARGUMENT_NAME>>",$RequestObj->Parameters-><<ARGUMENT2>>->[[LOOP,ARGUMENT_ATTRIBUTE]]<<ARGUMENT_ATTRIBUTE:C>>[[ENDLOOP,ARGUMENT_ATTRIBUTE]]);[[ENDLOOP,ARGUMENT]][[ENDFOR]]
 [[ELSE]]
 
 	$stid = oci_parse($conn, "BEGIN pkg_[[FOR,BUSINESS_OBJECT_TYPE:N>N]][[LOOP,TYPE]]<<TYPE1:L>>[[ENDLOOP,TYPE]][[ENDFOR]].<<OPERATION:L>> (:p_cube_row); END;");[[ENDIF]][[IF:CHILD(EXPORT)]]
@@ -40,14 +40,16 @@ case '<<SERVICE:C>>':[[LOOP,OPERATION]]
 		$RowObj = new \stdClass();[[LOOP,EXPORT]][[IF:1=Y]]
 		$RowObj-><<EXPORT:C>> = new \stdClass();[[LOOP,ARGUMENT]]
 		$RowObj-><<EXPORT:C>>-><<ARGUMENT:C>> = $row["<<ARGUMENT:U>>"];[[ENDLOOP,ARGUMENT]][[ELSE]]
-		$RowObj-><<EXPORT:C>> = [[LOOP,ARGUMENT]][[IF:1=subscript]][[IF:FIRST]]'('.[[ELSE]]' ('.[[ENDIF]][[ELSE]][[IF:!FIRST]]' '.[[ENDIF]][[ENDIF]]$row["<<ARGUMENT:U>>"][[IF:1=subscript]].')'[[ENDIF]][[ENDLOOP,ARGUMENT]];[[ENDIF]][[ENDLOOP,EXPORT]]
+		$RowObj-><<EXPORT:C>> = [[LOOP,ARGUMENT]][[IF:1=subscript]][[IF:FIRST]]'('.[[ELSE]].' ('.[[ENDIF]][[ELSE]][[IF:!FIRST]].' '.[[ENDIF]][[ENDIF]]$row["<<ARGUMENT:U>>"][[IF:1=subscript]].')'[[ENDIF]][[ENDLOOP,ARGUMENT]];[[ENDIF]][[ENDLOOP,EXPORT]]
 		$ResponseObj->Rows[] = $RowObj;
 	}[[ELSE]]
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
 		return;
-	}[[ENDIF]][[IF:!LAST]]
+	}[[ENDIF]]
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;[[IF:!LAST]]
 	echo ',';[[*next in operations array*]][[ELSE]]
 	echo ']';[[*end of operations array*]][[ENDIF]][[ENDLOOP,OPERATION]]
 

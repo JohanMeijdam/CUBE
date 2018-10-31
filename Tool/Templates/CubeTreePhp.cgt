@@ -7,6 +7,7 @@
 10-03-2018 - Implementation of tranferable.
 13-04-2018 - Fix for move recursive parts.
 23-04-2018 - BUSINESS_OBJECT_TYPE int ext.
+16-10-2018 - JSON instead of <|> struct
 *]][[INCLUDE,templates\includes\general.cgt]]
 [[BODY]][[LOOP,SYSTEM:0=<<1>>]]<?php
 session_start();
@@ -24,6 +25,21 @@ div {padding-left:12px}
 g_xmlhttp = new XMLHttpRequest();
 g_xmlhttp.onreadystatechange = function(){
 	if(g_xmlhttp.readyState == 4){
+		var g_responseText = g_xmlhttp.responseText;
+		var l_objArray = JSON.parse(g_responseText);
+		for (i in l_objArray) {
+			switch (l_objArray[i].ResultName) {
+				case '': break;[[LOOP,SYSTEM_BO_TYPE]][[LOOP,BUSINESS_OBJECT_TYPE]][[LOOP,TYPE]]
+				case 'LIST_<<TYPE1:U>>': AddTreeviewChildren(l_objArray[i].Rows,'TYP_<<TYPE1:U>>','icons/<<TYPE7:L>>.bmp'); break;[[IF:(3=Y[AND]!4=N)[OR]!5=N]]
+				case 'COUNT_<<TYPE1:U>>': CheckMenuItem('TYP_<<TYPE1:U>>',l_rows[1]); break;[[ENDIF]][[IF:6=P[AND]CHILD(ATTRIBUTE:<<TEXT,GEN_IS_OWN_KEY>>)]]
+				case 'MOVE_<<TYPE1:U>>': MoveNode (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.body._moveAction); break;[[ENDIF]][[IF:3=Y[AND]!4=1[AND]!6=P[AND]CHILD(ATTRIBUTE:<<TEXT,GEN_IS_OWN_KEY>>)]]
+				case 'CHANGE_PARENT_<<TYPE1:U>>': ChangeParent (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.getElementById('TYP_<<TYPE1:U>><||>'+l_rows[1])); break;[[ENDIF]][[REPEAT]][[ENDLOOP,TYPE]][[ENDLOOP,BUSINESS_OBJECT_TYPE]][[ENDLOOP,SYSTEM_BO_TYPE]]
+				case "ERROR": alert ('Error: '+l_rows[1]); break;
+				default: alert ('Unknown reply: '+l_objArray[i].ResultName);
+			}
+		}
+		
+[[*********************	
 		var l_groups = g_xmlhttp.responseText.split("<||||>");
 		for (ig in l_groups) {
 			var l_rows = l_groups[ig].split("<|||>");
@@ -37,6 +53,7 @@ g_xmlhttp.onreadystatechange = function(){
 			default: alert ('Unknown reply: '+l_rows[0]);
 			}
 		}
+**************************]]		
 	}
 }
 
@@ -54,6 +71,13 @@ var g_currentNodeType;
 function AddTreeviewChildren(p_rows, p_type, p_icon) {
 	var l_len = p_rows.length;
 	for (var ir=1; ir<l_len; ir++){
+		AddTreeviewNode(g_objNodeDiv, p_type, p_rows[ir].Key, p_icon, p_rows[ir].Display.toLowerCase(), 'N', ' ', null);
+	}
+}
+[[*****************************
+function AddTreeviewChildren(p_rows, p_type, p_icon) {
+	var l_len = p_rows.length;
+	for (var ir=1; ir<l_len; ir++){
 		var l_rowpart = p_rows[ir].split("<||>");
 		var l_lenp = l_rowpart.length;
 		if (l_lenp > 1) {
@@ -61,7 +85,7 @@ function AddTreeviewChildren(p_rows, p_type, p_icon) {
 		}
 	}
 }
-
+**********************]]
 function InitBody() {
 	document.body._FlagDragging = 0;
 	document.body._DraggingId = ' ';
@@ -83,10 +107,11 @@ function CheckMenuItem (p_type, p_count) {
 
 }
 
-function PerformTrans(p_message) {
+function PerformTrans(p_objParm) {
+	var l_requestText = JSON.stringify(p_objParm);
 	g_xmlhttp.open('POST','<<1>>Server.php',true);
-	g_xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-	g_xmlhttp.send(p_message);
+//	g_xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+	g_xmlhttp.send(l_requestText);
 }
 
 function DefineTypePosition (p_parentType, p_type, p_switch) {
@@ -296,7 +321,7 @@ function OpenCloseOnClick(p_obj) {
 
 		switch (p_obj.parentNode._type) {[[LOOP,SYSTEM_BO_TYPE]][[LOOP,BUSINESS_OBJECT_TYPE]][[LOOP,TYPE]][[IF:ROOT]]
  		case 'DIR_<<TYPE1:U>>':
-			PerformTrans('GetDir<<TYPE1:C>>Items');
+			PerformTrans( { Service : "GetDir<<TYPE1:C>>Items" } );
 			break;[[ENDIF]][[IF:CHILD(TYPE)[OR]3=Y]]
  		case 'TYP_<<TYPE1:U>>':
 			PerformTrans('Get<<TYPE1:C>>Items'+'<|||>'+p_obj.parentNode.id.split("<||>")[1]);

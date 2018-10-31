@@ -14,29 +14,31 @@ div {padding-left:12px}
 g_xmlhttp = new XMLHttpRequest();
 g_xmlhttp.onreadystatechange = function(){
 	if(g_xmlhttp.readyState == 4){
-		var l_groups = g_xmlhttp.responseText.split("<||||>");
-		for (ig in l_groups) {
-			var l_rows = l_groups[ig].split("<|||>");
-			switch (l_rows[0]) {
-			case '': break;
-			case 'LIST_AAA': AddTreeviewChildren(l_rows,'TYP_AAA','icons/produkt.bmp'); break;
-			case 'CHANGE_PARENT_AAA': ChangeParent (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.getElementById('TYP_AAA<||>'+l_rows[1])); break;
-			case 'LIST_AAD': AddTreeviewChildren(l_rows,'TYP_AAD','icons/attrib.bmp'); break;
-			case 'MOVE_AAD': MoveNode (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.body._moveAction); break;
-			case 'LIST_BBB': AddTreeviewChildren(l_rows,'TYP_BBB','icons/part.bmp'); break;
-			case 'LIST_CCC': AddTreeviewChildren(l_rows,'TYP_CCC','icons/produkt.bmp'); break;
-			case 'COUNT_CCC': CheckMenuItem('TYP_CCC',l_rows[1]); break;
-			case 'MOVE_CCC': MoveNode (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.body._moveAction); break;
-			case 'LIST_PRD': AddTreeviewChildren(l_rows,'TYP_PRD','icons/produkt.bmp'); break;
-			case 'LIST_PR2': AddTreeviewChildren(l_rows,'TYP_PR2','icons/produkt.bmp'); break;
-			case 'LIST_PA2': AddTreeviewChildren(l_rows,'TYP_PA2','icons/part.bmp'); break;
-			case 'CHANGE_PARENT_PA2': ChangeParent (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.getElementById('TYP_PA2<||>'+l_rows[1])); break;
-			case 'LIST_PRT': AddTreeviewChildren(l_rows,'TYP_PRT','icons/part.bmp'); break;
-			case 'CHANGE_PARENT_PRT': ChangeParent (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.getElementById('TYP_PRT<||>'+l_rows[1])); break;
-			case "ERROR": alert ('Error: '+l_rows[1]); break;
-			default: alert ('Unknown reply: '+l_rows[0]);
+		var g_responseText = g_xmlhttp.responseText;
+		var l_objArray = JSON.parse(g_responseText);
+		for (i in l_objArray) {
+			switch (l_objArray[i].ResultName) {
+				case '': break;
+				case 'LIST_AAA': AddTreeviewChildren(l_objArray[i].Rows,'TYP_AAA','icons/produkt.bmp'); break;
+				case 'CHANGE_PARENT_AAA': ChangeParent (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.getElementById('TYP_AAA<||>'+l_rows[1])); break;
+				case 'LIST_AAD': AddTreeviewChildren(l_objArray[i].Rows,'TYP_AAD','icons/attrib.bmp'); break;
+				case 'MOVE_AAD': MoveNode (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.body._moveAction); break;
+				case 'LIST_BBB': AddTreeviewChildren(l_objArray[i].Rows,'TYP_BBB','icons/part.bmp'); break;
+				case 'LIST_CCC': AddTreeviewChildren(l_objArray[i].Rows,'TYP_CCC','icons/produkt.bmp'); break;
+				case 'COUNT_CCC': CheckMenuItem('TYP_CCC',l_rows[1]); break;
+				case 'MOVE_CCC': MoveNode (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.body._moveAction); break;
+				case 'LIST_PRD': AddTreeviewChildren(l_objArray[i].Rows,'TYP_PRD','icons/produkt.bmp'); break;
+				case 'LIST_PR2': AddTreeviewChildren(l_objArray[i].Rows,'TYP_PR2','icons/produkt.bmp'); break;
+				case 'LIST_PA2': AddTreeviewChildren(l_objArray[i].Rows,'TYP_PA2','icons/part.bmp'); break;
+				case 'CHANGE_PARENT_PA2': ChangeParent (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.getElementById('TYP_PA2<||>'+l_rows[1])); break;
+				case 'LIST_PRT': AddTreeviewChildren(l_objArray[i].Rows,'TYP_PRT','icons/part.bmp'); break;
+				case 'CHANGE_PARENT_PRT': ChangeParent (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.getElementById('TYP_PRT<||>'+l_rows[1])); break;
+				case "ERROR": alert ('Error: '+l_rows[1]); break;
+				default: alert ('Unknown reply: '+l_objArray[i].ResultName);
 			}
 		}
+		
+		
 	}
 }
 
@@ -54,11 +56,7 @@ var g_currentNodeType;
 function AddTreeviewChildren(p_rows, p_type, p_icon) {
 	var l_len = p_rows.length;
 	for (var ir=1; ir<l_len; ir++){
-		var l_rowpart = p_rows[ir].split("<||>");
-		var l_lenp = l_rowpart.length;
-		if (l_lenp > 1) {
-			AddTreeviewNode(g_objNodeDiv, p_type, p_type+'<||>'+l_rowpart[0], p_icon, l_rowpart[1].toLowerCase(), 'N', ' ', null);
-		}
+		AddTreeviewNode(g_objNodeDiv, p_type, p_rows[ir].Key, p_icon, p_rows[ir].Display.toLowerCase(), 'N', ' ', null);
 	}
 }
 
@@ -86,10 +84,11 @@ function CheckMenuItem (p_type, p_count) {
 
 }
 
-function PerformTrans(p_message) {
+function PerformTrans(p_objParm) {
+	var l_requestText = JSON.stringify(p_objParm);
 	g_xmlhttp.open('POST','CubeTestServer.php',true);
-	g_xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-	g_xmlhttp.send(p_message);
+//	g_xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+	g_xmlhttp.send(l_requestText);
 }
 
 function DefineTypePosition (p_parentType, p_type, p_switch) {
@@ -314,22 +313,22 @@ function OpenCloseOnClick(p_obj) {
 
 		switch (p_obj.parentNode._type) {
  		case 'DIR_AAA':
-			PerformTrans('GetDirAaaItems');
+			PerformTrans( { Service : "GetDirAaaItems" } );
 			break;
  		case 'TYP_AAA':
 			PerformTrans('GetAaaItems'+'<|||>'+p_obj.parentNode.id.split("<||>")[1]);
 			break;
  		case 'DIR_BBB':
-			PerformTrans('GetDirBbbItems');
+			PerformTrans( { Service : "GetDirBbbItems" } );
 			break;
  		case 'DIR_CCC':
-			PerformTrans('GetDirCccItems');
+			PerformTrans( { Service : "GetDirCccItems" } );
 			break;
  		case 'TYP_CCC':
 			PerformTrans('GetCccItems'+'<|||>'+p_obj.parentNode.id.split("<||>")[1]);
 			break;
  		case 'DIR_PRD':
-			PerformTrans('GetDirPrdItems');
+			PerformTrans( { Service : "GetDirPrdItems" } );
 			break;
  		case 'TYP_PRD':
 			PerformTrans('GetPrdItems'+'<|||>'+p_obj.parentNode.id.split("<||>")[1]);
