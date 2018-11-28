@@ -91,7 +91,7 @@ function InitBody() {
 	case "D":
 		document.getElementById("InputNaam").value=values[0];
 		document.getElementById("ButtonCreate").disabled=true;
-		l_objParm = { service : "GetBbb", parameters : HIER _ARGUMENT VULLEN ALS OBJECT };
+		l_objParm = { service : "GetBbb", parameters : "HIER _ARGUMENT VULLEN ALS OBJECT"};
 		performTrans(l_objParm);
 		document.getElementById("InputNaam").readOnly=true;
 		break;

@@ -106,7 +106,7 @@ function InitBody() {
 		document.getElementById("InputCode").value=values[4];
 		document.getElementById("InputNaam").value=values[5];
 		document.getElementById("ButtonCreate").disabled=true;
-		l_objParm = { service : "GetPa2", parameters : HIER _ARGUMENT VULLEN ALS OBJECT };
+		l_objParm = { service : "GetPa2", parameters : "HIER _ARGUMENT VULLEN ALS OBJECT"};
 		performTrans(l_objParm);
 		document.getElementById("InputFkPrdCode").readOnly=true;
 		document.getElementById("InputFkPrdNaam").readOnly=true;

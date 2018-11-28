@@ -89,7 +89,7 @@ function InitBody() {
 		document.getElementById("InputFkAaaNaam").value=values[0];
 		document.getElementById("InputNaam").value=values[1];
 		document.getElementById("ButtonCreate").disabled=true;
-		l_objParm = { service : "GetAad", parameters : HIER _ARGUMENT VULLEN ALS OBJECT };
+		l_objParm = { service : "GetAad", parameters : "HIER _ARGUMENT VULLEN ALS OBJECT"};
 		performTrans(l_objParm);
 		document.getElementById("InputFkAaaNaam").readOnly=true;
 		document.getElementById("InputNaam").readOnly=true;

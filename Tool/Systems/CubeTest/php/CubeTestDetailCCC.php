@@ -95,7 +95,7 @@ function InitBody() {
 		document.getElementById("InputCode").value=values[0];
 		document.getElementById("InputNaam").value=values[1];
 		document.getElementById("ButtonCreate").disabled=true;
-		l_objParm = { service : "GetCcc", parameters : HIER _ARGUMENT VULLEN ALS OBJECT };
+		l_objParm = { service : "GetCcc", parameters : "HIER _ARGUMENT VULLEN ALS OBJECT"};
 		performTrans(l_objParm);
 		document.getElementById("InputFkCccCode").readOnly=true;
 		document.getElementById("InputFkCccNaam").readOnly=true;

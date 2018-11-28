@@ -65,10 +65,10 @@ function InitBody() {
 	l_objBody = document.body;
 	l_objBody._type = 'ROOT';
 	l_objBody.childNodes[0]._index = 0;
-	AddTreeviewNode(l_objBody, 'DIR_AAA', 'DIR_AAA', 'icons/folder.bmp', 'Test_AAA', 'Y', ' ', null);
-	AddTreeviewNode(l_objBody, 'DIR_BBB', 'DIR_BBB', 'icons/folder.bmp', 'Test_BBB', 'Y', ' ', null);
-	AddTreeviewNode(l_objBody, 'DIR_CCC', 'DIR_CCC', 'icons/folder.bmp', 'Test_CCC', 'Y', ' ', null);
-	AddTreeviewNode(l_objBody, 'DIR_PRD', 'DIR_PRD', 'icons/folder.bmp', 'Producten', 'Y', ' ', null);
+	AddTreeviewNode(l_objBody, 'DIR_AAA', null, 'icons/folder.bmp', 'Test_AAA', 'Y', ' ', null);
+	AddTreeviewNode(l_objBody, 'DIR_BBB', null, 'icons/folder.bmp', 'Test_BBB', 'Y', ' ', null);
+	AddTreeviewNode(l_objBody, 'DIR_CCC', null, 'icons/folder.bmp', 'Test_CCC', 'Y', ' ', null);
+	AddTreeviewNode(l_objBody, 'DIR_PRD', null, 'icons/folder.bmp', 'Producten', 'Y', ' ', null);
 }
 
 function CheckMenuItem (p_type, p_count) {
@@ -159,7 +159,7 @@ function AddTreeviewNode(p_obj, p_type, p_json_id, p_icon, p_text, p_root, p_pos
 		l_objDiv.appendChild(l_objSpan2);
 	}
 
-	l_objDiv.id = JSON.stringify(p_json_id);
+	l_objDiv.id = '{"'+p_type+'":'+JSON.stringify(p_json_id)+'}';
 	l_objDiv._type = p_type;
 
 	if (p_root == 'Y') {
@@ -314,7 +314,7 @@ function OpenCloseOnClick(p_obj) {
 			PerformTrans( {Service:"GetDirAaaItems"} );
 			break;
  		case 'TYP_AAA':
-			PerformTrans( {Service:"GetAaaItems",Parameters:{Type:JSON.parse(p_obj.parentNode.id)}} );
+			PerformTrans( {Service:"GetAaaItems",Parameters:{Type:JSON.parse(p_obj.parentNode.id)["TYP_AAA"]}} );
 			break;
  		case 'DIR_BBB':
 			PerformTrans( {Service:"GetDirBbbItems"} );
@@ -323,22 +323,22 @@ function OpenCloseOnClick(p_obj) {
 			PerformTrans( {Service:"GetDirCccItems"} );
 			break;
  		case 'TYP_CCC':
-			PerformTrans( {Service:"GetCccItems",Parameters:{Type:JSON.parse(p_obj.parentNode.id)}} );
+			PerformTrans( {Service:"GetCccItems",Parameters:{Type:JSON.parse(p_obj.parentNode.id)["TYP_CCC"]}} );
 			break;
  		case 'DIR_PRD':
 			PerformTrans( {Service:"GetDirPrdItems"} );
 			break;
  		case 'TYP_PRD':
-			PerformTrans( {Service:"GetPrdItems",Parameters:{Type:JSON.parse(p_obj.parentNode.id)}} );
+			PerformTrans( {Service:"GetPrdItems",Parameters:{Type:JSON.parse(p_obj.parentNode.id)["TYP_PRD"]}} );
 			break;
  		case 'TYP_PR2':
-			PerformTrans( {Service:"GetPr2Items",Parameters:{Type:JSON.parse(p_obj.parentNode.id)}} );
+			PerformTrans( {Service:"GetPr2Items",Parameters:{Type:JSON.parse(p_obj.parentNode.id)["TYP_PR2"]}} );
 			break;
  		case 'TYP_PA2':
-			PerformTrans( {Service:"GetPa2Items",Parameters:{Type:JSON.parse(p_obj.parentNode.id)}} );
+			PerformTrans( {Service:"GetPa2Items",Parameters:{Type:JSON.parse(p_obj.parentNode.id)["TYP_PA2"]}} );
 			break;
  		case 'TYP_PRT':
-			PerformTrans( {Service:"GetPrtItems",Parameters:{Type:JSON.parse(p_obj.parentNode.id)}} );
+			PerformTrans( {Service:"GetPrtItems",Parameters:{Type:JSON.parse(p_obj.parentNode.id)["TYP_PRT"]}} );
 			break;
 		} 
 	}
@@ -450,8 +450,8 @@ function OpenMenu(p_obj) {
 	ResetState(); 
 	CloseMenu();
 	var l_childCount = p_obj.parentNode.parentNode.children.length;
-	var l_obj_id = p_obj.parentNode.id;
-	var l_type_id = l_obj_id.split("<||>");
+	var l_json_id = JSON.parse(p_obj.parentNode.id);
+	var l_type_id = Object.keys(l_json_id)[0];
 	p_obj.style.backgroundColor = "#FFFFFF";
 	var l_x = event.clientX-20;
 	var l_y = event.clientY-20+document.body.scrollTop;
@@ -501,7 +501,7 @@ function OpenMenu(p_obj) {
 	l_objImgExit.onclick = function(){CloseMenu()};
 	g_objMenuList.colSpan = '2';
 
-	switch (l_type_id[0]) {
+	switch (l_type_id) {
  	case 'DIR_AAA':
 		AddMenuItem(g_objMenuList, 'add aaa', 'icons/produkt.bmp','DetailAAA','N','TYP_AAA',0,'N',2);
 		break;

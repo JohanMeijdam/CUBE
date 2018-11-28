@@ -91,7 +91,7 @@ function InitBody() {
 	l_objBody = document.body;
 	l_objBody._type = 'ROOT';
 	l_objBody.childNodes[0]._index = 0;[[LOOP,SYSTEM_BO_TYPE]][[LOOP,BUSINESS_OBJECT_TYPE]][[LOOP,TYPE]]
-	AddTreeviewNode(l_objBody, 'DIR_<<TYPE1:U>>', 'DIR_<<TYPE1:U>>', 'icons/folder.bmp', '<<BUSINESS_OBJECT_TYPE2>>', 'Y', ' ', null);[[ENDLOOP,TYPE]][[ENDLOOP,BUSINESS_OBJECT_TYPE]][[ENDLOOP,SYSTEM_BO_TYPE]]
+	AddTreeviewNode(l_objBody, 'DIR_<<TYPE1:U>>', null, 'icons/folder.bmp', '<<BUSINESS_OBJECT_TYPE2>>', 'Y', ' ', null);[[ENDLOOP,TYPE]][[ENDLOOP,BUSINESS_OBJECT_TYPE]][[ENDLOOP,SYSTEM_BO_TYPE]]
 }
 
 function CheckMenuItem (p_type, p_count) {
@@ -167,7 +167,7 @@ function AddTreeviewNode(p_obj, p_type, p_json_id, p_icon, p_text, p_root, p_pos
 		l_objDiv.appendChild(l_objSpan2);
 	}
 
-	l_objDiv.id = JSON.stringify(p_json_id);
+	l_objDiv.id = '{"'+p_type+'":'+JSON.stringify(p_json_id)+'}';
 	l_objDiv._type = p_type;
 
 	if (p_root == 'Y') {
@@ -322,7 +322,7 @@ function OpenCloseOnClick(p_obj) {
 			PerformTrans( {Service:"GetDir<<TYPE1:C>>Items"} );
 			break;[[ENDIF]][[IF:CHILD(TYPE)[OR]3=Y]]
  		case 'TYP_<<TYPE1:U>>':
-			PerformTrans( {Service:"Get<<TYPE1:C>>Items",Parameters:{Type:JSON.parse(p_obj.parentNode.id)}} );
+			PerformTrans( {Service:"Get<<TYPE1:C>>Items",Parameters:{Type:JSON.parse(p_obj.parentNode.id)["TYP_<<TYPE1:U>>"]}} );
 			break;[[ENDIF]][[REPEAT]][[ENDLOOP,TYPE]][[ENDLOOP,BUSINESS_OBJECT_TYPE]][[ENDLOOP,SYSTEM_BO_TYPE]]
 		} 
 	}
@@ -413,8 +413,8 @@ function OpenMenu(p_obj) {
 	ResetState(); 
 	CloseMenu();
 	var l_childCount = p_obj.parentNode.parentNode.children.length;
-	var l_obj_id = p_obj.parentNode.id;
-	var l_type_id = l_obj_id.split("<||>");
+	var l_json_id = JSON.parse(p_obj.parentNode.id);
+	var l_type_id = Object.keys(l_json_id)[0];
 	p_obj.style.backgroundColor = "#FFFFFF";
 	var l_x = event.clientX-20;
 	var l_y = event.clientY-20+document.body.scrollTop;
@@ -464,7 +464,7 @@ function OpenMenu(p_obj) {
 	l_objImgExit.onclick = function(){CloseMenu()};
 	g_objMenuList.colSpan = '2';
 
-	switch (l_type_id[0]) {[[LOOP,SYSTEM_BO_TYPE]][[LOOP,BUSINESS_OBJECT_TYPE]][[LOOP,TYPE]][[IF:ROOT]]
+	switch (l_type_id) {[[LOOP,SYSTEM_BO_TYPE]][[LOOP,BUSINESS_OBJECT_TYPE]][[LOOP,TYPE]][[IF:ROOT]]
  	case 'DIR_<<TYPE1:U>>':
 		AddMenuItem(g_objMenuList, 'add <<TYPE:L>>', 'icons/<<TYPE7:L>>.bmp','[[IF:6=P]]CubeAdd[[ELSE]]Detail<<TYPE1:U>>[[ENDIF]]','N','TYP_<<TYPE1:U>>',[[IF:!5=N]]<<TYPE5>>[[ELSE]]0[[ENDIF]],'N',2);[[IF:!5=N]]
 		PerformTrans('Count<<TYPE1:C>>');[[ENDIF]]

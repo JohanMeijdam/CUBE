@@ -142,7 +142,7 @@ function InitBody() {
 	case "D":[[LOOP,ATTRIBUTE:1=Y]]
 		document.getElementById("Input<<ATTRIBUTE:C>>").value=values[[[EVAL:<<ATTRIBUTE:IX>>-1]]];[[ENDLOOP,ATTRIBUTE]]
 		document.getElementById("ButtonCreate").disabled=true;[[IF:CHILD(ATTRIBUTE:1=N[AND]4=N)]]
-		l_objParm = { service : "Get<<TYPE1:C>>", parameters : HIER _ARGUMENT VULLEN ALS OBJECT };
+		l_objParm = { service : "Get<<TYPE1:C>>", parameters : "HIER _ARGUMENT VULLEN ALS OBJECT"};
 		performTrans(l_objParm);[[ENDIF]][[IF:!CHILD(ATTRIBUTE:1=N[AND]!(3=F[OR]3=R)[AND]4=N)]]
 		document.getElementById("ButtonUpdate").disabled=true;[[ENDIF]][[LOOP,ATTRIBUTE:1=Y[OR]3=F[OR]3=R[OR]6=Y]]
 		document.getElementById("Input<<ATTRIBUTE:C>>").readOnly=true;[[ENDLOOP,ATTRIBUTE]][[LOOP,REFERENCE:1=Y[OR]5=Y]]
@@ -152,7 +152,7 @@ function InitBody() {
 		document.getElementById("Input<<ATTRIBUTE:C>>").value=values[[[EVAL:<<ATTRIBUTE:IX>>-1]]];[[ENDLOOP,ATTRIBUTE]]
 		document.getElementById("ButtonUpdate").disabled=true;
 		document.getElementById("ButtonDelete").disabled=true;[[IF:CHILD(ATTRIBUTE:3=F[AND]CHILD(ATTRIBUTE_SOURCE:1=N))]]
-		l_objParm = { service : "Get<<TYPE(N-1)1:C>>Fkey", parameters : HIER _ARGUMENT VULLEN ALS OBJECT };
+		l_objParm = { service : "Get<<TYPE(N-1)1:C>>Fkey", parameters : "HIER _ARGUMENT VULLEN ALS OBJECT" };
 		performTrans(l_objParm);[[ENDIF]][[LOOP,ATTRIBUTE:(3=F[OR]3=R)[AND]4=N]]
 		document.getElementById("Input<<ATTRIBUTE:C>>").readOnly=true;[[ENDLOOP,ATTRIBUTE]]
 		break;[[IF,TYPE:3=Y]]  
@@ -161,7 +161,7 @@ function InitBody() {
 		document.getElementById("Input<<ATTRIBUTE:C>>").value=values[[[EVAL:<<ATTRIBUTE:IX>>-1]]];[[ENDLOOP,ATTRIBUTE]][[ENDIF]]
 		document.getElementById("ButtonUpdate").disabled=true;
 		document.getElementById("ButtonDelete").disabled=true;[[IF:CHILD(ATTRIBUTE:1=N[AND]3=F)]]
-		l_objParm = { service : "Get<<TYPE1:C>>Fkey", parameters : HIER _ARGUMENT VULLEN ALS OBJECT };
+		l_objParm = { service : "Get<<TYPE1:C>>Fkey", parameters : "HIER _ARGUMENT VULLEN ALS OBJECT" };
 		performTrans(l_objParm);[[ENDIF]][[LOOP,ATTRIBUTE:(3=F[OR]3=R)[AND]4=N]]
 		document.getElementById("Input<<ATTRIBUTE:C>>").readOnly=true;[[ENDLOOP,ATTRIBUTE]]
 		break;[[ENDIF]]
