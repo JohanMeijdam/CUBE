@@ -15,29 +15,28 @@ g_xmlhttp = new XMLHttpRequest();
 g_xmlhttp.onreadystatechange = function(){
 	if(g_xmlhttp.readyState == 4){
 		var g_responseText = g_xmlhttp.responseText;
-		var l_objArray = JSON.parse(g_responseText);
-		for (i in l_objArray) {
-			switch (l_objArray[i].ResultName) {
+		var l_json_array = JSON.parse(g_responseText);
+		for (i in l_json_array) {
+			switch (l_json_array[i].ResultName) {
 				case '': break;
-				case 'LIST_AAA': AddTreeviewChildren(l_objArray[i].Rows,'TYP_AAA','icons/produkt.bmp'); break;
+				case 'LIST_AAA': AddTreeviewChildren(l_json_array[i].Rows,'TYP_AAA','icons/produkt.bmp'); break;
 				case 'CHANGE_PARENT_AAA': ChangeParent (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.getElementById('TYP_AAA<||>'+l_rows[1])); break;
-				case 'LIST_AAD': AddTreeviewChildren(l_objArray[i].Rows,'TYP_AAD','icons/attrib.bmp'); break;
+				case 'LIST_AAD': AddTreeviewChildren(l_json_array[i].Rows,'TYP_AAD','icons/attrib.bmp'); break;
 				case 'MOVE_AAD': MoveNode (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.body._moveAction); break;
-				case 'LIST_BBB': AddTreeviewChildren(l_objArray[i].Rows,'TYP_BBB','icons/part.bmp'); break;
-				case 'LIST_CCC': AddTreeviewChildren(l_objArray[i].Rows,'TYP_CCC','icons/produkt.bmp'); break;
+				case 'LIST_BBB': AddTreeviewChildren(l_json_array[i].Rows,'TYP_BBB','icons/part.bmp'); break;
+				case 'LIST_CCC': AddTreeviewChildren(l_json_array[i].Rows,'TYP_CCC','icons/produkt.bmp'); break;
 				case 'COUNT_CCC': CheckMenuItem('TYP_CCC',l_rows[1]); break;
 				case 'MOVE_CCC': MoveNode (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.body._moveAction); break;
-				case 'LIST_PRD': AddTreeviewChildren(l_objArray[i].Rows,'TYP_PRD','icons/produkt.bmp'); break;
-				case 'LIST_PR2': AddTreeviewChildren(l_objArray[i].Rows,'TYP_PR2','icons/produkt.bmp'); break;
-				case 'LIST_PA2': AddTreeviewChildren(l_objArray[i].Rows,'TYP_PA2','icons/part.bmp'); break;
+				case 'LIST_PRD': AddTreeviewChildren(l_json_array[i].Rows,'TYP_PRD','icons/produkt.bmp'); break;
+				case 'LIST_PR2': AddTreeviewChildren(l_json_array[i].Rows,'TYP_PR2','icons/produkt.bmp'); break;
+				case 'LIST_PA2': AddTreeviewChildren(l_json_array[i].Rows,'TYP_PA2','icons/part.bmp'); break;
 				case 'CHANGE_PARENT_PA2': ChangeParent (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.getElementById('TYP_PA2<||>'+l_rows[1])); break;
-				case 'LIST_PRT': AddTreeviewChildren(l_objArray[i].Rows,'TYP_PRT','icons/part.bmp'); break;
+				case 'LIST_PRT': AddTreeviewChildren(l_json_array[i].Rows,'TYP_PRT','icons/part.bmp'); break;
 				case 'CHANGE_PARENT_PRT': ChangeParent (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.getElementById('TYP_PRT<||>'+l_rows[1])); break;
 				case "ERROR": alert ('Error: '+l_rows[1]); break;
-				default: alert ('Unknown reply: '+l_objArray[i].ResultName);
+				default: alert ('Unknown reply: '+l_json_array[i].ResultName);
 			}
 		}
-		
 		
 	}
 }
@@ -53,10 +52,9 @@ var g_currentObjId;
 var g_currentObjType;
 var g_currentNodeType;
 
-function AddTreeviewChildren(p_rows, p_type, p_icon) {
-	var l_len = p_rows.length;
-	for (var ir=1; ir<l_len; ir++){
-		AddTreeviewNode(g_objNodeDiv, p_type, p_rows[ir].Key, p_icon, p_rows[ir].Display.toLowerCase(), 'N', ' ', null);
+function AddTreeviewChildren(p_json_rows, p_type, p_icon) {
+	for (i in p_json_rows) {
+		AddTreeviewNode(g_objNodeDiv, p_type, p_json_rows[i].Key, p_icon, p_json_rows[i].Display.toLowerCase(), 'N', ' ', null);
 	}
 }
 
@@ -121,7 +119,7 @@ function DefineTypePosition (p_parentType, p_type, p_switch) {
 	}
 }
 
-function AddTreeviewNode(p_obj, p_type, p_ident, p_icon, p_text, p_root, p_position, p_objPosition) {
+function AddTreeviewNode(p_obj, p_type, p_json_id, p_icon, p_text, p_root, p_position, p_objPosition) {
 	var l_objDiv = document.createElement('DIV');
 	var l_objImg = document.createElement('IMG');
 	var l_objSpan1 = document.createElement('SPAN');
@@ -161,7 +159,7 @@ function AddTreeviewNode(p_obj, p_type, p_ident, p_icon, p_text, p_root, p_posit
 		l_objDiv.appendChild(l_objSpan2);
 	}
 
-	l_objDiv.id = p_ident;
+	l_objDiv.id = JSON.stringify(p_json_id);
 	l_objDiv._type = p_type;
 
 	if (p_root == 'Y') {
@@ -313,34 +311,34 @@ function OpenCloseOnClick(p_obj) {
 
 		switch (p_obj.parentNode._type) {
  		case 'DIR_AAA':
-			PerformTrans( { Service : "GetDirAaaItems" } );
+			PerformTrans( {Service:"GetDirAaaItems"} );
 			break;
  		case 'TYP_AAA':
-			PerformTrans('GetAaaItems'+'<|||>'+p_obj.parentNode.id.split("<||>")[1]);
+			PerformTrans( {Service:"GetAaaItems",Parameters:{Type:JSON.parse(p_obj.parentNode.id)}} );
 			break;
  		case 'DIR_BBB':
-			PerformTrans( { Service : "GetDirBbbItems" } );
+			PerformTrans( {Service:"GetDirBbbItems"} );
 			break;
  		case 'DIR_CCC':
-			PerformTrans( { Service : "GetDirCccItems" } );
+			PerformTrans( {Service:"GetDirCccItems"} );
 			break;
  		case 'TYP_CCC':
-			PerformTrans('GetCccItems'+'<|||>'+p_obj.parentNode.id.split("<||>")[1]);
+			PerformTrans( {Service:"GetCccItems",Parameters:{Type:JSON.parse(p_obj.parentNode.id)}} );
 			break;
  		case 'DIR_PRD':
-			PerformTrans( { Service : "GetDirPrdItems" } );
+			PerformTrans( {Service:"GetDirPrdItems"} );
 			break;
  		case 'TYP_PRD':
-			PerformTrans('GetPrdItems'+'<|||>'+p_obj.parentNode.id.split("<||>")[1]);
+			PerformTrans( {Service:"GetPrdItems",Parameters:{Type:JSON.parse(p_obj.parentNode.id)}} );
 			break;
  		case 'TYP_PR2':
-			PerformTrans('GetPr2Items'+'<|||>'+p_obj.parentNode.id.split("<||>")[1]);
+			PerformTrans( {Service:"GetPr2Items",Parameters:{Type:JSON.parse(p_obj.parentNode.id)}} );
 			break;
  		case 'TYP_PA2':
-			PerformTrans('GetPa2Items'+'<|||>'+p_obj.parentNode.id.split("<||>")[1]);
+			PerformTrans( {Service:"GetPa2Items",Parameters:{Type:JSON.parse(p_obj.parentNode.id)}} );
 			break;
  		case 'TYP_PRT':
-			PerformTrans('GetPrtItems'+'<|||>'+p_obj.parentNode.id.split("<||>")[1]);
+			PerformTrans( {Service:"GetPrtItems",Parameters:{Type:JSON.parse(p_obj.parentNode.id)}} );
 			break;
 		} 
 	}

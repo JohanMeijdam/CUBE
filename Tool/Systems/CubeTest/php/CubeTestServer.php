@@ -128,7 +128,6 @@ case 'GetAaaItems':
 	$ResponseText = json_encode($ResponseObj);
 	echo $ResponseText;
 	echo ',';
-	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_aaa.get_aaa_aaa_items (
 		:p_cube_row,
@@ -871,7 +870,6 @@ case 'GetPrdItems':
 	$ResponseText = json_encode($ResponseObj);
 	echo $ResponseText;
 	echo ',';
-	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_prd.get_prd_prt_items (
 		:p_cube_row,
