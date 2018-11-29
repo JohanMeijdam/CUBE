@@ -15,7 +15,7 @@ g_xmlhttp = new XMLHttpRequest();
 g_xmlhttp.onreadystatechange = function(){
 	if(g_xmlhttp.readyState == 4){
 		var g_responseText = g_xmlhttp.responseText;
-		var l_json_array = JSON.parse(g_responseText);
+		l_json_array = JSON.parse(g_responseText);
 		for (i in l_json_array) {
 			switch (l_json_array[i].ResultName) {
 				case '': break;
@@ -159,7 +159,14 @@ function AddTreeviewNode(p_obj, p_type, p_json_id, p_icon, p_text, p_root, p_pos
 		l_objDiv.appendChild(l_objSpan2);
 	}
 
-	l_objDiv.id = '{"'+p_type+'":'+JSON.stringify(p_json_id)+'}';
+	var l_comma = '';
+	l_objDiv.id = '{"'+p_type+'":[';
+	for (x in p_json_id) {
+		l_objDiv.id += l_comma+JSON.stringify(p_json_id[x]);
+		l_comma = ',';
+	}
+	l_objDiv.id += ']}';
+	
 	l_objDiv._type = p_type;
 
 	if (p_root == 'Y') {
@@ -314,7 +321,8 @@ function OpenCloseOnClick(p_obj) {
 			PerformTrans( {Service:"GetDirAaaItems"} );
 			break;
  		case 'TYP_AAA':
-			PerformTrans( {Service:"GetAaaItems",Parameters:{Type:JSON.parse(p_obj.parentNode.id)["TYP_AAA"]}} );
+			l_json_id = JSON.parse(p_obj.parentNode.id)["TYP_AAA"];
+			PerformTrans( {Service:"GetAaaItems",Parameters:{Type:{Naam:l_json_id[0]}}} );
 			break;
  		case 'DIR_BBB':
 			PerformTrans( {Service:"GetDirBbbItems"} );
@@ -323,22 +331,27 @@ function OpenCloseOnClick(p_obj) {
 			PerformTrans( {Service:"GetDirCccItems"} );
 			break;
  		case 'TYP_CCC':
-			PerformTrans( {Service:"GetCccItems",Parameters:{Type:JSON.parse(p_obj.parentNode.id)["TYP_CCC"]}} );
+			l_json_id = JSON.parse(p_obj.parentNode.id)["TYP_CCC"];
+			PerformTrans( {Service:"GetCccItems",Parameters:{Type:{Code:l_json_id[0],Naam:l_json_id[1]}}} );
 			break;
  		case 'DIR_PRD':
 			PerformTrans( {Service:"GetDirPrdItems"} );
 			break;
  		case 'TYP_PRD':
-			PerformTrans( {Service:"GetPrdItems",Parameters:{Type:JSON.parse(p_obj.parentNode.id)["TYP_PRD"]}} );
+			l_json_id = JSON.parse(p_obj.parentNode.id)["TYP_PRD"];
+			PerformTrans( {Service:"GetPrdItems",Parameters:{Type:{Code:l_json_id[0],Naam:l_json_id[1]}}} );
 			break;
  		case 'TYP_PR2':
-			PerformTrans( {Service:"GetPr2Items",Parameters:{Type:JSON.parse(p_obj.parentNode.id)["TYP_PR2"]}} );
+			l_json_id = JSON.parse(p_obj.parentNode.id)["TYP_PR2"];
+			PerformTrans( {Service:"GetPr2Items",Parameters:{Type:{FkPrdCode:l_json_id[0],FkPrdNaam:l_json_id[1],Code:l_json_id[2],Naam:l_json_id[3]}}} );
 			break;
  		case 'TYP_PA2':
-			PerformTrans( {Service:"GetPa2Items",Parameters:{Type:JSON.parse(p_obj.parentNode.id)["TYP_PA2"]}} );
+			l_json_id = JSON.parse(p_obj.parentNode.id)["TYP_PA2"];
+			PerformTrans( {Service:"GetPa2Items",Parameters:{Type:{FkPrdCode:l_json_id[0],FkPrdNaam:l_json_id[1],FkPr2Code:l_json_id[2],FkPr2Naam:l_json_id[3],Code:l_json_id[4],Naam:l_json_id[5]}}} );
 			break;
  		case 'TYP_PRT':
-			PerformTrans( {Service:"GetPrtItems",Parameters:{Type:JSON.parse(p_obj.parentNode.id)["TYP_PRT"]}} );
+			l_json_id = JSON.parse(p_obj.parentNode.id)["TYP_PRT"];
+			PerformTrans( {Service:"GetPrtItems",Parameters:{Type:{FkPrdCode:l_json_id[0],FkPrdNaam:l_json_id[1],Code:l_json_id[2],Naam:l_json_id[3]}}} );
 			break;
 		} 
 	}

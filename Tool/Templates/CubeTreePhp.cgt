@@ -26,7 +26,7 @@ g_xmlhttp = new XMLHttpRequest();
 g_xmlhttp.onreadystatechange = function(){
 	if(g_xmlhttp.readyState == 4){
 		var g_responseText = g_xmlhttp.responseText;
-		var l_json_array = JSON.parse(g_responseText);
+		l_json_array = JSON.parse(g_responseText);
 		for (i in l_json_array) {
 			switch (l_json_array[i].ResultName) {
 				case '': break;[[LOOP,SYSTEM_BO_TYPE]][[LOOP,BUSINESS_OBJECT_TYPE]][[LOOP,TYPE]]
@@ -167,7 +167,14 @@ function AddTreeviewNode(p_obj, p_type, p_json_id, p_icon, p_text, p_root, p_pos
 		l_objDiv.appendChild(l_objSpan2);
 	}
 
-	l_objDiv.id = '{"'+p_type+'":'+JSON.stringify(p_json_id)+'}';
+	var l_comma = '';
+	l_objDiv.id = '{"'+p_type+'":[';
+	for (x in p_json_id) {
+		l_objDiv.id += l_comma+JSON.stringify(p_json_id[x]);
+		l_comma = ',';
+	}
+	l_objDiv.id += ']}';
+	
 	l_objDiv._type = p_type;
 
 	if (p_root == 'Y') {
@@ -322,7 +329,8 @@ function OpenCloseOnClick(p_obj) {
 			PerformTrans( {Service:"GetDir<<TYPE1:C>>Items"} );
 			break;[[ENDIF]][[IF:CHILD(TYPE)[OR]3=Y]]
  		case 'TYP_<<TYPE1:U>>':
-			PerformTrans( {Service:"Get<<TYPE1:C>>Items",Parameters:{Type:JSON.parse(p_obj.parentNode.id)["TYP_<<TYPE1:U>>"]}} );
+			l_json_id = JSON.parse(p_obj.parentNode.id)["TYP_<<TYPE1:U>>"];
+			PerformTrans( {Service:"Get<<TYPE1:C>>Items",Parameters:{Type:{[[LOOP,ATTRIBUTE:1=Y]]<<ATTRIBUTE:C>>:l_json_id[[[EVAL:<<ATTRIBUTE:IX>>-1]]][[IF:!LAST]],[[ENDIF]][[ENDLOOP,ATTRIBUTE]]}}} );
 			break;[[ENDIF]][[REPEAT]][[ENDLOOP,TYPE]][[ENDLOOP,BUSINESS_OBJECT_TYPE]][[ENDLOOP,SYSTEM_BO_TYPE]]
 		} 
 	}
