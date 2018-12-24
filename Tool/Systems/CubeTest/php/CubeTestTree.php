@@ -11,36 +11,6 @@ div {padding-left:12px}
 </style>
 <script language='javascript' type='text/javascript'>
 <!--
-g_xmlhttp = new XMLHttpRequest();
-g_xmlhttp.onreadystatechange = function(){
-	if(g_xmlhttp.readyState == 4){
-		var g_responseText = g_xmlhttp.responseText;
-		l_json_array = JSON.parse(g_responseText);
-		for (i in l_json_array) {
-			switch (l_json_array[i].ResultName) {
-				case '': break;
-				case 'LIST_AAA': AddTreeviewChildren(l_json_array[i].Rows,'TYP_AAA','icons/produkt.bmp'); break;
-				case 'CHANGE_PARENT_AAA': ChangeParent (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.getElementById('TYP_AAA<||>'+l_rows[1])); break;
-				case 'LIST_AAD': AddTreeviewChildren(l_json_array[i].Rows,'TYP_AAD','icons/attrib.bmp'); break;
-				case 'MOVE_AAD': MoveNode (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.body._moveAction); break;
-				case 'LIST_BBB': AddTreeviewChildren(l_json_array[i].Rows,'TYP_BBB','icons/part.bmp'); break;
-				case 'LIST_CCC': AddTreeviewChildren(l_json_array[i].Rows,'TYP_CCC','icons/produkt.bmp'); break;
-				case 'COUNT_CCC': CheckMenuItem('TYP_CCC',l_rows[1]); break;
-				case 'MOVE_CCC': MoveNode (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.body._moveAction); break;
-				case 'LIST_PRD': AddTreeviewChildren(l_json_array[i].Rows,'TYP_PRD','icons/produkt.bmp'); break;
-				case 'LIST_PR2': AddTreeviewChildren(l_json_array[i].Rows,'TYP_PR2','icons/produkt.bmp'); break;
-				case 'LIST_PA2': AddTreeviewChildren(l_json_array[i].Rows,'TYP_PA2','icons/part.bmp'); break;
-				case 'CHANGE_PARENT_PA2': ChangeParent (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.getElementById('TYP_PA2<||>'+l_rows[1])); break;
-				case 'LIST_PRT': AddTreeviewChildren(l_json_array[i].Rows,'TYP_PRT','icons/part.bmp'); break;
-				case 'CHANGE_PARENT_PRT': ChangeParent (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.getElementById('TYP_PRT<||>'+l_rows[1])); break;
-				case "ERROR": alert ('Error: '+l_rows[1]); break;
-				default: alert ('Unknown reply: '+l_json_array[i].ResultName);
-			}
-		}
-		
-	}
-}
-
 var g_objMenuList;
 var g_objNodeDiv;
 var g_currentSpanIndex;
@@ -52,6 +22,46 @@ var g_currentObjId;
 var g_currentObjType;
 var g_currentNodeType;
 
+var g_xmlhttp = new XMLHttpRequest();
+g_xmlhttp.onreadystatechange = function() {
+	if(g_xmlhttp.readyState == 4) {
+		if(g_xmlhttp.status == 200) {
+			document.body.style.cursor = "default";
+			var g_responseText = g_xmlhttp.responseText;
+			try {
+				var l_json_array = JSON.parse(g_responseText);
+				for (i in l_json_array) {
+					switch (l_json_array[i].ResultName) {
+						case '': break;
+						case 'LIST_AAA': AddTreeviewChildren(l_json_array[i].Rows,'TYP_AAA','icons/produkt.bmp'); break;
+						case 'CHANGE_PARENT_AAA': ChangeParent (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.getElementById('TYP_AAA<||>'+l_rows[1])); break;
+						case 'LIST_AAD': AddTreeviewChildren(l_json_array[i].Rows,'TYP_AAD','icons/attrib.bmp'); break;
+						case 'MOVE_AAD': MoveNode (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.body._moveAction); break;
+						case 'LIST_BBB': AddTreeviewChildren(l_json_array[i].Rows,'TYP_BBB','icons/part.bmp'); break;
+						case 'LIST_CCC': AddTreeviewChildren(l_json_array[i].Rows,'TYP_CCC','icons/produkt.bmp'); break;
+						case 'COUNT_CCC': CheckMenuItem('TYP_CCC',l_json_array[i].Rows[0].Data.TypeCount); break;
+						case 'MOVE_CCC': MoveNode (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.body._moveAction); break;
+						case 'LIST_PRD': AddTreeviewChildren(l_json_array[i].Rows,'TYP_PRD','icons/produkt.bmp'); break;
+						case 'LIST_PR2': AddTreeviewChildren(l_json_array[i].Rows,'TYP_PR2','icons/produkt.bmp'); break;
+						case 'LIST_PA2': AddTreeviewChildren(l_json_array[i].Rows,'TYP_PA2','icons/part.bmp'); break;
+						case 'CHANGE_PARENT_PA2': ChangeParent (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.getElementById('TYP_PA2<||>'+l_rows[1])); break;
+						case 'LIST_PRT': AddTreeviewChildren(l_json_array[i].Rows,'TYP_PRT','icons/part.bmp'); break;
+						case 'CHANGE_PARENT_PRT': ChangeParent (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.getElementById('TYP_PRT<||>'+l_rows[1])); break;
+						case "ERROR": alert ('Server error:\n'+l_json_array[i].ErrorText); break;
+						default: alert ('Unknown reply:\n'+g_responseText);
+					}
+				}
+			}
+			catch (err) {
+				alert ('JSON error:\n'+g_responseText);
+			}
+		} else {
+			alert ('Request error:\n'+g_xmlhttp.statusText);
+		}
+		
+	}
+}
+	
 function AddTreeviewChildren(p_json_rows, p_type, p_icon) {
 	for (i in p_json_rows) {
 		AddTreeviewNode(g_objNodeDiv, p_type, p_json_rows[i].Key, p_icon, p_json_rows[i].Display.toLowerCase(), 'N', ' ', null);
@@ -238,23 +248,27 @@ function IsInHierarchy (p_objRoot, p_obj) {
 
 function Highlight(p_obj) {
 	p_obj.style.backgroundColor="#E0E0E0";
+	if (g_xmlhttp.readyState == 1) {
+		document.body.style.cursor = "wait";
+		return;
+	}
 	switch (document.body._state) {
 	case 'N':
-		document.body.style.cursor="pointer";
+		document.body.style.cursor = "pointer";
 		break;
 	case 'M':
 		if ((g_currentParentId != p_obj.parentNode._parentId || g_currentObjIndex < p_obj.parentNode.parentNode._index) && g_currentParentId != p_obj.parentNode.id) {
-			document.body.style.cursor="url(icons/pointer-pos-nok.cur), default";	
+			document.body.style.cursor = "url(icons/pointer-pos-nok.cur), default";	
 		}
 		break;
 	case 'P':
 		if ((g_currentRootId != p_obj.parentNode._rootId || g_currentObjType != p_obj.parentNode._type) && g_currentRootId != p_obj.parentNode.id || IsInHierarchy(g_objNodeDiv, p_obj.parentNode)) {
-			document.body.style.cursor="url(icons/pointer-par-nok.cur), default";
+			document.body.style.cursor = "url(icons/pointer-par-nok.cur), default";
 		}
 		break;
 	case 'A':
 		if ((g_currentObjId != p_obj.parentNode._parentId || g_currentChildIndex < p_obj.parentNode.parentNode._index ) && g_currentObjId != p_obj.parentNode.id) {
-			document.body.style.cursor="url(icons/pointer-pos-nok.cur), default";	
+			document.body.style.cursor = "url(icons/pointer-pos-nok.cur), default";	
 		}
 		break;
 	}
@@ -262,18 +276,22 @@ function Highlight(p_obj) {
 
 function DeHighlight(p_obj) {
 	p_obj.style.backgroundColor="#FFFFFF";
+	if (g_xmlhttp.readyState == 1) {
+		document.body.style.cursor = "wait";
+		return;
+	}
 	switch (document.body._state) {
 	case 'N':
-		document.body.style.cursor="default";
+		document.body.style.cursor = "default";
 		break;
 	case 'M':
-		document.body.style.cursor="url(icons/pointer-pos.cur), default";	
+		document.body.style.cursor = "url(icons/pointer-pos.cur), default";	
 		break;
 	case 'P':
-		document.body.style.cursor="url(icons/pointer-par.cur), default";	
+		document.body.style.cursor = "url(icons/pointer-par.cur), default";	
 		break;
 	case 'A':
-		document.body.style.cursor="url(icons/pointer-pos.cur), default";	
+		document.body.style.cursor = "url(icons/pointer-pos.cur), default";	
 		break;
 	}
 }
@@ -305,6 +323,10 @@ function OpenCloseMouseOut(p_obj) {
 
 function OpenCloseOnClick(p_obj) {
 	if (document.body._state !== "N") return;
+	if (g_xmlhttp.readyState == 1) {
+		document.body.style.cursor = "wait";
+		return;
+	}
 	ResetState();
 	CloseMenu();
 	g_objNodeDiv = p_obj.parentNode;
@@ -321,7 +343,7 @@ function OpenCloseOnClick(p_obj) {
 			PerformTrans( {Service:"GetDirAaaItems"} );
 			break;
  		case 'TYP_AAA':
-			l_json_id = JSON.parse(p_obj.parentNode.id)["TYP_AAA"];
+			var l_json_id = JSON.parse(p_obj.parentNode.id)["TYP_AAA"];
 			PerformTrans( {Service:"GetAaaItems",Parameters:{Type:{Naam:l_json_id[0]}}} );
 			break;
  		case 'DIR_BBB':
@@ -331,26 +353,26 @@ function OpenCloseOnClick(p_obj) {
 			PerformTrans( {Service:"GetDirCccItems"} );
 			break;
  		case 'TYP_CCC':
-			l_json_id = JSON.parse(p_obj.parentNode.id)["TYP_CCC"];
+			var l_json_id = JSON.parse(p_obj.parentNode.id)["TYP_CCC"];
 			PerformTrans( {Service:"GetCccItems",Parameters:{Type:{Code:l_json_id[0],Naam:l_json_id[1]}}} );
 			break;
  		case 'DIR_PRD':
 			PerformTrans( {Service:"GetDirPrdItems"} );
 			break;
  		case 'TYP_PRD':
-			l_json_id = JSON.parse(p_obj.parentNode.id)["TYP_PRD"];
+			var l_json_id = JSON.parse(p_obj.parentNode.id)["TYP_PRD"];
 			PerformTrans( {Service:"GetPrdItems",Parameters:{Type:{Code:l_json_id[0],Naam:l_json_id[1]}}} );
 			break;
  		case 'TYP_PR2':
-			l_json_id = JSON.parse(p_obj.parentNode.id)["TYP_PR2"];
+			var l_json_id = JSON.parse(p_obj.parentNode.id)["TYP_PR2"];
 			PerformTrans( {Service:"GetPr2Items",Parameters:{Type:{FkPrdCode:l_json_id[0],FkPrdNaam:l_json_id[1],Code:l_json_id[2],Naam:l_json_id[3]}}} );
 			break;
  		case 'TYP_PA2':
-			l_json_id = JSON.parse(p_obj.parentNode.id)["TYP_PA2"];
+			var l_json_id = JSON.parse(p_obj.parentNode.id)["TYP_PA2"];
 			PerformTrans( {Service:"GetPa2Items",Parameters:{Type:{FkPrdCode:l_json_id[0],FkPrdNaam:l_json_id[1],FkPr2Code:l_json_id[2],FkPr2Naam:l_json_id[3],Code:l_json_id[4],Naam:l_json_id[5]}}} );
 			break;
  		case 'TYP_PRT':
-			l_json_id = JSON.parse(p_obj.parentNode.id)["TYP_PRT"];
+			var l_json_id = JSON.parse(p_obj.parentNode.id)["TYP_PRT"];
 			PerformTrans( {Service:"GetPrtItems",Parameters:{Type:{FkPrdCode:l_json_id[0],FkPrdNaam:l_json_id[1],Code:l_json_id[2],Naam:l_json_id[3]}}} );
 			break;
 		} 
@@ -358,6 +380,10 @@ function OpenCloseOnClick(p_obj) {
 }
 
 function OpenDetail(p_obj) {
+	if (g_xmlhttp.readyState == 1) {
+		document.body.style.cursor = "wait";
+		return;
+	}
 	CloseMenu();
 
 	switch (document.body._state) {
@@ -381,12 +407,14 @@ function OpenDetail(p_obj) {
 			}
 			document.body._objNodePosId = l_obj.id;
 			ResetState();
+			var l_json_id = JSON.parse(g_currentObjId)[l_obj._type];
+			var l_json_id_ref = JSON.parse(document.body._objNodePosId)[l_obj._type];
 			switch (l_obj._type) {
 			case 'TYP_AAD':
-				PerformTrans('MoveAad'+'<|||>'+document.body._moveAction+'<|>'+g_currentObjId.split("<||>")[1]+'<|>'+document.body._objNodePosId.split("<||>")[1]);
+				PerformTrans( {Service:"MoveAad",Parameters:{Option:document.body._moveAction,Type:{FkAaaNaam:l_json_id[0],Naam:l_json_id[1]},Ref:{FkAaaNaam:l_json_id_ref[0],Naam:l_json_id_ref[1]}}});
 				break;
 			case 'TYP_CCC':
-				PerformTrans('MoveCcc'+'<|||>'+document.body._moveAction+'<|>'+g_currentObjId.split("<||>")[1]+'<|>'+document.body._objNodePosId.split("<||>")[1]);
+				PerformTrans( {Service:"MoveCcc",Parameters:{Option:document.body._moveAction,Type:{Code:l_json_id[0],Naam:l_json_id[1]},Ref:{Code:l_json_id_ref[0],Naam:l_json_id_ref[1]}}});
 				break;
 			}
 		}
@@ -460,11 +488,15 @@ function OpenDetailPage (p_code, p_nodeType, p_objId, p_options) {
 }
 
 function OpenMenu(p_obj) {
+	if (g_xmlhttp.readyState == 1) {
+		document.body.style.cursor = "wait";
+		return;
+	}
 	ResetState(); 
 	CloseMenu();
 	var l_childCount = p_obj.parentNode.parentNode.children.length;
-	var l_json_id = JSON.parse(p_obj.parentNode.id);
-	var l_type_id = Object.keys(l_json_id)[0];
+	var l_json_node_id = JSON.parse(p_obj.parentNode.id);
+	var l_type_id = Object.keys(l_json_node_id)[0];
 	p_obj.style.backgroundColor = "#FFFFFF";
 	var l_x = event.clientX-20;
 	var l_y = event.clientY-20+document.body.scrollTop;
@@ -532,14 +564,15 @@ function OpenMenu(p_obj) {
 		break;
  	case 'DIR_CCC':
 		AddMenuItem(g_objMenuList, 'add ccc', 'icons/produkt.bmp','CubeAdd','N','TYP_CCC',2,'N',2);
-		PerformTrans('CountCcc');
+		PerformTrans( {Service:"CountCcc"} );
 		break;
  	case 'TYP_CCC':
 		if (l_childCount > 1) {
 			AddMenuItem(g_objMenuList, 'move', 'icons/cube_move.bmp','CubeMove','','CUBE_M_CCC',0,'N',0);
 		}
 		AddMenuItem(g_objMenuList, 'add ccc', 'icons/produkt.bmp','CubeAdd','R','TYP_CCC',3,'N',2);
-		PerformTrans('CountCccRestrictedItems'+'<|||>'+l_type_id[1]);
+		var l_json_id = l_json_node_id[l_type_id];
+		PerformTrans( {Service:"CountCccRestrictedItems",Parameters:{Type:{Code:l_json_id[0],Naam:l_json_id[1]}}} );
 		break;
  	case 'DIR_PRD':
 		AddMenuItem(g_objMenuList, 'add prod', 'icons/produkt.bmp','DetailPRD','N','TYP_PRD',0,'N',2);
@@ -626,6 +659,10 @@ function CloseMenu() {
 
 function ResetState() {
 	document.body._state="N";
+	if (g_xmlhttp.readyState == 1) {
+		document.body.style.cursor = "wait";
+		return;
+	}
 	document.body.style.cursor="default";
 }
 

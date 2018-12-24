@@ -1692,7 +1692,7 @@ function perform_db_request() {
 	//echo $r;
 	$r = oci_execute($curs);
 	if (!$r) {
-		ProcessDbError($stid);
+		ProcessDbError($curs);
 		return false;
 	}
 	return true;
@@ -1706,6 +1706,7 @@ function ProcessDbError($stid) {
 	$ResponseObj->ErrorText = 'ORA-error: '.$e['code'].': '.$e['message'];
 	$ResponseText = json_encode($ResponseObj);
 	echo $ResponseText;
+	echo ']';
 }
 
 function CubeError($errno, $errstr) {
