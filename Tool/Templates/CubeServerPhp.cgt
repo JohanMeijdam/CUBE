@@ -30,11 +30,11 @@ case '<<SERVICE:C>>':[[LOOP,OPERATION]][[IF:FIRST]]
 	oci_bind_by_name($stid,":<<TEXT,SERVER_ARGUMENT_NAME>>",$RequestObj->Parameters-><<ARGUMENT2>>->[[LOOP,ARGUMENT_ATTRIBUTE]]<<ARGUMENT_ATTRIBUTE:C>>[[ENDLOOP,ARGUMENT_ATTRIBUTE]]);[[ENDLOOP,ARGUMENT]][[ENDFOR]]
 [[ELSE]]
 
-	$stid = oci_parse($conn, "BEGIN pkg_[[FOR,BUSINESS_OBJECT_TYPE:N>N]][[LOOP,TYPE]]<<TYPE1:L>>[[ENDLOOP,TYPE]][[ENDFOR]].<<OPERATION:L>> (:p_cube_row); END;");[[ENDIF]][[IF:CHILD(EXPORT)]]
+	$stid = oci_parse($conn, "BEGIN pkg_[[FOR,BUSINESS_OBJECT_TYPE:N>N]][[LOOP,TYPE]]<<TYPE1:L>>[[ENDLOOP,TYPE]][[ENDFOR]].<<OPERATION:L>> (:p_cube_row); END;");[[ENDIF]]
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = '<<SERVICE1:U>>[[IF:!2=#]]_<<OPERATION2:U>>[[ENDIF]][[LOOP,OPERATION_TYPE]]_<<OPERATION_TYPE1:U>>[[ENDLOOP,OPERATION_TYPE]]';[[IF:CHILD(EXPORT)]]
 	$r = perform_db_request();
 	if (!$r) { return; }
-	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = '<<SERVICE1:U>>[[IF:!2=#]]_<<OPERATION2:U>>[[ENDIF]][[LOOP,OPERATION_TYPE]]_<<OPERATION_TYPE1:U>>[[ENDLOOP,OPERATION_TYPE]]';
 	$ResponseObj->Rows = array();
 	[[IF:3=Y]]while[[ELSE]]if[[ENDIF]] ($row = oci_fetch_assoc($curs)) {
 		$RowObj = new \stdClass();[[LOOP,EXPORT]][[IF:1=Y]]
@@ -89,8 +89,7 @@ function ProcessDbError($stid) {
 	$ResponseObj->ResultName = 'ERROR';
 	$ResponseObj->ErrorText = 'ORA-error: '.$e['code'].': '.$e['message'];
 	$ResponseText = json_encode($ResponseObj);
-	echo $ResponseText;
-	echo ']';
+	echo '['.$ResponseText.']';
 }
 
 function CubeError($errno, $errstr) {

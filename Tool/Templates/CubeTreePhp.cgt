@@ -41,20 +41,20 @@ g_xmlhttp.onreadystatechange = function() {
 			var g_responseText = g_xmlhttp.responseText;
 			try {
 				var l_json_array = JSON.parse(g_responseText);
-				for (i in l_json_array) {
-					switch (l_json_array[i].ResultName) {
-						case '': break;[[LOOP,SYSTEM_BO_TYPE]][[LOOP,BUSINESS_OBJECT_TYPE]][[LOOP,TYPE]]
-						case 'LIST_<<TYPE1:U>>': AddTreeviewChildren(l_json_array[i].Rows,'TYP_<<TYPE1:U>>','icons/<<TYPE7:L>>.bmp'); break;[[IF:(3=Y[AND]!4=N)[OR]!5=N]]
-						case 'COUNT_<<TYPE1:U>>': CheckMenuItem('TYP_<<TYPE1:U>>',l_json_array[i].Rows[0].Data.TypeCount); break;[[ENDIF]][[IF:6=P[AND]CHILD(ATTRIBUTE:<<TEXT,GEN_IS_OWN_KEY>>)]]
-						case 'MOVE_<<TYPE1:U>>': MoveNode (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.body._moveAction); break;[[ENDIF]][[IF:3=Y[AND]!4=1[AND]!6=P[AND]CHILD(ATTRIBUTE:<<TEXT,GEN_IS_OWN_KEY>>)]]
-						case 'CHANGE_PARENT_<<TYPE1:U>>': ChangeParent (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.getElementById('TYP_<<TYPE1:U>><||>'+l_rows[1])); break;[[ENDIF]][[REPEAT]][[ENDLOOP,TYPE]][[ENDLOOP,BUSINESS_OBJECT_TYPE]][[ENDLOOP,SYSTEM_BO_TYPE]]
-						case "ERROR": alert ('Server error:\n'+l_json_array[i].ErrorText); break;
-						default: alert ('Unknown reply:\n'+g_responseText);
-					}
-				}
 			}
 			catch (err) {
-				alert ('JSON error:\n'+g_responseText);
+				alert ('JSON parse error:\n'+g_responseText);
+			}
+			for (i in l_json_array) {
+				switch (l_json_array[i].ResultName) {
+					case '': break;[[LOOP,SYSTEM_BO_TYPE]][[LOOP,BUSINESS_OBJECT_TYPE]][[LOOP,TYPE]]
+					case 'LIST_<<TYPE1:U>>': AddTreeviewChildren(l_json_array[i].Rows,'TYP_<<TYPE1:U>>','icons/<<TYPE7:L>>.bmp'); break;[[IF:(3=Y[AND]!4=N)[OR]!5=N]]
+					case 'COUNT_<<TYPE1:U>>': CheckMenuItem('TYP_<<TYPE1:U>>',l_json_array[i].Rows[0].Data.TypeCount); break;[[ENDIF]][[IF:6=P[AND]CHILD(ATTRIBUTE:<<TEXT,GEN_IS_OWN_KEY>>)]]
+					case 'MOVE_<<TYPE1:U>>': MoveNode (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.body._moveAction); break;[[ENDIF]][[IF:3=Y[AND]!4=1[AND]!6=P[AND]CHILD(ATTRIBUTE:<<TEXT,GEN_IS_OWN_KEY>>)]]
+					case 'CHANGE_PARENT_<<TYPE1:U>>': ChangeParent (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId),'TYP_<<TYPE1:U>>',l_json_array[i].Rows); break;[[ENDIF]][[REPEAT]][[ENDLOOP,TYPE]][[ENDLOOP,BUSINESS_OBJECT_TYPE]][[ENDLOOP,SYSTEM_BO_TYPE]]
+					case "ERROR": alert ('Server error:\n'+l_json_array[i].ErrorText); break;
+					default: alert ('Unknown reply:\n'+g_responseText);
+				}
 			}
 		} else {
 			alert ('Request error:\n'+g_xmlhttp.statusText);
@@ -176,16 +176,8 @@ function AddTreeviewNode(p_obj, p_type, p_json_id, p_icon, p_text, p_root, p_pos
 		l_objSpan2._index = i;
 		l_objDiv.appendChild(l_objSpan2);
 	}
-
-	var l_comma = '';
-	l_objDiv.id = '{"'+p_type+'":[';
-	for (x in p_json_id) {
-		l_objDiv.id += l_comma+JSON.stringify(p_json_id[x]);
-		l_comma = ',';
-	}
-	l_objDiv.id += ']}';
-	
 	l_objDiv._type = p_type;
+	l_objDiv.id = AssembleObjId (p_type, p_json_id);
 
 	if (p_root == 'Y') {
 		l_objDiv.style.paddingLeft = '0px';
@@ -235,12 +227,27 @@ function MoveNode (p_obj,  p_objPosition, p_moveAction) {
 	p_obj._parentId = p_objPosition._parentId;
 }
 
-function ChangeParent (p_obj, p_objParent, p_objPosition) {
+function ChangeParent (p_obj, p_objParent, p_type, p_json_rows) {
 	if (p_objParent.firstChild._state == 'O') {
-		p_objParent.childNodes[g_currentSpanIndex].insertBefore(p_obj, p_objPosition);
+		if (p_json_rows.length == 0) {
+			p_objParent.childNodes[g_currentSpanIndex].appendChild(p_obj);
+		} else {
+			var l_objPosition = document.getElementById (AssembleObjId (p_type, p_json_rows[0].Key));
+			p_objParent.childNodes[g_currentSpanIndex].insertBefore(p_obj, l_objPosition);
+		}
 	} else {
 		p_obj.parentNode.removeChild(p_obj);
 	}
+}
+
+function AssembleObjId (p_type, p_json_id) {
+	var l_comma = '';
+	var l_id = '{"'+p_type+'":[';
+	for (x in p_json_id) {
+		l_id += l_comma+JSON.stringify(p_json_id[x]);
+		l_comma = ',';
+	}
+	return l_id+']}';
 }
 
 function IsInHierarchy (p_objRoot, p_obj) {
@@ -390,7 +397,7 @@ function OpenDetail(p_obj) {
 			var l_json_id_ref = JSON.parse(document.body._objNodePosId)[l_obj._type];
 			switch (l_obj._type) {[[LOOP,SYSTEM_BO_TYPE]][[LOOP,BUSINESS_OBJECT_TYPE]][[LOOP,TYPE]][[IF:6=P[AND]CHILD(ATTRIBUTE:<<TEXT,GEN_IS_OWN_KEY>>)]]
 			case 'TYP_<<TYPE1:U>>':
-				PerformTrans( {Service:"Move<<TYPE1:C>>",Parameters:{Option:document.body._moveAction,Type:{[[LOOP,ATTRIBUTE:1=Y]]<<ATTRIBUTE:C>>:l_json_id[[[EVAL:<<ATTRIBUTE:IX>>-1]]][[IF:!LAST]],[[ENDIF]][[ENDLOOP,ATTRIBUTE]]},Ref:{[[LOOP,ATTRIBUTE:1=Y]]<<ATTRIBUTE:C>>:l_json_id_ref[[[EVAL:<<ATTRIBUTE:IX>>-1]]][[IF:!LAST]],[[ENDIF]][[ENDLOOP,ATTRIBUTE]]}}});
+				PerformTrans( {Service:"Move<<TYPE1:C>>",Parameters:{Option:{CubePosAction:document.body._moveAction},Type:{[[LOOP,ATTRIBUTE:1=Y]]<<ATTRIBUTE:C>>:l_json_id[[[EVAL:<<ATTRIBUTE:IX>>-1]]][[IF:!LAST]],[[ENDIF]][[ENDLOOP,ATTRIBUTE]]},Ref:{[[LOOP,ATTRIBUTE:1=Y]]<<ATTRIBUTE:C>>:l_json_id_ref[[[EVAL:<<ATTRIBUTE:IX>>-1]]][[IF:!LAST]],[[ENDIF]][[ENDLOOP,ATTRIBUTE]]}}} );
 				break;[[ENDIF]][[REPEAT]][[ENDLOOP,TYPE]][[ENDLOOP,BUSINESS_OBJECT_TYPE]][[ENDLOOP,SYSTEM_BO_TYPE]]
 			}
 		}
@@ -398,9 +405,9 @@ function OpenDetail(p_obj) {
 	case 'P':
 		if ((g_currentRootId == p_obj.parentNode._rootId && g_currentObjType == p_obj.parentNode._type || g_currentRootId == p_obj.parentNode.id) && !IsInHierarchy(g_objNodeDiv, p_obj.parentNode) ) {
 			if (g_currentRootId == p_obj.parentNode.id) {
-				g_currentSpanIndex = g_currentObjIndex;
-			} else {
 				g_currentSpanIndex = 2;
+			} else {
+				g_currentSpanIndex = g_currentObjIndex;
 			}
 			if (document.body._flagPosition == 'Y' && p_obj.parentNode.children[g_currentSpanIndex].children.length > 0) {
 				document.body.style.cursor = "url(icons/pointer-pos.cur), default";
@@ -411,17 +418,19 @@ function OpenDetail(p_obj) {
 				document.body._moveAction = "L";
 				document.body._objNodePosId = l_obj.id;
 				ResetState();
+				var l_json_id = JSON.parse(g_currentObjId)[g_currentObjType];
 				switch (l_obj._type) {[[LOOP,SYSTEM_BO_TYPE]][[LOOP,BUSINESS_OBJECT_TYPE]][[LOOP,TYPE]][[IF:ROOT[AND]!6=P[AND]CHILD(ATTRIBUTE:<<TEXT,GEN_IS_OWN_KEY>>)[AND]3=Y[AND]!4=1)]]
 				case 'DIR_<<TYPE1:U>>':
-					PerformTrans('ChangeParent<<TYPE1:C>>'+'<|||>Y<|>'+g_currentObjId.split("<||>")[1]+'[[LOOP,ATTRIBUTE:1=Y]]<|>[[ENDLOOP,ATTRIBUTE]]');
+					PerformTrans( {Service:"ChangeParent<<TYPE1:C>>",Parameters:{Option:{CubeFlagRoot:"Y"},Type:{[[LOOP,ATTRIBUTE:1=Y]]<<ATTRIBUTE:C>>:l_json_id[[[EVAL:<<ATTRIBUTE:IX>>-1]]][[IF:!LAST]],[[ENDIF]][[ENDLOOP,ATTRIBUTE]]}}} );
 					break;[[ENDIF]][[IF:CHILD(ATTRIBUTE:<<TEXT,GEN_IS_OWN_KEY>>)[AND]3=Y[AND]!4=1[OR]CHILD(TYPE:CHILD(ATTRIBUTE:<<TEXT,GEN_IS_OWN_KEY>>)[AND]3=Y[AND]!4=1[AND]!6=P)]]
-				case 'TYP_<<TYPE1:U>>':[[IF:6=P]]
-					PerformTrans('Move<<TYPE1:C>>'+'<|||>'+document.body._moveAction+'<|>'+g_currentObjId.split("<||>")[1]+'<|>'+l_obj.id.split("<||>")[1]);[[ELSE]][[LOOP,TYPE:CHILD(ATTRIBUTE:<<TEXT,GEN_IS_OWN_KEY>>)[AND]3=Y[AND]!4=1[AND]!6=P]]
+				case 'TYP_<<TYPE1:U>>':
+					var l_json_id_ref = JSON.parse(document.body._objNodePosId)[l_obj._type];[[IF:6=P]]
+					PerformTrans( {Service:"Move<<TYPE1:C>>",Parameters:{Option:{CubePosAction:document.body._moveAction},Type:{[[LOOP,ATTRIBUTE:1=Y]]<<ATTRIBUTE:C>>:l_json_id[[[EVAL:<<ATTRIBUTE:IX>>-1]]][[IF:!LAST]],[[ENDIF]][[ENDLOOP,ATTRIBUTE]]},Ref:{[[LOOP,ATTRIBUTE:1=Y]]<<ATTRIBUTE:C>>:l_json_id_ref[[[EVAL:<<ATTRIBUTE:IX>>-1]]][[IF:!LAST]],[[ENDIF]][[ENDLOOP,ATTRIBUTE]]}}} );[[ELSE]][[LOOP,TYPE:CHILD(ATTRIBUTE:<<TEXT,GEN_IS_OWN_KEY>>)[AND]3=Y[AND]!4=1[AND]!6=P]]
 					if (document.body._menuItemType == 'CUBE_P_<<TYPE1:U>>') {
-						PerformTrans('ChangeParent<<TYPE1:C>>'+'<|||>Y<|>'+g_currentObjId.split("<||>")[1]+'[[LOOP,ATTRIBUTE:1=Y]]<|>[[ENDLOOP,ATTRIBUTE]]');			
+						PerformTrans( {Service:"ChangeParent<<TYPE1:C>>",Parameters:{Option:{CubeFlagRoot:"Y"},Type:{[[LOOP,ATTRIBUTE:1=Y]]<<ATTRIBUTE:C>>:l_json_id[[[EVAL:<<ATTRIBUTE:IX>>-1]]][[IF:!LAST]],[[ENDIF]][[ENDLOOP,ATTRIBUTE]]}}} );			
 						break;
 					}[[ENDLOOP,TYPE]]
-					PerformTrans('ChangeParent<<TYPE1:C>>'+'<|||>N<|>'+g_currentObjId.split("<||>")[1]+'<|>'+l_obj.id.split("<||>")[1]);[[ENDIF]]
+					PerformTrans( {Service:"ChangeParent<<TYPE1:C>>",Parameters:{Option:{CubeFlagRoot:"N"},Type:{[[LOOP,ATTRIBUTE:1=Y]]<<ATTRIBUTE:C>>:l_json_id[[[EVAL:<<ATTRIBUTE:IX>>-1]]][[IF:!LAST]],[[ENDIF]][[ENDLOOP,ATTRIBUTE]]},Ref:{[[LOOP,ATTRIBUTE:1=Y]]<<ATTRIBUTE:C>>:l_json_id_ref[[[EVAL:<<ATTRIBUTE:IX>>-1]]][[IF:!LAST]],[[ENDIF]][[ENDLOOP,ATTRIBUTE]]}}} );[[ENDIF]]
 					break;[[ENDIF]][[REPEAT]][[ENDLOOP,TYPE]][[ENDLOOP,BUSINESS_OBJECT_TYPE]][[ENDLOOP,SYSTEM_BO_TYPE]]
 				}
 			}
@@ -513,7 +522,9 @@ function OpenMenu(p_obj) {
 		if (l_childCount > 1) {
 			AddMenuItem(g_objMenuList, 'move', 'icons/cube_move.bmp','CubeMove','','CUBE_M_<<TYPE1:U>>',0,'N',0);
 		}[[ENDIF]][[EVAL:($myI=1)]][[IF:3=Y[AND]!4=1[AND]8=Y[AND]CHILD(ATTRIBUTE:<<TEXT,GEN_IS_OWN_KEY>>)]]
-		if (l_childCount > 1 || l_type_id[0] == p_obj.parentNode.parentNode.parentNode.id.split("<||>")[0]) {
+		var l_json_parent_node_id = JSON.parse(p_obj.parentNode.parentNode.parentNode.id);
+		var l_parent_type_id = Object.keys(l_json_parent_node_id)[0];
+		if (l_childCount > 1 || l_type_id == l_parent_type_id) {
 			AddMenuItem(g_objMenuList, 'change parent', 'icons/cube_change_par.bmp','CubeChangePar','','CUBE_P_<<TYPE1:U>>',0,[[IF:6=P]]'Y'[[ELSE]]'N'[[ENDIF]],0);
 		}[[ENDIF]][[LOOP,TYPE]]
 		AddMenuItem(g_objMenuList, 'add <<TYPE:L>>', 'icons/<<TYPE7:L>>.bmp','[[IF:6=P]]CubeAdd[[ELSE]]Detail<<TYPE1:U>>[[ENDIF]]','N','TYP_<<TYPE1:U>>',[[IF:!5=N]]<<TYPE5>>[[ELSE]]0[[ENDIF]],'N',[[EVAL:++$myI]]);[[ENDLOOP,TYPE]][[IF:3=Y]]

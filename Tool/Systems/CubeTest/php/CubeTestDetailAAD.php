@@ -227,8 +227,8 @@ function UpdateForeignKey(p_obj) {
 function StartSelect001(p_event) {
 	document.body._SelectLeft = p_event.clientX;
 	document.body._SelectTop = p_event.clientY;
-	document.body._ListBoxCode = 'Ref001';;
-	performTrans('GetAaaListEncapsulated<|||>');
+	document.body._ListBoxCode = 'Ref001';
+	performTrans('GetAaaListAll');
 }
 
 function OpenDescBox(p_icon,p_name,p_type,p_attribute_type,p_sequence) {

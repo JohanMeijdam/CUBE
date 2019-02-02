@@ -13,10 +13,10 @@ case 'GetDirAaaItems':
 	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_aaa.get_aaa_root_items (:p_cube_row); END;");
-	$r = perform_db_request();
-	if (!$r) { return; }
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'LIST_AAA';
+	$r = perform_db_request();
+	if (!$r) { return; }
 	$ResponseObj->Rows = array();
 	while ($row = oci_fetch_assoc($curs)) {
 		$RowObj = new \stdClass();
@@ -35,32 +35,10 @@ case 'GetAaaListAll':
 	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_aaa.get_aaa_list_all (:p_cube_row); END;");
-	$r = perform_db_request();
-	if (!$r) { return; }
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'LIST_AAA';
-	$ResponseObj->Rows = array();
-	while ($row = oci_fetch_assoc($curs)) {
-		$RowObj = new \stdClass();
-		$RowObj->Key = new \stdClass();
-		$RowObj->Key->Naam = $row["NAAM"];
-		$RowObj->Display = $row["NAAM"];
-		$ResponseObj->Rows[] = $RowObj;
-	}
-	$ResponseText = json_encode($ResponseObj);
-	echo $ResponseText;
-	echo ']';
-
-	break;
-
-case 'GetAaaListEncapsulated':
-	echo '[';
-
-	$stid = oci_parse($conn, "BEGIN pkg_aaa.get_aaa_list_encapsulated (:p_cube_row); END;");
 	$r = perform_db_request();
 	if (!$r) { return; }
-	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'LIST_AAA';
 	$ResponseObj->Rows = array();
 	while ($row = oci_fetch_assoc($curs)) {
 		$RowObj = new \stdClass();
@@ -84,10 +62,10 @@ case 'GetAaa':
 	END;");
 	oci_bind_by_name($stid,":p_naam",$RequestObj->Parameters->Type->Naam);
 
-	$r = perform_db_request();
-	if (!$r) { return; }
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'SELECT_AAA';
+	$r = perform_db_request();
+	if (!$r) { return; }
 	$ResponseObj->Rows = array();
 	if ($row = oci_fetch_assoc($curs)) {
 		$RowObj = new \stdClass();
@@ -112,10 +90,10 @@ case 'GetAaaItems':
 	END;");
 	oci_bind_by_name($stid,":p_naam",$RequestObj->Parameters->Type->Naam);
 
-	$r = perform_db_request();
-	if (!$r) { return; }
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'LIST_AAD';
+	$r = perform_db_request();
+	if (!$r) { return; }
 	$ResponseObj->Rows = array();
 	while ($row = oci_fetch_assoc($curs)) {
 		$RowObj = new \stdClass();
@@ -135,10 +113,10 @@ case 'GetAaaItems':
 	END;");
 	oci_bind_by_name($stid,":p_naam",$RequestObj->Parameters->Type->Naam);
 
-	$r = perform_db_request();
-	if (!$r) { return; }
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'LIST_AAA';
+	$r = perform_db_request();
+	if (!$r) { return; }
 	$ResponseObj->Rows = array();
 	while ($row = oci_fetch_assoc($curs)) {
 		$RowObj = new \stdClass();
@@ -159,16 +137,23 @@ case 'ChangeParentAaa':
 	$stid = oci_parse($conn, "BEGIN pkg_aaa.change_parent_aaa (
 		:p_cube_flag_root,
 		:p_naam,
-		:x_naam);
+		:x_naam,
+		:p_cube_row);
 	END;");
 	oci_bind_by_name($stid,":p_cube_flag_root",$RequestObj->Parameters->Option->CubeFlagRoot);
 	oci_bind_by_name($stid,":p_naam",$RequestObj->Parameters->Type->Naam);
 	oci_bind_by_name($stid,":x_naam",$RequestObj->Parameters->Ref->Naam);
 
-	$r = oci_execute($stid);
-	if (!$r) {
-		ProcessDbError($stid);
-		return;
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'CHANGE_PARENT_AAA';
+	$r = perform_db_request();
+	if (!$r) { return; }
+	$ResponseObj->Rows = array();
+	if ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Key = new \stdClass();
+		$RowObj->Key->Naam = $row["NAAM"];
+		$ResponseObj->Rows[] = $RowObj;
 	}
 	$ResponseText = json_encode($ResponseObj);
 	echo $ResponseText;
@@ -183,17 +168,24 @@ case 'CreateAaa':
 		:p_fk_aaa_naam,
 		:p_naam,
 		:p_omschrijving,
-		:p_xk_aaa_naam);
+		:p_xk_aaa_naam,
+		:p_cube_row);
 	END;");
 	oci_bind_by_name($stid,":p_fk_aaa_naam",$RequestObj->Parameters->Type->FkAaaNaam);
 	oci_bind_by_name($stid,":p_naam",$RequestObj->Parameters->Type->Naam);
 	oci_bind_by_name($stid,":p_omschrijving",$RequestObj->Parameters->Type->Omschrijving);
 	oci_bind_by_name($stid,":p_xk_aaa_naam",$RequestObj->Parameters->Type->XkAaaNaam);
 
-	$r = oci_execute($stid);
-	if (!$r) {
-		ProcessDbError($stid);
-		return;
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'CREATE_AAA';
+	$r = perform_db_request();
+	if (!$r) { return; }
+	$ResponseObj->Rows = array();
+	if ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Key = new \stdClass();
+		$RowObj->Key->Naam = $row["NAAM"];
+		$ResponseObj->Rows[] = $RowObj;
 	}
 	$ResponseText = json_encode($ResponseObj);
 	echo $ResponseText;
@@ -215,6 +207,8 @@ case 'UpdateAaa':
 	oci_bind_by_name($stid,":p_omschrijving",$RequestObj->Parameters->Type->Omschrijving);
 	oci_bind_by_name($stid,":p_xk_aaa_naam",$RequestObj->Parameters->Type->XkAaaNaam);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'UPDATE_AAA';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -234,6 +228,8 @@ case 'DeleteAaa':
 	END;");
 	oci_bind_by_name($stid,":p_naam",$RequestObj->Parameters->Type->Naam);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'DELETE_AAA';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -256,10 +252,10 @@ case 'GetAad':
 	oci_bind_by_name($stid,":p_fk_aaa_naam",$RequestObj->Parameters->Type->FkAaaNaam);
 	oci_bind_by_name($stid,":p_naam",$RequestObj->Parameters->Type->Naam);
 
-	$r = perform_db_request();
-	if (!$r) { return; }
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'SELECT_AAD';
+	$r = perform_db_request();
+	if (!$r) { return; }
 	$ResponseObj->Rows = array();
 	if ($row = oci_fetch_assoc($curs)) {
 		$RowObj = new \stdClass();
@@ -289,6 +285,8 @@ case 'MoveAad':
 	oci_bind_by_name($stid,":x_fk_aaa_naam",$RequestObj->Parameters->Ref->FkAaaNaam);
 	oci_bind_by_name($stid,":x_naam",$RequestObj->Parameters->Ref->Naam);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'MOVE_AAD';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -318,6 +316,8 @@ case 'CreateAad':
 	oci_bind_by_name($stid,":x_fk_aaa_naam",$RequestObj->Parameters->Ref->FkAaaNaam);
 	oci_bind_by_name($stid,":x_naam",$RequestObj->Parameters->Ref->Naam);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'CREATE_AAD';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -341,6 +341,8 @@ case 'UpdateAad':
 	oci_bind_by_name($stid,":p_naam",$RequestObj->Parameters->Type->Naam);
 	oci_bind_by_name($stid,":p_xk_aaa_naam",$RequestObj->Parameters->Type->XkAaaNaam);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'UPDATE_AAD';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -362,6 +364,8 @@ case 'DeleteAad':
 	oci_bind_by_name($stid,":p_fk_aaa_naam",$RequestObj->Parameters->Type->FkAaaNaam);
 	oci_bind_by_name($stid,":p_naam",$RequestObj->Parameters->Type->Naam);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'DELETE_AAD';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -377,10 +381,10 @@ case 'GetDirBbbItems':
 	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bbb.get_bbb_root_items (:p_cube_row); END;");
-	$r = perform_db_request();
-	if (!$r) { return; }
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'LIST_BBB';
+	$r = perform_db_request();
+	if (!$r) { return; }
 	$ResponseObj->Rows = array();
 	while ($row = oci_fetch_assoc($curs)) {
 		$RowObj = new \stdClass();
@@ -399,10 +403,10 @@ case 'GetBbbList':
 	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bbb.get_bbb_list (:p_cube_row); END;");
-	$r = perform_db_request();
-	if (!$r) { return; }
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'LIST_BBB';
+	$r = perform_db_request();
+	if (!$r) { return; }
 	$ResponseObj->Rows = array();
 	while ($row = oci_fetch_assoc($curs)) {
 		$RowObj = new \stdClass();
@@ -426,10 +430,10 @@ case 'GetBbb':
 	END;");
 	oci_bind_by_name($stid,":p_naam",$RequestObj->Parameters->Type->Naam);
 
-	$r = perform_db_request();
-	if (!$r) { return; }
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'SELECT_BBB';
+	$r = perform_db_request();
+	if (!$r) { return; }
 	$ResponseObj->Rows = array();
 	if ($row = oci_fetch_assoc($curs)) {
 		$RowObj = new \stdClass();
@@ -459,6 +463,8 @@ case 'CreateBbb':
 	oci_bind_by_name($stid,":p_xk_aaa_naam",$RequestObj->Parameters->Type->XkAaaNaam);
 	oci_bind_by_name($stid,":p_xk_bbb_naam_1",$RequestObj->Parameters->Type->XkBbbNaam1);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'CREATE_BBB';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -484,6 +490,8 @@ case 'UpdateBbb':
 	oci_bind_by_name($stid,":p_xk_aaa_naam",$RequestObj->Parameters->Type->XkAaaNaam);
 	oci_bind_by_name($stid,":p_xk_bbb_naam_1",$RequestObj->Parameters->Type->XkBbbNaam1);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'UPDATE_BBB';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -503,6 +511,8 @@ case 'DeleteBbb':
 	END;");
 	oci_bind_by_name($stid,":p_naam",$RequestObj->Parameters->Type->Naam);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'DELETE_BBB';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -518,10 +528,10 @@ case 'GetDirCccItems':
 	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_ccc.get_ccc_root_items (:p_cube_row); END;");
-	$r = perform_db_request();
-	if (!$r) { return; }
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'LIST_CCC';
+	$r = perform_db_request();
+	if (!$r) { return; }
 	$ResponseObj->Rows = array();
 	while ($row = oci_fetch_assoc($curs)) {
 		$RowObj = new \stdClass();
@@ -537,14 +547,14 @@ case 'GetDirCccItems':
 
 	break;
 
-case 'GetCccListEncapsulated':
+case 'GetCccListAll':
 	echo '[';
 
-	$stid = oci_parse($conn, "BEGIN pkg_ccc.get_ccc_list_encapsulated (:p_cube_row); END;");
-	$r = perform_db_request();
-	if (!$r) { return; }
+	$stid = oci_parse($conn, "BEGIN pkg_ccc.get_ccc_list_all (:p_cube_row); END;");
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'LIST_CCC';
+	$r = perform_db_request();
+	if (!$r) { return; }
 	$ResponseObj->Rows = array();
 	while ($row = oci_fetch_assoc($curs)) {
 		$RowObj = new \stdClass();
@@ -564,10 +574,10 @@ case 'CountCcc':
 	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_ccc.count_ccc (:p_cube_row); END;");
-	$r = perform_db_request();
-	if (!$r) { return; }
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'COUNT_CCC';
+	$r = perform_db_request();
+	if (!$r) { return; }
 	$ResponseObj->Rows = array();
 	if ($row = oci_fetch_assoc($curs)) {
 		$RowObj = new \stdClass();
@@ -592,10 +602,10 @@ case 'GetCcc':
 	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
 	oci_bind_by_name($stid,":p_naam",$RequestObj->Parameters->Type->Naam);
 
-	$r = perform_db_request();
-	if (!$r) { return; }
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'SELECT_CCC';
+	$r = perform_db_request();
+	if (!$r) { return; }
 	$ResponseObj->Rows = array();
 	if ($row = oci_fetch_assoc($curs)) {
 		$RowObj = new \stdClass();
@@ -624,10 +634,10 @@ case 'GetCccItems':
 	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
 	oci_bind_by_name($stid,":p_naam",$RequestObj->Parameters->Type->Naam);
 
-	$r = perform_db_request();
-	if (!$r) { return; }
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'LIST_CCC';
+	$r = perform_db_request();
+	if (!$r) { return; }
 	$ResponseObj->Rows = array();
 	while ($row = oci_fetch_assoc($curs)) {
 		$RowObj = new \stdClass();
@@ -654,10 +664,10 @@ case 'CountCccRestrictedItems':
 	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
 	oci_bind_by_name($stid,":p_naam",$RequestObj->Parameters->Type->Naam);
 
-	$r = perform_db_request();
-	if (!$r) { return; }
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'COUNT_CCC';
+	$r = perform_db_request();
+	if (!$r) { return; }
 	$ResponseObj->Rows = array();
 	if ($row = oci_fetch_assoc($curs)) {
 		$RowObj = new \stdClass();
@@ -687,6 +697,8 @@ case 'MoveCcc':
 	oci_bind_by_name($stid,":x_code",$RequestObj->Parameters->Ref->Code);
 	oci_bind_by_name($stid,":x_naam",$RequestObj->Parameters->Ref->Naam);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'MOVE_CCC';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -724,6 +736,8 @@ case 'CreateCcc':
 	oci_bind_by_name($stid,":x_code",$RequestObj->Parameters->Ref->Code);
 	oci_bind_by_name($stid,":x_naam",$RequestObj->Parameters->Ref->Naam);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'CREATE_CCC';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -755,6 +769,8 @@ case 'UpdateCcc':
 	oci_bind_by_name($stid,":p_xk_ccc_code",$RequestObj->Parameters->Type->XkCccCode);
 	oci_bind_by_name($stid,":p_xk_ccc_naam",$RequestObj->Parameters->Type->XkCccNaam);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'UPDATE_CCC';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -776,6 +792,8 @@ case 'DeleteCcc':
 	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
 	oci_bind_by_name($stid,":p_naam",$RequestObj->Parameters->Type->Naam);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'DELETE_CCC';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -791,10 +809,10 @@ case 'GetDirPrdItems':
 	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_prd.get_prd_root_items (:p_cube_row); END;");
-	$r = perform_db_request();
-	if (!$r) { return; }
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'LIST_PRD';
+	$r = perform_db_request();
+	if (!$r) { return; }
 	$ResponseObj->Rows = array();
 	while ($row = oci_fetch_assoc($curs)) {
 		$RowObj = new \stdClass();
@@ -821,10 +839,10 @@ case 'GetPrd':
 	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
 	oci_bind_by_name($stid,":p_naam",$RequestObj->Parameters->Type->Naam);
 
-	$r = perform_db_request();
-	if (!$r) { return; }
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'SELECT_PRD';
+	$r = perform_db_request();
+	if (!$r) { return; }
 	$ResponseObj->Rows = array();
 	if ($row = oci_fetch_assoc($curs)) {
 		$RowObj = new \stdClass();
@@ -852,10 +870,10 @@ case 'GetPrdItems':
 	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
 	oci_bind_by_name($stid,":p_naam",$RequestObj->Parameters->Type->Naam);
 
-	$r = perform_db_request();
-	if (!$r) { return; }
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'LIST_PR2';
+	$r = perform_db_request();
+	if (!$r) { return; }
 	$ResponseObj->Rows = array();
 	while ($row = oci_fetch_assoc($curs)) {
 		$RowObj = new \stdClass();
@@ -879,10 +897,10 @@ case 'GetPrdItems':
 	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
 	oci_bind_by_name($stid,":p_naam",$RequestObj->Parameters->Type->Naam);
 
-	$r = perform_db_request();
-	if (!$r) { return; }
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'LIST_PRT';
+	$r = perform_db_request();
+	if (!$r) { return; }
 	$ResponseObj->Rows = array();
 	while ($row = oci_fetch_assoc($curs)) {
 		$RowObj = new \stdClass();
@@ -918,6 +936,8 @@ case 'CreatePrd':
 	oci_bind_by_name($stid,":p_datum",$RequestObj->Parameters->Type->Datum);
 	oci_bind_by_name($stid,":p_omschrijving",$RequestObj->Parameters->Type->Omschrijving);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'CREATE_PRD';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -947,6 +967,8 @@ case 'UpdatePrd':
 	oci_bind_by_name($stid,":p_datum",$RequestObj->Parameters->Type->Datum);
 	oci_bind_by_name($stid,":p_omschrijving",$RequestObj->Parameters->Type->Omschrijving);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'UPDATE_PRD';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -968,6 +990,8 @@ case 'DeletePrd':
 	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
 	oci_bind_by_name($stid,":p_naam",$RequestObj->Parameters->Type->Naam);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'DELETE_PRD';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -994,10 +1018,10 @@ case 'GetPr2':
 	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
 	oci_bind_by_name($stid,":p_naam",$RequestObj->Parameters->Type->Naam);
 
-	$r = perform_db_request();
-	if (!$r) { return; }
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'SELECT_PR2';
+	$r = perform_db_request();
+	if (!$r) { return; }
 	$ResponseObj->Rows = array();
 	if ($row = oci_fetch_assoc($curs)) {
 		$RowObj = new \stdClass();
@@ -1026,10 +1050,10 @@ case 'GetPr2Items':
 	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
 	oci_bind_by_name($stid,":p_naam",$RequestObj->Parameters->Type->Naam);
 
-	$r = perform_db_request();
-	if (!$r) { return; }
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'LIST_PA2';
+	$r = perform_db_request();
+	if (!$r) { return; }
 	$ResponseObj->Rows = array();
 	while ($row = oci_fetch_assoc($curs)) {
 		$RowObj = new \stdClass();
@@ -1065,6 +1089,8 @@ case 'CreatePr2':
 	oci_bind_by_name($stid,":p_naam",$RequestObj->Parameters->Type->Naam);
 	oci_bind_by_name($stid,":p_omschrijving",$RequestObj->Parameters->Type->Omschrijving);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'CREATE_PR2';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -1092,6 +1118,8 @@ case 'UpdatePr2':
 	oci_bind_by_name($stid,":p_naam",$RequestObj->Parameters->Type->Naam);
 	oci_bind_by_name($stid,":p_omschrijving",$RequestObj->Parameters->Type->Omschrijving);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'UPDATE_PR2';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -1117,6 +1145,8 @@ case 'DeletePr2':
 	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
 	oci_bind_by_name($stid,":p_naam",$RequestObj->Parameters->Type->Naam);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'DELETE_PR2';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -1147,10 +1177,10 @@ case 'GetPa2ForPrdListEncapsulated':
 	oci_bind_by_name($stid,":x_fk_prd_code",$RequestObj->Parameters->Ref->FkPrdCode);
 	oci_bind_by_name($stid,":x_fk_prd_naam",$RequestObj->Parameters->Ref->FkPrdNaam);
 
-	$r = perform_db_request();
-	if (!$r) { return; }
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'LIST_PA2';
+	$r = perform_db_request();
+	if (!$r) { return; }
 	$ResponseObj->Rows = array();
 	while ($row = oci_fetch_assoc($curs)) {
 		$RowObj = new \stdClass();
@@ -1189,10 +1219,10 @@ case 'GetPa2':
 	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
 	oci_bind_by_name($stid,":p_naam",$RequestObj->Parameters->Type->Naam);
 
-	$r = perform_db_request();
-	if (!$r) { return; }
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'SELECT_PA2';
+	$r = perform_db_request();
+	if (!$r) { return; }
 	$ResponseObj->Rows = array();
 	if ($row = oci_fetch_assoc($curs)) {
 		$RowObj = new \stdClass();
@@ -1233,10 +1263,10 @@ case 'GetPa2Items':
 	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
 	oci_bind_by_name($stid,":p_naam",$RequestObj->Parameters->Type->Naam);
 
-	$r = perform_db_request();
-	if (!$r) { return; }
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'LIST_PA2';
+	$r = perform_db_request();
+	if (!$r) { return; }
 	$ResponseObj->Rows = array();
 	while ($row = oci_fetch_assoc($curs)) {
 		$RowObj = new \stdClass();
@@ -1288,6 +1318,8 @@ case 'ChangeParentPa2':
 	oci_bind_by_name($stid,":x_code",$RequestObj->Parameters->Ref->Code);
 	oci_bind_by_name($stid,":x_naam",$RequestObj->Parameters->Ref->Naam);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'CHANGE_PARENT_PA2';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -1335,6 +1367,8 @@ case 'CreatePa2':
 	oci_bind_by_name($stid,":p_xk_pa2_code",$RequestObj->Parameters->Type->XkPa2Code);
 	oci_bind_by_name($stid,":p_xk_pa2_naam",$RequestObj->Parameters->Type->XkPa2Naam);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'CREATE_PA2';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -1382,6 +1416,8 @@ case 'UpdatePa2':
 	oci_bind_by_name($stid,":p_xk_pa2_code",$RequestObj->Parameters->Type->XkPa2Code);
 	oci_bind_by_name($stid,":p_xk_pa2_naam",$RequestObj->Parameters->Type->XkPa2Naam);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'UPDATE_PA2';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -1411,6 +1447,8 @@ case 'DeletePa2':
 	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
 	oci_bind_by_name($stid,":p_naam",$RequestObj->Parameters->Type->Naam);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'DELETE_PA2';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -1437,10 +1475,10 @@ case 'GetPrtForPrdListEncapsulated':
 	oci_bind_by_name($stid,":x_fk_prd_code",$RequestObj->Parameters->Ref->FkPrdCode);
 	oci_bind_by_name($stid,":x_fk_prd_naam",$RequestObj->Parameters->Ref->FkPrdNaam);
 
-	$r = perform_db_request();
-	if (!$r) { return; }
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'LIST_PRT';
+	$r = perform_db_request();
+	if (!$r) { return; }
 	$ResponseObj->Rows = array();
 	while ($row = oci_fetch_assoc($curs)) {
 		$RowObj = new \stdClass();
@@ -1473,10 +1511,10 @@ case 'GetPrt':
 	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
 	oci_bind_by_name($stid,":p_naam",$RequestObj->Parameters->Type->Naam);
 
-	$r = perform_db_request();
-	if (!$r) { return; }
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'SELECT_PRT';
+	$r = perform_db_request();
+	if (!$r) { return; }
 	$ResponseObj->Rows = array();
 	if ($row = oci_fetch_assoc($curs)) {
 		$RowObj = new \stdClass();
@@ -1511,10 +1549,10 @@ case 'GetPrtItems':
 	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
 	oci_bind_by_name($stid,":p_naam",$RequestObj->Parameters->Type->Naam);
 
-	$r = perform_db_request();
-	if (!$r) { return; }
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'LIST_PRT';
+	$r = perform_db_request();
+	if (!$r) { return; }
 	$ResponseObj->Rows = array();
 	while ($row = oci_fetch_assoc($curs)) {
 		$RowObj = new \stdClass();
@@ -1556,6 +1594,8 @@ case 'ChangeParentPrt':
 	oci_bind_by_name($stid,":x_code",$RequestObj->Parameters->Ref->Code);
 	oci_bind_by_name($stid,":x_naam",$RequestObj->Parameters->Ref->Naam);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'CHANGE_PARENT_PRT';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -1595,6 +1635,8 @@ case 'CreatePrt':
 	oci_bind_by_name($stid,":p_xk_prt_code",$RequestObj->Parameters->Type->XkPrtCode);
 	oci_bind_by_name($stid,":p_xk_prt_naam",$RequestObj->Parameters->Type->XkPrtNaam);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'CREATE_PRT';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -1634,6 +1676,8 @@ case 'UpdatePrt':
 	oci_bind_by_name($stid,":p_xk_prt_code",$RequestObj->Parameters->Type->XkPrtCode);
 	oci_bind_by_name($stid,":p_xk_prt_naam",$RequestObj->Parameters->Type->XkPrtNaam);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'UPDATE_PRT';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -1659,6 +1703,8 @@ case 'DeletePrt':
 	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
 	oci_bind_by_name($stid,":p_naam",$RequestObj->Parameters->Type->Naam);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'DELETE_PRT';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -1705,8 +1751,7 @@ function ProcessDbError($stid) {
 	$ResponseObj->ResultName = 'ERROR';
 	$ResponseObj->ErrorText = 'ORA-error: '.$e['code'].': '.$e['message'];
 	$ResponseText = json_encode($ResponseObj);
-	echo $ResponseText;
-	echo ']';
+	echo '['.$ResponseText.']';
 }
 
 function CubeError($errno, $errstr) {

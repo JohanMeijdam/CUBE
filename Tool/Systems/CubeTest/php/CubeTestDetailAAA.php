@@ -28,8 +28,13 @@ g_xmlhttp.onreadystatechange = function() {
 			document._nodeId = 'TYP_AAA<||>'+document.getElementById("InputNaam").value;
 			if (l_objNode != null) {
 				if (l_objNode.firstChild._state == 'O') {
-					var l_position = 'L';
-					l_objNodePos = null;
+					if (l_argument[1] == null) {
+						var l_position = 'L';
+						l_objNodePos = null;
+					} else {
+						var l_position = 'B';
+						l_objNodePos = parent.TREE.document.getElementById('TYP_AAA<||>'+l_argument[1]);
+					}
 					parent.TREE.AddTreeviewNode(
 						l_objNode,
 						'TYP_AAA',
@@ -232,8 +237,8 @@ function UpdateForeignKey(p_obj) {
 function StartSelect001(p_event) {
 	document.body._SelectLeft = p_event.clientX;
 	document.body._SelectTop = p_event.clientY;
-	document.body._ListBoxCode = 'Ref001';;
-	performTrans('GetAaaListEncapsulated<|||>');
+	document.body._ListBoxCode = 'Ref001';
+	performTrans('GetAaaListAll');
 }
 
 function OpenDescBox(p_icon,p_name,p_type,p_attribute_type,p_sequence) {

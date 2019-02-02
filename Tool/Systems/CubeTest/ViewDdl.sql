@@ -70,6 +70,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_aaa_trg IS
 		END IF;
 		UPDATE t_aaa SET 
 			cube_level = p_aaa_new.cube_level,
+			fk_aaa_naam = p_aaa_new.fk_aaa_naam,
 			omschrijving = p_aaa_new.omschrijving
 		WHERE rowid = p_cube_rowid;
 		IF NVL(p_aaa_old.cube_level,0) <> NVL(p_aaa_new.cube_level,0) THEN
@@ -399,6 +400,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_ccc_trg IS
 		UPDATE t_ccc SET 
 			cube_sequence = p_ccc_new.cube_sequence,
 			cube_level = p_ccc_new.cube_level,
+			fk_ccc_code = p_ccc_new.fk_ccc_code,
+			fk_ccc_naam = p_ccc_new.fk_ccc_naam,
 			omschrjving = p_ccc_new.omschrjving,
 			xk_ccc_code = p_ccc_new.xk_ccc_code,
 			xk_ccc_naam = p_ccc_new.xk_ccc_naam

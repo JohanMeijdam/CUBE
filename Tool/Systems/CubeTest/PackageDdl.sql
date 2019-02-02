@@ -45,8 +45,6 @@ CREATE OR REPLACE PACKAGE pkg_aaa IS
 			p_cube_row IN OUT c_cube_row);
 	PROCEDURE get_aaa_list_all (
 			p_cube_row IN OUT c_cube_row);
-	PROCEDURE get_aaa_list_encapsulated (
-			p_cube_row IN OUT c_cube_row);
 	PROCEDURE get_aaa (
 			p_cube_row IN OUT c_cube_row,
 			p_naam IN VARCHAR2);
@@ -59,12 +57,14 @@ CREATE OR REPLACE PACKAGE pkg_aaa IS
 	PROCEDURE change_parent_aaa (
 			p_cube_flag_root IN VARCHAR2,
 			p_naam IN VARCHAR2,
-			x_naam IN VARCHAR2);
+			x_naam IN VARCHAR2,
+			p_cube_row IN OUT c_cube_row);
 	PROCEDURE insert_aaa (
 			p_fk_aaa_naam IN VARCHAR2,
 			p_naam IN VARCHAR2,
 			p_omschrijving IN VARCHAR2,
-			p_xk_aaa_naam IN VARCHAR2);
+			p_xk_aaa_naam IN VARCHAR2,
+			p_cube_row IN OUT c_cube_row);
 	PROCEDURE update_aaa (
 			p_fk_aaa_naam IN VARCHAR2,
 			p_naam IN VARCHAR2,
@@ -127,17 +127,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_aaa IS
 			ORDER BY naam;
 	END;
 
-	PROCEDURE get_aaa_list_encapsulated (
-			p_cube_row IN OUT c_cube_row) IS
-	BEGIN
-		OPEN p_cube_row FOR
-			SELECT
-			  naam
-			FROM v_aaa
-			WHERE fk_aaa_naam IS NULL
-			ORDER BY naam;
-	END;
-
 	PROCEDURE get_aaa (
 			p_cube_row IN OUT c_cube_row,
 			p_naam IN VARCHAR2) IS
@@ -197,10 +186,27 @@ CREATE OR REPLACE PACKAGE BODY pkg_aaa IS
 		END LOOP;
 	END;
 
+	PROCEDURE get_next_aaa (
+			p_cube_row IN OUT c_cube_row,
+			p_fk_aaa_naam IN VARCHAR2,
+			p_naam IN VARCHAR2) IS
+	BEGIN
+		OPEN p_cube_row FOR
+			SELECT
+			  naam
+			FROM v_aaa
+			WHERE naam > p_naam
+			  AND 	    ( 	    ( fk_aaa_naam IS NULL
+					  AND p_fk_aaa_naam IS NULL )
+				   OR fk_aaa_naam = p_fk_aaa_naam )
+			ORDER BY naam;
+	END;
+
 	PROCEDURE change_parent_aaa (
 			p_cube_flag_root IN VARCHAR2,
 			p_naam IN VARCHAR2,
-			x_naam IN VARCHAR2) IS
+			x_naam IN VARCHAR2,
+			p_cube_row IN OUT c_cube_row) IS
 	BEGIN
 		IF p_cube_flag_root = 'Y' THEN
 			UPDATE v_aaa SET
@@ -209,6 +215,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_aaa IS
 			IF SQL%NOTFOUND THEN
 				RAISE_APPLICATION_ERROR (-20002, 'Type aaa not found');
 			END IF;
+			get_next_aaa (p_cube_row, NULL, p_naam);
 		ELSE
 			check_no_part_aaa (p_naam, x_naam);
 			UPDATE v_aaa SET
@@ -217,6 +224,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_aaa IS
 			IF SQL%NOTFOUND THEN
 				RAISE_APPLICATION_ERROR (-20002, 'Type aaa not found');
 			END IF;
+			get_next_aaa (p_cube_row, x_naam, p_naam);
 		END IF;
 	END;
 
@@ -224,7 +232,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_aaa IS
 			p_fk_aaa_naam IN VARCHAR2,
 			p_naam IN VARCHAR2,
 			p_omschrijving IN VARCHAR2,
-			p_xk_aaa_naam IN VARCHAR2) IS
+			p_xk_aaa_naam IN VARCHAR2,
+			p_cube_row IN OUT c_cube_row) IS
 	BEGIN
 		INSERT INTO v_aaa (
 			cube_id,
@@ -240,6 +249,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_aaa IS
 			p_naam,
 			p_omschrijving,
 			p_xk_aaa_naam);
+
+		get_next_aaa (p_cube_row, p_fk_aaa_naam, p_naam);
 	EXCEPTION
 		WHEN DUP_VAL_ON_INDEX THEN
 			RAISE_APPLICATION_ERROR (-20001, 'Type aaa already exists');
@@ -532,7 +543,7 @@ CREATE OR REPLACE PACKAGE pkg_ccc IS
 	FUNCTION cube_package RETURN VARCHAR2;
 	PROCEDURE get_ccc_root_items (
 			p_cube_row IN OUT c_cube_row);
-	PROCEDURE get_ccc_list_encapsulated (
+	PROCEDURE get_ccc_list_all (
 			p_cube_row IN OUT c_cube_row);
 	PROCEDURE count_ccc (
 			p_cube_row IN OUT c_cube_row);
@@ -600,7 +611,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_ccc IS
 			ORDER BY cube_sequence;
 	END;
 
-	PROCEDURE get_ccc_list_encapsulated (
+	PROCEDURE get_ccc_list_all (
 			p_cube_row IN OUT c_cube_row) IS
 	BEGIN
 		OPEN p_cube_row FOR
@@ -609,8 +620,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_ccc IS
 			  code,
 			  naam
 			FROM v_ccc
-			WHERE fk_ccc_code IS NULL
-			  AND fk_ccc_naam IS NULL
 			ORDER BY cube_sequence;
 	END;
 
