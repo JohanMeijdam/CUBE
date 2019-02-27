@@ -3,11 +3,11 @@ session_start();
 $_SESSION['views']=0;
 ?><html>
 <head>
+<title>CUBE Tool</title>
+<meta charset="UTF-8">
+<link rel="icon" href="icons/composys_icon.png">
 <link rel="stylesheet" href="base_css.php" />
 <style type="text/css">
-<!--
-div {padding-left:12px}
--->
 </style>
 <script language='javascript' type='text/javascript'>
 <!--
@@ -72,7 +72,7 @@ function InitBody() {
 	document.body._FlagDragging = 0;
 	document.body._DraggingId = ' ';
 	ResetState();
-	l_objBody = document.body;
+	l_objBody = document.getElementById('TreeBody');
 	l_objBody._type = 'ROOT';
 	l_objBody.childNodes[0]._index = 0;
 	AddTreeviewNode(l_objBody, 'DIR_AAA', null, 'icons/folder.bmp', 'Test_AAA', 'Y', ' ', null);
@@ -131,6 +131,7 @@ function DefineTypePosition (p_parentType, p_type, p_switch) {
 
 function AddTreeviewNode(p_obj, p_type, p_json_id, p_icon, p_text, p_root, p_position, p_objPosition) {
 	var l_objDiv = document.createElement('DIV');
+	l_objDiv.style.paddingLeft = "12px";
 	var l_objImg = document.createElement('IMG');
 	var l_objSpan1 = document.createElement('SPAN');
 
@@ -722,6 +723,16 @@ function drop(p_event) {
 -->
 </script>
 </head>
-<body oncontextmenu="ResetState(); return false;" onload="InitBody()" ondrop="drop(event)" ondragover="allowDrop(event)"><span/>
-</body>
-</html>
+<body lang="en" oncontextmenu="ResetState(); return false;" onload="InitBody()" ondrop="drop(event)" ondragover="allowDrop(event)">
+<div style="position:fixed;top:8px;left:8px;right:8px;bottom:8px;">
+<iframe src="composys_header.html" style="position:absolute;height:76px;width:100%;"></iframe>
+<div class="header0" style="position:absolute;top:76px;left:0px;width:40%;height:30px;">
+TREE VIEW</div>
+<div style="overflow:auto;position:absolute;top:106px;bottom:0px;left:0px;width:40%;">
+<div style="position:absolute;top:16px;">
+<span id="TreeBody"><span/></span>
+</div></div>
+<div class="header0" style="overflow:hidden;position:absolute;top:76px;left:40%;right:0;height:30px;">
+HOME</div><div style="overflow:auto;position:absolute;top:106px;bottom:0px;left:40%;right:0;background-color:white;border-left: 2px solid darkslategray;">
+<iframe style="position:absolute;height:100%;width:100%;"></iframe>
+</div></body></html>
