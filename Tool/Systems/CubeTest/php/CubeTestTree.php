@@ -234,13 +234,7 @@ function ChangeParent (p_obj, p_objParent, p_type, p_json_rows) {
 }
 
 function AssembleObjId (p_type, p_json_id) {
-	var l_comma = '';
-	var l_id = '{"'+p_type+'":[';
-	for (x in p_json_id) {
-		l_id += l_comma+JSON.stringify(p_json_id[x]);
-		l_comma = ',';
-	}
-	return l_id+']}';
+	return '{"'+p_type+'":'+JSON.stringify(p_json_id)+'}'
 }
 
 function IsInHierarchy (p_objRoot, p_obj) {
@@ -352,7 +346,7 @@ function OpenCloseOnClick(p_obj) {
 			break;
  		case 'TYP_AAA':
 			var l_json_id = JSON.parse(p_obj.parentNode.id)["TYP_AAA"];
-			PerformTrans( {Service:"GetAaaItems",Parameters:{Type:{Naam:l_json_id[0]}}} );
+			PerformTrans( {Service:"GetAaaItems",Parameters:{Type:l_json_id}} );
 			break;
  		case 'DIR_BBB':
 			PerformTrans( {Service:"GetDirBbbItems"} );
@@ -362,26 +356,26 @@ function OpenCloseOnClick(p_obj) {
 			break;
  		case 'TYP_CCC':
 			var l_json_id = JSON.parse(p_obj.parentNode.id)["TYP_CCC"];
-			PerformTrans( {Service:"GetCccItems",Parameters:{Type:{Code:l_json_id[0],Naam:l_json_id[1]}}} );
+			PerformTrans( {Service:"GetCccItems",Parameters:{Type:l_json_id}} );
 			break;
  		case 'DIR_PRD':
 			PerformTrans( {Service:"GetDirPrdItems"} );
 			break;
  		case 'TYP_PRD':
 			var l_json_id = JSON.parse(p_obj.parentNode.id)["TYP_PRD"];
-			PerformTrans( {Service:"GetPrdItems",Parameters:{Type:{Code:l_json_id[0],Naam:l_json_id[1]}}} );
+			PerformTrans( {Service:"GetPrdItems",Parameters:{Type:l_json_id}} );
 			break;
  		case 'TYP_PR2':
 			var l_json_id = JSON.parse(p_obj.parentNode.id)["TYP_PR2"];
-			PerformTrans( {Service:"GetPr2Items",Parameters:{Type:{FkPrdCode:l_json_id[0],FkPrdNaam:l_json_id[1],Code:l_json_id[2],Naam:l_json_id[3]}}} );
+			PerformTrans( {Service:"GetPr2Items",Parameters:{Type:l_json_id}} );
 			break;
  		case 'TYP_PA2':
 			var l_json_id = JSON.parse(p_obj.parentNode.id)["TYP_PA2"];
-			PerformTrans( {Service:"GetPa2Items",Parameters:{Type:{FkPrdCode:l_json_id[0],FkPrdNaam:l_json_id[1],FkPr2Code:l_json_id[2],FkPr2Naam:l_json_id[3],Code:l_json_id[4],Naam:l_json_id[5]}}} );
+			PerformTrans( {Service:"GetPa2Items",Parameters:{Type:l_json_id}} );
 			break;
  		case 'TYP_PRT':
 			var l_json_id = JSON.parse(p_obj.parentNode.id)["TYP_PRT"];
-			PerformTrans( {Service:"GetPrtItems",Parameters:{Type:{FkPrdCode:l_json_id[0],FkPrdNaam:l_json_id[1],Code:l_json_id[2],Naam:l_json_id[3]}}} );
+			PerformTrans( {Service:"GetPrtItems",Parameters:{Type:l_json_id}} );
 			break;
 		} 
 	}
@@ -419,10 +413,10 @@ function OpenDetail(p_obj) {
 			var l_json_id_ref = JSON.parse(document.body._objNodePosId)[l_obj._type];
 			switch (l_obj._type) {
 			case 'TYP_AAD':
-				PerformTrans( {Service:"MoveAad",Parameters:{Option:{CubePosAction:document.body._moveAction},Type:{FkAaaNaam:l_json_id[0],Naam:l_json_id[1]},Ref:{FkAaaNaam:l_json_id_ref[0],Naam:l_json_id_ref[1]}}} );
+				PerformTrans( {Service:"MoveAad",Parameters:{Option:{CubePosAction:document.body._moveAction},Type:l_json_id,Ref:l_json_id_ref}} );
 				break;
 			case 'TYP_CCC':
-				PerformTrans( {Service:"MoveCcc",Parameters:{Option:{CubePosAction:document.body._moveAction},Type:{Code:l_json_id[0],Naam:l_json_id[1]},Ref:{Code:l_json_id_ref[0],Naam:l_json_id_ref[1]}}} );
+				PerformTrans( {Service:"MoveCcc",Parameters:{Option:{CubePosAction:document.body._moveAction},Type:l_json_id,Ref:l_json_id_ref}} );
 				break;
 			}
 		}
@@ -446,39 +440,39 @@ function OpenDetail(p_obj) {
 				var l_json_id = JSON.parse(g_currentObjId)[g_currentObjType];
 				switch (l_obj._type) {
 				case 'DIR_AAA':
-					PerformTrans( {Service:"ChangeParentAaa",Parameters:{Option:{CubeFlagRoot:"Y"},Type:{Naam:l_json_id[0]}}} );
+					PerformTrans( {Service:"ChangeParentAaa",Parameters:{Option:{CubeFlagRoot:"Y"},Type:l_json_id}} );
 					break;
 				case 'TYP_AAA':
 					var l_json_id_ref = JSON.parse(document.body._objNodePosId)[l_obj._type];
-					PerformTrans( {Service:"ChangeParentAaa",Parameters:{Option:{CubeFlagRoot:"N"},Type:{Naam:l_json_id[0]},Ref:{Naam:l_json_id_ref[0]}}} );
+					PerformTrans( {Service:"ChangeParentAaa",Parameters:{Option:{CubeFlagRoot:"N"},Type:l_json_id,Ref:l_json_id_ref}} );
 					break;
 				case 'TYP_CCC':
 					var l_json_id_ref = JSON.parse(document.body._objNodePosId)[l_obj._type];
-					PerformTrans( {Service:"MoveCcc",Parameters:{Option:{CubePosAction:document.body._moveAction},Type:{Code:l_json_id[0],Naam:l_json_id[1]},Ref:{Code:l_json_id_ref[0],Naam:l_json_id_ref[1]}}} );
+					PerformTrans( {Service:"MoveCcc",Parameters:{Option:{CubePosAction:document.body._moveAction},Type:l_json_id,Ref:l_json_id_ref}} );
 					break;
 				case 'TYP_PRD':
 					var l_json_id_ref = JSON.parse(document.body._objNodePosId)[l_obj._type];
 					if (document.body._menuItemType == 'CUBE_P_PRT') {
-						PerformTrans( {Service:"ChangeParentPrt",Parameters:{Option:{CubeFlagRoot:"Y"},Type:{FkPrdCode:l_json_id[0],FkPrdNaam:l_json_id[1],Code:l_json_id[2],Naam:l_json_id[3]}}} );			
+						PerformTrans( {Service:"ChangeParentPrt",Parameters:{Option:{CubeFlagRoot:"Y"},Type:l_json_id}} );			
 						break;
 					}
-					PerformTrans( {Service:"ChangeParentPrd",Parameters:{Option:{CubeFlagRoot:"N"},Type:{Code:l_json_id[0],Naam:l_json_id[1]},Ref:{Code:l_json_id_ref[0],Naam:l_json_id_ref[1]}}} );
+					PerformTrans( {Service:"ChangeParentPrd",Parameters:{Option:{CubeFlagRoot:"N"},Type:l_json_id,Ref:l_json_id_ref}} );
 					break;
 				case 'TYP_PR2':
 					var l_json_id_ref = JSON.parse(document.body._objNodePosId)[l_obj._type];
 					if (document.body._menuItemType == 'CUBE_P_PA2') {
-						PerformTrans( {Service:"ChangeParentPa2",Parameters:{Option:{CubeFlagRoot:"Y"},Type:{FkPrdCode:l_json_id[0],FkPrdNaam:l_json_id[1],FkPr2Code:l_json_id[2],FkPr2Naam:l_json_id[3],Code:l_json_id[4],Naam:l_json_id[5]}}} );			
+						PerformTrans( {Service:"ChangeParentPa2",Parameters:{Option:{CubeFlagRoot:"Y"},Type:l_json_id}} );			
 						break;
 					}
-					PerformTrans( {Service:"ChangeParentPr2",Parameters:{Option:{CubeFlagRoot:"N"},Type:{FkPrdCode:l_json_id[0],FkPrdNaam:l_json_id[1],Code:l_json_id[2],Naam:l_json_id[3]},Ref:{FkPrdCode:l_json_id_ref[0],FkPrdNaam:l_json_id_ref[1],Code:l_json_id_ref[2],Naam:l_json_id_ref[3]}}} );
+					PerformTrans( {Service:"ChangeParentPr2",Parameters:{Option:{CubeFlagRoot:"N"},Type:l_json_id,Ref:l_json_id_ref}} );
 					break;
 				case 'TYP_PA2':
 					var l_json_id_ref = JSON.parse(document.body._objNodePosId)[l_obj._type];
-					PerformTrans( {Service:"ChangeParentPa2",Parameters:{Option:{CubeFlagRoot:"N"},Type:{FkPrdCode:l_json_id[0],FkPrdNaam:l_json_id[1],FkPr2Code:l_json_id[2],FkPr2Naam:l_json_id[3],Code:l_json_id[4],Naam:l_json_id[5]},Ref:{FkPrdCode:l_json_id_ref[0],FkPrdNaam:l_json_id_ref[1],FkPr2Code:l_json_id_ref[2],FkPr2Naam:l_json_id_ref[3],Code:l_json_id_ref[4],Naam:l_json_id_ref[5]}}} );
+					PerformTrans( {Service:"ChangeParentPa2",Parameters:{Option:{CubeFlagRoot:"N"},Type:l_json_id,Ref:l_json_id_ref}} );
 					break;
 				case 'TYP_PRT':
 					var l_json_id_ref = JSON.parse(document.body._objNodePosId)[l_obj._type];
-					PerformTrans( {Service:"ChangeParentPrt",Parameters:{Option:{CubeFlagRoot:"N"},Type:{FkPrdCode:l_json_id[0],FkPrdNaam:l_json_id[1],Code:l_json_id[2],Naam:l_json_id[3]},Ref:{FkPrdCode:l_json_id_ref[0],FkPrdNaam:l_json_id_ref[1],Code:l_json_id_ref[2],Naam:l_json_id_ref[3]}}} );
+					PerformTrans( {Service:"ChangeParentPrt",Parameters:{Option:{CubeFlagRoot:"N"},Type:l_json_id,Ref:l_json_id_ref}} );
 					break;
 				}
 			}
@@ -499,7 +493,7 @@ function OpenDetail(p_obj) {
 }
 
 function OpenDetailPage (p_code, p_nodeType, p_objId, p_options) {
-	parent.DETAIL.location.replace('CubeTestDetail'+p_code+'.php?'+encodeURIComponent('<|||>'+p_nodeType+'<|||>'+p_objId+'<|||>'+p_options));
+	document.getElementById('DetailFrame').src='CubeTestDetail'+p_code+'.php?nodeType='+encodeURIComponent(p_nodeType)+'&objectId='+encodeURIComponent(p_objId)+'&options='+encodeURIComponent(p_options);
 }
 
 function OpenMenu(p_obj) {
@@ -597,7 +591,7 @@ function OpenMenu(p_obj) {
 		}
 		AddMenuItem(g_objMenuList, 'add ccc', 'icons/produkt.bmp','CubeAdd','R','TYP_CCC',3,'N',2);
 		var l_json_id = l_json_node_id[l_type_id];
-		PerformTrans( {Service:"CountCccRestrictedItems",Parameters:{Type:{Code:l_json_id[0],Naam:l_json_id[1]}}} );
+		PerformTrans( {Service:"CountCccRestrictedItems",Parameters:{Type:l_json_id}} );
 		break;
  	case 'DIR_PRD':
 		AddMenuItem(g_objMenuList, 'add prod', 'icons/produkt.bmp','DetailPRD','N','TYP_PRD',0,'N',2);
@@ -734,5 +728,5 @@ TREE VIEW</div>
 </div></div>
 <div class="header0" style="overflow:hidden;position:absolute;top:76px;left:40%;right:0;height:30px;">
 HOME</div><div style="overflow:auto;position:absolute;top:106px;bottom:0px;left:40%;right:0;background-color:white;border-left: 2px solid darkslategray;">
-<iframe style="position:absolute;height:100%;width:100%;"></iframe>
+<iframe id="DetailFrame" style="position:absolute;height:100%;width:100%;"></iframe>
 </div></body></html>

@@ -4,7 +4,7 @@ header('Content-Type: text/css');
 
 * {
 background-color:white;
-font-family:Arial, Helvetica, sans-serif;;
+font-family:Arial, Helvetica, sans-serif;
 font-size:12px;
 white-space:nowrap;
 text-align:left

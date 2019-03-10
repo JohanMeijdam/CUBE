@@ -46,6 +46,7 @@ case '<<SERVICE:C>>':[[LOOP,OPERATION]][[IF:FIRST]]
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}[[ENDIF]]
 	$ResponseText = json_encode($ResponseObj);
@@ -89,7 +90,7 @@ function ProcessDbError($stid) {
 	$ResponseObj->ResultName = 'ERROR';
 	$ResponseObj->ErrorText = 'ORA-error: '.$e['code'].': '.$e['message'];
 	$ResponseText = json_encode($ResponseObj);
-	echo '['.$ResponseText.']';
+	echo $ResponseText;
 }
 
 function CubeError($errno, $errstr) {

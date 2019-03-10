@@ -212,6 +212,7 @@ case 'UpdateAaa':
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
 	$ResponseText = json_encode($ResponseObj);
@@ -233,6 +234,7 @@ case 'DeleteAaa':
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
 	$ResponseText = json_encode($ResponseObj);
@@ -290,6 +292,7 @@ case 'MoveAad':
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
 	$ResponseText = json_encode($ResponseObj);
@@ -321,6 +324,7 @@ case 'CreateAad':
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
 	$ResponseText = json_encode($ResponseObj);
@@ -346,6 +350,7 @@ case 'UpdateAad':
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
 	$ResponseText = json_encode($ResponseObj);
@@ -369,6 +374,7 @@ case 'DeleteAad':
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
 	$ResponseText = json_encode($ResponseObj);
@@ -468,6 +474,7 @@ case 'CreateBbb':
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
 	$ResponseText = json_encode($ResponseObj);
@@ -495,6 +502,7 @@ case 'UpdateBbb':
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
 	$ResponseText = json_encode($ResponseObj);
@@ -516,6 +524,7 @@ case 'DeleteBbb':
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
 	$ResponseText = json_encode($ResponseObj);
@@ -702,6 +711,7 @@ case 'MoveCcc':
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
 	$ResponseText = json_encode($ResponseObj);
@@ -741,6 +751,7 @@ case 'CreateCcc':
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
 	$ResponseText = json_encode($ResponseObj);
@@ -774,6 +785,7 @@ case 'UpdateCcc':
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
 	$ResponseText = json_encode($ResponseObj);
@@ -797,6 +809,7 @@ case 'DeleteCcc':
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
 	$ResponseText = json_encode($ResponseObj);
@@ -941,6 +954,7 @@ case 'CreatePrd':
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
 	$ResponseText = json_encode($ResponseObj);
@@ -972,6 +986,7 @@ case 'UpdatePrd':
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
 	$ResponseText = json_encode($ResponseObj);
@@ -995,6 +1010,7 @@ case 'DeletePrd':
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
 	$ResponseText = json_encode($ResponseObj);
@@ -1094,6 +1110,7 @@ case 'CreatePr2':
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
 	$ResponseText = json_encode($ResponseObj);
@@ -1123,6 +1140,7 @@ case 'UpdatePr2':
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
 	$ResponseText = json_encode($ResponseObj);
@@ -1150,6 +1168,7 @@ case 'DeletePr2':
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
 	$ResponseText = json_encode($ResponseObj);
@@ -1323,6 +1342,7 @@ case 'ChangeParentPa2':
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
 	$ResponseText = json_encode($ResponseObj);
@@ -1372,6 +1392,7 @@ case 'CreatePa2':
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
 	$ResponseText = json_encode($ResponseObj);
@@ -1421,6 +1442,7 @@ case 'UpdatePa2':
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
 	$ResponseText = json_encode($ResponseObj);
@@ -1452,6 +1474,7 @@ case 'DeletePa2':
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
 	$ResponseText = json_encode($ResponseObj);
@@ -1599,6 +1622,7 @@ case 'ChangeParentPrt':
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
 	$ResponseText = json_encode($ResponseObj);
@@ -1640,6 +1664,7 @@ case 'CreatePrt':
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
 	$ResponseText = json_encode($ResponseObj);
@@ -1681,6 +1706,7 @@ case 'UpdatePrt':
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
 	$ResponseText = json_encode($ResponseObj);
@@ -1708,6 +1734,7 @@ case 'DeletePrt':
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
 	$ResponseText = json_encode($ResponseObj);
@@ -1751,7 +1778,7 @@ function ProcessDbError($stid) {
 	$ResponseObj->ResultName = 'ERROR';
 	$ResponseObj->ErrorText = 'ORA-error: '.$e['code'].': '.$e['message'];
 	$ResponseText = json_encode($ResponseObj);
-	echo '['.$ResponseText.']';
+	echo $ResponseText;
 }
 
 function CubeError($errno, $errstr) {
