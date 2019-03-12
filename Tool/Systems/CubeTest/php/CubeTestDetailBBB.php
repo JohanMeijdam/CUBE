@@ -78,12 +78,14 @@ function performTrans(p_objParm) {
 }
 
 function InitBody() {
-	var l_argument = decodeURIComponent(document.location.href).split("<|||>");
+	var l_json_argument = JSON.parse(decodeURIComponent(location.href.split("?")[1]));
+//	var l_argument = decodeURIComponent(document.location.href).split("<|||>");
 	document.body._FlagDragging = 0;
 	document.body._DraggingId = ' ';
 	document.body._ListBoxCode="Ref000";
-	document._nodeId = l_argument[2];
-	document._argument = document._nodeId.split("<||>")[1];
+	document._nodeId = l_json_argument.objectId;
+	document._argument = document._nodeId.TYP_BBB;
+	alert (JSON.stringify(document._argument));
 	if (document._argument != null) {
 		var values = document._argument.split("<|>");
 	}

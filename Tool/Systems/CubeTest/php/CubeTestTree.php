@@ -493,7 +493,7 @@ function OpenDetail(p_obj) {
 }
 
 function OpenDetailPage (p_code, p_nodeType, p_objId, p_options) {
-	document.getElementById('DetailFrame').src='CubeTestDetail'+p_code+'.php?nodeType='+encodeURIComponent(p_nodeType)+'&objectId='+encodeURIComponent(p_objId)+'&options='+encodeURIComponent(p_options);
+	document.getElementById('DetailFrame').src='CubeTestDetail'+p_code+'.php?'+encodeURIComponent('{"nodeType":"'+p_nodeType+'","objectId":'+p_objId+',"options":"'+p_options+'"}');
 }
 
 function OpenMenu(p_obj) {
