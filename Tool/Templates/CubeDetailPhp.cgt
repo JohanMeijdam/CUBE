@@ -39,84 +39,98 @@ $_SESSION['views']=0;
 <script language='javascript' type='text/javascript'>
 <!--
 var g_option;
-g_xmlhttp = new XMLHttpRequest();
+var g_json_options;
+
+var g_xmlhttp = new XMLHttpRequest();
 g_xmlhttp.onreadystatechange = function() {
 	if(g_xmlhttp.readyState == 4) {
-		var l_argument = g_xmlhttp.responseText.split("<|||>");
-		switch (l_argument[0]) {
-		case "SELECT_<<TYPE1:U>>":
-			var l_values = l_argument[1].split("<|>");[[LOOP,ATTRIBUTE:1=N[AND]4=N]]
-			document.getElementById("Input<<ATTRIBUTE:C>>").value=l_values[[[EVAL:<<ATTRIBUTE:IX>>-1]]];[[ENDLOOP,ATTRIBUTE]][[IF:CHILD(TYPE_SPECIALISATION_GROUP)]]
-			ProcessTypeSpecialisation();[[ENDIF]]
-			break;
-		case "CREATE_<<TYPE1:U>>":[[LOOP,ATTRIBUTE:(1=Y[OR]3=F[OR]3=R)[AND]4=N]]
-			document.getElementById("Input<<ATTRIBUTE:C>>").readOnly=true;[[ENDLOOP,ATTRIBUTE]][[LOOP,REFERENCE:1=Y]]
-			document.getElementById("RefSelect<<REFERENCE:S>>").disabled=true;[[ENDLOOP,REFERENCE]]
-			document.getElementById("ButtonCreate").disabled=true;[[IF:CHILD(ATTRIBUTE:1=N[AND]!(3=F[OR]3=R)[AND]4=N)]]
-			document.getElementById("ButtonUpdate").disabled=false;[[ENDIF]]
-			document.getElementById("ButtonDelete").disabled=false;
-			l_objNode = parent.TREE.document.getElementById(document._nodeId);
-			document._nodeId = 'TYP_<<TYPE1:U>><||>'+[[LOOP,ATTRIBUTE:1=Y]]document.getElementById("Input<<ATTRIBUTE:C>>").value[[IF:!LAST]]+'<|>'+[[ENDIF]][[ENDLOOP,ATTRIBUTE]];
-			if (l_objNode != null) {
-				if (l_objNode.firstChild._state == 'O') {[[IF:6=K]]
-					if (l_argument[1] == null) {
-						var l_position = 'L';
-						l_objNodePos = null;
-					} else {
-						var l_position = 'B';
-						l_objNodePos = parent.TREE.document.getElementById('TYP_<<TYPE1:U>><||>'+l_argument[1]);
-					}[[ELSIF:6=P]]
-					var l_position = g_option[0];
-					l_objNodePos = parent.TREE.document.getElementById('TYP_<<TYPE1:U>><||>'+g_option[1]);[[ELSE]]
-					var l_position = 'L';
-					l_objNodePos = null;[[ENDIF]]
-					parent.TREE.AddTreeviewNode(
-						l_objNode,
-						'TYP_<<TYPE1:U>>',
-						document._nodeId,
-						'icons/<<TYPE7:L>>.bmp', 
-						[[IF:CHILD(ATTRIBUTE:!2=N)]][[LOOP,ATTRIBUTE:!2=N]][[IF:2=S]][[IF:FIRST]]'('+[[ELSE]]+' ('+[[ENDIF]][[ELSE]][[IF:!FIRST]]+' '+[[ENDIF]][[ENDIF]]document.getElementById("Input<<ATTRIBUTE:C>>").value.toLowerCase()[[IF:2=S]]+')'[[ENDIF]][[ENDLOOP,ATTRIBUTE]][[ELSE]]' '[[ENDIF]],
-						'N',
-						l_position,
-						l_objNodePos);
+		if(g_xmlhttp.status == 200) {
+			var g_responseText = g_xmlhttp.responseText;
+			try {
+				var l_json_array = JSON.parse(g_responseText);
+			}
+			catch (err) {
+				alert ('JSON parse error:\n'+g_responseText);
+			}
+			for (i in l_json_array) {
+				switch (l_json_array[i].ResultName) {
+					case "SELECT_<<TYPE1:U>>":[[LOOP,ATTRIBUTE:1=N[AND]4=N]]
+						document.getElementById("Input<<ATTRIBUTE:C>>").value=l_json_array[i].Rows[0].Data.<<ATTRIBUTE:C>>;[[ENDLOOP,ATTRIBUTE]][[IF:CHILD(TYPE_SPECIALISATION_GROUP)]]
+						ProcessTypeSpecialisation();[[ENDIF]]
+						break;
+					case "CREATE_<<TYPE1:U>>":[[LOOP,ATTRIBUTE:(1=Y[OR]3=F[OR]3=R)[AND]4=N]]
+						document.getElementById("Input<<ATTRIBUTE:C>>").readOnly=true;[[ENDLOOP,ATTRIBUTE]][[LOOP,REFERENCE:1=Y]]
+						document.getElementById("RefSelect<<REFERENCE:S>>").disabled=true;[[ENDLOOP,REFERENCE]]
+						document.getElementById("ButtonCreate").disabled=true;[[IF:CHILD(ATTRIBUTE:1=N[AND]!(3=F[OR]3=R)[AND]4=N)]]
+						document.getElementById("ButtonUpdate").disabled=false;[[ENDIF]]
+						document.getElementById("ButtonDelete").disabled=false;
+						l_objNode = parent.TREE.document.getElementById(document._nodeId);
+						document._nodeId = 'TYP_<<TYPE1:U>><||>'+[[LOOP,ATTRIBUTE:1=Y]]document.getElementById("Input<<ATTRIBUTE:C>>").value[[IF:!LAST]]+'<|>'+[[ENDIF]][[ENDLOOP,ATTRIBUTE]];
+						if (l_objNode != null) {
+							if (l_objNode.firstChild._state == 'O') {[[IF:6=K]]
+								if (l_argument[1] == null) {
+									var l_position = 'L';
+									l_objNodePos = null;
+								} else {
+									var l_position = 'B';
+									l_objNodePos = parent.TREE.document.getElementById('TYP_<<TYPE1:U>><||>'+l_argument[1]);
+								}[[ELSIF:6=P]]
+								var l_position = g_option[0];
+								l_objNodePos = parent.TREE.document.getElementById('TYP_<<TYPE1:U>><||>'+g_option[1]);[[ELSE]]
+								var l_position = 'L';
+								l_objNodePos = null;[[ENDIF]]
+								parent.TREE.AddTreeviewNode(
+									l_objNode,
+									'TYP_<<TYPE1:U>>',
+									document._nodeId,
+									'icons/<<TYPE7:L>>.bmp', 
+									[[IF:CHILD(ATTRIBUTE:!2=N)]][[LOOP,ATTRIBUTE:!2=N]][[IF:2=S]][[IF:FIRST]]'('+[[ELSE]]+' ('+[[ENDIF]][[ELSE]][[IF:!FIRST]]+' '+[[ENDIF]][[ENDIF]]document.getElementById("Input<<ATTRIBUTE:C>>").value.toLowerCase()[[IF:2=S]]+')'[[ENDIF]][[ENDLOOP,ATTRIBUTE]][[ELSE]]' '[[ENDIF]],
+									'N',
+									l_position,
+									l_objNodePos);
+							}
+						}
+						break;
+					case "UPDATE_<<TYPE1:U>>":[[IF:CHILD(ATTRIBUTE:1=N[AND]!2=N)]]
+						l_objNode = parent.TREE.document.getElementById(document._nodeId);
+						if (l_objNode != null) {
+							l_objNode.children[1].lastChild.nodeValue = ' '+[[LOOP,ATTRIBUTE:!2=N]][[IF:2=S]][[IF:FIRST]]'('+[[ELSE]]' ('+[[ENDIF]][[ELSE]][[IF:!FIRST]]' '+[[ENDIF]][[ENDIF]]document.getElementById("Input<<ATTRIBUTE:C>>").value.toLowerCase()[[IF:2=S]]+')'[[ENDIF]][[IF:!LAST]]+[[ENDIF]][[ENDLOOP,ATTRIBUTE]];
+					}[[ENDIF]]
+						break;
+					case "DELETE_<<TYPE1:U>>":
+						document.getElementById("ButtonUpdate").disabled=true;
+						document.getElementById("ButtonDelete").disabled=true;
+						l_objNode = parent.TREE.document.getElementById(document._nodeId);
+						if (l_objNode != null) {
+							l_objNode = l_objNode;
+							l_objNode.parentNode.removeChild(l_objNode);
+						}
+						break;[[LOOP,REFERENCE]][[LOOP,REFERENCE_TYPE]]
+					case "LIST_<<REFERENCE_TYPE1:U>>":
+						OpenListBox(l_argument,'<<REFERENCE_TYPE7:L>>','<<REFERENCE_TYPE:C>>',[[IF,REFERENCE:1='Y']]'N'[[ELSE]]'Y'[[ENDIF]]);
+						break;[[ENDLOOP,REFERENCE_TYPE]][[ENDLOOP,REFERENCE]][[IF:CHILD(ATTRIBUTE:3=F[AND]CHILD(ATTRIBUTE_SOURCE:1=N))]]
+					case "SELECT_FKEY_<<TYPE(N-1)1:U>>":
+						var l_values = l_argument[1].split("<|>");[[LOOP,ATTRIBUTE:3=F[AND]CHILD(ATTRIBUTE_SOURCE:1=N)]]
+						document.getElementById("Input<<ATTRIBUTE:C>>").value=l_values[[[EVAL:<<ATTRIBUTE:IX>>-1]]];[[ENDLOOP,ATTRIBUTE]]
+						break;[[ENDIF]][[IF:3=Y[AND]CHILD(ATTRIBUTE:1=N[AND]3=F)]]
+					case "SELECT_FKEY_<<TYPE1:U>>":
+						var l_values = l_argument[1].split("<|>");[[LOOP,ATTRIBUTE:1=N[AND]3=F]]
+						document.getElementById("Input<<ATTRIBUTE:C>>").value=l_values[[[EVAL:<<ATTRIBUTE:IX>>-1]]];[[ENDLOOP,ATTRIBUTE]]
+						break;[[ENDIF]]
+					case "SELECT_CUBE_DSC":
+						document.getElementById("CubeDesc").value = l_argument[1];
+						break;
+					case "ERROR":
+						alert ('Server error:\n'+l_json_array[i].ErrorText);
+						break;
+					default:
+						alert ('Unknown reply:\n'+g_responseText);
 				}
 			}
-			break;
-		case "UPDATE_<<TYPE1:U>>":[[IF:CHILD(ATTRIBUTE:1=N[AND]!2=N)]]
-			l_objNode = parent.TREE.document.getElementById(document._nodeId);
-			if (l_objNode != null) {
-				l_objNode.children[1].lastChild.nodeValue = ' '+[[LOOP,ATTRIBUTE:!2=N]][[IF:2=S]][[IF:FIRST]]'('+[[ELSE]]' ('+[[ENDIF]][[ELSE]][[IF:!FIRST]]' '+[[ENDIF]][[ENDIF]]document.getElementById("Input<<ATTRIBUTE:C>>").value.toLowerCase()[[IF:2=S]]+')'[[ENDIF]][[IF:!LAST]]+[[ENDIF]][[ENDLOOP,ATTRIBUTE]];
-			}[[ENDIF]]
-			break;
-		case "DELETE_<<TYPE1:U>>":
-			document.getElementById("ButtonUpdate").disabled=true;
-			document.getElementById("ButtonDelete").disabled=true;
-			l_objNode = parent.TREE.document.getElementById(document._nodeId);
-			if (l_objNode != null) {
-				l_objNode = l_objNode;
-				l_objNode.parentNode.removeChild(l_objNode);
-			}
-			break;[[LOOP,REFERENCE]][[LOOP,REFERENCE_TYPE]]
-		case "LIST_<<REFERENCE_TYPE1:U>>":
-			OpenListBox(l_argument,'<<REFERENCE_TYPE7:L>>','<<REFERENCE_TYPE:C>>',[[IF,REFERENCE:1='Y']]'N'[[ELSE]]'Y'[[ENDIF]]);
-			break;[[ENDLOOP,REFERENCE_TYPE]][[ENDLOOP,REFERENCE]][[IF:CHILD(ATTRIBUTE:3=F[AND]CHILD(ATTRIBUTE_SOURCE:1=N))]]
-		case "SELECT_FKEY_<<TYPE(N-1)1:U>>":
-			var l_values = l_argument[1].split("<|>");[[LOOP,ATTRIBUTE:3=F[AND]CHILD(ATTRIBUTE_SOURCE:1=N)]]
-			document.getElementById("Input<<ATTRIBUTE:C>>").value=l_values[[[EVAL:<<ATTRIBUTE:IX>>-1]]];[[ENDLOOP,ATTRIBUTE]]
-			break;[[ENDIF]][[IF:3=Y[AND]CHILD(ATTRIBUTE:1=N[AND]3=F)]]
-		case "SELECT_FKEY_<<TYPE1:U>>":
-			var l_values = l_argument[1].split("<|>");[[LOOP,ATTRIBUTE:1=N[AND]3=F]]
-			document.getElementById("Input<<ATTRIBUTE:C>>").value=l_values[[[EVAL:<<ATTRIBUTE:IX>>-1]]];[[ENDLOOP,ATTRIBUTE]]
-			break;[[ENDIF]]
-		case "ERROR":
-			alert ('Error: '+l_argument[1]);
-			break;
-		case "SELECT_CUBE_DSC":
-			document.getElementById("CubeDesc").value = l_argument[1];
-			break;
-		default:
-			alert (g_xmlhttp.responseText);	
-		}			
+		} else {
+			alert ('Request error:\n'+g_xmlhttp.statusText);
+		}
+		
 	}
 }
 
@@ -133,37 +147,34 @@ function InitBody() {
 	document.body._FlagDragging = 0;
 	document.body._DraggingId = ' ';
 	document.body._ListBoxCode="Ref000";
-	document._nodeId = l_json_argument.objectId;
-	document._argument = document._nodeId.TYP_<<TYPE1>>;
-	alert (JSON.stringify(document._argument));[[IF:6=P]]
+	document._nodeId = JSON.stringify(l_json_argument.objectId);
+	l_json_objectKey = l_json_argument.objectId.TYP_<<TYPE1>>;[[IF:6=P]]
+	g_json_options = l_json_argument.options;
 //	g_option = l_argument[3].split("<||>");[[ENDIF]]
-	if (document._argument != null) {
-		var values = document._argument.split("<|>");
-	}
-	switch (l_argument[1]) {
+	switch (l_json_argument.nodeType) {
 	case "D":[[LOOP,ATTRIBUTE:1=Y]]
-		document.getElementById("Input<<ATTRIBUTE:C>>").value=values[[[EVAL:<<ATTRIBUTE:IX>>-1]]];[[ENDLOOP,ATTRIBUTE]]
+		document.getElementById("Input<<ATTRIBUTE:C>>").value=l_json_objectKey.<<ATTRIBUTE:C>>;[[ENDLOOP,ATTRIBUTE]]
 		document.getElementById("ButtonCreate").disabled=true;[[IF:CHILD(ATTRIBUTE:1=N[AND]4=N)]]
-		l_objParm = { service : "Get<<TYPE1:C>>", parameters : "HIER _ARGUMENT VULLEN ALS OBJECT"};
+		l_objParm = {Service:"Get<<TYPE1:C>>",Parameters:{Type:l_json_objectKey}};
 		performTrans(l_objParm);[[ENDIF]][[IF:!CHILD(ATTRIBUTE:1=N[AND]!(3=F[OR]3=R)[AND]4=N)]]
 		document.getElementById("ButtonUpdate").disabled=true;[[ENDIF]][[LOOP,ATTRIBUTE:1=Y[OR]3=F[OR]3=R[OR]6=Y]]
 		document.getElementById("Input<<ATTRIBUTE:C>>").readOnly=true;[[ENDLOOP,ATTRIBUTE]][[LOOP,REFERENCE:1=Y[OR]5=Y]]
 		document.getElementById("RefSelect<<REFERENCE:S>>").disabled=true;[[ENDLOOP,REFERENCE]]
 		break;
 	case "N":[[LOOP,ATTRIBUTE:3=F[AND]CHILD(ATTRIBUTE_SOURCE:1=Y)]]
-		document.getElementById("Input<<ATTRIBUTE:C>>").value=values[[[EVAL:<<ATTRIBUTE:IX>>-1]]];[[ENDLOOP,ATTRIBUTE]]
+		document.getElementById("Input<<ATTRIBUTE:C>>").value=l_json_objectKey.<<ATTRIBUTE:C>>;[[ENDLOOP,ATTRIBUTE]]
 		document.getElementById("ButtonUpdate").disabled=true;
 		document.getElementById("ButtonDelete").disabled=true;[[IF:CHILD(ATTRIBUTE:3=F[AND]CHILD(ATTRIBUTE_SOURCE:1=N))]]
-		l_objParm = { service : "Get<<TYPE(N-1)1:C>>Fkey", parameters : "HIER _ARGUMENT VULLEN ALS OBJECT" };
+		l_objParm = {Service:"Get<<TYPE(N-1)1:C>>Fkey",Parameters:{Type:l_json_objectKey}};
 		performTrans(l_objParm);[[ENDIF]][[LOOP,ATTRIBUTE:(3=F[OR]3=R)[AND]4=N]]
 		document.getElementById("Input<<ATTRIBUTE:C>>").readOnly=true;[[ENDLOOP,ATTRIBUTE]]
 		break;[[IF,TYPE:3=Y]]  
 	case "R":[[IF,TYPE:2=Y]][[LOOP,ATTRIBUTE:3=F[AND]CHILD(ATTRIBUTE_SOURCE:1=Y)[OR]3=R]]
-		document.getElementById("Input<<ATTRIBUTE:C>>").value=values[[[EVAL:<<ATTRIBUTE:IX>>-1]]];[[ENDLOOP,ATTRIBUTE]][[ELSE]][[LOOP,ATTRIBUTE:3=R]]
-		document.getElementById("Input<<ATTRIBUTE:C>>").value=values[[[EVAL:<<ATTRIBUTE:IX>>-1]]];[[ENDLOOP,ATTRIBUTE]][[ENDIF]]
+		document.getElementById("Input<<ATTRIBUTE:C>>").value=l_json_objectKey.<<ATTRIBUTE:C>>;[[ENDLOOP,ATTRIBUTE]][[ELSE]][[LOOP,ATTRIBUTE:3=R]]
+		document.getElementById("Input<<ATTRIBUTE:C>>").value=l_json_objectKey.<<ATTRIBUTE:C>>;[[ENDLOOP,ATTRIBUTE]][[ENDIF]]
 		document.getElementById("ButtonUpdate").disabled=true;
 		document.getElementById("ButtonDelete").disabled=true;[[IF:CHILD(ATTRIBUTE:1=N[AND]3=F)]]
-		l_objParm = { service : "Get<<TYPE1:C>>Fkey", parameters : "HIER _ARGUMENT VULLEN ALS OBJECT" };
+		l_objParm = {Service:"Get<<TYPE1:C>>Fkey",Parameters:{Type:l_json_objectKey}};
 		performTrans(l_objParm);[[ENDIF]][[LOOP,ATTRIBUTE:(3=F[OR]3=R)[AND]4=N]]
 		document.getElementById("Input<<ATTRIBUTE:C>>").readOnly=true;[[ENDLOOP,ATTRIBUTE]]
 		break;[[ENDIF]]

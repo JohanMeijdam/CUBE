@@ -7,76 +7,90 @@ $_SESSION['views']=0;
 <script language='javascript' type='text/javascript'>
 <!--
 var g_option;
-g_xmlhttp = new XMLHttpRequest();
+var g_json_options;
+
+var g_xmlhttp = new XMLHttpRequest();
 g_xmlhttp.onreadystatechange = function() {
 	if(g_xmlhttp.readyState == 4) {
-		var l_argument = g_xmlhttp.responseText.split("<|||>");
-		switch (l_argument[0]) {
-		case "SELECT_PA2":
-			var l_values = l_argument[1].split("<|>");
-			document.getElementById("InputFkPa2Code").value=l_values[0];
-			document.getElementById("InputFkPa2Naam").value=l_values[1];
-			document.getElementById("InputOmschrijving").value=l_values[2];
-			document.getElementById("InputXfPa2PrdCode").value=l_values[3];
-			document.getElementById("InputXfPa2PrdNaam").value=l_values[4];
-			document.getElementById("InputXfPa2Pr2Code").value=l_values[5];
-			document.getElementById("InputXfPa2Pr2Naam").value=l_values[6];
-			document.getElementById("InputXkPa2Code").value=l_values[7];
-			document.getElementById("InputXkPa2Naam").value=l_values[8];
-			break;
-		case "CREATE_PA2":
-			document.getElementById("InputFkPrdCode").readOnly=true;
-			document.getElementById("InputFkPrdNaam").readOnly=true;
-			document.getElementById("InputFkPr2Code").readOnly=true;
-			document.getElementById("InputFkPr2Naam").readOnly=true;
-			document.getElementById("InputFkPa2Code").readOnly=true;
-			document.getElementById("InputFkPa2Naam").readOnly=true;
-			document.getElementById("InputCode").readOnly=true;
-			document.getElementById("InputNaam").readOnly=true;
-			document.getElementById("ButtonCreate").disabled=true;
-			document.getElementById("ButtonUpdate").disabled=false;
-			document.getElementById("ButtonDelete").disabled=false;
-			l_objNode = parent.TREE.document.getElementById(document._nodeId);
-			document._nodeId = 'TYP_PA2<||>'+document.getElementById("InputFkPrdCode").value+'<|>'+document.getElementById("InputFkPrdNaam").value+'<|>'+document.getElementById("InputFkPr2Code").value+'<|>'+document.getElementById("InputFkPr2Naam").value+'<|>'+document.getElementById("InputCode").value+'<|>'+document.getElementById("InputNaam").value;
-			if (l_objNode != null) {
-				if (l_objNode.firstChild._state == 'O') {
-					var l_position = 'L';
-					l_objNodePos = null;
-					parent.TREE.AddTreeviewNode(
-						l_objNode,
-						'TYP_PA2',
-						document._nodeId,
-						'icons/part.bmp', 
-						document.getElementById("InputCode").value.toLowerCase()+' '+document.getElementById("InputNaam").value.toLowerCase(),
-						'N',
-						l_position,
-						l_objNodePos);
+		if(g_xmlhttp.status == 200) {
+			var g_responseText = g_xmlhttp.responseText;
+			try {
+				var l_json_array = JSON.parse(g_responseText);
+			}
+			catch (err) {
+				alert ('JSON parse error:\n'+g_responseText);
+			}
+			for (i in l_json_array) {
+				switch (l_json_array[i].ResultName) {
+					case "SELECT_PA2":
+						document.getElementById("InputFkPa2Code").value=l_json_array[i].Rows[0].Data.FkPa2Code;
+						document.getElementById("InputFkPa2Naam").value=l_json_array[i].Rows[0].Data.FkPa2Naam;
+						document.getElementById("InputOmschrijving").value=l_json_array[i].Rows[0].Data.Omschrijving;
+						document.getElementById("InputXfPa2PrdCode").value=l_json_array[i].Rows[0].Data.XfPa2PrdCode;
+						document.getElementById("InputXfPa2PrdNaam").value=l_json_array[i].Rows[0].Data.XfPa2PrdNaam;
+						document.getElementById("InputXfPa2Pr2Code").value=l_json_array[i].Rows[0].Data.XfPa2Pr2Code;
+						document.getElementById("InputXfPa2Pr2Naam").value=l_json_array[i].Rows[0].Data.XfPa2Pr2Naam;
+						document.getElementById("InputXkPa2Code").value=l_json_array[i].Rows[0].Data.XkPa2Code;
+						document.getElementById("InputXkPa2Naam").value=l_json_array[i].Rows[0].Data.XkPa2Naam;
+						break;
+					case "CREATE_PA2":
+						document.getElementById("InputFkPrdCode").readOnly=true;
+						document.getElementById("InputFkPrdNaam").readOnly=true;
+						document.getElementById("InputFkPr2Code").readOnly=true;
+						document.getElementById("InputFkPr2Naam").readOnly=true;
+						document.getElementById("InputFkPa2Code").readOnly=true;
+						document.getElementById("InputFkPa2Naam").readOnly=true;
+						document.getElementById("InputCode").readOnly=true;
+						document.getElementById("InputNaam").readOnly=true;
+						document.getElementById("ButtonCreate").disabled=true;
+						document.getElementById("ButtonUpdate").disabled=false;
+						document.getElementById("ButtonDelete").disabled=false;
+						l_objNode = parent.TREE.document.getElementById(document._nodeId);
+						document._nodeId = 'TYP_PA2<||>'+document.getElementById("InputFkPrdCode").value+'<|>'+document.getElementById("InputFkPrdNaam").value+'<|>'+document.getElementById("InputFkPr2Code").value+'<|>'+document.getElementById("InputFkPr2Naam").value+'<|>'+document.getElementById("InputCode").value+'<|>'+document.getElementById("InputNaam").value;
+						if (l_objNode != null) {
+							if (l_objNode.firstChild._state == 'O') {
+								var l_position = 'L';
+								l_objNodePos = null;
+								parent.TREE.AddTreeviewNode(
+									l_objNode,
+									'TYP_PA2',
+									document._nodeId,
+									'icons/part.bmp', 
+									document.getElementById("InputCode").value.toLowerCase()+' '+document.getElementById("InputNaam").value.toLowerCase(),
+									'N',
+									l_position,
+									l_objNodePos);
+							}
+						}
+						break;
+					case "UPDATE_PA2":
+						break;
+					case "DELETE_PA2":
+						document.getElementById("ButtonUpdate").disabled=true;
+						document.getElementById("ButtonDelete").disabled=true;
+						l_objNode = parent.TREE.document.getElementById(document._nodeId);
+						if (l_objNode != null) {
+							l_objNode = l_objNode;
+							l_objNode.parentNode.removeChild(l_objNode);
+						}
+						break;
+					case "LIST_PA2":
+						OpenListBox(l_argument,'part','Part2','Y');
+						break;
+					case "SELECT_CUBE_DSC":
+						document.getElementById("CubeDesc").value = l_argument[1];
+						break;
+					case "ERROR":
+						alert ('Server error:\n'+l_json_array[i].ErrorText);
+						break;
+					default:
+						alert ('Unknown reply:\n'+g_responseText);
 				}
 			}
-			break;
-		case "UPDATE_PA2":
-			break;
-		case "DELETE_PA2":
-			document.getElementById("ButtonUpdate").disabled=true;
-			document.getElementById("ButtonDelete").disabled=true;
-			l_objNode = parent.TREE.document.getElementById(document._nodeId);
-			if (l_objNode != null) {
-				l_objNode = l_objNode;
-				l_objNode.parentNode.removeChild(l_objNode);
-			}
-			break;
-		case "LIST_PA2":
-			OpenListBox(l_argument,'part','Part2','Y');
-			break;
-		case "ERROR":
-			alert ('Error: '+l_argument[1]);
-			break;
-		case "SELECT_CUBE_DSC":
-			document.getElementById("CubeDesc").value = l_argument[1];
-			break;
-		default:
-			alert (g_xmlhttp.responseText);	
-		}			
+		} else {
+			alert ('Request error:\n'+g_xmlhttp.statusText);
+		}
+		
 	}
 }
 
@@ -93,22 +107,18 @@ function InitBody() {
 	document.body._FlagDragging = 0;
 	document.body._DraggingId = ' ';
 	document.body._ListBoxCode="Ref000";
-	document._nodeId = l_json_argument.objectId;
-	document._argument = document._nodeId.TYP_PA2;
-	alert (JSON.stringify(document._argument));
-	if (document._argument != null) {
-		var values = document._argument.split("<|>");
-	}
-	switch (l_argument[1]) {
+	document._nodeId = JSON.stringify(l_json_argument.objectId);
+	l_json_objectKey = l_json_argument.objectId.TYP_PA2;
+	switch (l_json_argument.nodeType) {
 	case "D":
-		document.getElementById("InputFkPrdCode").value=values[0];
-		document.getElementById("InputFkPrdNaam").value=values[1];
-		document.getElementById("InputFkPr2Code").value=values[2];
-		document.getElementById("InputFkPr2Naam").value=values[3];
-		document.getElementById("InputCode").value=values[4];
-		document.getElementById("InputNaam").value=values[5];
+		document.getElementById("InputFkPrdCode").value=l_json_objectKey.FkPrdCode;
+		document.getElementById("InputFkPrdNaam").value=l_json_objectKey.FkPrdNaam;
+		document.getElementById("InputFkPr2Code").value=l_json_objectKey.FkPr2Code;
+		document.getElementById("InputFkPr2Naam").value=l_json_objectKey.FkPr2Naam;
+		document.getElementById("InputCode").value=l_json_objectKey.Code;
+		document.getElementById("InputNaam").value=l_json_objectKey.Naam;
 		document.getElementById("ButtonCreate").disabled=true;
-		l_objParm = { service : "GetPa2", parameters : "HIER _ARGUMENT VULLEN ALS OBJECT"};
+		l_objParm = {Service:"GetPa2",Parameters:{Type:l_json_objectKey}};
 		performTrans(l_objParm);
 		document.getElementById("InputFkPrdCode").readOnly=true;
 		document.getElementById("InputFkPrdNaam").readOnly=true;
@@ -120,10 +130,10 @@ function InitBody() {
 		document.getElementById("InputNaam").readOnly=true;
 		break;
 	case "N":
-		document.getElementById("InputFkPrdCode").value=values[0];
-		document.getElementById("InputFkPrdNaam").value=values[1];
-		document.getElementById("InputFkPr2Code").value=values[2];
-		document.getElementById("InputFkPr2Naam").value=values[3];
+		document.getElementById("InputFkPrdCode").value=l_json_objectKey.FkPrdCode;
+		document.getElementById("InputFkPrdNaam").value=l_json_objectKey.FkPrdNaam;
+		document.getElementById("InputFkPr2Code").value=l_json_objectKey.FkPr2Code;
+		document.getElementById("InputFkPr2Naam").value=l_json_objectKey.FkPr2Naam;
 		document.getElementById("ButtonUpdate").disabled=true;
 		document.getElementById("ButtonDelete").disabled=true;
 		document.getElementById("InputFkPrdCode").readOnly=true;
@@ -134,12 +144,12 @@ function InitBody() {
 		document.getElementById("InputFkPa2Naam").readOnly=true;
 		break;  
 	case "R":
-		document.getElementById("InputFkPrdCode").value=values[0];
-		document.getElementById("InputFkPrdNaam").value=values[1];
-		document.getElementById("InputFkPr2Code").value=values[2];
-		document.getElementById("InputFkPr2Naam").value=values[3];
-		document.getElementById("InputFkPa2Code").value=values[4];
-		document.getElementById("InputFkPa2Naam").value=values[5];
+		document.getElementById("InputFkPrdCode").value=l_json_objectKey.FkPrdCode;
+		document.getElementById("InputFkPrdNaam").value=l_json_objectKey.FkPrdNaam;
+		document.getElementById("InputFkPr2Code").value=l_json_objectKey.FkPr2Code;
+		document.getElementById("InputFkPr2Naam").value=l_json_objectKey.FkPr2Naam;
+		document.getElementById("InputFkPa2Code").value=l_json_objectKey.FkPa2Code;
+		document.getElementById("InputFkPa2Naam").value=l_json_objectKey.FkPa2Naam;
 		document.getElementById("ButtonUpdate").disabled=true;
 		document.getElementById("ButtonDelete").disabled=true;
 		document.getElementById("InputFkPrdCode").readOnly=true;

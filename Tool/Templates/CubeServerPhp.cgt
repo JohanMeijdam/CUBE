@@ -95,7 +95,12 @@ function ProcessDbError($stid) {
 
 function CubeError($errno, $errstr) {
 	if ($errno > 2) {
-		echo "Error: [$errno] $errstr";   
+		$ResponseObj = new \stdClass();
+		$ResponseObj->ResultName = 'ERROR';
+		$ResponseObj->ErrorText = "[$errno] $errstr";
+		$ResponseText = json_encode($ResponseObj);
+		echo '['.$ResponseText.']';
+		exit;
 	}
 }
 ?>[[ENDBODY]]

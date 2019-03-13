@@ -642,7 +642,7 @@ function drop(p_event) {
 <div class="header0" style="position:absolute;top:76px;left:0px;width:40%;height:30px;">
 TREE VIEW</div>
 <div style="overflow:auto;position:absolute;top:106px;bottom:0px;left:0px;width:40%;">
-<div style="position:absolute;top:16px;">
+<div style="position:absolute;top:8px;">
 <span id="TreeBody"><span/></span>
 </div></div>
 <div class="header0" style="overflow:hidden;position:absolute;top:76px;left:40%;right:0;height:30px;">

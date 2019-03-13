@@ -7,61 +7,75 @@ $_SESSION['views']=0;
 <script language='javascript' type='text/javascript'>
 <!--
 var g_option;
-g_xmlhttp = new XMLHttpRequest();
+var g_json_options;
+
+var g_xmlhttp = new XMLHttpRequest();
 g_xmlhttp.onreadystatechange = function() {
 	if(g_xmlhttp.readyState == 4) {
-		var l_argument = g_xmlhttp.responseText.split("<|||>");
-		switch (l_argument[0]) {
-		case "SELECT_PR2":
-			var l_values = l_argument[1].split("<|>");
-			document.getElementById("InputOmschrijving").value=l_values[0];
-			break;
-		case "CREATE_PR2":
-			document.getElementById("InputFkPrdCode").readOnly=true;
-			document.getElementById("InputFkPrdNaam").readOnly=true;
-			document.getElementById("InputCode").readOnly=true;
-			document.getElementById("InputNaam").readOnly=true;
-			document.getElementById("ButtonCreate").disabled=true;
-			document.getElementById("ButtonUpdate").disabled=false;
-			document.getElementById("ButtonDelete").disabled=false;
-			l_objNode = parent.TREE.document.getElementById(document._nodeId);
-			document._nodeId = 'TYP_PR2<||>'+document.getElementById("InputFkPrdCode").value+'<|>'+document.getElementById("InputFkPrdNaam").value+'<|>'+document.getElementById("InputCode").value+'<|>'+document.getElementById("InputNaam").value;
-			if (l_objNode != null) {
-				if (l_objNode.firstChild._state == 'O') {
-					var l_position = 'L';
-					l_objNodePos = null;
-					parent.TREE.AddTreeviewNode(
-						l_objNode,
-						'TYP_PR2',
-						document._nodeId,
-						'icons/produkt.bmp', 
-						document.getElementById("InputCode").value.toLowerCase()+' '+document.getElementById("InputNaam").value.toLowerCase(),
-						'N',
-						l_position,
-						l_objNodePos);
+		if(g_xmlhttp.status == 200) {
+			var g_responseText = g_xmlhttp.responseText;
+			try {
+				var l_json_array = JSON.parse(g_responseText);
+			}
+			catch (err) {
+				alert ('JSON parse error:\n'+g_responseText);
+			}
+			for (i in l_json_array) {
+				switch (l_json_array[i].ResultName) {
+					case "SELECT_PR2":
+						document.getElementById("InputOmschrijving").value=l_json_array[i].Rows[0].Data.Omschrijving;
+						break;
+					case "CREATE_PR2":
+						document.getElementById("InputFkPrdCode").readOnly=true;
+						document.getElementById("InputFkPrdNaam").readOnly=true;
+						document.getElementById("InputCode").readOnly=true;
+						document.getElementById("InputNaam").readOnly=true;
+						document.getElementById("ButtonCreate").disabled=true;
+						document.getElementById("ButtonUpdate").disabled=false;
+						document.getElementById("ButtonDelete").disabled=false;
+						l_objNode = parent.TREE.document.getElementById(document._nodeId);
+						document._nodeId = 'TYP_PR2<||>'+document.getElementById("InputFkPrdCode").value+'<|>'+document.getElementById("InputFkPrdNaam").value+'<|>'+document.getElementById("InputCode").value+'<|>'+document.getElementById("InputNaam").value;
+						if (l_objNode != null) {
+							if (l_objNode.firstChild._state == 'O') {
+								var l_position = 'L';
+								l_objNodePos = null;
+								parent.TREE.AddTreeviewNode(
+									l_objNode,
+									'TYP_PR2',
+									document._nodeId,
+									'icons/produkt.bmp', 
+									document.getElementById("InputCode").value.toLowerCase()+' '+document.getElementById("InputNaam").value.toLowerCase(),
+									'N',
+									l_position,
+									l_objNodePos);
+							}
+						}
+						break;
+					case "UPDATE_PR2":
+						break;
+					case "DELETE_PR2":
+						document.getElementById("ButtonUpdate").disabled=true;
+						document.getElementById("ButtonDelete").disabled=true;
+						l_objNode = parent.TREE.document.getElementById(document._nodeId);
+						if (l_objNode != null) {
+							l_objNode = l_objNode;
+							l_objNode.parentNode.removeChild(l_objNode);
+						}
+						break;
+					case "SELECT_CUBE_DSC":
+						document.getElementById("CubeDesc").value = l_argument[1];
+						break;
+					case "ERROR":
+						alert ('Server error:\n'+l_json_array[i].ErrorText);
+						break;
+					default:
+						alert ('Unknown reply:\n'+g_responseText);
 				}
 			}
-			break;
-		case "UPDATE_PR2":
-			break;
-		case "DELETE_PR2":
-			document.getElementById("ButtonUpdate").disabled=true;
-			document.getElementById("ButtonDelete").disabled=true;
-			l_objNode = parent.TREE.document.getElementById(document._nodeId);
-			if (l_objNode != null) {
-				l_objNode = l_objNode;
-				l_objNode.parentNode.removeChild(l_objNode);
-			}
-			break;
-		case "ERROR":
-			alert ('Error: '+l_argument[1]);
-			break;
-		case "SELECT_CUBE_DSC":
-			document.getElementById("CubeDesc").value = l_argument[1];
-			break;
-		default:
-			alert (g_xmlhttp.responseText);	
-		}			
+		} else {
+			alert ('Request error:\n'+g_xmlhttp.statusText);
+		}
+		
 	}
 }
 
@@ -78,20 +92,16 @@ function InitBody() {
 	document.body._FlagDragging = 0;
 	document.body._DraggingId = ' ';
 	document.body._ListBoxCode="Ref000";
-	document._nodeId = l_json_argument.objectId;
-	document._argument = document._nodeId.TYP_PR2;
-	alert (JSON.stringify(document._argument));
-	if (document._argument != null) {
-		var values = document._argument.split("<|>");
-	}
-	switch (l_argument[1]) {
+	document._nodeId = JSON.stringify(l_json_argument.objectId);
+	l_json_objectKey = l_json_argument.objectId.TYP_PR2;
+	switch (l_json_argument.nodeType) {
 	case "D":
-		document.getElementById("InputFkPrdCode").value=values[0];
-		document.getElementById("InputFkPrdNaam").value=values[1];
-		document.getElementById("InputCode").value=values[2];
-		document.getElementById("InputNaam").value=values[3];
+		document.getElementById("InputFkPrdCode").value=l_json_objectKey.FkPrdCode;
+		document.getElementById("InputFkPrdNaam").value=l_json_objectKey.FkPrdNaam;
+		document.getElementById("InputCode").value=l_json_objectKey.Code;
+		document.getElementById("InputNaam").value=l_json_objectKey.Naam;
 		document.getElementById("ButtonCreate").disabled=true;
-		l_objParm = { service : "GetPr2", parameters : "HIER _ARGUMENT VULLEN ALS OBJECT"};
+		l_objParm = {Service:"GetPr2",Parameters:{Type:l_json_objectKey}};
 		performTrans(l_objParm);
 		document.getElementById("InputFkPrdCode").readOnly=true;
 		document.getElementById("InputFkPrdNaam").readOnly=true;
@@ -99,8 +109,8 @@ function InitBody() {
 		document.getElementById("InputNaam").readOnly=true;
 		break;
 	case "N":
-		document.getElementById("InputFkPrdCode").value=values[0];
-		document.getElementById("InputFkPrdNaam").value=values[1];
+		document.getElementById("InputFkPrdCode").value=l_json_objectKey.FkPrdCode;
+		document.getElementById("InputFkPrdNaam").value=l_json_objectKey.FkPrdNaam;
 		document.getElementById("ButtonUpdate").disabled=true;
 		document.getElementById("ButtonDelete").disabled=true;
 		document.getElementById("InputFkPrdCode").readOnly=true;
