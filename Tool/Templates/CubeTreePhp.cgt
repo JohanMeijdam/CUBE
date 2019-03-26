@@ -372,7 +372,7 @@ function OpenDetail(p_obj) {
 	case 'N':
 		ResetState();
 		if (p_obj.parentNode._type.substr(0,4) == 'TYP_') {
-			OpenDetailPage(p_obj.parentNode._type.substr(4), 'D', p_obj.parentNode.id, '');
+			OpenDetailPage(p_obj.parentNode._type.substr(4), 'D', p_obj.parentNode.id, null);
 		}
 		break;
 	case 'M':
@@ -435,9 +435,9 @@ function OpenDetail(p_obj) {
 	case 'A':
 		if (g_currentObjId == p_obj.parentNode._parentId && g_currentChildIndex >= p_obj.parentNode.parentNode._index || g_currentObjId == p_obj.parentNode.id) {
 			if (g_currentObjId == p_obj.parentNode._parentId && g_currentChildIndex == p_obj.parentNode.parentNode._index) {
-				var l_option = 'A<||>' + p_obj.parentNode.id.split("<||>")[1];
+				var l_option = '{"code":"A","type":'+p_obj.parentNode.id+'}';
 			} else {
-				var l_option = 'B<||>' + g_objNodeDiv.children[g_currentChildIndex].firstChild.id.split("<||>")[1];
+				var l_option = '{"code":"B","type":'+g_objNodeDiv.children[g_currentChildIndex].firstChild.id+'}';
 			}
 			ResetState();
 			OpenDetailPage(g_currentObjType.substr(4), g_currentNodeType, g_currentObjId, l_option);
@@ -446,8 +446,13 @@ function OpenDetail(p_obj) {
 	}
 }
 
-function OpenDetailPage (p_code, p_nodeType, p_objId, p_options) {
-	document.getElementById('DetailFrame').src='<<1>>Detail'+p_code+'.php?'+encodeURIComponent('{"nodeType":"'+p_nodeType+'","objectId":'+p_objId+',"options":"'+p_options+'"}');
+function OpenDetailPage (p_code, p_nodeType, p_objId, p_option) {
+	if (p_option == null) {
+		var l_option = '';
+	} else {
+		var l_option = ',"option":'+p_option;
+	}
+	document.getElementById('DetailFrame').src='<<1>>Detail'+p_code+'.php?'+encodeURIComponent('{"nodeType":"'+p_nodeType+'","objectId":'+p_objId+l_option+'}');
 }
 
 function OpenMenu(p_obj) {
@@ -574,9 +579,9 @@ function OpenMenuItem(p_obj) {
 		break;
 	case 'CubeAdd':
 		if (g_objNodeDiv.firstChild._state == 'C') {
-			OpenDetailPage(p_obj._type.substr(4), p_obj._nodeType, g_currentObjId, 'L');
+			OpenDetailPage(p_obj._type.substr(4), p_obj._nodeType, g_currentObjId, '{"code":"L"}');
 		} else if (g_objNodeDiv.children[p_obj._childIndex].children.length == 0) {
-			OpenDetailPage(p_obj._type.substr(4), p_obj._nodeType, g_currentObjId, 'F');
+			OpenDetailPage(p_obj._type.substr(4), p_obj._nodeType, g_currentObjId, '{"code":"F"}');
 		} else {
 			document.body.style.cursor = "url(icons/pointer-pos.cur), default";
 			document.body._state = "A";
@@ -586,7 +591,7 @@ function OpenMenuItem(p_obj) {
 		}
 		break;
 	default:
-		OpenDetailPage(p_obj._type.substr(4), p_obj._nodeType, g_currentObjId, '');
+		OpenDetailPage(p_obj._type.substr(4), p_obj._nodeType, g_currentObjId, null);
 	}
 }
 

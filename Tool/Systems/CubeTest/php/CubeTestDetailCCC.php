@@ -7,7 +7,7 @@ $_SESSION['views']=0;
 <script language='javascript' type='text/javascript'>
 <!--
 var g_option;
-var g_json_options;
+var g_json_option;
 
 var g_xmlhttp = new XMLHttpRequest();
 g_xmlhttp.onreadystatechange = function() {
@@ -99,16 +99,16 @@ function InitBody() {
 	document.body._FlagDragging = 0;
 	document.body._DraggingId = ' ';
 	document.body._ListBoxCode="Ref000";
+	var l_json_objectKey = l_json_argument.objectId;
 	document._nodeId = JSON.stringify(l_json_argument.objectId);
-	l_json_objectKey = l_json_argument.objectId.TYP_CCC;
-	g_json_options = l_json_argument.options;
+	g_json_option = l_json_argument.option;
 //	g_option = l_argument[3].split("<||>");
 	switch (l_json_argument.nodeType) {
 	case "D":
-		document.getElementById("InputCode").value=l_json_objectKey.Code;
-		document.getElementById("InputNaam").value=l_json_objectKey.Naam;
+		document.getElementById("InputCode").value=l_json_objectKey.TYP_CCC.Code;
+		document.getElementById("InputNaam").value=l_json_objectKey.TYP_CCC.Naam;
 		document.getElementById("ButtonCreate").disabled=true;
-		l_objParm = {Service:"GetCcc",Parameters:{Type:l_json_objectKey}};
+		l_objParm = {Service:"GetCcc",Parameters:{Type:l_json_objectKey.TYP_CCC}};
 		performTrans(l_objParm);
 		document.getElementById("InputFkCccCode").readOnly=true;
 		document.getElementById("InputFkCccNaam").readOnly=true;
@@ -122,8 +122,8 @@ function InitBody() {
 		document.getElementById("InputFkCccNaam").readOnly=true;
 		break;  
 	case "R":
-		document.getElementById("InputFkCccCode").value=l_json_objectKey.FkCccCode;
-		document.getElementById("InputFkCccNaam").value=l_json_objectKey.FkCccNaam;
+		document.getElementById("InputFkCccCode").value=l_json_objectKey.TYP_CCC.Code;
+		document.getElementById("InputFkCccNaam").value=l_json_objectKey.TYP_CCC.Naam;
 		document.getElementById("ButtonUpdate").disabled=true;
 		document.getElementById("ButtonDelete").disabled=true;
 		document.getElementById("InputFkCccCode").readOnly=true;

@@ -7,7 +7,7 @@ $_SESSION['views']=0;
 <script language='javascript' type='text/javascript'>
 <!--
 var g_option;
-var g_json_options;
+var g_json_option;
 
 var g_xmlhttp = new XMLHttpRequest();
 g_xmlhttp.onreadystatechange = function() {
@@ -93,22 +93,22 @@ function InitBody() {
 	document.body._FlagDragging = 0;
 	document.body._DraggingId = ' ';
 	document.body._ListBoxCode="Ref000";
+	var l_json_objectKey = l_json_argument.objectId;
 	document._nodeId = JSON.stringify(l_json_argument.objectId);
-	l_json_objectKey = l_json_argument.objectId.TYP_AAD;
-	g_json_options = l_json_argument.options;
+	g_json_option = l_json_argument.option;
 //	g_option = l_argument[3].split("<||>");
 	switch (l_json_argument.nodeType) {
 	case "D":
-		document.getElementById("InputFkAaaNaam").value=l_json_objectKey.FkAaaNaam;
-		document.getElementById("InputNaam").value=l_json_objectKey.Naam;
+		document.getElementById("InputFkAaaNaam").value=l_json_objectKey.TYP_AAD.FkAaaNaam;
+		document.getElementById("InputNaam").value=l_json_objectKey.TYP_AAD.Naam;
 		document.getElementById("ButtonCreate").disabled=true;
-		l_objParm = {Service:"GetAad",Parameters:{Type:l_json_objectKey}};
+		l_objParm = {Service:"GetAad",Parameters:{Type:l_json_objectKey.TYP_AAD}};
 		performTrans(l_objParm);
 		document.getElementById("InputFkAaaNaam").readOnly=true;
 		document.getElementById("InputNaam").readOnly=true;
 		break;
 	case "N":
-		document.getElementById("InputFkAaaNaam").value=l_json_objectKey.FkAaaNaam;
+		document.getElementById("InputFkAaaNaam").value=l_json_objectKey.TYP_AAA.Naam;
 		document.getElementById("ButtonUpdate").disabled=true;
 		document.getElementById("ButtonDelete").disabled=true;
 		document.getElementById("InputFkAaaNaam").readOnly=true;

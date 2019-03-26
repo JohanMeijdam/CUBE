@@ -7,7 +7,7 @@ $_SESSION['views']=0;
 <script language='javascript' type='text/javascript'>
 <!--
 var g_option;
-var g_json_options;
+var g_json_option;
 
 var g_xmlhttp = new XMLHttpRequest();
 g_xmlhttp.onreadystatechange = function() {
@@ -97,13 +97,13 @@ function InitBody() {
 	document.body._FlagDragging = 0;
 	document.body._DraggingId = ' ';
 	document.body._ListBoxCode="Ref000";
+	var l_json_objectKey = l_json_argument.objectId;
 	document._nodeId = JSON.stringify(l_json_argument.objectId);
-	l_json_objectKey = l_json_argument.objectId.TYP_BBB;
 	switch (l_json_argument.nodeType) {
 	case "D":
-		document.getElementById("InputNaam").value=l_json_objectKey.Naam;
+		document.getElementById("InputNaam").value=l_json_objectKey.TYP_BBB.Naam;
 		document.getElementById("ButtonCreate").disabled=true;
-		l_objParm = {Service:"GetBbb",Parameters:{Type:l_json_objectKey}};
+		l_objParm = {Service:"GetBbb",Parameters:{Type:l_json_objectKey.TYP_BBB}};
 		performTrans(l_objParm);
 		document.getElementById("InputNaam").readOnly=true;
 		break;

@@ -7,7 +7,7 @@ $_SESSION['views']=0;
 <script language='javascript' type='text/javascript'>
 <!--
 var g_option;
-var g_json_options;
+var g_json_option;
 
 var g_xmlhttp = new XMLHttpRequest();
 g_xmlhttp.onreadystatechange = function() {
@@ -92,16 +92,16 @@ function InitBody() {
 	document.body._FlagDragging = 0;
 	document.body._DraggingId = ' ';
 	document.body._ListBoxCode="Ref000";
+	var l_json_objectKey = l_json_argument.objectId;
 	document._nodeId = JSON.stringify(l_json_argument.objectId);
-	l_json_objectKey = l_json_argument.objectId.TYP_PR2;
 	switch (l_json_argument.nodeType) {
 	case "D":
-		document.getElementById("InputFkPrdCode").value=l_json_objectKey.FkPrdCode;
-		document.getElementById("InputFkPrdNaam").value=l_json_objectKey.FkPrdNaam;
-		document.getElementById("InputCode").value=l_json_objectKey.Code;
-		document.getElementById("InputNaam").value=l_json_objectKey.Naam;
+		document.getElementById("InputFkPrdCode").value=l_json_objectKey.TYP_PR2.FkPrdCode;
+		document.getElementById("InputFkPrdNaam").value=l_json_objectKey.TYP_PR2.FkPrdNaam;
+		document.getElementById("InputCode").value=l_json_objectKey.TYP_PR2.Code;
+		document.getElementById("InputNaam").value=l_json_objectKey.TYP_PR2.Naam;
 		document.getElementById("ButtonCreate").disabled=true;
-		l_objParm = {Service:"GetPr2",Parameters:{Type:l_json_objectKey}};
+		l_objParm = {Service:"GetPr2",Parameters:{Type:l_json_objectKey.TYP_PR2}};
 		performTrans(l_objParm);
 		document.getElementById("InputFkPrdCode").readOnly=true;
 		document.getElementById("InputFkPrdNaam").readOnly=true;
@@ -109,8 +109,8 @@ function InitBody() {
 		document.getElementById("InputNaam").readOnly=true;
 		break;
 	case "N":
-		document.getElementById("InputFkPrdCode").value=l_json_objectKey.FkPrdCode;
-		document.getElementById("InputFkPrdNaam").value=l_json_objectKey.FkPrdNaam;
+		document.getElementById("InputFkPrdCode").value=l_json_objectKey.TYP_PRD.Code;
+		document.getElementById("InputFkPrdNaam").value=l_json_objectKey.TYP_PRD.Naam;
 		document.getElementById("ButtonUpdate").disabled=true;
 		document.getElementById("ButtonDelete").disabled=true;
 		document.getElementById("InputFkPrdCode").readOnly=true;

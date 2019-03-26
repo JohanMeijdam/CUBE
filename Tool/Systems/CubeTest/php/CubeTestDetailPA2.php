@@ -7,7 +7,7 @@ $_SESSION['views']=0;
 <script language='javascript' type='text/javascript'>
 <!--
 var g_option;
-var g_json_options;
+var g_json_option;
 
 var g_xmlhttp = new XMLHttpRequest();
 g_xmlhttp.onreadystatechange = function() {
@@ -107,18 +107,18 @@ function InitBody() {
 	document.body._FlagDragging = 0;
 	document.body._DraggingId = ' ';
 	document.body._ListBoxCode="Ref000";
+	var l_json_objectKey = l_json_argument.objectId;
 	document._nodeId = JSON.stringify(l_json_argument.objectId);
-	l_json_objectKey = l_json_argument.objectId.TYP_PA2;
 	switch (l_json_argument.nodeType) {
 	case "D":
-		document.getElementById("InputFkPrdCode").value=l_json_objectKey.FkPrdCode;
-		document.getElementById("InputFkPrdNaam").value=l_json_objectKey.FkPrdNaam;
-		document.getElementById("InputFkPr2Code").value=l_json_objectKey.FkPr2Code;
-		document.getElementById("InputFkPr2Naam").value=l_json_objectKey.FkPr2Naam;
-		document.getElementById("InputCode").value=l_json_objectKey.Code;
-		document.getElementById("InputNaam").value=l_json_objectKey.Naam;
+		document.getElementById("InputFkPrdCode").value=l_json_objectKey.TYP_PA2.FkPrdCode;
+		document.getElementById("InputFkPrdNaam").value=l_json_objectKey.TYP_PA2.FkPrdNaam;
+		document.getElementById("InputFkPr2Code").value=l_json_objectKey.TYP_PA2.FkPr2Code;
+		document.getElementById("InputFkPr2Naam").value=l_json_objectKey.TYP_PA2.FkPr2Naam;
+		document.getElementById("InputCode").value=l_json_objectKey.TYP_PA2.Code;
+		document.getElementById("InputNaam").value=l_json_objectKey.TYP_PA2.Naam;
 		document.getElementById("ButtonCreate").disabled=true;
-		l_objParm = {Service:"GetPa2",Parameters:{Type:l_json_objectKey}};
+		l_objParm = {Service:"GetPa2",Parameters:{Type:l_json_objectKey.TYP_PA2}};
 		performTrans(l_objParm);
 		document.getElementById("InputFkPrdCode").readOnly=true;
 		document.getElementById("InputFkPrdNaam").readOnly=true;
@@ -130,10 +130,10 @@ function InitBody() {
 		document.getElementById("InputNaam").readOnly=true;
 		break;
 	case "N":
-		document.getElementById("InputFkPrdCode").value=l_json_objectKey.FkPrdCode;
-		document.getElementById("InputFkPrdNaam").value=l_json_objectKey.FkPrdNaam;
-		document.getElementById("InputFkPr2Code").value=l_json_objectKey.FkPr2Code;
-		document.getElementById("InputFkPr2Naam").value=l_json_objectKey.FkPr2Naam;
+		document.getElementById("InputFkPrdCode").value=l_json_objectKey.TYP_PR2.FkPrdCode;
+		document.getElementById("InputFkPrdNaam").value=l_json_objectKey.TYP_PR2.FkPrdNaam;
+		document.getElementById("InputFkPr2Code").value=l_json_objectKey.TYP_PR2.Code;
+		document.getElementById("InputFkPr2Naam").value=l_json_objectKey.TYP_PR2.Naam;
 		document.getElementById("ButtonUpdate").disabled=true;
 		document.getElementById("ButtonDelete").disabled=true;
 		document.getElementById("InputFkPrdCode").readOnly=true;
@@ -144,12 +144,12 @@ function InitBody() {
 		document.getElementById("InputFkPa2Naam").readOnly=true;
 		break;  
 	case "R":
-		document.getElementById("InputFkPrdCode").value=l_json_objectKey.FkPrdCode;
-		document.getElementById("InputFkPrdNaam").value=l_json_objectKey.FkPrdNaam;
-		document.getElementById("InputFkPr2Code").value=l_json_objectKey.FkPr2Code;
-		document.getElementById("InputFkPr2Naam").value=l_json_objectKey.FkPr2Naam;
-		document.getElementById("InputFkPa2Code").value=l_json_objectKey.FkPa2Code;
-		document.getElementById("InputFkPa2Naam").value=l_json_objectKey.FkPa2Naam;
+		document.getElementById("InputFkPrdCode").value=l_json_objectKey.TYP_PA2.FkPrdCode;
+		document.getElementById("InputFkPrdNaam").value=l_json_objectKey.TYP_PA2.FkPrdNaam;
+		document.getElementById("InputFkPr2Code").value=l_json_objectKey.TYP_PA2.Code;
+		document.getElementById("InputFkPr2Naam").value=l_json_objectKey.TYP_PA2.Naam;
+		document.getElementById("InputFkPa2Code").value=l_json_objectKey.TYP_PA2.Code;
+		document.getElementById("InputFkPa2Naam").value=l_json_objectKey.TYP_PA2.Naam;
 		document.getElementById("ButtonUpdate").disabled=true;
 		document.getElementById("ButtonDelete").disabled=true;
 		document.getElementById("InputFkPrdCode").readOnly=true;
