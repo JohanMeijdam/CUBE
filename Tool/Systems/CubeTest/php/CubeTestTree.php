@@ -481,9 +481,9 @@ function OpenDetail(p_obj) {
 	case 'A':
 		if (g_currentObjId == p_obj.parentNode._parentId && g_currentChildIndex >= p_obj.parentNode.parentNode._index || g_currentObjId == p_obj.parentNode.id) {
 			if (g_currentObjId == p_obj.parentNode._parentId && g_currentChildIndex == p_obj.parentNode.parentNode._index) {
-				var l_option = '{"code":"A","type":'+p_obj.parentNode.id+'}';
+				var l_option = '{"Code":"A","Type":'+p_obj.parentNode.id+'}';
 			} else {
-				var l_option = '{"code":"B","type":'+g_objNodeDiv.children[g_currentChildIndex].firstChild.id+'}';
+				var l_option = '{"Code":"B","Type":'+g_objNodeDiv.children[g_currentChildIndex].firstChild.id+'}';
 			}
 			ResetState();
 			OpenDetailPage(g_currentObjType.substr(4), g_currentNodeType, g_currentObjId, l_option);
@@ -496,7 +496,7 @@ function OpenDetailPage (p_code, p_nodeType, p_objId, p_option) {
 	if (p_option == null) {
 		var l_option = '';
 	} else {
-		var l_option = ',"option":'+p_option;
+		var l_option = ',"Option":'+p_option;
 	}
 	document.getElementById('DetailFrame').src='CubeTestDetail'+p_code+'.php?'+encodeURIComponent('{"nodeType":"'+p_nodeType+'","objectId":'+p_objId+l_option+'}');
 }

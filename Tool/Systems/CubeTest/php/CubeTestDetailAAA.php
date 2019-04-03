@@ -8,6 +8,7 @@ $_SESSION['views']=0;
 <!--
 var g_option;
 var g_json_option;
+var g_node_id;
 
 var g_xmlhttp = new XMLHttpRequest();
 g_xmlhttp.onreadystatechange = function() {
@@ -33,21 +34,23 @@ g_xmlhttp.onreadystatechange = function() {
 						document.getElementById("ButtonCreate").disabled=true;
 						document.getElementById("ButtonUpdate").disabled=false;
 						document.getElementById("ButtonDelete").disabled=false;
-						l_objNode = parent.TREE.document.getElementById(document._nodeId);
-						document._nodeId = 'TYP_AAA<||>'+document.getElementById("InputNaam").value;
+						var l_objNode = parent.document.getElementById(g_node_id);
+						var l_json_node_id = {TYP_AAA:{Naam:document.getElementById("InputNaam").value}}
+						g_node_id = JSON.stringify(l_json_node_id);
 						if (l_objNode != null) {
 							if (l_objNode.firstChild._state == 'O') {
-								if (l_argument[1] == null) {
+								var l_json_objectKey = l_json_array[i].Rows.Key;
+								if (l_json_objectKey == null) {
 									var l_position = 'L';
 									l_objNodePos = null;
 								} else {
 									var l_position = 'B';
-									l_objNodePos = parent.TREE.document.getElementById('TYP_AAA<||>'+l_argument[1]);
+									l_objNodePos = parent.document.getElementById('"TYP_AAA":'+JSON.stringify(l_json_objectKey));
 								}
-								parent.TREE.AddTreeviewNode(
+								parent.AddTreeviewNode(
 									l_objNode,
 									'TYP_AAA',
-									document._nodeId,
+									l_json_node_id,
 									'icons/produkt.bmp', 
 									document.getElementById("InputNaam").value.toLowerCase(),
 									'N',
@@ -61,7 +64,7 @@ g_xmlhttp.onreadystatechange = function() {
 					case "DELETE_AAA":
 						document.getElementById("ButtonUpdate").disabled=true;
 						document.getElementById("ButtonDelete").disabled=true;
-						l_objNode = parent.TREE.document.getElementById(document._nodeId);
+						var l_objNode = parent.document.getElementById(g_node_id);
 						if (l_objNode != null) {
 							l_objNode = l_objNode;
 							l_objNode.parentNode.removeChild(l_objNode);
@@ -101,7 +104,7 @@ function InitBody() {
 	document.body._DraggingId = ' ';
 	document.body._ListBoxCode="Ref000";
 	var l_json_objectKey = l_json_argument.objectId;
-	document._nodeId = JSON.stringify(l_json_argument.objectId);
+	g_node_id = JSON.stringify(l_json_argument.objectId);
 	switch (l_json_argument.nodeType) {
 	case "D":
 		document.getElementById("InputNaam").value=l_json_objectKey.TYP_AAA.Naam;
@@ -131,27 +134,18 @@ function InitBody() {
 }
 
 function CreateAaa() {
-	var l_parameters = 
-		document.getElementById("InputFkAaaNaam").value+'<|>'+
-		document.getElementById("InputNaam").value+'<|>'+
-		document.getElementById("InputOmschrijving").value+'<|>'+
-		document.getElementById("InputXkAaaNaam").value;
-	performTrans('CreateAaa<|||>'+l_parameters);
+	var l_json_type = {Type:{FkAaaNaam:document.getElementById("InputFkAaaNaam").value,Naam:document.getElementById("InputNaam").value,Omschrijving:document.getElementById("InputOmschrijving").value,XkAaaNaam:document.getElementById("InputXkAaaNaam").value}};
+	performTrans( {Service:"CreateAaa",Parameters:l_json_type} );
 }
 
 function UpdateAaa() {
-	var l_parameters = 
-		document.getElementById("InputFkAaaNaam").value+'<|>'+
-		document.getElementById("InputNaam").value+'<|>'+
-		document.getElementById("InputOmschrijving").value+'<|>'+
-		document.getElementById("InputXkAaaNaam").value;
-	performTrans('UpdateAaa<|||>'+l_parameters);
+	var l_json_type = {Type:{FkAaaNaam:document.getElementById("InputFkAaaNaam").value,Naam:document.getElementById("InputNaam").value,Omschrijving:document.getElementById("InputOmschrijving").value,XkAaaNaam:document.getElementById("InputXkAaaNaam").value}};;
+	performTrans( {Service:"UpdateAaa",Parameters:l_json_type} );
 }
 
 function DeleteAaa() {
-	var l_parameters = 
-		document.getElementById("InputNaam").value;
-	performTrans('DeleteAaa<|||>'+l_parameters);
+	var l_json_type = {Type:{Naam:document.getElementById("InputNaam").value}};;
+	performTrans( {Service:"DeleteAaa",Parameters:l_json_type} );
 }
 
 function OpenListBox(p_rows,p_icon,p_header,p_optional) {

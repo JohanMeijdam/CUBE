@@ -8,6 +8,7 @@ $_SESSION['views']=0;
 <!--
 var g_option;
 var g_json_option;
+var g_node_id;
 
 var g_xmlhttp = new XMLHttpRequest();
 g_xmlhttp.onreadystatechange = function() {
@@ -41,16 +42,17 @@ g_xmlhttp.onreadystatechange = function() {
 						document.getElementById("ButtonCreate").disabled=true;
 						document.getElementById("ButtonUpdate").disabled=false;
 						document.getElementById("ButtonDelete").disabled=false;
-						l_objNode = parent.TREE.document.getElementById(document._nodeId);
-						document._nodeId = 'TYP_PRT<||>'+document.getElementById("InputFkPrdCode").value+'<|>'+document.getElementById("InputFkPrdNaam").value+'<|>'+document.getElementById("InputCode").value+'<|>'+document.getElementById("InputNaam").value;
+						var l_objNode = parent.document.getElementById(g_node_id);
+						var l_json_node_id = {TYP_PRT:{FkPrdCode:document.getElementById("InputFkPrdCode").value,FkPrdNaam:document.getElementById("InputFkPrdNaam").value,Code:document.getElementById("InputCode").value,Naam:document.getElementById("InputNaam").value}}
+						g_node_id = JSON.stringify(l_json_node_id);
 						if (l_objNode != null) {
 							if (l_objNode.firstChild._state == 'O') {
 								var l_position = 'L';
 								l_objNodePos = null;
-								parent.TREE.AddTreeviewNode(
+								parent.AddTreeviewNode(
 									l_objNode,
 									'TYP_PRT',
-									document._nodeId,
+									l_json_node_id,
 									'icons/part.bmp', 
 									document.getElementById("InputCode").value.toLowerCase()+' '+document.getElementById("InputNaam").value.toLowerCase(),
 									'N',
@@ -64,7 +66,7 @@ g_xmlhttp.onreadystatechange = function() {
 					case "DELETE_PRT":
 						document.getElementById("ButtonUpdate").disabled=true;
 						document.getElementById("ButtonDelete").disabled=true;
-						l_objNode = parent.TREE.document.getElementById(document._nodeId);
+						var l_objNode = parent.document.getElementById(g_node_id);
 						if (l_objNode != null) {
 							l_objNode = l_objNode;
 							l_objNode.parentNode.removeChild(l_objNode);
@@ -104,7 +106,7 @@ function InitBody() {
 	document.body._DraggingId = ' ';
 	document.body._ListBoxCode="Ref000";
 	var l_json_objectKey = l_json_argument.objectId;
-	document._nodeId = JSON.stringify(l_json_argument.objectId);
+	g_node_id = JSON.stringify(l_json_argument.objectId);
 	switch (l_json_argument.nodeType) {
 	case "D":
 		document.getElementById("InputFkPrdCode").value=l_json_objectKey.TYP_PRT.FkPrdCode;
@@ -150,44 +152,18 @@ function InitBody() {
 }
 
 function CreatePrt() {
-	var l_parameters = 
-		document.getElementById("InputFkPrdCode").value+'<|>'+
-		document.getElementById("InputFkPrdNaam").value+'<|>'+
-		document.getElementById("InputFkPrtCode").value+'<|>'+
-		document.getElementById("InputFkPrtNaam").value+'<|>'+
-		document.getElementById("InputCode").value+'<|>'+
-		document.getElementById("InputNaam").value+'<|>'+
-		document.getElementById("InputOmschrijving").value+'<|>'+
-		document.getElementById("InputXfPrtPrdCode").value+'<|>'+
-		document.getElementById("InputXfPrtPrdNaam").value+'<|>'+
-		document.getElementById("InputXkPrtCode").value+'<|>'+
-		document.getElementById("InputXkPrtNaam").value;
-	performTrans('CreatePrt<|||>'+l_parameters);
+	var l_json_type = {Type:{FkPrdCode:document.getElementById("InputFkPrdCode").value,FkPrdNaam:document.getElementById("InputFkPrdNaam").value,FkPrtCode:document.getElementById("InputFkPrtCode").value,FkPrtNaam:document.getElementById("InputFkPrtNaam").value,Code:document.getElementById("InputCode").value,Naam:document.getElementById("InputNaam").value,Omschrijving:document.getElementById("InputOmschrijving").value,XfPrtPrdCode:document.getElementById("InputXfPrtPrdCode").value,XfPrtPrdNaam:document.getElementById("InputXfPrtPrdNaam").value,XkPrtCode:document.getElementById("InputXkPrtCode").value,XkPrtNaam:document.getElementById("InputXkPrtNaam").value}};
+	performTrans( {Service:"CreatePrt",Parameters:l_json_type} );
 }
 
 function UpdatePrt() {
-	var l_parameters = 
-		document.getElementById("InputFkPrdCode").value+'<|>'+
-		document.getElementById("InputFkPrdNaam").value+'<|>'+
-		document.getElementById("InputFkPrtCode").value+'<|>'+
-		document.getElementById("InputFkPrtNaam").value+'<|>'+
-		document.getElementById("InputCode").value+'<|>'+
-		document.getElementById("InputNaam").value+'<|>'+
-		document.getElementById("InputOmschrijving").value+'<|>'+
-		document.getElementById("InputXfPrtPrdCode").value+'<|>'+
-		document.getElementById("InputXfPrtPrdNaam").value+'<|>'+
-		document.getElementById("InputXkPrtCode").value+'<|>'+
-		document.getElementById("InputXkPrtNaam").value;
-	performTrans('UpdatePrt<|||>'+l_parameters);
+	var l_json_type = {Type:{FkPrdCode:document.getElementById("InputFkPrdCode").value,FkPrdNaam:document.getElementById("InputFkPrdNaam").value,FkPrtCode:document.getElementById("InputFkPrtCode").value,FkPrtNaam:document.getElementById("InputFkPrtNaam").value,Code:document.getElementById("InputCode").value,Naam:document.getElementById("InputNaam").value,Omschrijving:document.getElementById("InputOmschrijving").value,XfPrtPrdCode:document.getElementById("InputXfPrtPrdCode").value,XfPrtPrdNaam:document.getElementById("InputXfPrtPrdNaam").value,XkPrtCode:document.getElementById("InputXkPrtCode").value,XkPrtNaam:document.getElementById("InputXkPrtNaam").value}};;
+	performTrans( {Service:"UpdatePrt",Parameters:l_json_type} );
 }
 
 function DeletePrt() {
-	var l_parameters = 
-		document.getElementById("InputFkPrdCode").value+'<|>'+
-		document.getElementById("InputFkPrdNaam").value+'<|>'+
-		document.getElementById("InputCode").value+'<|>'+
-		document.getElementById("InputNaam").value;
-	performTrans('DeletePrt<|||>'+l_parameters);
+	var l_json_type = {Type:{FkPrdCode:document.getElementById("InputFkPrdCode").value,FkPrdNaam:document.getElementById("InputFkPrdNaam").value,Code:document.getElementById("InputCode").value,Naam:document.getElementById("InputNaam").value}};;
+	performTrans( {Service:"DeletePrt",Parameters:l_json_type} );
 }
 
 function OpenListBox(p_rows,p_icon,p_header,p_optional) {

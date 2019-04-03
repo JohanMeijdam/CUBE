@@ -8,6 +8,7 @@ $_SESSION['views']=0;
 <!--
 var g_option;
 var g_json_option;
+var g_node_id;
 
 var g_xmlhttp = new XMLHttpRequest();
 g_xmlhttp.onreadystatechange = function() {
@@ -35,16 +36,17 @@ g_xmlhttp.onreadystatechange = function() {
 						document.getElementById("ButtonCreate").disabled=true;
 						document.getElementById("ButtonUpdate").disabled=false;
 						document.getElementById("ButtonDelete").disabled=false;
-						l_objNode = parent.TREE.document.getElementById(document._nodeId);
-						document._nodeId = 'TYP_PRD<||>'+document.getElementById("InputCode").value+'<|>'+document.getElementById("InputNaam").value;
+						var l_objNode = parent.document.getElementById(g_node_id);
+						var l_json_node_id = {TYP_PRD:{Code:document.getElementById("InputCode").value,Naam:document.getElementById("InputNaam").value}}
+						g_node_id = JSON.stringify(l_json_node_id);
 						if (l_objNode != null) {
 							if (l_objNode.firstChild._state == 'O') {
 								var l_position = 'L';
 								l_objNodePos = null;
-								parent.TREE.AddTreeviewNode(
+								parent.AddTreeviewNode(
 									l_objNode,
 									'TYP_PRD',
-									document._nodeId,
+									l_json_node_id,
 									'icons/produkt.bmp', 
 									document.getElementById("InputCode").value.toLowerCase()+' '+document.getElementById("InputNaam").value.toLowerCase(),
 									'N',
@@ -58,7 +60,7 @@ g_xmlhttp.onreadystatechange = function() {
 					case "DELETE_PRD":
 						document.getElementById("ButtonUpdate").disabled=true;
 						document.getElementById("ButtonDelete").disabled=true;
-						l_objNode = parent.TREE.document.getElementById(document._nodeId);
+						var l_objNode = parent.document.getElementById(g_node_id);
 						if (l_objNode != null) {
 							l_objNode = l_objNode;
 							l_objNode.parentNode.removeChild(l_objNode);
@@ -95,7 +97,7 @@ function InitBody() {
 	document.body._DraggingId = ' ';
 	document.body._ListBoxCode="Ref000";
 	var l_json_objectKey = l_json_argument.objectId;
-	document._nodeId = JSON.stringify(l_json_argument.objectId);
+	g_node_id = JSON.stringify(l_json_argument.objectId);
 	switch (l_json_argument.nodeType) {
 	case "D":
 		document.getElementById("InputCode").value=l_json_objectKey.TYP_PRD.Code;
@@ -118,32 +120,18 @@ function InitBody() {
 }
 
 function CreatePrd() {
-	var l_parameters = 
-		document.getElementById("InputCubeTsgZzz").value+'<|>'+
-		document.getElementById("InputCubeTsgYyy").value+'<|>'+
-		document.getElementById("InputCode").value+'<|>'+
-		document.getElementById("InputNaam").value+'<|>'+
-		document.getElementById("InputDatum").value+'<|>'+
-		document.getElementById("InputOmschrijving").value;
-	performTrans('CreatePrd<|||>'+l_parameters);
+	var l_json_type = {Type:{CubeTsgZzz:document.getElementById("InputCubeTsgZzz").value,CubeTsgYyy:document.getElementById("InputCubeTsgYyy").value,Code:document.getElementById("InputCode").value,Naam:document.getElementById("InputNaam").value,Datum:document.getElementById("InputDatum").value,Omschrijving:document.getElementById("InputOmschrijving").value}};
+	performTrans( {Service:"CreatePrd",Parameters:l_json_type} );
 }
 
 function UpdatePrd() {
-	var l_parameters = 
-		document.getElementById("InputCubeTsgZzz").value+'<|>'+
-		document.getElementById("InputCubeTsgYyy").value+'<|>'+
-		document.getElementById("InputCode").value+'<|>'+
-		document.getElementById("InputNaam").value+'<|>'+
-		document.getElementById("InputDatum").value+'<|>'+
-		document.getElementById("InputOmschrijving").value;
-	performTrans('UpdatePrd<|||>'+l_parameters);
+	var l_json_type = {Type:{CubeTsgZzz:document.getElementById("InputCubeTsgZzz").value,CubeTsgYyy:document.getElementById("InputCubeTsgYyy").value,Code:document.getElementById("InputCode").value,Naam:document.getElementById("InputNaam").value,Datum:document.getElementById("InputDatum").value,Omschrijving:document.getElementById("InputOmschrijving").value}};;
+	performTrans( {Service:"UpdatePrd",Parameters:l_json_type} );
 }
 
 function DeletePrd() {
-	var l_parameters = 
-		document.getElementById("InputCode").value+'<|>'+
-		document.getElementById("InputNaam").value;
-	performTrans('DeletePrd<|||>'+l_parameters);
+	var l_json_type = {Type:{Code:document.getElementById("InputCode").value,Naam:document.getElementById("InputNaam").value}};;
+	performTrans( {Service:"DeletePrd",Parameters:l_json_type} );
 }
 
 function OpenDescBox(p_icon,p_name,p_type,p_attribute_type,p_sequence) {

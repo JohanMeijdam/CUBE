@@ -8,6 +8,7 @@ $_SESSION['views']=0;
 <!--
 var g_option;
 var g_json_option;
+var g_node_id;
 
 var g_xmlhttp = new XMLHttpRequest();
 g_xmlhttp.onreadystatechange = function() {
@@ -33,16 +34,17 @@ g_xmlhttp.onreadystatechange = function() {
 						document.getElementById("ButtonCreate").disabled=true;
 						document.getElementById("ButtonUpdate").disabled=false;
 						document.getElementById("ButtonDelete").disabled=false;
-						l_objNode = parent.TREE.document.getElementById(document._nodeId);
-						document._nodeId = 'TYP_PR2<||>'+document.getElementById("InputFkPrdCode").value+'<|>'+document.getElementById("InputFkPrdNaam").value+'<|>'+document.getElementById("InputCode").value+'<|>'+document.getElementById("InputNaam").value;
+						var l_objNode = parent.document.getElementById(g_node_id);
+						var l_json_node_id = {TYP_PR2:{FkPrdCode:document.getElementById("InputFkPrdCode").value,FkPrdNaam:document.getElementById("InputFkPrdNaam").value,Code:document.getElementById("InputCode").value,Naam:document.getElementById("InputNaam").value}}
+						g_node_id = JSON.stringify(l_json_node_id);
 						if (l_objNode != null) {
 							if (l_objNode.firstChild._state == 'O') {
 								var l_position = 'L';
 								l_objNodePos = null;
-								parent.TREE.AddTreeviewNode(
+								parent.AddTreeviewNode(
 									l_objNode,
 									'TYP_PR2',
-									document._nodeId,
+									l_json_node_id,
 									'icons/produkt.bmp', 
 									document.getElementById("InputCode").value.toLowerCase()+' '+document.getElementById("InputNaam").value.toLowerCase(),
 									'N',
@@ -56,7 +58,7 @@ g_xmlhttp.onreadystatechange = function() {
 					case "DELETE_PR2":
 						document.getElementById("ButtonUpdate").disabled=true;
 						document.getElementById("ButtonDelete").disabled=true;
-						l_objNode = parent.TREE.document.getElementById(document._nodeId);
+						var l_objNode = parent.document.getElementById(g_node_id);
 						if (l_objNode != null) {
 							l_objNode = l_objNode;
 							l_objNode.parentNode.removeChild(l_objNode);
@@ -93,7 +95,7 @@ function InitBody() {
 	document.body._DraggingId = ' ';
 	document.body._ListBoxCode="Ref000";
 	var l_json_objectKey = l_json_argument.objectId;
-	document._nodeId = JSON.stringify(l_json_argument.objectId);
+	g_node_id = JSON.stringify(l_json_argument.objectId);
 	switch (l_json_argument.nodeType) {
 	case "D":
 		document.getElementById("InputFkPrdCode").value=l_json_objectKey.TYP_PR2.FkPrdCode;
@@ -122,32 +124,18 @@ function InitBody() {
 }
 
 function CreatePr2() {
-	var l_parameters = 
-		document.getElementById("InputFkPrdCode").value+'<|>'+
-		document.getElementById("InputFkPrdNaam").value+'<|>'+
-		document.getElementById("InputCode").value+'<|>'+
-		document.getElementById("InputNaam").value+'<|>'+
-		document.getElementById("InputOmschrijving").value;
-	performTrans('CreatePr2<|||>'+l_parameters);
+	var l_json_type = {Type:{FkPrdCode:document.getElementById("InputFkPrdCode").value,FkPrdNaam:document.getElementById("InputFkPrdNaam").value,Code:document.getElementById("InputCode").value,Naam:document.getElementById("InputNaam").value,Omschrijving:document.getElementById("InputOmschrijving").value}};
+	performTrans( {Service:"CreatePr2",Parameters:l_json_type} );
 }
 
 function UpdatePr2() {
-	var l_parameters = 
-		document.getElementById("InputFkPrdCode").value+'<|>'+
-		document.getElementById("InputFkPrdNaam").value+'<|>'+
-		document.getElementById("InputCode").value+'<|>'+
-		document.getElementById("InputNaam").value+'<|>'+
-		document.getElementById("InputOmschrijving").value;
-	performTrans('UpdatePr2<|||>'+l_parameters);
+	var l_json_type = {Type:{FkPrdCode:document.getElementById("InputFkPrdCode").value,FkPrdNaam:document.getElementById("InputFkPrdNaam").value,Code:document.getElementById("InputCode").value,Naam:document.getElementById("InputNaam").value,Omschrijving:document.getElementById("InputOmschrijving").value}};;
+	performTrans( {Service:"UpdatePr2",Parameters:l_json_type} );
 }
 
 function DeletePr2() {
-	var l_parameters = 
-		document.getElementById("InputFkPrdCode").value+'<|>'+
-		document.getElementById("InputFkPrdNaam").value+'<|>'+
-		document.getElementById("InputCode").value+'<|>'+
-		document.getElementById("InputNaam").value;
-	performTrans('DeletePr2<|||>'+l_parameters);
+	var l_json_type = {Type:{FkPrdCode:document.getElementById("InputFkPrdCode").value,FkPrdNaam:document.getElementById("InputFkPrdNaam").value,Code:document.getElementById("InputCode").value,Naam:document.getElementById("InputNaam").value}};;
+	performTrans( {Service:"DeletePr2",Parameters:l_json_type} );
 }
 
 function OpenDescBox(p_icon,p_name,p_type,p_attribute_type,p_sequence) {

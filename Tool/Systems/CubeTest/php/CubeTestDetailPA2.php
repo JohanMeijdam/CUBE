@@ -8,6 +8,7 @@ $_SESSION['views']=0;
 <!--
 var g_option;
 var g_json_option;
+var g_node_id;
 
 var g_xmlhttp = new XMLHttpRequest();
 g_xmlhttp.onreadystatechange = function() {
@@ -45,16 +46,17 @@ g_xmlhttp.onreadystatechange = function() {
 						document.getElementById("ButtonCreate").disabled=true;
 						document.getElementById("ButtonUpdate").disabled=false;
 						document.getElementById("ButtonDelete").disabled=false;
-						l_objNode = parent.TREE.document.getElementById(document._nodeId);
-						document._nodeId = 'TYP_PA2<||>'+document.getElementById("InputFkPrdCode").value+'<|>'+document.getElementById("InputFkPrdNaam").value+'<|>'+document.getElementById("InputFkPr2Code").value+'<|>'+document.getElementById("InputFkPr2Naam").value+'<|>'+document.getElementById("InputCode").value+'<|>'+document.getElementById("InputNaam").value;
+						var l_objNode = parent.document.getElementById(g_node_id);
+						var l_json_node_id = {TYP_PA2:{FkPrdCode:document.getElementById("InputFkPrdCode").value,FkPrdNaam:document.getElementById("InputFkPrdNaam").value,FkPr2Code:document.getElementById("InputFkPr2Code").value,FkPr2Naam:document.getElementById("InputFkPr2Naam").value,Code:document.getElementById("InputCode").value,Naam:document.getElementById("InputNaam").value}}
+						g_node_id = JSON.stringify(l_json_node_id);
 						if (l_objNode != null) {
 							if (l_objNode.firstChild._state == 'O') {
 								var l_position = 'L';
 								l_objNodePos = null;
-								parent.TREE.AddTreeviewNode(
+								parent.AddTreeviewNode(
 									l_objNode,
 									'TYP_PA2',
-									document._nodeId,
+									l_json_node_id,
 									'icons/part.bmp', 
 									document.getElementById("InputCode").value.toLowerCase()+' '+document.getElementById("InputNaam").value.toLowerCase(),
 									'N',
@@ -68,7 +70,7 @@ g_xmlhttp.onreadystatechange = function() {
 					case "DELETE_PA2":
 						document.getElementById("ButtonUpdate").disabled=true;
 						document.getElementById("ButtonDelete").disabled=true;
-						l_objNode = parent.TREE.document.getElementById(document._nodeId);
+						var l_objNode = parent.document.getElementById(g_node_id);
 						if (l_objNode != null) {
 							l_objNode = l_objNode;
 							l_objNode.parentNode.removeChild(l_objNode);
@@ -108,7 +110,7 @@ function InitBody() {
 	document.body._DraggingId = ' ';
 	document.body._ListBoxCode="Ref000";
 	var l_json_objectKey = l_json_argument.objectId;
-	document._nodeId = JSON.stringify(l_json_argument.objectId);
+	g_node_id = JSON.stringify(l_json_argument.objectId);
 	switch (l_json_argument.nodeType) {
 	case "D":
 		document.getElementById("InputFkPrdCode").value=l_json_objectKey.TYP_PA2.FkPrdCode;
@@ -166,54 +168,18 @@ function InitBody() {
 }
 
 function CreatePa2() {
-	var l_parameters = 
-		document.getElementById("InputFkPrdCode").value+'<|>'+
-		document.getElementById("InputFkPrdNaam").value+'<|>'+
-		document.getElementById("InputFkPr2Code").value+'<|>'+
-		document.getElementById("InputFkPr2Naam").value+'<|>'+
-		document.getElementById("InputFkPa2Code").value+'<|>'+
-		document.getElementById("InputFkPa2Naam").value+'<|>'+
-		document.getElementById("InputCode").value+'<|>'+
-		document.getElementById("InputNaam").value+'<|>'+
-		document.getElementById("InputOmschrijving").value+'<|>'+
-		document.getElementById("InputXfPa2PrdCode").value+'<|>'+
-		document.getElementById("InputXfPa2PrdNaam").value+'<|>'+
-		document.getElementById("InputXfPa2Pr2Code").value+'<|>'+
-		document.getElementById("InputXfPa2Pr2Naam").value+'<|>'+
-		document.getElementById("InputXkPa2Code").value+'<|>'+
-		document.getElementById("InputXkPa2Naam").value;
-	performTrans('CreatePa2<|||>'+l_parameters);
+	var l_json_type = {Type:{FkPrdCode:document.getElementById("InputFkPrdCode").value,FkPrdNaam:document.getElementById("InputFkPrdNaam").value,FkPr2Code:document.getElementById("InputFkPr2Code").value,FkPr2Naam:document.getElementById("InputFkPr2Naam").value,FkPa2Code:document.getElementById("InputFkPa2Code").value,FkPa2Naam:document.getElementById("InputFkPa2Naam").value,Code:document.getElementById("InputCode").value,Naam:document.getElementById("InputNaam").value,Omschrijving:document.getElementById("InputOmschrijving").value,XfPa2PrdCode:document.getElementById("InputXfPa2PrdCode").value,XfPa2PrdNaam:document.getElementById("InputXfPa2PrdNaam").value,XfPa2Pr2Code:document.getElementById("InputXfPa2Pr2Code").value,XfPa2Pr2Naam:document.getElementById("InputXfPa2Pr2Naam").value,XkPa2Code:document.getElementById("InputXkPa2Code").value,XkPa2Naam:document.getElementById("InputXkPa2Naam").value}};
+	performTrans( {Service:"CreatePa2",Parameters:l_json_type} );
 }
 
 function UpdatePa2() {
-	var l_parameters = 
-		document.getElementById("InputFkPrdCode").value+'<|>'+
-		document.getElementById("InputFkPrdNaam").value+'<|>'+
-		document.getElementById("InputFkPr2Code").value+'<|>'+
-		document.getElementById("InputFkPr2Naam").value+'<|>'+
-		document.getElementById("InputFkPa2Code").value+'<|>'+
-		document.getElementById("InputFkPa2Naam").value+'<|>'+
-		document.getElementById("InputCode").value+'<|>'+
-		document.getElementById("InputNaam").value+'<|>'+
-		document.getElementById("InputOmschrijving").value+'<|>'+
-		document.getElementById("InputXfPa2PrdCode").value+'<|>'+
-		document.getElementById("InputXfPa2PrdNaam").value+'<|>'+
-		document.getElementById("InputXfPa2Pr2Code").value+'<|>'+
-		document.getElementById("InputXfPa2Pr2Naam").value+'<|>'+
-		document.getElementById("InputXkPa2Code").value+'<|>'+
-		document.getElementById("InputXkPa2Naam").value;
-	performTrans('UpdatePa2<|||>'+l_parameters);
+	var l_json_type = {Type:{FkPrdCode:document.getElementById("InputFkPrdCode").value,FkPrdNaam:document.getElementById("InputFkPrdNaam").value,FkPr2Code:document.getElementById("InputFkPr2Code").value,FkPr2Naam:document.getElementById("InputFkPr2Naam").value,FkPa2Code:document.getElementById("InputFkPa2Code").value,FkPa2Naam:document.getElementById("InputFkPa2Naam").value,Code:document.getElementById("InputCode").value,Naam:document.getElementById("InputNaam").value,Omschrijving:document.getElementById("InputOmschrijving").value,XfPa2PrdCode:document.getElementById("InputXfPa2PrdCode").value,XfPa2PrdNaam:document.getElementById("InputXfPa2PrdNaam").value,XfPa2Pr2Code:document.getElementById("InputXfPa2Pr2Code").value,XfPa2Pr2Naam:document.getElementById("InputXfPa2Pr2Naam").value,XkPa2Code:document.getElementById("InputXkPa2Code").value,XkPa2Naam:document.getElementById("InputXkPa2Naam").value}};;
+	performTrans( {Service:"UpdatePa2",Parameters:l_json_type} );
 }
 
 function DeletePa2() {
-	var l_parameters = 
-		document.getElementById("InputFkPrdCode").value+'<|>'+
-		document.getElementById("InputFkPrdNaam").value+'<|>'+
-		document.getElementById("InputFkPr2Code").value+'<|>'+
-		document.getElementById("InputFkPr2Naam").value+'<|>'+
-		document.getElementById("InputCode").value+'<|>'+
-		document.getElementById("InputNaam").value;
-	performTrans('DeletePa2<|||>'+l_parameters);
+	var l_json_type = {Type:{FkPrdCode:document.getElementById("InputFkPrdCode").value,FkPrdNaam:document.getElementById("InputFkPrdNaam").value,FkPr2Code:document.getElementById("InputFkPr2Code").value,FkPr2Naam:document.getElementById("InputFkPr2Naam").value,Code:document.getElementById("InputCode").value,Naam:document.getElementById("InputNaam").value}};;
+	performTrans( {Service:"DeletePa2",Parameters:l_json_type} );
 }
 
 function OpenListBox(p_rows,p_icon,p_header,p_optional) {

@@ -40,6 +40,7 @@ $_SESSION['views']=0;
 <!--
 var g_option;
 var g_json_option;
+var g_node_id;
 
 var g_xmlhttp = new XMLHttpRequest();
 g_xmlhttp.onreadystatechange = function() {
@@ -64,25 +65,27 @@ g_xmlhttp.onreadystatechange = function() {
 						document.getElementById("ButtonCreate").disabled=true;[[IF:CHILD(ATTRIBUTE:1=N[AND]!(3=F[OR]3=R)[AND]4=N)]]
 						document.getElementById("ButtonUpdate").disabled=false;[[ENDIF]]
 						document.getElementById("ButtonDelete").disabled=false;
-						l_objNode = parent.TREE.document.getElementById(document._nodeId);
-						document._nodeId = 'TYP_<<TYPE1:U>><||>'+[[LOOP,ATTRIBUTE:1=Y]]document.getElementById("Input<<ATTRIBUTE:C>>").value[[IF:!LAST]]+'<|>'+[[ENDIF]][[ENDLOOP,ATTRIBUTE]];
+						var l_objNode = parent.document.getElementById(g_node_id);
+						var l_json_node_id = {TYP_<<TYPE1:U>>:{[[LOOP,ATTRIBUTE:1=Y]]<<ATTRIBUTE:C>>:document.getElementById("Input<<ATTRIBUTE:C>>").value[[IF:!LAST]],[[ENDIF]][[ENDLOOP,ATTRIBUTE]]}}
+						g_node_id = JSON.stringify(l_json_node_id);
 						if (l_objNode != null) {
 							if (l_objNode.firstChild._state == 'O') {[[IF:6=K]]
-								if (l_argument[1] == null) {
+								var l_json_objectKey = l_json_array[i].Rows.Key;
+								if (l_json_objectKey == null) {
 									var l_position = 'L';
 									l_objNodePos = null;
 								} else {
 									var l_position = 'B';
-									l_objNodePos = parent.TREE.document.getElementById('TYP_<<TYPE1:U>><||>'+l_argument[1]);
+									l_objNodePos = parent.document.getElementById('"TYP_<<TYPE1:U>>":'+JSON.stringify(l_json_objectKey));
 								}[[ELSIF:6=P]]
-								var l_position = g_option[0];
-								l_objNodePos = parent.TREE.document.getElementById('TYP_<<TYPE1:U>><||>'+g_option[1]);[[ELSE]]
+								var l_position = g_json_option.Code;
+								l_objNodePos = parent.document.getElementById(g_json_option.Type);[[ELSE]]
 								var l_position = 'L';
 								l_objNodePos = null;[[ENDIF]]
-								parent.TREE.AddTreeviewNode(
+								parent.AddTreeviewNode(
 									l_objNode,
 									'TYP_<<TYPE1:U>>',
-									document._nodeId,
+									l_json_node_id,
 									'icons/<<TYPE7:L>>.bmp', 
 									[[IF:CHILD(ATTRIBUTE:!2=N)]][[LOOP,ATTRIBUTE:!2=N]][[IF:2=S]][[IF:FIRST]]'('+[[ELSE]]+' ('+[[ENDIF]][[ELSE]][[IF:!FIRST]]+' '+[[ENDIF]][[ENDIF]]document.getElementById("Input<<ATTRIBUTE:C>>").value.toLowerCase()[[IF:2=S]]+')'[[ENDIF]][[ENDLOOP,ATTRIBUTE]][[ELSE]]' '[[ENDIF]],
 									'N',
@@ -92,7 +95,7 @@ g_xmlhttp.onreadystatechange = function() {
 						}
 						break;
 					case "UPDATE_<<TYPE1:U>>":[[IF:CHILD(ATTRIBUTE:1=N[AND]!2=N)]]
-						l_objNode = parent.TREE.document.getElementById(document._nodeId);
+						var l_objNode = parent.document.getElementById(g_node_id);
 						if (l_objNode != null) {
 							l_objNode.children[1].lastChild.nodeValue = ' '+[[LOOP,ATTRIBUTE:!2=N]][[IF:2=S]][[IF:FIRST]]'('+[[ELSE]]' ('+[[ENDIF]][[ELSE]][[IF:!FIRST]]' '+[[ENDIF]][[ENDIF]]document.getElementById("Input<<ATTRIBUTE:C>>").value.toLowerCase()[[IF:2=S]]+')'[[ENDIF]][[IF:!LAST]]+[[ENDIF]][[ENDLOOP,ATTRIBUTE]];
 					}[[ENDIF]]
@@ -100,7 +103,7 @@ g_xmlhttp.onreadystatechange = function() {
 					case "DELETE_<<TYPE1:U>>":
 						document.getElementById("ButtonUpdate").disabled=true;
 						document.getElementById("ButtonDelete").disabled=true;
-						l_objNode = parent.TREE.document.getElementById(document._nodeId);
+						var l_objNode = parent.document.getElementById(g_node_id);
 						if (l_objNode != null) {
 							l_objNode = l_objNode;
 							l_objNode.parentNode.removeChild(l_objNode);
@@ -148,8 +151,8 @@ function InitBody() {
 	document.body._DraggingId = ' ';
 	document.body._ListBoxCode="Ref000";
 	var l_json_objectKey = l_json_argument.objectId;
-	document._nodeId = JSON.stringify(l_json_argument.objectId);[[IF:6=P]]
-	g_json_option = l_json_argument.option;
+	g_node_id = JSON.stringify(l_json_argument.objectId);[[IF:6=P]]
+	g_json_option = l_json_argument.Option;
 //	g_option = l_argument[3].split("<||>");[[ENDIF]]
 	switch (l_json_argument.nodeType) {
 	case "D":[[LOOP,ATTRIBUTE:1=Y]]
@@ -185,26 +188,26 @@ function InitBody() {
 }
 
 function Create<<TYPE1:C>>() {
-	var l_parameters = [[LOOP,ATTRIBUTE:!CHILD(DERIVATION)]]
-		document.getElementById("Input<<ATTRIBUTE:C>>").value[[IF:!LAST]]+'<|>'+[[ENDIF]][[ENDLOOP,ATTRIBUTE]];[[IF:6=P]]
-	if (g_option[0] == 'F' || g_option[0] == 'L') {
-		performTrans('Create<<TYPE1:C>><|||>'+g_option[0]+'<|>'+l_parameters);
+	var l_json_type = {Type:{[[LOOP,ATTRIBUTE:!CHILD(DERIVATION)]]<<ATTRIBUTE:C>>:document.getElementById("Input<<ATTRIBUTE:C>>").value[[IF:!LAST]],[[ENDIF]][[ENDLOOP,ATTRIBUTE]]}};[[IF:6=P]]
+	var l_pos_action = g_json_option.Option.Code;
+	var l_json_option_code = {Option:{CubePosAction:l_pos_action}};
+	if (l_pos_action == 'F' || l_pos_action == 'L') {
+		performTrans( {Service:"Create<<TYPE1:C>>",Parameters:l_json_option_code,l_json_type} );
 	} else {
-		performTrans('Create<<TYPE1:C>><|||>'+g_option[0]+'<|>'+l_parameters+'<|>'+g_option[1]);
+		var l_json_ref == {Ref:g_json_option.Type};
+		performTrans( {Service:"Create<<TYPE1:C>>",Parameters:l_json_option_code,l_json_type,l_json_ref} );
 	}[[ELSE]]
-	performTrans('Create<<TYPE1:C>><|||>'+l_parameters);[[ENDIF]]
+	performTrans( {Service:"Create<<TYPE1:C>>",Parameters:l_json_type} );[[ENDIF]]
 }[[IF:CHILD(ATTRIBUTE:1=N)]]
 
 function Update<<TYPE1:C>>() {
-	var l_parameters = [[LOOP,ATTRIBUTE:1=Y[OR]!CHILD(DERIVATION)]]
-		document.getElementById("Input<<ATTRIBUTE:C>>").value[[IF:!LAST]]+'<|>'+[[ENDIF]][[ENDLOOP,ATTRIBUTE]];
-	performTrans('Update<<TYPE1:C>><|||>'+l_parameters);
+	var l_json_type = {Type:{[[LOOP,ATTRIBUTE:1=Y[OR]!CHILD(DERIVATION)]]<<ATTRIBUTE:C>>:document.getElementById("Input<<ATTRIBUTE:C>>").value[[IF:!LAST]],[[ENDIF]][[ENDLOOP,ATTRIBUTE]]}};;
+	performTrans( {Service:"Update<<TYPE1:C>>",Parameters:l_json_type} );
 }[[ENDIF]]
 
 function Delete<<TYPE1:C>>() {
-	var l_parameters = [[LOOP,ATTRIBUTE:1=Y]]
-		document.getElementById("Input<<ATTRIBUTE:C>>").value[[IF:!LAST]]+'<|>'+[[ENDIF]][[ENDLOOP,ATTRIBUTE]];
-	performTrans('Delete<<TYPE1:C>><|||>'+l_parameters);
+	var l_json_type = {Type:{[[LOOP,ATTRIBUTE:1=Y]]<<ATTRIBUTE:C>>:document.getElementById("Input<<ATTRIBUTE:C>>").value[[IF:!LAST]],[[ENDIF]][[ENDLOOP,ATTRIBUTE]]}};;
+	performTrans( {Service:"Delete<<TYPE1:C>>",Parameters:l_json_type} );
 }[[IF:CHILD(REFERENCE)]]
 
 function OpenListBox(p_rows,p_icon,p_header,p_optional) {

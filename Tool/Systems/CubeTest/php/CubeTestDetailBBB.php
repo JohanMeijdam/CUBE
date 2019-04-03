@@ -8,6 +8,7 @@ $_SESSION['views']=0;
 <!--
 var g_option;
 var g_json_option;
+var g_node_id;
 
 var g_xmlhttp = new XMLHttpRequest();
 g_xmlhttp.onreadystatechange = function() {
@@ -32,16 +33,17 @@ g_xmlhttp.onreadystatechange = function() {
 						document.getElementById("ButtonCreate").disabled=true;
 						document.getElementById("ButtonUpdate").disabled=false;
 						document.getElementById("ButtonDelete").disabled=false;
-						l_objNode = parent.TREE.document.getElementById(document._nodeId);
-						document._nodeId = 'TYP_BBB<||>'+document.getElementById("InputNaam").value;
+						var l_objNode = parent.document.getElementById(g_node_id);
+						var l_json_node_id = {TYP_BBB:{Naam:document.getElementById("InputNaam").value}}
+						g_node_id = JSON.stringify(l_json_node_id);
 						if (l_objNode != null) {
 							if (l_objNode.firstChild._state == 'O') {
 								var l_position = 'L';
 								l_objNodePos = null;
-								parent.TREE.AddTreeviewNode(
+								parent.AddTreeviewNode(
 									l_objNode,
 									'TYP_BBB',
-									document._nodeId,
+									l_json_node_id,
 									'icons/part.bmp', 
 									document.getElementById("InputNaam").value.toLowerCase(),
 									'N',
@@ -55,7 +57,7 @@ g_xmlhttp.onreadystatechange = function() {
 					case "DELETE_BBB":
 						document.getElementById("ButtonUpdate").disabled=true;
 						document.getElementById("ButtonDelete").disabled=true;
-						l_objNode = parent.TREE.document.getElementById(document._nodeId);
+						var l_objNode = parent.document.getElementById(g_node_id);
 						if (l_objNode != null) {
 							l_objNode = l_objNode;
 							l_objNode.parentNode.removeChild(l_objNode);
@@ -98,7 +100,7 @@ function InitBody() {
 	document.body._DraggingId = ' ';
 	document.body._ListBoxCode="Ref000";
 	var l_json_objectKey = l_json_argument.objectId;
-	document._nodeId = JSON.stringify(l_json_argument.objectId);
+	g_node_id = JSON.stringify(l_json_argument.objectId);
 	switch (l_json_argument.nodeType) {
 	case "D":
 		document.getElementById("InputNaam").value=l_json_objectKey.TYP_BBB.Naam;
@@ -117,27 +119,18 @@ function InitBody() {
 }
 
 function CreateBbb() {
-	var l_parameters = 
-		document.getElementById("InputNaam").value+'<|>'+
-		document.getElementById("InputOmschrijving").value+'<|>'+
-		document.getElementById("InputXkAaaNaam").value+'<|>'+
-		document.getElementById("InputXkBbbNaam1").value;
-	performTrans('CreateBbb<|||>'+l_parameters);
+	var l_json_type = {Type:{Naam:document.getElementById("InputNaam").value,Omschrijving:document.getElementById("InputOmschrijving").value,XkAaaNaam:document.getElementById("InputXkAaaNaam").value,XkBbbNaam1:document.getElementById("InputXkBbbNaam1").value}};
+	performTrans( {Service:"CreateBbb",Parameters:l_json_type} );
 }
 
 function UpdateBbb() {
-	var l_parameters = 
-		document.getElementById("InputNaam").value+'<|>'+
-		document.getElementById("InputOmschrijving").value+'<|>'+
-		document.getElementById("InputXkAaaNaam").value+'<|>'+
-		document.getElementById("InputXkBbbNaam1").value;
-	performTrans('UpdateBbb<|||>'+l_parameters);
+	var l_json_type = {Type:{Naam:document.getElementById("InputNaam").value,Omschrijving:document.getElementById("InputOmschrijving").value,XkAaaNaam:document.getElementById("InputXkAaaNaam").value,XkBbbNaam1:document.getElementById("InputXkBbbNaam1").value}};;
+	performTrans( {Service:"UpdateBbb",Parameters:l_json_type} );
 }
 
 function DeleteBbb() {
-	var l_parameters = 
-		document.getElementById("InputNaam").value;
-	performTrans('DeleteBbb<|||>'+l_parameters);
+	var l_json_type = {Type:{Naam:document.getElementById("InputNaam").value}};;
+	performTrans( {Service:"DeleteBbb",Parameters:l_json_type} );
 }
 
 function OpenListBox(p_rows,p_icon,p_header,p_optional) {

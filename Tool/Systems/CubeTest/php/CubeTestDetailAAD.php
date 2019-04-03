@@ -8,6 +8,7 @@ $_SESSION['views']=0;
 <!--
 var g_option;
 var g_json_option;
+var g_node_id;
 
 var g_xmlhttp = new XMLHttpRequest();
 g_xmlhttp.onreadystatechange = function() {
@@ -31,16 +32,17 @@ g_xmlhttp.onreadystatechange = function() {
 						document.getElementById("ButtonCreate").disabled=true;
 						document.getElementById("ButtonUpdate").disabled=false;
 						document.getElementById("ButtonDelete").disabled=false;
-						l_objNode = parent.TREE.document.getElementById(document._nodeId);
-						document._nodeId = 'TYP_AAD<||>'+document.getElementById("InputFkAaaNaam").value+'<|>'+document.getElementById("InputNaam").value;
+						var l_objNode = parent.document.getElementById(g_node_id);
+						var l_json_node_id = {TYP_AAD:{FkAaaNaam:document.getElementById("InputFkAaaNaam").value,Naam:document.getElementById("InputNaam").value}}
+						g_node_id = JSON.stringify(l_json_node_id);
 						if (l_objNode != null) {
 							if (l_objNode.firstChild._state == 'O') {
-								var l_position = g_option[0];
-								l_objNodePos = parent.TREE.document.getElementById('TYP_AAD<||>'+g_option[1]);
-								parent.TREE.AddTreeviewNode(
+								var l_position = g_json_option.Code;
+								l_objNodePos = parent.document.getElementById(g_json_option.Type);
+								parent.AddTreeviewNode(
 									l_objNode,
 									'TYP_AAD',
-									document._nodeId,
+									l_json_node_id,
 									'icons/attrib.bmp', 
 									document.getElementById("InputNaam").value.toLowerCase(),
 									'N',
@@ -54,7 +56,7 @@ g_xmlhttp.onreadystatechange = function() {
 					case "DELETE_AAD":
 						document.getElementById("ButtonUpdate").disabled=true;
 						document.getElementById("ButtonDelete").disabled=true;
-						l_objNode = parent.TREE.document.getElementById(document._nodeId);
+						var l_objNode = parent.document.getElementById(g_node_id);
 						if (l_objNode != null) {
 							l_objNode = l_objNode;
 							l_objNode.parentNode.removeChild(l_objNode);
@@ -94,8 +96,8 @@ function InitBody() {
 	document.body._DraggingId = ' ';
 	document.body._ListBoxCode="Ref000";
 	var l_json_objectKey = l_json_argument.objectId;
-	document._nodeId = JSON.stringify(l_json_argument.objectId);
-	g_json_option = l_json_argument.option;
+	g_node_id = JSON.stringify(l_json_argument.objectId);
+	g_json_option = l_json_argument.Option;
 //	g_option = l_argument[3].split("<||>");
 	switch (l_json_argument.nodeType) {
 	case "D":
@@ -119,30 +121,25 @@ function InitBody() {
 }
 
 function CreateAad() {
-	var l_parameters = 
-		document.getElementById("InputFkAaaNaam").value+'<|>'+
-		document.getElementById("InputNaam").value+'<|>'+
-		document.getElementById("InputXkAaaNaam").value;
-	if (g_option[0] == 'F' || g_option[0] == 'L') {
-		performTrans('CreateAad<|||>'+g_option[0]+'<|>'+l_parameters);
+	var l_json_type = {Type:{FkAaaNaam:document.getElementById("InputFkAaaNaam").value,Naam:document.getElementById("InputNaam").value,XkAaaNaam:document.getElementById("InputXkAaaNaam").value}};
+	var l_pos_action = g_json_option.Option.Code;
+	var l_json_option_code = {Option:{CubePosAction:l_pos_action}};
+	if (l_pos_action == 'F' || l_pos_action == 'L') {
+		performTrans( {Service:"CreateAad",Parameters:l_json_option_code,l_json_type} );
 	} else {
-		performTrans('CreateAad<|||>'+g_option[0]+'<|>'+l_parameters+'<|>'+g_option[1]);
+		var l_json_ref == {Ref:g_json_option.Type};
+		performTrans( {Service:"CreateAad",Parameters:l_json_option_code,l_json_type,l_json_ref} );
 	}
 }
 
 function UpdateAad() {
-	var l_parameters = 
-		document.getElementById("InputFkAaaNaam").value+'<|>'+
-		document.getElementById("InputNaam").value+'<|>'+
-		document.getElementById("InputXkAaaNaam").value;
-	performTrans('UpdateAad<|||>'+l_parameters);
+	var l_json_type = {Type:{FkAaaNaam:document.getElementById("InputFkAaaNaam").value,Naam:document.getElementById("InputNaam").value,XkAaaNaam:document.getElementById("InputXkAaaNaam").value}};;
+	performTrans( {Service:"UpdateAad",Parameters:l_json_type} );
 }
 
 function DeleteAad() {
-	var l_parameters = 
-		document.getElementById("InputFkAaaNaam").value+'<|>'+
-		document.getElementById("InputNaam").value;
-	performTrans('DeleteAad<|||>'+l_parameters);
+	var l_json_type = {Type:{FkAaaNaam:document.getElementById("InputFkAaaNaam").value,Naam:document.getElementById("InputNaam").value}};;
+	performTrans( {Service:"DeleteAad",Parameters:l_json_type} );
 }
 
 function OpenListBox(p_rows,p_icon,p_header,p_optional) {

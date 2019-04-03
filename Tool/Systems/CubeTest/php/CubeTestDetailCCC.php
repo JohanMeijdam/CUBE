@@ -8,6 +8,7 @@ $_SESSION['views']=0;
 <!--
 var g_option;
 var g_json_option;
+var g_node_id;
 
 var g_xmlhttp = new XMLHttpRequest();
 g_xmlhttp.onreadystatechange = function() {
@@ -37,16 +38,17 @@ g_xmlhttp.onreadystatechange = function() {
 						document.getElementById("ButtonCreate").disabled=true;
 						document.getElementById("ButtonUpdate").disabled=false;
 						document.getElementById("ButtonDelete").disabled=false;
-						l_objNode = parent.TREE.document.getElementById(document._nodeId);
-						document._nodeId = 'TYP_CCC<||>'+document.getElementById("InputCode").value+'<|>'+document.getElementById("InputNaam").value;
+						var l_objNode = parent.document.getElementById(g_node_id);
+						var l_json_node_id = {TYP_CCC:{Code:document.getElementById("InputCode").value,Naam:document.getElementById("InputNaam").value}}
+						g_node_id = JSON.stringify(l_json_node_id);
 						if (l_objNode != null) {
 							if (l_objNode.firstChild._state == 'O') {
-								var l_position = g_option[0];
-								l_objNodePos = parent.TREE.document.getElementById('TYP_CCC<||>'+g_option[1]);
-								parent.TREE.AddTreeviewNode(
+								var l_position = g_json_option.Code;
+								l_objNodePos = parent.document.getElementById(g_json_option.Type);
+								parent.AddTreeviewNode(
 									l_objNode,
 									'TYP_CCC',
-									document._nodeId,
+									l_json_node_id,
 									'icons/produkt.bmp', 
 									document.getElementById("InputCode").value.toLowerCase()+' '+document.getElementById("InputNaam").value.toLowerCase(),
 									'N',
@@ -60,7 +62,7 @@ g_xmlhttp.onreadystatechange = function() {
 					case "DELETE_CCC":
 						document.getElementById("ButtonUpdate").disabled=true;
 						document.getElementById("ButtonDelete").disabled=true;
-						l_objNode = parent.TREE.document.getElementById(document._nodeId);
+						var l_objNode = parent.document.getElementById(g_node_id);
 						if (l_objNode != null) {
 							l_objNode = l_objNode;
 							l_objNode.parentNode.removeChild(l_objNode);
@@ -100,8 +102,8 @@ function InitBody() {
 	document.body._DraggingId = ' ';
 	document.body._ListBoxCode="Ref000";
 	var l_json_objectKey = l_json_argument.objectId;
-	document._nodeId = JSON.stringify(l_json_argument.objectId);
-	g_json_option = l_json_argument.option;
+	g_node_id = JSON.stringify(l_json_argument.objectId);
+	g_json_option = l_json_argument.Option;
 //	g_option = l_argument[3].split("<||>");
 	switch (l_json_argument.nodeType) {
 	case "D":
@@ -136,38 +138,25 @@ function InitBody() {
 }
 
 function CreateCcc() {
-	var l_parameters = 
-		document.getElementById("InputFkCccCode").value+'<|>'+
-		document.getElementById("InputFkCccNaam").value+'<|>'+
-		document.getElementById("InputCode").value+'<|>'+
-		document.getElementById("InputNaam").value+'<|>'+
-		document.getElementById("InputOmschrjving").value+'<|>'+
-		document.getElementById("InputXkCccCode").value+'<|>'+
-		document.getElementById("InputXkCccNaam").value;
-	if (g_option[0] == 'F' || g_option[0] == 'L') {
-		performTrans('CreateCcc<|||>'+g_option[0]+'<|>'+l_parameters);
+	var l_json_type = {Type:{FkCccCode:document.getElementById("InputFkCccCode").value,FkCccNaam:document.getElementById("InputFkCccNaam").value,Code:document.getElementById("InputCode").value,Naam:document.getElementById("InputNaam").value,Omschrjving:document.getElementById("InputOmschrjving").value,XkCccCode:document.getElementById("InputXkCccCode").value,XkCccNaam:document.getElementById("InputXkCccNaam").value}};
+	var l_pos_action = g_json_option.Option.Code;
+	var l_json_option_code = {Option:{CubePosAction:l_pos_action}};
+	if (l_pos_action == 'F' || l_pos_action == 'L') {
+		performTrans( {Service:"CreateCcc",Parameters:l_json_option_code,l_json_type} );
 	} else {
-		performTrans('CreateCcc<|||>'+g_option[0]+'<|>'+l_parameters+'<|>'+g_option[1]);
+		var l_json_ref == {Ref:g_json_option.Type};
+		performTrans( {Service:"CreateCcc",Parameters:l_json_option_code,l_json_type,l_json_ref} );
 	}
 }
 
 function UpdateCcc() {
-	var l_parameters = 
-		document.getElementById("InputFkCccCode").value+'<|>'+
-		document.getElementById("InputFkCccNaam").value+'<|>'+
-		document.getElementById("InputCode").value+'<|>'+
-		document.getElementById("InputNaam").value+'<|>'+
-		document.getElementById("InputOmschrjving").value+'<|>'+
-		document.getElementById("InputXkCccCode").value+'<|>'+
-		document.getElementById("InputXkCccNaam").value;
-	performTrans('UpdateCcc<|||>'+l_parameters);
+	var l_json_type = {Type:{FkCccCode:document.getElementById("InputFkCccCode").value,FkCccNaam:document.getElementById("InputFkCccNaam").value,Code:document.getElementById("InputCode").value,Naam:document.getElementById("InputNaam").value,Omschrjving:document.getElementById("InputOmschrjving").value,XkCccCode:document.getElementById("InputXkCccCode").value,XkCccNaam:document.getElementById("InputXkCccNaam").value}};;
+	performTrans( {Service:"UpdateCcc",Parameters:l_json_type} );
 }
 
 function DeleteCcc() {
-	var l_parameters = 
-		document.getElementById("InputCode").value+'<|>'+
-		document.getElementById("InputNaam").value;
-	performTrans('DeleteCcc<|||>'+l_parameters);
+	var l_json_type = {Type:{Code:document.getElementById("InputCode").value,Naam:document.getElementById("InputNaam").value}};;
+	performTrans( {Service:"DeleteCcc",Parameters:l_json_type} );
 }
 
 function OpenListBox(p_rows,p_icon,p_header,p_optional) {
