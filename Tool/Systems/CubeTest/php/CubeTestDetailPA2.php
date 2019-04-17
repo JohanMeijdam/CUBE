@@ -47,8 +47,8 @@ g_xmlhttp.onreadystatechange = function() {
 						document.getElementById("ButtonUpdate").disabled=false;
 						document.getElementById("ButtonDelete").disabled=false;
 						var l_objNode = parent.document.getElementById(g_node_id);
-						var l_json_node_id = {TYP_PA2:{FkPrdCode:document.getElementById("InputFkPrdCode").value,FkPrdNaam:document.getElementById("InputFkPrdNaam").value,FkPr2Code:document.getElementById("InputFkPr2Code").value,FkPr2Naam:document.getElementById("InputFkPr2Naam").value,Code:document.getElementById("InputCode").value,Naam:document.getElementById("InputNaam").value}}
-						g_node_id = JSON.stringify(l_json_node_id);
+						var l_json_node_id = {FkPrdCode:document.getElementById("InputFkPrdCode").value,FkPrdNaam:document.getElementById("InputFkPrdNaam").value,FkPr2Code:document.getElementById("InputFkPr2Code").value,FkPr2Naam:document.getElementById("InputFkPr2Naam").value,Code:document.getElementById("InputCode").value,Naam:document.getElementById("InputNaam").value};
+						g_node_id = '{"TYP_PA2":'+JSON.stringify(l_json_node_id)+'}';
 						if (l_objNode != null) {
 							if (l_objNode.firstChild._state == 'O') {
 								var l_position = 'L';

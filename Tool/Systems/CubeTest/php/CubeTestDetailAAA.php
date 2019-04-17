@@ -35,17 +35,17 @@ g_xmlhttp.onreadystatechange = function() {
 						document.getElementById("ButtonUpdate").disabled=false;
 						document.getElementById("ButtonDelete").disabled=false;
 						var l_objNode = parent.document.getElementById(g_node_id);
-						var l_json_node_id = {TYP_AAA:{Naam:document.getElementById("InputNaam").value}}
-						g_node_id = JSON.stringify(l_json_node_id);
+						var l_json_node_id = {Naam:document.getElementById("InputNaam").value};
+						g_node_id = '{"TYP_AAA":'+JSON.stringify(l_json_node_id)+'}';
 						if (l_objNode != null) {
 							if (l_objNode.firstChild._state == 'O') {
-								var l_json_objectKey = l_json_array[i].Rows.Key;
+								var l_json_objectKey = l_json_array[i].Rows[0].Key;
 								if (l_json_objectKey == null) {
 									var l_position = 'L';
 									l_objNodePos = null;
 								} else {
 									var l_position = 'B';
-									l_objNodePos = parent.document.getElementById('"TYP_AAA":'+JSON.stringify(l_json_objectKey));
+									var l_objNodePos = parent.document.getElementById('{"TYP_AAA":'+JSON.stringify(l_json_objectKey)+'}');
 								}
 								parent.AddTreeviewNode(
 									l_objNode,

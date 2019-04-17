@@ -66,17 +66,17 @@ g_xmlhttp.onreadystatechange = function() {
 						document.getElementById("ButtonUpdate").disabled=false;[[ENDIF]]
 						document.getElementById("ButtonDelete").disabled=false;
 						var l_objNode = parent.document.getElementById(g_node_id);
-						var l_json_node_id = {TYP_<<TYPE1:U>>:{[[LOOP,ATTRIBUTE:1=Y]]<<ATTRIBUTE:C>>:document.getElementById("Input<<ATTRIBUTE:C>>").value[[IF:!LAST]],[[ENDIF]][[ENDLOOP,ATTRIBUTE]]}}
-						g_node_id = JSON.stringify(l_json_node_id);
+						var l_json_node_id = {[[LOOP,ATTRIBUTE:1=Y]]<<ATTRIBUTE:C>>:document.getElementById("Input<<ATTRIBUTE:C>>").value[[IF:!LAST]],[[ENDIF]][[ENDLOOP,ATTRIBUTE]]};
+						g_node_id = '{"TYP_<<TYPE1:U>>":'+JSON.stringify(l_json_node_id)+'}';
 						if (l_objNode != null) {
 							if (l_objNode.firstChild._state == 'O') {[[IF:6=K]]
-								var l_json_objectKey = l_json_array[i].Rows.Key;
+								var l_json_objectKey = l_json_array[i].Rows[0].Key;
 								if (l_json_objectKey == null) {
 									var l_position = 'L';
 									l_objNodePos = null;
 								} else {
 									var l_position = 'B';
-									l_objNodePos = parent.document.getElementById('"TYP_<<TYPE1:U>>":'+JSON.stringify(l_json_objectKey));
+									var l_objNodePos = parent.document.getElementById('{"TYP_<<TYPE1:U>>":'+JSON.stringify(l_json_objectKey)+'}');
 								}[[ELSIF:6=P]]
 								var l_position = g_json_option.Code;
 								l_objNodePos = parent.document.getElementById(g_json_option.Type);[[ELSE]]
@@ -194,7 +194,7 @@ function Create<<TYPE1:C>>() {
 	if (l_pos_action == 'F' || l_pos_action == 'L') {
 		performTrans( {Service:"Create<<TYPE1:C>>",Parameters:l_json_option_code,l_json_type} );
 	} else {
-		var l_json_ref == {Ref:g_json_option.Type};
+		var l_json_ref = {Ref:g_json_option.Type};
 		performTrans( {Service:"Create<<TYPE1:C>>",Parameters:l_json_option_code,l_json_type,l_json_ref} );
 	}[[ELSE]]
 	performTrans( {Service:"Create<<TYPE1:C>>",Parameters:l_json_type} );[[ENDIF]]

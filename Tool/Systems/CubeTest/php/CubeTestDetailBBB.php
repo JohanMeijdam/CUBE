@@ -34,8 +34,8 @@ g_xmlhttp.onreadystatechange = function() {
 						document.getElementById("ButtonUpdate").disabled=false;
 						document.getElementById("ButtonDelete").disabled=false;
 						var l_objNode = parent.document.getElementById(g_node_id);
-						var l_json_node_id = {TYP_BBB:{Naam:document.getElementById("InputNaam").value}}
-						g_node_id = JSON.stringify(l_json_node_id);
+						var l_json_node_id = {Naam:document.getElementById("InputNaam").value};
+						g_node_id = '{"TYP_BBB":'+JSON.stringify(l_json_node_id)+'}';
 						if (l_objNode != null) {
 							if (l_objNode.firstChild._state == 'O') {
 								var l_position = 'L';

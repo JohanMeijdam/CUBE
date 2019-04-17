@@ -33,8 +33,8 @@ g_xmlhttp.onreadystatechange = function() {
 						document.getElementById("ButtonUpdate").disabled=false;
 						document.getElementById("ButtonDelete").disabled=false;
 						var l_objNode = parent.document.getElementById(g_node_id);
-						var l_json_node_id = {TYP_AAD:{FkAaaNaam:document.getElementById("InputFkAaaNaam").value,Naam:document.getElementById("InputNaam").value}}
-						g_node_id = JSON.stringify(l_json_node_id);
+						var l_json_node_id = {FkAaaNaam:document.getElementById("InputFkAaaNaam").value,Naam:document.getElementById("InputNaam").value};
+						g_node_id = '{"TYP_AAD":'+JSON.stringify(l_json_node_id)+'}';
 						if (l_objNode != null) {
 							if (l_objNode.firstChild._state == 'O') {
 								var l_position = g_json_option.Code;
@@ -127,7 +127,7 @@ function CreateAad() {
 	if (l_pos_action == 'F' || l_pos_action == 'L') {
 		performTrans( {Service:"CreateAad",Parameters:l_json_option_code,l_json_type} );
 	} else {
-		var l_json_ref == {Ref:g_json_option.Type};
+		var l_json_ref = {Ref:g_json_option.Type};
 		performTrans( {Service:"CreateAad",Parameters:l_json_option_code,l_json_type,l_json_ref} );
 	}
 }
