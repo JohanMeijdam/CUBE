@@ -60,21 +60,6 @@ g_xmlhttp.onreadystatechange = function() {
 		} else {
 			alert ('Request error:\n'+g_xmlhttp.statusText);
 		}
-[[*********************	
-		var l_groups = g_xmlhttp.responseText.split("<||||>");
-		for (ig in l_groups) {
-			var l_rows = l_groups[ig].split("<|||>");
-			switch (l_rows[0]) {
-			case '': break;[[LOOP,SYSTEM_BO_TYPE]][[LOOP,BUSINESS_OBJECT_TYPE]][[LOOP,TYPE]]
-			case 'LIST_<<TYPE1:U>>': AddTreeviewChildren(l_rows,'TYP_<<TYPE1:U>>','icons/<<TYPE7:L>>.bmp'); break;[[IF:(3=Y[AND]!4=N)[OR]!5=N]]
-			case 'COUNT_<<TYPE1:U>>': CheckMenuItem('TYP_<<TYPE1:U>>',l_rows[1]); break;[[ENDIF]][[IF:6=P[AND]CHILD(ATTRIBUTE:<<TEXT,GEN_IS_OWN_KEY>>)]]
-			case 'MOVE_<<TYPE1:U>>': MoveNode (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.body._moveAction); break;[[ENDIF]][[IF:3=Y[AND]!4=1[AND]!6=P[AND]CHILD(ATTRIBUTE:<<TEXT,GEN_IS_OWN_KEY>>)]]
-			case 'CHANGE_PARENT_<<TYPE1:U>>': ChangeParent (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.getElementById('TYP_<<TYPE1:U>><||>'+l_rows[1])); break;[[ENDIF]][[REPEAT]][[ENDLOOP,TYPE]][[ENDLOOP,BUSINESS_OBJECT_TYPE]][[ENDLOOP,SYSTEM_BO_TYPE]]
-			case "ERROR": alert ('Error: '+l_rows[1]); break;
-			default: alert ('Unknown reply: '+l_rows[0]);
-			}
-		}
-**************************]]		
 	}
 }
 	
@@ -83,18 +68,7 @@ function AddTreeviewChildren(p_json_rows, p_type, p_icon) {
 		AddTreeviewNode(g_objNodeDiv, p_type, p_json_rows[i].Key, p_icon, p_json_rows[i].Display.toLowerCase(), 'N', ' ', null);
 	}
 }
-[[*****************************
-function AddTreeviewChildren(p_rows, p_type, p_icon) {
-	var l_len = p_rows.length;
-	for (var ir=1; ir<l_len; ir++){
-		var l_rowpart = p_rows[ir].split("<||>");
-		var l_lenp = l_rowpart.length;
-		if (l_lenp > 1) {
-			AddTreeviewNode(g_objNodeDiv, p_type, p_type+'<||>'+l_rowpart[0], p_icon, l_rowpart[1].toLowerCase(), 'N', ' ', null);
-		}
-	}
-}
-**********************]]
+
 function InitBody() {
 	document.body._FlagDragging = 0;
 	document.body._DraggingId = ' ';

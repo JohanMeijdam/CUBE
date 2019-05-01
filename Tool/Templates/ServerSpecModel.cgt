@@ -40,7 +40,7 @@ Change log:
 !		SERVICE: 0=Name 1=Class 2=FlagNoSelect 3=InternalOrExternal
 !			>SERVICE_TYPE: TYPE
 !			>SERVICE_TYPE_LIST: TYPE_LIST
-!			ARGUMENT: 0=Name 1=Prefix 2=InputOutput 3=JsonGroup
+!			ARGUMENT: 0=Prefix 1=InputOutput 2=JsonGroup
 !				>ARGUMENT_ATTRIBUTE: ATTRIBUTE
 !			OPERATION: 0=Name 1=SelectionType 2=ResultNameExtension 3=FlagMultipleExport 4=FlagMultipleList
 !				>OPERATION_TYPE: TYPE

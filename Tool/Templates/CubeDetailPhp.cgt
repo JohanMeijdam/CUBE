@@ -24,7 +24,21 @@ Change log:
 27-03-2018 - Implementation of attribute presentation COD en DES.
 23-04-2018 - Position Classifying Attribute.
 10-06-2018 - PARENT(TYPE:0=<<REFERENCE_TYPE>>) instead of EVAL variable.
-[[TEXT,DETAIL_RECURSIVE_PARMS]]'[[IF,REFERENCE:4=PRA]]U<|>9999[[ELSIF,REFERENCE:4=PR1]]U<|>1[[ELSIF,REFERENCE:4=CHA]]D<|>9999[[ELSIF,REFERENCE:4=CH1]]D<|>1[[ELSE]]X<|>0[[ENDIF]]<|>'+[[ENDTEXT]]
+16-10-2018 - JSON instead of <|> struct
+27-02-2019 - Restructured
+[[TEXT,DETAIL_RECURSIVE_PARMS]]
+		Option: {[[IF,REFERENCE:4=PRA]]
+			CubeUpOrDown:"U",
+			CubeScopeLevel:9999[[ELSIF,REFERENCE:4=PR1]]
+			CubeUpOrDown:"U",
+			CubeScopeLevel:1[[ELSIF,REFERENCE:4=CHA]]
+			CubeUpOrDown:"D",
+			CubeScopeLevel:9999[[ELSIF,REFERENCE:4=CH1]]
+			CubeUpOrDown:"D",
+			CubeScopeLevel:1[ELSE]]
+			CubeUpOrDown:"X",
+			CubeScopeLevel:0[[ENDIF]]
+		},[[ENDTEXT]]
 [[TEXT,DETAIL_GET_LIST_NAME]]Get<<REFERENCE_TYPE1:C>>[[FOR,REFERENCE:N>N]][[LOOP,REFERENCE_TYPE_WITHIN_SCOPE_OF]]For<<REFERENCE_TYPE_WITHIN_SCOPE_OF1:C>>[[ENDLOOP,REFERENCE_TYPE_WITHIN_SCOPE_OF]][[ENDFOR]]List[[ENDTEXT]]
 [[TEXT,DETAIL_ROOT_NAME]][[LOOP,ATTRIBUTE_ROOT_TYPE]]<<ATTRIBUTE_ROOT_TYPE:C>>[[ENDLOOP,ATTRIBUTE_ROOT_TYPE]].[[LOOP,ATTRIBUTE_ROOT]][[IF:CHILD(ATTRIBUTE_TYPE_SPECIALISATION_GROUP)]][[LOOP,ATTRIBUTE_TYPE_SPECIALISATION_GROUP]]<<ATTRIBUTE_TYPE_SPECIALISATION_GROUP1:C>>[[ENDLOOP,ATTRIBUTE_TYPE_SPECIALISATION_GROUP]][[ELSE]]<<ATTRIBUTE_ROOT:C>>[[ENDIF]][[ENDLOOP,ATTRIBUTE_ROOT]][[ENDTEXT]]
 [[TEXT,DETAIL_MAXLENGTH]] maxlength="[[IF:2=DATE]]10[[ELSIF:2=NUMBER]][[EVAL:<<INFORMATION_TYPE_ELEMENT3>>+1]][[ELSE]]<<INFORMATION_TYPE_ELEMENT3>>[[ENDIF]]"[[ENDTEXT]]
@@ -38,9 +52,10 @@ $_SESSION['views']=0;
 <link rel="stylesheet" href="base_css.php" />
 <script language='javascript' type='text/javascript'>
 <!--
-var g_option;
-var g_json_option;
-var g_node_id;
+var g_option = null;
+var g_json_option = null;
+var g_parent_node_id = null;
+var g_node_id = null;
 
 var g_xmlhttp = new XMLHttpRequest();
 g_xmlhttp.onreadystatechange = function() {
@@ -65,18 +80,17 @@ g_xmlhttp.onreadystatechange = function() {
 						document.getElementById("ButtonCreate").disabled=true;[[IF:CHILD(ATTRIBUTE:1=N[AND]!(3=F[OR]3=R)[AND]4=N)]]
 						document.getElementById("ButtonUpdate").disabled=false;[[ENDIF]]
 						document.getElementById("ButtonDelete").disabled=false;
-						var l_objNode = parent.document.getElementById(g_node_id);
+						var l_objNode = parent.document.getElementById(g_parent_node_id);
 						var l_json_node_id = {[[LOOP,ATTRIBUTE:1=Y]]<<ATTRIBUTE:C>>:document.getElementById("Input<<ATTRIBUTE:C>>").value[[IF:!LAST]],[[ENDIF]][[ENDLOOP,ATTRIBUTE]]};
 						g_node_id = '{"TYP_<<TYPE1:U>>":'+JSON.stringify(l_json_node_id)+'}';
 						if (l_objNode != null) {
 							if (l_objNode.firstChild._state == 'O') {[[IF:6=K]]
-								var l_json_objectKey = l_json_array[i].Rows[0].Key;
-								if (l_json_objectKey == null) {
+								if (l_json_array[i].Rows.length == 0) {
 									var l_position = 'L';
 									l_objNodePos = null;
 								} else {
 									var l_position = 'B';
-									var l_objNodePos = parent.document.getElementById('{"TYP_<<TYPE1:U>>":'+JSON.stringify(l_json_objectKey)+'}');
+									var l_objNodePos = parent.document.getElementById('{"TYP_<<TYPE1:U>>":'+JSON.stringify(l_json_array[i].Rows[0].Key)+'}');
 								}[[ELSIF:6=P]]
 								var l_position = g_json_option.Code;
 								l_objNodePos = parent.document.getElementById(g_json_option.Type);[[ELSE]]
@@ -101,16 +115,19 @@ g_xmlhttp.onreadystatechange = function() {
 					}[[ENDIF]]
 						break;
 					case "DELETE_<<TYPE1:U>>":
+						document.getElementById("ButtonCreate").disabled=false;
 						document.getElementById("ButtonUpdate").disabled=true;
 						document.getElementById("ButtonDelete").disabled=true;
 						var l_objNode = parent.document.getElementById(g_node_id);
+						if (g_parent_node_id == null) {
+							g_parent_node_id = l_objNode.parentNode.parentNode.id;
+						} 
 						if (l_objNode != null) {
-							l_objNode = l_objNode;
 							l_objNode.parentNode.removeChild(l_objNode);
 						}
 						break;[[LOOP,REFERENCE]][[LOOP,REFERENCE_TYPE]]
 					case "LIST_<<REFERENCE_TYPE1:U>>":
-						OpenListBox(l_argument,'<<REFERENCE_TYPE7:L>>','<<REFERENCE_TYPE:C>>',[[IF,REFERENCE:1='Y']]'N'[[ELSE]]'Y'[[ENDIF]]);
+						OpenListBox(l_json_array[i].Rows,'<<REFERENCE_TYPE7:L>>','<<REFERENCE_TYPE:C>>',[[IF,REFERENCE:1='Y']]'N'[[ELSE]]'Y'[[ENDIF]]);
 						break;[[ENDLOOP,REFERENCE_TYPE]][[ENDLOOP,REFERENCE]][[IF:CHILD(ATTRIBUTE:3=F[AND]CHILD(ATTRIBUTE_SOURCE:1=N))]]
 					case "SELECT_FKEY_<<TYPE(N-1)1:U>>":
 						var l_values = l_argument[1].split("<|>");[[LOOP,ATTRIBUTE:3=F[AND]CHILD(ATTRIBUTE_SOURCE:1=N)]]
@@ -137,8 +154,8 @@ g_xmlhttp.onreadystatechange = function() {
 	}
 }
 
-function performTrans(p_objParm) {
-	var l_requestText = JSON.stringify(p_objParm);
+function performTrans(p_json_parm) {
+	var l_requestText = JSON.stringify(p_json_parm);
 	g_xmlhttp.open('POST','<<1>>Server.php',true);
 //	g_xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 	g_xmlhttp.send(l_requestText);
@@ -146,39 +163,39 @@ function performTrans(p_objParm) {
 
 function InitBody() {
 	var l_json_argument = JSON.parse(decodeURIComponent(location.href.split("?")[1]));
-//	var l_argument = decodeURIComponent(document.location.href).split("<|||>");
 	document.body._FlagDragging = 0;
 	document.body._DraggingId = ' ';
 	document.body._ListBoxCode="Ref000";
-	var l_json_objectKey = l_json_argument.objectId;
-	g_node_id = JSON.stringify(l_json_argument.objectId);[[IF:6=P]]
-	g_json_option = l_json_argument.Option;
-//	g_option = l_argument[3].split("<||>");[[ENDIF]]
+	var l_json_objectKey = l_json_argument.objectId;[[IF:6=P]]
+	g_json_option = l_json_argument.Option;[[ENDIF]]
 	switch (l_json_argument.nodeType) {
-	case "D":[[LOOP,ATTRIBUTE:1=Y]]
+	case "D":
+		g_node_id = JSON.stringify(l_json_argument.objectId);[[LOOP,ATTRIBUTE:1=Y]]
 		document.getElementById("Input<<ATTRIBUTE:C>>").value=l_json_objectKey.TYP_<<TYPE1>>.<<ATTRIBUTE:C>>;[[ENDLOOP,ATTRIBUTE]]
 		document.getElementById("ButtonCreate").disabled=true;[[IF:CHILD(ATTRIBUTE:1=N[AND]4=N)]]
-		l_objParm = {Service:"Get<<TYPE1:C>>",Parameters:{Type:l_json_objectKey.TYP_<<TYPE1>>}};
-		performTrans(l_objParm);[[ENDIF]][[IF:!CHILD(ATTRIBUTE:1=N[AND]!(3=F[OR]3=R)[AND]4=N)]]
+		l_json_parm = {Service:"Get<<TYPE1:C>>",Parameters:{Type:l_json_objectKey.TYP_<<TYPE1>>}};
+		performTrans(l_json_parm);[[ENDIF]][[IF:!CHILD(ATTRIBUTE:1=N[AND]!(3=F[OR]3=R)[AND]4=N)]]
 		document.getElementById("ButtonUpdate").disabled=true;[[ENDIF]][[LOOP,ATTRIBUTE:1=Y[OR]3=F[OR]3=R[OR]6=Y]]
 		document.getElementById("Input<<ATTRIBUTE:C>>").readOnly=true;[[ENDLOOP,ATTRIBUTE]][[LOOP,REFERENCE:1=Y[OR]5=Y]]
 		document.getElementById("RefSelect<<REFERENCE:S>>").disabled=true;[[ENDLOOP,REFERENCE]]
 		break;
-	case "N":[[LOOP,ATTRIBUTE:3=F[AND]CHILD(ATTRIBUTE_SOURCE:1=Y)]]
+	case "N":
+		g_parent_node_id = JSON.stringify(l_json_argument.objectId);[[LOOP,ATTRIBUTE:3=F[AND]CHILD(ATTRIBUTE_SOURCE:1=Y)]]
 		document.getElementById("Input<<ATTRIBUTE:C>>").value=l_json_objectKey.TYP_<<TYPE(N-1)1>>.[[LOOP,ATTRIBUTE_SOURCE]]<<ATTRIBUTE_SOURCE:C>>[[ENDLOOP,ATTRIBUTE_SOURCE]];[[ENDLOOP,ATTRIBUTE]]
 		document.getElementById("ButtonUpdate").disabled=true;
 		document.getElementById("ButtonDelete").disabled=true;[[IF:CHILD(ATTRIBUTE:3=F[AND]CHILD(ATTRIBUTE_SOURCE:1=N))]]
-		l_objParm = {Service:"Get<<TYPE(N-1)1:C>>Fkey",Parameters:{Type:l_json_objectKey}};
-		performTrans(l_objParm);[[ENDIF]][[LOOP,ATTRIBUTE:(3=F[OR]3=R)[AND]4=N]]
+		l_json_parm = {Service:"Get<<TYPE(N-1)1:C>>Fkey",Parameters:{Type:l_json_objectKey}};
+		performTrans(l_json_parm);[[ENDIF]][[LOOP,ATTRIBUTE:(3=F[OR]3=R)[AND]4=N]]
 		document.getElementById("Input<<ATTRIBUTE:C>>").readOnly=true;[[ENDLOOP,ATTRIBUTE]]
 		break;[[IF,TYPE:3=Y]]  
-	case "R":[[IF,TYPE:2=Y]][[LOOP,ATTRIBUTE:3=F[AND]CHILD(ATTRIBUTE_SOURCE:1=Y)[OR]3=R]]
+	case "R":
+		g_parent_node_id = JSON.stringify(l_json_argument.objectId);[[IF,TYPE:2=Y]][[LOOP,ATTRIBUTE:3=F[AND]CHILD(ATTRIBUTE_SOURCE:1=Y)[OR]3=R]]
 		document.getElementById("Input<<ATTRIBUTE:C>>").value=l_json_objectKey.TYP_<<TYPE1>>.[[LOOP,ATTRIBUTE_SOURCE]]<<ATTRIBUTE_SOURCE:C>>[[ENDLOOP,ATTRIBUTE_SOURCE]];[[ENDLOOP,ATTRIBUTE]][[ELSE]][[LOOP,ATTRIBUTE:3=R]]
 		document.getElementById("Input<<ATTRIBUTE:C>>").value=l_json_objectKey.TYP_<<TYPE1>>.[[LOOP,ATTRIBUTE_SOURCE]]<<ATTRIBUTE_SOURCE:C>>[[ENDLOOP,ATTRIBUTE_SOURCE]];[[ENDLOOP,ATTRIBUTE]][[ENDIF]]
 		document.getElementById("ButtonUpdate").disabled=true;
 		document.getElementById("ButtonDelete").disabled=true;[[IF:CHILD(ATTRIBUTE:1=N[AND]3=F)]]
-		l_objParm = {Service:"Get<<TYPE1:C>>Fkey",Parameters:{Type:l_json_objectKey.TYP_<<TYPE1>>}};
-		performTrans(l_objParm);[[ENDIF]][[LOOP,ATTRIBUTE:(3=F[OR]3=R)[AND]4=N]]
+		l_json_parm = {Service:"Get<<TYPE1:C>>Fkey",Parameters:{Type:l_json_objectKey.TYP_<<TYPE1>>}};
+		performTrans(l_json_parm);[[ENDIF]][[LOOP,ATTRIBUTE:(3=F[OR]3=R)[AND]4=N]]
 		document.getElementById("Input<<ATTRIBUTE:C>>").readOnly=true;[[ENDLOOP,ATTRIBUTE]]
 		break;[[ENDIF]]
 	default:
@@ -188,8 +205,12 @@ function InitBody() {
 }
 
 function Create<<TYPE1:C>>() {
-	var l_json_type = {Type:{[[LOOP,ATTRIBUTE:!CHILD(DERIVATION)]]<<ATTRIBUTE:C>>:document.getElementById("Input<<ATTRIBUTE:C>>").value[[IF:!LAST]],[[ENDIF]][[ENDLOOP,ATTRIBUTE]]}};[[IF:6=P]]
-	var l_pos_action = g_json_option.Option.Code;
+	var l_json_type = {
+		Type: {[[LOOP,ATTRIBUTE:!CHILD(DERIVATION)]]
+			<<ATTRIBUTE:C>>:document.getElementById("Input<<ATTRIBUTE:C>>").value[[IF:!LAST]],[[ENDIF]][[ENDLOOP,ATTRIBUTE]]
+		}
+	};[[IF:6=P]]
+	var l_pos_action = g_json_option.Code;
 	var l_json_option_code = {Option:{CubePosAction:l_pos_action}};
 	if (l_pos_action == 'F' || l_pos_action == 'L') {
 		performTrans( {Service:"Create<<TYPE1:C>>",Parameters:l_json_option_code,l_json_type} );
@@ -201,18 +222,26 @@ function Create<<TYPE1:C>>() {
 }[[IF:CHILD(ATTRIBUTE:1=N)]]
 
 function Update<<TYPE1:C>>() {
-	var l_json_type = {Type:{[[LOOP,ATTRIBUTE:1=Y[OR]!CHILD(DERIVATION)]]<<ATTRIBUTE:C>>:document.getElementById("Input<<ATTRIBUTE:C>>").value[[IF:!LAST]],[[ENDIF]][[ENDLOOP,ATTRIBUTE]]}};;
+	var l_json_type = {
+		Type: {[[LOOP,ATTRIBUTE:1=Y[OR]!CHILD(DERIVATION)]]
+			<<ATTRIBUTE:C>>:document.getElementById("Input<<ATTRIBUTE:C>>").value[[IF:!LAST]],[[ENDIF]][[ENDLOOP,ATTRIBUTE]]
+		}
+	};
 	performTrans( {Service:"Update<<TYPE1:C>>",Parameters:l_json_type} );
 }[[ENDIF]]
 
 function Delete<<TYPE1:C>>() {
-	var l_json_type = {Type:{[[LOOP,ATTRIBUTE:1=Y]]<<ATTRIBUTE:C>>:document.getElementById("Input<<ATTRIBUTE:C>>").value[[IF:!LAST]],[[ENDIF]][[ENDLOOP,ATTRIBUTE]]}};;
+	var l_json_type = {
+		Type: {[[LOOP,ATTRIBUTE:1=Y]]
+			<<ATTRIBUTE:C>>:document.getElementById("Input<<ATTRIBUTE:C>>").value[[IF:!LAST]],[[ENDIF]][[ENDLOOP,ATTRIBUTE]]
+		}
+	};
 	performTrans( {Service:"Delete<<TYPE1:C>>",Parameters:l_json_type} );
 }[[IF:CHILD(REFERENCE)]]
 
-function OpenListBox(p_rows,p_icon,p_header,p_optional) {
+function OpenListBox(p_json_rows,p_icon,p_header,p_optional) {
 	CloseListBox();
-	if (p_rows.length > 1) {
+	if (p_json_rows.length > 1) {
 
 		var l_objDiv = document.createElement('DIV');
 		var l_objTable = document.createElement('TABLE');
@@ -255,7 +284,7 @@ function OpenListBox(p_rows,p_icon,p_header,p_optional) {
 		l_objCell_1_0.colSpan = '2';
 
 
-		l_objSelect.size = Math.min(p_rows.length-1,16)
+		l_objSelect.size = Math.min(p_json_rows.length-1,16)
 		l_objSelect.onclick = function(){UpdateForeignKey(this)};
 
 		if (p_optional == 'Y') {
@@ -266,14 +295,11 @@ function OpenListBox(p_rows,p_icon,p_header,p_optional) {
 			l_objOption.innerHTML = '';
 		}
 
-		for (ir in p_rows) {
-			if (ir > 0) {
-				var l_rowpart = p_rows[ir].split("<||>");
-				var l_objOption = document.createElement('OPTION');
-				l_objSelect.appendChild(l_objOption);
-				l_objOption.value = l_rowpart[0];
-				l_objOption.innerHTML = l_rowpart[1].toLowerCase();
-			}
+		for (ir in p_json_rows) {
+			var l_objOption = document.createElement('OPTION');
+			l_objSelect.appendChild(l_objOption);
+			l_objOption.value = JSON.stringify(p_json_rows[ir].Key); 
+			l_objOption.innerHTML = p_json_rows[ir].Display.toLowerCase();
 		}
 	} else {
 		alert ("No Items Found");
@@ -286,15 +312,17 @@ function CloseListBox() {
 }
 
 function UpdateForeignKey(p_obj) {
-	var l_obj_option = p_obj.options[p_obj.selectedIndex];
-	var l_values = l_obj_option.value.split("<|>");
+	var l_values = p_obj.options[p_obj.selectedIndex].value;
+	if (l_values != '') {
+		var l_json_values = JSON.parse(l_values);
+	}
 	switch (document.body._ListBoxCode){[[LOOP,REFERENCE]]
-	case "Ref<<REFERENCE:S>>":[[LOOP,FKEY]]
-		if (l_obj_option.value == '') {
+	case "Ref<<REFERENCE:S>>":[[LOOP,FKEY]][[LOOP,ATTRIBUTE_SOURCE]]
+		if (l_values == '') {
 			document.getElementById("Input<<FKEY:C>>").value = '';
 		} else {
-			document.getElementById("Input<<FKEY:C>>").value = l_values[[[EVAL:<<FKEY:IX>>-1]]];
-		}[[ENDLOOP,FKEY]]
+			document.getElementById("Input<<FKEY:C>>").value = l_json_values.<<ATTRIBUTE_SOURCE:C>>;
+		}[[ENDLOOP,ATTRIBUTE_SOURCE]][[ENDLOOP,FKEY]]
 		break;[[ENDLOOP,REFERENCE]]
 	default:
 		alert ('Error Listbox: '+document.body._ListBoxCode);
@@ -305,17 +333,35 @@ function UpdateForeignKey(p_obj) {
 function StartSelect<<REFERENCE:S>>(p_event) {
 	document.body._SelectLeft = p_event.clientX;
 	document.body._SelectTop = p_event.clientY;
-	document.body._ListBoxCode = 'Ref<<REFERENCE:S>>';[[LOOP,REFERENCE_TYPE]][[IF:3=Y[AND]!8=Y[AND]!REFERENCE.4=ALL[AND]REFERENCE.PARENT(TYPE:0=<<REFERENCE_TYPE>>)]][[EVAL:($myFlag=0)]][[IF,REFERENCE:4=ENC]][[LOOP,ATTRIBUTE:3=F[AND]CHILD(ATTRIBUTE_SOURCE:1=Y)]][[IF:FIRST]]
-	var l_parameters = [[EVAL:($myFlag=1)]][[ENDIF]]
-		document.getElementById("Input<<ATTRIBUTE:C>>").value[[IF:!LAST[OR]REFERENCE.CHILD(REFERENCE_SCOPE_ATTRIBUTE)]]+'<|>'+[[ENDIF]][[ENDLOOP,ATTRIBUTE]][[FOR,REFERENCE:N>N]][[LOOP,REFERENCE_SCOPE_ATTRIBUTE]]
-		document.getElementById("Input<<REFERENCE_SCOPE_ATTRIBUTE:C>>").value[[IF:!LAST]]+'<|>'+[[ENDIF]][[ENDLOOP,REFERENCE_SCOPE_ATTRIBUTE]][[ENDFOR]][[ELSIF,REFERENCE_TYPE:0=<<TYPE>>]]
-	var l_parameters = [[EVAL:($myFlag=1)]]<<TEXT,DETAIL_RECURSIVE_PARMS>>[[LOOP,ATTRIBUTE:1=Y]]
-		document.getElementById("Input<<ATTRIBUTE:C>>").value[[IF:!LAST]]+'<|>'+[[ENDIF]][[ENDLOOP,ATTRIBUTE]][[ELSE]]
-	var l_parameters = [[EVAL:($myFlag=1)]]<<TEXT,DETAIL_RECURSIVE_PARMS>>[[FOR,TYPE:N>N]][[LOOP,ATTRIBUTE:3=F[AND]CHILD(ATTRIBUTE_KEY_TYPE:0=<<REFERENCE_TYPE>>)]]
-		document.getElementById("Input<<ATTRIBUTE:C>>").value[[IF:!LAST]]+'<|>'+[[ENDIF]][[ENDLOOP,ATTRIBUTE]][[ENDFOR]][[ENDIF]];
-	performTrans('<<TEXT,DETAIL_GET_LIST_NAME>>[[IF,REFERENCE:4=ENC]]Encapsulated[[ELSE]]Recursive[[ENDIF]]<|||>'[[IF:EVAL:$myFlag]]+l_parameters[[ENDIF]]);[[ELSE]][[IF,REFERENCE:4=ALL[AND]CHILD(REFERENCE_SCOPE_ATTRIBUTE)]]
-	var l_parameters = [[IF,REFERENCE:CHILD(REFERENCE_TYPE_WITHIN_SCOPE_OF:3=Y)]]'<<REFERENCE6>><|>'+[[ENDIF]][[FOR,REFERENCE:N>N]][[LOOP,REFERENCE_SCOPE_ATTRIBUTE]]document.getElementById("Input<<REFERENCE_SCOPE_ATTRIBUTE:C>>").value[[IF:!LAST]]+'<|>'+[[ENDIF]][[ENDLOOP,REFERENCE_SCOPE_ATTRIBUTE]][[ENDFOR]][[ENDIF]]
-	performTrans('<<TEXT,DETAIL_GET_LIST_NAME>>[[IF:3=Y]]All[[ENDIF]][[IF,REFERENCE:4=ALL[AND]CHILD(REFERENCE_SCOPE_ATTRIBUTE)]]<|||>'+l_parameters[[ELSE]]'[[ENDIF]]);[[ENDIF]][[ENDLOOP,REFERENCE_TYPE]]
+	document.body._ListBoxCode = 'Ref<<REFERENCE:S>>';[[LOOP,REFERENCE_TYPE]][[IF:3=Y[AND]!8=Y[AND]!REFERENCE.4=ALL[AND]REFERENCE.PARENT(TYPE:0=<<REFERENCE_TYPE>>)]][[EVAL:($myFlag=0)]][[IF,REFERENCE:4=ENC]]
+	var l_json_parms = {
+		Type: {[[EVAL:($myFlag=1)]][[LOOP,ATTRIBUTE:3=F[AND]CHILD(ATTRIBUTE_SOURCE:1=Y)]]
+			<<ATTRIBUTE:C>>:document.getElementById("Input<<ATTRIBUTE:C>>").value[[IF:!LAST]],[[ENDIF]][[ENDLOOP,ATTRIBUTE]]
+		}[[IF:REFERENCE.CHILD(REFERENCE_SCOPE_ATTRIBUTE)]],
+		Ref: {[[FOR,REFERENCE:N>N]][[LOOP,REFERENCE_SCOPE_ATTRIBUTE]]
+			<<REFERENCE_SCOPE_ATTRIBUTE:C>>:document.getElementById("Input<<REFERENCE_SCOPE_ATTRIBUTE:C>>").value[[IF:!LAST]],[[ENDIF]][[ENDLOOP,REFERENCE_SCOPE_ATTRIBUTE]][[ENDFOR]]
+		}[[ENDIF]]
+	};[[ELSIF,REFERENCE_TYPE:0=<<TYPE>>]]
+	var l_json_parms = {[[EVAL:($myFlag=1)]]<<TEXT,DETAIL_RECURSIVE_PARMS>>
+		Type:{[[LOOP,ATTRIBUTE:1=Y]]
+			<<ATTRIBUTE:C>>:document.getElementById("Input<<ATTRIBUTE:C>>").value[[IF:!LAST]],[[ENDIF]][[ENDLOOP,ATTRIBUTE]]
+		}
+	};[[ELSE]]
+	var l_json_parms = {[[EVAL:($myFlag=1)]]<<TEXT,DETAIL_RECURSIVE_PARMS>>
+		Type: {[[FOR,TYPE:N>N]][[LOOP,ATTRIBUTE:3=F[AND]CHILD(ATTRIBUTE_KEY_TYPE:0=<<REFERENCE_TYPE>>)]]
+			<<ATTRIBUTE:C>>:document.getElementById("Input<<ATTRIBUTE:C>>").value[[IF:!LAST]],[[ENDIF]][[ENDLOOP,ATTRIBUTE]][[ENDFOR]]
+		}
+	};[[ENDIF]]
+	performTrans( {Service:"<<TEXT,DETAIL_GET_LIST_NAME>>[[IF,REFERENCE:4=ENC]]Encapsulated[[ELSE]]Recursive[[ENDIF]]",Parameters:'[[IF:EVAL:$myFlag]]+l_json_parms[[ENDIF]]} );[[ELSE]][[IF,REFERENCE:4=ALL[AND]CHILD(REFERENCE_SCOPE_ATTRIBUTE)]]
+	var l_json_parms = {[[IF,REFERENCE:CHILD(REFERENCE_TYPE_WITHIN_SCOPE_OF:3=Y)]]
+		Option: {
+			CubeScopeLevel:<<REFERENCE6>>
+		},[[ENDIF]]
+		Type: {[[FOR,REFERENCE:N>N]][[LOOP,REFERENCE_SCOPE_ATTRIBUTE]]
+			<<REFERENCE_SCOPE_ATTRIBUTE:C>>:document.getElementById("Input<<REFERENCE_SCOPE_ATTRIBUTE:C>>").value[[IF:!LAST]],[[ENDIF]][[ENDLOOP,REFERENCE_SCOPE_ATTRIBUTE]][[ENDFOR]]
+		}
+	};[[ENDIF]]
+	performTrans( {Service:"<<TEXT,DETAIL_GET_LIST_NAME>>[[IF:3=Y]]All[[ENDIF]]"[[IF,REFERENCE:4=ALL[AND]CHILD(REFERENCE_SCOPE_ATTRIBUTE)]],Parameters:l_json_parms[[ENDIF]]} );[[ENDIF]][[ENDLOOP,REFERENCE_TYPE]]
 }[[ENDLOOP,REFERENCE]]
 
 function OpenDescBox(p_icon,p_name,p_type,p_attribute_type,p_sequence) {
@@ -388,7 +434,6 @@ function ToUpperCase(p_obj)
 function ReplaceSpaces(p_obj) 
 {
 	p_obj.value = p_obj.value.replace(/^\s+|\s+$/g, "").replace(/ /g ,"_");
-
 }
 
 function StartMove(p_event) {

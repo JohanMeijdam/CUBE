@@ -16,7 +16,10 @@ case 'GetDirAaaItems':
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'LIST_AAA';
 	$r = perform_db_request();
-	if (!$r) { return; }
+	if (!$r) { 
+		echo ']';
+		return;
+	}
 	$ResponseObj->Rows = array();
 	while ($row = oci_fetch_assoc($curs)) {
 		$RowObj = new \stdClass();
@@ -38,7 +41,10 @@ case 'GetAaaListAll':
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'LIST_AAA';
 	$r = perform_db_request();
-	if (!$r) { return; }
+	if (!$r) { 
+		echo ']';
+		return;
+	}
 	$ResponseObj->Rows = array();
 	while ($row = oci_fetch_assoc($curs)) {
 		$RowObj = new \stdClass();
@@ -65,7 +71,10 @@ case 'GetAaa':
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'SELECT_AAA';
 	$r = perform_db_request();
-	if (!$r) { return; }
+	if (!$r) { 
+		echo ']';
+		return;
+	}
 	$ResponseObj->Rows = array();
 	if ($row = oci_fetch_assoc($curs)) {
 		$RowObj = new \stdClass();
@@ -93,7 +102,10 @@ case 'GetAaaItems':
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'LIST_AAD';
 	$r = perform_db_request();
-	if (!$r) { return; }
+	if (!$r) { 
+		echo ']';
+		return;
+	}
 	$ResponseObj->Rows = array();
 	while ($row = oci_fetch_assoc($curs)) {
 		$RowObj = new \stdClass();
@@ -116,7 +128,10 @@ case 'GetAaaItems':
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'LIST_AAA';
 	$r = perform_db_request();
-	if (!$r) { return; }
+	if (!$r) { 
+		echo ']';
+		return;
+	}
 	$ResponseObj->Rows = array();
 	while ($row = oci_fetch_assoc($curs)) {
 		$RowObj = new \stdClass();
@@ -147,7 +162,10 @@ case 'ChangeParentAaa':
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'CHANGE_PARENT_AAA';
 	$r = perform_db_request();
-	if (!$r) { return; }
+	if (!$r) { 
+		echo ']';
+		return;
+	}
 	$ResponseObj->Rows = array();
 	if ($row = oci_fetch_assoc($curs)) {
 		$RowObj = new \stdClass();
@@ -179,7 +197,10 @@ case 'CreateAaa':
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'CREATE_AAA';
 	$r = perform_db_request();
-	if (!$r) { return; }
+	if (!$r) { 
+		echo ']';
+		return;
+	}
 	$ResponseObj->Rows = array();
 	if ($row = oci_fetch_assoc($curs)) {
 		$RowObj = new \stdClass();
@@ -257,7 +278,10 @@ case 'GetAad':
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'SELECT_AAD';
 	$r = perform_db_request();
-	if (!$r) { return; }
+	if (!$r) { 
+		echo ']';
+		return;
+	}
 	$ResponseObj->Rows = array();
 	if ($row = oci_fetch_assoc($curs)) {
 		$RowObj = new \stdClass();
@@ -390,7 +414,10 @@ case 'GetDirBbbItems':
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'LIST_BBB';
 	$r = perform_db_request();
-	if (!$r) { return; }
+	if (!$r) { 
+		echo ']';
+		return;
+	}
 	$ResponseObj->Rows = array();
 	while ($row = oci_fetch_assoc($curs)) {
 		$RowObj = new \stdClass();
@@ -412,7 +439,10 @@ case 'GetBbbList':
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'LIST_BBB';
 	$r = perform_db_request();
-	if (!$r) { return; }
+	if (!$r) { 
+		echo ']';
+		return;
+	}
 	$ResponseObj->Rows = array();
 	while ($row = oci_fetch_assoc($curs)) {
 		$RowObj = new \stdClass();
@@ -439,7 +469,10 @@ case 'GetBbb':
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'SELECT_BBB';
 	$r = perform_db_request();
-	if (!$r) { return; }
+	if (!$r) { 
+		echo ']';
+		return;
+	}
 	$ResponseObj->Rows = array();
 	if ($row = oci_fetch_assoc($curs)) {
 		$RowObj = new \stdClass();
@@ -540,7 +573,10 @@ case 'GetDirCccItems':
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'LIST_CCC';
 	$r = perform_db_request();
-	if (!$r) { return; }
+	if (!$r) { 
+		echo ']';
+		return;
+	}
 	$ResponseObj->Rows = array();
 	while ($row = oci_fetch_assoc($curs)) {
 		$RowObj = new \stdClass();
@@ -563,7 +599,10 @@ case 'GetCccListAll':
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'LIST_CCC';
 	$r = perform_db_request();
-	if (!$r) { return; }
+	if (!$r) { 
+		echo ']';
+		return;
+	}
 	$ResponseObj->Rows = array();
 	while ($row = oci_fetch_assoc($curs)) {
 		$RowObj = new \stdClass();
@@ -586,7 +625,10 @@ case 'CountCcc':
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'COUNT_CCC';
 	$r = perform_db_request();
-	if (!$r) { return; }
+	if (!$r) { 
+		echo ']';
+		return;
+	}
 	$ResponseObj->Rows = array();
 	if ($row = oci_fetch_assoc($curs)) {
 		$RowObj = new \stdClass();
@@ -614,7 +656,10 @@ case 'GetCcc':
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'SELECT_CCC';
 	$r = perform_db_request();
-	if (!$r) { return; }
+	if (!$r) { 
+		echo ']';
+		return;
+	}
 	$ResponseObj->Rows = array();
 	if ($row = oci_fetch_assoc($curs)) {
 		$RowObj = new \stdClass();
@@ -646,7 +691,10 @@ case 'GetCccItems':
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'LIST_CCC';
 	$r = perform_db_request();
-	if (!$r) { return; }
+	if (!$r) { 
+		echo ']';
+		return;
+	}
 	$ResponseObj->Rows = array();
 	while ($row = oci_fetch_assoc($curs)) {
 		$RowObj = new \stdClass();
@@ -676,7 +724,10 @@ case 'CountCccRestrictedItems':
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'COUNT_CCC';
 	$r = perform_db_request();
-	if (!$r) { return; }
+	if (!$r) { 
+		echo ']';
+		return;
+	}
 	$ResponseObj->Rows = array();
 	if ($row = oci_fetch_assoc($curs)) {
 		$RowObj = new \stdClass();
@@ -825,7 +876,10 @@ case 'GetDirPrdItems':
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'LIST_PRD';
 	$r = perform_db_request();
-	if (!$r) { return; }
+	if (!$r) { 
+		echo ']';
+		return;
+	}
 	$ResponseObj->Rows = array();
 	while ($row = oci_fetch_assoc($curs)) {
 		$RowObj = new \stdClass();
@@ -855,7 +909,10 @@ case 'GetPrd':
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'SELECT_PRD';
 	$r = perform_db_request();
-	if (!$r) { return; }
+	if (!$r) { 
+		echo ']';
+		return;
+	}
 	$ResponseObj->Rows = array();
 	if ($row = oci_fetch_assoc($curs)) {
 		$RowObj = new \stdClass();
@@ -886,7 +943,10 @@ case 'GetPrdItems':
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'LIST_PR2';
 	$r = perform_db_request();
-	if (!$r) { return; }
+	if (!$r) { 
+		echo ']';
+		return;
+	}
 	$ResponseObj->Rows = array();
 	while ($row = oci_fetch_assoc($curs)) {
 		$RowObj = new \stdClass();
@@ -913,7 +973,10 @@ case 'GetPrdItems':
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'LIST_PRT';
 	$r = perform_db_request();
-	if (!$r) { return; }
+	if (!$r) { 
+		echo ']';
+		return;
+	}
 	$ResponseObj->Rows = array();
 	while ($row = oci_fetch_assoc($curs)) {
 		$RowObj = new \stdClass();
@@ -1037,7 +1100,10 @@ case 'GetPr2':
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'SELECT_PR2';
 	$r = perform_db_request();
-	if (!$r) { return; }
+	if (!$r) { 
+		echo ']';
+		return;
+	}
 	$ResponseObj->Rows = array();
 	if ($row = oci_fetch_assoc($curs)) {
 		$RowObj = new \stdClass();
@@ -1069,7 +1135,10 @@ case 'GetPr2Items':
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'LIST_PA2';
 	$r = perform_db_request();
-	if (!$r) { return; }
+	if (!$r) { 
+		echo ']';
+		return;
+	}
 	$ResponseObj->Rows = array();
 	while ($row = oci_fetch_assoc($curs)) {
 		$RowObj = new \stdClass();
@@ -1199,7 +1268,10 @@ case 'GetPa2ForPrdListEncapsulated':
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'LIST_PA2';
 	$r = perform_db_request();
-	if (!$r) { return; }
+	if (!$r) { 
+		echo ']';
+		return;
+	}
 	$ResponseObj->Rows = array();
 	while ($row = oci_fetch_assoc($curs)) {
 		$RowObj = new \stdClass();
@@ -1241,7 +1313,10 @@ case 'GetPa2':
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'SELECT_PA2';
 	$r = perform_db_request();
-	if (!$r) { return; }
+	if (!$r) { 
+		echo ']';
+		return;
+	}
 	$ResponseObj->Rows = array();
 	if ($row = oci_fetch_assoc($curs)) {
 		$RowObj = new \stdClass();
@@ -1285,7 +1360,10 @@ case 'GetPa2Items':
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'LIST_PA2';
 	$r = perform_db_request();
-	if (!$r) { return; }
+	if (!$r) { 
+		echo ']';
+		return;
+	}
 	$ResponseObj->Rows = array();
 	while ($row = oci_fetch_assoc($curs)) {
 		$RowObj = new \stdClass();
@@ -1501,7 +1579,10 @@ case 'GetPrtForPrdListEncapsulated':
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'LIST_PRT';
 	$r = perform_db_request();
-	if (!$r) { return; }
+	if (!$r) { 
+		echo ']';
+		return;
+	}
 	$ResponseObj->Rows = array();
 	while ($row = oci_fetch_assoc($curs)) {
 		$RowObj = new \stdClass();
@@ -1537,7 +1618,10 @@ case 'GetPrt':
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'SELECT_PRT';
 	$r = perform_db_request();
-	if (!$r) { return; }
+	if (!$r) { 
+		echo ']';
+		return;
+	}
 	$ResponseObj->Rows = array();
 	if ($row = oci_fetch_assoc($curs)) {
 		$RowObj = new \stdClass();
@@ -1575,7 +1659,10 @@ case 'GetPrtItems':
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'LIST_PRT';
 	$r = perform_db_request();
-	if (!$r) { return; }
+	if (!$r) { 
+		echo ']';
+		return;
+	}
 	$ResponseObj->Rows = array();
 	while ($row = oci_fetch_assoc($curs)) {
 		$RowObj = new \stdClass();

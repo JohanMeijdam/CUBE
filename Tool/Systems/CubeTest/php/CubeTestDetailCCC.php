@@ -6,9 +6,10 @@ $_SESSION['views']=0;
 <link rel="stylesheet" href="base_css.php" />
 <script language='javascript' type='text/javascript'>
 <!--
-var g_option;
-var g_json_option;
-var g_node_id;
+var g_option = null;
+var g_json_option = null;
+var g_parent_node_id = null;
+var g_node_id = null;
 
 var g_xmlhttp = new XMLHttpRequest();
 g_xmlhttp.onreadystatechange = function() {
@@ -38,7 +39,7 @@ g_xmlhttp.onreadystatechange = function() {
 						document.getElementById("ButtonCreate").disabled=true;
 						document.getElementById("ButtonUpdate").disabled=false;
 						document.getElementById("ButtonDelete").disabled=false;
-						var l_objNode = parent.document.getElementById(g_node_id);
+						var l_objNode = parent.document.getElementById(g_parent_node_id);
 						var l_json_node_id = {Code:document.getElementById("InputCode").value,Naam:document.getElementById("InputNaam").value};
 						g_node_id = '{"TYP_CCC":'+JSON.stringify(l_json_node_id)+'}';
 						if (l_objNode != null) {
@@ -60,16 +61,19 @@ g_xmlhttp.onreadystatechange = function() {
 					case "UPDATE_CCC":
 						break;
 					case "DELETE_CCC":
+						document.getElementById("ButtonCreate").disabled=false;
 						document.getElementById("ButtonUpdate").disabled=true;
 						document.getElementById("ButtonDelete").disabled=true;
 						var l_objNode = parent.document.getElementById(g_node_id);
+						if (g_parent_node_id == null) {
+							g_parent_node_id = l_objNode.parentNode.parentNode.id;
+						} 
 						if (l_objNode != null) {
-							l_objNode = l_objNode;
 							l_objNode.parentNode.removeChild(l_objNode);
 						}
 						break;
 					case "LIST_CCC":
-						OpenListBox(l_argument,'produkt','Ccc','Y');
+						OpenListBox(l_json_array[i].Rows,'produkt','Ccc','Y');
 						break;
 					case "SELECT_CUBE_DSC":
 						document.getElementById("CubeDesc").value = l_argument[1];
@@ -88,8 +92,8 @@ g_xmlhttp.onreadystatechange = function() {
 	}
 }
 
-function performTrans(p_objParm) {
-	var l_requestText = JSON.stringify(p_objParm);
+function performTrans(p_json_parm) {
+	var l_requestText = JSON.stringify(p_json_parm);
 	g_xmlhttp.open('POST','CubeTestServer.php',true);
 //	g_xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 	g_xmlhttp.send(l_requestText);
@@ -97,33 +101,33 @@ function performTrans(p_objParm) {
 
 function InitBody() {
 	var l_json_argument = JSON.parse(decodeURIComponent(location.href.split("?")[1]));
-//	var l_argument = decodeURIComponent(document.location.href).split("<|||>");
 	document.body._FlagDragging = 0;
 	document.body._DraggingId = ' ';
 	document.body._ListBoxCode="Ref000";
 	var l_json_objectKey = l_json_argument.objectId;
-	g_node_id = JSON.stringify(l_json_argument.objectId);
 	g_json_option = l_json_argument.Option;
-//	g_option = l_argument[3].split("<||>");
 	switch (l_json_argument.nodeType) {
 	case "D":
+		g_node_id = JSON.stringify(l_json_argument.objectId);
 		document.getElementById("InputCode").value=l_json_objectKey.TYP_CCC.Code;
 		document.getElementById("InputNaam").value=l_json_objectKey.TYP_CCC.Naam;
 		document.getElementById("ButtonCreate").disabled=true;
-		l_objParm = {Service:"GetCcc",Parameters:{Type:l_json_objectKey.TYP_CCC}};
-		performTrans(l_objParm);
+		l_json_parm = {Service:"GetCcc",Parameters:{Type:l_json_objectKey.TYP_CCC}};
+		performTrans(l_json_parm);
 		document.getElementById("InputFkCccCode").readOnly=true;
 		document.getElementById("InputFkCccNaam").readOnly=true;
 		document.getElementById("InputCode").readOnly=true;
 		document.getElementById("InputNaam").readOnly=true;
 		break;
 	case "N":
+		g_parent_node_id = JSON.stringify(l_json_argument.objectId);
 		document.getElementById("ButtonUpdate").disabled=true;
 		document.getElementById("ButtonDelete").disabled=true;
 		document.getElementById("InputFkCccCode").readOnly=true;
 		document.getElementById("InputFkCccNaam").readOnly=true;
 		break;  
 	case "R":
+		g_parent_node_id = JSON.stringify(l_json_argument.objectId);
 		document.getElementById("InputFkCccCode").value=l_json_objectKey.TYP_CCC.Code;
 		document.getElementById("InputFkCccNaam").value=l_json_objectKey.TYP_CCC.Naam;
 		document.getElementById("ButtonUpdate").disabled=true;
@@ -138,8 +142,18 @@ function InitBody() {
 }
 
 function CreateCcc() {
-	var l_json_type = {Type:{FkCccCode:document.getElementById("InputFkCccCode").value,FkCccNaam:document.getElementById("InputFkCccNaam").value,Code:document.getElementById("InputCode").value,Naam:document.getElementById("InputNaam").value,Omschrjving:document.getElementById("InputOmschrjving").value,XkCccCode:document.getElementById("InputXkCccCode").value,XkCccNaam:document.getElementById("InputXkCccNaam").value}};
-	var l_pos_action = g_json_option.Option.Code;
+	var l_json_type = {
+		Type: {
+			FkCccCode:document.getElementById("InputFkCccCode").value,
+			FkCccNaam:document.getElementById("InputFkCccNaam").value,
+			Code:document.getElementById("InputCode").value,
+			Naam:document.getElementById("InputNaam").value,
+			Omschrjving:document.getElementById("InputOmschrjving").value,
+			XkCccCode:document.getElementById("InputXkCccCode").value,
+			XkCccNaam:document.getElementById("InputXkCccNaam").value
+		}
+	};
+	var l_pos_action = g_json_option.Code;
 	var l_json_option_code = {Option:{CubePosAction:l_pos_action}};
 	if (l_pos_action == 'F' || l_pos_action == 'L') {
 		performTrans( {Service:"CreateCcc",Parameters:l_json_option_code,l_json_type} );
@@ -150,18 +164,33 @@ function CreateCcc() {
 }
 
 function UpdateCcc() {
-	var l_json_type = {Type:{FkCccCode:document.getElementById("InputFkCccCode").value,FkCccNaam:document.getElementById("InputFkCccNaam").value,Code:document.getElementById("InputCode").value,Naam:document.getElementById("InputNaam").value,Omschrjving:document.getElementById("InputOmschrjving").value,XkCccCode:document.getElementById("InputXkCccCode").value,XkCccNaam:document.getElementById("InputXkCccNaam").value}};;
+	var l_json_type = {
+		Type: {
+			FkCccCode:document.getElementById("InputFkCccCode").value,
+			FkCccNaam:document.getElementById("InputFkCccNaam").value,
+			Code:document.getElementById("InputCode").value,
+			Naam:document.getElementById("InputNaam").value,
+			Omschrjving:document.getElementById("InputOmschrjving").value,
+			XkCccCode:document.getElementById("InputXkCccCode").value,
+			XkCccNaam:document.getElementById("InputXkCccNaam").value
+		}
+	};
 	performTrans( {Service:"UpdateCcc",Parameters:l_json_type} );
 }
 
 function DeleteCcc() {
-	var l_json_type = {Type:{Code:document.getElementById("InputCode").value,Naam:document.getElementById("InputNaam").value}};;
+	var l_json_type = {
+		Type: {
+			Code:document.getElementById("InputCode").value,
+			Naam:document.getElementById("InputNaam").value
+		}
+	};
 	performTrans( {Service:"DeleteCcc",Parameters:l_json_type} );
 }
 
-function OpenListBox(p_rows,p_icon,p_header,p_optional) {
+function OpenListBox(p_json_rows,p_icon,p_header,p_optional) {
 	CloseListBox();
-	if (p_rows.length > 1) {
+	if (p_json_rows.length > 1) {
 
 		var l_objDiv = document.createElement('DIV');
 		var l_objTable = document.createElement('TABLE');
@@ -204,7 +233,7 @@ function OpenListBox(p_rows,p_icon,p_header,p_optional) {
 		l_objCell_1_0.colSpan = '2';
 
 
-		l_objSelect.size = Math.min(p_rows.length-1,16)
+		l_objSelect.size = Math.min(p_json_rows.length-1,16)
 		l_objSelect.onclick = function(){UpdateForeignKey(this)};
 
 		if (p_optional == 'Y') {
@@ -215,14 +244,11 @@ function OpenListBox(p_rows,p_icon,p_header,p_optional) {
 			l_objOption.innerHTML = '';
 		}
 
-		for (ir in p_rows) {
-			if (ir > 0) {
-				var l_rowpart = p_rows[ir].split("<||>");
-				var l_objOption = document.createElement('OPTION');
-				l_objSelect.appendChild(l_objOption);
-				l_objOption.value = l_rowpart[0];
-				l_objOption.innerHTML = l_rowpart[1].toLowerCase();
-			}
+		for (ir in p_json_rows) {
+			var l_objOption = document.createElement('OPTION');
+			l_objSelect.appendChild(l_objOption);
+			l_objOption.value = JSON.stringify(p_json_rows[ir].Key); 
+			l_objOption.innerHTML = p_json_rows[ir].Display.toLowerCase();
 		}
 	} else {
 		alert ("No Items Found");
@@ -235,19 +261,21 @@ function CloseListBox() {
 }
 
 function UpdateForeignKey(p_obj) {
-	var l_obj_option = p_obj.options[p_obj.selectedIndex];
-	var l_values = l_obj_option.value.split("<|>");
+	var l_values = p_obj.options[p_obj.selectedIndex].value;
+	if (l_values != '') {
+		var l_json_values = JSON.parse(l_values);
+	}
 	switch (document.body._ListBoxCode){
 	case "Ref001":
-		if (l_obj_option.value == '') {
+		if (l_values == '') {
 			document.getElementById("InputXkCccCode").value = '';
 		} else {
-			document.getElementById("InputXkCccCode").value = l_values[0];
+			document.getElementById("InputXkCccCode").value = l_json_values.Code;
 		}
-		if (l_obj_option.value == '') {
+		if (l_values == '') {
 			document.getElementById("InputXkCccNaam").value = '';
 		} else {
-			document.getElementById("InputXkCccNaam").value = l_values[1];
+			document.getElementById("InputXkCccNaam").value = l_json_values.Naam;
 		}
 		break;
 	default:
@@ -260,7 +288,7 @@ function StartSelect001(p_event) {
 	document.body._SelectLeft = p_event.clientX;
 	document.body._SelectTop = p_event.clientY;
 	document.body._ListBoxCode = 'Ref001';
-	performTrans('GetCccListAll');
+	performTrans( {Service:"GetCccListAll"} );
 }
 
 function OpenDescBox(p_icon,p_name,p_type,p_attribute_type,p_sequence) {
@@ -333,7 +361,6 @@ function ToUpperCase(p_obj)
 function ReplaceSpaces(p_obj) 
 {
 	p_obj.value = p_obj.value.replace(/^\s+|\s+$/g, "").replace(/ /g ,"_");
-
 }
 
 function StartMove(p_event) {

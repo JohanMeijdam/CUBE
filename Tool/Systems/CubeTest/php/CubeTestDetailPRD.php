@@ -6,9 +6,10 @@ $_SESSION['views']=0;
 <link rel="stylesheet" href="base_css.php" />
 <script language='javascript' type='text/javascript'>
 <!--
-var g_option;
-var g_json_option;
-var g_node_id;
+var g_option = null;
+var g_json_option = null;
+var g_parent_node_id = null;
+var g_node_id = null;
 
 var g_xmlhttp = new XMLHttpRequest();
 g_xmlhttp.onreadystatechange = function() {
@@ -36,7 +37,7 @@ g_xmlhttp.onreadystatechange = function() {
 						document.getElementById("ButtonCreate").disabled=true;
 						document.getElementById("ButtonUpdate").disabled=false;
 						document.getElementById("ButtonDelete").disabled=false;
-						var l_objNode = parent.document.getElementById(g_node_id);
+						var l_objNode = parent.document.getElementById(g_parent_node_id);
 						var l_json_node_id = {Code:document.getElementById("InputCode").value,Naam:document.getElementById("InputNaam").value};
 						g_node_id = '{"TYP_PRD":'+JSON.stringify(l_json_node_id)+'}';
 						if (l_objNode != null) {
@@ -58,11 +59,14 @@ g_xmlhttp.onreadystatechange = function() {
 					case "UPDATE_PRD":
 						break;
 					case "DELETE_PRD":
+						document.getElementById("ButtonCreate").disabled=false;
 						document.getElementById("ButtonUpdate").disabled=true;
 						document.getElementById("ButtonDelete").disabled=true;
 						var l_objNode = parent.document.getElementById(g_node_id);
+						if (g_parent_node_id == null) {
+							g_parent_node_id = l_objNode.parentNode.parentNode.id;
+						} 
 						if (l_objNode != null) {
-							l_objNode = l_objNode;
 							l_objNode.parentNode.removeChild(l_objNode);
 						}
 						break;
@@ -83,8 +87,8 @@ g_xmlhttp.onreadystatechange = function() {
 	}
 }
 
-function performTrans(p_objParm) {
-	var l_requestText = JSON.stringify(p_objParm);
+function performTrans(p_json_parm) {
+	var l_requestText = JSON.stringify(p_json_parm);
 	g_xmlhttp.open('POST','CubeTestServer.php',true);
 //	g_xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 	g_xmlhttp.send(l_requestText);
@@ -92,25 +96,25 @@ function performTrans(p_objParm) {
 
 function InitBody() {
 	var l_json_argument = JSON.parse(decodeURIComponent(location.href.split("?")[1]));
-//	var l_argument = decodeURIComponent(document.location.href).split("<|||>");
 	document.body._FlagDragging = 0;
 	document.body._DraggingId = ' ';
 	document.body._ListBoxCode="Ref000";
 	var l_json_objectKey = l_json_argument.objectId;
-	g_node_id = JSON.stringify(l_json_argument.objectId);
 	switch (l_json_argument.nodeType) {
 	case "D":
+		g_node_id = JSON.stringify(l_json_argument.objectId);
 		document.getElementById("InputCode").value=l_json_objectKey.TYP_PRD.Code;
 		document.getElementById("InputNaam").value=l_json_objectKey.TYP_PRD.Naam;
 		document.getElementById("ButtonCreate").disabled=true;
-		l_objParm = {Service:"GetPrd",Parameters:{Type:l_json_objectKey.TYP_PRD}};
-		performTrans(l_objParm);
+		l_json_parm = {Service:"GetPrd",Parameters:{Type:l_json_objectKey.TYP_PRD}};
+		performTrans(l_json_parm);
 		document.getElementById("InputCubeTsgZzz").readOnly=true;
 		document.getElementById("InputCubeTsgYyy").readOnly=true;
 		document.getElementById("InputCode").readOnly=true;
 		document.getElementById("InputNaam").readOnly=true;
 		break;
 	case "N":
+		g_parent_node_id = JSON.stringify(l_json_argument.objectId);
 		document.getElementById("ButtonUpdate").disabled=true;
 		document.getElementById("ButtonDelete").disabled=true;
 		break;
@@ -120,17 +124,40 @@ function InitBody() {
 }
 
 function CreatePrd() {
-	var l_json_type = {Type:{CubeTsgZzz:document.getElementById("InputCubeTsgZzz").value,CubeTsgYyy:document.getElementById("InputCubeTsgYyy").value,Code:document.getElementById("InputCode").value,Naam:document.getElementById("InputNaam").value,Datum:document.getElementById("InputDatum").value,Omschrijving:document.getElementById("InputOmschrijving").value}};
+	var l_json_type = {
+		Type: {
+			CubeTsgZzz:document.getElementById("InputCubeTsgZzz").value,
+			CubeTsgYyy:document.getElementById("InputCubeTsgYyy").value,
+			Code:document.getElementById("InputCode").value,
+			Naam:document.getElementById("InputNaam").value,
+			Datum:document.getElementById("InputDatum").value,
+			Omschrijving:document.getElementById("InputOmschrijving").value
+		}
+	};
 	performTrans( {Service:"CreatePrd",Parameters:l_json_type} );
 }
 
 function UpdatePrd() {
-	var l_json_type = {Type:{CubeTsgZzz:document.getElementById("InputCubeTsgZzz").value,CubeTsgYyy:document.getElementById("InputCubeTsgYyy").value,Code:document.getElementById("InputCode").value,Naam:document.getElementById("InputNaam").value,Datum:document.getElementById("InputDatum").value,Omschrijving:document.getElementById("InputOmschrijving").value}};;
+	var l_json_type = {
+		Type: {
+			CubeTsgZzz:document.getElementById("InputCubeTsgZzz").value,
+			CubeTsgYyy:document.getElementById("InputCubeTsgYyy").value,
+			Code:document.getElementById("InputCode").value,
+			Naam:document.getElementById("InputNaam").value,
+			Datum:document.getElementById("InputDatum").value,
+			Omschrijving:document.getElementById("InputOmschrijving").value
+		}
+	};
 	performTrans( {Service:"UpdatePrd",Parameters:l_json_type} );
 }
 
 function DeletePrd() {
-	var l_json_type = {Type:{Code:document.getElementById("InputCode").value,Naam:document.getElementById("InputNaam").value}};;
+	var l_json_type = {
+		Type: {
+			Code:document.getElementById("InputCode").value,
+			Naam:document.getElementById("InputNaam").value
+		}
+	};
 	performTrans( {Service:"DeletePrd",Parameters:l_json_type} );
 }
 
@@ -204,7 +231,6 @@ function ToUpperCase(p_obj)
 function ReplaceSpaces(p_obj) 
 {
 	p_obj.value = p_obj.value.replace(/^\s+|\s+$/g, "").replace(/ /g ,"_");
-
 }
 
 function StartMove(p_event) {

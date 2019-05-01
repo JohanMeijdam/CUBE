@@ -6,9 +6,10 @@ $_SESSION['views']=0;
 <link rel="stylesheet" href="base_css.php" />
 <script language='javascript' type='text/javascript'>
 <!--
-var g_option;
-var g_json_option;
-var g_node_id;
+var g_option = null;
+var g_json_option = null;
+var g_parent_node_id = null;
+var g_node_id = null;
 
 var g_xmlhttp = new XMLHttpRequest();
 g_xmlhttp.onreadystatechange = function() {
@@ -42,7 +43,7 @@ g_xmlhttp.onreadystatechange = function() {
 						document.getElementById("ButtonCreate").disabled=true;
 						document.getElementById("ButtonUpdate").disabled=false;
 						document.getElementById("ButtonDelete").disabled=false;
-						var l_objNode = parent.document.getElementById(g_node_id);
+						var l_objNode = parent.document.getElementById(g_parent_node_id);
 						var l_json_node_id = {FkPrdCode:document.getElementById("InputFkPrdCode").value,FkPrdNaam:document.getElementById("InputFkPrdNaam").value,Code:document.getElementById("InputCode").value,Naam:document.getElementById("InputNaam").value};
 						g_node_id = '{"TYP_PRT":'+JSON.stringify(l_json_node_id)+'}';
 						if (l_objNode != null) {
@@ -64,16 +65,19 @@ g_xmlhttp.onreadystatechange = function() {
 					case "UPDATE_PRT":
 						break;
 					case "DELETE_PRT":
+						document.getElementById("ButtonCreate").disabled=false;
 						document.getElementById("ButtonUpdate").disabled=true;
 						document.getElementById("ButtonDelete").disabled=true;
 						var l_objNode = parent.document.getElementById(g_node_id);
+						if (g_parent_node_id == null) {
+							g_parent_node_id = l_objNode.parentNode.parentNode.id;
+						} 
 						if (l_objNode != null) {
-							l_objNode = l_objNode;
 							l_objNode.parentNode.removeChild(l_objNode);
 						}
 						break;
 					case "LIST_PRT":
-						OpenListBox(l_argument,'part','Part','Y');
+						OpenListBox(l_json_array[i].Rows,'part','Part','Y');
 						break;
 					case "SELECT_CUBE_DSC":
 						document.getElementById("CubeDesc").value = l_argument[1];
@@ -92,8 +96,8 @@ g_xmlhttp.onreadystatechange = function() {
 	}
 }
 
-function performTrans(p_objParm) {
-	var l_requestText = JSON.stringify(p_objParm);
+function performTrans(p_json_parm) {
+	var l_requestText = JSON.stringify(p_json_parm);
 	g_xmlhttp.open('POST','CubeTestServer.php',true);
 //	g_xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 	g_xmlhttp.send(l_requestText);
@@ -101,21 +105,20 @@ function performTrans(p_objParm) {
 
 function InitBody() {
 	var l_json_argument = JSON.parse(decodeURIComponent(location.href.split("?")[1]));
-//	var l_argument = decodeURIComponent(document.location.href).split("<|||>");
 	document.body._FlagDragging = 0;
 	document.body._DraggingId = ' ';
 	document.body._ListBoxCode="Ref000";
 	var l_json_objectKey = l_json_argument.objectId;
-	g_node_id = JSON.stringify(l_json_argument.objectId);
 	switch (l_json_argument.nodeType) {
 	case "D":
+		g_node_id = JSON.stringify(l_json_argument.objectId);
 		document.getElementById("InputFkPrdCode").value=l_json_objectKey.TYP_PRT.FkPrdCode;
 		document.getElementById("InputFkPrdNaam").value=l_json_objectKey.TYP_PRT.FkPrdNaam;
 		document.getElementById("InputCode").value=l_json_objectKey.TYP_PRT.Code;
 		document.getElementById("InputNaam").value=l_json_objectKey.TYP_PRT.Naam;
 		document.getElementById("ButtonCreate").disabled=true;
-		l_objParm = {Service:"GetPrt",Parameters:{Type:l_json_objectKey.TYP_PRT}};
-		performTrans(l_objParm);
+		l_json_parm = {Service:"GetPrt",Parameters:{Type:l_json_objectKey.TYP_PRT}};
+		performTrans(l_json_parm);
 		document.getElementById("InputFkPrdCode").readOnly=true;
 		document.getElementById("InputFkPrdNaam").readOnly=true;
 		document.getElementById("InputFkPrtCode").readOnly=true;
@@ -124,6 +127,7 @@ function InitBody() {
 		document.getElementById("InputNaam").readOnly=true;
 		break;
 	case "N":
+		g_parent_node_id = JSON.stringify(l_json_argument.objectId);
 		document.getElementById("InputFkPrdCode").value=l_json_objectKey.TYP_PRD.Code;
 		document.getElementById("InputFkPrdNaam").value=l_json_objectKey.TYP_PRD.Naam;
 		document.getElementById("ButtonUpdate").disabled=true;
@@ -134,6 +138,7 @@ function InitBody() {
 		document.getElementById("InputFkPrtNaam").readOnly=true;
 		break;  
 	case "R":
+		g_parent_node_id = JSON.stringify(l_json_argument.objectId);
 		document.getElementById("InputFkPrdCode").value=l_json_objectKey.TYP_PRT.Code;
 		document.getElementById("InputFkPrdNaam").value=l_json_objectKey.TYP_PRT.Naam;
 		document.getElementById("InputFkPrtCode").value=l_json_objectKey.TYP_PRT.Code;
@@ -152,23 +157,58 @@ function InitBody() {
 }
 
 function CreatePrt() {
-	var l_json_type = {Type:{FkPrdCode:document.getElementById("InputFkPrdCode").value,FkPrdNaam:document.getElementById("InputFkPrdNaam").value,FkPrtCode:document.getElementById("InputFkPrtCode").value,FkPrtNaam:document.getElementById("InputFkPrtNaam").value,Code:document.getElementById("InputCode").value,Naam:document.getElementById("InputNaam").value,Omschrijving:document.getElementById("InputOmschrijving").value,XfPrtPrdCode:document.getElementById("InputXfPrtPrdCode").value,XfPrtPrdNaam:document.getElementById("InputXfPrtPrdNaam").value,XkPrtCode:document.getElementById("InputXkPrtCode").value,XkPrtNaam:document.getElementById("InputXkPrtNaam").value}};
+	var l_json_type = {
+		Type: {
+			FkPrdCode:document.getElementById("InputFkPrdCode").value,
+			FkPrdNaam:document.getElementById("InputFkPrdNaam").value,
+			FkPrtCode:document.getElementById("InputFkPrtCode").value,
+			FkPrtNaam:document.getElementById("InputFkPrtNaam").value,
+			Code:document.getElementById("InputCode").value,
+			Naam:document.getElementById("InputNaam").value,
+			Omschrijving:document.getElementById("InputOmschrijving").value,
+			XfPrtPrdCode:document.getElementById("InputXfPrtPrdCode").value,
+			XfPrtPrdNaam:document.getElementById("InputXfPrtPrdNaam").value,
+			XkPrtCode:document.getElementById("InputXkPrtCode").value,
+			XkPrtNaam:document.getElementById("InputXkPrtNaam").value
+		}
+	};
 	performTrans( {Service:"CreatePrt",Parameters:l_json_type} );
 }
 
 function UpdatePrt() {
-	var l_json_type = {Type:{FkPrdCode:document.getElementById("InputFkPrdCode").value,FkPrdNaam:document.getElementById("InputFkPrdNaam").value,FkPrtCode:document.getElementById("InputFkPrtCode").value,FkPrtNaam:document.getElementById("InputFkPrtNaam").value,Code:document.getElementById("InputCode").value,Naam:document.getElementById("InputNaam").value,Omschrijving:document.getElementById("InputOmschrijving").value,XfPrtPrdCode:document.getElementById("InputXfPrtPrdCode").value,XfPrtPrdNaam:document.getElementById("InputXfPrtPrdNaam").value,XkPrtCode:document.getElementById("InputXkPrtCode").value,XkPrtNaam:document.getElementById("InputXkPrtNaam").value}};;
+	var l_json_type = {
+		Type: {
+			FkPrdCode:document.getElementById("InputFkPrdCode").value,
+			FkPrdNaam:document.getElementById("InputFkPrdNaam").value,
+			FkPrtCode:document.getElementById("InputFkPrtCode").value,
+			FkPrtNaam:document.getElementById("InputFkPrtNaam").value,
+			Code:document.getElementById("InputCode").value,
+			Naam:document.getElementById("InputNaam").value,
+			Omschrijving:document.getElementById("InputOmschrijving").value,
+			XfPrtPrdCode:document.getElementById("InputXfPrtPrdCode").value,
+			XfPrtPrdNaam:document.getElementById("InputXfPrtPrdNaam").value,
+			XkPrtCode:document.getElementById("InputXkPrtCode").value,
+			XkPrtNaam:document.getElementById("InputXkPrtNaam").value
+		}
+	};
 	performTrans( {Service:"UpdatePrt",Parameters:l_json_type} );
 }
 
 function DeletePrt() {
-	var l_json_type = {Type:{FkPrdCode:document.getElementById("InputFkPrdCode").value,FkPrdNaam:document.getElementById("InputFkPrdNaam").value,Code:document.getElementById("InputCode").value,Naam:document.getElementById("InputNaam").value}};;
+	var l_json_type = {
+		Type: {
+			FkPrdCode:document.getElementById("InputFkPrdCode").value,
+			FkPrdNaam:document.getElementById("InputFkPrdNaam").value,
+			Code:document.getElementById("InputCode").value,
+			Naam:document.getElementById("InputNaam").value
+		}
+	};
 	performTrans( {Service:"DeletePrt",Parameters:l_json_type} );
 }
 
-function OpenListBox(p_rows,p_icon,p_header,p_optional) {
+function OpenListBox(p_json_rows,p_icon,p_header,p_optional) {
 	CloseListBox();
-	if (p_rows.length > 1) {
+	if (p_json_rows.length > 1) {
 
 		var l_objDiv = document.createElement('DIV');
 		var l_objTable = document.createElement('TABLE');
@@ -211,7 +251,7 @@ function OpenListBox(p_rows,p_icon,p_header,p_optional) {
 		l_objCell_1_0.colSpan = '2';
 
 
-		l_objSelect.size = Math.min(p_rows.length-1,16)
+		l_objSelect.size = Math.min(p_json_rows.length-1,16)
 		l_objSelect.onclick = function(){UpdateForeignKey(this)};
 
 		if (p_optional == 'Y') {
@@ -222,14 +262,11 @@ function OpenListBox(p_rows,p_icon,p_header,p_optional) {
 			l_objOption.innerHTML = '';
 		}
 
-		for (ir in p_rows) {
-			if (ir > 0) {
-				var l_rowpart = p_rows[ir].split("<||>");
-				var l_objOption = document.createElement('OPTION');
-				l_objSelect.appendChild(l_objOption);
-				l_objOption.value = l_rowpart[0];
-				l_objOption.innerHTML = l_rowpart[1].toLowerCase();
-			}
+		for (ir in p_json_rows) {
+			var l_objOption = document.createElement('OPTION');
+			l_objSelect.appendChild(l_objOption);
+			l_objOption.value = JSON.stringify(p_json_rows[ir].Key); 
+			l_objOption.innerHTML = p_json_rows[ir].Display.toLowerCase();
 		}
 	} else {
 		alert ("No Items Found");
@@ -242,29 +279,31 @@ function CloseListBox() {
 }
 
 function UpdateForeignKey(p_obj) {
-	var l_obj_option = p_obj.options[p_obj.selectedIndex];
-	var l_values = l_obj_option.value.split("<|>");
+	var l_values = p_obj.options[p_obj.selectedIndex].value;
+	if (l_values != '') {
+		var l_json_values = JSON.parse(l_values);
+	}
 	switch (document.body._ListBoxCode){
 	case "Ref001":
-		if (l_obj_option.value == '') {
+		if (l_values == '') {
 			document.getElementById("InputXfPrtPrdCode").value = '';
 		} else {
-			document.getElementById("InputXfPrtPrdCode").value = l_values[0];
+			document.getElementById("InputXfPrtPrdCode").value = l_json_values.FkPrdCode;
 		}
-		if (l_obj_option.value == '') {
+		if (l_values == '') {
 			document.getElementById("InputXfPrtPrdNaam").value = '';
 		} else {
-			document.getElementById("InputXfPrtPrdNaam").value = l_values[1];
+			document.getElementById("InputXfPrtPrdNaam").value = l_json_values.FkPrdNaam;
 		}
-		if (l_obj_option.value == '') {
+		if (l_values == '') {
 			document.getElementById("InputXkPrtCode").value = '';
 		} else {
-			document.getElementById("InputXkPrtCode").value = l_values[2];
+			document.getElementById("InputXkPrtCode").value = l_json_values.Code;
 		}
-		if (l_obj_option.value == '') {
+		if (l_values == '') {
 			document.getElementById("InputXkPrtNaam").value = '';
 		} else {
-			document.getElementById("InputXkPrtNaam").value = l_values[3];
+			document.getElementById("InputXkPrtNaam").value = l_json_values.Naam;
 		}
 		break;
 	default:
@@ -277,12 +316,17 @@ function StartSelect001(p_event) {
 	document.body._SelectLeft = p_event.clientX;
 	document.body._SelectTop = p_event.clientY;
 	document.body._ListBoxCode = 'Ref001';
-	var l_parameters = 
-		document.getElementById("InputFkPrdCode").value+'<|>'+
-		document.getElementById("InputFkPrdNaam").value+'<|>'+
-		document.getElementById("InputFkPrdCode").value+'<|>'+
-		document.getElementById("InputFkPrdNaam").value;
-	performTrans('GetPrtForPrdListEncapsulated<|||>'+l_parameters);
+	var l_json_parms = {
+		Type: {
+			FkPrdCode:document.getElementById("InputFkPrdCode").value,
+			FkPrdNaam:document.getElementById("InputFkPrdNaam").value
+		},
+		Ref: {
+			FkPrdCode:document.getElementById("InputFkPrdCode").value,
+			FkPrdNaam:document.getElementById("InputFkPrdNaam").value
+		}
+	};
+	performTrans( {Service:"GetPrtForPrdListEncapsulated",Parameters:'+l_json_parms} );
 }
 
 function OpenDescBox(p_icon,p_name,p_type,p_attribute_type,p_sequence) {
@@ -355,7 +399,6 @@ function ToUpperCase(p_obj)
 function ReplaceSpaces(p_obj) 
 {
 	p_obj.value = p_obj.value.replace(/^\s+|\s+$/g, "").replace(/ /g ,"_");
-
 }
 
 function StartMove(p_event) {

@@ -6,9 +6,10 @@ $_SESSION['views']=0;
 <link rel="stylesheet" href="base_css.php" />
 <script language='javascript' type='text/javascript'>
 <!--
-var g_option;
-var g_json_option;
-var g_node_id;
+var g_option = null;
+var g_json_option = null;
+var g_parent_node_id = null;
+var g_node_id = null;
 
 var g_xmlhttp = new XMLHttpRequest();
 g_xmlhttp.onreadystatechange = function() {
@@ -34,18 +35,17 @@ g_xmlhttp.onreadystatechange = function() {
 						document.getElementById("ButtonCreate").disabled=true;
 						document.getElementById("ButtonUpdate").disabled=false;
 						document.getElementById("ButtonDelete").disabled=false;
-						var l_objNode = parent.document.getElementById(g_node_id);
+						var l_objNode = parent.document.getElementById(g_parent_node_id);
 						var l_json_node_id = {Naam:document.getElementById("InputNaam").value};
 						g_node_id = '{"TYP_AAA":'+JSON.stringify(l_json_node_id)+'}';
 						if (l_objNode != null) {
 							if (l_objNode.firstChild._state == 'O') {
-								var l_json_objectKey = l_json_array[i].Rows[0].Key;
-								if (l_json_objectKey == null) {
+								if (l_json_array[i].Rows.length == 0) {
 									var l_position = 'L';
 									l_objNodePos = null;
 								} else {
 									var l_position = 'B';
-									var l_objNodePos = parent.document.getElementById('{"TYP_AAA":'+JSON.stringify(l_json_objectKey)+'}');
+									var l_objNodePos = parent.document.getElementById('{"TYP_AAA":'+JSON.stringify(l_json_array[i].Rows[0].Key)+'}');
 								}
 								parent.AddTreeviewNode(
 									l_objNode,
@@ -62,16 +62,19 @@ g_xmlhttp.onreadystatechange = function() {
 					case "UPDATE_AAA":
 						break;
 					case "DELETE_AAA":
+						document.getElementById("ButtonCreate").disabled=false;
 						document.getElementById("ButtonUpdate").disabled=true;
 						document.getElementById("ButtonDelete").disabled=true;
 						var l_objNode = parent.document.getElementById(g_node_id);
+						if (g_parent_node_id == null) {
+							g_parent_node_id = l_objNode.parentNode.parentNode.id;
+						} 
 						if (l_objNode != null) {
-							l_objNode = l_objNode;
 							l_objNode.parentNode.removeChild(l_objNode);
 						}
 						break;
 					case "LIST_AAA":
-						OpenListBox(l_argument,'produkt','Aaa','Y');
+						OpenListBox(l_json_array[i].Rows,'produkt','Aaa','Y');
 						break;
 					case "SELECT_CUBE_DSC":
 						document.getElementById("CubeDesc").value = l_argument[1];
@@ -90,8 +93,8 @@ g_xmlhttp.onreadystatechange = function() {
 	}
 }
 
-function performTrans(p_objParm) {
-	var l_requestText = JSON.stringify(p_objParm);
+function performTrans(p_json_parm) {
+	var l_requestText = JSON.stringify(p_json_parm);
 	g_xmlhttp.open('POST','CubeTestServer.php',true);
 //	g_xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 	g_xmlhttp.send(l_requestText);
@@ -99,29 +102,30 @@ function performTrans(p_objParm) {
 
 function InitBody() {
 	var l_json_argument = JSON.parse(decodeURIComponent(location.href.split("?")[1]));
-//	var l_argument = decodeURIComponent(document.location.href).split("<|||>");
 	document.body._FlagDragging = 0;
 	document.body._DraggingId = ' ';
 	document.body._ListBoxCode="Ref000";
 	var l_json_objectKey = l_json_argument.objectId;
-	g_node_id = JSON.stringify(l_json_argument.objectId);
 	switch (l_json_argument.nodeType) {
 	case "D":
+		g_node_id = JSON.stringify(l_json_argument.objectId);
 		document.getElementById("InputNaam").value=l_json_objectKey.TYP_AAA.Naam;
 		document.getElementById("ButtonCreate").disabled=true;
-		l_objParm = {Service:"GetAaa",Parameters:{Type:l_json_objectKey.TYP_AAA}};
-		performTrans(l_objParm);
+		l_json_parm = {Service:"GetAaa",Parameters:{Type:l_json_objectKey.TYP_AAA}};
+		performTrans(l_json_parm);
 		document.getElementById("InputFkAaaNaam").readOnly=true;
 		document.getElementById("InputNaam").readOnly=true;
 		document.getElementById("InputXkAaaNaam").readOnly=true;
 		document.getElementById("RefSelect001").disabled=true;
 		break;
 	case "N":
+		g_parent_node_id = JSON.stringify(l_json_argument.objectId);
 		document.getElementById("ButtonUpdate").disabled=true;
 		document.getElementById("ButtonDelete").disabled=true;
 		document.getElementById("InputFkAaaNaam").readOnly=true;
 		break;  
 	case "R":
+		g_parent_node_id = JSON.stringify(l_json_argument.objectId);
 		document.getElementById("InputFkAaaNaam").value=l_json_objectKey.TYP_AAA.Naam;
 		document.getElementById("ButtonUpdate").disabled=true;
 		document.getElementById("ButtonDelete").disabled=true;
@@ -134,23 +138,41 @@ function InitBody() {
 }
 
 function CreateAaa() {
-	var l_json_type = {Type:{FkAaaNaam:document.getElementById("InputFkAaaNaam").value,Naam:document.getElementById("InputNaam").value,Omschrijving:document.getElementById("InputOmschrijving").value,XkAaaNaam:document.getElementById("InputXkAaaNaam").value}};
+	var l_json_type = {
+		Type: {
+			FkAaaNaam:document.getElementById("InputFkAaaNaam").value,
+			Naam:document.getElementById("InputNaam").value,
+			Omschrijving:document.getElementById("InputOmschrijving").value,
+			XkAaaNaam:document.getElementById("InputXkAaaNaam").value
+		}
+	};
 	performTrans( {Service:"CreateAaa",Parameters:l_json_type} );
 }
 
 function UpdateAaa() {
-	var l_json_type = {Type:{FkAaaNaam:document.getElementById("InputFkAaaNaam").value,Naam:document.getElementById("InputNaam").value,Omschrijving:document.getElementById("InputOmschrijving").value,XkAaaNaam:document.getElementById("InputXkAaaNaam").value}};;
+	var l_json_type = {
+		Type: {
+			FkAaaNaam:document.getElementById("InputFkAaaNaam").value,
+			Naam:document.getElementById("InputNaam").value,
+			Omschrijving:document.getElementById("InputOmschrijving").value,
+			XkAaaNaam:document.getElementById("InputXkAaaNaam").value
+		}
+	};
 	performTrans( {Service:"UpdateAaa",Parameters:l_json_type} );
 }
 
 function DeleteAaa() {
-	var l_json_type = {Type:{Naam:document.getElementById("InputNaam").value}};;
+	var l_json_type = {
+		Type: {
+			Naam:document.getElementById("InputNaam").value
+		}
+	};
 	performTrans( {Service:"DeleteAaa",Parameters:l_json_type} );
 }
 
-function OpenListBox(p_rows,p_icon,p_header,p_optional) {
+function OpenListBox(p_json_rows,p_icon,p_header,p_optional) {
 	CloseListBox();
-	if (p_rows.length > 1) {
+	if (p_json_rows.length > 1) {
 
 		var l_objDiv = document.createElement('DIV');
 		var l_objTable = document.createElement('TABLE');
@@ -193,7 +215,7 @@ function OpenListBox(p_rows,p_icon,p_header,p_optional) {
 		l_objCell_1_0.colSpan = '2';
 
 
-		l_objSelect.size = Math.min(p_rows.length-1,16)
+		l_objSelect.size = Math.min(p_json_rows.length-1,16)
 		l_objSelect.onclick = function(){UpdateForeignKey(this)};
 
 		if (p_optional == 'Y') {
@@ -204,14 +226,11 @@ function OpenListBox(p_rows,p_icon,p_header,p_optional) {
 			l_objOption.innerHTML = '';
 		}
 
-		for (ir in p_rows) {
-			if (ir > 0) {
-				var l_rowpart = p_rows[ir].split("<||>");
-				var l_objOption = document.createElement('OPTION');
-				l_objSelect.appendChild(l_objOption);
-				l_objOption.value = l_rowpart[0];
-				l_objOption.innerHTML = l_rowpart[1].toLowerCase();
-			}
+		for (ir in p_json_rows) {
+			var l_objOption = document.createElement('OPTION');
+			l_objSelect.appendChild(l_objOption);
+			l_objOption.value = JSON.stringify(p_json_rows[ir].Key); 
+			l_objOption.innerHTML = p_json_rows[ir].Display.toLowerCase();
 		}
 	} else {
 		alert ("No Items Found");
@@ -224,14 +243,16 @@ function CloseListBox() {
 }
 
 function UpdateForeignKey(p_obj) {
-	var l_obj_option = p_obj.options[p_obj.selectedIndex];
-	var l_values = l_obj_option.value.split("<|>");
+	var l_values = p_obj.options[p_obj.selectedIndex].value;
+	if (l_values != '') {
+		var l_json_values = JSON.parse(l_values);
+	}
 	switch (document.body._ListBoxCode){
 	case "Ref001":
-		if (l_obj_option.value == '') {
+		if (l_values == '') {
 			document.getElementById("InputXkAaaNaam").value = '';
 		} else {
-			document.getElementById("InputXkAaaNaam").value = l_values[0];
+			document.getElementById("InputXkAaaNaam").value = l_json_values.Naam;
 		}
 		break;
 	default:
@@ -244,7 +265,7 @@ function StartSelect001(p_event) {
 	document.body._SelectLeft = p_event.clientX;
 	document.body._SelectTop = p_event.clientY;
 	document.body._ListBoxCode = 'Ref001';
-	performTrans('GetAaaListAll');
+	performTrans( {Service:"GetAaaListAll"} );
 }
 
 function OpenDescBox(p_icon,p_name,p_type,p_attribute_type,p_sequence) {
@@ -317,7 +338,6 @@ function ToUpperCase(p_obj)
 function ReplaceSpaces(p_obj) 
 {
 	p_obj.value = p_obj.value.replace(/^\s+|\s+$/g, "").replace(/ /g ,"_");
-
 }
 
 function StartMove(p_event) {
