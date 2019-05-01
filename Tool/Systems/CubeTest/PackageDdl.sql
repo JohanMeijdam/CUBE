@@ -358,7 +358,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_aaa IS
 		l_cube_sequence NUMBER(8);
 	BEGIN
 		-- A=After B=Before F=First L=Last
-		IF p_cube_pos_action NOT IN ('A', 'B', 'F', 'L') THEN
+		IF NVL (p_cube_pos_action, ' ') NOT IN ('A', 'B', 'F', 'L') THEN
 			RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
 		END IF;
 		determine_position_aad (l_cube_sequence, p_cube_pos_action, x_fk_aaa_naam, x_naam);
@@ -381,7 +381,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_aaa IS
 		l_cube_sequence NUMBER(8);
 	BEGIN
 		-- A=After B=Before F=First L=Last
-		IF p_cube_pos_action NOT IN ('A', 'B', 'F', 'L') THEN
+		IF NVL (p_cube_pos_action, ' ') NOT IN ('A', 'B', 'F', 'L') THEN
 			RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
 		END IF;
 		determine_position_aad (l_cube_sequence, p_cube_pos_action, x_fk_aaa_naam, x_naam);
@@ -792,7 +792,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_ccc IS
 		l_fk_ccc_naam v_ccc.fk_ccc_naam%TYPE;
 	BEGIN
 		-- A=After B=Before F=First L=Last
-		IF p_cube_pos_action NOT IN ('A', 'B', 'F', 'L') THEN
+		IF NVL (p_cube_pos_action, ' ') NOT IN ('A', 'B', 'F', 'L') THEN
 			RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
 		END IF;
 		-- Get parent id of the target.
@@ -833,7 +833,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_ccc IS
 		l_cube_sequence NUMBER(8);
 	BEGIN
 		-- A=After B=Before F=First L=Last
-		IF p_cube_pos_action NOT IN ('A', 'B', 'F', 'L') THEN
+		IF NVL (p_cube_pos_action, ' ') NOT IN ('A', 'B', 'F', 'L') THEN
 			RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
 		END IF;
 		determine_position_ccc (l_cube_sequence, p_cube_pos_action, p_fk_ccc_code, p_fk_ccc_naam, x_code, x_naam);

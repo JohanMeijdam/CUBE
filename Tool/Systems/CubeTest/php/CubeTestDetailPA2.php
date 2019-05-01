@@ -173,63 +173,57 @@ function InitBody() {
 }
 
 function CreatePa2() {
-	var l_json_type = {
-		Type: {
-			FkPrdCode:document.getElementById("InputFkPrdCode").value,
-			FkPrdNaam:document.getElementById("InputFkPrdNaam").value,
-			FkPr2Code:document.getElementById("InputFkPr2Code").value,
-			FkPr2Naam:document.getElementById("InputFkPr2Naam").value,
-			FkPa2Code:document.getElementById("InputFkPa2Code").value,
-			FkPa2Naam:document.getElementById("InputFkPa2Naam").value,
-			Code:document.getElementById("InputCode").value,
-			Naam:document.getElementById("InputNaam").value,
-			Omschrijving:document.getElementById("InputOmschrijving").value,
-			XfPa2PrdCode:document.getElementById("InputXfPa2PrdCode").value,
-			XfPa2PrdNaam:document.getElementById("InputXfPa2PrdNaam").value,
-			XfPa2Pr2Code:document.getElementById("InputXfPa2Pr2Code").value,
-			XfPa2Pr2Naam:document.getElementById("InputXfPa2Pr2Naam").value,
-			XkPa2Code:document.getElementById("InputXkPa2Code").value,
-			XkPa2Naam:document.getElementById("InputXkPa2Naam").value
-		}
+	var Type = {
+		FkPrdCode:document.getElementById("InputFkPrdCode").value,
+		FkPrdNaam:document.getElementById("InputFkPrdNaam").value,
+		FkPr2Code:document.getElementById("InputFkPr2Code").value,
+		FkPr2Naam:document.getElementById("InputFkPr2Naam").value,
+		FkPa2Code:document.getElementById("InputFkPa2Code").value,
+		FkPa2Naam:document.getElementById("InputFkPa2Naam").value,
+		Code:document.getElementById("InputCode").value,
+		Naam:document.getElementById("InputNaam").value,
+		Omschrijving:document.getElementById("InputOmschrijving").value,
+		XfPa2PrdCode:document.getElementById("InputXfPa2PrdCode").value,
+		XfPa2PrdNaam:document.getElementById("InputXfPa2PrdNaam").value,
+		XfPa2Pr2Code:document.getElementById("InputXfPa2Pr2Code").value,
+		XfPa2Pr2Naam:document.getElementById("InputXfPa2Pr2Naam").value,
+		XkPa2Code:document.getElementById("InputXkPa2Code").value,
+		XkPa2Naam:document.getElementById("InputXkPa2Naam").value
 	};
-	performTrans( {Service:"CreatePa2",Parameters:l_json_type} );
+	performTrans( {Service:"CreatePa2",Parameters:{Type}} );
 }
 
 function UpdatePa2() {
-	var l_json_type = {
-		Type: {
-			FkPrdCode:document.getElementById("InputFkPrdCode").value,
-			FkPrdNaam:document.getElementById("InputFkPrdNaam").value,
-			FkPr2Code:document.getElementById("InputFkPr2Code").value,
-			FkPr2Naam:document.getElementById("InputFkPr2Naam").value,
-			FkPa2Code:document.getElementById("InputFkPa2Code").value,
-			FkPa2Naam:document.getElementById("InputFkPa2Naam").value,
-			Code:document.getElementById("InputCode").value,
-			Naam:document.getElementById("InputNaam").value,
-			Omschrijving:document.getElementById("InputOmschrijving").value,
-			XfPa2PrdCode:document.getElementById("InputXfPa2PrdCode").value,
-			XfPa2PrdNaam:document.getElementById("InputXfPa2PrdNaam").value,
-			XfPa2Pr2Code:document.getElementById("InputXfPa2Pr2Code").value,
-			XfPa2Pr2Naam:document.getElementById("InputXfPa2Pr2Naam").value,
-			XkPa2Code:document.getElementById("InputXkPa2Code").value,
-			XkPa2Naam:document.getElementById("InputXkPa2Naam").value
-		}
+	var Type = {
+		FkPrdCode:document.getElementById("InputFkPrdCode").value,
+		FkPrdNaam:document.getElementById("InputFkPrdNaam").value,
+		FkPr2Code:document.getElementById("InputFkPr2Code").value,
+		FkPr2Naam:document.getElementById("InputFkPr2Naam").value,
+		FkPa2Code:document.getElementById("InputFkPa2Code").value,
+		FkPa2Naam:document.getElementById("InputFkPa2Naam").value,
+		Code:document.getElementById("InputCode").value,
+		Naam:document.getElementById("InputNaam").value,
+		Omschrijving:document.getElementById("InputOmschrijving").value,
+		XfPa2PrdCode:document.getElementById("InputXfPa2PrdCode").value,
+		XfPa2PrdNaam:document.getElementById("InputXfPa2PrdNaam").value,
+		XfPa2Pr2Code:document.getElementById("InputXfPa2Pr2Code").value,
+		XfPa2Pr2Naam:document.getElementById("InputXfPa2Pr2Naam").value,
+		XkPa2Code:document.getElementById("InputXkPa2Code").value,
+		XkPa2Naam:document.getElementById("InputXkPa2Naam").value
 	};
-	performTrans( {Service:"UpdatePa2",Parameters:l_json_type} );
+	performTrans( {Service:"UpdatePa2",Parameters:{Type}} );
 }
 
 function DeletePa2() {
-	var l_json_type = {
-		Type: {
-			FkPrdCode:document.getElementById("InputFkPrdCode").value,
-			FkPrdNaam:document.getElementById("InputFkPrdNaam").value,
-			FkPr2Code:document.getElementById("InputFkPr2Code").value,
-			FkPr2Naam:document.getElementById("InputFkPr2Naam").value,
-			Code:document.getElementById("InputCode").value,
-			Naam:document.getElementById("InputNaam").value
-		}
+	var Type = {
+		FkPrdCode:document.getElementById("InputFkPrdCode").value,
+		FkPrdNaam:document.getElementById("InputFkPrdNaam").value,
+		FkPr2Code:document.getElementById("InputFkPr2Code").value,
+		FkPr2Naam:document.getElementById("InputFkPr2Naam").value,
+		Code:document.getElementById("InputCode").value,
+		Naam:document.getElementById("InputNaam").value
 	};
-	performTrans( {Service:"DeletePa2",Parameters:l_json_type} );
+	performTrans( {Service:"DeletePa2",Parameters:{Type}} );
 }
 
 function OpenListBox(p_json_rows,p_icon,p_header,p_optional) {

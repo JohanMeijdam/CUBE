@@ -124,42 +124,38 @@ function InitBody() {
 }
 
 function CreateAad() {
-	var l_json_type = {
-		Type: {
-			FkAaaNaam:document.getElementById("InputFkAaaNaam").value,
-			Naam:document.getElementById("InputNaam").value,
-			XkAaaNaam:document.getElementById("InputXkAaaNaam").value
-		}
+	var Type = {
+		FkAaaNaam:document.getElementById("InputFkAaaNaam").value,
+		Naam:document.getElementById("InputNaam").value,
+		XkAaaNaam:document.getElementById("InputXkAaaNaam").value
 	};
 	var l_pos_action = g_json_option.Code;
-	var l_json_option_code = {Option:{CubePosAction:l_pos_action}};
+	var Option = {
+		CubePosAction:l_pos_action
+	};
 	if (l_pos_action == 'F' || l_pos_action == 'L') {
-		performTrans( {Service:"CreateAad",Parameters:l_json_option_code,l_json_type} );
+		performTrans( {Service:"CreateAad",Parameters:{Option,Type}} );
 	} else {
-		var l_json_ref = {Ref:g_json_option.Type};
-		performTrans( {Service:"CreateAad",Parameters:l_json_option_code,l_json_type,l_json_ref} );
+		var Ref = g_json_option.Type;
+		performTrans( {Service:"CreateAad",Parameters:{Option,Type,Ref}} );
 	}
 }
 
 function UpdateAad() {
-	var l_json_type = {
-		Type: {
-			FkAaaNaam:document.getElementById("InputFkAaaNaam").value,
-			Naam:document.getElementById("InputNaam").value,
-			XkAaaNaam:document.getElementById("InputXkAaaNaam").value
-		}
+	var Type = {
+		FkAaaNaam:document.getElementById("InputFkAaaNaam").value,
+		Naam:document.getElementById("InputNaam").value,
+		XkAaaNaam:document.getElementById("InputXkAaaNaam").value
 	};
-	performTrans( {Service:"UpdateAad",Parameters:l_json_type} );
+	performTrans( {Service:"UpdateAad",Parameters:{Type}} );
 }
 
 function DeleteAad() {
-	var l_json_type = {
-		Type: {
-			FkAaaNaam:document.getElementById("InputFkAaaNaam").value,
-			Naam:document.getElementById("InputNaam").value
-		}
+	var Type = {
+		FkAaaNaam:document.getElementById("InputFkAaaNaam").value,
+		Naam:document.getElementById("InputNaam").value
 	};
-	performTrans( {Service:"DeleteAad",Parameters:l_json_type} );
+	performTrans( {Service:"DeleteAad",Parameters:{Type}} );
 }
 
 function OpenListBox(p_json_rows,p_icon,p_header,p_optional) {

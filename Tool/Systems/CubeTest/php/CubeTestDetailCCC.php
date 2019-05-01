@@ -142,50 +142,46 @@ function InitBody() {
 }
 
 function CreateCcc() {
-	var l_json_type = {
-		Type: {
-			FkCccCode:document.getElementById("InputFkCccCode").value,
-			FkCccNaam:document.getElementById("InputFkCccNaam").value,
-			Code:document.getElementById("InputCode").value,
-			Naam:document.getElementById("InputNaam").value,
-			Omschrjving:document.getElementById("InputOmschrjving").value,
-			XkCccCode:document.getElementById("InputXkCccCode").value,
-			XkCccNaam:document.getElementById("InputXkCccNaam").value
-		}
+	var Type = {
+		FkCccCode:document.getElementById("InputFkCccCode").value,
+		FkCccNaam:document.getElementById("InputFkCccNaam").value,
+		Code:document.getElementById("InputCode").value,
+		Naam:document.getElementById("InputNaam").value,
+		Omschrjving:document.getElementById("InputOmschrjving").value,
+		XkCccCode:document.getElementById("InputXkCccCode").value,
+		XkCccNaam:document.getElementById("InputXkCccNaam").value
 	};
 	var l_pos_action = g_json_option.Code;
-	var l_json_option_code = {Option:{CubePosAction:l_pos_action}};
+	var Option = {
+		CubePosAction:l_pos_action
+	};
 	if (l_pos_action == 'F' || l_pos_action == 'L') {
-		performTrans( {Service:"CreateCcc",Parameters:l_json_option_code,l_json_type} );
+		performTrans( {Service:"CreateCcc",Parameters:{Option,Type}} );
 	} else {
-		var l_json_ref = {Ref:g_json_option.Type};
-		performTrans( {Service:"CreateCcc",Parameters:l_json_option_code,l_json_type,l_json_ref} );
+		var Ref = g_json_option.Type;
+		performTrans( {Service:"CreateCcc",Parameters:{Option,Type,Ref}} );
 	}
 }
 
 function UpdateCcc() {
-	var l_json_type = {
-		Type: {
-			FkCccCode:document.getElementById("InputFkCccCode").value,
-			FkCccNaam:document.getElementById("InputFkCccNaam").value,
-			Code:document.getElementById("InputCode").value,
-			Naam:document.getElementById("InputNaam").value,
-			Omschrjving:document.getElementById("InputOmschrjving").value,
-			XkCccCode:document.getElementById("InputXkCccCode").value,
-			XkCccNaam:document.getElementById("InputXkCccNaam").value
-		}
+	var Type = {
+		FkCccCode:document.getElementById("InputFkCccCode").value,
+		FkCccNaam:document.getElementById("InputFkCccNaam").value,
+		Code:document.getElementById("InputCode").value,
+		Naam:document.getElementById("InputNaam").value,
+		Omschrjving:document.getElementById("InputOmschrjving").value,
+		XkCccCode:document.getElementById("InputXkCccCode").value,
+		XkCccNaam:document.getElementById("InputXkCccNaam").value
 	};
-	performTrans( {Service:"UpdateCcc",Parameters:l_json_type} );
+	performTrans( {Service:"UpdateCcc",Parameters:{Type}} );
 }
 
 function DeleteCcc() {
-	var l_json_type = {
-		Type: {
-			Code:document.getElementById("InputCode").value,
-			Naam:document.getElementById("InputNaam").value
-		}
+	var Type = {
+		Code:document.getElementById("InputCode").value,
+		Naam:document.getElementById("InputNaam").value
 	};
-	performTrans( {Service:"DeleteCcc",Parameters:l_json_type} );
+	performTrans( {Service:"DeleteCcc",Parameters:{Type}} );
 }
 
 function OpenListBox(p_json_rows,p_icon,p_header,p_optional) {

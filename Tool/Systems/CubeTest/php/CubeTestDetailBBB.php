@@ -123,36 +123,30 @@ function InitBody() {
 }
 
 function CreateBbb() {
-	var l_json_type = {
-		Type: {
-			Naam:document.getElementById("InputNaam").value,
-			Omschrijving:document.getElementById("InputOmschrijving").value,
-			XkAaaNaam:document.getElementById("InputXkAaaNaam").value,
-			XkBbbNaam1:document.getElementById("InputXkBbbNaam1").value
-		}
+	var Type = {
+		Naam:document.getElementById("InputNaam").value,
+		Omschrijving:document.getElementById("InputOmschrijving").value,
+		XkAaaNaam:document.getElementById("InputXkAaaNaam").value,
+		XkBbbNaam1:document.getElementById("InputXkBbbNaam1").value
 	};
-	performTrans( {Service:"CreateBbb",Parameters:l_json_type} );
+	performTrans( {Service:"CreateBbb",Parameters:{Type}} );
 }
 
 function UpdateBbb() {
-	var l_json_type = {
-		Type: {
-			Naam:document.getElementById("InputNaam").value,
-			Omschrijving:document.getElementById("InputOmschrijving").value,
-			XkAaaNaam:document.getElementById("InputXkAaaNaam").value,
-			XkBbbNaam1:document.getElementById("InputXkBbbNaam1").value
-		}
+	var Type = {
+		Naam:document.getElementById("InputNaam").value,
+		Omschrijving:document.getElementById("InputOmschrijving").value,
+		XkAaaNaam:document.getElementById("InputXkAaaNaam").value,
+		XkBbbNaam1:document.getElementById("InputXkBbbNaam1").value
 	};
-	performTrans( {Service:"UpdateBbb",Parameters:l_json_type} );
+	performTrans( {Service:"UpdateBbb",Parameters:{Type}} );
 }
 
 function DeleteBbb() {
-	var l_json_type = {
-		Type: {
-			Naam:document.getElementById("InputNaam").value
-		}
+	var Type = {
+		Naam:document.getElementById("InputNaam").value
 	};
-	performTrans( {Service:"DeleteBbb",Parameters:l_json_type} );
+	performTrans( {Service:"DeleteBbb",Parameters:{Type}} );
 }
 
 function OpenListBox(p_json_rows,p_icon,p_header,p_optional) {

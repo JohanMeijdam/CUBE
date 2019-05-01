@@ -128,41 +128,35 @@ function InitBody() {
 }
 
 function CreatePr2() {
-	var l_json_type = {
-		Type: {
-			FkPrdCode:document.getElementById("InputFkPrdCode").value,
-			FkPrdNaam:document.getElementById("InputFkPrdNaam").value,
-			Code:document.getElementById("InputCode").value,
-			Naam:document.getElementById("InputNaam").value,
-			Omschrijving:document.getElementById("InputOmschrijving").value
-		}
+	var Type = {
+		FkPrdCode:document.getElementById("InputFkPrdCode").value,
+		FkPrdNaam:document.getElementById("InputFkPrdNaam").value,
+		Code:document.getElementById("InputCode").value,
+		Naam:document.getElementById("InputNaam").value,
+		Omschrijving:document.getElementById("InputOmschrijving").value
 	};
-	performTrans( {Service:"CreatePr2",Parameters:l_json_type} );
+	performTrans( {Service:"CreatePr2",Parameters:{Type}} );
 }
 
 function UpdatePr2() {
-	var l_json_type = {
-		Type: {
-			FkPrdCode:document.getElementById("InputFkPrdCode").value,
-			FkPrdNaam:document.getElementById("InputFkPrdNaam").value,
-			Code:document.getElementById("InputCode").value,
-			Naam:document.getElementById("InputNaam").value,
-			Omschrijving:document.getElementById("InputOmschrijving").value
-		}
+	var Type = {
+		FkPrdCode:document.getElementById("InputFkPrdCode").value,
+		FkPrdNaam:document.getElementById("InputFkPrdNaam").value,
+		Code:document.getElementById("InputCode").value,
+		Naam:document.getElementById("InputNaam").value,
+		Omschrijving:document.getElementById("InputOmschrijving").value
 	};
-	performTrans( {Service:"UpdatePr2",Parameters:l_json_type} );
+	performTrans( {Service:"UpdatePr2",Parameters:{Type}} );
 }
 
 function DeletePr2() {
-	var l_json_type = {
-		Type: {
-			FkPrdCode:document.getElementById("InputFkPrdCode").value,
-			FkPrdNaam:document.getElementById("InputFkPrdNaam").value,
-			Code:document.getElementById("InputCode").value,
-			Naam:document.getElementById("InputNaam").value
-		}
+	var Type = {
+		FkPrdCode:document.getElementById("InputFkPrdCode").value,
+		FkPrdNaam:document.getElementById("InputFkPrdNaam").value,
+		Code:document.getElementById("InputCode").value,
+		Naam:document.getElementById("InputNaam").value
 	};
-	performTrans( {Service:"DeletePr2",Parameters:l_json_type} );
+	performTrans( {Service:"DeletePr2",Parameters:{Type}} );
 }
 
 function OpenDescBox(p_icon,p_name,p_type,p_attribute_type,p_sequence) {

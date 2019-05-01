@@ -124,41 +124,35 @@ function InitBody() {
 }
 
 function CreatePrd() {
-	var l_json_type = {
-		Type: {
-			CubeTsgZzz:document.getElementById("InputCubeTsgZzz").value,
-			CubeTsgYyy:document.getElementById("InputCubeTsgYyy").value,
-			Code:document.getElementById("InputCode").value,
-			Naam:document.getElementById("InputNaam").value,
-			Datum:document.getElementById("InputDatum").value,
-			Omschrijving:document.getElementById("InputOmschrijving").value
-		}
+	var Type = {
+		CubeTsgZzz:document.getElementById("InputCubeTsgZzz").value,
+		CubeTsgYyy:document.getElementById("InputCubeTsgYyy").value,
+		Code:document.getElementById("InputCode").value,
+		Naam:document.getElementById("InputNaam").value,
+		Datum:document.getElementById("InputDatum").value,
+		Omschrijving:document.getElementById("InputOmschrijving").value
 	};
-	performTrans( {Service:"CreatePrd",Parameters:l_json_type} );
+	performTrans( {Service:"CreatePrd",Parameters:{Type}} );
 }
 
 function UpdatePrd() {
-	var l_json_type = {
-		Type: {
-			CubeTsgZzz:document.getElementById("InputCubeTsgZzz").value,
-			CubeTsgYyy:document.getElementById("InputCubeTsgYyy").value,
-			Code:document.getElementById("InputCode").value,
-			Naam:document.getElementById("InputNaam").value,
-			Datum:document.getElementById("InputDatum").value,
-			Omschrijving:document.getElementById("InputOmschrijving").value
-		}
+	var Type = {
+		CubeTsgZzz:document.getElementById("InputCubeTsgZzz").value,
+		CubeTsgYyy:document.getElementById("InputCubeTsgYyy").value,
+		Code:document.getElementById("InputCode").value,
+		Naam:document.getElementById("InputNaam").value,
+		Datum:document.getElementById("InputDatum").value,
+		Omschrijving:document.getElementById("InputOmschrijving").value
 	};
-	performTrans( {Service:"UpdatePrd",Parameters:l_json_type} );
+	performTrans( {Service:"UpdatePrd",Parameters:{Type}} );
 }
 
 function DeletePrd() {
-	var l_json_type = {
-		Type: {
-			Code:document.getElementById("InputCode").value,
-			Naam:document.getElementById("InputNaam").value
-		}
+	var Type = {
+		Code:document.getElementById("InputCode").value,
+		Naam:document.getElementById("InputNaam").value
 	};
-	performTrans( {Service:"DeletePrd",Parameters:l_json_type} );
+	performTrans( {Service:"DeletePrd",Parameters:{Type}} );
 }
 
 function OpenDescBox(p_icon,p_name,p_type,p_attribute_type,p_sequence) {

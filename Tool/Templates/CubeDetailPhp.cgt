@@ -205,38 +205,34 @@ function InitBody() {
 }
 
 function Create<<TYPE1:C>>() {
-	var l_json_type = {
-		Type: {[[LOOP,ATTRIBUTE:!CHILD(DERIVATION)]]
-			<<ATTRIBUTE:C>>:document.getElementById("Input<<ATTRIBUTE:C>>").value[[IF:!LAST]],[[ENDIF]][[ENDLOOP,ATTRIBUTE]]
-		}
+	var Type = {[[LOOP,ATTRIBUTE:!CHILD(DERIVATION)]]
+		<<ATTRIBUTE:C>>:document.getElementById("Input<<ATTRIBUTE:C>>").value[[IF:!LAST]],[[ENDIF]][[ENDLOOP,ATTRIBUTE]]
 	};[[IF:6=P]]
 	var l_pos_action = g_json_option.Code;
-	var l_json_option_code = {Option:{CubePosAction:l_pos_action}};
+	var Option = {
+		CubePosAction:l_pos_action
+	};
 	if (l_pos_action == 'F' || l_pos_action == 'L') {
-		performTrans( {Service:"Create<<TYPE1:C>>",Parameters:l_json_option_code,l_json_type} );
+		performTrans( {Service:"Create<<TYPE1:C>>",Parameters:{Option,Type}} );
 	} else {
-		var l_json_ref = {Ref:g_json_option.Type};
-		performTrans( {Service:"Create<<TYPE1:C>>",Parameters:l_json_option_code,l_json_type,l_json_ref} );
+		var Ref = g_json_option.Type;
+		performTrans( {Service:"Create<<TYPE1:C>>",Parameters:{Option,Type,Ref}} );
 	}[[ELSE]]
-	performTrans( {Service:"Create<<TYPE1:C>>",Parameters:l_json_type} );[[ENDIF]]
+	performTrans( {Service:"Create<<TYPE1:C>>",Parameters:{Type}} );[[ENDIF]]
 }[[IF:CHILD(ATTRIBUTE:1=N)]]
 
 function Update<<TYPE1:C>>() {
-	var l_json_type = {
-		Type: {[[LOOP,ATTRIBUTE:1=Y[OR]!CHILD(DERIVATION)]]
-			<<ATTRIBUTE:C>>:document.getElementById("Input<<ATTRIBUTE:C>>").value[[IF:!LAST]],[[ENDIF]][[ENDLOOP,ATTRIBUTE]]
-		}
+	var Type = {[[LOOP,ATTRIBUTE:1=Y[OR]!CHILD(DERIVATION)]]
+		<<ATTRIBUTE:C>>:document.getElementById("Input<<ATTRIBUTE:C>>").value[[IF:!LAST]],[[ENDIF]][[ENDLOOP,ATTRIBUTE]]
 	};
-	performTrans( {Service:"Update<<TYPE1:C>>",Parameters:l_json_type} );
+	performTrans( {Service:"Update<<TYPE1:C>>",Parameters:{Type}} );
 }[[ENDIF]]
 
 function Delete<<TYPE1:C>>() {
-	var l_json_type = {
-		Type: {[[LOOP,ATTRIBUTE:1=Y]]
-			<<ATTRIBUTE:C>>:document.getElementById("Input<<ATTRIBUTE:C>>").value[[IF:!LAST]],[[ENDIF]][[ENDLOOP,ATTRIBUTE]]
-		}
+	var Type = {[[LOOP,ATTRIBUTE:1=Y]]
+		<<ATTRIBUTE:C>>:document.getElementById("Input<<ATTRIBUTE:C>>").value[[IF:!LAST]],[[ENDIF]][[ENDLOOP,ATTRIBUTE]]
 	};
-	performTrans( {Service:"Delete<<TYPE1:C>>",Parameters:l_json_type} );
+	performTrans( {Service:"Delete<<TYPE1:C>>",Parameters:{Type}} );
 }[[IF:CHILD(REFERENCE)]]
 
 function OpenListBox(p_json_rows,p_icon,p_header,p_optional) {

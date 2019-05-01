@@ -157,53 +157,47 @@ function InitBody() {
 }
 
 function CreatePrt() {
-	var l_json_type = {
-		Type: {
-			FkPrdCode:document.getElementById("InputFkPrdCode").value,
-			FkPrdNaam:document.getElementById("InputFkPrdNaam").value,
-			FkPrtCode:document.getElementById("InputFkPrtCode").value,
-			FkPrtNaam:document.getElementById("InputFkPrtNaam").value,
-			Code:document.getElementById("InputCode").value,
-			Naam:document.getElementById("InputNaam").value,
-			Omschrijving:document.getElementById("InputOmschrijving").value,
-			XfPrtPrdCode:document.getElementById("InputXfPrtPrdCode").value,
-			XfPrtPrdNaam:document.getElementById("InputXfPrtPrdNaam").value,
-			XkPrtCode:document.getElementById("InputXkPrtCode").value,
-			XkPrtNaam:document.getElementById("InputXkPrtNaam").value
-		}
+	var Type = {
+		FkPrdCode:document.getElementById("InputFkPrdCode").value,
+		FkPrdNaam:document.getElementById("InputFkPrdNaam").value,
+		FkPrtCode:document.getElementById("InputFkPrtCode").value,
+		FkPrtNaam:document.getElementById("InputFkPrtNaam").value,
+		Code:document.getElementById("InputCode").value,
+		Naam:document.getElementById("InputNaam").value,
+		Omschrijving:document.getElementById("InputOmschrijving").value,
+		XfPrtPrdCode:document.getElementById("InputXfPrtPrdCode").value,
+		XfPrtPrdNaam:document.getElementById("InputXfPrtPrdNaam").value,
+		XkPrtCode:document.getElementById("InputXkPrtCode").value,
+		XkPrtNaam:document.getElementById("InputXkPrtNaam").value
 	};
-	performTrans( {Service:"CreatePrt",Parameters:l_json_type} );
+	performTrans( {Service:"CreatePrt",Parameters:{Type}} );
 }
 
 function UpdatePrt() {
-	var l_json_type = {
-		Type: {
-			FkPrdCode:document.getElementById("InputFkPrdCode").value,
-			FkPrdNaam:document.getElementById("InputFkPrdNaam").value,
-			FkPrtCode:document.getElementById("InputFkPrtCode").value,
-			FkPrtNaam:document.getElementById("InputFkPrtNaam").value,
-			Code:document.getElementById("InputCode").value,
-			Naam:document.getElementById("InputNaam").value,
-			Omschrijving:document.getElementById("InputOmschrijving").value,
-			XfPrtPrdCode:document.getElementById("InputXfPrtPrdCode").value,
-			XfPrtPrdNaam:document.getElementById("InputXfPrtPrdNaam").value,
-			XkPrtCode:document.getElementById("InputXkPrtCode").value,
-			XkPrtNaam:document.getElementById("InputXkPrtNaam").value
-		}
+	var Type = {
+		FkPrdCode:document.getElementById("InputFkPrdCode").value,
+		FkPrdNaam:document.getElementById("InputFkPrdNaam").value,
+		FkPrtCode:document.getElementById("InputFkPrtCode").value,
+		FkPrtNaam:document.getElementById("InputFkPrtNaam").value,
+		Code:document.getElementById("InputCode").value,
+		Naam:document.getElementById("InputNaam").value,
+		Omschrijving:document.getElementById("InputOmschrijving").value,
+		XfPrtPrdCode:document.getElementById("InputXfPrtPrdCode").value,
+		XfPrtPrdNaam:document.getElementById("InputXfPrtPrdNaam").value,
+		XkPrtCode:document.getElementById("InputXkPrtCode").value,
+		XkPrtNaam:document.getElementById("InputXkPrtNaam").value
 	};
-	performTrans( {Service:"UpdatePrt",Parameters:l_json_type} );
+	performTrans( {Service:"UpdatePrt",Parameters:{Type}} );
 }
 
 function DeletePrt() {
-	var l_json_type = {
-		Type: {
-			FkPrdCode:document.getElementById("InputFkPrdCode").value,
-			FkPrdNaam:document.getElementById("InputFkPrdNaam").value,
-			Code:document.getElementById("InputCode").value,
-			Naam:document.getElementById("InputNaam").value
-		}
+	var Type = {
+		FkPrdCode:document.getElementById("InputFkPrdCode").value,
+		FkPrdNaam:document.getElementById("InputFkPrdNaam").value,
+		Code:document.getElementById("InputCode").value,
+		Naam:document.getElementById("InputNaam").value
 	};
-	performTrans( {Service:"DeletePrt",Parameters:l_json_type} );
+	performTrans( {Service:"DeletePrt",Parameters:{Type}} );
 }
 
 function OpenListBox(p_json_rows,p_icon,p_header,p_optional) {

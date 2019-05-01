@@ -10,6 +10,7 @@
 28-02-2018 - TYPE CODE not from BUSINESS_OBJECT_TYPE but from TYPE.
 02-03-2018 - Scoping in hierarchy selection (SCOPE_LEVEL) implemented.
 30-05-2018 - Create with position always define l_cube_sequence.
+01-05-2019 - NVL in validation of POS_ACTION
 [[INCLUDE,templates\includes\general.cgt]]
 [[TEXT,IMPL_SQL_NOT_FOUND]][[*No arguments*]]
 		+STATEMENT:SELECTION|IF;
@@ -32,7 +33,10 @@
 		+STATEMENT:SELECTION|IF;
 			+STATEMENT_GROUP:;
 				+EXPRESSION:CONDITION|NOT IN;
-					=EXPRESSION:REF_NAME|p_cube_pos_action;
+					+EXPRESSION:FUNCTION|NVL;
+						=EXPRESSION:REF_NAME|p_cube_pos_action;
+						=EXPRESSION:STRING| ;
+					-EXPRESSION:;
 					+EXPRESSION:LIST;
 						=EXPRESSION:STRING|A;
 						=EXPRESSION:STRING|B;
