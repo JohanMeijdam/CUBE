@@ -17,6 +17,7 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Prepare table T_CUBE_DESCRIPTION');
 	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = '' AND table_name = 'T_CUBE_DESCRIPTION';
 	IF l_count = 0 THEN
 		EXECUTE IMMEDIATE
@@ -95,6 +96,7 @@ BEGIN
 END;
 /
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Maintain table T_CUBE_DESCRIPTION');
 	FOR r_field IN (SELECT column_name,
 		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
 		data_default old_default_value,

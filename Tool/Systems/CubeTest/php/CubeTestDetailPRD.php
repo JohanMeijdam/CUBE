@@ -25,10 +25,11 @@ g_xmlhttp.onreadystatechange = function() {
 			for (i in l_json_array) {
 				switch (l_json_array[i].ResultName) {
 					case "SELECT_PRD":
-						document.getElementById("InputCubeTsgZzz").value=l_json_array[i].Rows[0].Data.CubeTsgZzz;
-						document.getElementById("InputCubeTsgYyy").value=l_json_array[i].Rows[0].Data.CubeTsgYyy;
-						document.getElementById("InputDatum").value=l_json_array[i].Rows[0].Data.Datum;
-						document.getElementById("InputOmschrijving").value=l_json_array[i].Rows[0].Data.Omschrijving;
+						var l_json_values = l_json_array[i].Rows[0].Data;
+						document.getElementById("InputCubeTsgZzz").value=l_json_values.CubeTsgZzz;
+						document.getElementById("InputCubeTsgYyy").value=l_json_values.CubeTsgYyy;
+						document.getElementById("InputDatum").value=l_json_values.Datum;
+						document.getElementById("InputOmschrijving").value=l_json_values.Omschrijving;
 						ProcessTypeSpecialisation();
 						break;
 					case "CREATE_PRD":
@@ -106,8 +107,12 @@ function InitBody() {
 		document.getElementById("InputCode").value=l_json_objectKey.TYP_PRD.Code;
 		document.getElementById("InputNaam").value=l_json_objectKey.TYP_PRD.Naam;
 		document.getElementById("ButtonCreate").disabled=true;
-		l_json_parm = {Service:"GetPrd",Parameters:{Type:l_json_objectKey.TYP_PRD}};
-		performTrans(l_json_parm);
+		performTrans( {
+			Service: "GetPrd",
+			Parameters: {
+				Type: l_json_objectKey.TYP_PRD
+			}
+		} );
 		document.getElementById("InputCubeTsgZzz").readOnly=true;
 		document.getElementById("InputCubeTsgYyy").readOnly=true;
 		document.getElementById("InputCode").readOnly=true;
@@ -125,34 +130,49 @@ function InitBody() {
 
 function CreatePrd() {
 	var Type = {
-		CubeTsgZzz:document.getElementById("InputCubeTsgZzz").value,
-		CubeTsgYyy:document.getElementById("InputCubeTsgYyy").value,
-		Code:document.getElementById("InputCode").value,
-		Naam:document.getElementById("InputNaam").value,
-		Datum:document.getElementById("InputDatum").value,
-		Omschrijving:document.getElementById("InputOmschrijving").value
+		CubeTsgZzz: document.getElementById("InputCubeTsgZzz").value,
+		CubeTsgYyy: document.getElementById("InputCubeTsgYyy").value,
+		Code: document.getElementById("InputCode").value,
+		Naam: document.getElementById("InputNaam").value,
+		Datum: document.getElementById("InputDatum").value,
+		Omschrijving: document.getElementById("InputOmschrijving").value
 	};
-	performTrans( {Service:"CreatePrd",Parameters:{Type}} );
+	performTrans( {
+		Service: "CreatePrd",
+		Parameters: {
+			Type
+		}
+	} );
 }
 
 function UpdatePrd() {
 	var Type = {
-		CubeTsgZzz:document.getElementById("InputCubeTsgZzz").value,
-		CubeTsgYyy:document.getElementById("InputCubeTsgYyy").value,
-		Code:document.getElementById("InputCode").value,
-		Naam:document.getElementById("InputNaam").value,
-		Datum:document.getElementById("InputDatum").value,
-		Omschrijving:document.getElementById("InputOmschrijving").value
+		CubeTsgZzz: document.getElementById("InputCubeTsgZzz").value,
+		CubeTsgYyy: document.getElementById("InputCubeTsgYyy").value,
+		Code: document.getElementById("InputCode").value,
+		Naam: document.getElementById("InputNaam").value,
+		Datum: document.getElementById("InputDatum").value,
+		Omschrijving: document.getElementById("InputOmschrijving").value
 	};
-	performTrans( {Service:"UpdatePrd",Parameters:{Type}} );
+	performTrans( {
+		Service: "UpdatePrd",
+		Parameters: {
+			Type
+		}
+	} );
 }
 
 function DeletePrd() {
 	var Type = {
-		Code:document.getElementById("InputCode").value,
-		Naam:document.getElementById("InputNaam").value
+		Code: document.getElementById("InputCode").value,
+		Naam: document.getElementById("InputNaam").value
 	};
-	performTrans( {Service:"DeletePrd",Parameters:{Type}} );
+	performTrans( {
+		Service: "DeletePrd",
+		Parameters: {
+			Type
+		}
+	} );
 }
 
 function OpenDescBox(p_icon,p_name,p_type,p_attribute_type,p_sequence) {
@@ -212,8 +232,16 @@ function CloseDescBox() {
 
 function GetDescription(p_type,p_attribute_type,p_sequence) {
 	g_xmlhttp.open('POST','CubeSysServer.php',true);
-	g_xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-	g_xmlhttp.send('GetCubeDsc'+'<|||>'+p_type+'<|>'+p_attribute_type+'<|>'+p_sequence);
+	g_xmlhttp.send( {
+		Service: "GetCubeDsc",
+		Parameters: {
+			Type: {
+				TypeName: p_type,
+				AttributeTypeName: p_attribute_type,
+				Sequence: p_sequence
+			}
+		}
+	} );
 }
 
 function ToUpperCase(p_obj) 
@@ -268,16 +296,17 @@ function ResetFieldCubeTsgYyy(p_field_id) {
 	document.getElementById("InputCubeTsgYyy").value=' ';
 	switch (document.getElementById(p_field_id).value){
 	case "QQQ":
+		document.getElementById("ValCubeTsgYyy-QQQ").style.display="inline";
 		break;
 	}
 }
 -->
 </script>
 </head><body oncontextmenu="return false;" onload="InitBody()" ondrop="drop(event)" ondragover="allowDrop(event)">
-<div><img src="icons/produkt_large.bmp" /><span> PROD /
+<div><img src="icons/produkt_large.bmp" /><span style="cursor:help" oncontextmenu="OpenDescBox('PRODUKT','Prod','PROD','_',-1)"> PROD /
 <select id="InputCubeTsgZzz" type="text" onchange="ResetFieldCubeTsgYyy('InputCubeTsgZzz')">
 	<option value=" " selected>&lt;zzz&gt;</option>
-	<option value="QQQ"></option>
+	<option value="QQQ">QQQ</option>
 </select> <b>.</b>
 <select id="InputCubeTsgYyy" type="text" onchange="ProcessTypeSpecialisation()">
 	<option value=" " selected>&lt;yyy&gt;</option>

@@ -25,13 +25,14 @@ g_xmlhttp.onreadystatechange = function() {
 			for (i in l_json_array) {
 				switch (l_json_array[i].ResultName) {
 					case "SELECT_PRT":
-						document.getElementById("InputFkPrtCode").value=l_json_array[i].Rows[0].Data.FkPrtCode;
-						document.getElementById("InputFkPrtNaam").value=l_json_array[i].Rows[0].Data.FkPrtNaam;
-						document.getElementById("InputOmschrijving").value=l_json_array[i].Rows[0].Data.Omschrijving;
-						document.getElementById("InputXfPrtPrdCode").value=l_json_array[i].Rows[0].Data.XfPrtPrdCode;
-						document.getElementById("InputXfPrtPrdNaam").value=l_json_array[i].Rows[0].Data.XfPrtPrdNaam;
-						document.getElementById("InputXkPrtCode").value=l_json_array[i].Rows[0].Data.XkPrtCode;
-						document.getElementById("InputXkPrtNaam").value=l_json_array[i].Rows[0].Data.XkPrtNaam;
+						var l_json_values = l_json_array[i].Rows[0].Data;
+						document.getElementById("InputFkPrdCode").value=l_json_values.FkPrdCode;
+						document.getElementById("InputFkPrdNaam").value=l_json_values.FkPrdNaam;
+						document.getElementById("InputFkPrtCode").value=l_json_values.FkPrtCode;
+						document.getElementById("InputFkPrtNaam").value=l_json_values.FkPrtNaam;
+						document.getElementById("InputOmschrijving").value=l_json_values.Omschrijving;
+						document.getElementById("InputXkPrtCode").value=l_json_values.XkPrtCode;
+						document.getElementById("InputXkPrtNaam").value=l_json_values.XkPrtNaam;
 						break;
 					case "CREATE_PRT":
 						document.getElementById("InputFkPrdCode").readOnly=true;
@@ -44,7 +45,7 @@ g_xmlhttp.onreadystatechange = function() {
 						document.getElementById("ButtonUpdate").disabled=false;
 						document.getElementById("ButtonDelete").disabled=false;
 						var l_objNode = parent.document.getElementById(g_parent_node_id);
-						var l_json_node_id = {FkPrdCode:document.getElementById("InputFkPrdCode").value,FkPrdNaam:document.getElementById("InputFkPrdNaam").value,Code:document.getElementById("InputCode").value,Naam:document.getElementById("InputNaam").value};
+						var l_json_node_id = {Code:document.getElementById("InputCode").value,Naam:document.getElementById("InputNaam").value};
 						g_node_id = '{"TYP_PRT":'+JSON.stringify(l_json_node_id)+'}';
 						if (l_objNode != null) {
 							if (l_objNode.firstChild._state == 'O') {
@@ -79,6 +80,11 @@ g_xmlhttp.onreadystatechange = function() {
 					case "LIST_PRT":
 						OpenListBox(l_json_array[i].Rows,'part','Part','Y');
 						break;
+					case "SELECT_FKEY_PRT":
+						var l_json_values = l_json_array[i].Rows[0].Data;
+						document.getElementById("InputFkPrdCode").value=l_json_values.FkPrdCode;
+						document.getElementById("InputFkPrdNaam").value=l_json_values.FkPrdNaam;
+						break;
 					case "SELECT_CUBE_DSC":
 						document.getElementById("CubeDesc").value = l_argument[1];
 						break;
@@ -112,13 +118,15 @@ function InitBody() {
 	switch (l_json_argument.nodeType) {
 	case "D":
 		g_node_id = JSON.stringify(l_json_argument.objectId);
-		document.getElementById("InputFkPrdCode").value=l_json_objectKey.TYP_PRT.FkPrdCode;
-		document.getElementById("InputFkPrdNaam").value=l_json_objectKey.TYP_PRT.FkPrdNaam;
 		document.getElementById("InputCode").value=l_json_objectKey.TYP_PRT.Code;
 		document.getElementById("InputNaam").value=l_json_objectKey.TYP_PRT.Naam;
 		document.getElementById("ButtonCreate").disabled=true;
-		l_json_parm = {Service:"GetPrt",Parameters:{Type:l_json_objectKey.TYP_PRT}};
-		performTrans(l_json_parm);
+		performTrans( {
+			Service: "GetPrt",
+			Parameters: {
+				Type: l_json_objectKey.TYP_PRT
+			}
+		} );
 		document.getElementById("InputFkPrdCode").readOnly=true;
 		document.getElementById("InputFkPrdNaam").readOnly=true;
 		document.getElementById("InputFkPrtCode").readOnly=true;
@@ -139,12 +147,16 @@ function InitBody() {
 		break;  
 	case "R":
 		g_parent_node_id = JSON.stringify(l_json_argument.objectId);
-		document.getElementById("InputFkPrdCode").value=l_json_objectKey.TYP_PRT.Code;
-		document.getElementById("InputFkPrdNaam").value=l_json_objectKey.TYP_PRT.Naam;
 		document.getElementById("InputFkPrtCode").value=l_json_objectKey.TYP_PRT.Code;
 		document.getElementById("InputFkPrtNaam").value=l_json_objectKey.TYP_PRT.Naam;
 		document.getElementById("ButtonUpdate").disabled=true;
 		document.getElementById("ButtonDelete").disabled=true;
+		performTrans( {
+			Service: "GetPrtFkey",
+			Parameters: {
+				Type: l_json_objectKey.TYP_PRT
+			}
+		} );
 		document.getElementById("InputFkPrdCode").readOnly=true;
 		document.getElementById("InputFkPrdNaam").readOnly=true;
 		document.getElementById("InputFkPrtCode").readOnly=true;
@@ -158,46 +170,55 @@ function InitBody() {
 
 function CreatePrt() {
 	var Type = {
-		FkPrdCode:document.getElementById("InputFkPrdCode").value,
-		FkPrdNaam:document.getElementById("InputFkPrdNaam").value,
-		FkPrtCode:document.getElementById("InputFkPrtCode").value,
-		FkPrtNaam:document.getElementById("InputFkPrtNaam").value,
-		Code:document.getElementById("InputCode").value,
-		Naam:document.getElementById("InputNaam").value,
-		Omschrijving:document.getElementById("InputOmschrijving").value,
-		XfPrtPrdCode:document.getElementById("InputXfPrtPrdCode").value,
-		XfPrtPrdNaam:document.getElementById("InputXfPrtPrdNaam").value,
-		XkPrtCode:document.getElementById("InputXkPrtCode").value,
-		XkPrtNaam:document.getElementById("InputXkPrtNaam").value
+		FkPrdCode: document.getElementById("InputFkPrdCode").value,
+		FkPrdNaam: document.getElementById("InputFkPrdNaam").value,
+		FkPrtCode: document.getElementById("InputFkPrtCode").value,
+		FkPrtNaam: document.getElementById("InputFkPrtNaam").value,
+		Code: document.getElementById("InputCode").value,
+		Naam: document.getElementById("InputNaam").value,
+		Omschrijving: document.getElementById("InputOmschrijving").value,
+		XkPrtCode: document.getElementById("InputXkPrtCode").value,
+		XkPrtNaam: document.getElementById("InputXkPrtNaam").value
 	};
-	performTrans( {Service:"CreatePrt",Parameters:{Type}} );
+	performTrans( {
+		Service: "CreatePrt",
+		Parameters: {
+			Type
+		}
+	} );
 }
 
 function UpdatePrt() {
 	var Type = {
-		FkPrdCode:document.getElementById("InputFkPrdCode").value,
-		FkPrdNaam:document.getElementById("InputFkPrdNaam").value,
-		FkPrtCode:document.getElementById("InputFkPrtCode").value,
-		FkPrtNaam:document.getElementById("InputFkPrtNaam").value,
-		Code:document.getElementById("InputCode").value,
-		Naam:document.getElementById("InputNaam").value,
-		Omschrijving:document.getElementById("InputOmschrijving").value,
-		XfPrtPrdCode:document.getElementById("InputXfPrtPrdCode").value,
-		XfPrtPrdNaam:document.getElementById("InputXfPrtPrdNaam").value,
-		XkPrtCode:document.getElementById("InputXkPrtCode").value,
-		XkPrtNaam:document.getElementById("InputXkPrtNaam").value
+		FkPrdCode: document.getElementById("InputFkPrdCode").value,
+		FkPrdNaam: document.getElementById("InputFkPrdNaam").value,
+		FkPrtCode: document.getElementById("InputFkPrtCode").value,
+		FkPrtNaam: document.getElementById("InputFkPrtNaam").value,
+		Code: document.getElementById("InputCode").value,
+		Naam: document.getElementById("InputNaam").value,
+		Omschrijving: document.getElementById("InputOmschrijving").value,
+		XkPrtCode: document.getElementById("InputXkPrtCode").value,
+		XkPrtNaam: document.getElementById("InputXkPrtNaam").value
 	};
-	performTrans( {Service:"UpdatePrt",Parameters:{Type}} );
+	performTrans( {
+		Service: "UpdatePrt",
+		Parameters: {
+			Type
+		}
+	} );
 }
 
 function DeletePrt() {
 	var Type = {
-		FkPrdCode:document.getElementById("InputFkPrdCode").value,
-		FkPrdNaam:document.getElementById("InputFkPrdNaam").value,
-		Code:document.getElementById("InputCode").value,
-		Naam:document.getElementById("InputNaam").value
+		Code: document.getElementById("InputCode").value,
+		Naam: document.getElementById("InputNaam").value
 	};
-	performTrans( {Service:"DeletePrt",Parameters:{Type}} );
+	performTrans( {
+		Service: "DeletePrt",
+		Parameters: {
+			Type
+		}
+	} );
 }
 
 function OpenListBox(p_json_rows,p_icon,p_header,p_optional) {
@@ -280,16 +301,6 @@ function UpdateForeignKey(p_obj) {
 	switch (document.body._ListBoxCode){
 	case "Ref001":
 		if (l_values == '') {
-			document.getElementById("InputXfPrtPrdCode").value = '';
-		} else {
-			document.getElementById("InputXfPrtPrdCode").value = l_json_values.FkPrdCode;
-		}
-		if (l_values == '') {
-			document.getElementById("InputXfPrtPrdNaam").value = '';
-		} else {
-			document.getElementById("InputXfPrtPrdNaam").value = l_json_values.FkPrdNaam;
-		}
-		if (l_values == '') {
 			document.getElementById("InputXkPrtCode").value = '';
 		} else {
 			document.getElementById("InputXkPrtCode").value = l_json_values.Code;
@@ -310,7 +321,7 @@ function StartSelect001(p_event) {
 	document.body._SelectLeft = p_event.clientX;
 	document.body._SelectTop = p_event.clientY;
 	document.body._ListBoxCode = 'Ref001';
-	var l_json_parms = {
+	var Parameters = {
 		Type: {
 			FkPrdCode:document.getElementById("InputFkPrdCode").value,
 			FkPrdNaam:document.getElementById("InputFkPrdNaam").value
@@ -320,7 +331,10 @@ function StartSelect001(p_event) {
 			FkPrdNaam:document.getElementById("InputFkPrdNaam").value
 		}
 	};
-	performTrans( {Service:"GetPrtForPrdListEncapsulated",Parameters:'+l_json_parms} );
+	performTrans( {
+		Service: "GetPrtForPrdListEncapsulated",
+		Parameters
+	} );
 }
 
 function OpenDescBox(p_icon,p_name,p_type,p_attribute_type,p_sequence) {
@@ -380,8 +394,16 @@ function CloseDescBox() {
 
 function GetDescription(p_type,p_attribute_type,p_sequence) {
 	g_xmlhttp.open('POST','CubeSysServer.php',true);
-	g_xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-	g_xmlhttp.send('GetCubeDsc'+'<|||>'+p_type+'<|>'+p_attribute_type+'<|>'+p_sequence);
+	g_xmlhttp.send( {
+		Service: "GetCubeDsc",
+		Parameters: {
+			Type: {
+				TypeName: p_type,
+				AttributeTypeName: p_attribute_type,
+				Sequence: p_sequence
+			}
+		}
+	} );
 }
 
 function ToUpperCase(p_obj) 
@@ -426,12 +448,12 @@ function drop(p_event) {
 -->
 </script>
 </head><body oncontextmenu="return false;" onload="InitBody()" ondrop="drop(event)" ondragover="allowDrop(event)">
-<div><img src="icons/part_large.bmp" /><span> PART</span></div>
+<div><img src="icons/part_large.bmp" /><span style="cursor:help" oncontextmenu="OpenDescBox('PART','Part','PART','_',-1)"> PART</span></div>
 <hr/>
 <table>
-<tr><td><u>Prod.Code</u></td><td><div style="max-width:8em;">
+<tr><td>Prod.Code</td><td><div style="max-width:8em;">
 <input id="InputFkPrdCode" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td><u>Prod.Naam</u></td><td><div style="max-width:40em;">
+<tr><td>Prod.Naam</td><td><div style="max-width:40em;">
 <input id="InputFkPrdNaam" type="text" maxlength="40" style="width:100%;"></input></div></td></tr>
 <tr><td>Part.Code</td><td><div style="max-width:8em;">
 <input id="InputFkPrtCode" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
@@ -445,13 +467,9 @@ function drop(p_event) {
 <input id="InputOmschrijving" type="text" maxlength="120" style="width:100%;"></input></div></td></tr>
 <tr><td height=6></td></tr><tr><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/part.bmp"/> Part (Concerns)</legend>
 <table style="width:100%;">
-<tr><td>Prod.Code</td><td style="width:100%;"><div style="max-width:8em;">
-<input id="InputXfPrtPrdCode" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" readonly></input></div></td>
-<td><button id="RefSelect001" type="button" onclick="StartSelect001(event)">Select</button></td></tr>
-<tr><td>Prod.Naam</td><td style="width:100%;"><div style="max-width:40em;">
-<input id="InputXfPrtPrdNaam" type="text" maxlength="40" style="width:100%;" readonly></input></div></td></tr>
 <tr><td>Part.Code</td><td style="width:100%;"><div style="max-width:8em;">
-<input id="InputXkPrtCode" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" readonly></input></div></td></tr>
+<input id="InputXkPrtCode" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" readonly></input></div></td>
+<td><button id="RefSelect001" type="button" onclick="StartSelect001(event)">Select</button></td></tr>
 <tr><td>Part.Naam</td><td style="width:100%;"><div style="max-width:40em;">
 <input id="InputXkPrtNaam" type="text" maxlength="40" style="width:100%;" readonly></input></div></td></tr>
 </table></fieldset></td></tr>

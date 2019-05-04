@@ -70,8 +70,9 @@ g_xmlhttp.onreadystatechange = function() {
 			}
 			for (i in l_json_array) {
 				switch (l_json_array[i].ResultName) {
-					case "SELECT_<<TYPE1:U>>":[[LOOP,ATTRIBUTE:1=N[AND]4=N]]
-						document.getElementById("Input<<ATTRIBUTE:C>>").value=l_json_array[i].Rows[0].Data.<<ATTRIBUTE:C>>;[[ENDLOOP,ATTRIBUTE]][[IF:CHILD(TYPE_SPECIALISATION_GROUP)]]
+					case "SELECT_<<TYPE1:U>>":
+						var l_json_values = l_json_array[i].Rows[0].Data;[[LOOP,ATTRIBUTE:1=N[AND]4=N]]
+						document.getElementById("Input<<ATTRIBUTE:C>>").value=l_json_values.<<ATTRIBUTE:C>>;[[ENDLOOP,ATTRIBUTE]][[IF:CHILD(TYPE_SPECIALISATION_GROUP)]]
 						ProcessTypeSpecialisation();[[ENDIF]]
 						break;
 					case "CREATE_<<TYPE1:U>>":[[LOOP,ATTRIBUTE:(1=Y[OR]3=F[OR]3=R)[AND]4=N]]
@@ -93,7 +94,7 @@ g_xmlhttp.onreadystatechange = function() {
 									var l_objNodePos = parent.document.getElementById('{"TYP_<<TYPE1:U>>":'+JSON.stringify(l_json_array[i].Rows[0].Key)+'}');
 								}[[ELSIF:6=P]]
 								var l_position = g_json_option.Code;
-								l_objNodePos = parent.document.getElementById(g_json_option.Type);[[ELSE]]
+								l_objNodePos = parent.document.getElementById(JSON.stringify(g_json_option.Type));[[ELSE]]
 								var l_position = 'L';
 								l_objNodePos = null;[[ENDIF]]
 								parent.AddTreeviewNode(
@@ -130,12 +131,12 @@ g_xmlhttp.onreadystatechange = function() {
 						OpenListBox(l_json_array[i].Rows,'<<REFERENCE_TYPE7:L>>','<<REFERENCE_TYPE:C>>',[[IF,REFERENCE:1='Y']]'N'[[ELSE]]'Y'[[ENDIF]]);
 						break;[[ENDLOOP,REFERENCE_TYPE]][[ENDLOOP,REFERENCE]][[IF:CHILD(ATTRIBUTE:3=F[AND]CHILD(ATTRIBUTE_SOURCE:1=N))]]
 					case "SELECT_FKEY_<<TYPE(N-1)1:U>>":
-						var l_values = l_argument[1].split("<|>");[[LOOP,ATTRIBUTE:3=F[AND]CHILD(ATTRIBUTE_SOURCE:1=N)]]
-						document.getElementById("Input<<ATTRIBUTE:C>>").value=l_values[[[EVAL:<<ATTRIBUTE:IX>>-1]]];[[ENDLOOP,ATTRIBUTE]]
+						var l_json_values = l_json_array[i].Rows[0].Data;[[LOOP,ATTRIBUTE:3=F[AND]CHILD(ATTRIBUTE_SOURCE:1=N)]]
+						document.getElementById("Input<<ATTRIBUTE:C>>").value=l_json_values.<<ATTRIBUTE:C>>;[[ENDLOOP,ATTRIBUTE]]
 						break;[[ENDIF]][[IF:3=Y[AND]CHILD(ATTRIBUTE:1=N[AND]3=F)]]
 					case "SELECT_FKEY_<<TYPE1:U>>":
-						var l_values = l_argument[1].split("<|>");[[LOOP,ATTRIBUTE:1=N[AND]3=F]]
-						document.getElementById("Input<<ATTRIBUTE:C>>").value=l_values[[[EVAL:<<ATTRIBUTE:IX>>-1]]];[[ENDLOOP,ATTRIBUTE]]
+						var l_json_values = l_json_array[i].Rows[0].Data;[[LOOP,ATTRIBUTE:1=N[AND]3=F]]
+						document.getElementById("Input<<ATTRIBUTE:C>>").value=l_json_values.<<ATTRIBUTE:C>>;[[ENDLOOP,ATTRIBUTE]]
 						break;[[ENDIF]]
 					case "SELECT_CUBE_DSC":
 						document.getElementById("CubeDesc").value = l_argument[1];
@@ -173,8 +174,12 @@ function InitBody() {
 		g_node_id = JSON.stringify(l_json_argument.objectId);[[LOOP,ATTRIBUTE:1=Y]]
 		document.getElementById("Input<<ATTRIBUTE:C>>").value=l_json_objectKey.TYP_<<TYPE1>>.<<ATTRIBUTE:C>>;[[ENDLOOP,ATTRIBUTE]]
 		document.getElementById("ButtonCreate").disabled=true;[[IF:CHILD(ATTRIBUTE:1=N[AND]4=N)]]
-		l_json_parm = {Service:"Get<<TYPE1:C>>",Parameters:{Type:l_json_objectKey.TYP_<<TYPE1>>}};
-		performTrans(l_json_parm);[[ENDIF]][[IF:!CHILD(ATTRIBUTE:1=N[AND]!(3=F[OR]3=R)[AND]4=N)]]
+		performTrans( {
+			Service: "Get<<TYPE1:C>>",
+			Parameters: {
+				Type: l_json_objectKey.TYP_<<TYPE1>>
+			}
+		} );[[ENDIF]][[IF:!CHILD(ATTRIBUTE:1=N[AND]!(3=F[OR]3=R)[AND]4=N)]]
 		document.getElementById("ButtonUpdate").disabled=true;[[ENDIF]][[LOOP,ATTRIBUTE:1=Y[OR]3=F[OR]3=R[OR]6=Y]]
 		document.getElementById("Input<<ATTRIBUTE:C>>").readOnly=true;[[ENDLOOP,ATTRIBUTE]][[LOOP,REFERENCE:1=Y[OR]5=Y]]
 		document.getElementById("RefSelect<<REFERENCE:S>>").disabled=true;[[ENDLOOP,REFERENCE]]
@@ -184,8 +189,12 @@ function InitBody() {
 		document.getElementById("Input<<ATTRIBUTE:C>>").value=l_json_objectKey.TYP_<<TYPE(N-1)1>>.[[LOOP,ATTRIBUTE_SOURCE]]<<ATTRIBUTE_SOURCE:C>>[[ENDLOOP,ATTRIBUTE_SOURCE]];[[ENDLOOP,ATTRIBUTE]]
 		document.getElementById("ButtonUpdate").disabled=true;
 		document.getElementById("ButtonDelete").disabled=true;[[IF:CHILD(ATTRIBUTE:3=F[AND]CHILD(ATTRIBUTE_SOURCE:1=N))]]
-		l_json_parm = {Service:"Get<<TYPE(N-1)1:C>>Fkey",Parameters:{Type:l_json_objectKey}};
-		performTrans(l_json_parm);[[ENDIF]][[LOOP,ATTRIBUTE:(3=F[OR]3=R)[AND]4=N]]
+		performTrans( {
+			Service: "Get<<TYPE(N-1)1:C>>Fkey",
+			Parameters: {
+				Type: l_json_objectKey.TYP_<<TYPE(N-1)1>>
+			}
+		} );[[ENDIF]][[LOOP,ATTRIBUTE:(3=F[OR]3=R)[AND]4=N]]
 		document.getElementById("Input<<ATTRIBUTE:C>>").readOnly=true;[[ENDLOOP,ATTRIBUTE]]
 		break;[[IF,TYPE:3=Y]]  
 	case "R":
@@ -194,8 +203,12 @@ function InitBody() {
 		document.getElementById("Input<<ATTRIBUTE:C>>").value=l_json_objectKey.TYP_<<TYPE1>>.[[LOOP,ATTRIBUTE_SOURCE]]<<ATTRIBUTE_SOURCE:C>>[[ENDLOOP,ATTRIBUTE_SOURCE]];[[ENDLOOP,ATTRIBUTE]][[ENDIF]]
 		document.getElementById("ButtonUpdate").disabled=true;
 		document.getElementById("ButtonDelete").disabled=true;[[IF:CHILD(ATTRIBUTE:1=N[AND]3=F)]]
-		l_json_parm = {Service:"Get<<TYPE1:C>>Fkey",Parameters:{Type:l_json_objectKey.TYP_<<TYPE1>>}};
-		performTrans(l_json_parm);[[ENDIF]][[LOOP,ATTRIBUTE:(3=F[OR]3=R)[AND]4=N]]
+		performTrans( {
+			Service: "Get<<TYPE1:C>>Fkey",
+			Parameters: {
+				Type: l_json_objectKey.TYP_<<TYPE1>>
+			}
+		} );[[ENDIF]][[LOOP,ATTRIBUTE:(3=F[OR]3=R)[AND]4=N]]
 		document.getElementById("Input<<ATTRIBUTE:C>>").readOnly=true;[[ENDLOOP,ATTRIBUTE]]
 		break;[[ENDIF]]
 	default:
@@ -206,33 +219,61 @@ function InitBody() {
 
 function Create<<TYPE1:C>>() {
 	var Type = {[[LOOP,ATTRIBUTE:!CHILD(DERIVATION)]]
-		<<ATTRIBUTE:C>>:document.getElementById("Input<<ATTRIBUTE:C>>").value[[IF:!LAST]],[[ENDIF]][[ENDLOOP,ATTRIBUTE]]
+		<<ATTRIBUTE:C>>: document.getElementById("Input<<ATTRIBUTE:C>>").value[[IF:!LAST]],[[ENDIF]][[ENDLOOP,ATTRIBUTE]]
 	};[[IF:6=P]]
 	var l_pos_action = g_json_option.Code;
 	var Option = {
-		CubePosAction:l_pos_action
+		CubePosAction: l_pos_action
 	};
 	if (l_pos_action == 'F' || l_pos_action == 'L') {
-		performTrans( {Service:"Create<<TYPE1:C>>",Parameters:{Option,Type}} );
+		performTrans( {
+			Service: "Create<<TYPE1:C>>",
+			Parameters: {
+				Option,
+				Type
+			}
+		} );
 	} else {
 		var Ref = g_json_option.Type;
-		performTrans( {Service:"Create<<TYPE1:C>>",Parameters:{Option,Type,Ref}} );
+		performTrans( {
+			Service: "Create<<TYPE1:C>>",
+				Parameters: {
+					Option,
+					Type,
+					Ref
+				}
+			} );
 	}[[ELSE]]
-	performTrans( {Service:"Create<<TYPE1:C>>",Parameters:{Type}} );[[ENDIF]]
+	performTrans( {
+		Service: "Create<<TYPE1:C>>",
+		Parameters: {
+			Type
+		}
+	} );[[ENDIF]]
 }[[IF:CHILD(ATTRIBUTE:1=N)]]
 
 function Update<<TYPE1:C>>() {
 	var Type = {[[LOOP,ATTRIBUTE:1=Y[OR]!CHILD(DERIVATION)]]
-		<<ATTRIBUTE:C>>:document.getElementById("Input<<ATTRIBUTE:C>>").value[[IF:!LAST]],[[ENDIF]][[ENDLOOP,ATTRIBUTE]]
+		<<ATTRIBUTE:C>>: document.getElementById("Input<<ATTRIBUTE:C>>").value[[IF:!LAST]],[[ENDIF]][[ENDLOOP,ATTRIBUTE]]
 	};
-	performTrans( {Service:"Update<<TYPE1:C>>",Parameters:{Type}} );
+	performTrans( {
+		Service: "Update<<TYPE1:C>>",
+		Parameters: {
+			Type
+		}
+	} );
 }[[ENDIF]]
 
 function Delete<<TYPE1:C>>() {
 	var Type = {[[LOOP,ATTRIBUTE:1=Y]]
-		<<ATTRIBUTE:C>>:document.getElementById("Input<<ATTRIBUTE:C>>").value[[IF:!LAST]],[[ENDIF]][[ENDLOOP,ATTRIBUTE]]
+		<<ATTRIBUTE:C>>: document.getElementById("Input<<ATTRIBUTE:C>>").value[[IF:!LAST]],[[ENDIF]][[ENDLOOP,ATTRIBUTE]]
 	};
-	performTrans( {Service:"Delete<<TYPE1:C>>",Parameters:{Type}} );
+	performTrans( {
+		Service: "Delete<<TYPE1:C>>",
+		Parameters: {
+			Type
+		}
+	} );
 }[[IF:CHILD(REFERENCE)]]
 
 function OpenListBox(p_json_rows,p_icon,p_header,p_optional) {
@@ -330,7 +371,7 @@ function StartSelect<<REFERENCE:S>>(p_event) {
 	document.body._SelectLeft = p_event.clientX;
 	document.body._SelectTop = p_event.clientY;
 	document.body._ListBoxCode = 'Ref<<REFERENCE:S>>';[[LOOP,REFERENCE_TYPE]][[IF:3=Y[AND]!8=Y[AND]!REFERENCE.4=ALL[AND]REFERENCE.PARENT(TYPE:0=<<REFERENCE_TYPE>>)]][[EVAL:($myFlag=0)]][[IF,REFERENCE:4=ENC]]
-	var l_json_parms = {
+	var Parameters = {
 		Type: {[[EVAL:($myFlag=1)]][[LOOP,ATTRIBUTE:3=F[AND]CHILD(ATTRIBUTE_SOURCE:1=Y)]]
 			<<ATTRIBUTE:C>>:document.getElementById("Input<<ATTRIBUTE:C>>").value[[IF:!LAST]],[[ENDIF]][[ENDLOOP,ATTRIBUTE]]
 		}[[IF:REFERENCE.CHILD(REFERENCE_SCOPE_ATTRIBUTE)]],
@@ -338,18 +379,21 @@ function StartSelect<<REFERENCE:S>>(p_event) {
 			<<REFERENCE_SCOPE_ATTRIBUTE:C>>:document.getElementById("Input<<REFERENCE_SCOPE_ATTRIBUTE:C>>").value[[IF:!LAST]],[[ENDIF]][[ENDLOOP,REFERENCE_SCOPE_ATTRIBUTE]][[ENDFOR]]
 		}[[ENDIF]]
 	};[[ELSIF,REFERENCE_TYPE:0=<<TYPE>>]]
-	var l_json_parms = {[[EVAL:($myFlag=1)]]<<TEXT,DETAIL_RECURSIVE_PARMS>>
-		Type:{[[LOOP,ATTRIBUTE:1=Y]]
+	var Parameters = {[[EVAL:($myFlag=1)]]<<TEXT,DETAIL_RECURSIVE_PARMS>>
+		Type: {[[LOOP,ATTRIBUTE:1=Y]]
 			<<ATTRIBUTE:C>>:document.getElementById("Input<<ATTRIBUTE:C>>").value[[IF:!LAST]],[[ENDIF]][[ENDLOOP,ATTRIBUTE]]
 		}
 	};[[ELSE]]
-	var l_json_parms = {[[EVAL:($myFlag=1)]]<<TEXT,DETAIL_RECURSIVE_PARMS>>
+	var Parameters = {[[EVAL:($myFlag=1)]]<<TEXT,DETAIL_RECURSIVE_PARMS>>
 		Type: {[[FOR,TYPE:N>N]][[LOOP,ATTRIBUTE:3=F[AND]CHILD(ATTRIBUTE_KEY_TYPE:0=<<REFERENCE_TYPE>>)]]
 			<<ATTRIBUTE:C>>:document.getElementById("Input<<ATTRIBUTE:C>>").value[[IF:!LAST]],[[ENDIF]][[ENDLOOP,ATTRIBUTE]][[ENDFOR]]
 		}
 	};[[ENDIF]]
-	performTrans( {Service:"<<TEXT,DETAIL_GET_LIST_NAME>>[[IF,REFERENCE:4=ENC]]Encapsulated[[ELSE]]Recursive[[ENDIF]]",Parameters:'[[IF:EVAL:$myFlag]]+l_json_parms[[ENDIF]]} );[[ELSE]][[IF,REFERENCE:4=ALL[AND]CHILD(REFERENCE_SCOPE_ATTRIBUTE)]]
-	var l_json_parms = {[[IF,REFERENCE:CHILD(REFERENCE_TYPE_WITHIN_SCOPE_OF:3=Y)]]
+	performTrans( {
+		Service: "<<TEXT,DETAIL_GET_LIST_NAME>>[[IF,REFERENCE:4=ENC]]Encapsulated[[ELSE]]Recursive[[ENDIF]]"[[IF:EVAL:$myFlag]],
+		Parameters[[ENDIF]]
+	} );[[ELSE]][[IF,REFERENCE:4=ALL[AND]CHILD(REFERENCE_SCOPE_ATTRIBUTE)]]
+	var Parameters = {[[IF,REFERENCE:CHILD(REFERENCE_TYPE_WITHIN_SCOPE_OF:3=Y)]]
 		Option: {
 			CubeScopeLevel:<<REFERENCE6>>
 		},[[ENDIF]]
@@ -357,7 +401,10 @@ function StartSelect<<REFERENCE:S>>(p_event) {
 			<<REFERENCE_SCOPE_ATTRIBUTE:C>>:document.getElementById("Input<<REFERENCE_SCOPE_ATTRIBUTE:C>>").value[[IF:!LAST]],[[ENDIF]][[ENDLOOP,REFERENCE_SCOPE_ATTRIBUTE]][[ENDFOR]]
 		}
 	};[[ENDIF]]
-	performTrans( {Service:"<<TEXT,DETAIL_GET_LIST_NAME>>[[IF:3=Y]]All[[ENDIF]]"[[IF,REFERENCE:4=ALL[AND]CHILD(REFERENCE_SCOPE_ATTRIBUTE)]],Parameters:l_json_parms[[ENDIF]]} );[[ENDIF]][[ENDLOOP,REFERENCE_TYPE]]
+	performTrans( {
+		Service: "<<TEXT,DETAIL_GET_LIST_NAME>>[[IF:3=Y]]All[[ENDIF]]"[[IF,REFERENCE:4=ALL[AND]CHILD(REFERENCE_SCOPE_ATTRIBUTE)]],
+		Parameters[[ENDIF]]
+	} );[[ENDIF]][[ENDLOOP,REFERENCE_TYPE]]
 }[[ENDLOOP,REFERENCE]]
 
 function OpenDescBox(p_icon,p_name,p_type,p_attribute_type,p_sequence) {
@@ -417,8 +464,16 @@ function CloseDescBox() {
 
 function GetDescription(p_type,p_attribute_type,p_sequence) {
 	g_xmlhttp.open('POST','CubeSysServer.php',true);
-	g_xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-	g_xmlhttp.send('GetCubeDsc'+'<|||>'+p_type+'<|>'+p_attribute_type+'<|>'+p_sequence);
+	g_xmlhttp.send( {
+		Service: "GetCubeDsc",
+		Parameters: {
+			Type: {
+				TypeName: p_type,
+				AttributeTypeName: p_attribute_type,
+				Sequence: p_sequence
+			}
+		}
+	} );
 }
 
 function ToUpperCase(p_obj) 

@@ -137,7 +137,7 @@ CREATE TABLE t_prod2 (
 	naam VARCHAR2(40),
 	omschrijving VARCHAR2(120),
 	CONSTRAINT pr2_pk
-		PRIMARY KEY (fk_prd_code, fk_prd_naam, code, naam),
+		PRIMARY KEY (code, naam),
 	CONSTRAINT pr2_prd_fk
 		FOREIGN KEY (fk_prd_code, fk_prd_naam)
 		REFERENCES t_prod (code, naam)
@@ -155,21 +155,17 @@ CREATE TABLE t_part2 (
 	code VARCHAR2(8),
 	naam VARCHAR2(40),
 	omschrijving VARCHAR2(120),
-	xf_pa2_prd_code VARCHAR2(8),
-	xf_pa2_prd_naam VARCHAR2(40),
-	xf_pa2_pr2_code VARCHAR2(8),
-	xf_pa2_pr2_naam VARCHAR2(40),
 	xk_pa2_code VARCHAR2(8),
 	xk_pa2_naam VARCHAR2(40),
 	CONSTRAINT pa2_pk
-		PRIMARY KEY (fk_prd_code, fk_prd_naam, fk_pr2_code, fk_pr2_naam, code, naam),
+		PRIMARY KEY (code, naam),
 	CONSTRAINT pa2_pr2_fk
-		FOREIGN KEY (fk_prd_code, fk_prd_naam, fk_pr2_code, fk_pr2_naam)
-		REFERENCES t_prod2 (fk_prd_code, fk_prd_naam, code, naam)
+		FOREIGN KEY (fk_pr2_code, fk_pr2_naam)
+		REFERENCES t_prod2 (code, naam)
 		ON DELETE CASCADE,
 	CONSTRAINT pa2_pa2_fk
-		FOREIGN KEY (fk_prd_code, fk_prd_naam, fk_pr2_code, fk_pr2_naam, fk_pa2_code, fk_pa2_naam)
-		REFERENCES t_part2 (fk_prd_code, fk_prd_naam, fk_pr2_code, fk_pr2_naam, code, naam)
+		FOREIGN KEY (fk_pa2_code, fk_pa2_naam)
+		REFERENCES t_part2 (code, naam)
 		ON DELETE CASCADE )
 /
 CREATE TABLE t_part (
@@ -182,19 +178,17 @@ CREATE TABLE t_part (
 	code VARCHAR2(8),
 	naam VARCHAR2(40),
 	omschrijving VARCHAR2(120),
-	xf_prt_prd_code VARCHAR2(8),
-	xf_prt_prd_naam VARCHAR2(40),
 	xk_prt_code VARCHAR2(8),
 	xk_prt_naam VARCHAR2(40),
 	CONSTRAINT prt_pk
-		PRIMARY KEY (fk_prd_code, fk_prd_naam, code, naam),
+		PRIMARY KEY (code, naam),
 	CONSTRAINT prt_prd_fk
 		FOREIGN KEY (fk_prd_code, fk_prd_naam)
 		REFERENCES t_prod (code, naam)
 		ON DELETE CASCADE,
 	CONSTRAINT prt_prt_fk
-		FOREIGN KEY (fk_prd_code, fk_prd_naam, fk_prt_code, fk_prt_naam)
-		REFERENCES t_part (fk_prd_code, fk_prd_naam, code, naam)
+		FOREIGN KEY (fk_prt_code, fk_prt_naam)
+		REFERENCES t_part (code, naam)
 		ON DELETE CASCADE )
 /
 EXIT;

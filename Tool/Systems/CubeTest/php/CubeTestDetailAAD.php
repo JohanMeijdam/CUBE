@@ -25,7 +25,8 @@ g_xmlhttp.onreadystatechange = function() {
 			for (i in l_json_array) {
 				switch (l_json_array[i].ResultName) {
 					case "SELECT_AAD":
-						document.getElementById("InputXkAaaNaam").value=l_json_array[i].Rows[0].Data.XkAaaNaam;
+						var l_json_values = l_json_array[i].Rows[0].Data;
+						document.getElementById("InputXkAaaNaam").value=l_json_values.XkAaaNaam;
 						break;
 					case "CREATE_AAD":
 						document.getElementById("InputFkAaaNaam").readOnly=true;
@@ -39,7 +40,7 @@ g_xmlhttp.onreadystatechange = function() {
 						if (l_objNode != null) {
 							if (l_objNode.firstChild._state == 'O') {
 								var l_position = g_json_option.Code;
-								l_objNodePos = parent.document.getElementById(g_json_option.Type);
+								l_objNodePos = parent.document.getElementById(JSON.stringify(g_json_option.Type));
 								parent.AddTreeviewNode(
 									l_objNode,
 									'TYP_AAD',
@@ -106,8 +107,12 @@ function InitBody() {
 		document.getElementById("InputFkAaaNaam").value=l_json_objectKey.TYP_AAD.FkAaaNaam;
 		document.getElementById("InputNaam").value=l_json_objectKey.TYP_AAD.Naam;
 		document.getElementById("ButtonCreate").disabled=true;
-		l_json_parm = {Service:"GetAad",Parameters:{Type:l_json_objectKey.TYP_AAD}};
-		performTrans(l_json_parm);
+		performTrans( {
+			Service: "GetAad",
+			Parameters: {
+				Type: l_json_objectKey.TYP_AAD
+			}
+		} );
 		document.getElementById("InputFkAaaNaam").readOnly=true;
 		document.getElementById("InputNaam").readOnly=true;
 		break;
@@ -125,37 +130,60 @@ function InitBody() {
 
 function CreateAad() {
 	var Type = {
-		FkAaaNaam:document.getElementById("InputFkAaaNaam").value,
-		Naam:document.getElementById("InputNaam").value,
-		XkAaaNaam:document.getElementById("InputXkAaaNaam").value
+		FkAaaNaam: document.getElementById("InputFkAaaNaam").value,
+		Naam: document.getElementById("InputNaam").value,
+		XkAaaNaam: document.getElementById("InputXkAaaNaam").value
 	};
 	var l_pos_action = g_json_option.Code;
 	var Option = {
-		CubePosAction:l_pos_action
+		CubePosAction: l_pos_action
 	};
 	if (l_pos_action == 'F' || l_pos_action == 'L') {
-		performTrans( {Service:"CreateAad",Parameters:{Option,Type}} );
+		performTrans( {
+			Service: "CreateAad",
+			Parameters: {
+				Option,
+				Type
+			}
+		} );
 	} else {
 		var Ref = g_json_option.Type;
-		performTrans( {Service:"CreateAad",Parameters:{Option,Type,Ref}} );
+		performTrans( {
+			Service: "CreateAad",
+				Parameters: {
+					Option,
+					Type,
+					Ref
+				}
+			} );
 	}
 }
 
 function UpdateAad() {
 	var Type = {
-		FkAaaNaam:document.getElementById("InputFkAaaNaam").value,
-		Naam:document.getElementById("InputNaam").value,
-		XkAaaNaam:document.getElementById("InputXkAaaNaam").value
+		FkAaaNaam: document.getElementById("InputFkAaaNaam").value,
+		Naam: document.getElementById("InputNaam").value,
+		XkAaaNaam: document.getElementById("InputXkAaaNaam").value
 	};
-	performTrans( {Service:"UpdateAad",Parameters:{Type}} );
+	performTrans( {
+		Service: "UpdateAad",
+		Parameters: {
+			Type
+		}
+	} );
 }
 
 function DeleteAad() {
 	var Type = {
-		FkAaaNaam:document.getElementById("InputFkAaaNaam").value,
-		Naam:document.getElementById("InputNaam").value
+		FkAaaNaam: document.getElementById("InputFkAaaNaam").value,
+		Naam: document.getElementById("InputNaam").value
 	};
-	performTrans( {Service:"DeleteAad",Parameters:{Type}} );
+	performTrans( {
+		Service: "DeleteAad",
+		Parameters: {
+			Type
+		}
+	} );
 }
 
 function OpenListBox(p_json_rows,p_icon,p_header,p_optional) {
@@ -253,7 +281,9 @@ function StartSelect001(p_event) {
 	document.body._SelectLeft = p_event.clientX;
 	document.body._SelectTop = p_event.clientY;
 	document.body._ListBoxCode = 'Ref001';
-	performTrans( {Service:"GetAaaListAll"} );
+	performTrans( {
+		Service: "GetAaaListAll"
+	} );
 }
 
 function OpenDescBox(p_icon,p_name,p_type,p_attribute_type,p_sequence) {
@@ -313,8 +343,16 @@ function CloseDescBox() {
 
 function GetDescription(p_type,p_attribute_type,p_sequence) {
 	g_xmlhttp.open('POST','CubeSysServer.php',true);
-	g_xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-	g_xmlhttp.send('GetCubeDsc'+'<|||>'+p_type+'<|>'+p_attribute_type+'<|>'+p_sequence);
+	g_xmlhttp.send( {
+		Service: "GetCubeDsc",
+		Parameters: {
+			Type: {
+				TypeName: p_type,
+				AttributeTypeName: p_attribute_type,
+				Sequence: p_sequence
+			}
+		}
+	} );
 }
 
 function ToUpperCase(p_obj) 

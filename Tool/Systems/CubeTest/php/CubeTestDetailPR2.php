@@ -25,7 +25,10 @@ g_xmlhttp.onreadystatechange = function() {
 			for (i in l_json_array) {
 				switch (l_json_array[i].ResultName) {
 					case "SELECT_PR2":
-						document.getElementById("InputOmschrijving").value=l_json_array[i].Rows[0].Data.Omschrijving;
+						var l_json_values = l_json_array[i].Rows[0].Data;
+						document.getElementById("InputFkPrdCode").value=l_json_values.FkPrdCode;
+						document.getElementById("InputFkPrdNaam").value=l_json_values.FkPrdNaam;
+						document.getElementById("InputOmschrijving").value=l_json_values.Omschrijving;
 						break;
 					case "CREATE_PR2":
 						document.getElementById("InputFkPrdCode").readOnly=true;
@@ -36,7 +39,7 @@ g_xmlhttp.onreadystatechange = function() {
 						document.getElementById("ButtonUpdate").disabled=false;
 						document.getElementById("ButtonDelete").disabled=false;
 						var l_objNode = parent.document.getElementById(g_parent_node_id);
-						var l_json_node_id = {FkPrdCode:document.getElementById("InputFkPrdCode").value,FkPrdNaam:document.getElementById("InputFkPrdNaam").value,Code:document.getElementById("InputCode").value,Naam:document.getElementById("InputNaam").value};
+						var l_json_node_id = {Code:document.getElementById("InputCode").value,Naam:document.getElementById("InputNaam").value};
 						g_node_id = '{"TYP_PR2":'+JSON.stringify(l_json_node_id)+'}';
 						if (l_objNode != null) {
 							if (l_objNode.firstChild._state == 'O') {
@@ -101,13 +104,15 @@ function InitBody() {
 	switch (l_json_argument.nodeType) {
 	case "D":
 		g_node_id = JSON.stringify(l_json_argument.objectId);
-		document.getElementById("InputFkPrdCode").value=l_json_objectKey.TYP_PR2.FkPrdCode;
-		document.getElementById("InputFkPrdNaam").value=l_json_objectKey.TYP_PR2.FkPrdNaam;
 		document.getElementById("InputCode").value=l_json_objectKey.TYP_PR2.Code;
 		document.getElementById("InputNaam").value=l_json_objectKey.TYP_PR2.Naam;
 		document.getElementById("ButtonCreate").disabled=true;
-		l_json_parm = {Service:"GetPr2",Parameters:{Type:l_json_objectKey.TYP_PR2}};
-		performTrans(l_json_parm);
+		performTrans( {
+			Service: "GetPr2",
+			Parameters: {
+				Type: l_json_objectKey.TYP_PR2
+			}
+		} );
 		document.getElementById("InputFkPrdCode").readOnly=true;
 		document.getElementById("InputFkPrdNaam").readOnly=true;
 		document.getElementById("InputCode").readOnly=true;
@@ -129,34 +134,47 @@ function InitBody() {
 
 function CreatePr2() {
 	var Type = {
-		FkPrdCode:document.getElementById("InputFkPrdCode").value,
-		FkPrdNaam:document.getElementById("InputFkPrdNaam").value,
-		Code:document.getElementById("InputCode").value,
-		Naam:document.getElementById("InputNaam").value,
-		Omschrijving:document.getElementById("InputOmschrijving").value
+		FkPrdCode: document.getElementById("InputFkPrdCode").value,
+		FkPrdNaam: document.getElementById("InputFkPrdNaam").value,
+		Code: document.getElementById("InputCode").value,
+		Naam: document.getElementById("InputNaam").value,
+		Omschrijving: document.getElementById("InputOmschrijving").value
 	};
-	performTrans( {Service:"CreatePr2",Parameters:{Type}} );
+	performTrans( {
+		Service: "CreatePr2",
+		Parameters: {
+			Type
+		}
+	} );
 }
 
 function UpdatePr2() {
 	var Type = {
-		FkPrdCode:document.getElementById("InputFkPrdCode").value,
-		FkPrdNaam:document.getElementById("InputFkPrdNaam").value,
-		Code:document.getElementById("InputCode").value,
-		Naam:document.getElementById("InputNaam").value,
-		Omschrijving:document.getElementById("InputOmschrijving").value
+		FkPrdCode: document.getElementById("InputFkPrdCode").value,
+		FkPrdNaam: document.getElementById("InputFkPrdNaam").value,
+		Code: document.getElementById("InputCode").value,
+		Naam: document.getElementById("InputNaam").value,
+		Omschrijving: document.getElementById("InputOmschrijving").value
 	};
-	performTrans( {Service:"UpdatePr2",Parameters:{Type}} );
+	performTrans( {
+		Service: "UpdatePr2",
+		Parameters: {
+			Type
+		}
+	} );
 }
 
 function DeletePr2() {
 	var Type = {
-		FkPrdCode:document.getElementById("InputFkPrdCode").value,
-		FkPrdNaam:document.getElementById("InputFkPrdNaam").value,
-		Code:document.getElementById("InputCode").value,
-		Naam:document.getElementById("InputNaam").value
+		Code: document.getElementById("InputCode").value,
+		Naam: document.getElementById("InputNaam").value
 	};
-	performTrans( {Service:"DeletePr2",Parameters:{Type}} );
+	performTrans( {
+		Service: "DeletePr2",
+		Parameters: {
+			Type
+		}
+	} );
 }
 
 function OpenDescBox(p_icon,p_name,p_type,p_attribute_type,p_sequence) {
@@ -216,8 +234,16 @@ function CloseDescBox() {
 
 function GetDescription(p_type,p_attribute_type,p_sequence) {
 	g_xmlhttp.open('POST','CubeSysServer.php',true);
-	g_xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-	g_xmlhttp.send('GetCubeDsc'+'<|||>'+p_type+'<|>'+p_attribute_type+'<|>'+p_sequence);
+	g_xmlhttp.send( {
+		Service: "GetCubeDsc",
+		Parameters: {
+			Type: {
+				TypeName: p_type,
+				AttributeTypeName: p_attribute_type,
+				Sequence: p_sequence
+			}
+		}
+	} );
 }
 
 function ToUpperCase(p_obj) 
@@ -262,12 +288,12 @@ function drop(p_event) {
 -->
 </script>
 </head><body oncontextmenu="return false;" onload="InitBody()" ondrop="drop(event)" ondragover="allowDrop(event)">
-<div><img src="icons/produkt_large.bmp" /><span> PROD2</span></div>
+<div><img src="icons/produkt_large.bmp" /><span style="cursor:help" oncontextmenu="OpenDescBox('PRODUKT','Prod2','PROD2','_',-1)"> PROD2</span></div>
 <hr/>
 <table>
-<tr><td><u>Prod.Code</u></td><td><div style="max-width:8em;">
+<tr><td>Prod.Code</td><td><div style="max-width:8em;">
 <input id="InputFkPrdCode" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td><u>Prod.Naam</u></td><td><div style="max-width:40em;">
+<tr><td>Prod.Naam</td><td><div style="max-width:40em;">
 <input id="InputFkPrdNaam" type="text" maxlength="40" style="width:100%;"></input></div></td></tr>
 <tr><td><u>Code</u></td><td><div style="max-width:8em;">
 <input id="InputCode" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>

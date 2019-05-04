@@ -25,9 +25,10 @@ g_xmlhttp.onreadystatechange = function() {
 			for (i in l_json_array) {
 				switch (l_json_array[i].ResultName) {
 					case "SELECT_BBB":
-						document.getElementById("InputOmschrijving").value=l_json_array[i].Rows[0].Data.Omschrijving;
-						document.getElementById("InputXkAaaNaam").value=l_json_array[i].Rows[0].Data.XkAaaNaam;
-						document.getElementById("InputXkBbbNaam1").value=l_json_array[i].Rows[0].Data.XkBbbNaam1;
+						var l_json_values = l_json_array[i].Rows[0].Data;
+						document.getElementById("InputOmschrijving").value=l_json_values.Omschrijving;
+						document.getElementById("InputXkAaaNaam").value=l_json_values.XkAaaNaam;
+						document.getElementById("InputXkBbbNaam1").value=l_json_values.XkBbbNaam1;
 						break;
 					case "CREATE_BBB":
 						document.getElementById("InputNaam").readOnly=true;
@@ -108,8 +109,12 @@ function InitBody() {
 		g_node_id = JSON.stringify(l_json_argument.objectId);
 		document.getElementById("InputNaam").value=l_json_objectKey.TYP_BBB.Naam;
 		document.getElementById("ButtonCreate").disabled=true;
-		l_json_parm = {Service:"GetBbb",Parameters:{Type:l_json_objectKey.TYP_BBB}};
-		performTrans(l_json_parm);
+		performTrans( {
+			Service: "GetBbb",
+			Parameters: {
+				Type: l_json_objectKey.TYP_BBB
+			}
+		} );
 		document.getElementById("InputNaam").readOnly=true;
 		break;
 	case "N":
@@ -124,29 +129,44 @@ function InitBody() {
 
 function CreateBbb() {
 	var Type = {
-		Naam:document.getElementById("InputNaam").value,
-		Omschrijving:document.getElementById("InputOmschrijving").value,
-		XkAaaNaam:document.getElementById("InputXkAaaNaam").value,
-		XkBbbNaam1:document.getElementById("InputXkBbbNaam1").value
+		Naam: document.getElementById("InputNaam").value,
+		Omschrijving: document.getElementById("InputOmschrijving").value,
+		XkAaaNaam: document.getElementById("InputXkAaaNaam").value,
+		XkBbbNaam1: document.getElementById("InputXkBbbNaam1").value
 	};
-	performTrans( {Service:"CreateBbb",Parameters:{Type}} );
+	performTrans( {
+		Service: "CreateBbb",
+		Parameters: {
+			Type
+		}
+	} );
 }
 
 function UpdateBbb() {
 	var Type = {
-		Naam:document.getElementById("InputNaam").value,
-		Omschrijving:document.getElementById("InputOmschrijving").value,
-		XkAaaNaam:document.getElementById("InputXkAaaNaam").value,
-		XkBbbNaam1:document.getElementById("InputXkBbbNaam1").value
+		Naam: document.getElementById("InputNaam").value,
+		Omschrijving: document.getElementById("InputOmschrijving").value,
+		XkAaaNaam: document.getElementById("InputXkAaaNaam").value,
+		XkBbbNaam1: document.getElementById("InputXkBbbNaam1").value
 	};
-	performTrans( {Service:"UpdateBbb",Parameters:{Type}} );
+	performTrans( {
+		Service: "UpdateBbb",
+		Parameters: {
+			Type
+		}
+	} );
 }
 
 function DeleteBbb() {
 	var Type = {
-		Naam:document.getElementById("InputNaam").value
+		Naam: document.getElementById("InputNaam").value
 	};
-	performTrans( {Service:"DeleteBbb",Parameters:{Type}} );
+	performTrans( {
+		Service: "DeleteBbb",
+		Parameters: {
+			Type
+		}
+	} );
 }
 
 function OpenListBox(p_json_rows,p_icon,p_header,p_optional) {
@@ -251,14 +271,18 @@ function StartSelect001(p_event) {
 	document.body._SelectLeft = p_event.clientX;
 	document.body._SelectTop = p_event.clientY;
 	document.body._ListBoxCode = 'Ref001';
-	performTrans( {Service:"GetAaaListAll"} );
+	performTrans( {
+		Service: "GetAaaListAll"
+	} );
 }
 
 function StartSelect002(p_event) {
 	document.body._SelectLeft = p_event.clientX;
 	document.body._SelectTop = p_event.clientY;
 	document.body._ListBoxCode = 'Ref002';
-	performTrans( {Service:"GetBbbList"} );
+	performTrans( {
+		Service: "GetBbbList"
+	} );
 }
 
 function OpenDescBox(p_icon,p_name,p_type,p_attribute_type,p_sequence) {
@@ -318,8 +342,16 @@ function CloseDescBox() {
 
 function GetDescription(p_type,p_attribute_type,p_sequence) {
 	g_xmlhttp.open('POST','CubeSysServer.php',true);
-	g_xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-	g_xmlhttp.send('GetCubeDsc'+'<|||>'+p_type+'<|>'+p_attribute_type+'<|>'+p_sequence);
+	g_xmlhttp.send( {
+		Service: "GetCubeDsc",
+		Parameters: {
+			Type: {
+				TypeName: p_type,
+				AttributeTypeName: p_attribute_type,
+				Sequence: p_sequence
+			}
+		}
+	} );
 }
 
 function ToUpperCase(p_obj) 

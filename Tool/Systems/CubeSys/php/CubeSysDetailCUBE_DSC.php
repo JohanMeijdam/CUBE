@@ -6,92 +6,117 @@ $_SESSION['views']=0;
 <link rel="stylesheet" href="base_css.php" />
 <script language='javascript' type='text/javascript'>
 <!--
-var g_option;
-g_xmlhttp = new XMLHttpRequest();
+var g_option = null;
+var g_json_option = null;
+var g_parent_node_id = null;
+var g_node_id = null;
+
+var g_xmlhttp = new XMLHttpRequest();
 g_xmlhttp.onreadystatechange = function() {
 	if(g_xmlhttp.readyState == 4) {
-		var l_argument = g_xmlhttp.responseText.split("<|||>");
-		switch (l_argument[0]) {
-		case "SELECT_CUBE_DSC":
-			var l_values = l_argument[1].split("<|>");
-			document.getElementById("InputValue").value=l_values[0];
-			break;
-		case "CREATE_CUBE_DSC":
-			document.getElementById("InputTypeName").readOnly=true;
-			document.getElementById("InputAttributeTypeName").readOnly=true;
-			document.getElementById("InputSequence").readOnly=true;
-			document.getElementById("ButtonCreate").disabled=true;
-			document.getElementById("ButtonUpdate").disabled=false;
-			document.getElementById("ButtonDelete").disabled=false;
-			l_objNode = parent.TREE.document.getElementById(document._nodeId);
-			document._nodeId = 'TYP_CUBE_DSC<||>'+document.getElementById("InputTypeName").value+'<|>'+document.getElementById("InputAttributeTypeName").value+'<|>'+document.getElementById("InputSequence").value;
-			if (l_objNode != null) {
-				if (l_objNode.firstChild._state == 'O') {
-					var l_position = 'L';
-					l_objNodePos = null;
-					parent.TREE.AddTreeviewNode(
-						l_objNode,
-						'TYP_CUBE_DSC',
-						document._nodeId,
-						'icons/desc.bmp', 
-						document.getElementById("InputTypeName").value.toLowerCase()+' '+document.getElementById("InputAttributeTypeName").value.toLowerCase()+' '+document.getElementById("InputSequence").value.toLowerCase(),
-						'N',
-						l_position,
-						l_objNodePos);
+		if(g_xmlhttp.status == 200) {
+			var g_responseText = g_xmlhttp.responseText;
+			try {
+				var l_json_array = JSON.parse(g_responseText);
+			}
+			catch (err) {
+				alert ('JSON parse error:\n'+g_responseText);
+			}
+			for (i in l_json_array) {
+				switch (l_json_array[i].ResultName) {
+					case "SELECT_CUBE_DSC":
+						var l_json_values = l_json_array[i].Rows[0].Data;
+						document.getElementById("InputValue").value=l_json_values.Value;
+						break;
+					case "CREATE_CUBE_DSC":
+						document.getElementById("InputTypeName").readOnly=true;
+						document.getElementById("InputAttributeTypeName").readOnly=true;
+						document.getElementById("InputSequence").readOnly=true;
+						document.getElementById("ButtonCreate").disabled=true;
+						document.getElementById("ButtonUpdate").disabled=false;
+						document.getElementById("ButtonDelete").disabled=false;
+						var l_objNode = parent.document.getElementById(g_parent_node_id);
+						var l_json_node_id = {TypeName:document.getElementById("InputTypeName").value,AttributeTypeName:document.getElementById("InputAttributeTypeName").value,Sequence:document.getElementById("InputSequence").value};
+						g_node_id = '{"TYP_CUBE_DSC":'+JSON.stringify(l_json_node_id)+'}';
+						if (l_objNode != null) {
+							if (l_objNode.firstChild._state == 'O') {
+								var l_position = 'L';
+								l_objNodePos = null;
+								parent.AddTreeviewNode(
+									l_objNode,
+									'TYP_CUBE_DSC',
+									l_json_node_id,
+									'icons/desc.bmp', 
+									document.getElementById("InputTypeName").value.toLowerCase()+' '+document.getElementById("InputAttributeTypeName").value.toLowerCase()+' '+document.getElementById("InputSequence").value.toLowerCase(),
+									'N',
+									l_position,
+									l_objNodePos);
+							}
+						}
+						break;
+					case "UPDATE_CUBE_DSC":
+						break;
+					case "DELETE_CUBE_DSC":
+						document.getElementById("ButtonCreate").disabled=false;
+						document.getElementById("ButtonUpdate").disabled=true;
+						document.getElementById("ButtonDelete").disabled=true;
+						var l_objNode = parent.document.getElementById(g_node_id);
+						if (g_parent_node_id == null) {
+							g_parent_node_id = l_objNode.parentNode.parentNode.id;
+						} 
+						if (l_objNode != null) {
+							l_objNode.parentNode.removeChild(l_objNode);
+						}
+						break;
+					case "SELECT_CUBE_DSC":
+						document.getElementById("CubeDesc").value = l_argument[1];
+						break;
+					case "ERROR":
+						alert ('Server error:\n'+l_json_array[i].ErrorText);
+						break;
+					default:
+						alert ('Unknown reply:\n'+g_responseText);
 				}
 			}
-			break;
-		case "UPDATE_CUBE_DSC":
-			break;
-		case "DELETE_CUBE_DSC":
-			document.getElementById("ButtonUpdate").disabled=true;
-			document.getElementById("ButtonDelete").disabled=true;
-			l_objNode = parent.TREE.document.getElementById(document._nodeId);
-			if (l_objNode != null) {
-				l_objNode = l_objNode;
-				l_objNode.parentNode.removeChild(l_objNode);
-			}
-			break;
-		case "ERROR":
-			alert ('Error: '+l_argument[1]);
-			break;
-		case "SELECT_CUBE_DSC":
-			document.getElementById("CubeDesc").value = l_argument[1];
-			break;
-		default:
-			alert (g_xmlhttp.responseText);	
-		}			
+		} else {
+			alert ('Request error:\n'+g_xmlhttp.statusText);
+		}
+		
 	}
 }
 
-function performTrans(p_message) {
+function performTrans(p_json_parm) {
+	var l_requestText = JSON.stringify(p_json_parm);
 	g_xmlhttp.open('POST','CubeSysServer.php',true);
-	g_xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-	g_xmlhttp.send(p_message);
+//	g_xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+	g_xmlhttp.send(l_requestText);
 }
 
 function InitBody() {
-	var l_argument = decodeURIComponent(document.location.href).split("<|||>");
+	var l_json_argument = JSON.parse(decodeURIComponent(location.href.split("?")[1]));
 	document.body._FlagDragging = 0;
 	document.body._DraggingId = ' ';
 	document.body._ListBoxCode="Ref000";
-	document._nodeId = l_argument[2];
-	document._argument = document._nodeId.split("<||>")[1];
-	if (document._argument != null) {
-		var values = document._argument.split("<|>");
-	}
-	switch (l_argument[1]) {
+	var l_json_objectKey = l_json_argument.objectId;
+	switch (l_json_argument.nodeType) {
 	case "D":
-		document.getElementById("InputTypeName").value=values[0];
-		document.getElementById("InputAttributeTypeName").value=values[1];
-		document.getElementById("InputSequence").value=values[2];
+		g_node_id = JSON.stringify(l_json_argument.objectId);
+		document.getElementById("InputTypeName").value=l_json_objectKey.TYP_CUBE_DSC.TypeName;
+		document.getElementById("InputAttributeTypeName").value=l_json_objectKey.TYP_CUBE_DSC.AttributeTypeName;
+		document.getElementById("InputSequence").value=l_json_objectKey.TYP_CUBE_DSC.Sequence;
 		document.getElementById("ButtonCreate").disabled=true;
-		performTrans('GetCubeDsc'+'<|||>'+document._argument);
+		performTrans( {
+			Service: "GetCubeDsc",
+			Parameters: {
+				Type: l_json_objectKey.TYP_CUBE_DSC
+			}
+		} );
 		document.getElementById("InputTypeName").readOnly=true;
 		document.getElementById("InputAttributeTypeName").readOnly=true;
 		document.getElementById("InputSequence").readOnly=true;
 		break;
 	case "N":
+		g_parent_node_id = JSON.stringify(l_json_argument.objectId);
 		document.getElementById("ButtonUpdate").disabled=true;
 		document.getElementById("ButtonDelete").disabled=true;
 		break;
@@ -101,29 +126,47 @@ function InitBody() {
 }
 
 function CreateCubeDsc() {
-	var l_parameters = 
-		document.getElementById("InputTypeName").value+'<|>'+
-		document.getElementById("InputAttributeTypeName").value+'<|>'+
-		document.getElementById("InputSequence").value+'<|>'+
-		document.getElementById("InputValue").value;
-	performTrans('CreateCubeDsc<|||>'+l_parameters);
+	var Type = {
+		TypeName: document.getElementById("InputTypeName").value,
+		AttributeTypeName: document.getElementById("InputAttributeTypeName").value,
+		Sequence: document.getElementById("InputSequence").value,
+		Value: document.getElementById("InputValue").value
+	};
+	performTrans( {
+		Service: "CreateCubeDsc",
+		Parameters: {
+			Type
+		}
+	} );
 }
 
 function UpdateCubeDsc() {
-	var l_parameters = 
-		document.getElementById("InputTypeName").value+'<|>'+
-		document.getElementById("InputAttributeTypeName").value+'<|>'+
-		document.getElementById("InputSequence").value+'<|>'+
-		document.getElementById("InputValue").value;
-	performTrans('UpdateCubeDsc<|||>'+l_parameters);
+	var Type = {
+		TypeName: document.getElementById("InputTypeName").value,
+		AttributeTypeName: document.getElementById("InputAttributeTypeName").value,
+		Sequence: document.getElementById("InputSequence").value,
+		Value: document.getElementById("InputValue").value
+	};
+	performTrans( {
+		Service: "UpdateCubeDsc",
+		Parameters: {
+			Type
+		}
+	} );
 }
 
 function DeleteCubeDsc() {
-	var l_parameters = 
-		document.getElementById("InputTypeName").value+'<|>'+
-		document.getElementById("InputAttributeTypeName").value+'<|>'+
-		document.getElementById("InputSequence").value;
-	performTrans('DeleteCubeDsc<|||>'+l_parameters);
+	var Type = {
+		TypeName: document.getElementById("InputTypeName").value,
+		AttributeTypeName: document.getElementById("InputAttributeTypeName").value,
+		Sequence: document.getElementById("InputSequence").value
+	};
+	performTrans( {
+		Service: "DeleteCubeDsc",
+		Parameters: {
+			Type
+		}
+	} );
 }
 
 function OpenDescBox(p_icon,p_name,p_type,p_attribute_type,p_sequence) {
@@ -196,7 +239,6 @@ function ToUpperCase(p_obj)
 function ReplaceSpaces(p_obj) 
 {
 	p_obj.value = p_obj.value.replace(/^\s+|\s+$/g, "").replace(/ /g ,"_");
-
 }
 
 function StartMove(p_event) {

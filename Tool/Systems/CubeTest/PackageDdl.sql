@@ -932,14 +932,14 @@ CREATE OR REPLACE PACKAGE pkg_prd IS
 			p_naam IN VARCHAR2);
 	PROCEDURE get_pr2 (
 			p_cube_row IN OUT c_cube_row,
-			p_fk_prd_code IN VARCHAR2,
-			p_fk_prd_naam IN VARCHAR2,
+			p_code IN VARCHAR2,
+			p_naam IN VARCHAR2);
+	PROCEDURE get_pr2_fkey (
+			p_cube_row IN OUT c_cube_row,
 			p_code IN VARCHAR2,
 			p_naam IN VARCHAR2);
 	PROCEDURE get_pr2_pa2_items (
 			p_cube_row IN OUT c_cube_row,
-			p_fk_prd_code IN VARCHAR2,
-			p_fk_prd_naam IN VARCHAR2,
 			p_code IN VARCHAR2,
 			p_naam IN VARCHAR2);
 	PROCEDURE insert_pr2 (
@@ -955,46 +955,30 @@ CREATE OR REPLACE PACKAGE pkg_prd IS
 			p_naam IN VARCHAR2,
 			p_omschrijving IN VARCHAR2);
 	PROCEDURE delete_pr2 (
-			p_fk_prd_code IN VARCHAR2,
-			p_fk_prd_naam IN VARCHAR2,
 			p_code IN VARCHAR2,
 			p_naam IN VARCHAR2);
 	PROCEDURE get_pa2_for_prd_list_encapsulated (
 			p_cube_row IN OUT c_cube_row,
-			p_fk_prd_code IN VARCHAR2,
-			p_fk_prd_naam IN VARCHAR2,
 			p_code IN VARCHAR2,
 			p_naam IN VARCHAR2,
 			x_fk_prd_code IN VARCHAR2,
 			x_fk_prd_naam IN VARCHAR2);
 	PROCEDURE get_pa2 (
 			p_cube_row IN OUT c_cube_row,
-			p_fk_prd_code IN VARCHAR2,
-			p_fk_prd_naam IN VARCHAR2,
-			p_fk_pr2_code IN VARCHAR2,
-			p_fk_pr2_naam IN VARCHAR2,
+			p_code IN VARCHAR2,
+			p_naam IN VARCHAR2);
+	PROCEDURE get_pa2_fkey (
+			p_cube_row IN OUT c_cube_row,
 			p_code IN VARCHAR2,
 			p_naam IN VARCHAR2);
 	PROCEDURE get_pa2_pa2_items (
 			p_cube_row IN OUT c_cube_row,
-			p_fk_prd_code IN VARCHAR2,
-			p_fk_prd_naam IN VARCHAR2,
-			p_fk_pr2_code IN VARCHAR2,
-			p_fk_pr2_naam IN VARCHAR2,
 			p_code IN VARCHAR2,
 			p_naam IN VARCHAR2);
 	PROCEDURE change_parent_pa2 (
 			p_cube_flag_root IN VARCHAR2,
-			p_fk_prd_code IN VARCHAR2,
-			p_fk_prd_naam IN VARCHAR2,
-			p_fk_pr2_code IN VARCHAR2,
-			p_fk_pr2_naam IN VARCHAR2,
 			p_code IN VARCHAR2,
 			p_naam IN VARCHAR2,
-			x_fk_prd_code IN VARCHAR2,
-			x_fk_prd_naam IN VARCHAR2,
-			x_fk_pr2_code IN VARCHAR2,
-			x_fk_pr2_naam IN VARCHAR2,
 			x_code IN VARCHAR2,
 			x_naam IN VARCHAR2);
 	PROCEDURE insert_pa2 (
@@ -1007,10 +991,6 @@ CREATE OR REPLACE PACKAGE pkg_prd IS
 			p_code IN VARCHAR2,
 			p_naam IN VARCHAR2,
 			p_omschrijving IN VARCHAR2,
-			p_xf_pa2_prd_code IN VARCHAR2,
-			p_xf_pa2_prd_naam IN VARCHAR2,
-			p_xf_pa2_pr2_code IN VARCHAR2,
-			p_xf_pa2_pr2_naam IN VARCHAR2,
 			p_xk_pa2_code IN VARCHAR2,
 			p_xk_pa2_naam IN VARCHAR2);
 	PROCEDURE update_pa2 (
@@ -1023,17 +1003,9 @@ CREATE OR REPLACE PACKAGE pkg_prd IS
 			p_code IN VARCHAR2,
 			p_naam IN VARCHAR2,
 			p_omschrijving IN VARCHAR2,
-			p_xf_pa2_prd_code IN VARCHAR2,
-			p_xf_pa2_prd_naam IN VARCHAR2,
-			p_xf_pa2_pr2_code IN VARCHAR2,
-			p_xf_pa2_pr2_naam IN VARCHAR2,
 			p_xk_pa2_code IN VARCHAR2,
 			p_xk_pa2_naam IN VARCHAR2);
 	PROCEDURE delete_pa2 (
-			p_fk_prd_code IN VARCHAR2,
-			p_fk_prd_naam IN VARCHAR2,
-			p_fk_pr2_code IN VARCHAR2,
-			p_fk_pr2_naam IN VARCHAR2,
 			p_code IN VARCHAR2,
 			p_naam IN VARCHAR2);
 	PROCEDURE get_prt_for_prd_list_encapsulated (
@@ -1044,24 +1016,20 @@ CREATE OR REPLACE PACKAGE pkg_prd IS
 			x_fk_prd_naam IN VARCHAR2);
 	PROCEDURE get_prt (
 			p_cube_row IN OUT c_cube_row,
-			p_fk_prd_code IN VARCHAR2,
-			p_fk_prd_naam IN VARCHAR2,
+			p_code IN VARCHAR2,
+			p_naam IN VARCHAR2);
+	PROCEDURE get_prt_fkey (
+			p_cube_row IN OUT c_cube_row,
 			p_code IN VARCHAR2,
 			p_naam IN VARCHAR2);
 	PROCEDURE get_prt_prt_items (
 			p_cube_row IN OUT c_cube_row,
-			p_fk_prd_code IN VARCHAR2,
-			p_fk_prd_naam IN VARCHAR2,
 			p_code IN VARCHAR2,
 			p_naam IN VARCHAR2);
 	PROCEDURE change_parent_prt (
 			p_cube_flag_root IN VARCHAR2,
-			p_fk_prd_code IN VARCHAR2,
-			p_fk_prd_naam IN VARCHAR2,
 			p_code IN VARCHAR2,
 			p_naam IN VARCHAR2,
-			x_fk_prd_code IN VARCHAR2,
-			x_fk_prd_naam IN VARCHAR2,
 			x_code IN VARCHAR2,
 			x_naam IN VARCHAR2);
 	PROCEDURE insert_prt (
@@ -1072,8 +1040,6 @@ CREATE OR REPLACE PACKAGE pkg_prd IS
 			p_code IN VARCHAR2,
 			p_naam IN VARCHAR2,
 			p_omschrijving IN VARCHAR2,
-			p_xf_prt_prd_code IN VARCHAR2,
-			p_xf_prt_prd_naam IN VARCHAR2,
 			p_xk_prt_code IN VARCHAR2,
 			p_xk_prt_naam IN VARCHAR2);
 	PROCEDURE update_prt (
@@ -1084,13 +1050,9 @@ CREATE OR REPLACE PACKAGE pkg_prd IS
 			p_code IN VARCHAR2,
 			p_naam IN VARCHAR2,
 			p_omschrijving IN VARCHAR2,
-			p_xf_prt_prd_code IN VARCHAR2,
-			p_xf_prt_prd_naam IN VARCHAR2,
 			p_xk_prt_code IN VARCHAR2,
 			p_xk_prt_naam IN VARCHAR2);
 	PROCEDURE delete_prt (
-			p_fk_prd_code IN VARCHAR2,
-			p_fk_prd_naam IN VARCHAR2,
 			p_code IN VARCHAR2,
 			p_naam IN VARCHAR2);
 END;
@@ -1137,14 +1099,12 @@ CREATE OR REPLACE PACKAGE BODY pkg_prd IS
 	BEGIN
 		OPEN p_cube_row FOR
 			SELECT
-			  fk_prd_code,
-			  fk_prd_naam,
 			  code,
 			  naam
 			FROM v_prod2
 			WHERE fk_prd_code = p_code
 			  AND fk_prd_naam = p_naam
-			ORDER BY fk_prd_code, fk_prd_naam, code, naam;
+			ORDER BY code, naam;
 	END;
 
 	PROCEDURE get_prd_prt_items (
@@ -1154,8 +1114,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_prd IS
 	BEGIN
 		OPEN p_cube_row FOR
 			SELECT
-			  fk_prd_code,
-			  fk_prd_naam,
 			  code,
 			  naam
 			FROM v_part
@@ -1163,7 +1121,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_prd IS
 			  AND fk_prd_naam = p_naam
 			  AND fk_prt_code IS NULL
 			  AND fk_prt_naam IS NULL
-			ORDER BY fk_prd_code, fk_prd_naam, code, naam;
+			ORDER BY code, naam;
 	END;
 
 	PROCEDURE insert_prd (
@@ -1223,25 +1181,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_prd IS
 
 	PROCEDURE get_pr2 (
 			p_cube_row IN OUT c_cube_row,
-			p_fk_prd_code IN VARCHAR2,
-			p_fk_prd_naam IN VARCHAR2,
-			p_code IN VARCHAR2,
-			p_naam IN VARCHAR2) IS
-	BEGIN
-		OPEN p_cube_row FOR
-			SELECT
-			  omschrijving
-			FROM v_prod2
-			WHERE fk_prd_code = p_fk_prd_code
-			  AND fk_prd_naam = p_fk_prd_naam
-			  AND code = p_code
-			  AND naam = p_naam;
-	END;
-
-	PROCEDURE get_pr2_pa2_items (
-			p_cube_row IN OUT c_cube_row,
-			p_fk_prd_code IN VARCHAR2,
-			p_fk_prd_naam IN VARCHAR2,
 			p_code IN VARCHAR2,
 			p_naam IN VARCHAR2) IS
 	BEGIN
@@ -1249,18 +1188,41 @@ CREATE OR REPLACE PACKAGE BODY pkg_prd IS
 			SELECT
 			  fk_prd_code,
 			  fk_prd_naam,
-			  fk_pr2_code,
-			  fk_pr2_naam,
+			  omschrijving
+			FROM v_prod2
+			WHERE code = p_code
+			  AND naam = p_naam;
+	END;
+
+	PROCEDURE get_pr2_fkey (
+			p_cube_row IN OUT c_cube_row,
+			p_code IN VARCHAR2,
+			p_naam IN VARCHAR2) IS
+	BEGIN
+		OPEN p_cube_row FOR
+			SELECT
+			  fk_prd_code,
+			  fk_prd_naam
+			FROM v_prod2
+			WHERE code = p_code
+			  AND naam = p_naam;
+	END;
+
+	PROCEDURE get_pr2_pa2_items (
+			p_cube_row IN OUT c_cube_row,
+			p_code IN VARCHAR2,
+			p_naam IN VARCHAR2) IS
+	BEGIN
+		OPEN p_cube_row FOR
+			SELECT
 			  code,
 			  naam
 			FROM v_part2
-			WHERE fk_prd_code = p_fk_prd_code
-			  AND fk_prd_naam = p_fk_prd_naam
-			  AND fk_pr2_code = p_code
+			WHERE fk_pr2_code = p_code
 			  AND fk_pr2_naam = p_naam
 			  AND fk_pa2_code IS NULL
 			  AND fk_pa2_naam IS NULL
-			ORDER BY fk_prd_code, fk_prd_naam, fk_pr2_code, fk_pr2_naam, code, naam;
+			ORDER BY code, naam;
 	END;
 
 	PROCEDURE insert_pr2 (
@@ -1297,30 +1259,24 @@ CREATE OR REPLACE PACKAGE BODY pkg_prd IS
 			p_omschrijving IN VARCHAR2) IS
 	BEGIN
 		UPDATE v_prod2 SET
+			fk_prd_code = p_fk_prd_code,
+			fk_prd_naam = p_fk_prd_naam,
 			omschrijving = p_omschrijving
-		WHERE fk_prd_code = p_fk_prd_code
-		  AND fk_prd_naam = p_fk_prd_naam
-		  AND code = p_code
+		WHERE code = p_code
 		  AND naam = p_naam;
 	END;
 
 	PROCEDURE delete_pr2 (
-			p_fk_prd_code IN VARCHAR2,
-			p_fk_prd_naam IN VARCHAR2,
 			p_code IN VARCHAR2,
 			p_naam IN VARCHAR2) IS
 	BEGIN
 		DELETE v_prod2
-		WHERE fk_prd_code = p_fk_prd_code
-		  AND fk_prd_naam = p_fk_prd_naam
-		  AND code = p_code
+		WHERE code = p_code
 		  AND naam = p_naam;
 	END;
 
 	PROCEDURE get_pa2_for_prd_list_encapsulated (
 			p_cube_row IN OUT c_cube_row,
-			p_fk_prd_code IN VARCHAR2,
-			p_fk_prd_naam IN VARCHAR2,
 			p_code IN VARCHAR2,
 			p_naam IN VARCHAR2,
 			x_fk_prd_code IN VARCHAR2,
@@ -1328,22 +1284,12 @@ CREATE OR REPLACE PACKAGE BODY pkg_prd IS
 	BEGIN
 		OPEN p_cube_row FOR
 			SELECT
-			  fk_prd_code,
-			  fk_prd_naam,
-			  fk_pr2_code,
-			  fk_pr2_naam,
 			  code,
 			  naam
 			FROM v_part2
-			WHERE 	    ( fk_prd_code = p_fk_prd_code
-				  AND fk_prd_naam = p_fk_prd_naam
-				  AND fk_pr2_code = p_code
+			WHERE 	    ( fk_pr2_code = p_code
 				  AND fk_pr2_naam = p_naam )
-			   OR 	    ( 	NOT ( fk_prd_code = p_fk_prd_code
-					  AND p_fk_prd_code IS NOT NULL
-					  AND fk_prd_naam = p_fk_prd_naam
-					  AND p_fk_prd_naam IS NOT NULL
-					  AND fk_pr2_code = p_code
+			   OR 	    ( 	NOT ( fk_pr2_code = p_code
 					  AND p_code IS NOT NULL
 					  AND fk_pr2_naam = p_naam
 					  AND p_naam IS NOT NULL )
@@ -1351,44 +1297,11 @@ CREATE OR REPLACE PACKAGE BODY pkg_prd IS
 				  AND fk_pa2_naam IS NULL
 				  AND fk_prd_code = x_fk_prd_code
 				  AND fk_prd_naam = x_fk_prd_naam )
-			ORDER BY fk_prd_code, fk_prd_naam, fk_pr2_code, fk_pr2_naam, code, naam;
+			ORDER BY code, naam;
 	END;
 
 	PROCEDURE get_pa2 (
 			p_cube_row IN OUT c_cube_row,
-			p_fk_prd_code IN VARCHAR2,
-			p_fk_prd_naam IN VARCHAR2,
-			p_fk_pr2_code IN VARCHAR2,
-			p_fk_pr2_naam IN VARCHAR2,
-			p_code IN VARCHAR2,
-			p_naam IN VARCHAR2) IS
-	BEGIN
-		OPEN p_cube_row FOR
-			SELECT
-			  fk_pa2_code,
-			  fk_pa2_naam,
-			  omschrijving,
-			  xf_pa2_prd_code,
-			  xf_pa2_prd_naam,
-			  xf_pa2_pr2_code,
-			  xf_pa2_pr2_naam,
-			  xk_pa2_code,
-			  xk_pa2_naam
-			FROM v_part2
-			WHERE fk_prd_code = p_fk_prd_code
-			  AND fk_prd_naam = p_fk_prd_naam
-			  AND fk_pr2_code = p_fk_pr2_code
-			  AND fk_pr2_naam = p_fk_pr2_naam
-			  AND code = p_code
-			  AND naam = p_naam;
-	END;
-
-	PROCEDURE get_pa2_pa2_items (
-			p_cube_row IN OUT c_cube_row,
-			p_fk_prd_code IN VARCHAR2,
-			p_fk_prd_naam IN VARCHAR2,
-			p_fk_pr2_code IN VARCHAR2,
-			p_fk_pr2_naam IN VARCHAR2,
 			p_code IN VARCHAR2,
 			p_naam IN VARCHAR2) IS
 	BEGIN
@@ -1398,23 +1311,48 @@ CREATE OR REPLACE PACKAGE BODY pkg_prd IS
 			  fk_prd_naam,
 			  fk_pr2_code,
 			  fk_pr2_naam,
+			  fk_pa2_code,
+			  fk_pa2_naam,
+			  omschrijving,
+			  xk_pa2_code,
+			  xk_pa2_naam
+			FROM v_part2
+			WHERE code = p_code
+			  AND naam = p_naam;
+	END;
+
+	PROCEDURE get_pa2_fkey (
+			p_cube_row IN OUT c_cube_row,
+			p_code IN VARCHAR2,
+			p_naam IN VARCHAR2) IS
+	BEGIN
+		OPEN p_cube_row FOR
+			SELECT
+			  fk_prd_code,
+			  fk_prd_naam,
+			  fk_pr2_code,
+			  fk_pr2_naam
+			FROM v_part2
+			WHERE code = p_code
+			  AND naam = p_naam;
+	END;
+
+	PROCEDURE get_pa2_pa2_items (
+			p_cube_row IN OUT c_cube_row,
+			p_code IN VARCHAR2,
+			p_naam IN VARCHAR2) IS
+	BEGIN
+		OPEN p_cube_row FOR
+			SELECT
 			  code,
 			  naam
 			FROM v_part2
-			WHERE fk_prd_code = p_fk_prd_code
-			  AND fk_prd_naam = p_fk_prd_naam
-			  AND fk_pr2_code = p_fk_pr2_code
-			  AND fk_pr2_naam = p_fk_pr2_naam
-			  AND fk_pa2_code = p_code
+			WHERE fk_pa2_code = p_code
 			  AND fk_pa2_naam = p_naam
-			ORDER BY fk_prd_code, fk_prd_naam, fk_pr2_code, fk_pr2_naam, code, naam;
+			ORDER BY code, naam;
 	END;
 
 	PROCEDURE check_no_part_pa2 (
-			p_fk_prd_code IN VARCHAR2,
-			p_fk_prd_naam IN VARCHAR2,
-			p_fk_pr2_code IN VARCHAR2,
-			p_fk_pr2_naam IN VARCHAR2,
 			p_code IN VARCHAR2,
 			p_naam IN VARCHAR2,
 			x_code IN VARCHAR2,
@@ -1436,27 +1374,15 @@ CREATE OR REPLACE PACKAGE BODY pkg_prd IS
 			SELECT fk_pa2_code, fk_pa2_naam
 			INTO l_code, l_naam
 			FROM v_part2
-			WHERE fk_prd_code = p_fk_prd_code
-			  AND fk_prd_naam = p_fk_prd_naam
-			  AND fk_pr2_code = p_fk_pr2_code
-			  AND fk_pr2_naam = p_fk_pr2_naam
-			  AND code = l_code
+			WHERE code = l_code
 			  AND naam = l_naam;
 		END LOOP;
 	END;
 
 	PROCEDURE change_parent_pa2 (
 			p_cube_flag_root IN VARCHAR2,
-			p_fk_prd_code IN VARCHAR2,
-			p_fk_prd_naam IN VARCHAR2,
-			p_fk_pr2_code IN VARCHAR2,
-			p_fk_pr2_naam IN VARCHAR2,
 			p_code IN VARCHAR2,
 			p_naam IN VARCHAR2,
-			x_fk_prd_code IN VARCHAR2,
-			x_fk_prd_naam IN VARCHAR2,
-			x_fk_pr2_code IN VARCHAR2,
-			x_fk_pr2_naam IN VARCHAR2,
 			x_code IN VARCHAR2,
 			x_naam IN VARCHAR2) IS
 	BEGIN
@@ -1464,25 +1390,17 @@ CREATE OR REPLACE PACKAGE BODY pkg_prd IS
 			UPDATE v_part2 SET
 				fk_pa2_code = NULL,
 				fk_pa2_naam = NULL
-			WHERE fk_prd_code = p_fk_prd_code
-			  AND fk_prd_naam = p_fk_prd_naam
-			  AND fk_pr2_code = p_fk_pr2_code
-			  AND fk_pr2_naam = p_fk_pr2_naam
-			  AND code = p_code
+			WHERE code = p_code
 			  AND naam = p_naam;
 			IF SQL%NOTFOUND THEN
 				RAISE_APPLICATION_ERROR (-20002, 'Type part2 not found');
 			END IF;
 		ELSE
-			check_no_part_pa2 (p_fk_prd_code, p_fk_prd_naam, p_fk_pr2_code, p_fk_pr2_naam, p_code, p_naam, x_code, x_naam);
+			check_no_part_pa2 (p_code, p_naam, x_code, x_naam);
 			UPDATE v_part2 SET
 				fk_pa2_code = x_code,
 				fk_pa2_naam = x_naam
-			WHERE fk_prd_code = p_fk_prd_code
-			  AND fk_prd_naam = p_fk_prd_naam
-			  AND fk_pr2_code = p_fk_pr2_code
-			  AND fk_pr2_naam = p_fk_pr2_naam
-			  AND code = p_code
+			WHERE code = p_code
 			  AND naam = p_naam;
 			IF SQL%NOTFOUND THEN
 				RAISE_APPLICATION_ERROR (-20002, 'Type part2 not found');
@@ -1500,10 +1418,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_prd IS
 			p_code IN VARCHAR2,
 			p_naam IN VARCHAR2,
 			p_omschrijving IN VARCHAR2,
-			p_xf_pa2_prd_code IN VARCHAR2,
-			p_xf_pa2_prd_naam IN VARCHAR2,
-			p_xf_pa2_pr2_code IN VARCHAR2,
-			p_xf_pa2_pr2_naam IN VARCHAR2,
 			p_xk_pa2_code IN VARCHAR2,
 			p_xk_pa2_naam IN VARCHAR2) IS
 	BEGIN
@@ -1519,10 +1433,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_prd IS
 			code,
 			naam,
 			omschrijving,
-			xf_pa2_prd_code,
-			xf_pa2_prd_naam,
-			xf_pa2_pr2_code,
-			xf_pa2_pr2_naam,
 			xk_pa2_code,
 			xk_pa2_naam)
 		VALUES (
@@ -1537,10 +1447,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_prd IS
 			p_code,
 			p_naam,
 			p_omschrijving,
-			p_xf_pa2_prd_code,
-			p_xf_pa2_prd_naam,
-			p_xf_pa2_pr2_code,
-			p_xf_pa2_pr2_naam,
 			p_xk_pa2_code,
 			p_xk_pa2_naam);
 	EXCEPTION
@@ -1558,45 +1464,29 @@ CREATE OR REPLACE PACKAGE BODY pkg_prd IS
 			p_code IN VARCHAR2,
 			p_naam IN VARCHAR2,
 			p_omschrijving IN VARCHAR2,
-			p_xf_pa2_prd_code IN VARCHAR2,
-			p_xf_pa2_prd_naam IN VARCHAR2,
-			p_xf_pa2_pr2_code IN VARCHAR2,
-			p_xf_pa2_pr2_naam IN VARCHAR2,
 			p_xk_pa2_code IN VARCHAR2,
 			p_xk_pa2_naam IN VARCHAR2) IS
 	BEGIN
 		UPDATE v_part2 SET
+			fk_prd_code = p_fk_prd_code,
+			fk_prd_naam = p_fk_prd_naam,
+			fk_pr2_code = p_fk_pr2_code,
+			fk_pr2_naam = p_fk_pr2_naam,
 			fk_pa2_code = p_fk_pa2_code,
 			fk_pa2_naam = p_fk_pa2_naam,
 			omschrijving = p_omschrijving,
-			xf_pa2_prd_code = p_xf_pa2_prd_code,
-			xf_pa2_prd_naam = p_xf_pa2_prd_naam,
-			xf_pa2_pr2_code = p_xf_pa2_pr2_code,
-			xf_pa2_pr2_naam = p_xf_pa2_pr2_naam,
 			xk_pa2_code = p_xk_pa2_code,
 			xk_pa2_naam = p_xk_pa2_naam
-		WHERE fk_prd_code = p_fk_prd_code
-		  AND fk_prd_naam = p_fk_prd_naam
-		  AND fk_pr2_code = p_fk_pr2_code
-		  AND fk_pr2_naam = p_fk_pr2_naam
-		  AND code = p_code
+		WHERE code = p_code
 		  AND naam = p_naam;
 	END;
 
 	PROCEDURE delete_pa2 (
-			p_fk_prd_code IN VARCHAR2,
-			p_fk_prd_naam IN VARCHAR2,
-			p_fk_pr2_code IN VARCHAR2,
-			p_fk_pr2_naam IN VARCHAR2,
 			p_code IN VARCHAR2,
 			p_naam IN VARCHAR2) IS
 	BEGIN
 		DELETE v_part2
-		WHERE fk_prd_code = p_fk_prd_code
-		  AND fk_prd_naam = p_fk_prd_naam
-		  AND fk_pr2_code = p_fk_pr2_code
-		  AND fk_pr2_naam = p_fk_pr2_naam
-		  AND code = p_code
+		WHERE code = p_code
 		  AND naam = p_naam;
 	END;
 
@@ -1609,8 +1499,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_prd IS
 	BEGIN
 		OPEN p_cube_row FOR
 			SELECT
-			  fk_prd_code,
-			  fk_prd_naam,
 			  code,
 			  naam
 			FROM v_part
@@ -1624,36 +1512,11 @@ CREATE OR REPLACE PACKAGE BODY pkg_prd IS
 				  AND fk_prt_naam IS NULL
 				  AND fk_prd_code = x_fk_prd_code
 				  AND fk_prd_naam = x_fk_prd_naam )
-			ORDER BY fk_prd_code, fk_prd_naam, code, naam;
+			ORDER BY code, naam;
 	END;
 
 	PROCEDURE get_prt (
 			p_cube_row IN OUT c_cube_row,
-			p_fk_prd_code IN VARCHAR2,
-			p_fk_prd_naam IN VARCHAR2,
-			p_code IN VARCHAR2,
-			p_naam IN VARCHAR2) IS
-	BEGIN
-		OPEN p_cube_row FOR
-			SELECT
-			  fk_prt_code,
-			  fk_prt_naam,
-			  omschrijving,
-			  xf_prt_prd_code,
-			  xf_prt_prd_naam,
-			  xk_prt_code,
-			  xk_prt_naam
-			FROM v_part
-			WHERE fk_prd_code = p_fk_prd_code
-			  AND fk_prd_naam = p_fk_prd_naam
-			  AND code = p_code
-			  AND naam = p_naam;
-	END;
-
-	PROCEDURE get_prt_prt_items (
-			p_cube_row IN OUT c_cube_row,
-			p_fk_prd_code IN VARCHAR2,
-			p_fk_prd_naam IN VARCHAR2,
 			p_code IN VARCHAR2,
 			p_naam IN VARCHAR2) IS
 	BEGIN
@@ -1661,19 +1524,46 @@ CREATE OR REPLACE PACKAGE BODY pkg_prd IS
 			SELECT
 			  fk_prd_code,
 			  fk_prd_naam,
+			  fk_prt_code,
+			  fk_prt_naam,
+			  omschrijving,
+			  xk_prt_code,
+			  xk_prt_naam
+			FROM v_part
+			WHERE code = p_code
+			  AND naam = p_naam;
+	END;
+
+	PROCEDURE get_prt_fkey (
+			p_cube_row IN OUT c_cube_row,
+			p_code IN VARCHAR2,
+			p_naam IN VARCHAR2) IS
+	BEGIN
+		OPEN p_cube_row FOR
+			SELECT
+			  fk_prd_code,
+			  fk_prd_naam
+			FROM v_part
+			WHERE code = p_code
+			  AND naam = p_naam;
+	END;
+
+	PROCEDURE get_prt_prt_items (
+			p_cube_row IN OUT c_cube_row,
+			p_code IN VARCHAR2,
+			p_naam IN VARCHAR2) IS
+	BEGIN
+		OPEN p_cube_row FOR
+			SELECT
 			  code,
 			  naam
 			FROM v_part
-			WHERE fk_prd_code = p_fk_prd_code
-			  AND fk_prd_naam = p_fk_prd_naam
-			  AND fk_prt_code = p_code
+			WHERE fk_prt_code = p_code
 			  AND fk_prt_naam = p_naam
-			ORDER BY fk_prd_code, fk_prd_naam, code, naam;
+			ORDER BY code, naam;
 	END;
 
 	PROCEDURE check_no_part_prt (
-			p_fk_prd_code IN VARCHAR2,
-			p_fk_prd_naam IN VARCHAR2,
 			p_code IN VARCHAR2,
 			p_naam IN VARCHAR2,
 			x_code IN VARCHAR2,
@@ -1695,21 +1585,15 @@ CREATE OR REPLACE PACKAGE BODY pkg_prd IS
 			SELECT fk_prt_code, fk_prt_naam
 			INTO l_code, l_naam
 			FROM v_part
-			WHERE fk_prd_code = p_fk_prd_code
-			  AND fk_prd_naam = p_fk_prd_naam
-			  AND code = l_code
+			WHERE code = l_code
 			  AND naam = l_naam;
 		END LOOP;
 	END;
 
 	PROCEDURE change_parent_prt (
 			p_cube_flag_root IN VARCHAR2,
-			p_fk_prd_code IN VARCHAR2,
-			p_fk_prd_naam IN VARCHAR2,
 			p_code IN VARCHAR2,
 			p_naam IN VARCHAR2,
-			x_fk_prd_code IN VARCHAR2,
-			x_fk_prd_naam IN VARCHAR2,
 			x_code IN VARCHAR2,
 			x_naam IN VARCHAR2) IS
 	BEGIN
@@ -1717,21 +1601,17 @@ CREATE OR REPLACE PACKAGE BODY pkg_prd IS
 			UPDATE v_part SET
 				fk_prt_code = NULL,
 				fk_prt_naam = NULL
-			WHERE fk_prd_code = p_fk_prd_code
-			  AND fk_prd_naam = p_fk_prd_naam
-			  AND code = p_code
+			WHERE code = p_code
 			  AND naam = p_naam;
 			IF SQL%NOTFOUND THEN
 				RAISE_APPLICATION_ERROR (-20002, 'Type part not found');
 			END IF;
 		ELSE
-			check_no_part_prt (p_fk_prd_code, p_fk_prd_naam, p_code, p_naam, x_code, x_naam);
+			check_no_part_prt (p_code, p_naam, x_code, x_naam);
 			UPDATE v_part SET
 				fk_prt_code = x_code,
 				fk_prt_naam = x_naam
-			WHERE fk_prd_code = p_fk_prd_code
-			  AND fk_prd_naam = p_fk_prd_naam
-			  AND code = p_code
+			WHERE code = p_code
 			  AND naam = p_naam;
 			IF SQL%NOTFOUND THEN
 				RAISE_APPLICATION_ERROR (-20002, 'Type part not found');
@@ -1747,8 +1627,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_prd IS
 			p_code IN VARCHAR2,
 			p_naam IN VARCHAR2,
 			p_omschrijving IN VARCHAR2,
-			p_xf_prt_prd_code IN VARCHAR2,
-			p_xf_prt_prd_naam IN VARCHAR2,
 			p_xk_prt_code IN VARCHAR2,
 			p_xk_prt_naam IN VARCHAR2) IS
 	BEGIN
@@ -1762,8 +1640,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_prd IS
 			code,
 			naam,
 			omschrijving,
-			xf_prt_prd_code,
-			xf_prt_prd_naam,
 			xk_prt_code,
 			xk_prt_naam)
 		VALUES (
@@ -1776,8 +1652,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_prd IS
 			p_code,
 			p_naam,
 			p_omschrijving,
-			p_xf_prt_prd_code,
-			p_xf_prt_prd_naam,
 			p_xk_prt_code,
 			p_xk_prt_naam);
 	EXCEPTION
@@ -1793,35 +1667,27 @@ CREATE OR REPLACE PACKAGE BODY pkg_prd IS
 			p_code IN VARCHAR2,
 			p_naam IN VARCHAR2,
 			p_omschrijving IN VARCHAR2,
-			p_xf_prt_prd_code IN VARCHAR2,
-			p_xf_prt_prd_naam IN VARCHAR2,
 			p_xk_prt_code IN VARCHAR2,
 			p_xk_prt_naam IN VARCHAR2) IS
 	BEGIN
 		UPDATE v_part SET
+			fk_prd_code = p_fk_prd_code,
+			fk_prd_naam = p_fk_prd_naam,
 			fk_prt_code = p_fk_prt_code,
 			fk_prt_naam = p_fk_prt_naam,
 			omschrijving = p_omschrijving,
-			xf_prt_prd_code = p_xf_prt_prd_code,
-			xf_prt_prd_naam = p_xf_prt_prd_naam,
 			xk_prt_code = p_xk_prt_code,
 			xk_prt_naam = p_xk_prt_naam
-		WHERE fk_prd_code = p_fk_prd_code
-		  AND fk_prd_naam = p_fk_prd_naam
-		  AND code = p_code
+		WHERE code = p_code
 		  AND naam = p_naam;
 	END;
 
 	PROCEDURE delete_prt (
-			p_fk_prd_code IN VARCHAR2,
-			p_fk_prd_naam IN VARCHAR2,
 			p_code IN VARCHAR2,
 			p_naam IN VARCHAR2) IS
 	BEGIN
 		DELETE v_part
-		WHERE fk_prd_code = p_fk_prd_code
-		  AND fk_prd_naam = p_fk_prd_naam
-		  AND code = p_code
+		WHERE code = p_code
 		  AND naam = p_naam;
 	END;
 END;

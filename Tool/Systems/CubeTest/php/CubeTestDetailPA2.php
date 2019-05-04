@@ -25,15 +25,16 @@ g_xmlhttp.onreadystatechange = function() {
 			for (i in l_json_array) {
 				switch (l_json_array[i].ResultName) {
 					case "SELECT_PA2":
-						document.getElementById("InputFkPa2Code").value=l_json_array[i].Rows[0].Data.FkPa2Code;
-						document.getElementById("InputFkPa2Naam").value=l_json_array[i].Rows[0].Data.FkPa2Naam;
-						document.getElementById("InputOmschrijving").value=l_json_array[i].Rows[0].Data.Omschrijving;
-						document.getElementById("InputXfPa2PrdCode").value=l_json_array[i].Rows[0].Data.XfPa2PrdCode;
-						document.getElementById("InputXfPa2PrdNaam").value=l_json_array[i].Rows[0].Data.XfPa2PrdNaam;
-						document.getElementById("InputXfPa2Pr2Code").value=l_json_array[i].Rows[0].Data.XfPa2Pr2Code;
-						document.getElementById("InputXfPa2Pr2Naam").value=l_json_array[i].Rows[0].Data.XfPa2Pr2Naam;
-						document.getElementById("InputXkPa2Code").value=l_json_array[i].Rows[0].Data.XkPa2Code;
-						document.getElementById("InputXkPa2Naam").value=l_json_array[i].Rows[0].Data.XkPa2Naam;
+						var l_json_values = l_json_array[i].Rows[0].Data;
+						document.getElementById("InputFkPrdCode").value=l_json_values.FkPrdCode;
+						document.getElementById("InputFkPrdNaam").value=l_json_values.FkPrdNaam;
+						document.getElementById("InputFkPr2Code").value=l_json_values.FkPr2Code;
+						document.getElementById("InputFkPr2Naam").value=l_json_values.FkPr2Naam;
+						document.getElementById("InputFkPa2Code").value=l_json_values.FkPa2Code;
+						document.getElementById("InputFkPa2Naam").value=l_json_values.FkPa2Naam;
+						document.getElementById("InputOmschrijving").value=l_json_values.Omschrijving;
+						document.getElementById("InputXkPa2Code").value=l_json_values.XkPa2Code;
+						document.getElementById("InputXkPa2Naam").value=l_json_values.XkPa2Naam;
 						break;
 					case "CREATE_PA2":
 						document.getElementById("InputFkPrdCode").readOnly=true;
@@ -48,7 +49,7 @@ g_xmlhttp.onreadystatechange = function() {
 						document.getElementById("ButtonUpdate").disabled=false;
 						document.getElementById("ButtonDelete").disabled=false;
 						var l_objNode = parent.document.getElementById(g_parent_node_id);
-						var l_json_node_id = {FkPrdCode:document.getElementById("InputFkPrdCode").value,FkPrdNaam:document.getElementById("InputFkPrdNaam").value,FkPr2Code:document.getElementById("InputFkPr2Code").value,FkPr2Naam:document.getElementById("InputFkPr2Naam").value,Code:document.getElementById("InputCode").value,Naam:document.getElementById("InputNaam").value};
+						var l_json_node_id = {Code:document.getElementById("InputCode").value,Naam:document.getElementById("InputNaam").value};
 						g_node_id = '{"TYP_PA2":'+JSON.stringify(l_json_node_id)+'}';
 						if (l_objNode != null) {
 							if (l_objNode.firstChild._state == 'O') {
@@ -83,6 +84,18 @@ g_xmlhttp.onreadystatechange = function() {
 					case "LIST_PA2":
 						OpenListBox(l_json_array[i].Rows,'part','Part2','Y');
 						break;
+					case "SELECT_FKEY_PR2":
+						var l_json_values = l_json_array[i].Rows[0].Data;
+						document.getElementById("InputFkPrdCode").value=l_json_values.FkPrdCode;
+						document.getElementById("InputFkPrdNaam").value=l_json_values.FkPrdNaam;
+						break;
+					case "SELECT_FKEY_PA2":
+						var l_json_values = l_json_array[i].Rows[0].Data;
+						document.getElementById("InputFkPrdCode").value=l_json_values.FkPrdCode;
+						document.getElementById("InputFkPrdNaam").value=l_json_values.FkPrdNaam;
+						document.getElementById("InputFkPr2Code").value=l_json_values.FkPr2Code;
+						document.getElementById("InputFkPr2Naam").value=l_json_values.FkPr2Naam;
+						break;
 					case "SELECT_CUBE_DSC":
 						document.getElementById("CubeDesc").value = l_argument[1];
 						break;
@@ -116,15 +129,15 @@ function InitBody() {
 	switch (l_json_argument.nodeType) {
 	case "D":
 		g_node_id = JSON.stringify(l_json_argument.objectId);
-		document.getElementById("InputFkPrdCode").value=l_json_objectKey.TYP_PA2.FkPrdCode;
-		document.getElementById("InputFkPrdNaam").value=l_json_objectKey.TYP_PA2.FkPrdNaam;
-		document.getElementById("InputFkPr2Code").value=l_json_objectKey.TYP_PA2.FkPr2Code;
-		document.getElementById("InputFkPr2Naam").value=l_json_objectKey.TYP_PA2.FkPr2Naam;
 		document.getElementById("InputCode").value=l_json_objectKey.TYP_PA2.Code;
 		document.getElementById("InputNaam").value=l_json_objectKey.TYP_PA2.Naam;
 		document.getElementById("ButtonCreate").disabled=true;
-		l_json_parm = {Service:"GetPa2",Parameters:{Type:l_json_objectKey.TYP_PA2}};
-		performTrans(l_json_parm);
+		performTrans( {
+			Service: "GetPa2",
+			Parameters: {
+				Type: l_json_objectKey.TYP_PA2
+			}
+		} );
 		document.getElementById("InputFkPrdCode").readOnly=true;
 		document.getElementById("InputFkPrdNaam").readOnly=true;
 		document.getElementById("InputFkPr2Code").readOnly=true;
@@ -136,12 +149,16 @@ function InitBody() {
 		break;
 	case "N":
 		g_parent_node_id = JSON.stringify(l_json_argument.objectId);
-		document.getElementById("InputFkPrdCode").value=l_json_objectKey.TYP_PR2.FkPrdCode;
-		document.getElementById("InputFkPrdNaam").value=l_json_objectKey.TYP_PR2.FkPrdNaam;
 		document.getElementById("InputFkPr2Code").value=l_json_objectKey.TYP_PR2.Code;
 		document.getElementById("InputFkPr2Naam").value=l_json_objectKey.TYP_PR2.Naam;
 		document.getElementById("ButtonUpdate").disabled=true;
 		document.getElementById("ButtonDelete").disabled=true;
+		performTrans( {
+			Service: "GetPr2Fkey",
+			Parameters: {
+				Type: l_json_objectKey.TYP_PR2
+			}
+		} );
 		document.getElementById("InputFkPrdCode").readOnly=true;
 		document.getElementById("InputFkPrdNaam").readOnly=true;
 		document.getElementById("InputFkPr2Code").readOnly=true;
@@ -151,14 +168,16 @@ function InitBody() {
 		break;  
 	case "R":
 		g_parent_node_id = JSON.stringify(l_json_argument.objectId);
-		document.getElementById("InputFkPrdCode").value=l_json_objectKey.TYP_PA2.FkPrdCode;
-		document.getElementById("InputFkPrdNaam").value=l_json_objectKey.TYP_PA2.FkPrdNaam;
-		document.getElementById("InputFkPr2Code").value=l_json_objectKey.TYP_PA2.Code;
-		document.getElementById("InputFkPr2Naam").value=l_json_objectKey.TYP_PA2.Naam;
 		document.getElementById("InputFkPa2Code").value=l_json_objectKey.TYP_PA2.Code;
 		document.getElementById("InputFkPa2Naam").value=l_json_objectKey.TYP_PA2.Naam;
 		document.getElementById("ButtonUpdate").disabled=true;
 		document.getElementById("ButtonDelete").disabled=true;
+		performTrans( {
+			Service: "GetPa2Fkey",
+			Parameters: {
+				Type: l_json_objectKey.TYP_PA2
+			}
+		} );
 		document.getElementById("InputFkPrdCode").readOnly=true;
 		document.getElementById("InputFkPrdNaam").readOnly=true;
 		document.getElementById("InputFkPr2Code").readOnly=true;
@@ -174,56 +193,59 @@ function InitBody() {
 
 function CreatePa2() {
 	var Type = {
-		FkPrdCode:document.getElementById("InputFkPrdCode").value,
-		FkPrdNaam:document.getElementById("InputFkPrdNaam").value,
-		FkPr2Code:document.getElementById("InputFkPr2Code").value,
-		FkPr2Naam:document.getElementById("InputFkPr2Naam").value,
-		FkPa2Code:document.getElementById("InputFkPa2Code").value,
-		FkPa2Naam:document.getElementById("InputFkPa2Naam").value,
-		Code:document.getElementById("InputCode").value,
-		Naam:document.getElementById("InputNaam").value,
-		Omschrijving:document.getElementById("InputOmschrijving").value,
-		XfPa2PrdCode:document.getElementById("InputXfPa2PrdCode").value,
-		XfPa2PrdNaam:document.getElementById("InputXfPa2PrdNaam").value,
-		XfPa2Pr2Code:document.getElementById("InputXfPa2Pr2Code").value,
-		XfPa2Pr2Naam:document.getElementById("InputXfPa2Pr2Naam").value,
-		XkPa2Code:document.getElementById("InputXkPa2Code").value,
-		XkPa2Naam:document.getElementById("InputXkPa2Naam").value
+		FkPrdCode: document.getElementById("InputFkPrdCode").value,
+		FkPrdNaam: document.getElementById("InputFkPrdNaam").value,
+		FkPr2Code: document.getElementById("InputFkPr2Code").value,
+		FkPr2Naam: document.getElementById("InputFkPr2Naam").value,
+		FkPa2Code: document.getElementById("InputFkPa2Code").value,
+		FkPa2Naam: document.getElementById("InputFkPa2Naam").value,
+		Code: document.getElementById("InputCode").value,
+		Naam: document.getElementById("InputNaam").value,
+		Omschrijving: document.getElementById("InputOmschrijving").value,
+		XkPa2Code: document.getElementById("InputXkPa2Code").value,
+		XkPa2Naam: document.getElementById("InputXkPa2Naam").value
 	};
-	performTrans( {Service:"CreatePa2",Parameters:{Type}} );
+	performTrans( {
+		Service: "CreatePa2",
+		Parameters: {
+			Type
+		}
+	} );
 }
 
 function UpdatePa2() {
 	var Type = {
-		FkPrdCode:document.getElementById("InputFkPrdCode").value,
-		FkPrdNaam:document.getElementById("InputFkPrdNaam").value,
-		FkPr2Code:document.getElementById("InputFkPr2Code").value,
-		FkPr2Naam:document.getElementById("InputFkPr2Naam").value,
-		FkPa2Code:document.getElementById("InputFkPa2Code").value,
-		FkPa2Naam:document.getElementById("InputFkPa2Naam").value,
-		Code:document.getElementById("InputCode").value,
-		Naam:document.getElementById("InputNaam").value,
-		Omschrijving:document.getElementById("InputOmschrijving").value,
-		XfPa2PrdCode:document.getElementById("InputXfPa2PrdCode").value,
-		XfPa2PrdNaam:document.getElementById("InputXfPa2PrdNaam").value,
-		XfPa2Pr2Code:document.getElementById("InputXfPa2Pr2Code").value,
-		XfPa2Pr2Naam:document.getElementById("InputXfPa2Pr2Naam").value,
-		XkPa2Code:document.getElementById("InputXkPa2Code").value,
-		XkPa2Naam:document.getElementById("InputXkPa2Naam").value
+		FkPrdCode: document.getElementById("InputFkPrdCode").value,
+		FkPrdNaam: document.getElementById("InputFkPrdNaam").value,
+		FkPr2Code: document.getElementById("InputFkPr2Code").value,
+		FkPr2Naam: document.getElementById("InputFkPr2Naam").value,
+		FkPa2Code: document.getElementById("InputFkPa2Code").value,
+		FkPa2Naam: document.getElementById("InputFkPa2Naam").value,
+		Code: document.getElementById("InputCode").value,
+		Naam: document.getElementById("InputNaam").value,
+		Omschrijving: document.getElementById("InputOmschrijving").value,
+		XkPa2Code: document.getElementById("InputXkPa2Code").value,
+		XkPa2Naam: document.getElementById("InputXkPa2Naam").value
 	};
-	performTrans( {Service:"UpdatePa2",Parameters:{Type}} );
+	performTrans( {
+		Service: "UpdatePa2",
+		Parameters: {
+			Type
+		}
+	} );
 }
 
 function DeletePa2() {
 	var Type = {
-		FkPrdCode:document.getElementById("InputFkPrdCode").value,
-		FkPrdNaam:document.getElementById("InputFkPrdNaam").value,
-		FkPr2Code:document.getElementById("InputFkPr2Code").value,
-		FkPr2Naam:document.getElementById("InputFkPr2Naam").value,
-		Code:document.getElementById("InputCode").value,
-		Naam:document.getElementById("InputNaam").value
+		Code: document.getElementById("InputCode").value,
+		Naam: document.getElementById("InputNaam").value
 	};
-	performTrans( {Service:"DeletePa2",Parameters:{Type}} );
+	performTrans( {
+		Service: "DeletePa2",
+		Parameters: {
+			Type
+		}
+	} );
 }
 
 function OpenListBox(p_json_rows,p_icon,p_header,p_optional) {
@@ -306,26 +328,6 @@ function UpdateForeignKey(p_obj) {
 	switch (document.body._ListBoxCode){
 	case "Ref001":
 		if (l_values == '') {
-			document.getElementById("InputXfPa2PrdCode").value = '';
-		} else {
-			document.getElementById("InputXfPa2PrdCode").value = l_json_values.FkPrdCode;
-		}
-		if (l_values == '') {
-			document.getElementById("InputXfPa2PrdNaam").value = '';
-		} else {
-			document.getElementById("InputXfPa2PrdNaam").value = l_json_values.FkPrdNaam;
-		}
-		if (l_values == '') {
-			document.getElementById("InputXfPa2Pr2Code").value = '';
-		} else {
-			document.getElementById("InputXfPa2Pr2Code").value = l_json_values.FkPr2Code;
-		}
-		if (l_values == '') {
-			document.getElementById("InputXfPa2Pr2Naam").value = '';
-		} else {
-			document.getElementById("InputXfPa2Pr2Naam").value = l_json_values.FkPr2Naam;
-		}
-		if (l_values == '') {
 			document.getElementById("InputXkPa2Code").value = '';
 		} else {
 			document.getElementById("InputXkPa2Code").value = l_json_values.Code;
@@ -346,10 +348,8 @@ function StartSelect001(p_event) {
 	document.body._SelectLeft = p_event.clientX;
 	document.body._SelectTop = p_event.clientY;
 	document.body._ListBoxCode = 'Ref001';
-	var l_json_parms = {
+	var Parameters = {
 		Type: {
-			FkPrdCode:document.getElementById("InputFkPrdCode").value,
-			FkPrdNaam:document.getElementById("InputFkPrdNaam").value,
 			FkPr2Code:document.getElementById("InputFkPr2Code").value,
 			FkPr2Naam:document.getElementById("InputFkPr2Naam").value
 		},
@@ -358,7 +358,10 @@ function StartSelect001(p_event) {
 			FkPrdNaam:document.getElementById("InputFkPrdNaam").value
 		}
 	};
-	performTrans( {Service:"GetPa2ForPrdListEncapsulated",Parameters:'+l_json_parms} );
+	performTrans( {
+		Service: "GetPa2ForPrdListEncapsulated",
+		Parameters
+	} );
 }
 
 function OpenDescBox(p_icon,p_name,p_type,p_attribute_type,p_sequence) {
@@ -418,8 +421,16 @@ function CloseDescBox() {
 
 function GetDescription(p_type,p_attribute_type,p_sequence) {
 	g_xmlhttp.open('POST','CubeSysServer.php',true);
-	g_xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-	g_xmlhttp.send('GetCubeDsc'+'<|||>'+p_type+'<|>'+p_attribute_type+'<|>'+p_sequence);
+	g_xmlhttp.send( {
+		Service: "GetCubeDsc",
+		Parameters: {
+			Type: {
+				TypeName: p_type,
+				AttributeTypeName: p_attribute_type,
+				Sequence: p_sequence
+			}
+		}
+	} );
 }
 
 function ToUpperCase(p_obj) 
@@ -464,16 +475,16 @@ function drop(p_event) {
 -->
 </script>
 </head><body oncontextmenu="return false;" onload="InitBody()" ondrop="drop(event)" ondragover="allowDrop(event)">
-<div><img src="icons/part_large.bmp" /><span> PART2</span></div>
+<div><img src="icons/part_large.bmp" /><span style="cursor:help" oncontextmenu="OpenDescBox('PART','Part2','PART2','_',-1)"> PART2</span></div>
 <hr/>
 <table>
-<tr><td><u>Prod.Code</u></td><td><div style="max-width:8em;">
+<tr><td>Prod.Code</td><td><div style="max-width:8em;">
 <input id="InputFkPrdCode" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td><u>Prod.Naam</u></td><td><div style="max-width:40em;">
+<tr><td>Prod.Naam</td><td><div style="max-width:40em;">
 <input id="InputFkPrdNaam" type="text" maxlength="40" style="width:100%;"></input></div></td></tr>
-<tr><td><u>Prod2.Code</u></td><td><div style="max-width:8em;">
+<tr><td>Prod2.Code</td><td><div style="max-width:8em;">
 <input id="InputFkPr2Code" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td><u>Prod2.Naam</u></td><td><div style="max-width:40em;">
+<tr><td>Prod2.Naam</td><td><div style="max-width:40em;">
 <input id="InputFkPr2Naam" type="text" maxlength="40" style="width:100%;"></input></div></td></tr>
 <tr><td>Part2.Code</td><td><div style="max-width:8em;">
 <input id="InputFkPa2Code" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
@@ -487,17 +498,9 @@ function drop(p_event) {
 <input id="InputOmschrijving" type="text" maxlength="120" style="width:100%;"></input></div></td></tr>
 <tr><td height=6></td></tr><tr><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/part.bmp"/> Part2 (Concerns)</legend>
 <table style="width:100%;">
-<tr><td>Prod.Code</td><td style="width:100%;"><div style="max-width:8em;">
-<input id="InputXfPa2PrdCode" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" readonly></input></div></td>
-<td><button id="RefSelect001" type="button" onclick="StartSelect001(event)">Select</button></td></tr>
-<tr><td>Prod.Naam</td><td style="width:100%;"><div style="max-width:40em;">
-<input id="InputXfPa2PrdNaam" type="text" maxlength="40" style="width:100%;" readonly></input></div></td></tr>
-<tr><td>Prod2.Code</td><td style="width:100%;"><div style="max-width:8em;">
-<input id="InputXfPa2Pr2Code" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" readonly></input></div></td></tr>
-<tr><td>Prod2.Naam</td><td style="width:100%;"><div style="max-width:40em;">
-<input id="InputXfPa2Pr2Naam" type="text" maxlength="40" style="width:100%;" readonly></input></div></td></tr>
 <tr><td>Part2.Code</td><td style="width:100%;"><div style="max-width:8em;">
-<input id="InputXkPa2Code" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" readonly></input></div></td></tr>
+<input id="InputXkPa2Code" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" readonly></input></div></td>
+<td><button id="RefSelect001" type="button" onclick="StartSelect001(event)">Select</button></td></tr>
 <tr><td>Part2.Naam</td><td style="width:100%;"><div style="max-width:40em;">
 <input id="InputXkPa2Naam" type="text" maxlength="40" style="width:100%;" readonly></input></div></td></tr>
 </table></fieldset></td></tr>

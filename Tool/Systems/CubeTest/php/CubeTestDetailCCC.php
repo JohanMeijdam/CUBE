@@ -25,11 +25,12 @@ g_xmlhttp.onreadystatechange = function() {
 			for (i in l_json_array) {
 				switch (l_json_array[i].ResultName) {
 					case "SELECT_CCC":
-						document.getElementById("InputFkCccCode").value=l_json_array[i].Rows[0].Data.FkCccCode;
-						document.getElementById("InputFkCccNaam").value=l_json_array[i].Rows[0].Data.FkCccNaam;
-						document.getElementById("InputOmschrjving").value=l_json_array[i].Rows[0].Data.Omschrjving;
-						document.getElementById("InputXkCccCode").value=l_json_array[i].Rows[0].Data.XkCccCode;
-						document.getElementById("InputXkCccNaam").value=l_json_array[i].Rows[0].Data.XkCccNaam;
+						var l_json_values = l_json_array[i].Rows[0].Data;
+						document.getElementById("InputFkCccCode").value=l_json_values.FkCccCode;
+						document.getElementById("InputFkCccNaam").value=l_json_values.FkCccNaam;
+						document.getElementById("InputOmschrjving").value=l_json_values.Omschrjving;
+						document.getElementById("InputXkCccCode").value=l_json_values.XkCccCode;
+						document.getElementById("InputXkCccNaam").value=l_json_values.XkCccNaam;
 						break;
 					case "CREATE_CCC":
 						document.getElementById("InputFkCccCode").readOnly=true;
@@ -45,7 +46,7 @@ g_xmlhttp.onreadystatechange = function() {
 						if (l_objNode != null) {
 							if (l_objNode.firstChild._state == 'O') {
 								var l_position = g_json_option.Code;
-								l_objNodePos = parent.document.getElementById(g_json_option.Type);
+								l_objNodePos = parent.document.getElementById(JSON.stringify(g_json_option.Type));
 								parent.AddTreeviewNode(
 									l_objNode,
 									'TYP_CCC',
@@ -112,8 +113,12 @@ function InitBody() {
 		document.getElementById("InputCode").value=l_json_objectKey.TYP_CCC.Code;
 		document.getElementById("InputNaam").value=l_json_objectKey.TYP_CCC.Naam;
 		document.getElementById("ButtonCreate").disabled=true;
-		l_json_parm = {Service:"GetCcc",Parameters:{Type:l_json_objectKey.TYP_CCC}};
-		performTrans(l_json_parm);
+		performTrans( {
+			Service: "GetCcc",
+			Parameters: {
+				Type: l_json_objectKey.TYP_CCC
+			}
+		} );
 		document.getElementById("InputFkCccCode").readOnly=true;
 		document.getElementById("InputFkCccNaam").readOnly=true;
 		document.getElementById("InputCode").readOnly=true;
@@ -143,45 +148,68 @@ function InitBody() {
 
 function CreateCcc() {
 	var Type = {
-		FkCccCode:document.getElementById("InputFkCccCode").value,
-		FkCccNaam:document.getElementById("InputFkCccNaam").value,
-		Code:document.getElementById("InputCode").value,
-		Naam:document.getElementById("InputNaam").value,
-		Omschrjving:document.getElementById("InputOmschrjving").value,
-		XkCccCode:document.getElementById("InputXkCccCode").value,
-		XkCccNaam:document.getElementById("InputXkCccNaam").value
+		FkCccCode: document.getElementById("InputFkCccCode").value,
+		FkCccNaam: document.getElementById("InputFkCccNaam").value,
+		Code: document.getElementById("InputCode").value,
+		Naam: document.getElementById("InputNaam").value,
+		Omschrjving: document.getElementById("InputOmschrjving").value,
+		XkCccCode: document.getElementById("InputXkCccCode").value,
+		XkCccNaam: document.getElementById("InputXkCccNaam").value
 	};
 	var l_pos_action = g_json_option.Code;
 	var Option = {
-		CubePosAction:l_pos_action
+		CubePosAction: l_pos_action
 	};
 	if (l_pos_action == 'F' || l_pos_action == 'L') {
-		performTrans( {Service:"CreateCcc",Parameters:{Option,Type}} );
+		performTrans( {
+			Service: "CreateCcc",
+			Parameters: {
+				Option,
+				Type
+			}
+		} );
 	} else {
 		var Ref = g_json_option.Type;
-		performTrans( {Service:"CreateCcc",Parameters:{Option,Type,Ref}} );
+		performTrans( {
+			Service: "CreateCcc",
+				Parameters: {
+					Option,
+					Type,
+					Ref
+				}
+			} );
 	}
 }
 
 function UpdateCcc() {
 	var Type = {
-		FkCccCode:document.getElementById("InputFkCccCode").value,
-		FkCccNaam:document.getElementById("InputFkCccNaam").value,
-		Code:document.getElementById("InputCode").value,
-		Naam:document.getElementById("InputNaam").value,
-		Omschrjving:document.getElementById("InputOmschrjving").value,
-		XkCccCode:document.getElementById("InputXkCccCode").value,
-		XkCccNaam:document.getElementById("InputXkCccNaam").value
+		FkCccCode: document.getElementById("InputFkCccCode").value,
+		FkCccNaam: document.getElementById("InputFkCccNaam").value,
+		Code: document.getElementById("InputCode").value,
+		Naam: document.getElementById("InputNaam").value,
+		Omschrjving: document.getElementById("InputOmschrjving").value,
+		XkCccCode: document.getElementById("InputXkCccCode").value,
+		XkCccNaam: document.getElementById("InputXkCccNaam").value
 	};
-	performTrans( {Service:"UpdateCcc",Parameters:{Type}} );
+	performTrans( {
+		Service: "UpdateCcc",
+		Parameters: {
+			Type
+		}
+	} );
 }
 
 function DeleteCcc() {
 	var Type = {
-		Code:document.getElementById("InputCode").value,
-		Naam:document.getElementById("InputNaam").value
+		Code: document.getElementById("InputCode").value,
+		Naam: document.getElementById("InputNaam").value
 	};
-	performTrans( {Service:"DeleteCcc",Parameters:{Type}} );
+	performTrans( {
+		Service: "DeleteCcc",
+		Parameters: {
+			Type
+		}
+	} );
 }
 
 function OpenListBox(p_json_rows,p_icon,p_header,p_optional) {
@@ -284,7 +312,9 @@ function StartSelect001(p_event) {
 	document.body._SelectLeft = p_event.clientX;
 	document.body._SelectTop = p_event.clientY;
 	document.body._ListBoxCode = 'Ref001';
-	performTrans( {Service:"GetCccListAll"} );
+	performTrans( {
+		Service: "GetCccListAll"
+	} );
 }
 
 function OpenDescBox(p_icon,p_name,p_type,p_attribute_type,p_sequence) {
@@ -344,8 +374,16 @@ function CloseDescBox() {
 
 function GetDescription(p_type,p_attribute_type,p_sequence) {
 	g_xmlhttp.open('POST','CubeSysServer.php',true);
-	g_xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-	g_xmlhttp.send('GetCubeDsc'+'<|||>'+p_type+'<|>'+p_attribute_type+'<|>'+p_sequence);
+	g_xmlhttp.send( {
+		Service: "GetCubeDsc",
+		Parameters: {
+			Type: {
+				TypeName: p_type,
+				AttributeTypeName: p_attribute_type,
+				Sequence: p_sequence
+			}
+		}
+	} );
 }
 
 function ToUpperCase(p_obj) 

@@ -25,9 +25,10 @@ g_xmlhttp.onreadystatechange = function() {
 			for (i in l_json_array) {
 				switch (l_json_array[i].ResultName) {
 					case "SELECT_AAA":
-						document.getElementById("InputFkAaaNaam").value=l_json_array[i].Rows[0].Data.FkAaaNaam;
-						document.getElementById("InputOmschrijving").value=l_json_array[i].Rows[0].Data.Omschrijving;
-						document.getElementById("InputXkAaaNaam").value=l_json_array[i].Rows[0].Data.XkAaaNaam;
+						var l_json_values = l_json_array[i].Rows[0].Data;
+						document.getElementById("InputFkAaaNaam").value=l_json_values.FkAaaNaam;
+						document.getElementById("InputOmschrijving").value=l_json_values.Omschrijving;
+						document.getElementById("InputXkAaaNaam").value=l_json_values.XkAaaNaam;
 						break;
 					case "CREATE_AAA":
 						document.getElementById("InputFkAaaNaam").readOnly=true;
@@ -111,8 +112,12 @@ function InitBody() {
 		g_node_id = JSON.stringify(l_json_argument.objectId);
 		document.getElementById("InputNaam").value=l_json_objectKey.TYP_AAA.Naam;
 		document.getElementById("ButtonCreate").disabled=true;
-		l_json_parm = {Service:"GetAaa",Parameters:{Type:l_json_objectKey.TYP_AAA}};
-		performTrans(l_json_parm);
+		performTrans( {
+			Service: "GetAaa",
+			Parameters: {
+				Type: l_json_objectKey.TYP_AAA
+			}
+		} );
 		document.getElementById("InputFkAaaNaam").readOnly=true;
 		document.getElementById("InputNaam").readOnly=true;
 		document.getElementById("InputXkAaaNaam").readOnly=true;
@@ -139,29 +144,44 @@ function InitBody() {
 
 function CreateAaa() {
 	var Type = {
-		FkAaaNaam:document.getElementById("InputFkAaaNaam").value,
-		Naam:document.getElementById("InputNaam").value,
-		Omschrijving:document.getElementById("InputOmschrijving").value,
-		XkAaaNaam:document.getElementById("InputXkAaaNaam").value
+		FkAaaNaam: document.getElementById("InputFkAaaNaam").value,
+		Naam: document.getElementById("InputNaam").value,
+		Omschrijving: document.getElementById("InputOmschrijving").value,
+		XkAaaNaam: document.getElementById("InputXkAaaNaam").value
 	};
-	performTrans( {Service:"CreateAaa",Parameters:{Type}} );
+	performTrans( {
+		Service: "CreateAaa",
+		Parameters: {
+			Type
+		}
+	} );
 }
 
 function UpdateAaa() {
 	var Type = {
-		FkAaaNaam:document.getElementById("InputFkAaaNaam").value,
-		Naam:document.getElementById("InputNaam").value,
-		Omschrijving:document.getElementById("InputOmschrijving").value,
-		XkAaaNaam:document.getElementById("InputXkAaaNaam").value
+		FkAaaNaam: document.getElementById("InputFkAaaNaam").value,
+		Naam: document.getElementById("InputNaam").value,
+		Omschrijving: document.getElementById("InputOmschrijving").value,
+		XkAaaNaam: document.getElementById("InputXkAaaNaam").value
 	};
-	performTrans( {Service:"UpdateAaa",Parameters:{Type}} );
+	performTrans( {
+		Service: "UpdateAaa",
+		Parameters: {
+			Type
+		}
+	} );
 }
 
 function DeleteAaa() {
 	var Type = {
-		Naam:document.getElementById("InputNaam").value
+		Naam: document.getElementById("InputNaam").value
 	};
-	performTrans( {Service:"DeleteAaa",Parameters:{Type}} );
+	performTrans( {
+		Service: "DeleteAaa",
+		Parameters: {
+			Type
+		}
+	} );
 }
 
 function OpenListBox(p_json_rows,p_icon,p_header,p_optional) {
@@ -259,7 +279,9 @@ function StartSelect001(p_event) {
 	document.body._SelectLeft = p_event.clientX;
 	document.body._SelectTop = p_event.clientY;
 	document.body._ListBoxCode = 'Ref001';
-	performTrans( {Service:"GetAaaListAll"} );
+	performTrans( {
+		Service: "GetAaaListAll"
+	} );
 }
 
 function OpenDescBox(p_icon,p_name,p_type,p_attribute_type,p_sequence) {
@@ -319,8 +341,16 @@ function CloseDescBox() {
 
 function GetDescription(p_type,p_attribute_type,p_sequence) {
 	g_xmlhttp.open('POST','CubeSysServer.php',true);
-	g_xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-	g_xmlhttp.send('GetCubeDsc'+'<|||>'+p_type+'<|>'+p_attribute_type+'<|>'+p_sequence);
+	g_xmlhttp.send( {
+		Service: "GetCubeDsc",
+		Parameters: {
+			Type: {
+				TypeName: p_type,
+				AttributeTypeName: p_attribute_type,
+				Sequence: p_sequence
+			}
+		}
+	} );
 }
 
 function ToUpperCase(p_obj) 

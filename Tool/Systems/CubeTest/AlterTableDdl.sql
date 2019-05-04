@@ -598,10 +598,6 @@ BEGIN
 			code VARCHAR2(8),
 			naam VARCHAR2(40),
 			omschrijving VARCHAR2(120),
-			xf_pa2_prd_code VARCHAR2(8),
-			xf_pa2_prd_naam VARCHAR2(40),
-			xf_pa2_pr2_code VARCHAR2(8),
-			xf_pa2_pr2_naam VARCHAR2(40),
 			xk_pa2_code VARCHAR2(8),
 			xk_pa2_naam VARCHAR2(40))';
 		DBMS_OUTPUT.PUT_LINE('Table T_PART2 created');
@@ -684,34 +680,6 @@ BEGIN
 			DBMS_OUTPUT.PUT_LINE('Column T_PART2.OMSCHRIJVING created');
 		END IF;
 
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_PART2' AND column_name = 'XF_PA2_PRD_CODE';
-		IF l_count = 0 THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_part2 ADD xf_pa2_prd_code VARCHAR2(8)';
-			DBMS_OUTPUT.PUT_LINE('Column T_PART2.XF_PA2_PRD_CODE created');
-		END IF;
-
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_PART2' AND column_name = 'XF_PA2_PRD_NAAM';
-		IF l_count = 0 THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_part2 ADD xf_pa2_prd_naam VARCHAR2(40)';
-			DBMS_OUTPUT.PUT_LINE('Column T_PART2.XF_PA2_PRD_NAAM created');
-		END IF;
-
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_PART2' AND column_name = 'XF_PA2_PR2_CODE';
-		IF l_count = 0 THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_part2 ADD xf_pa2_pr2_code VARCHAR2(8)';
-			DBMS_OUTPUT.PUT_LINE('Column T_PART2.XF_PA2_PR2_CODE created');
-		END IF;
-
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_PART2' AND column_name = 'XF_PA2_PR2_NAAM';
-		IF l_count = 0 THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_part2 ADD xf_pa2_pr2_naam VARCHAR2(40)';
-			DBMS_OUTPUT.PUT_LINE('Column T_PART2.XF_PA2_PR2_NAAM created');
-		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_PART2' AND column_name = 'XK_PA2_CODE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
@@ -759,8 +727,6 @@ BEGIN
 			code VARCHAR2(8),
 			naam VARCHAR2(40),
 			omschrijving VARCHAR2(120),
-			xf_prt_prd_code VARCHAR2(8),
-			xf_prt_prd_naam VARCHAR2(40),
 			xk_prt_code VARCHAR2(8),
 			xk_prt_naam VARCHAR2(40))';
 		DBMS_OUTPUT.PUT_LINE('Table T_PART created');
@@ -827,20 +793,6 @@ BEGIN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_part ADD omschrijving VARCHAR2(120)';
 			DBMS_OUTPUT.PUT_LINE('Column T_PART.OMSCHRIJVING created');
-		END IF;
-
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_PART' AND column_name = 'XF_PRT_PRD_CODE';
-		IF l_count = 0 THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_part ADD xf_prt_prd_code VARCHAR2(8)';
-			DBMS_OUTPUT.PUT_LINE('Column T_PART.XF_PRT_PRD_CODE created');
-		END IF;
-
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_PART' AND column_name = 'XF_PRT_PRD_NAAM';
-		IF l_count = 0 THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_part ADD xf_prt_prd_naam VARCHAR2(40)';
-			DBMS_OUTPUT.PUT_LINE('Column T_PART.XF_PRT_PRD_NAAM created');
 		END IF;
 
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_PART' AND column_name = 'XK_PRT_CODE';
@@ -1277,8 +1229,6 @@ BEGIN
 	EXECUTE IMMEDIATE
 	'ALTER TABLE t_prod2 ADD CONSTRAINT pr2_pk
 		PRIMARY KEY (
-			fk_prd_code,
-			fk_prd_naam,
 			code,
 			naam )';
 	DBMS_OUTPUT.PUT_LINE('Primary Key T_PROD2.PR2_PK created');
@@ -1318,10 +1268,6 @@ BEGIN
 			'CODE','VARCHAR2(8)',
 			'NAAM','VARCHAR2(40)',
 			'OMSCHRIJVING','VARCHAR2(120)',
-			'XF_PA2_PRD_CODE','VARCHAR2(8)',
-			'XF_PA2_PRD_NAAM','VARCHAR2(40)',
-			'XF_PA2_PR2_CODE','VARCHAR2(8)',
-			'XF_PA2_PR2_NAAM','VARCHAR2(40)',
 			'XK_PA2_CODE','VARCHAR2(8)',
 			'XK_PA2_NAAM','VARCHAR2(40)',NULL) new_domain,
 		DECODE(column_name,
@@ -1336,10 +1282,6 @@ BEGIN
 			'CODE',NULL,
 			'NAAM',NULL,
 			'OMSCHRIJVING',NULL,
-			'XF_PA2_PRD_CODE',NULL,
-			'XF_PA2_PRD_NAAM',NULL,
-			'XF_PA2_PR2_CODE',NULL,
-			'XF_PA2_PR2_NAAM',NULL,
 			'XK_PA2_CODE',NULL,
 			'XK_PA2_NAAM',NULL,NULL) new_default_value
   		FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_PART2')
@@ -1369,22 +1311,18 @@ BEGIN
 	EXECUTE IMMEDIATE
 	'ALTER TABLE t_part2 ADD CONSTRAINT pa2_pk
 		PRIMARY KEY (
-			fk_prd_code,
-			fk_prd_naam,
-			fk_pr2_code,
-			fk_pr2_naam,
 			code,
 			naam )';
 	DBMS_OUTPUT.PUT_LINE('Primary Key T_PART2.PA2_PK created');
 	EXECUTE IMMEDIATE
 	'ALTER TABLE t_part2 ADD CONSTRAINT pa2_pr2_fk
-		FOREIGN KEY (fk_prd_code, fk_prd_naam, fk_pr2_code, fk_pr2_naam)
-		REFERENCES t_prod2 (fk_prd_code, fk_prd_naam, code, naam)
+		FOREIGN KEY (fk_pr2_code, fk_pr2_naam)
+		REFERENCES t_prod2 (code, naam)
 		ON DELETE CASCADE';
 	EXECUTE IMMEDIATE
 	'ALTER TABLE t_part2 ADD CONSTRAINT pa2_pa2_fk
-		FOREIGN KEY (fk_prd_code, fk_prd_naam, fk_pr2_code, fk_pr2_naam, fk_pa2_code, fk_pa2_naam)
-		REFERENCES t_part2 (fk_prd_code, fk_prd_naam, fk_pr2_code, fk_pr2_naam, code, naam)
+		FOREIGN KEY (fk_pa2_code, fk_pa2_naam)
+		REFERENCES t_part2 (code, naam)
 		ON DELETE CASCADE';
 	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_PART2' AND column_name NOT IN (
 							'CUBE_ID',
@@ -1398,10 +1336,6 @@ BEGIN
 							'CODE',
 							'NAAM',
 							'OMSCHRIJVING',
-							'XF_PA2_PRD_CODE',
-							'XF_PA2_PRD_NAAM',
-							'XF_PA2_PR2_CODE',
-							'XF_PA2_PR2_NAAM',
 							'XK_PA2_CODE',
 							'XK_PA2_NAAM'))
 	LOOP
@@ -1426,8 +1360,6 @@ BEGIN
 			'CODE','VARCHAR2(8)',
 			'NAAM','VARCHAR2(40)',
 			'OMSCHRIJVING','VARCHAR2(120)',
-			'XF_PRT_PRD_CODE','VARCHAR2(8)',
-			'XF_PRT_PRD_NAAM','VARCHAR2(40)',
 			'XK_PRT_CODE','VARCHAR2(8)',
 			'XK_PRT_NAAM','VARCHAR2(40)',NULL) new_domain,
 		DECODE(column_name,
@@ -1440,8 +1372,6 @@ BEGIN
 			'CODE',NULL,
 			'NAAM',NULL,
 			'OMSCHRIJVING',NULL,
-			'XF_PRT_PRD_CODE',NULL,
-			'XF_PRT_PRD_NAAM',NULL,
 			'XK_PRT_CODE',NULL,
 			'XK_PRT_NAAM',NULL,NULL) new_default_value
   		FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_PART')
@@ -1471,8 +1401,6 @@ BEGIN
 	EXECUTE IMMEDIATE
 	'ALTER TABLE t_part ADD CONSTRAINT prt_pk
 		PRIMARY KEY (
-			fk_prd_code,
-			fk_prd_naam,
 			code,
 			naam )';
 	DBMS_OUTPUT.PUT_LINE('Primary Key T_PART.PRT_PK created');
@@ -1483,8 +1411,8 @@ BEGIN
 		ON DELETE CASCADE';
 	EXECUTE IMMEDIATE
 	'ALTER TABLE t_part ADD CONSTRAINT prt_prt_fk
-		FOREIGN KEY (fk_prd_code, fk_prd_naam, fk_prt_code, fk_prt_naam)
-		REFERENCES t_part (fk_prd_code, fk_prd_naam, code, naam)
+		FOREIGN KEY (fk_prt_code, fk_prt_naam)
+		REFERENCES t_part (code, naam)
 		ON DELETE CASCADE';
 	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_PART' AND column_name NOT IN (
 							'CUBE_ID',
@@ -1496,8 +1424,6 @@ BEGIN
 							'CODE',
 							'NAAM',
 							'OMSCHRIJVING',
-							'XF_PRT_PRD_CODE',
-							'XF_PRT_PRD_NAAM',
 							'XK_PRT_CODE',
 							'XK_PRT_NAAM'))
 	LOOP
