@@ -277,6 +277,7 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Prepare table T_INFORMATION_TYPE');
 	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = 'CUBEROOT' AND table_name = 'T_INFORMATION_TYPE';
 	IF l_count = 0 THEN
 		EXECUTE IMMEDIATE
@@ -319,6 +320,7 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Prepare table T_INFORMATION_TYPE_ELEMENT');
 	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = 'CUBEROOT' AND table_name = 'T_INFORMATION_TYPE_ELEMENT';
 	IF l_count = 0 THEN
 		EXECUTE IMMEDIATE
@@ -433,6 +435,7 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Prepare table T_PERMITTED_VALUE');
 	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = 'CUBEROOT' AND table_name = 'T_PERMITTED_VALUE';
 	IF l_count = 0 THEN
 		EXECUTE IMMEDIATE
@@ -507,6 +510,7 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Prepare table T_BUSINESS_OBJECT_TYPE');
 	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = 'CUBEROOT' AND table_name = 'T_BUSINESS_OBJECT_TYPE';
 	IF l_count = 0 THEN
 		EXECUTE IMMEDIATE
@@ -581,6 +585,7 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Prepare table T_TYPE');
 	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = 'CUBEROOT' AND table_name = 'T_TYPE';
 	IF l_count = 0 THEN
 		EXECUTE IMMEDIATE
@@ -719,6 +724,7 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Prepare table T_ATTRIBUTE');
 	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = 'CUBEROOT' AND table_name = 'T_ATTRIBUTE';
 	IF l_count = 0 THEN
 		EXECUTE IMMEDIATE
@@ -841,6 +847,7 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Prepare table T_DERIVATION');
 	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = 'CUBEROOT' AND table_name = 'T_DERIVATION';
 	IF l_count = 0 THEN
 		EXECUTE IMMEDIATE
@@ -931,6 +938,7 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Prepare table T_DESCRIPTION_ATTRIBUTE');
 	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = 'CUBEROOT' AND table_name = 'T_DESCRIPTION_ATTRIBUTE';
 	IF l_count = 0 THEN
 		EXECUTE IMMEDIATE
@@ -997,6 +1005,7 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Prepare table T_RESTRICTION_TYPE_SPEC_ATB');
 	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = 'CUBEROOT' AND table_name = 'T_RESTRICTION_TYPE_SPEC_ATB';
 	IF l_count = 0 THEN
 		EXECUTE IMMEDIATE
@@ -1087,6 +1096,7 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Prepare table T_REFERENCE');
 	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = 'CUBEROOT' AND table_name = 'T_REFERENCE';
 	IF l_count = 0 THEN
 		EXECUTE IMMEDIATE
@@ -1217,6 +1227,7 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Prepare table T_DESCRIPTION_REFERENCE');
 	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = 'CUBEROOT' AND table_name = 'T_DESCRIPTION_REFERENCE';
 	IF l_count = 0 THEN
 		EXECUTE IMMEDIATE
@@ -1291,6 +1302,7 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Prepare table T_RESTRICTION_TYPE_SPEC_REF');
 	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = 'CUBEROOT' AND table_name = 'T_RESTRICTION_TYPE_SPEC_REF';
 	IF l_count = 0 THEN
 		EXECUTE IMMEDIATE
@@ -1389,6 +1401,7 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Prepare table T_RESTRICTION_TYPE_SPEC_TYP');
 	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = 'CUBEROOT' AND table_name = 'T_RESTRICTION_TYPE_SPEC_TYP';
 	IF l_count = 0 THEN
 		EXECUTE IMMEDIATE
@@ -1471,6 +1484,7 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Prepare table T_TYPE_REUSE');
 	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = 'CUBEROOT' AND table_name = 'T_TYPE_REUSE';
 	IF l_count = 0 THEN
 		EXECUTE IMMEDIATE
@@ -1537,6 +1551,7 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Prepare table T_PARTITION');
 	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = 'CUBEROOT' AND table_name = 'T_PARTITION';
 	IF l_count = 0 THEN
 		EXECUTE IMMEDIATE
@@ -1595,6 +1610,7 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Prepare table T_SUBTYPE');
 	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = 'CUBEROOT' AND table_name = 'T_SUBTYPE';
 	IF l_count = 0 THEN
 		EXECUTE IMMEDIATE
@@ -1669,6 +1685,7 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Prepare table T_TYPE_SPECIALISATION_GROUP');
 	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = 'CUBEROOT' AND table_name = 'T_TYPE_SPECIALISATION_GROUP';
 	IF l_count = 0 THEN
 		EXECUTE IMMEDIATE
@@ -1783,6 +1800,7 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Prepare table T_TYPE_SPECIALISATION');
 	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = 'CUBEROOT' AND table_name = 'T_TYPE_SPECIALISATION';
 	IF l_count = 0 THEN
 		EXECUTE IMMEDIATE
@@ -1889,6 +1907,7 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Prepare table T_DESCRIPTION_TYPE');
 	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = 'CUBEROOT' AND table_name = 'T_DESCRIPTION_TYPE';
 	IF l_count = 0 THEN
 		EXECUTE IMMEDIATE
@@ -1947,6 +1966,7 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Prepare table T_SYSTEM');
 	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = 'CUBEROOT' AND table_name = 'T_SYSTEM';
 	IF l_count = 0 THEN
 		EXECUTE IMMEDIATE
@@ -2013,6 +2033,7 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Prepare table T_SYSTEM_BO_TYPE');
 	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = 'CUBEROOT' AND table_name = 'T_SYSTEM_BO_TYPE';
 	IF l_count = 0 THEN
 		EXECUTE IMMEDIATE
@@ -2103,6 +2124,7 @@ BEGIN
 END;
 /
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Maintain table T_INFORMATION_TYPE');
 	FOR r_field IN (SELECT column_name,
 		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
 		data_default old_default_value,
@@ -2152,6 +2174,7 @@ BEGIN
 END;
 /
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Maintain table T_INFORMATION_TYPE_ELEMENT');
 	FOR r_field IN (SELECT column_name,
 		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
 		data_default old_default_value,
@@ -2234,6 +2257,7 @@ BEGIN
 END;
 /
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Maintain table T_PERMITTED_VALUE');
 	FOR r_field IN (SELECT column_name,
 		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
 		data_default old_default_value,
@@ -2302,6 +2326,7 @@ BEGIN
 END;
 /
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Maintain table T_BUSINESS_OBJECT_TYPE');
 	FOR r_field IN (SELECT column_name,
 		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
 		data_default old_default_value,
@@ -2363,6 +2388,7 @@ BEGIN
 END;
 /
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Maintain table T_TYPE');
 	FOR r_field IN (SELECT column_name,
 		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
 		data_default old_default_value,
@@ -2458,6 +2484,7 @@ BEGIN
 END;
 /
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Maintain table T_ATTRIBUTE');
 	FOR r_field IN (SELECT column_name,
 		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
 		data_default old_default_value,
@@ -2543,6 +2570,7 @@ BEGIN
 END;
 /
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Maintain table T_DERIVATION');
 	FOR r_field IN (SELECT column_name,
 		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
 		data_default old_default_value,
@@ -2616,6 +2644,7 @@ BEGIN
 END;
 /
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Maintain table T_DESCRIPTION_ATTRIBUTE');
 	FOR r_field IN (SELECT column_name,
 		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
 		data_default old_default_value,
@@ -2680,6 +2709,7 @@ BEGIN
 END;
 /
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Maintain table T_RESTRICTION_TYPE_SPEC_ATB');
 	FOR r_field IN (SELECT column_name,
 		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
 		data_default old_default_value,
@@ -2756,6 +2786,7 @@ BEGIN
 END;
 /
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Maintain table T_REFERENCE');
 	FOR r_field IN (SELECT column_name,
 		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
 		data_default old_default_value,
@@ -2845,6 +2876,7 @@ BEGIN
 END;
 /
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Maintain table T_DESCRIPTION_REFERENCE');
 	FOR r_field IN (SELECT column_name,
 		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
 		data_default old_default_value,
@@ -2913,6 +2945,7 @@ BEGIN
 END;
 /
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Maintain table T_RESTRICTION_TYPE_SPEC_REF');
 	FOR r_field IN (SELECT column_name,
 		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
 		data_default old_default_value,
@@ -2993,6 +3026,7 @@ BEGIN
 END;
 /
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Maintain table T_RESTRICTION_TYPE_SPEC_TYP');
 	FOR r_field IN (SELECT column_name,
 		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
 		data_default old_default_value,
@@ -3065,6 +3099,7 @@ BEGIN
 END;
 /
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Maintain table T_TYPE_REUSE');
 	FOR r_field IN (SELECT column_name,
 		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
 		data_default old_default_value,
@@ -3129,6 +3164,7 @@ BEGIN
 END;
 /
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Maintain table T_PARTITION');
 	FOR r_field IN (SELECT column_name,
 		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
 		data_default old_default_value,
@@ -3190,6 +3226,7 @@ BEGIN
 END;
 /
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Maintain table T_SUBTYPE');
 	FOR r_field IN (SELECT column_name,
 		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
 		data_default old_default_value,
@@ -3258,6 +3295,7 @@ BEGIN
 END;
 /
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Maintain table T_TYPE_SPECIALISATION_GROUP');
 	FOR r_field IN (SELECT column_name,
 		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
 		data_default old_default_value,
@@ -3345,6 +3383,7 @@ BEGIN
 END;
 /
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Maintain table T_TYPE_SPECIALISATION');
 	FOR r_field IN (SELECT column_name,
 		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
 		data_default old_default_value,
@@ -3425,6 +3464,7 @@ BEGIN
 END;
 /
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Maintain table T_DESCRIPTION_TYPE');
 	FOR r_field IN (SELECT column_name,
 		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
 		data_default old_default_value,
@@ -3485,6 +3525,7 @@ BEGIN
 END;
 /
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Maintain table T_SYSTEM');
 	FOR r_field IN (SELECT column_name,
 		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
 		data_default old_default_value,
@@ -3543,6 +3584,7 @@ BEGIN
 END;
 /
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Maintain table T_SYSTEM_BO_TYPE');
 	FOR r_field IN (SELECT column_name,
 		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
 		data_default old_default_value,

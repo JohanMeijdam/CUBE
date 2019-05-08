@@ -43,7 +43,7 @@ case '<<SERVICE:C>>':[[LOOP,OPERATION]][[IF:FIRST]]
 		$RowObj = new \stdClass();[[LOOP,EXPORT]][[IF:1=Y]]
 		$RowObj-><<EXPORT:C>> = new \stdClass();[[LOOP,ARGUMENT]]
 		$RowObj-><<EXPORT:C>>-><<ARGUMENT:C>> = $row["<<ARGUMENT:U>>"];[[ENDLOOP,ARGUMENT]][[ELSE]]
-		$RowObj-><<EXPORT:C>> = [[LOOP,ARGUMENT]][[IF:1=subscript]][[IF:FIRST]]'('.[[ELSE]].' ('.[[ENDIF]][[ELSE]][[IF:!FIRST]].' '.[[ENDIF]][[ENDIF]]$row["<<ARGUMENT:U>>"][[IF:1=subscript]].')'[[ENDIF]][[ENDLOOP,ARGUMENT]];[[ENDIF]][[ENDLOOP,EXPORT]]
+		$RowObj-><<EXPORT:C>> = [[IF:CHILD(ARGUMENT)]][[LOOP,ARGUMENT]][[IF:1=subscript]][[IF:FIRST]]'('.[[ELSE]].' ('.[[ENDIF]][[ELSE]][[IF:!FIRST]].' '.[[ENDIF]][[ENDIF]]$row["<<ARGUMENT:U>>"][[IF:1=subscript]].')'[[ENDIF]][[ENDLOOP,ARGUMENT]][[ELSE]]' '[[ENDIF]];[[ENDIF]][[ENDLOOP,EXPORT]]
 		$ResponseObj->Rows[] = $RowObj;
 	}[[ELSE]]
 	$r = oci_execute($stid);

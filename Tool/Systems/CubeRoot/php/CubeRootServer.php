@@ -4,133 +4,217 @@ include 'CubeDbLogon.php';
 
 set_error_handler("CubeError");
 
-$import=explode("<|||>",file_get_contents('php://input'));
-switch ($import[0]) {
+$RequestText = file_get_contents('php://input');
+$RequestObj = json_decode($RequestText, false);
+
+switch ($RequestObj->Service) {
 
 case 'GetDirItpItems':
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_itp.get_itp_root_items (:p_cube_row); END;");
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'LIST_ITP';
 	$r = perform_db_request();
-	if (!$r) { return; }
-	echo "LIST_ITP";
-	while ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["NAME"];
-		echo "<||>".$row["NAME"];
+	if (!$r) { 
+		echo ']';
+		return;
 	}
+	$ResponseObj->Rows = array();
+	while ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Key = new \stdClass();
+		$RowObj->Key->Name = $row["NAME"];
+		$RowObj->Display = $row["NAME"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'GetItpList':
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_itp.get_itp_list (:p_cube_row); END;");
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'LIST_ITP';
 	$r = perform_db_request();
-	if (!$r) { return; }
-	echo "LIST_ITP";
-	while ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["NAME"];
-		echo "<||>".$row["NAME"];
+	if (!$r) { 
+		echo ']';
+		return;
 	}
+	$ResponseObj->Rows = array();
+	while ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Key = new \stdClass();
+		$RowObj->Key->Name = $row["NAME"];
+		$RowObj->Display = $row["NAME"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'GetItpItems':
-
-	list($p_name) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_itp.get_itp_ite_items (
 		:p_cube_row,
 		:p_name);
 	END;");
-	oci_bind_by_name($stid,":p_name",$p_name);
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'LIST_ITE';
 	$r = perform_db_request();
-	if (!$r) { return; }
-	$first = True;
-	while ($row = oci_fetch_assoc($curs)) {
-		if ($first) { $first = False; echo "LIST_ITE";}
-		echo "<|||>".$row["FK_ITP_NAME"]."<|>".$row["SEQUENCE"];
-		echo "<||>".$row["SUFFIX"]." (".$row["DOMAIN"].")";
+	if (!$r) { 
+		echo ']';
+		return;
 	}
+	$ResponseObj->Rows = array();
+	while ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Key = new \stdClass();
+		$RowObj->Key->FkItpName = $row["FK_ITP_NAME"];
+		$RowObj->Key->Sequence = $row["SEQUENCE"];
+		$RowObj->Display = $row["SUFFIX"].' ('.$row["DOMAIN"].')';
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'CreateItp':
-
-	list($p_name) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_itp.insert_itp (
 		:p_name,
 		:p_cube_row);
 	END;");
-	oci_bind_by_name($stid,":p_name",$p_name);
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'CREATE_ITP';
 	$r = perform_db_request();
-	if (!$r) { return; }
-	echo "CREATE_ITP";
-	if ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["NAME"];
+	if (!$r) { 
+		echo ']';
+		return;
 	}
+	$ResponseObj->Rows = array();
+	if ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Key = new \stdClass();
+		$RowObj->Key->Name = $row["NAME"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'DeleteItp':
-
-	list($p_name) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_itp.delete_itp (
 		:p_name);
 	END;");
-	oci_bind_by_name($stid,":p_name",$p_name);
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'DELETE_ITP';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
-	echo "DELETE_ITP";
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'GetIte':
-
-	list($p_fk_itp_name, $p_sequence) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_itp.get_ite (
 		:p_cube_row,
 		:p_fk_itp_name,
 		:p_sequence);
 	END;");
-	oci_bind_by_name($stid,":p_fk_itp_name",$p_fk_itp_name);
-	oci_bind_by_name($stid,":p_sequence",$p_sequence);
+	oci_bind_by_name($stid,":p_fk_itp_name",$RequestObj->Parameters->Type->FkItpName);
+	oci_bind_by_name($stid,":p_sequence",$RequestObj->Parameters->Type->Sequence);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'SELECT_ITE';
 	$r = perform_db_request();
-	if (!$r) { return; }
-	echo "SELECT_ITE";
-	if ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["SUFFIX"]."<|>".$row["DOMAIN"]."<|>".$row["LENGTH"]."<|>".$row["DECIMALS"]."<|>".$row["CASE_SENSITIVE"]."<|>".$row["DEFAULT_VALUE"]."<|>".$row["SPACES_ALLOWED"]."<|>".$row["PRESENTATION"];
+	if (!$r) { 
+		echo ']';
+		return;
 	}
+	$ResponseObj->Rows = array();
+	if ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Data = new \stdClass();
+		$RowObj->Data->Suffix = $row["SUFFIX"];
+		$RowObj->Data->Domain = $row["DOMAIN"];
+		$RowObj->Data->Length = $row["LENGTH"];
+		$RowObj->Data->Decimals = $row["DECIMALS"];
+		$RowObj->Data->CaseSensitive = $row["CASE_SENSITIVE"];
+		$RowObj->Data->DefaultValue = $row["DEFAULT_VALUE"];
+		$RowObj->Data->SpacesAllowed = $row["SPACES_ALLOWED"];
+		$RowObj->Data->Presentation = $row["PRESENTATION"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'GetIteItems':
-
-	list($p_fk_itp_name, $p_sequence) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_itp.get_ite_val_items (
 		:p_cube_row,
 		:p_fk_itp_name,
 		:p_sequence);
 	END;");
-	oci_bind_by_name($stid,":p_fk_itp_name",$p_fk_itp_name);
-	oci_bind_by_name($stid,":p_sequence",$p_sequence);
+	oci_bind_by_name($stid,":p_fk_itp_name",$RequestObj->Parameters->Type->FkItpName);
+	oci_bind_by_name($stid,":p_sequence",$RequestObj->Parameters->Type->Sequence);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'LIST_VAL';
 	$r = perform_db_request();
-	if (!$r) { return; }
-	$first = True;
-	while ($row = oci_fetch_assoc($curs)) {
-		if ($first) { $first = False; echo "LIST_VAL";}
-		echo "<|||>".$row["FK_ITP_NAME"]."<|>".$row["FK_ITE_SEQUENCE"]."<|>".$row["CODE"];
-		echo "<||>".$row["CODE"]." ".$row["PROMPT"];
+	if (!$r) { 
+		echo ']';
+		return;
 	}
+	$ResponseObj->Rows = array();
+	while ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Key = new \stdClass();
+		$RowObj->Key->FkItpName = $row["FK_ITP_NAME"];
+		$RowObj->Key->FkIteSequence = $row["FK_ITE_SEQUENCE"];
+		$RowObj->Key->Code = $row["CODE"];
+		$RowObj->Display = $row["CODE"].' '.$row["PROMPT"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'CreateIte':
-
-	list($p_fk_itp_name, $p_sequence, $p_suffix, $p_domain, $p_length, $p_decimals, $p_case_sensitive, $p_default_value, $p_spaces_allowed, $p_presentation) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_itp.insert_ite (
 		:p_fk_itp_name,
@@ -145,28 +229,40 @@ case 'CreateIte':
 		:p_presentation,
 		:p_cube_row);
 	END;");
-	oci_bind_by_name($stid,":p_fk_itp_name",$p_fk_itp_name);
-	oci_bind_by_name($stid,":p_sequence",$p_sequence);
-	oci_bind_by_name($stid,":p_suffix",$p_suffix);
-	oci_bind_by_name($stid,":p_domain",$p_domain);
-	oci_bind_by_name($stid,":p_length",$p_length);
-	oci_bind_by_name($stid,":p_decimals",$p_decimals);
-	oci_bind_by_name($stid,":p_case_sensitive",$p_case_sensitive);
-	oci_bind_by_name($stid,":p_default_value",$p_default_value);
-	oci_bind_by_name($stid,":p_spaces_allowed",$p_spaces_allowed);
-	oci_bind_by_name($stid,":p_presentation",$p_presentation);
+	oci_bind_by_name($stid,":p_fk_itp_name",$RequestObj->Parameters->Type->FkItpName);
+	oci_bind_by_name($stid,":p_sequence",$RequestObj->Parameters->Type->Sequence);
+	oci_bind_by_name($stid,":p_suffix",$RequestObj->Parameters->Type->Suffix);
+	oci_bind_by_name($stid,":p_domain",$RequestObj->Parameters->Type->Domain);
+	oci_bind_by_name($stid,":p_length",$RequestObj->Parameters->Type->Length);
+	oci_bind_by_name($stid,":p_decimals",$RequestObj->Parameters->Type->Decimals);
+	oci_bind_by_name($stid,":p_case_sensitive",$RequestObj->Parameters->Type->CaseSensitive);
+	oci_bind_by_name($stid,":p_default_value",$RequestObj->Parameters->Type->DefaultValue);
+	oci_bind_by_name($stid,":p_spaces_allowed",$RequestObj->Parameters->Type->SpacesAllowed);
+	oci_bind_by_name($stid,":p_presentation",$RequestObj->Parameters->Type->Presentation);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'CREATE_ITE';
 	$r = perform_db_request();
-	if (!$r) { return; }
-	echo "CREATE_ITE";
-	if ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["FK_ITP_NAME"]."<|>".$row["SEQUENCE"];
+	if (!$r) { 
+		echo ']';
+		return;
 	}
+	$ResponseObj->Rows = array();
+	if ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Key = new \stdClass();
+		$RowObj->Key->FkItpName = $row["FK_ITP_NAME"];
+		$RowObj->Key->Sequence = $row["SEQUENCE"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'UpdateIte':
-
-	list($p_fk_itp_name, $p_sequence, $p_suffix, $p_domain, $p_length, $p_decimals, $p_case_sensitive, $p_default_value, $p_spaces_allowed, $p_presentation) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_itp.update_ite (
 		:p_fk_itp_name,
@@ -180,47 +276,57 @@ case 'UpdateIte':
 		:p_spaces_allowed,
 		:p_presentation);
 	END;");
-	oci_bind_by_name($stid,":p_fk_itp_name",$p_fk_itp_name);
-	oci_bind_by_name($stid,":p_sequence",$p_sequence);
-	oci_bind_by_name($stid,":p_suffix",$p_suffix);
-	oci_bind_by_name($stid,":p_domain",$p_domain);
-	oci_bind_by_name($stid,":p_length",$p_length);
-	oci_bind_by_name($stid,":p_decimals",$p_decimals);
-	oci_bind_by_name($stid,":p_case_sensitive",$p_case_sensitive);
-	oci_bind_by_name($stid,":p_default_value",$p_default_value);
-	oci_bind_by_name($stid,":p_spaces_allowed",$p_spaces_allowed);
-	oci_bind_by_name($stid,":p_presentation",$p_presentation);
+	oci_bind_by_name($stid,":p_fk_itp_name",$RequestObj->Parameters->Type->FkItpName);
+	oci_bind_by_name($stid,":p_sequence",$RequestObj->Parameters->Type->Sequence);
+	oci_bind_by_name($stid,":p_suffix",$RequestObj->Parameters->Type->Suffix);
+	oci_bind_by_name($stid,":p_domain",$RequestObj->Parameters->Type->Domain);
+	oci_bind_by_name($stid,":p_length",$RequestObj->Parameters->Type->Length);
+	oci_bind_by_name($stid,":p_decimals",$RequestObj->Parameters->Type->Decimals);
+	oci_bind_by_name($stid,":p_case_sensitive",$RequestObj->Parameters->Type->CaseSensitive);
+	oci_bind_by_name($stid,":p_default_value",$RequestObj->Parameters->Type->DefaultValue);
+	oci_bind_by_name($stid,":p_spaces_allowed",$RequestObj->Parameters->Type->SpacesAllowed);
+	oci_bind_by_name($stid,":p_presentation",$RequestObj->Parameters->Type->Presentation);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'UPDATE_ITE';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
-	echo "UPDATE_ITE";
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'DeleteIte':
-
-	list($p_fk_itp_name, $p_sequence) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_itp.delete_ite (
 		:p_fk_itp_name,
 		:p_sequence);
 	END;");
-	oci_bind_by_name($stid,":p_fk_itp_name",$p_fk_itp_name);
-	oci_bind_by_name($stid,":p_sequence",$p_sequence);
+	oci_bind_by_name($stid,":p_fk_itp_name",$RequestObj->Parameters->Type->FkItpName);
+	oci_bind_by_name($stid,":p_sequence",$RequestObj->Parameters->Type->Sequence);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'DELETE_ITE';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
-	echo "DELETE_ITE";
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'GetVal':
-
-	list($p_fk_itp_name, $p_fk_ite_sequence, $p_code) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_itp.get_val (
 		:p_cube_row,
@@ -228,21 +334,32 @@ case 'GetVal':
 		:p_fk_ite_sequence,
 		:p_code);
 	END;");
-	oci_bind_by_name($stid,":p_fk_itp_name",$p_fk_itp_name);
-	oci_bind_by_name($stid,":p_fk_ite_sequence",$p_fk_ite_sequence);
-	oci_bind_by_name($stid,":p_code",$p_code);
+	oci_bind_by_name($stid,":p_fk_itp_name",$RequestObj->Parameters->Type->FkItpName);
+	oci_bind_by_name($stid,":p_fk_ite_sequence",$RequestObj->Parameters->Type->FkIteSequence);
+	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'SELECT_VAL';
 	$r = perform_db_request();
-	if (!$r) { return; }
-	echo "SELECT_VAL";
-	if ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["PROMPT"];
+	if (!$r) { 
+		echo ']';
+		return;
 	}
+	$ResponseObj->Rows = array();
+	if ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Data = new \stdClass();
+		$RowObj->Data->Prompt = $row["PROMPT"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'MoveVal':
-
-	list($p_cube_pos_action, $p_fk_itp_name, $p_fk_ite_sequence, $p_code, $x_fk_itp_name, $x_fk_ite_sequence, $x_code) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_itp.move_val (
 		:p_cube_pos_action,
@@ -253,25 +370,30 @@ case 'MoveVal':
 		:x_fk_ite_sequence,
 		:x_code);
 	END;");
-	oci_bind_by_name($stid,":p_cube_pos_action",$p_cube_pos_action);
-	oci_bind_by_name($stid,":p_fk_itp_name",$p_fk_itp_name);
-	oci_bind_by_name($stid,":p_fk_ite_sequence",$p_fk_ite_sequence);
-	oci_bind_by_name($stid,":p_code",$p_code);
-	oci_bind_by_name($stid,":x_fk_itp_name",$x_fk_itp_name);
-	oci_bind_by_name($stid,":x_fk_ite_sequence",$x_fk_ite_sequence);
-	oci_bind_by_name($stid,":x_code",$x_code);
+	oci_bind_by_name($stid,":p_cube_pos_action",$RequestObj->Parameters->Option->CubePosAction);
+	oci_bind_by_name($stid,":p_fk_itp_name",$RequestObj->Parameters->Type->FkItpName);
+	oci_bind_by_name($stid,":p_fk_ite_sequence",$RequestObj->Parameters->Type->FkIteSequence);
+	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
+	oci_bind_by_name($stid,":x_fk_itp_name",$RequestObj->Parameters->Ref->FkItpName);
+	oci_bind_by_name($stid,":x_fk_ite_sequence",$RequestObj->Parameters->Ref->FkIteSequence);
+	oci_bind_by_name($stid,":x_code",$RequestObj->Parameters->Ref->Code);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'MOVE_VAL';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
-	echo "MOVE_VAL";
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'CreateVal':
-
-	list($p_cube_pos_action, $p_fk_itp_name, $p_fk_ite_sequence, $p_code, $p_prompt, $x_fk_itp_name, $x_fk_ite_sequence, $x_code) = explode("<|>", $import[1]."<|><|><|>");
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_itp.insert_val (
 		:p_cube_pos_action,
@@ -283,26 +405,31 @@ case 'CreateVal':
 		:x_fk_ite_sequence,
 		:x_code);
 	END;");
-	oci_bind_by_name($stid,":p_cube_pos_action",$p_cube_pos_action);
-	oci_bind_by_name($stid,":p_fk_itp_name",$p_fk_itp_name);
-	oci_bind_by_name($stid,":p_fk_ite_sequence",$p_fk_ite_sequence);
-	oci_bind_by_name($stid,":p_code",$p_code);
-	oci_bind_by_name($stid,":p_prompt",$p_prompt);
-	oci_bind_by_name($stid,":x_fk_itp_name",$x_fk_itp_name);
-	oci_bind_by_name($stid,":x_fk_ite_sequence",$x_fk_ite_sequence);
-	oci_bind_by_name($stid,":x_code",$x_code);
+	oci_bind_by_name($stid,":p_cube_pos_action",$RequestObj->Parameters->Option->CubePosAction);
+	oci_bind_by_name($stid,":p_fk_itp_name",$RequestObj->Parameters->Type->FkItpName);
+	oci_bind_by_name($stid,":p_fk_ite_sequence",$RequestObj->Parameters->Type->FkIteSequence);
+	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
+	oci_bind_by_name($stid,":p_prompt",$RequestObj->Parameters->Type->Prompt);
+	oci_bind_by_name($stid,":x_fk_itp_name",$RequestObj->Parameters->Ref->FkItpName);
+	oci_bind_by_name($stid,":x_fk_ite_sequence",$RequestObj->Parameters->Ref->FkIteSequence);
+	oci_bind_by_name($stid,":x_code",$RequestObj->Parameters->Ref->Code);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'CREATE_VAL';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
-	echo "CREATE_VAL";
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'UpdateVal':
-
-	list($p_fk_itp_name, $p_fk_ite_sequence, $p_code, $p_prompt) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_itp.update_val (
 		:p_fk_itp_name,
@@ -310,144 +437,219 @@ case 'UpdateVal':
 		:p_code,
 		:p_prompt);
 	END;");
-	oci_bind_by_name($stid,":p_fk_itp_name",$p_fk_itp_name);
-	oci_bind_by_name($stid,":p_fk_ite_sequence",$p_fk_ite_sequence);
-	oci_bind_by_name($stid,":p_code",$p_code);
-	oci_bind_by_name($stid,":p_prompt",$p_prompt);
+	oci_bind_by_name($stid,":p_fk_itp_name",$RequestObj->Parameters->Type->FkItpName);
+	oci_bind_by_name($stid,":p_fk_ite_sequence",$RequestObj->Parameters->Type->FkIteSequence);
+	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
+	oci_bind_by_name($stid,":p_prompt",$RequestObj->Parameters->Type->Prompt);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'UPDATE_VAL';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
-	echo "UPDATE_VAL";
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'DeleteVal':
-
-	list($p_fk_itp_name, $p_fk_ite_sequence, $p_code) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_itp.delete_val (
 		:p_fk_itp_name,
 		:p_fk_ite_sequence,
 		:p_code);
 	END;");
-	oci_bind_by_name($stid,":p_fk_itp_name",$p_fk_itp_name);
-	oci_bind_by_name($stid,":p_fk_ite_sequence",$p_fk_ite_sequence);
-	oci_bind_by_name($stid,":p_code",$p_code);
+	oci_bind_by_name($stid,":p_fk_itp_name",$RequestObj->Parameters->Type->FkItpName);
+	oci_bind_by_name($stid,":p_fk_ite_sequence",$RequestObj->Parameters->Type->FkIteSequence);
+	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'DELETE_VAL';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
-	echo "DELETE_VAL";
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'GetDirBotItems':
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.get_bot_root_items (:p_cube_row); END;");
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'LIST_BOT';
 	$r = perform_db_request();
-	if (!$r) { return; }
-	echo "LIST_BOT";
-	while ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["NAME"];
-		echo "<||>".$row["NAME"];
+	if (!$r) { 
+		echo ']';
+		return;
 	}
+	$ResponseObj->Rows = array();
+	while ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Key = new \stdClass();
+		$RowObj->Key->Name = $row["NAME"];
+		$RowObj->Display = $row["NAME"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'GetBotList':
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.get_bot_list (:p_cube_row); END;");
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'LIST_BOT';
 	$r = perform_db_request();
-	if (!$r) { return; }
-	echo "LIST_BOT";
-	while ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["NAME"];
-		echo "<||>".$row["NAME"];
+	if (!$r) { 
+		echo ']';
+		return;
 	}
+	$ResponseObj->Rows = array();
+	while ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Key = new \stdClass();
+		$RowObj->Key->Name = $row["NAME"];
+		$RowObj->Display = $row["NAME"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'GetBot':
-
-	list($p_name) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.get_bot (
 		:p_cube_row,
 		:p_name);
 	END;");
-	oci_bind_by_name($stid,":p_name",$p_name);
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'SELECT_BOT';
 	$r = perform_db_request();
-	if (!$r) { return; }
-	echo "SELECT_BOT";
-	if ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["CUBE_TSG_TYPE"]."<|>".$row["DIRECTORY"]."<|>".$row["API_URL"];
+	if (!$r) { 
+		echo ']';
+		return;
 	}
+	$ResponseObj->Rows = array();
+	if ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Data = new \stdClass();
+		$RowObj->Data->CubeTsgType = $row["CUBE_TSG_TYPE"];
+		$RowObj->Data->Directory = $row["DIRECTORY"];
+		$RowObj->Data->ApiUrl = $row["API_URL"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'GetBotItems':
-
-	list($p_name) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.get_bot_typ_items (
 		:p_cube_row,
 		:p_name);
 	END;");
-	oci_bind_by_name($stid,":p_name",$p_name);
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'LIST_TYP';
 	$r = perform_db_request();
-	if (!$r) { return; }
-	$first = True;
-	while ($row = oci_fetch_assoc($curs)) {
-		if ($first) { $first = False; echo "LIST_TYP";}
-		echo "<|||>".$row["NAME"];
-		echo "<||>".$row["NAME"]." (".$row["CODE"].")";
+	if (!$r) { 
+		echo ']';
+		return;
 	}
+	$ResponseObj->Rows = array();
+	while ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Key = new \stdClass();
+		$RowObj->Key->Name = $row["NAME"];
+		$RowObj->Display = $row["NAME"].' ('.$row["CODE"].')';
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'CountBotRestrictedItems':
-
-	list($p_name) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.count_bot_typ (
 		:p_cube_row,
 		:p_name);
 	END;");
-	oci_bind_by_name($stid,":p_name",$p_name);
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'COUNT_TYP';
 	$r = perform_db_request();
-	if (!$r) { return; }
-	echo "COUNT_TYP";
-	if ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["TYPE_COUNT"];
+	if (!$r) { 
+		echo ']';
+		return;
 	}
+	$ResponseObj->Rows = array();
+	if ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Data = new \stdClass();
+		$RowObj->Data->TypeCount = $row["TYPE_COUNT"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'MoveBot':
-
-	list($p_cube_pos_action, $p_name, $x_name) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.move_bot (
 		:p_cube_pos_action,
 		:p_name,
 		:x_name);
 	END;");
-	oci_bind_by_name($stid,":p_cube_pos_action",$p_cube_pos_action);
-	oci_bind_by_name($stid,":p_name",$p_name);
-	oci_bind_by_name($stid,":x_name",$x_name);
+	oci_bind_by_name($stid,":p_cube_pos_action",$RequestObj->Parameters->Option->CubePosAction);
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
+	oci_bind_by_name($stid,":x_name",$RequestObj->Parameters->Ref->Name);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'MOVE_BOT';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
-	echo "MOVE_BOT";
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'CreateBot':
-
-	list($p_cube_pos_action, $p_name, $p_cube_tsg_type, $p_directory, $p_api_url, $x_name) = explode("<|>", $import[1]."<|>");
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.insert_bot (
 		:p_cube_pos_action,
@@ -457,24 +659,29 @@ case 'CreateBot':
 		:p_api_url,
 		:x_name);
 	END;");
-	oci_bind_by_name($stid,":p_cube_pos_action",$p_cube_pos_action);
-	oci_bind_by_name($stid,":p_name",$p_name);
-	oci_bind_by_name($stid,":p_cube_tsg_type",$p_cube_tsg_type);
-	oci_bind_by_name($stid,":p_directory",$p_directory);
-	oci_bind_by_name($stid,":p_api_url",$p_api_url);
-	oci_bind_by_name($stid,":x_name",$x_name);
+	oci_bind_by_name($stid,":p_cube_pos_action",$RequestObj->Parameters->Option->CubePosAction);
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
+	oci_bind_by_name($stid,":p_cube_tsg_type",$RequestObj->Parameters->Type->CubeTsgType);
+	oci_bind_by_name($stid,":p_directory",$RequestObj->Parameters->Type->Directory);
+	oci_bind_by_name($stid,":p_api_url",$RequestObj->Parameters->Type->ApiUrl);
+	oci_bind_by_name($stid,":x_name",$RequestObj->Parameters->Ref->Name);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'CREATE_BOT';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
-	echo "CREATE_BOT";
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'UpdateBot':
-
-	list($p_name, $p_cube_tsg_type, $p_directory, $p_api_url) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.update_bot (
 		:p_name,
@@ -482,258 +689,410 @@ case 'UpdateBot':
 		:p_directory,
 		:p_api_url);
 	END;");
-	oci_bind_by_name($stid,":p_name",$p_name);
-	oci_bind_by_name($stid,":p_cube_tsg_type",$p_cube_tsg_type);
-	oci_bind_by_name($stid,":p_directory",$p_directory);
-	oci_bind_by_name($stid,":p_api_url",$p_api_url);
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
+	oci_bind_by_name($stid,":p_cube_tsg_type",$RequestObj->Parameters->Type->CubeTsgType);
+	oci_bind_by_name($stid,":p_directory",$RequestObj->Parameters->Type->Directory);
+	oci_bind_by_name($stid,":p_api_url",$RequestObj->Parameters->Type->ApiUrl);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'UPDATE_BOT';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
-	echo "UPDATE_BOT";
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'DeleteBot':
-
-	list($p_name) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.delete_bot (
 		:p_name);
 	END;");
-	oci_bind_by_name($stid,":p_name",$p_name);
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'DELETE_BOT';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
-	echo "DELETE_BOT";
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'GetTypListAll':
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.get_typ_list_all (:p_cube_row); END;");
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'LIST_TYP';
 	$r = perform_db_request();
-	if (!$r) { return; }
-	echo "LIST_TYP";
-	while ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["NAME"];
-		echo "<||>".$row["NAME"]." (".$row["CODE"].")";
+	if (!$r) { 
+		echo ']';
+		return;
 	}
+	$ResponseObj->Rows = array();
+	while ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Key = new \stdClass();
+		$RowObj->Key->Name = $row["NAME"];
+		$RowObj->Display = $row["NAME"].' ('.$row["CODE"].')';
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'GetTyp':
-
-	list($p_name) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.get_typ (
 		:p_cube_row,
 		:p_name);
 	END;");
-	oci_bind_by_name($stid,":p_name",$p_name);
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'SELECT_TYP';
 	$r = perform_db_request();
-	if (!$r) { return; }
-	echo "SELECT_TYP";
-	if ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["FK_BOT_NAME"]."<|>".$row["FK_TYP_NAME"]."<|>".$row["CODE"]."<|>".$row["FLAG_PARTIAL_KEY"]."<|>".$row["FLAG_RECURSIVE"]."<|>".$row["RECURSIVE_CARDINALITY"]."<|>".$row["CARDINALITY"]."<|>".$row["SORT_ORDER"]."<|>".$row["ICON"]."<|>".$row["TRANSFERABLE"];
+	if (!$r) { 
+		echo ']';
+		return;
 	}
+	$ResponseObj->Rows = array();
+	if ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Data = new \stdClass();
+		$RowObj->Data->FkBotName = $row["FK_BOT_NAME"];
+		$RowObj->Data->FkTypName = $row["FK_TYP_NAME"];
+		$RowObj->Data->Code = $row["CODE"];
+		$RowObj->Data->FlagPartialKey = $row["FLAG_PARTIAL_KEY"];
+		$RowObj->Data->FlagRecursive = $row["FLAG_RECURSIVE"];
+		$RowObj->Data->RecursiveCardinality = $row["RECURSIVE_CARDINALITY"];
+		$RowObj->Data->Cardinality = $row["CARDINALITY"];
+		$RowObj->Data->SortOrder = $row["SORT_ORDER"];
+		$RowObj->Data->Icon = $row["ICON"];
+		$RowObj->Data->Transferable = $row["TRANSFERABLE"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'GetTypFkey':
-
-	list($p_name) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.get_typ_fkey (
 		:p_cube_row,
 		:p_name);
 	END;");
-	oci_bind_by_name($stid,":p_name",$p_name);
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'SELECT_FKEY_TYP';
 	$r = perform_db_request();
-	if (!$r) { return; }
-	echo "SELECT_FKEY_TYP";
-	if ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["FK_BOT_NAME"];
+	if (!$r) { 
+		echo ']';
+		return;
 	}
+	$ResponseObj->Rows = array();
+	if ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Data = new \stdClass();
+		$RowObj->Data->FkBotName = $row["FK_BOT_NAME"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'GetTypItems':
-
-	list($p_name) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.get_typ_atb_items (
 		:p_cube_row,
 		:p_name);
 	END;");
-	oci_bind_by_name($stid,":p_name",$p_name);
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'LIST_ATB';
 	$r = perform_db_request();
-	if (!$r) { return; }
-	$first = True;
-	while ($row = oci_fetch_assoc($curs)) {
-		if ($first) { $first = False; echo "LIST_ATB";}
-		echo "<|||>".$row["FK_TYP_NAME"]."<|>".$row["NAME"];
-		echo "<||>".$row["NAME"];
+	if (!$r) { 
+		echo ']';
+		return;
 	}
-	echo "<||||>";
+	$ResponseObj->Rows = array();
+	while ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Key = new \stdClass();
+		$RowObj->Key->FkTypName = $row["FK_TYP_NAME"];
+		$RowObj->Key->Name = $row["NAME"];
+		$RowObj->Display = $row["NAME"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ',';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.get_typ_ref_items (
 		:p_cube_row,
 		:p_name);
 	END;");
-	oci_bind_by_name($stid,":p_name",$p_name);
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'LIST_REF';
 	$r = perform_db_request();
-	if (!$r) { return; }
-	$first = True;
-	while ($row = oci_fetch_assoc($curs)) {
-		if ($first) { $first = False; echo "LIST_REF";}
-		echo "<|||>".$row["FK_TYP_NAME"]."<|>".$row["SEQUENCE"]."<|>".$row["XK_TYP_NAME"];
-		echo "<||>".$row["NAME"]." ".$row["XK_TYP_NAME"];
+	if (!$r) { 
+		echo ']';
+		return;
 	}
-	echo "<||||>";
+	$ResponseObj->Rows = array();
+	while ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Key = new \stdClass();
+		$RowObj->Key->FkTypName = $row["FK_TYP_NAME"];
+		$RowObj->Key->Sequence = $row["SEQUENCE"];
+		$RowObj->Key->XkTypName = $row["XK_TYP_NAME"];
+		$RowObj->Display = $row["NAME"].' '.$row["XK_TYP_NAME"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ',';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.get_typ_rtt_items (
 		:p_cube_row,
 		:p_name);
 	END;");
-	oci_bind_by_name($stid,":p_name",$p_name);
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'LIST_RTT';
 	$r = perform_db_request();
-	if (!$r) { return; }
-	$first = True;
-	while ($row = oci_fetch_assoc($curs)) {
-		if ($first) { $first = False; echo "LIST_RTT";}
-		echo "<|||>".$row["FK_TYP_NAME"]."<|>".$row["XF_TSP_TYP_NAME"]."<|>".$row["XF_TSP_TSG_CODE"]."<|>".$row["XK_TSP_CODE"];
-		echo "<||>".$row["XF_TSP_TYP_NAME"]." ".$row["XF_TSP_TSG_CODE"]." ".$row["XK_TSP_CODE"];
+	if (!$r) { 
+		echo ']';
+		return;
 	}
-	echo "<||||>";
+	$ResponseObj->Rows = array();
+	while ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Key = new \stdClass();
+		$RowObj->Key->FkTypName = $row["FK_TYP_NAME"];
+		$RowObj->Key->XfTspTypName = $row["XF_TSP_TYP_NAME"];
+		$RowObj->Key->XfTspTsgCode = $row["XF_TSP_TSG_CODE"];
+		$RowObj->Key->XkTspCode = $row["XK_TSP_CODE"];
+		$RowObj->Display = $row["XF_TSP_TYP_NAME"].' '.$row["XF_TSP_TSG_CODE"].' '.$row["XK_TSP_CODE"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ',';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.get_typ_tyr_items (
 		:p_cube_row,
 		:p_name);
 	END;");
-	oci_bind_by_name($stid,":p_name",$p_name);
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'LIST_TYR';
 	$r = perform_db_request();
-	if (!$r) { return; }
-	$first = True;
-	while ($row = oci_fetch_assoc($curs)) {
-		if ($first) { $first = False; echo "LIST_TYR";}
-		echo "<|||>".$row["FK_TYP_NAME"]."<|>".$row["XK_TYP_NAME"];
-		echo "<||>".$row["XK_TYP_NAME"];
+	if (!$r) { 
+		echo ']';
+		return;
 	}
-	echo "<||||>";
+	$ResponseObj->Rows = array();
+	while ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Key = new \stdClass();
+		$RowObj->Key->FkTypName = $row["FK_TYP_NAME"];
+		$RowObj->Key->XkTypName = $row["XK_TYP_NAME"];
+		$RowObj->Display = $row["XK_TYP_NAME"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ',';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.get_typ_par_items (
 		:p_cube_row,
 		:p_name);
 	END;");
-	oci_bind_by_name($stid,":p_name",$p_name);
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'LIST_PAR';
 	$r = perform_db_request();
-	if (!$r) { return; }
-	$first = True;
-	while ($row = oci_fetch_assoc($curs)) {
-		if ($first) { $first = False; echo "LIST_PAR";}
-		echo "<|||>".$row["FK_TYP_NAME"]."<|>".$row["NAME"];
-		echo "<||>".$row["NAME"];
+	if (!$r) { 
+		echo ']';
+		return;
 	}
-	echo "<||||>";
+	$ResponseObj->Rows = array();
+	while ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Key = new \stdClass();
+		$RowObj->Key->FkTypName = $row["FK_TYP_NAME"];
+		$RowObj->Key->Name = $row["NAME"];
+		$RowObj->Display = $row["NAME"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ',';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.get_typ_tsg_items (
 		:p_cube_row,
 		:p_name);
 	END;");
-	oci_bind_by_name($stid,":p_name",$p_name);
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'LIST_TSG';
 	$r = perform_db_request();
-	if (!$r) { return; }
-	$first = True;
-	while ($row = oci_fetch_assoc($curs)) {
-		if ($first) { $first = False; echo "LIST_TSG";}
-		echo "<|||>".$row["FK_TYP_NAME"]."<|>".$row["CODE"];
-		echo "<||>"."(".$row["CODE"].")"." ".$row["NAME"];
+	if (!$r) { 
+		echo ']';
+		return;
 	}
-	echo "<||||>";
+	$ResponseObj->Rows = array();
+	while ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Key = new \stdClass();
+		$RowObj->Key->FkTypName = $row["FK_TYP_NAME"];
+		$RowObj->Key->Code = $row["CODE"];
+		$RowObj->Display = '('.$row["CODE"].')'.' '.$row["NAME"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ',';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.get_typ_dct_items (
 		:p_cube_row,
 		:p_name);
 	END;");
-	oci_bind_by_name($stid,":p_name",$p_name);
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'LIST_DCT';
 	$r = perform_db_request();
-	if (!$r) { return; }
-	$first = True;
-	while ($row = oci_fetch_assoc($curs)) {
-		if ($first) { $first = False; echo "LIST_DCT";}
-		echo "<|||>".$row["FK_TYP_NAME"];
-		echo "<||>";
+	if (!$r) { 
+		echo ']';
+		return;
 	}
-	echo "<||||>";
+	$ResponseObj->Rows = array();
+	while ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Key = new \stdClass();
+		$RowObj->Key->FkTypName = $row["FK_TYP_NAME"];
+		$RowObj->Display = ' ';
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ',';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.get_typ_typ_items (
 		:p_cube_row,
 		:p_name);
 	END;");
-	oci_bind_by_name($stid,":p_name",$p_name);
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'LIST_TYP';
 	$r = perform_db_request();
-	if (!$r) { return; }
-	$first = True;
-	while ($row = oci_fetch_assoc($curs)) {
-		if ($first) { $first = False; echo "LIST_TYP";}
-		echo "<|||>".$row["NAME"];
-		echo "<||>".$row["NAME"]." (".$row["CODE"].")";
+	if (!$r) { 
+		echo ']';
+		return;
 	}
+	$ResponseObj->Rows = array();
+	while ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Key = new \stdClass();
+		$RowObj->Key->Name = $row["NAME"];
+		$RowObj->Display = $row["NAME"].' ('.$row["CODE"].')';
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'CountTypRestrictedItems':
-
-	list($p_name) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.count_typ_dct (
 		:p_cube_row,
 		:p_name);
 	END;");
-	oci_bind_by_name($stid,":p_name",$p_name);
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'COUNT_DCT';
 	$r = perform_db_request();
-	if (!$r) { return; }
-	echo "COUNT_DCT";
-	if ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["TYPE_COUNT"];
+	if (!$r) { 
+		echo ']';
+		return;
 	}
+	$ResponseObj->Rows = array();
+	if ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Data = new \stdClass();
+		$RowObj->Data->TypeCount = $row["TYPE_COUNT"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'MoveTyp':
-
-	list($p_cube_pos_action, $p_name, $x_name) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.move_typ (
 		:p_cube_pos_action,
 		:p_name,
 		:x_name);
 	END;");
-	oci_bind_by_name($stid,":p_cube_pos_action",$p_cube_pos_action);
-	oci_bind_by_name($stid,":p_name",$p_name);
-	oci_bind_by_name($stid,":x_name",$x_name);
+	oci_bind_by_name($stid,":p_cube_pos_action",$RequestObj->Parameters->Option->CubePosAction);
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
+	oci_bind_by_name($stid,":x_name",$RequestObj->Parameters->Ref->Name);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'MOVE_TYP';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
-	echo "MOVE_TYP";
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'CreateTyp':
-
-	list($p_cube_pos_action, $p_fk_bot_name, $p_fk_typ_name, $p_name, $p_code, $p_flag_partial_key, $p_flag_recursive, $p_recursive_cardinality, $p_cardinality, $p_sort_order, $p_icon, $p_transferable, $x_name) = explode("<|>", $import[1]."<|>");
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.insert_typ (
 		:p_cube_pos_action,
@@ -750,31 +1109,36 @@ case 'CreateTyp':
 		:p_transferable,
 		:x_name);
 	END;");
-	oci_bind_by_name($stid,":p_cube_pos_action",$p_cube_pos_action);
-	oci_bind_by_name($stid,":p_fk_bot_name",$p_fk_bot_name);
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-	oci_bind_by_name($stid,":p_name",$p_name);
-	oci_bind_by_name($stid,":p_code",$p_code);
-	oci_bind_by_name($stid,":p_flag_partial_key",$p_flag_partial_key);
-	oci_bind_by_name($stid,":p_flag_recursive",$p_flag_recursive);
-	oci_bind_by_name($stid,":p_recursive_cardinality",$p_recursive_cardinality);
-	oci_bind_by_name($stid,":p_cardinality",$p_cardinality);
-	oci_bind_by_name($stid,":p_sort_order",$p_sort_order);
-	oci_bind_by_name($stid,":p_icon",$p_icon);
-	oci_bind_by_name($stid,":p_transferable",$p_transferable);
-	oci_bind_by_name($stid,":x_name",$x_name);
+	oci_bind_by_name($stid,":p_cube_pos_action",$RequestObj->Parameters->Option->CubePosAction);
+	oci_bind_by_name($stid,":p_fk_bot_name",$RequestObj->Parameters->Type->FkBotName);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
+	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
+	oci_bind_by_name($stid,":p_flag_partial_key",$RequestObj->Parameters->Type->FlagPartialKey);
+	oci_bind_by_name($stid,":p_flag_recursive",$RequestObj->Parameters->Type->FlagRecursive);
+	oci_bind_by_name($stid,":p_recursive_cardinality",$RequestObj->Parameters->Type->RecursiveCardinality);
+	oci_bind_by_name($stid,":p_cardinality",$RequestObj->Parameters->Type->Cardinality);
+	oci_bind_by_name($stid,":p_sort_order",$RequestObj->Parameters->Type->SortOrder);
+	oci_bind_by_name($stid,":p_icon",$RequestObj->Parameters->Type->Icon);
+	oci_bind_by_name($stid,":p_transferable",$RequestObj->Parameters->Type->Transferable);
+	oci_bind_by_name($stid,":x_name",$RequestObj->Parameters->Ref->Name);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'CREATE_TYP';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
-	echo "CREATE_TYP";
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'UpdateTyp':
-
-	list($p_fk_bot_name, $p_fk_typ_name, $p_name, $p_code, $p_flag_partial_key, $p_flag_recursive, $p_recursive_cardinality, $p_cardinality, $p_sort_order, $p_icon, $p_transferable) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.update_typ (
 		:p_fk_bot_name,
@@ -789,201 +1153,307 @@ case 'UpdateTyp':
 		:p_icon,
 		:p_transferable);
 	END;");
-	oci_bind_by_name($stid,":p_fk_bot_name",$p_fk_bot_name);
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-	oci_bind_by_name($stid,":p_name",$p_name);
-	oci_bind_by_name($stid,":p_code",$p_code);
-	oci_bind_by_name($stid,":p_flag_partial_key",$p_flag_partial_key);
-	oci_bind_by_name($stid,":p_flag_recursive",$p_flag_recursive);
-	oci_bind_by_name($stid,":p_recursive_cardinality",$p_recursive_cardinality);
-	oci_bind_by_name($stid,":p_cardinality",$p_cardinality);
-	oci_bind_by_name($stid,":p_sort_order",$p_sort_order);
-	oci_bind_by_name($stid,":p_icon",$p_icon);
-	oci_bind_by_name($stid,":p_transferable",$p_transferable);
+	oci_bind_by_name($stid,":p_fk_bot_name",$RequestObj->Parameters->Type->FkBotName);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
+	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
+	oci_bind_by_name($stid,":p_flag_partial_key",$RequestObj->Parameters->Type->FlagPartialKey);
+	oci_bind_by_name($stid,":p_flag_recursive",$RequestObj->Parameters->Type->FlagRecursive);
+	oci_bind_by_name($stid,":p_recursive_cardinality",$RequestObj->Parameters->Type->RecursiveCardinality);
+	oci_bind_by_name($stid,":p_cardinality",$RequestObj->Parameters->Type->Cardinality);
+	oci_bind_by_name($stid,":p_sort_order",$RequestObj->Parameters->Type->SortOrder);
+	oci_bind_by_name($stid,":p_icon",$RequestObj->Parameters->Type->Icon);
+	oci_bind_by_name($stid,":p_transferable",$RequestObj->Parameters->Type->Transferable);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'UPDATE_TYP';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
-	echo "UPDATE_TYP";
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'DeleteTyp':
-
-	list($p_name) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.delete_typ (
 		:p_name);
 	END;");
-	oci_bind_by_name($stid,":p_name",$p_name);
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'DELETE_TYP';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
-	echo "DELETE_TYP";
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'GetAtbForTypList':
-
-	list($p_cube_scope_level, $x_fk_typ_name) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.get_atb_for_typ_list (
 		:p_cube_row,
 		:p_cube_scope_level,
 		:x_fk_typ_name);
 	END;");
-	oci_bind_by_name($stid,":p_cube_scope_level",$p_cube_scope_level);
-	oci_bind_by_name($stid,":x_fk_typ_name",$x_fk_typ_name);
+	oci_bind_by_name($stid,":p_cube_scope_level",$RequestObj->Parameters->Option->CubeScopeLevel);
+	oci_bind_by_name($stid,":x_fk_typ_name",$RequestObj->Parameters->Ref->FkTypName);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'LIST_ATB';
 	$r = perform_db_request();
-	if (!$r) { return; }
-	echo "LIST_ATB";
-	while ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["FK_TYP_NAME"]."<|>".$row["NAME"];
-		echo "<||>".$row["FK_TYP_NAME"]." ".$row["NAME"];
+	if (!$r) { 
+		echo ']';
+		return;
 	}
+	$ResponseObj->Rows = array();
+	while ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Key = new \stdClass();
+		$RowObj->Key->FkTypName = $row["FK_TYP_NAME"];
+		$RowObj->Key->Name = $row["NAME"];
+		$RowObj->Display = $row["FK_TYP_NAME"].' '.$row["NAME"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'GetAtb':
-
-	list($p_fk_typ_name, $p_name) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.get_atb (
 		:p_cube_row,
 		:p_fk_typ_name,
 		:p_name);
 	END;");
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-	oci_bind_by_name($stid,":p_name",$p_name);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'SELECT_ATB';
 	$r = perform_db_request();
-	if (!$r) { return; }
-	echo "SELECT_ATB";
-	if ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["FK_BOT_NAME"]."<|>".$row["PRIMARY_KEY"]."<|>".$row["CODE_DISPLAY_KEY"]."<|>".$row["CODE_FOREIGN_KEY"]."<|>".$row["FLAG_HIDDEN"]."<|>".$row["DEFAULT_VALUE"]."<|>".$row["UNCHANGEABLE"]."<|>".$row["XK_ITP_NAME"];
+	if (!$r) { 
+		echo ']';
+		return;
 	}
+	$ResponseObj->Rows = array();
+	if ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Data = new \stdClass();
+		$RowObj->Data->FkBotName = $row["FK_BOT_NAME"];
+		$RowObj->Data->PrimaryKey = $row["PRIMARY_KEY"];
+		$RowObj->Data->CodeDisplayKey = $row["CODE_DISPLAY_KEY"];
+		$RowObj->Data->CodeForeignKey = $row["CODE_FOREIGN_KEY"];
+		$RowObj->Data->FlagHidden = $row["FLAG_HIDDEN"];
+		$RowObj->Data->DefaultValue = $row["DEFAULT_VALUE"];
+		$RowObj->Data->Unchangeable = $row["UNCHANGEABLE"];
+		$RowObj->Data->XkItpName = $row["XK_ITP_NAME"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'GetAtbFkey':
-
-	list($p_fk_typ_name, $p_name) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.get_atb_fkey (
 		:p_cube_row,
 		:p_fk_typ_name,
 		:p_name);
 	END;");
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-	oci_bind_by_name($stid,":p_name",$p_name);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'SELECT_FKEY_ATB';
 	$r = perform_db_request();
-	if (!$r) { return; }
-	echo "SELECT_FKEY_ATB";
-	if ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["FK_BOT_NAME"];
+	if (!$r) { 
+		echo ']';
+		return;
 	}
+	$ResponseObj->Rows = array();
+	if ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Data = new \stdClass();
+		$RowObj->Data->FkBotName = $row["FK_BOT_NAME"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'GetAtbItems':
-
-	list($p_fk_typ_name, $p_name) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.get_atb_der_items (
 		:p_cube_row,
 		:p_fk_typ_name,
 		:p_name);
 	END;");
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-	oci_bind_by_name($stid,":p_name",$p_name);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'LIST_DER';
 	$r = perform_db_request();
-	if (!$r) { return; }
-	$first = True;
-	while ($row = oci_fetch_assoc($curs)) {
-		if ($first) { $first = False; echo "LIST_DER";}
-		echo "<|||>".$row["FK_TYP_NAME"]."<|>".$row["FK_ATB_NAME"];
-		echo "<||>";
+	if (!$r) { 
+		echo ']';
+		return;
 	}
-	echo "<||||>";
+	$ResponseObj->Rows = array();
+	while ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Key = new \stdClass();
+		$RowObj->Key->FkTypName = $row["FK_TYP_NAME"];
+		$RowObj->Key->FkAtbName = $row["FK_ATB_NAME"];
+		$RowObj->Display = ' ';
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ',';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.get_atb_dca_items (
 		:p_cube_row,
 		:p_fk_typ_name,
 		:p_name);
 	END;");
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-	oci_bind_by_name($stid,":p_name",$p_name);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'LIST_DCA';
 	$r = perform_db_request();
-	if (!$r) { return; }
-	$first = True;
-	while ($row = oci_fetch_assoc($curs)) {
-		if ($first) { $first = False; echo "LIST_DCA";}
-		echo "<|||>".$row["FK_TYP_NAME"]."<|>".$row["FK_ATB_NAME"];
-		echo "<||>";
+	if (!$r) { 
+		echo ']';
+		return;
 	}
-	echo "<||||>";
+	$ResponseObj->Rows = array();
+	while ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Key = new \stdClass();
+		$RowObj->Key->FkTypName = $row["FK_TYP_NAME"];
+		$RowObj->Key->FkAtbName = $row["FK_ATB_NAME"];
+		$RowObj->Display = ' ';
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ',';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.get_atb_rta_items (
 		:p_cube_row,
 		:p_fk_typ_name,
 		:p_name);
 	END;");
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-	oci_bind_by_name($stid,":p_name",$p_name);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'LIST_RTA';
 	$r = perform_db_request();
-	if (!$r) { return; }
-	$first = True;
-	while ($row = oci_fetch_assoc($curs)) {
-		if ($first) { $first = False; echo "LIST_RTA";}
-		echo "<|||>".$row["FK_TYP_NAME"]."<|>".$row["FK_ATB_NAME"]."<|>".$row["XF_TSP_TYP_NAME"]."<|>".$row["XF_TSP_TSG_CODE"]."<|>".$row["XK_TSP_CODE"];
-		echo "<||>".$row["XF_TSP_TYP_NAME"]." ".$row["XF_TSP_TSG_CODE"]." ".$row["XK_TSP_CODE"];
+	if (!$r) { 
+		echo ']';
+		return;
 	}
+	$ResponseObj->Rows = array();
+	while ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Key = new \stdClass();
+		$RowObj->Key->FkTypName = $row["FK_TYP_NAME"];
+		$RowObj->Key->FkAtbName = $row["FK_ATB_NAME"];
+		$RowObj->Key->XfTspTypName = $row["XF_TSP_TYP_NAME"];
+		$RowObj->Key->XfTspTsgCode = $row["XF_TSP_TSG_CODE"];
+		$RowObj->Key->XkTspCode = $row["XK_TSP_CODE"];
+		$RowObj->Display = $row["XF_TSP_TYP_NAME"].' '.$row["XF_TSP_TSG_CODE"].' '.$row["XK_TSP_CODE"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'CountAtbRestrictedItems':
-
-	list($p_fk_typ_name, $p_name) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.count_atb_der (
 		:p_cube_row,
 		:p_fk_typ_name,
 		:p_name);
 	END;");
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-	oci_bind_by_name($stid,":p_name",$p_name);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'COUNT_DER';
 	$r = perform_db_request();
-	if (!$r) { return; }
-	echo "COUNT_DER";
-	if ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["TYPE_COUNT"];
+	if (!$r) { 
+		echo ']';
+		return;
 	}
-	echo "<||||>";
+	$ResponseObj->Rows = array();
+	if ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Data = new \stdClass();
+		$RowObj->Data->TypeCount = $row["TYPE_COUNT"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ',';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.count_atb_dca (
 		:p_cube_row,
 		:p_fk_typ_name,
 		:p_name);
 	END;");
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-	oci_bind_by_name($stid,":p_name",$p_name);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'COUNT_DCA';
 	$r = perform_db_request();
-	if (!$r) { return; }
-	echo "COUNT_DCA";
-	if ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["TYPE_COUNT"];
+	if (!$r) { 
+		echo ']';
+		return;
 	}
+	$ResponseObj->Rows = array();
+	if ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Data = new \stdClass();
+		$RowObj->Data->TypeCount = $row["TYPE_COUNT"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'MoveAtb':
-
-	list($p_cube_pos_action, $p_fk_typ_name, $p_name, $x_fk_typ_name, $x_name) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.move_atb (
 		:p_cube_pos_action,
@@ -992,23 +1462,28 @@ case 'MoveAtb':
 		:x_fk_typ_name,
 		:x_name);
 	END;");
-	oci_bind_by_name($stid,":p_cube_pos_action",$p_cube_pos_action);
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-	oci_bind_by_name($stid,":p_name",$p_name);
-	oci_bind_by_name($stid,":x_fk_typ_name",$x_fk_typ_name);
-	oci_bind_by_name($stid,":x_name",$x_name);
+	oci_bind_by_name($stid,":p_cube_pos_action",$RequestObj->Parameters->Option->CubePosAction);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
+	oci_bind_by_name($stid,":x_fk_typ_name",$RequestObj->Parameters->Ref->FkTypName);
+	oci_bind_by_name($stid,":x_name",$RequestObj->Parameters->Ref->Name);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'MOVE_ATB';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
-	echo "MOVE_ATB";
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'CreateAtb':
-
-	list($p_cube_pos_action, $p_fk_bot_name, $p_fk_typ_name, $p_name, $p_primary_key, $p_code_display_key, $p_code_foreign_key, $p_flag_hidden, $p_default_value, $p_unchangeable, $p_xk_itp_name, $x_fk_typ_name, $x_name) = explode("<|>", $import[1]."<|><|>");
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.insert_atb (
 		:p_cube_pos_action,
@@ -1025,31 +1500,36 @@ case 'CreateAtb':
 		:x_fk_typ_name,
 		:x_name);
 	END;");
-	oci_bind_by_name($stid,":p_cube_pos_action",$p_cube_pos_action);
-	oci_bind_by_name($stid,":p_fk_bot_name",$p_fk_bot_name);
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-	oci_bind_by_name($stid,":p_name",$p_name);
-	oci_bind_by_name($stid,":p_primary_key",$p_primary_key);
-	oci_bind_by_name($stid,":p_code_display_key",$p_code_display_key);
-	oci_bind_by_name($stid,":p_code_foreign_key",$p_code_foreign_key);
-	oci_bind_by_name($stid,":p_flag_hidden",$p_flag_hidden);
-	oci_bind_by_name($stid,":p_default_value",$p_default_value);
-	oci_bind_by_name($stid,":p_unchangeable",$p_unchangeable);
-	oci_bind_by_name($stid,":p_xk_itp_name",$p_xk_itp_name);
-	oci_bind_by_name($stid,":x_fk_typ_name",$x_fk_typ_name);
-	oci_bind_by_name($stid,":x_name",$x_name);
+	oci_bind_by_name($stid,":p_cube_pos_action",$RequestObj->Parameters->Option->CubePosAction);
+	oci_bind_by_name($stid,":p_fk_bot_name",$RequestObj->Parameters->Type->FkBotName);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
+	oci_bind_by_name($stid,":p_primary_key",$RequestObj->Parameters->Type->PrimaryKey);
+	oci_bind_by_name($stid,":p_code_display_key",$RequestObj->Parameters->Type->CodeDisplayKey);
+	oci_bind_by_name($stid,":p_code_foreign_key",$RequestObj->Parameters->Type->CodeForeignKey);
+	oci_bind_by_name($stid,":p_flag_hidden",$RequestObj->Parameters->Type->FlagHidden);
+	oci_bind_by_name($stid,":p_default_value",$RequestObj->Parameters->Type->DefaultValue);
+	oci_bind_by_name($stid,":p_unchangeable",$RequestObj->Parameters->Type->Unchangeable);
+	oci_bind_by_name($stid,":p_xk_itp_name",$RequestObj->Parameters->Type->XkItpName);
+	oci_bind_by_name($stid,":x_fk_typ_name",$RequestObj->Parameters->Ref->FkTypName);
+	oci_bind_by_name($stid,":x_name",$RequestObj->Parameters->Ref->Name);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'CREATE_ATB';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
-	echo "CREATE_ATB";
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'UpdateAtb':
-
-	list($p_fk_bot_name, $p_fk_typ_name, $p_name, $p_primary_key, $p_code_display_key, $p_code_foreign_key, $p_flag_hidden, $p_default_value, $p_unchangeable, $p_xk_itp_name) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.update_atb (
 		:p_fk_bot_name,
@@ -1063,67 +1543,92 @@ case 'UpdateAtb':
 		:p_unchangeable,
 		:p_xk_itp_name);
 	END;");
-	oci_bind_by_name($stid,":p_fk_bot_name",$p_fk_bot_name);
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-	oci_bind_by_name($stid,":p_name",$p_name);
-	oci_bind_by_name($stid,":p_primary_key",$p_primary_key);
-	oci_bind_by_name($stid,":p_code_display_key",$p_code_display_key);
-	oci_bind_by_name($stid,":p_code_foreign_key",$p_code_foreign_key);
-	oci_bind_by_name($stid,":p_flag_hidden",$p_flag_hidden);
-	oci_bind_by_name($stid,":p_default_value",$p_default_value);
-	oci_bind_by_name($stid,":p_unchangeable",$p_unchangeable);
-	oci_bind_by_name($stid,":p_xk_itp_name",$p_xk_itp_name);
+	oci_bind_by_name($stid,":p_fk_bot_name",$RequestObj->Parameters->Type->FkBotName);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
+	oci_bind_by_name($stid,":p_primary_key",$RequestObj->Parameters->Type->PrimaryKey);
+	oci_bind_by_name($stid,":p_code_display_key",$RequestObj->Parameters->Type->CodeDisplayKey);
+	oci_bind_by_name($stid,":p_code_foreign_key",$RequestObj->Parameters->Type->CodeForeignKey);
+	oci_bind_by_name($stid,":p_flag_hidden",$RequestObj->Parameters->Type->FlagHidden);
+	oci_bind_by_name($stid,":p_default_value",$RequestObj->Parameters->Type->DefaultValue);
+	oci_bind_by_name($stid,":p_unchangeable",$RequestObj->Parameters->Type->Unchangeable);
+	oci_bind_by_name($stid,":p_xk_itp_name",$RequestObj->Parameters->Type->XkItpName);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'UPDATE_ATB';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
-	echo "UPDATE_ATB";
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'DeleteAtb':
-
-	list($p_fk_typ_name, $p_name) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.delete_atb (
 		:p_fk_typ_name,
 		:p_name);
 	END;");
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-	oci_bind_by_name($stid,":p_name",$p_name);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'DELETE_ATB';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
-	echo "DELETE_ATB";
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'GetDer':
-
-	list($p_fk_typ_name, $p_fk_atb_name) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.get_der (
 		:p_cube_row,
 		:p_fk_typ_name,
 		:p_fk_atb_name);
 	END;");
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-	oci_bind_by_name($stid,":p_fk_atb_name",$p_fk_atb_name);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_fk_atb_name",$RequestObj->Parameters->Type->FkAtbName);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'SELECT_DER';
 	$r = perform_db_request();
-	if (!$r) { return; }
-	echo "SELECT_DER";
-	if ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["FK_BOT_NAME"]."<|>".$row["CUBE_TSG_TYPE"]."<|>".$row["AGGREGATE_FUNCTION"]."<|>".$row["XK_TYP_NAME"]."<|>".$row["XK_TYP_NAME_1"];
+	if (!$r) { 
+		echo ']';
+		return;
 	}
+	$ResponseObj->Rows = array();
+	if ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Data = new \stdClass();
+		$RowObj->Data->FkBotName = $row["FK_BOT_NAME"];
+		$RowObj->Data->CubeTsgType = $row["CUBE_TSG_TYPE"];
+		$RowObj->Data->AggregateFunction = $row["AGGREGATE_FUNCTION"];
+		$RowObj->Data->XkTypName = $row["XK_TYP_NAME"];
+		$RowObj->Data->XkTypName1 = $row["XK_TYP_NAME_1"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'CreateDer':
-
-	list($p_fk_bot_name, $p_fk_typ_name, $p_fk_atb_name, $p_cube_tsg_type, $p_aggregate_function, $p_xk_typ_name, $p_xk_typ_name_1) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.insert_der (
 		:p_fk_bot_name,
@@ -1134,25 +1639,30 @@ case 'CreateDer':
 		:p_xk_typ_name,
 		:p_xk_typ_name_1);
 	END;");
-	oci_bind_by_name($stid,":p_fk_bot_name",$p_fk_bot_name);
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-	oci_bind_by_name($stid,":p_fk_atb_name",$p_fk_atb_name);
-	oci_bind_by_name($stid,":p_cube_tsg_type",$p_cube_tsg_type);
-	oci_bind_by_name($stid,":p_aggregate_function",$p_aggregate_function);
-	oci_bind_by_name($stid,":p_xk_typ_name",$p_xk_typ_name);
-	oci_bind_by_name($stid,":p_xk_typ_name_1",$p_xk_typ_name_1);
+	oci_bind_by_name($stid,":p_fk_bot_name",$RequestObj->Parameters->Type->FkBotName);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_fk_atb_name",$RequestObj->Parameters->Type->FkAtbName);
+	oci_bind_by_name($stid,":p_cube_tsg_type",$RequestObj->Parameters->Type->CubeTsgType);
+	oci_bind_by_name($stid,":p_aggregate_function",$RequestObj->Parameters->Type->AggregateFunction);
+	oci_bind_by_name($stid,":p_xk_typ_name",$RequestObj->Parameters->Type->XkTypName);
+	oci_bind_by_name($stid,":p_xk_typ_name_1",$RequestObj->Parameters->Type->XkTypName1);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'CREATE_DER';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
-	echo "CREATE_DER";
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'UpdateDer':
-
-	list($p_fk_bot_name, $p_fk_typ_name, $p_fk_atb_name, $p_cube_tsg_type, $p_aggregate_function, $p_xk_typ_name, $p_xk_typ_name_1) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.update_der (
 		:p_fk_bot_name,
@@ -1163,64 +1673,86 @@ case 'UpdateDer':
 		:p_xk_typ_name,
 		:p_xk_typ_name_1);
 	END;");
-	oci_bind_by_name($stid,":p_fk_bot_name",$p_fk_bot_name);
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-	oci_bind_by_name($stid,":p_fk_atb_name",$p_fk_atb_name);
-	oci_bind_by_name($stid,":p_cube_tsg_type",$p_cube_tsg_type);
-	oci_bind_by_name($stid,":p_aggregate_function",$p_aggregate_function);
-	oci_bind_by_name($stid,":p_xk_typ_name",$p_xk_typ_name);
-	oci_bind_by_name($stid,":p_xk_typ_name_1",$p_xk_typ_name_1);
+	oci_bind_by_name($stid,":p_fk_bot_name",$RequestObj->Parameters->Type->FkBotName);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_fk_atb_name",$RequestObj->Parameters->Type->FkAtbName);
+	oci_bind_by_name($stid,":p_cube_tsg_type",$RequestObj->Parameters->Type->CubeTsgType);
+	oci_bind_by_name($stid,":p_aggregate_function",$RequestObj->Parameters->Type->AggregateFunction);
+	oci_bind_by_name($stid,":p_xk_typ_name",$RequestObj->Parameters->Type->XkTypName);
+	oci_bind_by_name($stid,":p_xk_typ_name_1",$RequestObj->Parameters->Type->XkTypName1);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'UPDATE_DER';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
-	echo "UPDATE_DER";
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'DeleteDer':
-
-	list($p_fk_typ_name, $p_fk_atb_name) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.delete_der (
 		:p_fk_typ_name,
 		:p_fk_atb_name);
 	END;");
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-	oci_bind_by_name($stid,":p_fk_atb_name",$p_fk_atb_name);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_fk_atb_name",$RequestObj->Parameters->Type->FkAtbName);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'DELETE_DER';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
-	echo "DELETE_DER";
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'GetDca':
-
-	list($p_fk_typ_name, $p_fk_atb_name) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.get_dca (
 		:p_cube_row,
 		:p_fk_typ_name,
 		:p_fk_atb_name);
 	END;");
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-	oci_bind_by_name($stid,":p_fk_atb_name",$p_fk_atb_name);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_fk_atb_name",$RequestObj->Parameters->Type->FkAtbName);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'SELECT_DCA';
 	$r = perform_db_request();
-	if (!$r) { return; }
-	echo "SELECT_DCA";
-	if ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["FK_BOT_NAME"]."<|>".$row["TEXT"];
+	if (!$r) { 
+		echo ']';
+		return;
 	}
+	$ResponseObj->Rows = array();
+	if ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Data = new \stdClass();
+		$RowObj->Data->FkBotName = $row["FK_BOT_NAME"];
+		$RowObj->Data->Text = $row["TEXT"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'CreateDca':
-
-	list($p_fk_bot_name, $p_fk_typ_name, $p_fk_atb_name, $p_text) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.insert_dca (
 		:p_fk_bot_name,
@@ -1228,22 +1760,27 @@ case 'CreateDca':
 		:p_fk_atb_name,
 		:p_text);
 	END;");
-	oci_bind_by_name($stid,":p_fk_bot_name",$p_fk_bot_name);
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-	oci_bind_by_name($stid,":p_fk_atb_name",$p_fk_atb_name);
-	oci_bind_by_name($stid,":p_text",$p_text);
+	oci_bind_by_name($stid,":p_fk_bot_name",$RequestObj->Parameters->Type->FkBotName);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_fk_atb_name",$RequestObj->Parameters->Type->FkAtbName);
+	oci_bind_by_name($stid,":p_text",$RequestObj->Parameters->Type->Text);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'CREATE_DCA';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
-	echo "CREATE_DCA";
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'UpdateDca':
-
-	list($p_fk_bot_name, $p_fk_typ_name, $p_fk_atb_name, $p_text) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.update_dca (
 		:p_fk_bot_name,
@@ -1251,41 +1788,51 @@ case 'UpdateDca':
 		:p_fk_atb_name,
 		:p_text);
 	END;");
-	oci_bind_by_name($stid,":p_fk_bot_name",$p_fk_bot_name);
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-	oci_bind_by_name($stid,":p_fk_atb_name",$p_fk_atb_name);
-	oci_bind_by_name($stid,":p_text",$p_text);
+	oci_bind_by_name($stid,":p_fk_bot_name",$RequestObj->Parameters->Type->FkBotName);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_fk_atb_name",$RequestObj->Parameters->Type->FkAtbName);
+	oci_bind_by_name($stid,":p_text",$RequestObj->Parameters->Type->Text);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'UPDATE_DCA';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
-	echo "UPDATE_DCA";
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'DeleteDca':
-
-	list($p_fk_typ_name, $p_fk_atb_name) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.delete_dca (
 		:p_fk_typ_name,
 		:p_fk_atb_name);
 	END;");
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-	oci_bind_by_name($stid,":p_fk_atb_name",$p_fk_atb_name);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_fk_atb_name",$RequestObj->Parameters->Type->FkAtbName);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'DELETE_DCA';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
-	echo "DELETE_DCA";
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'GetRta':
-
-	list($p_fk_typ_name, $p_fk_atb_name, $p_xf_tsp_typ_name, $p_xf_tsp_tsg_code, $p_xk_tsp_code) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.get_rta (
 		:p_cube_row,
@@ -1295,23 +1842,35 @@ case 'GetRta':
 		:p_xf_tsp_tsg_code,
 		:p_xk_tsp_code);
 	END;");
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-	oci_bind_by_name($stid,":p_fk_atb_name",$p_fk_atb_name);
-	oci_bind_by_name($stid,":p_xf_tsp_typ_name",$p_xf_tsp_typ_name);
-	oci_bind_by_name($stid,":p_xf_tsp_tsg_code",$p_xf_tsp_tsg_code);
-	oci_bind_by_name($stid,":p_xk_tsp_code",$p_xk_tsp_code);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_fk_atb_name",$RequestObj->Parameters->Type->FkAtbName);
+	oci_bind_by_name($stid,":p_xf_tsp_typ_name",$RequestObj->Parameters->Type->XfTspTypName);
+	oci_bind_by_name($stid,":p_xf_tsp_tsg_code",$RequestObj->Parameters->Type->XfTspTsgCode);
+	oci_bind_by_name($stid,":p_xk_tsp_code",$RequestObj->Parameters->Type->XkTspCode);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'SELECT_RTA';
 	$r = perform_db_request();
-	if (!$r) { return; }
-	echo "SELECT_RTA";
-	if ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["FK_BOT_NAME"]."<|>".$row["INCLUDE_OR_EXCLUDE"];
+	if (!$r) { 
+		echo ']';
+		return;
 	}
+	$ResponseObj->Rows = array();
+	if ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Data = new \stdClass();
+		$RowObj->Data->FkBotName = $row["FK_BOT_NAME"];
+		$RowObj->Data->IncludeOrExclude = $row["INCLUDE_OR_EXCLUDE"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'CreateRta':
-
-	list($p_fk_bot_name, $p_fk_typ_name, $p_fk_atb_name, $p_include_or_exclude, $p_xf_tsp_typ_name, $p_xf_tsp_tsg_code, $p_xk_tsp_code) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.insert_rta (
 		:p_fk_bot_name,
@@ -1323,25 +1882,40 @@ case 'CreateRta':
 		:p_xk_tsp_code,
 		:p_cube_row);
 	END;");
-	oci_bind_by_name($stid,":p_fk_bot_name",$p_fk_bot_name);
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-	oci_bind_by_name($stid,":p_fk_atb_name",$p_fk_atb_name);
-	oci_bind_by_name($stid,":p_include_or_exclude",$p_include_or_exclude);
-	oci_bind_by_name($stid,":p_xf_tsp_typ_name",$p_xf_tsp_typ_name);
-	oci_bind_by_name($stid,":p_xf_tsp_tsg_code",$p_xf_tsp_tsg_code);
-	oci_bind_by_name($stid,":p_xk_tsp_code",$p_xk_tsp_code);
+	oci_bind_by_name($stid,":p_fk_bot_name",$RequestObj->Parameters->Type->FkBotName);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_fk_atb_name",$RequestObj->Parameters->Type->FkAtbName);
+	oci_bind_by_name($stid,":p_include_or_exclude",$RequestObj->Parameters->Type->IncludeOrExclude);
+	oci_bind_by_name($stid,":p_xf_tsp_typ_name",$RequestObj->Parameters->Type->XfTspTypName);
+	oci_bind_by_name($stid,":p_xf_tsp_tsg_code",$RequestObj->Parameters->Type->XfTspTsgCode);
+	oci_bind_by_name($stid,":p_xk_tsp_code",$RequestObj->Parameters->Type->XkTspCode);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'CREATE_RTA';
 	$r = perform_db_request();
-	if (!$r) { return; }
-	echo "CREATE_RTA";
-	if ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["FK_TYP_NAME"]."<|>".$row["FK_ATB_NAME"]."<|>".$row["XF_TSP_TYP_NAME"]."<|>".$row["XF_TSP_TSG_CODE"]."<|>".$row["XK_TSP_CODE"];
+	if (!$r) { 
+		echo ']';
+		return;
 	}
+	$ResponseObj->Rows = array();
+	if ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Key = new \stdClass();
+		$RowObj->Key->FkTypName = $row["FK_TYP_NAME"];
+		$RowObj->Key->FkAtbName = $row["FK_ATB_NAME"];
+		$RowObj->Key->XfTspTypName = $row["XF_TSP_TYP_NAME"];
+		$RowObj->Key->XfTspTsgCode = $row["XF_TSP_TSG_CODE"];
+		$RowObj->Key->XkTspCode = $row["XK_TSP_CODE"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'UpdateRta':
-
-	list($p_fk_bot_name, $p_fk_typ_name, $p_fk_atb_name, $p_include_or_exclude, $p_xf_tsp_typ_name, $p_xf_tsp_tsg_code, $p_xk_tsp_code) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.update_rta (
 		:p_fk_bot_name,
@@ -1352,25 +1926,30 @@ case 'UpdateRta':
 		:p_xf_tsp_tsg_code,
 		:p_xk_tsp_code);
 	END;");
-	oci_bind_by_name($stid,":p_fk_bot_name",$p_fk_bot_name);
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-	oci_bind_by_name($stid,":p_fk_atb_name",$p_fk_atb_name);
-	oci_bind_by_name($stid,":p_include_or_exclude",$p_include_or_exclude);
-	oci_bind_by_name($stid,":p_xf_tsp_typ_name",$p_xf_tsp_typ_name);
-	oci_bind_by_name($stid,":p_xf_tsp_tsg_code",$p_xf_tsp_tsg_code);
-	oci_bind_by_name($stid,":p_xk_tsp_code",$p_xk_tsp_code);
+	oci_bind_by_name($stid,":p_fk_bot_name",$RequestObj->Parameters->Type->FkBotName);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_fk_atb_name",$RequestObj->Parameters->Type->FkAtbName);
+	oci_bind_by_name($stid,":p_include_or_exclude",$RequestObj->Parameters->Type->IncludeOrExclude);
+	oci_bind_by_name($stid,":p_xf_tsp_typ_name",$RequestObj->Parameters->Type->XfTspTypName);
+	oci_bind_by_name($stid,":p_xf_tsp_tsg_code",$RequestObj->Parameters->Type->XfTspTsgCode);
+	oci_bind_by_name($stid,":p_xk_tsp_code",$RequestObj->Parameters->Type->XkTspCode);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'UPDATE_RTA';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
-	echo "UPDATE_RTA";
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'DeleteRta':
-
-	list($p_fk_typ_name, $p_fk_atb_name, $p_xf_tsp_typ_name, $p_xf_tsp_tsg_code, $p_xk_tsp_code) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.delete_rta (
 		:p_fk_typ_name,
@@ -1379,23 +1958,28 @@ case 'DeleteRta':
 		:p_xf_tsp_tsg_code,
 		:p_xk_tsp_code);
 	END;");
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-	oci_bind_by_name($stid,":p_fk_atb_name",$p_fk_atb_name);
-	oci_bind_by_name($stid,":p_xf_tsp_typ_name",$p_xf_tsp_typ_name);
-	oci_bind_by_name($stid,":p_xf_tsp_tsg_code",$p_xf_tsp_tsg_code);
-	oci_bind_by_name($stid,":p_xk_tsp_code",$p_xk_tsp_code);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_fk_atb_name",$RequestObj->Parameters->Type->FkAtbName);
+	oci_bind_by_name($stid,":p_xf_tsp_typ_name",$RequestObj->Parameters->Type->XfTspTypName);
+	oci_bind_by_name($stid,":p_xf_tsp_tsg_code",$RequestObj->Parameters->Type->XfTspTsgCode);
+	oci_bind_by_name($stid,":p_xk_tsp_code",$RequestObj->Parameters->Type->XkTspCode);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'DELETE_RTA';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
-	echo "DELETE_RTA";
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'GetRef':
-
-	list($p_fk_typ_name, $p_sequence, $p_xk_typ_name) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.get_ref (
 		:p_cube_row,
@@ -1403,21 +1987,39 @@ case 'GetRef':
 		:p_sequence,
 		:p_xk_typ_name);
 	END;");
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-	oci_bind_by_name($stid,":p_sequence",$p_sequence);
-	oci_bind_by_name($stid,":p_xk_typ_name",$p_xk_typ_name);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_sequence",$RequestObj->Parameters->Type->Sequence);
+	oci_bind_by_name($stid,":p_xk_typ_name",$RequestObj->Parameters->Type->XkTypName);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'SELECT_REF';
 	$r = perform_db_request();
-	if (!$r) { return; }
-	echo "SELECT_REF";
-	if ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["FK_BOT_NAME"]."<|>".$row["NAME"]."<|>".$row["PRIMARY_KEY"]."<|>".$row["CODE_DISPLAY_KEY"]."<|>".$row["SCOPE"]."<|>".$row["UNCHANGEABLE"]."<|>".$row["WITHIN_SCOPE_LEVEL"]."<|>".$row["XK_TYP_NAME_1"];
+	if (!$r) { 
+		echo ']';
+		return;
 	}
+	$ResponseObj->Rows = array();
+	if ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Data = new \stdClass();
+		$RowObj->Data->FkBotName = $row["FK_BOT_NAME"];
+		$RowObj->Data->Name = $row["NAME"];
+		$RowObj->Data->PrimaryKey = $row["PRIMARY_KEY"];
+		$RowObj->Data->CodeDisplayKey = $row["CODE_DISPLAY_KEY"];
+		$RowObj->Data->Scope = $row["SCOPE"];
+		$RowObj->Data->Unchangeable = $row["UNCHANGEABLE"];
+		$RowObj->Data->WithinScopeLevel = $row["WITHIN_SCOPE_LEVEL"];
+		$RowObj->Data->XkTypName1 = $row["XK_TYP_NAME_1"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'GetRefFkey':
-
-	list($p_fk_typ_name, $p_sequence, $p_xk_typ_name) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.get_ref_fkey (
 		:p_cube_row,
@@ -1425,21 +2027,32 @@ case 'GetRefFkey':
 		:p_sequence,
 		:p_xk_typ_name);
 	END;");
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-	oci_bind_by_name($stid,":p_sequence",$p_sequence);
-	oci_bind_by_name($stid,":p_xk_typ_name",$p_xk_typ_name);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_sequence",$RequestObj->Parameters->Type->Sequence);
+	oci_bind_by_name($stid,":p_xk_typ_name",$RequestObj->Parameters->Type->XkTypName);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'SELECT_FKEY_REF';
 	$r = perform_db_request();
-	if (!$r) { return; }
-	echo "SELECT_FKEY_REF";
-	if ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["FK_BOT_NAME"];
+	if (!$r) { 
+		echo ']';
+		return;
 	}
+	$ResponseObj->Rows = array();
+	if ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Data = new \stdClass();
+		$RowObj->Data->FkBotName = $row["FK_BOT_NAME"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'GetRefItems':
-
-	list($p_fk_typ_name, $p_sequence, $p_xk_typ_name) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.get_ref_dcr_items (
 		:p_cube_row,
@@ -1447,19 +2060,30 @@ case 'GetRefItems':
 		:p_sequence,
 		:p_xk_typ_name);
 	END;");
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-	oci_bind_by_name($stid,":p_sequence",$p_sequence);
-	oci_bind_by_name($stid,":p_xk_typ_name",$p_xk_typ_name);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_sequence",$RequestObj->Parameters->Type->Sequence);
+	oci_bind_by_name($stid,":p_xk_typ_name",$RequestObj->Parameters->Type->XkTypName);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'LIST_DCR';
 	$r = perform_db_request();
-	if (!$r) { return; }
-	$first = True;
-	while ($row = oci_fetch_assoc($curs)) {
-		if ($first) { $first = False; echo "LIST_DCR";}
-		echo "<|||>".$row["FK_TYP_NAME"]."<|>".$row["FK_REF_SEQUENCE"]."<|>".$row["FK_REF_TYP_NAME"];
-		echo "<||>";
+	if (!$r) { 
+		echo ']';
+		return;
 	}
-	echo "<||||>";
+	$ResponseObj->Rows = array();
+	while ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Key = new \stdClass();
+		$RowObj->Key->FkTypName = $row["FK_TYP_NAME"];
+		$RowObj->Key->FkRefSequence = $row["FK_REF_SEQUENCE"];
+		$RowObj->Key->FkRefTypName = $row["FK_REF_TYP_NAME"];
+		$RowObj->Display = ' ';
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ',';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.get_ref_rtr_items (
 		:p_cube_row,
@@ -1467,23 +2091,38 @@ case 'GetRefItems':
 		:p_sequence,
 		:p_xk_typ_name);
 	END;");
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-	oci_bind_by_name($stid,":p_sequence",$p_sequence);
-	oci_bind_by_name($stid,":p_xk_typ_name",$p_xk_typ_name);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_sequence",$RequestObj->Parameters->Type->Sequence);
+	oci_bind_by_name($stid,":p_xk_typ_name",$RequestObj->Parameters->Type->XkTypName);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'LIST_RTR';
 	$r = perform_db_request();
-	if (!$r) { return; }
-	$first = True;
-	while ($row = oci_fetch_assoc($curs)) {
-		if ($first) { $first = False; echo "LIST_RTR";}
-		echo "<|||>".$row["FK_TYP_NAME"]."<|>".$row["FK_REF_SEQUENCE"]."<|>".$row["FK_REF_TYP_NAME"]."<|>".$row["XF_TSP_TYP_NAME"]."<|>".$row["XF_TSP_TSG_CODE"]."<|>".$row["XK_TSP_CODE"];
-		echo "<||>".$row["XF_TSP_TYP_NAME"]." ".$row["XF_TSP_TSG_CODE"]." ".$row["XK_TSP_CODE"];
+	if (!$r) { 
+		echo ']';
+		return;
 	}
+	$ResponseObj->Rows = array();
+	while ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Key = new \stdClass();
+		$RowObj->Key->FkTypName = $row["FK_TYP_NAME"];
+		$RowObj->Key->FkRefSequence = $row["FK_REF_SEQUENCE"];
+		$RowObj->Key->FkRefTypName = $row["FK_REF_TYP_NAME"];
+		$RowObj->Key->XfTspTypName = $row["XF_TSP_TYP_NAME"];
+		$RowObj->Key->XfTspTsgCode = $row["XF_TSP_TSG_CODE"];
+		$RowObj->Key->XkTspCode = $row["XK_TSP_CODE"];
+		$RowObj->Display = $row["XF_TSP_TYP_NAME"].' '.$row["XF_TSP_TSG_CODE"].' '.$row["XK_TSP_CODE"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'CountRefRestrictedItems':
-
-	list($p_fk_typ_name, $p_sequence, $p_xk_typ_name) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.count_ref_dcr (
 		:p_cube_row,
@@ -1491,21 +2130,32 @@ case 'CountRefRestrictedItems':
 		:p_sequence,
 		:p_xk_typ_name);
 	END;");
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-	oci_bind_by_name($stid,":p_sequence",$p_sequence);
-	oci_bind_by_name($stid,":p_xk_typ_name",$p_xk_typ_name);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_sequence",$RequestObj->Parameters->Type->Sequence);
+	oci_bind_by_name($stid,":p_xk_typ_name",$RequestObj->Parameters->Type->XkTypName);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'COUNT_DCR';
 	$r = perform_db_request();
-	if (!$r) { return; }
-	echo "COUNT_DCR";
-	if ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["TYPE_COUNT"];
+	if (!$r) { 
+		echo ']';
+		return;
 	}
+	$ResponseObj->Rows = array();
+	if ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Data = new \stdClass();
+		$RowObj->Data->TypeCount = $row["TYPE_COUNT"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'MoveRef':
-
-	list($p_cube_pos_action, $p_fk_typ_name, $p_sequence, $p_xk_typ_name, $x_fk_typ_name, $x_sequence, $x_xk_typ_name) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.move_ref (
 		:p_cube_pos_action,
@@ -1516,25 +2166,30 @@ case 'MoveRef':
 		:x_sequence,
 		:x_xk_typ_name);
 	END;");
-	oci_bind_by_name($stid,":p_cube_pos_action",$p_cube_pos_action);
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-	oci_bind_by_name($stid,":p_sequence",$p_sequence);
-	oci_bind_by_name($stid,":p_xk_typ_name",$p_xk_typ_name);
-	oci_bind_by_name($stid,":x_fk_typ_name",$x_fk_typ_name);
-	oci_bind_by_name($stid,":x_sequence",$x_sequence);
-	oci_bind_by_name($stid,":x_xk_typ_name",$x_xk_typ_name);
+	oci_bind_by_name($stid,":p_cube_pos_action",$RequestObj->Parameters->Option->CubePosAction);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_sequence",$RequestObj->Parameters->Type->Sequence);
+	oci_bind_by_name($stid,":p_xk_typ_name",$RequestObj->Parameters->Type->XkTypName);
+	oci_bind_by_name($stid,":x_fk_typ_name",$RequestObj->Parameters->Ref->FkTypName);
+	oci_bind_by_name($stid,":x_sequence",$RequestObj->Parameters->Ref->Sequence);
+	oci_bind_by_name($stid,":x_xk_typ_name",$RequestObj->Parameters->Ref->XkTypName);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'MOVE_REF';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
-	echo "MOVE_REF";
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'CreateRef':
-
-	list($p_cube_pos_action, $p_fk_bot_name, $p_fk_typ_name, $p_name, $p_primary_key, $p_code_display_key, $p_sequence, $p_scope, $p_unchangeable, $p_within_scope_level, $p_xk_typ_name, $p_xk_typ_name_1, $x_fk_typ_name, $x_sequence, $x_xk_typ_name) = explode("<|>", $import[1]."<|><|><|>");
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.insert_ref (
 		:p_cube_pos_action,
@@ -1553,33 +2208,38 @@ case 'CreateRef':
 		:x_sequence,
 		:x_xk_typ_name);
 	END;");
-	oci_bind_by_name($stid,":p_cube_pos_action",$p_cube_pos_action);
-	oci_bind_by_name($stid,":p_fk_bot_name",$p_fk_bot_name);
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-	oci_bind_by_name($stid,":p_name",$p_name);
-	oci_bind_by_name($stid,":p_primary_key",$p_primary_key);
-	oci_bind_by_name($stid,":p_code_display_key",$p_code_display_key);
-	oci_bind_by_name($stid,":p_sequence",$p_sequence);
-	oci_bind_by_name($stid,":p_scope",$p_scope);
-	oci_bind_by_name($stid,":p_unchangeable",$p_unchangeable);
-	oci_bind_by_name($stid,":p_within_scope_level",$p_within_scope_level);
-	oci_bind_by_name($stid,":p_xk_typ_name",$p_xk_typ_name);
-	oci_bind_by_name($stid,":p_xk_typ_name_1",$p_xk_typ_name_1);
-	oci_bind_by_name($stid,":x_fk_typ_name",$x_fk_typ_name);
-	oci_bind_by_name($stid,":x_sequence",$x_sequence);
-	oci_bind_by_name($stid,":x_xk_typ_name",$x_xk_typ_name);
+	oci_bind_by_name($stid,":p_cube_pos_action",$RequestObj->Parameters->Option->CubePosAction);
+	oci_bind_by_name($stid,":p_fk_bot_name",$RequestObj->Parameters->Type->FkBotName);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
+	oci_bind_by_name($stid,":p_primary_key",$RequestObj->Parameters->Type->PrimaryKey);
+	oci_bind_by_name($stid,":p_code_display_key",$RequestObj->Parameters->Type->CodeDisplayKey);
+	oci_bind_by_name($stid,":p_sequence",$RequestObj->Parameters->Type->Sequence);
+	oci_bind_by_name($stid,":p_scope",$RequestObj->Parameters->Type->Scope);
+	oci_bind_by_name($stid,":p_unchangeable",$RequestObj->Parameters->Type->Unchangeable);
+	oci_bind_by_name($stid,":p_within_scope_level",$RequestObj->Parameters->Type->WithinScopeLevel);
+	oci_bind_by_name($stid,":p_xk_typ_name",$RequestObj->Parameters->Type->XkTypName);
+	oci_bind_by_name($stid,":p_xk_typ_name_1",$RequestObj->Parameters->Type->XkTypName1);
+	oci_bind_by_name($stid,":x_fk_typ_name",$RequestObj->Parameters->Ref->FkTypName);
+	oci_bind_by_name($stid,":x_sequence",$RequestObj->Parameters->Ref->Sequence);
+	oci_bind_by_name($stid,":x_xk_typ_name",$RequestObj->Parameters->Ref->XkTypName);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'CREATE_REF';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
-	echo "CREATE_REF";
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'UpdateRef':
-
-	list($p_fk_bot_name, $p_fk_typ_name, $p_name, $p_primary_key, $p_code_display_key, $p_sequence, $p_scope, $p_unchangeable, $p_within_scope_level, $p_xk_typ_name, $p_xk_typ_name_1) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.update_ref (
 		:p_fk_bot_name,
@@ -1594,50 +2254,60 @@ case 'UpdateRef':
 		:p_xk_typ_name,
 		:p_xk_typ_name_1);
 	END;");
-	oci_bind_by_name($stid,":p_fk_bot_name",$p_fk_bot_name);
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-	oci_bind_by_name($stid,":p_name",$p_name);
-	oci_bind_by_name($stid,":p_primary_key",$p_primary_key);
-	oci_bind_by_name($stid,":p_code_display_key",$p_code_display_key);
-	oci_bind_by_name($stid,":p_sequence",$p_sequence);
-	oci_bind_by_name($stid,":p_scope",$p_scope);
-	oci_bind_by_name($stid,":p_unchangeable",$p_unchangeable);
-	oci_bind_by_name($stid,":p_within_scope_level",$p_within_scope_level);
-	oci_bind_by_name($stid,":p_xk_typ_name",$p_xk_typ_name);
-	oci_bind_by_name($stid,":p_xk_typ_name_1",$p_xk_typ_name_1);
+	oci_bind_by_name($stid,":p_fk_bot_name",$RequestObj->Parameters->Type->FkBotName);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
+	oci_bind_by_name($stid,":p_primary_key",$RequestObj->Parameters->Type->PrimaryKey);
+	oci_bind_by_name($stid,":p_code_display_key",$RequestObj->Parameters->Type->CodeDisplayKey);
+	oci_bind_by_name($stid,":p_sequence",$RequestObj->Parameters->Type->Sequence);
+	oci_bind_by_name($stid,":p_scope",$RequestObj->Parameters->Type->Scope);
+	oci_bind_by_name($stid,":p_unchangeable",$RequestObj->Parameters->Type->Unchangeable);
+	oci_bind_by_name($stid,":p_within_scope_level",$RequestObj->Parameters->Type->WithinScopeLevel);
+	oci_bind_by_name($stid,":p_xk_typ_name",$RequestObj->Parameters->Type->XkTypName);
+	oci_bind_by_name($stid,":p_xk_typ_name_1",$RequestObj->Parameters->Type->XkTypName1);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'UPDATE_REF';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
-	echo "UPDATE_REF";
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'DeleteRef':
-
-	list($p_fk_typ_name, $p_sequence, $p_xk_typ_name) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.delete_ref (
 		:p_fk_typ_name,
 		:p_sequence,
 		:p_xk_typ_name);
 	END;");
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-	oci_bind_by_name($stid,":p_sequence",$p_sequence);
-	oci_bind_by_name($stid,":p_xk_typ_name",$p_xk_typ_name);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_sequence",$RequestObj->Parameters->Type->Sequence);
+	oci_bind_by_name($stid,":p_xk_typ_name",$RequestObj->Parameters->Type->XkTypName);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'DELETE_REF';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
-	echo "DELETE_REF";
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'GetDcr':
-
-	list($p_fk_typ_name, $p_fk_ref_sequence, $p_fk_ref_typ_name) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.get_dcr (
 		:p_cube_row,
@@ -1645,21 +2315,33 @@ case 'GetDcr':
 		:p_fk_ref_sequence,
 		:p_fk_ref_typ_name);
 	END;");
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-	oci_bind_by_name($stid,":p_fk_ref_sequence",$p_fk_ref_sequence);
-	oci_bind_by_name($stid,":p_fk_ref_typ_name",$p_fk_ref_typ_name);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_fk_ref_sequence",$RequestObj->Parameters->Type->FkRefSequence);
+	oci_bind_by_name($stid,":p_fk_ref_typ_name",$RequestObj->Parameters->Type->FkRefTypName);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'SELECT_DCR';
 	$r = perform_db_request();
-	if (!$r) { return; }
-	echo "SELECT_DCR";
-	if ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["FK_BOT_NAME"]."<|>".$row["TEXT"];
+	if (!$r) { 
+		echo ']';
+		return;
 	}
+	$ResponseObj->Rows = array();
+	if ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Data = new \stdClass();
+		$RowObj->Data->FkBotName = $row["FK_BOT_NAME"];
+		$RowObj->Data->Text = $row["TEXT"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'CreateDcr':
-
-	list($p_fk_bot_name, $p_fk_typ_name, $p_fk_ref_sequence, $p_fk_ref_typ_name, $p_text) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.insert_dcr (
 		:p_fk_bot_name,
@@ -1668,23 +2350,28 @@ case 'CreateDcr':
 		:p_fk_ref_typ_name,
 		:p_text);
 	END;");
-	oci_bind_by_name($stid,":p_fk_bot_name",$p_fk_bot_name);
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-	oci_bind_by_name($stid,":p_fk_ref_sequence",$p_fk_ref_sequence);
-	oci_bind_by_name($stid,":p_fk_ref_typ_name",$p_fk_ref_typ_name);
-	oci_bind_by_name($stid,":p_text",$p_text);
+	oci_bind_by_name($stid,":p_fk_bot_name",$RequestObj->Parameters->Type->FkBotName);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_fk_ref_sequence",$RequestObj->Parameters->Type->FkRefSequence);
+	oci_bind_by_name($stid,":p_fk_ref_typ_name",$RequestObj->Parameters->Type->FkRefTypName);
+	oci_bind_by_name($stid,":p_text",$RequestObj->Parameters->Type->Text);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'CREATE_DCR';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
-	echo "CREATE_DCR";
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'UpdateDcr':
-
-	list($p_fk_bot_name, $p_fk_typ_name, $p_fk_ref_sequence, $p_fk_ref_typ_name, $p_text) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.update_dcr (
 		:p_fk_bot_name,
@@ -1693,44 +2380,54 @@ case 'UpdateDcr':
 		:p_fk_ref_typ_name,
 		:p_text);
 	END;");
-	oci_bind_by_name($stid,":p_fk_bot_name",$p_fk_bot_name);
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-	oci_bind_by_name($stid,":p_fk_ref_sequence",$p_fk_ref_sequence);
-	oci_bind_by_name($stid,":p_fk_ref_typ_name",$p_fk_ref_typ_name);
-	oci_bind_by_name($stid,":p_text",$p_text);
+	oci_bind_by_name($stid,":p_fk_bot_name",$RequestObj->Parameters->Type->FkBotName);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_fk_ref_sequence",$RequestObj->Parameters->Type->FkRefSequence);
+	oci_bind_by_name($stid,":p_fk_ref_typ_name",$RequestObj->Parameters->Type->FkRefTypName);
+	oci_bind_by_name($stid,":p_text",$RequestObj->Parameters->Type->Text);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'UPDATE_DCR';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
-	echo "UPDATE_DCR";
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'DeleteDcr':
-
-	list($p_fk_typ_name, $p_fk_ref_sequence, $p_fk_ref_typ_name) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.delete_dcr (
 		:p_fk_typ_name,
 		:p_fk_ref_sequence,
 		:p_fk_ref_typ_name);
 	END;");
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-	oci_bind_by_name($stid,":p_fk_ref_sequence",$p_fk_ref_sequence);
-	oci_bind_by_name($stid,":p_fk_ref_typ_name",$p_fk_ref_typ_name);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_fk_ref_sequence",$RequestObj->Parameters->Type->FkRefSequence);
+	oci_bind_by_name($stid,":p_fk_ref_typ_name",$RequestObj->Parameters->Type->FkRefTypName);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'DELETE_DCR';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
-	echo "DELETE_DCR";
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'GetRtr':
-
-	list($p_fk_typ_name, $p_fk_ref_sequence, $p_fk_ref_typ_name, $p_xf_tsp_typ_name, $p_xf_tsp_tsg_code, $p_xk_tsp_code) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.get_rtr (
 		:p_cube_row,
@@ -1741,24 +2438,36 @@ case 'GetRtr':
 		:p_xf_tsp_tsg_code,
 		:p_xk_tsp_code);
 	END;");
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-	oci_bind_by_name($stid,":p_fk_ref_sequence",$p_fk_ref_sequence);
-	oci_bind_by_name($stid,":p_fk_ref_typ_name",$p_fk_ref_typ_name);
-	oci_bind_by_name($stid,":p_xf_tsp_typ_name",$p_xf_tsp_typ_name);
-	oci_bind_by_name($stid,":p_xf_tsp_tsg_code",$p_xf_tsp_tsg_code);
-	oci_bind_by_name($stid,":p_xk_tsp_code",$p_xk_tsp_code);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_fk_ref_sequence",$RequestObj->Parameters->Type->FkRefSequence);
+	oci_bind_by_name($stid,":p_fk_ref_typ_name",$RequestObj->Parameters->Type->FkRefTypName);
+	oci_bind_by_name($stid,":p_xf_tsp_typ_name",$RequestObj->Parameters->Type->XfTspTypName);
+	oci_bind_by_name($stid,":p_xf_tsp_tsg_code",$RequestObj->Parameters->Type->XfTspTsgCode);
+	oci_bind_by_name($stid,":p_xk_tsp_code",$RequestObj->Parameters->Type->XkTspCode);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'SELECT_RTR';
 	$r = perform_db_request();
-	if (!$r) { return; }
-	echo "SELECT_RTR";
-	if ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["FK_BOT_NAME"]."<|>".$row["INCLUDE_OR_EXCLUDE"];
+	if (!$r) { 
+		echo ']';
+		return;
 	}
+	$ResponseObj->Rows = array();
+	if ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Data = new \stdClass();
+		$RowObj->Data->FkBotName = $row["FK_BOT_NAME"];
+		$RowObj->Data->IncludeOrExclude = $row["INCLUDE_OR_EXCLUDE"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'CreateRtr':
-
-	list($p_fk_bot_name, $p_fk_typ_name, $p_fk_ref_sequence, $p_fk_ref_typ_name, $p_include_or_exclude, $p_xf_tsp_typ_name, $p_xf_tsp_tsg_code, $p_xk_tsp_code) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.insert_rtr (
 		:p_fk_bot_name,
@@ -1771,26 +2480,42 @@ case 'CreateRtr':
 		:p_xk_tsp_code,
 		:p_cube_row);
 	END;");
-	oci_bind_by_name($stid,":p_fk_bot_name",$p_fk_bot_name);
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-	oci_bind_by_name($stid,":p_fk_ref_sequence",$p_fk_ref_sequence);
-	oci_bind_by_name($stid,":p_fk_ref_typ_name",$p_fk_ref_typ_name);
-	oci_bind_by_name($stid,":p_include_or_exclude",$p_include_or_exclude);
-	oci_bind_by_name($stid,":p_xf_tsp_typ_name",$p_xf_tsp_typ_name);
-	oci_bind_by_name($stid,":p_xf_tsp_tsg_code",$p_xf_tsp_tsg_code);
-	oci_bind_by_name($stid,":p_xk_tsp_code",$p_xk_tsp_code);
+	oci_bind_by_name($stid,":p_fk_bot_name",$RequestObj->Parameters->Type->FkBotName);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_fk_ref_sequence",$RequestObj->Parameters->Type->FkRefSequence);
+	oci_bind_by_name($stid,":p_fk_ref_typ_name",$RequestObj->Parameters->Type->FkRefTypName);
+	oci_bind_by_name($stid,":p_include_or_exclude",$RequestObj->Parameters->Type->IncludeOrExclude);
+	oci_bind_by_name($stid,":p_xf_tsp_typ_name",$RequestObj->Parameters->Type->XfTspTypName);
+	oci_bind_by_name($stid,":p_xf_tsp_tsg_code",$RequestObj->Parameters->Type->XfTspTsgCode);
+	oci_bind_by_name($stid,":p_xk_tsp_code",$RequestObj->Parameters->Type->XkTspCode);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'CREATE_RTR';
 	$r = perform_db_request();
-	if (!$r) { return; }
-	echo "CREATE_RTR";
-	if ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["FK_TYP_NAME"]."<|>".$row["FK_REF_SEQUENCE"]."<|>".$row["FK_REF_TYP_NAME"]."<|>".$row["XF_TSP_TYP_NAME"]."<|>".$row["XF_TSP_TSG_CODE"]."<|>".$row["XK_TSP_CODE"];
+	if (!$r) { 
+		echo ']';
+		return;
 	}
+	$ResponseObj->Rows = array();
+	if ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Key = new \stdClass();
+		$RowObj->Key->FkTypName = $row["FK_TYP_NAME"];
+		$RowObj->Key->FkRefSequence = $row["FK_REF_SEQUENCE"];
+		$RowObj->Key->FkRefTypName = $row["FK_REF_TYP_NAME"];
+		$RowObj->Key->XfTspTypName = $row["XF_TSP_TYP_NAME"];
+		$RowObj->Key->XfTspTsgCode = $row["XF_TSP_TSG_CODE"];
+		$RowObj->Key->XkTspCode = $row["XK_TSP_CODE"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'UpdateRtr':
-
-	list($p_fk_bot_name, $p_fk_typ_name, $p_fk_ref_sequence, $p_fk_ref_typ_name, $p_include_or_exclude, $p_xf_tsp_typ_name, $p_xf_tsp_tsg_code, $p_xk_tsp_code) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.update_rtr (
 		:p_fk_bot_name,
@@ -1802,26 +2527,31 @@ case 'UpdateRtr':
 		:p_xf_tsp_tsg_code,
 		:p_xk_tsp_code);
 	END;");
-	oci_bind_by_name($stid,":p_fk_bot_name",$p_fk_bot_name);
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-	oci_bind_by_name($stid,":p_fk_ref_sequence",$p_fk_ref_sequence);
-	oci_bind_by_name($stid,":p_fk_ref_typ_name",$p_fk_ref_typ_name);
-	oci_bind_by_name($stid,":p_include_or_exclude",$p_include_or_exclude);
-	oci_bind_by_name($stid,":p_xf_tsp_typ_name",$p_xf_tsp_typ_name);
-	oci_bind_by_name($stid,":p_xf_tsp_tsg_code",$p_xf_tsp_tsg_code);
-	oci_bind_by_name($stid,":p_xk_tsp_code",$p_xk_tsp_code);
+	oci_bind_by_name($stid,":p_fk_bot_name",$RequestObj->Parameters->Type->FkBotName);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_fk_ref_sequence",$RequestObj->Parameters->Type->FkRefSequence);
+	oci_bind_by_name($stid,":p_fk_ref_typ_name",$RequestObj->Parameters->Type->FkRefTypName);
+	oci_bind_by_name($stid,":p_include_or_exclude",$RequestObj->Parameters->Type->IncludeOrExclude);
+	oci_bind_by_name($stid,":p_xf_tsp_typ_name",$RequestObj->Parameters->Type->XfTspTypName);
+	oci_bind_by_name($stid,":p_xf_tsp_tsg_code",$RequestObj->Parameters->Type->XfTspTsgCode);
+	oci_bind_by_name($stid,":p_xk_tsp_code",$RequestObj->Parameters->Type->XkTspCode);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'UPDATE_RTR';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
-	echo "UPDATE_RTR";
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'DeleteRtr':
-
-	list($p_fk_typ_name, $p_fk_ref_sequence, $p_fk_ref_typ_name, $p_xf_tsp_typ_name, $p_xf_tsp_tsg_code, $p_xk_tsp_code) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.delete_rtr (
 		:p_fk_typ_name,
@@ -1831,24 +2561,29 @@ case 'DeleteRtr':
 		:p_xf_tsp_tsg_code,
 		:p_xk_tsp_code);
 	END;");
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-	oci_bind_by_name($stid,":p_fk_ref_sequence",$p_fk_ref_sequence);
-	oci_bind_by_name($stid,":p_fk_ref_typ_name",$p_fk_ref_typ_name);
-	oci_bind_by_name($stid,":p_xf_tsp_typ_name",$p_xf_tsp_typ_name);
-	oci_bind_by_name($stid,":p_xf_tsp_tsg_code",$p_xf_tsp_tsg_code);
-	oci_bind_by_name($stid,":p_xk_tsp_code",$p_xk_tsp_code);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_fk_ref_sequence",$RequestObj->Parameters->Type->FkRefSequence);
+	oci_bind_by_name($stid,":p_fk_ref_typ_name",$RequestObj->Parameters->Type->FkRefTypName);
+	oci_bind_by_name($stid,":p_xf_tsp_typ_name",$RequestObj->Parameters->Type->XfTspTypName);
+	oci_bind_by_name($stid,":p_xf_tsp_tsg_code",$RequestObj->Parameters->Type->XfTspTsgCode);
+	oci_bind_by_name($stid,":p_xk_tsp_code",$RequestObj->Parameters->Type->XkTspCode);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'DELETE_RTR';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
-	echo "DELETE_RTR";
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'GetRtt':
-
-	list($p_fk_typ_name, $p_xf_tsp_typ_name, $p_xf_tsp_tsg_code, $p_xk_tsp_code) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.get_rtt (
 		:p_cube_row,
@@ -1857,22 +2592,34 @@ case 'GetRtt':
 		:p_xf_tsp_tsg_code,
 		:p_xk_tsp_code);
 	END;");
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-	oci_bind_by_name($stid,":p_xf_tsp_typ_name",$p_xf_tsp_typ_name);
-	oci_bind_by_name($stid,":p_xf_tsp_tsg_code",$p_xf_tsp_tsg_code);
-	oci_bind_by_name($stid,":p_xk_tsp_code",$p_xk_tsp_code);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_xf_tsp_typ_name",$RequestObj->Parameters->Type->XfTspTypName);
+	oci_bind_by_name($stid,":p_xf_tsp_tsg_code",$RequestObj->Parameters->Type->XfTspTsgCode);
+	oci_bind_by_name($stid,":p_xk_tsp_code",$RequestObj->Parameters->Type->XkTspCode);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'SELECT_RTT';
 	$r = perform_db_request();
-	if (!$r) { return; }
-	echo "SELECT_RTT";
-	if ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["FK_BOT_NAME"]."<|>".$row["INCLUDE_OR_EXCLUDE"];
+	if (!$r) { 
+		echo ']';
+		return;
 	}
+	$ResponseObj->Rows = array();
+	if ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Data = new \stdClass();
+		$RowObj->Data->FkBotName = $row["FK_BOT_NAME"];
+		$RowObj->Data->IncludeOrExclude = $row["INCLUDE_OR_EXCLUDE"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'CreateRtt':
-
-	list($p_fk_bot_name, $p_fk_typ_name, $p_include_or_exclude, $p_xf_tsp_typ_name, $p_xf_tsp_tsg_code, $p_xk_tsp_code) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.insert_rtt (
 		:p_fk_bot_name,
@@ -1883,24 +2630,38 @@ case 'CreateRtt':
 		:p_xk_tsp_code,
 		:p_cube_row);
 	END;");
-	oci_bind_by_name($stid,":p_fk_bot_name",$p_fk_bot_name);
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-	oci_bind_by_name($stid,":p_include_or_exclude",$p_include_or_exclude);
-	oci_bind_by_name($stid,":p_xf_tsp_typ_name",$p_xf_tsp_typ_name);
-	oci_bind_by_name($stid,":p_xf_tsp_tsg_code",$p_xf_tsp_tsg_code);
-	oci_bind_by_name($stid,":p_xk_tsp_code",$p_xk_tsp_code);
+	oci_bind_by_name($stid,":p_fk_bot_name",$RequestObj->Parameters->Type->FkBotName);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_include_or_exclude",$RequestObj->Parameters->Type->IncludeOrExclude);
+	oci_bind_by_name($stid,":p_xf_tsp_typ_name",$RequestObj->Parameters->Type->XfTspTypName);
+	oci_bind_by_name($stid,":p_xf_tsp_tsg_code",$RequestObj->Parameters->Type->XfTspTsgCode);
+	oci_bind_by_name($stid,":p_xk_tsp_code",$RequestObj->Parameters->Type->XkTspCode);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'CREATE_RTT';
 	$r = perform_db_request();
-	if (!$r) { return; }
-	echo "CREATE_RTT";
-	if ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["FK_TYP_NAME"]."<|>".$row["XF_TSP_TYP_NAME"]."<|>".$row["XF_TSP_TSG_CODE"]."<|>".$row["XK_TSP_CODE"];
+	if (!$r) { 
+		echo ']';
+		return;
 	}
+	$ResponseObj->Rows = array();
+	if ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Key = new \stdClass();
+		$RowObj->Key->FkTypName = $row["FK_TYP_NAME"];
+		$RowObj->Key->XfTspTypName = $row["XF_TSP_TYP_NAME"];
+		$RowObj->Key->XfTspTsgCode = $row["XF_TSP_TSG_CODE"];
+		$RowObj->Key->XkTspCode = $row["XK_TSP_CODE"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'UpdateRtt':
-
-	list($p_fk_bot_name, $p_fk_typ_name, $p_include_or_exclude, $p_xf_tsp_typ_name, $p_xf_tsp_tsg_code, $p_xk_tsp_code) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.update_rtt (
 		:p_fk_bot_name,
@@ -1910,24 +2671,29 @@ case 'UpdateRtt':
 		:p_xf_tsp_tsg_code,
 		:p_xk_tsp_code);
 	END;");
-	oci_bind_by_name($stid,":p_fk_bot_name",$p_fk_bot_name);
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-	oci_bind_by_name($stid,":p_include_or_exclude",$p_include_or_exclude);
-	oci_bind_by_name($stid,":p_xf_tsp_typ_name",$p_xf_tsp_typ_name);
-	oci_bind_by_name($stid,":p_xf_tsp_tsg_code",$p_xf_tsp_tsg_code);
-	oci_bind_by_name($stid,":p_xk_tsp_code",$p_xk_tsp_code);
+	oci_bind_by_name($stid,":p_fk_bot_name",$RequestObj->Parameters->Type->FkBotName);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_include_or_exclude",$RequestObj->Parameters->Type->IncludeOrExclude);
+	oci_bind_by_name($stid,":p_xf_tsp_typ_name",$RequestObj->Parameters->Type->XfTspTypName);
+	oci_bind_by_name($stid,":p_xf_tsp_tsg_code",$RequestObj->Parameters->Type->XfTspTsgCode);
+	oci_bind_by_name($stid,":p_xk_tsp_code",$RequestObj->Parameters->Type->XkTspCode);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'UPDATE_RTT';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
-	echo "UPDATE_RTT";
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'DeleteRtt':
-
-	list($p_fk_typ_name, $p_xf_tsp_typ_name, $p_xf_tsp_tsg_code, $p_xk_tsp_code) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.delete_rtt (
 		:p_fk_typ_name,
@@ -1935,42 +2701,59 @@ case 'DeleteRtt':
 		:p_xf_tsp_tsg_code,
 		:p_xk_tsp_code);
 	END;");
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-	oci_bind_by_name($stid,":p_xf_tsp_typ_name",$p_xf_tsp_typ_name);
-	oci_bind_by_name($stid,":p_xf_tsp_tsg_code",$p_xf_tsp_tsg_code);
-	oci_bind_by_name($stid,":p_xk_tsp_code",$p_xk_tsp_code);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_xf_tsp_typ_name",$RequestObj->Parameters->Type->XfTspTypName);
+	oci_bind_by_name($stid,":p_xf_tsp_tsg_code",$RequestObj->Parameters->Type->XfTspTsgCode);
+	oci_bind_by_name($stid,":p_xk_tsp_code",$RequestObj->Parameters->Type->XkTspCode);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'DELETE_RTT';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
-	echo "DELETE_RTT";
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'GetTyr':
-
-	list($p_fk_typ_name, $p_xk_typ_name) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.get_tyr (
 		:p_cube_row,
 		:p_fk_typ_name,
 		:p_xk_typ_name);
 	END;");
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-	oci_bind_by_name($stid,":p_xk_typ_name",$p_xk_typ_name);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_xk_typ_name",$RequestObj->Parameters->Type->XkTypName);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'SELECT_TYR';
 	$r = perform_db_request();
-	if (!$r) { return; }
-	echo "SELECT_TYR";
-	if ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["FK_BOT_NAME"]."<|>".$row["CARDINALITY"];
+	if (!$r) { 
+		echo ']';
+		return;
 	}
+	$ResponseObj->Rows = array();
+	if ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Data = new \stdClass();
+		$RowObj->Data->FkBotName = $row["FK_BOT_NAME"];
+		$RowObj->Data->Cardinality = $row["CARDINALITY"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'CreateTyr':
-
-	list($p_fk_bot_name, $p_fk_typ_name, $p_cardinality, $p_xk_typ_name) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.insert_tyr (
 		:p_fk_bot_name,
@@ -1979,22 +2762,34 @@ case 'CreateTyr':
 		:p_xk_typ_name,
 		:p_cube_row);
 	END;");
-	oci_bind_by_name($stid,":p_fk_bot_name",$p_fk_bot_name);
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-	oci_bind_by_name($stid,":p_cardinality",$p_cardinality);
-	oci_bind_by_name($stid,":p_xk_typ_name",$p_xk_typ_name);
+	oci_bind_by_name($stid,":p_fk_bot_name",$RequestObj->Parameters->Type->FkBotName);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_cardinality",$RequestObj->Parameters->Type->Cardinality);
+	oci_bind_by_name($stid,":p_xk_typ_name",$RequestObj->Parameters->Type->XkTypName);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'CREATE_TYR';
 	$r = perform_db_request();
-	if (!$r) { return; }
-	echo "CREATE_TYR";
-	if ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["FK_TYP_NAME"]."<|>".$row["XK_TYP_NAME"];
+	if (!$r) { 
+		echo ']';
+		return;
 	}
+	$ResponseObj->Rows = array();
+	if ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Key = new \stdClass();
+		$RowObj->Key->FkTypName = $row["FK_TYP_NAME"];
+		$RowObj->Key->XkTypName = $row["XK_TYP_NAME"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'UpdateTyr':
-
-	list($p_fk_bot_name, $p_fk_typ_name, $p_cardinality, $p_xk_typ_name) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.update_tyr (
 		:p_fk_bot_name,
@@ -2002,164 +2797,223 @@ case 'UpdateTyr':
 		:p_cardinality,
 		:p_xk_typ_name);
 	END;");
-	oci_bind_by_name($stid,":p_fk_bot_name",$p_fk_bot_name);
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-	oci_bind_by_name($stid,":p_cardinality",$p_cardinality);
-	oci_bind_by_name($stid,":p_xk_typ_name",$p_xk_typ_name);
+	oci_bind_by_name($stid,":p_fk_bot_name",$RequestObj->Parameters->Type->FkBotName);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_cardinality",$RequestObj->Parameters->Type->Cardinality);
+	oci_bind_by_name($stid,":p_xk_typ_name",$RequestObj->Parameters->Type->XkTypName);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'UPDATE_TYR';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
-	echo "UPDATE_TYR";
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'DeleteTyr':
-
-	list($p_fk_typ_name, $p_xk_typ_name) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.delete_tyr (
 		:p_fk_typ_name,
 		:p_xk_typ_name);
 	END;");
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-	oci_bind_by_name($stid,":p_xk_typ_name",$p_xk_typ_name);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_xk_typ_name",$RequestObj->Parameters->Type->XkTypName);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'DELETE_TYR';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
-	echo "DELETE_TYR";
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'GetPar':
-
-	list($p_fk_typ_name, $p_name) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.get_par (
 		:p_cube_row,
 		:p_fk_typ_name,
 		:p_name);
 	END;");
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-	oci_bind_by_name($stid,":p_name",$p_name);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'SELECT_PAR';
 	$r = perform_db_request();
-	if (!$r) { return; }
-	echo "SELECT_PAR";
-	if ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["FK_BOT_NAME"];
+	if (!$r) { 
+		echo ']';
+		return;
 	}
+	$ResponseObj->Rows = array();
+	if ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Data = new \stdClass();
+		$RowObj->Data->FkBotName = $row["FK_BOT_NAME"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'GetParFkey':
-
-	list($p_fk_typ_name, $p_name) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.get_par_fkey (
 		:p_cube_row,
 		:p_fk_typ_name,
 		:p_name);
 	END;");
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-	oci_bind_by_name($stid,":p_name",$p_name);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'SELECT_FKEY_PAR';
 	$r = perform_db_request();
-	if (!$r) { return; }
-	echo "SELECT_FKEY_PAR";
-	if ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["FK_BOT_NAME"];
+	if (!$r) { 
+		echo ']';
+		return;
 	}
+	$ResponseObj->Rows = array();
+	if ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Data = new \stdClass();
+		$RowObj->Data->FkBotName = $row["FK_BOT_NAME"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'GetParItems':
-
-	list($p_fk_typ_name, $p_name) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.get_par_stp_items (
 		:p_cube_row,
 		:p_fk_typ_name,
 		:p_name);
 	END;");
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-	oci_bind_by_name($stid,":p_name",$p_name);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'LIST_STP';
 	$r = perform_db_request();
-	if (!$r) { return; }
-	$first = True;
-	while ($row = oci_fetch_assoc($curs)) {
-		if ($first) { $first = False; echo "LIST_STP";}
-		echo "<|||>".$row["FK_TYP_NAME"]."<|>".$row["FK_PAR_NAME"]."<|>".$row["NAME"];
-		echo "<||>".$row["NAME"];
+	if (!$r) { 
+		echo ']';
+		return;
 	}
+	$ResponseObj->Rows = array();
+	while ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Key = new \stdClass();
+		$RowObj->Key->FkTypName = $row["FK_TYP_NAME"];
+		$RowObj->Key->FkParName = $row["FK_PAR_NAME"];
+		$RowObj->Key->Name = $row["NAME"];
+		$RowObj->Display = $row["NAME"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'CreatePar':
-
-	list($p_fk_bot_name, $p_fk_typ_name, $p_name) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.insert_par (
 		:p_fk_bot_name,
 		:p_fk_typ_name,
 		:p_name);
 	END;");
-	oci_bind_by_name($stid,":p_fk_bot_name",$p_fk_bot_name);
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-	oci_bind_by_name($stid,":p_name",$p_name);
+	oci_bind_by_name($stid,":p_fk_bot_name",$RequestObj->Parameters->Type->FkBotName);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'CREATE_PAR';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
-	echo "CREATE_PAR";
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'UpdatePar':
-
-	list($p_fk_bot_name, $p_fk_typ_name, $p_name) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.update_par (
 		:p_fk_bot_name,
 		:p_fk_typ_name,
 		:p_name);
 	END;");
-	oci_bind_by_name($stid,":p_fk_bot_name",$p_fk_bot_name);
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-	oci_bind_by_name($stid,":p_name",$p_name);
+	oci_bind_by_name($stid,":p_fk_bot_name",$RequestObj->Parameters->Type->FkBotName);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'UPDATE_PAR';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
-	echo "UPDATE_PAR";
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'DeletePar':
-
-	list($p_fk_typ_name, $p_name) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.delete_par (
 		:p_fk_typ_name,
 		:p_name);
 	END;");
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-	oci_bind_by_name($stid,":p_name",$p_name);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'DELETE_PAR';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
-	echo "DELETE_PAR";
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'GetStp':
-
-	list($p_fk_typ_name, $p_fk_par_name, $p_name) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.get_stp (
 		:p_cube_row,
@@ -2167,21 +3021,32 @@ case 'GetStp':
 		:p_fk_par_name,
 		:p_name);
 	END;");
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-	oci_bind_by_name($stid,":p_fk_par_name",$p_fk_par_name);
-	oci_bind_by_name($stid,":p_name",$p_name);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_fk_par_name",$RequestObj->Parameters->Type->FkParName);
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'SELECT_STP';
 	$r = perform_db_request();
-	if (!$r) { return; }
-	echo "SELECT_STP";
-	if ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["FK_BOT_NAME"];
+	if (!$r) { 
+		echo ']';
+		return;
 	}
+	$ResponseObj->Rows = array();
+	if ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Data = new \stdClass();
+		$RowObj->Data->FkBotName = $row["FK_BOT_NAME"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'MoveStp':
-
-	list($p_cube_pos_action, $p_fk_typ_name, $p_fk_par_name, $p_name, $x_fk_typ_name, $x_fk_par_name, $x_name) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.move_stp (
 		:p_cube_pos_action,
@@ -2192,25 +3057,30 @@ case 'MoveStp':
 		:x_fk_par_name,
 		:x_name);
 	END;");
-	oci_bind_by_name($stid,":p_cube_pos_action",$p_cube_pos_action);
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-	oci_bind_by_name($stid,":p_fk_par_name",$p_fk_par_name);
-	oci_bind_by_name($stid,":p_name",$p_name);
-	oci_bind_by_name($stid,":x_fk_typ_name",$x_fk_typ_name);
-	oci_bind_by_name($stid,":x_fk_par_name",$x_fk_par_name);
-	oci_bind_by_name($stid,":x_name",$x_name);
+	oci_bind_by_name($stid,":p_cube_pos_action",$RequestObj->Parameters->Option->CubePosAction);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_fk_par_name",$RequestObj->Parameters->Type->FkParName);
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
+	oci_bind_by_name($stid,":x_fk_typ_name",$RequestObj->Parameters->Ref->FkTypName);
+	oci_bind_by_name($stid,":x_fk_par_name",$RequestObj->Parameters->Ref->FkParName);
+	oci_bind_by_name($stid,":x_name",$RequestObj->Parameters->Ref->Name);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'MOVE_STP';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
-	echo "MOVE_STP";
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'CreateStp':
-
-	list($p_cube_pos_action, $p_fk_bot_name, $p_fk_typ_name, $p_fk_par_name, $p_name, $x_fk_typ_name, $x_fk_par_name, $x_name) = explode("<|>", $import[1]."<|><|><|>");
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.insert_stp (
 		:p_cube_pos_action,
@@ -2222,26 +3092,31 @@ case 'CreateStp':
 		:x_fk_par_name,
 		:x_name);
 	END;");
-	oci_bind_by_name($stid,":p_cube_pos_action",$p_cube_pos_action);
-	oci_bind_by_name($stid,":p_fk_bot_name",$p_fk_bot_name);
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-	oci_bind_by_name($stid,":p_fk_par_name",$p_fk_par_name);
-	oci_bind_by_name($stid,":p_name",$p_name);
-	oci_bind_by_name($stid,":x_fk_typ_name",$x_fk_typ_name);
-	oci_bind_by_name($stid,":x_fk_par_name",$x_fk_par_name);
-	oci_bind_by_name($stid,":x_name",$x_name);
+	oci_bind_by_name($stid,":p_cube_pos_action",$RequestObj->Parameters->Option->CubePosAction);
+	oci_bind_by_name($stid,":p_fk_bot_name",$RequestObj->Parameters->Type->FkBotName);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_fk_par_name",$RequestObj->Parameters->Type->FkParName);
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
+	oci_bind_by_name($stid,":x_fk_typ_name",$RequestObj->Parameters->Ref->FkTypName);
+	oci_bind_by_name($stid,":x_fk_par_name",$RequestObj->Parameters->Ref->FkParName);
+	oci_bind_by_name($stid,":x_name",$RequestObj->Parameters->Ref->Name);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'CREATE_STP';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
-	echo "CREATE_STP";
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'UpdateStp':
-
-	list($p_fk_bot_name, $p_fk_typ_name, $p_fk_par_name, $p_name) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.update_stp (
 		:p_fk_bot_name,
@@ -2249,143 +3124,213 @@ case 'UpdateStp':
 		:p_fk_par_name,
 		:p_name);
 	END;");
-	oci_bind_by_name($stid,":p_fk_bot_name",$p_fk_bot_name);
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-	oci_bind_by_name($stid,":p_fk_par_name",$p_fk_par_name);
-	oci_bind_by_name($stid,":p_name",$p_name);
+	oci_bind_by_name($stid,":p_fk_bot_name",$RequestObj->Parameters->Type->FkBotName);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_fk_par_name",$RequestObj->Parameters->Type->FkParName);
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'UPDATE_STP';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
-	echo "UPDATE_STP";
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'DeleteStp':
-
-	list($p_fk_typ_name, $p_fk_par_name, $p_name) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.delete_stp (
 		:p_fk_typ_name,
 		:p_fk_par_name,
 		:p_name);
 	END;");
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-	oci_bind_by_name($stid,":p_fk_par_name",$p_fk_par_name);
-	oci_bind_by_name($stid,":p_name",$p_name);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_fk_par_name",$RequestObj->Parameters->Type->FkParName);
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'DELETE_STP';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
-	echo "DELETE_STP";
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'GetTsg':
-
-	list($p_fk_typ_name, $p_code) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.get_tsg (
 		:p_cube_row,
 		:p_fk_typ_name,
 		:p_code);
 	END;");
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-	oci_bind_by_name($stid,":p_code",$p_code);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'SELECT_TSG';
 	$r = perform_db_request();
-	if (!$r) { return; }
-	echo "SELECT_TSG";
-	if ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["FK_BOT_NAME"]."<|>".$row["FK_TSG_CODE"]."<|>".$row["NAME"]."<|>".$row["PRIMARY_KEY"]."<|>".$row["XF_ATB_TYP_NAME"]."<|>".$row["XK_ATB_NAME"];
+	if (!$r) { 
+		echo ']';
+		return;
 	}
+	$ResponseObj->Rows = array();
+	if ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Data = new \stdClass();
+		$RowObj->Data->FkBotName = $row["FK_BOT_NAME"];
+		$RowObj->Data->FkTsgCode = $row["FK_TSG_CODE"];
+		$RowObj->Data->Name = $row["NAME"];
+		$RowObj->Data->PrimaryKey = $row["PRIMARY_KEY"];
+		$RowObj->Data->XfAtbTypName = $row["XF_ATB_TYP_NAME"];
+		$RowObj->Data->XkAtbName = $row["XK_ATB_NAME"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'GetTsgFkey':
-
-	list($p_fk_typ_name, $p_code) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.get_tsg_fkey (
 		:p_cube_row,
 		:p_fk_typ_name,
 		:p_code);
 	END;");
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-	oci_bind_by_name($stid,":p_code",$p_code);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'SELECT_FKEY_TSG';
 	$r = perform_db_request();
-	if (!$r) { return; }
-	echo "SELECT_FKEY_TSG";
-	if ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["FK_BOT_NAME"];
+	if (!$r) { 
+		echo ']';
+		return;
 	}
+	$ResponseObj->Rows = array();
+	if ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Data = new \stdClass();
+		$RowObj->Data->FkBotName = $row["FK_BOT_NAME"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'GetTsgItems':
-
-	list($p_fk_typ_name, $p_code) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.get_tsg_tsp_items (
 		:p_cube_row,
 		:p_fk_typ_name,
 		:p_code);
 	END;");
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-	oci_bind_by_name($stid,":p_code",$p_code);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'LIST_TSP';
 	$r = perform_db_request();
-	if (!$r) { return; }
-	$first = True;
-	while ($row = oci_fetch_assoc($curs)) {
-		if ($first) { $first = False; echo "LIST_TSP";}
-		echo "<|||>".$row["FK_TYP_NAME"]."<|>".$row["FK_TSG_CODE"]."<|>".$row["CODE"];
-		echo "<||>"."(".$row["CODE"].")"." ".$row["NAME"];
+	if (!$r) { 
+		echo ']';
+		return;
 	}
-	echo "<||||>";
+	$ResponseObj->Rows = array();
+	while ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Key = new \stdClass();
+		$RowObj->Key->FkTypName = $row["FK_TYP_NAME"];
+		$RowObj->Key->FkTsgCode = $row["FK_TSG_CODE"];
+		$RowObj->Key->Code = $row["CODE"];
+		$RowObj->Display = '('.$row["CODE"].')'.' '.$row["NAME"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ',';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.get_tsg_tsg_items (
 		:p_cube_row,
 		:p_fk_typ_name,
 		:p_code);
 	END;");
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-	oci_bind_by_name($stid,":p_code",$p_code);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'LIST_TSG';
 	$r = perform_db_request();
-	if (!$r) { return; }
-	$first = True;
-	while ($row = oci_fetch_assoc($curs)) {
-		if ($first) { $first = False; echo "LIST_TSG";}
-		echo "<|||>".$row["FK_TYP_NAME"]."<|>".$row["CODE"];
-		echo "<||>"."(".$row["CODE"].")"." ".$row["NAME"];
+	if (!$r) { 
+		echo ']';
+		return;
 	}
+	$ResponseObj->Rows = array();
+	while ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Key = new \stdClass();
+		$RowObj->Key->FkTypName = $row["FK_TYP_NAME"];
+		$RowObj->Key->Code = $row["CODE"];
+		$RowObj->Display = '('.$row["CODE"].')'.' '.$row["NAME"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'CountTsgRestrictedItems':
-
-	list($p_fk_typ_name, $p_code) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.count_tsg_tsg (
 		:p_cube_row,
 		:p_fk_typ_name,
 		:p_code);
 	END;");
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-	oci_bind_by_name($stid,":p_code",$p_code);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'COUNT_TSG';
 	$r = perform_db_request();
-	if (!$r) { return; }
-	echo "COUNT_TSG";
-	if ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["TYPE_COUNT"];
+	if (!$r) { 
+		echo ']';
+		return;
 	}
+	$ResponseObj->Rows = array();
+	if ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Data = new \stdClass();
+		$RowObj->Data->TypeCount = $row["TYPE_COUNT"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'MoveTsg':
-
-	list($p_cube_pos_action, $p_fk_typ_name, $p_code, $x_fk_typ_name, $x_code) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.move_tsg (
 		:p_cube_pos_action,
@@ -2394,23 +3339,28 @@ case 'MoveTsg':
 		:x_fk_typ_name,
 		:x_code);
 	END;");
-	oci_bind_by_name($stid,":p_cube_pos_action",$p_cube_pos_action);
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-	oci_bind_by_name($stid,":p_code",$p_code);
-	oci_bind_by_name($stid,":x_fk_typ_name",$x_fk_typ_name);
-	oci_bind_by_name($stid,":x_code",$x_code);
+	oci_bind_by_name($stid,":p_cube_pos_action",$RequestObj->Parameters->Option->CubePosAction);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
+	oci_bind_by_name($stid,":x_fk_typ_name",$RequestObj->Parameters->Ref->FkTypName);
+	oci_bind_by_name($stid,":x_code",$RequestObj->Parameters->Ref->Code);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'MOVE_TSG';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
-	echo "MOVE_TSG";
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'CreateTsg':
-
-	list($p_cube_pos_action, $p_fk_bot_name, $p_fk_typ_name, $p_fk_tsg_code, $p_code, $p_name, $p_primary_key, $p_xf_atb_typ_name, $p_xk_atb_name, $x_fk_typ_name, $x_code) = explode("<|>", $import[1]."<|><|>");
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.insert_tsg (
 		:p_cube_pos_action,
@@ -2425,29 +3375,34 @@ case 'CreateTsg':
 		:x_fk_typ_name,
 		:x_code);
 	END;");
-	oci_bind_by_name($stid,":p_cube_pos_action",$p_cube_pos_action);
-	oci_bind_by_name($stid,":p_fk_bot_name",$p_fk_bot_name);
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-	oci_bind_by_name($stid,":p_fk_tsg_code",$p_fk_tsg_code);
-	oci_bind_by_name($stid,":p_code",$p_code);
-	oci_bind_by_name($stid,":p_name",$p_name);
-	oci_bind_by_name($stid,":p_primary_key",$p_primary_key);
-	oci_bind_by_name($stid,":p_xf_atb_typ_name",$p_xf_atb_typ_name);
-	oci_bind_by_name($stid,":p_xk_atb_name",$p_xk_atb_name);
-	oci_bind_by_name($stid,":x_fk_typ_name",$x_fk_typ_name);
-	oci_bind_by_name($stid,":x_code",$x_code);
+	oci_bind_by_name($stid,":p_cube_pos_action",$RequestObj->Parameters->Option->CubePosAction);
+	oci_bind_by_name($stid,":p_fk_bot_name",$RequestObj->Parameters->Type->FkBotName);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_fk_tsg_code",$RequestObj->Parameters->Type->FkTsgCode);
+	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
+	oci_bind_by_name($stid,":p_primary_key",$RequestObj->Parameters->Type->PrimaryKey);
+	oci_bind_by_name($stid,":p_xf_atb_typ_name",$RequestObj->Parameters->Type->XfAtbTypName);
+	oci_bind_by_name($stid,":p_xk_atb_name",$RequestObj->Parameters->Type->XkAtbName);
+	oci_bind_by_name($stid,":x_fk_typ_name",$RequestObj->Parameters->Ref->FkTypName);
+	oci_bind_by_name($stid,":x_code",$RequestObj->Parameters->Ref->Code);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'CREATE_TSG';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
-	echo "CREATE_TSG";
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'UpdateTsg':
-
-	list($p_fk_bot_name, $p_fk_typ_name, $p_fk_tsg_code, $p_code, $p_name, $p_primary_key, $p_xf_atb_typ_name, $p_xk_atb_name) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.update_tsg (
 		:p_fk_bot_name,
@@ -2459,66 +3414,89 @@ case 'UpdateTsg':
 		:p_xf_atb_typ_name,
 		:p_xk_atb_name);
 	END;");
-	oci_bind_by_name($stid,":p_fk_bot_name",$p_fk_bot_name);
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-	oci_bind_by_name($stid,":p_fk_tsg_code",$p_fk_tsg_code);
-	oci_bind_by_name($stid,":p_code",$p_code);
-	oci_bind_by_name($stid,":p_name",$p_name);
-	oci_bind_by_name($stid,":p_primary_key",$p_primary_key);
-	oci_bind_by_name($stid,":p_xf_atb_typ_name",$p_xf_atb_typ_name);
-	oci_bind_by_name($stid,":p_xk_atb_name",$p_xk_atb_name);
+	oci_bind_by_name($stid,":p_fk_bot_name",$RequestObj->Parameters->Type->FkBotName);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_fk_tsg_code",$RequestObj->Parameters->Type->FkTsgCode);
+	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
+	oci_bind_by_name($stid,":p_primary_key",$RequestObj->Parameters->Type->PrimaryKey);
+	oci_bind_by_name($stid,":p_xf_atb_typ_name",$RequestObj->Parameters->Type->XfAtbTypName);
+	oci_bind_by_name($stid,":p_xk_atb_name",$RequestObj->Parameters->Type->XkAtbName);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'UPDATE_TSG';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
-	echo "UPDATE_TSG";
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'DeleteTsg':
-
-	list($p_fk_typ_name, $p_code) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.delete_tsg (
 		:p_fk_typ_name,
 		:p_code);
 	END;");
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-	oci_bind_by_name($stid,":p_code",$p_code);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'DELETE_TSG';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
-	echo "DELETE_TSG";
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'GetTspForTypList':
-
-	list($p_cube_scope_level, $x_fk_typ_name) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.get_tsp_for_typ_list (
 		:p_cube_row,
 		:p_cube_scope_level,
 		:x_fk_typ_name);
 	END;");
-	oci_bind_by_name($stid,":p_cube_scope_level",$p_cube_scope_level);
-	oci_bind_by_name($stid,":x_fk_typ_name",$x_fk_typ_name);
+	oci_bind_by_name($stid,":p_cube_scope_level",$RequestObj->Parameters->Option->CubeScopeLevel);
+	oci_bind_by_name($stid,":x_fk_typ_name",$RequestObj->Parameters->Ref->FkTypName);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'LIST_TSP';
 	$r = perform_db_request();
-	if (!$r) { return; }
-	echo "LIST_TSP";
-	while ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["FK_TYP_NAME"]."<|>".$row["FK_TSG_CODE"]."<|>".$row["CODE"];
-		echo "<||>".$row["FK_TYP_NAME"]." ".$row["FK_TSG_CODE"]." (".$row["CODE"].")"." ".$row["NAME"];
+	if (!$r) { 
+		echo ']';
+		return;
 	}
+	$ResponseObj->Rows = array();
+	while ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Key = new \stdClass();
+		$RowObj->Key->FkTypName = $row["FK_TYP_NAME"];
+		$RowObj->Key->FkTsgCode = $row["FK_TSG_CODE"];
+		$RowObj->Key->Code = $row["CODE"];
+		$RowObj->Display = $row["FK_TYP_NAME"].' '.$row["FK_TSG_CODE"].' ('.$row["CODE"].')'.' '.$row["NAME"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'GetTspForTsgList':
-
-	list($p_cube_scope_level, $x_fk_typ_name, $x_fk_tsg_code) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.get_tsp_for_tsg_list (
 		:p_cube_row,
@@ -2526,22 +3504,35 @@ case 'GetTspForTsgList':
 		:x_fk_typ_name,
 		:x_fk_tsg_code);
 	END;");
-	oci_bind_by_name($stid,":p_cube_scope_level",$p_cube_scope_level);
-	oci_bind_by_name($stid,":x_fk_typ_name",$x_fk_typ_name);
-	oci_bind_by_name($stid,":x_fk_tsg_code",$x_fk_tsg_code);
+	oci_bind_by_name($stid,":p_cube_scope_level",$RequestObj->Parameters->Option->CubeScopeLevel);
+	oci_bind_by_name($stid,":x_fk_typ_name",$RequestObj->Parameters->Ref->FkTypName);
+	oci_bind_by_name($stid,":x_fk_tsg_code",$RequestObj->Parameters->Ref->FkTsgCode);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'LIST_TSP';
 	$r = perform_db_request();
-	if (!$r) { return; }
-	echo "LIST_TSP";
-	while ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["FK_TYP_NAME"]."<|>".$row["FK_TSG_CODE"]."<|>".$row["CODE"];
-		echo "<||>".$row["FK_TYP_NAME"]." ".$row["FK_TSG_CODE"]." (".$row["CODE"].")"." ".$row["NAME"];
+	if (!$r) { 
+		echo ']';
+		return;
 	}
+	$ResponseObj->Rows = array();
+	while ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Key = new \stdClass();
+		$RowObj->Key->FkTypName = $row["FK_TYP_NAME"];
+		$RowObj->Key->FkTsgCode = $row["FK_TSG_CODE"];
+		$RowObj->Key->Code = $row["CODE"];
+		$RowObj->Display = $row["FK_TYP_NAME"].' '.$row["FK_TSG_CODE"].' ('.$row["CODE"].')'.' '.$row["NAME"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'GetTsp':
-
-	list($p_fk_typ_name, $p_fk_tsg_code, $p_code) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.get_tsp (
 		:p_cube_row,
@@ -2549,21 +3540,36 @@ case 'GetTsp':
 		:p_fk_tsg_code,
 		:p_code);
 	END;");
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-	oci_bind_by_name($stid,":p_fk_tsg_code",$p_fk_tsg_code);
-	oci_bind_by_name($stid,":p_code",$p_code);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_fk_tsg_code",$RequestObj->Parameters->Type->FkTsgCode);
+	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'SELECT_TSP';
 	$r = perform_db_request();
-	if (!$r) { return; }
-	echo "SELECT_TSP";
-	if ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["FK_BOT_NAME"]."<|>".$row["NAME"]."<|>".$row["XF_TSP_TYP_NAME"]."<|>".$row["XF_TSP_TSG_CODE"]."<|>".$row["XK_TSP_CODE"];
+	if (!$r) { 
+		echo ']';
+		return;
 	}
+	$ResponseObj->Rows = array();
+	if ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Data = new \stdClass();
+		$RowObj->Data->FkBotName = $row["FK_BOT_NAME"];
+		$RowObj->Data->Name = $row["NAME"];
+		$RowObj->Data->XfTspTypName = $row["XF_TSP_TYP_NAME"];
+		$RowObj->Data->XfTspTsgCode = $row["XF_TSP_TSG_CODE"];
+		$RowObj->Data->XkTspCode = $row["XK_TSP_CODE"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'MoveTsp':
-
-	list($p_cube_pos_action, $p_fk_typ_name, $p_fk_tsg_code, $p_code, $x_fk_typ_name, $x_fk_tsg_code, $x_code) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.move_tsp (
 		:p_cube_pos_action,
@@ -2574,25 +3580,30 @@ case 'MoveTsp':
 		:x_fk_tsg_code,
 		:x_code);
 	END;");
-	oci_bind_by_name($stid,":p_cube_pos_action",$p_cube_pos_action);
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-	oci_bind_by_name($stid,":p_fk_tsg_code",$p_fk_tsg_code);
-	oci_bind_by_name($stid,":p_code",$p_code);
-	oci_bind_by_name($stid,":x_fk_typ_name",$x_fk_typ_name);
-	oci_bind_by_name($stid,":x_fk_tsg_code",$x_fk_tsg_code);
-	oci_bind_by_name($stid,":x_code",$x_code);
+	oci_bind_by_name($stid,":p_cube_pos_action",$RequestObj->Parameters->Option->CubePosAction);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_fk_tsg_code",$RequestObj->Parameters->Type->FkTsgCode);
+	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
+	oci_bind_by_name($stid,":x_fk_typ_name",$RequestObj->Parameters->Ref->FkTypName);
+	oci_bind_by_name($stid,":x_fk_tsg_code",$RequestObj->Parameters->Ref->FkTsgCode);
+	oci_bind_by_name($stid,":x_code",$RequestObj->Parameters->Ref->Code);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'MOVE_TSP';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
-	echo "MOVE_TSP";
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'CreateTsp':
-
-	list($p_cube_pos_action, $p_fk_bot_name, $p_fk_typ_name, $p_fk_tsg_code, $p_code, $p_name, $p_xf_tsp_typ_name, $p_xf_tsp_tsg_code, $p_xk_tsp_code, $x_fk_typ_name, $x_fk_tsg_code, $x_code) = explode("<|>", $import[1]."<|><|><|>");
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.insert_tsp (
 		:p_cube_pos_action,
@@ -2608,30 +3619,35 @@ case 'CreateTsp':
 		:x_fk_tsg_code,
 		:x_code);
 	END;");
-	oci_bind_by_name($stid,":p_cube_pos_action",$p_cube_pos_action);
-	oci_bind_by_name($stid,":p_fk_bot_name",$p_fk_bot_name);
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-	oci_bind_by_name($stid,":p_fk_tsg_code",$p_fk_tsg_code);
-	oci_bind_by_name($stid,":p_code",$p_code);
-	oci_bind_by_name($stid,":p_name",$p_name);
-	oci_bind_by_name($stid,":p_xf_tsp_typ_name",$p_xf_tsp_typ_name);
-	oci_bind_by_name($stid,":p_xf_tsp_tsg_code",$p_xf_tsp_tsg_code);
-	oci_bind_by_name($stid,":p_xk_tsp_code",$p_xk_tsp_code);
-	oci_bind_by_name($stid,":x_fk_typ_name",$x_fk_typ_name);
-	oci_bind_by_name($stid,":x_fk_tsg_code",$x_fk_tsg_code);
-	oci_bind_by_name($stid,":x_code",$x_code);
+	oci_bind_by_name($stid,":p_cube_pos_action",$RequestObj->Parameters->Option->CubePosAction);
+	oci_bind_by_name($stid,":p_fk_bot_name",$RequestObj->Parameters->Type->FkBotName);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_fk_tsg_code",$RequestObj->Parameters->Type->FkTsgCode);
+	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
+	oci_bind_by_name($stid,":p_xf_tsp_typ_name",$RequestObj->Parameters->Type->XfTspTypName);
+	oci_bind_by_name($stid,":p_xf_tsp_tsg_code",$RequestObj->Parameters->Type->XfTspTsgCode);
+	oci_bind_by_name($stid,":p_xk_tsp_code",$RequestObj->Parameters->Type->XkTspCode);
+	oci_bind_by_name($stid,":x_fk_typ_name",$RequestObj->Parameters->Ref->FkTypName);
+	oci_bind_by_name($stid,":x_fk_tsg_code",$RequestObj->Parameters->Ref->FkTsgCode);
+	oci_bind_by_name($stid,":x_code",$RequestObj->Parameters->Ref->Code);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'CREATE_TSP';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
-	echo "CREATE_TSP";
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'UpdateTsp':
-
-	list($p_fk_bot_name, $p_fk_typ_name, $p_fk_tsg_code, $p_code, $p_name, $p_xf_tsp_typ_name, $p_xf_tsp_tsg_code, $p_xk_tsp_code) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.update_tsp (
 		:p_fk_bot_name,
@@ -2643,174 +3659,248 @@ case 'UpdateTsp':
 		:p_xf_tsp_tsg_code,
 		:p_xk_tsp_code);
 	END;");
-	oci_bind_by_name($stid,":p_fk_bot_name",$p_fk_bot_name);
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-	oci_bind_by_name($stid,":p_fk_tsg_code",$p_fk_tsg_code);
-	oci_bind_by_name($stid,":p_code",$p_code);
-	oci_bind_by_name($stid,":p_name",$p_name);
-	oci_bind_by_name($stid,":p_xf_tsp_typ_name",$p_xf_tsp_typ_name);
-	oci_bind_by_name($stid,":p_xf_tsp_tsg_code",$p_xf_tsp_tsg_code);
-	oci_bind_by_name($stid,":p_xk_tsp_code",$p_xk_tsp_code);
+	oci_bind_by_name($stid,":p_fk_bot_name",$RequestObj->Parameters->Type->FkBotName);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_fk_tsg_code",$RequestObj->Parameters->Type->FkTsgCode);
+	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
+	oci_bind_by_name($stid,":p_xf_tsp_typ_name",$RequestObj->Parameters->Type->XfTspTypName);
+	oci_bind_by_name($stid,":p_xf_tsp_tsg_code",$RequestObj->Parameters->Type->XfTspTsgCode);
+	oci_bind_by_name($stid,":p_xk_tsp_code",$RequestObj->Parameters->Type->XkTspCode);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'UPDATE_TSP';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
-	echo "UPDATE_TSP";
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'DeleteTsp':
-
-	list($p_fk_typ_name, $p_fk_tsg_code, $p_code) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.delete_tsp (
 		:p_fk_typ_name,
 		:p_fk_tsg_code,
 		:p_code);
 	END;");
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-	oci_bind_by_name($stid,":p_fk_tsg_code",$p_fk_tsg_code);
-	oci_bind_by_name($stid,":p_code",$p_code);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_fk_tsg_code",$RequestObj->Parameters->Type->FkTsgCode);
+	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'DELETE_TSP';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
-	echo "DELETE_TSP";
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'GetDct':
-
-	list($p_fk_typ_name) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.get_dct (
 		:p_cube_row,
 		:p_fk_typ_name);
 	END;");
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'SELECT_DCT';
 	$r = perform_db_request();
-	if (!$r) { return; }
-	echo "SELECT_DCT";
-	if ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["FK_BOT_NAME"]."<|>".$row["TEXT"];
+	if (!$r) { 
+		echo ']';
+		return;
 	}
+	$ResponseObj->Rows = array();
+	if ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Data = new \stdClass();
+		$RowObj->Data->FkBotName = $row["FK_BOT_NAME"];
+		$RowObj->Data->Text = $row["TEXT"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'CreateDct':
-
-	list($p_fk_bot_name, $p_fk_typ_name, $p_text) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.insert_dct (
 		:p_fk_bot_name,
 		:p_fk_typ_name,
 		:p_text);
 	END;");
-	oci_bind_by_name($stid,":p_fk_bot_name",$p_fk_bot_name);
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-	oci_bind_by_name($stid,":p_text",$p_text);
+	oci_bind_by_name($stid,":p_fk_bot_name",$RequestObj->Parameters->Type->FkBotName);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_text",$RequestObj->Parameters->Type->Text);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'CREATE_DCT';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
-	echo "CREATE_DCT";
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'UpdateDct':
-
-	list($p_fk_bot_name, $p_fk_typ_name, $p_text) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.update_dct (
 		:p_fk_bot_name,
 		:p_fk_typ_name,
 		:p_text);
 	END;");
-	oci_bind_by_name($stid,":p_fk_bot_name",$p_fk_bot_name);
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
-	oci_bind_by_name($stid,":p_text",$p_text);
+	oci_bind_by_name($stid,":p_fk_bot_name",$RequestObj->Parameters->Type->FkBotName);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_text",$RequestObj->Parameters->Type->Text);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'UPDATE_DCT';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
-	echo "UPDATE_DCT";
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'DeleteDct':
-
-	list($p_fk_typ_name) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.delete_dct (
 		:p_fk_typ_name);
 	END;");
-	oci_bind_by_name($stid,":p_fk_typ_name",$p_fk_typ_name);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'DELETE_DCT';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
-	echo "DELETE_DCT";
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'GetDirSysItems':
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_sys.get_sys_root_items (:p_cube_row); END;");
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'LIST_SYS';
 	$r = perform_db_request();
-	if (!$r) { return; }
-	echo "LIST_SYS";
-	while ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["NAME"];
-		echo "<||>".$row["NAME"];
+	if (!$r) { 
+		echo ']';
+		return;
 	}
+	$ResponseObj->Rows = array();
+	while ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Key = new \stdClass();
+		$RowObj->Key->Name = $row["NAME"];
+		$RowObj->Display = $row["NAME"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'GetSys':
-
-	list($p_name) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_sys.get_sys (
 		:p_cube_row,
 		:p_name);
 	END;");
-	oci_bind_by_name($stid,":p_name",$p_name);
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'SELECT_SYS';
 	$r = perform_db_request();
-	if (!$r) { return; }
-	echo "SELECT_SYS";
-	if ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["DATABASE"]."<|>".$row["SCHEMA"]."<|>".$row["PASSWORD"];
+	if (!$r) { 
+		echo ']';
+		return;
 	}
+	$ResponseObj->Rows = array();
+	if ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Data = new \stdClass();
+		$RowObj->Data->Database = $row["DATABASE"];
+		$RowObj->Data->Schema = $row["SCHEMA"];
+		$RowObj->Data->Password = $row["PASSWORD"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'GetSysItems':
-
-	list($p_name) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_sys.get_sys_sbt_items (
 		:p_cube_row,
 		:p_name);
 	END;");
-	oci_bind_by_name($stid,":p_name",$p_name);
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'LIST_SBT';
 	$r = perform_db_request();
-	if (!$r) { return; }
-	$first = True;
-	while ($row = oci_fetch_assoc($curs)) {
-		if ($first) { $first = False; echo "LIST_SBT";}
-		echo "<|||>".$row["FK_SYS_NAME"]."<|>".$row["XK_BOT_NAME"];
-		echo "<||>".$row["XK_BOT_NAME"];
+	if (!$r) { 
+		echo ']';
+		return;
 	}
+	$ResponseObj->Rows = array();
+	while ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Key = new \stdClass();
+		$RowObj->Key->FkSysName = $row["FK_SYS_NAME"];
+		$RowObj->Key->XkBotName = $row["XK_BOT_NAME"];
+		$RowObj->Display = $row["XK_BOT_NAME"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'CreateSys':
-
-	list($p_name, $p_database, $p_schema, $p_password) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_sys.insert_sys (
 		:p_name,
@@ -2819,22 +3909,33 @@ case 'CreateSys':
 		:p_password,
 		:p_cube_row);
 	END;");
-	oci_bind_by_name($stid,":p_name",$p_name);
-	oci_bind_by_name($stid,":p_database",$p_database);
-	oci_bind_by_name($stid,":p_schema",$p_schema);
-	oci_bind_by_name($stid,":p_password",$p_password);
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
+	oci_bind_by_name($stid,":p_database",$RequestObj->Parameters->Type->Database);
+	oci_bind_by_name($stid,":p_schema",$RequestObj->Parameters->Type->Schema);
+	oci_bind_by_name($stid,":p_password",$RequestObj->Parameters->Type->Password);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'CREATE_SYS';
 	$r = perform_db_request();
-	if (!$r) { return; }
-	echo "CREATE_SYS";
-	if ($row = oci_fetch_assoc($curs)) {
-		echo "<|||>".$row["NAME"];
+	if (!$r) { 
+		echo ']';
+		return;
 	}
+	$ResponseObj->Rows = array();
+	if ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Key = new \stdClass();
+		$RowObj->Key->Name = $row["NAME"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'UpdateSys':
-
-	list($p_name, $p_database, $p_schema, $p_password) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_sys.update_sys (
 		:p_name,
@@ -2842,39 +3943,49 @@ case 'UpdateSys':
 		:p_schema,
 		:p_password);
 	END;");
-	oci_bind_by_name($stid,":p_name",$p_name);
-	oci_bind_by_name($stid,":p_database",$p_database);
-	oci_bind_by_name($stid,":p_schema",$p_schema);
-	oci_bind_by_name($stid,":p_password",$p_password);
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
+	oci_bind_by_name($stid,":p_database",$RequestObj->Parameters->Type->Database);
+	oci_bind_by_name($stid,":p_schema",$RequestObj->Parameters->Type->Schema);
+	oci_bind_by_name($stid,":p_password",$RequestObj->Parameters->Type->Password);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'UPDATE_SYS';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
-	echo "UPDATE_SYS";
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'DeleteSys':
-
-	list($p_name) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_sys.delete_sys (
 		:p_name);
 	END;");
-	oci_bind_by_name($stid,":p_name",$p_name);
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'DELETE_SYS';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
-	echo "DELETE_SYS";
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'MoveSbt':
-
-	list($p_cube_pos_action, $p_fk_sys_name, $p_xk_bot_name, $x_fk_sys_name, $x_xk_bot_name) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_sys.move_sbt (
 		:p_cube_pos_action,
@@ -2883,23 +3994,28 @@ case 'MoveSbt':
 		:x_fk_sys_name,
 		:x_xk_bot_name);
 	END;");
-	oci_bind_by_name($stid,":p_cube_pos_action",$p_cube_pos_action);
-	oci_bind_by_name($stid,":p_fk_sys_name",$p_fk_sys_name);
-	oci_bind_by_name($stid,":p_xk_bot_name",$p_xk_bot_name);
-	oci_bind_by_name($stid,":x_fk_sys_name",$x_fk_sys_name);
-	oci_bind_by_name($stid,":x_xk_bot_name",$x_xk_bot_name);
+	oci_bind_by_name($stid,":p_cube_pos_action",$RequestObj->Parameters->Option->CubePosAction);
+	oci_bind_by_name($stid,":p_fk_sys_name",$RequestObj->Parameters->Type->FkSysName);
+	oci_bind_by_name($stid,":p_xk_bot_name",$RequestObj->Parameters->Type->XkBotName);
+	oci_bind_by_name($stid,":x_fk_sys_name",$RequestObj->Parameters->Ref->FkSysName);
+	oci_bind_by_name($stid,":x_xk_bot_name",$RequestObj->Parameters->Ref->XkBotName);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'MOVE_SBT';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
-	echo "MOVE_SBT";
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'CreateSbt':
-
-	list($p_cube_pos_action, $p_fk_sys_name, $p_xk_bot_name, $x_fk_sys_name, $x_xk_bot_name) = explode("<|>", $import[1]."<|><|>");
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_sys.insert_sbt (
 		:p_cube_pos_action,
@@ -2908,46 +4024,60 @@ case 'CreateSbt':
 		:x_fk_sys_name,
 		:x_xk_bot_name);
 	END;");
-	oci_bind_by_name($stid,":p_cube_pos_action",$p_cube_pos_action);
-	oci_bind_by_name($stid,":p_fk_sys_name",$p_fk_sys_name);
-	oci_bind_by_name($stid,":p_xk_bot_name",$p_xk_bot_name);
-	oci_bind_by_name($stid,":x_fk_sys_name",$x_fk_sys_name);
-	oci_bind_by_name($stid,":x_xk_bot_name",$x_xk_bot_name);
+	oci_bind_by_name($stid,":p_cube_pos_action",$RequestObj->Parameters->Option->CubePosAction);
+	oci_bind_by_name($stid,":p_fk_sys_name",$RequestObj->Parameters->Type->FkSysName);
+	oci_bind_by_name($stid,":p_xk_bot_name",$RequestObj->Parameters->Type->XkBotName);
+	oci_bind_by_name($stid,":x_fk_sys_name",$RequestObj->Parameters->Ref->FkSysName);
+	oci_bind_by_name($stid,":x_xk_bot_name",$RequestObj->Parameters->Ref->XkBotName);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'CREATE_SBT';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
-	echo "CREATE_SBT";
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 case 'DeleteSbt':
-
-	list($p_fk_sys_name, $p_xk_bot_name) = explode("<|>", $import[1]);
+	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_sys.delete_sbt (
 		:p_fk_sys_name,
 		:p_xk_bot_name);
 	END;");
-	oci_bind_by_name($stid,":p_fk_sys_name",$p_fk_sys_name);
-	oci_bind_by_name($stid,":p_xk_bot_name",$p_xk_bot_name);
+	oci_bind_by_name($stid,":p_fk_sys_name",$RequestObj->Parameters->Type->FkSysName);
+	oci_bind_by_name($stid,":p_xk_bot_name",$RequestObj->Parameters->Type->XkBotName);
 
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'DELETE_SBT';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
+		echo ']';
 		return;
 	}
-	echo "DELETE_SBT";
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
 	break;
 
 default:
-	echo "ERROR<|||>";
-	echo file_get_contents('php://input');
+	$ResponseObj = new \stdClass();
+	$ResponseObj->ResultName = 'ERROR';
+	$ResponseObj->ErrorText = $RequestText;
+	$ResponseText = json_encode($ResponseObj);
+	echo '['.$ResponseText.']';
 }
 
-function perform_db_request()
-{
+function perform_db_request() {
+
 	global $conn, $stid, $curs;
 
 	$curs = oci_new_cursor($conn);
@@ -2960,20 +4090,30 @@ function perform_db_request()
 	//echo $r;
 	$r = oci_execute($curs);
 	if (!$r) {
-		ProcessDbError($stid);
+		ProcessDbError($curs);
 		return false;
 	}
 	return true;
 }
 
 function ProcessDbError($stid) {
+
 	$e = oci_error($stid);
-	echo "ERROR<|||>ORA-error: ".$e['code'].": ".$e['message'];
+	$ResponseObj = new \stdClass();
+	$ResponseObj->ResultName = 'ERROR';
+	$ResponseObj->ErrorText = 'ORA-error: '.$e['code'].': '.$e['message'];
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
 }
 
 function CubeError($errno, $errstr) {
 	if ($errno > 2) {
-		echo "Error: [$errno] $errstr";   
+		$ResponseObj = new \stdClass();
+		$ResponseObj->ResultName = 'ERROR';
+		$ResponseObj->ErrorText = "[$errno] $errstr";
+		$ResponseText = json_encode($ResponseObj);
+		echo '['.$ResponseText.']';
+		exit;
 	}
 }
 ?>

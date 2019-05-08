@@ -38,6 +38,7 @@ g_xmlhttp.onreadystatechange = function() {
 				switch (l_json_array[i].ResultName) {
 					case '': break;
 					case 'LIST_CUBE_DSC': AddTreeviewChildren(l_json_array[i].Rows,'TYP_CUBE_DSC','icons/desc.bmp'); break;
+					case "SELECT_CUBE_DSC":	document.getElementById("CubeDesc").value = l_json_array[i].Rows[0].Data.Value;	break;
 					case "ERROR": alert ('Server error:\n'+l_json_array[i].ErrorText); break;
 					default: alert ('Unknown reply:\n'+g_responseText);
 				}
@@ -390,6 +391,76 @@ function OpenDetailPage (p_code, p_nodeType, p_objId, p_option) {
 		var l_option = ',"Option":'+p_option;
 	}
 	document.getElementById('DetailFrame').src='CubeSysDetail'+p_code+'.php?'+encodeURIComponent('{"nodeType":"'+p_nodeType+'","objectId":'+p_objId+l_option+'}');
+}
+
+function OpenDescBox(p_icon,p_name,p_type,p_attribute_type,p_sequence) {
+
+	CloseDescBox();
+
+	var l_objDiv = document.createElement('DIV');
+	var l_objTable = document.createElement('TABLE');
+	var l_objImg = document.createElement('IMG');
+	var l_objSpan = document.createElement('SPAN');
+	var l_objImgExit = document.createElement('IMG');
+	var l_objTextarea = document.createElement('TEXTAREA');
+
+	document.body.appendChild(l_objDiv);
+
+	l_objDiv.appendChild(l_objTable);
+	l_objRow_0 = l_objTable.insertRow();
+	l_objCell_0_0 = l_objRow_0.insertCell();
+	l_objCell_0_1 = l_objRow_0.insertCell();
+	l_objRow_1 = l_objTable.insertRow();
+	l_objCell_1_0 = l_objRow_1.insertCell();
+	l_objCell_0_0.appendChild(l_objImg);
+	l_objCell_0_0.appendChild(l_objSpan);
+	l_objCell_0_1.appendChild(l_objImgExit);
+	l_objCell_1_0.appendChild(l_objTextarea);
+
+	l_objDiv.id = 'DescBox';
+	l_objDiv.style.position = 'absolute';
+	l_objDiv.style.left = 100;
+	l_objDiv.style.top = 100;
+	l_objDiv.style.border = 'thin solid #7F7F7F';
+	l_objDiv.style.boxShadow = '10px 10px 5px #888888';
+	l_objDiv.draggable = 'true';
+	l_objDiv.ondragstart = function(){StartMove(event)};
+	l_objDiv.ondragend = function(){EndMove(event)};
+	l_objImg.src = 'icons/' + p_icon + '.bmp';
+	l_objSpan.innerHTML = '&nbsp;&nbsp;' + p_name;
+	l_objCell_0_1.style.textAlign = 'right';
+	l_objImgExit.style.cursor = 'pointer';
+	l_objImgExit.src = 'icons/exit.bmp';
+	l_objImgExit.onclick = function(){CloseDescBox()};
+	l_objCell_1_0.colSpan = '2';
+	l_objTextarea.readOnly = true;
+	l_objTextarea.id = 'CubeDesc';
+	l_objTextarea.rows = '5';
+	l_objTextarea.cols = '80';
+	l_objTextarea.style.whiteSpace = 'normal';
+	l_objTextarea.maxLength = '3999';
+
+	GetDescription(p_type,p_attribute_type,p_sequence);
+}
+
+function CloseDescBox() {
+	l_obj = document.getElementById("DescBox");
+	if (l_obj) { l_obj.parentNode.removeChild(l_obj);}
+}
+
+function GetDescription(p_type,p_attribute_type,p_sequence) {
+	var l_requestText = JSON.stringify( {
+		Service: "GetCubeDsc",
+		Parameters: {
+			Type: {
+				TypeName: p_type,
+				AttributeTypeName: p_attribute_type,
+				Sequence: p_sequence
+			}
+		}
+	} );
+	g_xmlhttp.open('POST','CubeSysServer.php',true);
+	g_xmlhttp.send(l_requestText);
 }
 
 function OpenMenu(p_obj) {
