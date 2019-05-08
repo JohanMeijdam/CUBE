@@ -96,9 +96,6 @@ g_xmlhttp.onreadystatechange = function() {
 						document.getElementById("InputFkPr2Code").value=l_json_values.FkPr2Code;
 						document.getElementById("InputFkPr2Naam").value=l_json_values.FkPr2Naam;
 						break;
-					case "SELECT_CUBE_DSC":
-						document.getElementById("CubeDesc").value = l_argument[1];
-						break;
 					case "ERROR":
 						alert ('Server error:\n'+l_json_array[i].ErrorText);
 						break;
@@ -116,7 +113,6 @@ g_xmlhttp.onreadystatechange = function() {
 function performTrans(p_json_parm) {
 	var l_requestText = JSON.stringify(p_json_parm);
 	g_xmlhttp.open('POST','CubeTestServer.php',true);
-//	g_xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 	g_xmlhttp.send(l_requestText);
 }
 
@@ -364,74 +360,6 @@ function StartSelect001(p_event) {
 	} );
 }
 
-function OpenDescBox(p_icon,p_name,p_type,p_attribute_type,p_sequence) {
-
-	CloseDescBox();
-
-	var l_objDiv = document.createElement('DIV');
-	var l_objTable = document.createElement('TABLE');
-	var l_objImg = document.createElement('IMG');
-	var l_objSpan = document.createElement('SPAN');
-	var l_objImgExit = document.createElement('IMG');
-	var l_objTextarea = document.createElement('TEXTAREA');
-
-	document.body.appendChild(l_objDiv);
-
-	l_objDiv.appendChild(l_objTable);
-	l_objRow_0 = l_objTable.insertRow();
-	l_objCell_0_0 = l_objRow_0.insertCell();
-	l_objCell_0_1 = l_objRow_0.insertCell();
-	l_objRow_1 = l_objTable.insertRow();
-	l_objCell_1_0 = l_objRow_1.insertCell();
-	l_objCell_0_0.appendChild(l_objImg);
-	l_objCell_0_0.appendChild(l_objSpan);
-	l_objCell_0_1.appendChild(l_objImgExit);
-	l_objCell_1_0.appendChild(l_objTextarea);
-
-	l_objDiv.id = 'DescBox';
-	l_objDiv.style.position = 'absolute';
-	l_objDiv.style.left = event.clientX+30;
-	l_objDiv.style.top = event.clientY+10;
-	l_objDiv.style.border = 'thin solid #7F7F7F';
-	l_objDiv.style.boxShadow = '10px 10px 5px #888888';
-	l_objDiv.draggable = 'true';
-	l_objDiv.ondragstart = function(){StartMove(event)};
-	l_objDiv.ondragend = function(){EndMove(event)};
-	l_objImg.src = 'icons/' + p_icon + '.bmp';
-	l_objSpan.innerHTML = '&nbsp;&nbsp;' + p_name;
-	l_objCell_0_1.style.textAlign = 'right';
-	l_objImgExit.style.cursor = 'pointer';
-	l_objImgExit.src = 'icons/exit.bmp';
-	l_objImgExit.onclick = function(){CloseDescBox()};
-	l_objCell_1_0.colSpan = '2';
-	l_objTextarea.readOnly = true;
-	l_objTextarea.id = 'CubeDesc';
-	l_objTextarea.rows = '5';
-	l_objTextarea.cols = '80';
-	l_objTextarea.style.whiteSpace = 'normal';
-	l_objTextarea.maxLength = '3999';
-
-	GetDescription(p_type,p_attribute_type,p_sequence);
-}
-
-function CloseDescBox() {
-	l_obj = document.getElementById("DescBox");
-	if (l_obj) { l_obj.parentNode.removeChild(l_obj);}
-}
-
-function GetDescription(p_type,p_attribute_type,p_sequence) {
-	g_xmlhttp.open('POST','CubeSysServer.php',true);
-	g_xmlhttp.send( {
-		Service: "GetCubeDsc",
-		Parameters: {
-			Type: {
-				TypeName: p_type,
-				AttributeTypeName: p_attribute_type,
-				Sequence: p_sequence
-			}
-		}
-	} );
-}
 
 function ToUpperCase(p_obj) 
 {
@@ -475,7 +403,7 @@ function drop(p_event) {
 -->
 </script>
 </head><body oncontextmenu="return false;" onload="InitBody()" ondrop="drop(event)" ondragover="allowDrop(event)">
-<div><img src="icons/part_large.bmp" /><span style="cursor:help" oncontextmenu="OpenDescBox('PART','Part2','PART2','_',-1)"> PART2</span></div>
+<div><img src="icons/part_large.bmp" /><span style="cursor:help" oncontextmenu="parent.OpenDescBox('PART','Part2','PART2','_',-1)"> PART2</span></div>
 <hr/>
 <table>
 <tr><td>Prod.Code</td><td><div style="max-width:8em;">

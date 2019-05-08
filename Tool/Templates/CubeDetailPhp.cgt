@@ -138,9 +138,6 @@ g_xmlhttp.onreadystatechange = function() {
 						var l_json_values = l_json_array[i].Rows[0].Data;[[LOOP,ATTRIBUTE:1=N[AND]3=F]]
 						document.getElementById("Input<<ATTRIBUTE:C>>").value=l_json_values.<<ATTRIBUTE:C>>;[[ENDLOOP,ATTRIBUTE]]
 						break;[[ENDIF]]
-					case "SELECT_CUBE_DSC":
-						document.getElementById("CubeDesc").value = l_argument[1];
-						break;
 					case "ERROR":
 						alert ('Server error:\n'+l_json_array[i].ErrorText);
 						break;
@@ -158,7 +155,6 @@ g_xmlhttp.onreadystatechange = function() {
 function performTrans(p_json_parm) {
 	var l_requestText = JSON.stringify(p_json_parm);
 	g_xmlhttp.open('POST','<<1>>Server.php',true);
-//	g_xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 	g_xmlhttp.send(l_requestText);
 }
 
@@ -407,74 +403,6 @@ function StartSelect<<REFERENCE:S>>(p_event) {
 	} );[[ENDIF]][[ENDLOOP,REFERENCE_TYPE]]
 }[[ENDLOOP,REFERENCE]]
 
-function OpenDescBox(p_icon,p_name,p_type,p_attribute_type,p_sequence) {
-
-	CloseDescBox();
-
-	var l_objDiv = document.createElement('DIV');
-	var l_objTable = document.createElement('TABLE');
-	var l_objImg = document.createElement('IMG');
-	var l_objSpan = document.createElement('SPAN');
-	var l_objImgExit = document.createElement('IMG');
-	var l_objTextarea = document.createElement('TEXTAREA');
-
-	document.body.appendChild(l_objDiv);
-
-	l_objDiv.appendChild(l_objTable);
-	l_objRow_0 = l_objTable.insertRow();
-	l_objCell_0_0 = l_objRow_0.insertCell();
-	l_objCell_0_1 = l_objRow_0.insertCell();
-	l_objRow_1 = l_objTable.insertRow();
-	l_objCell_1_0 = l_objRow_1.insertCell();
-	l_objCell_0_0.appendChild(l_objImg);
-	l_objCell_0_0.appendChild(l_objSpan);
-	l_objCell_0_1.appendChild(l_objImgExit);
-	l_objCell_1_0.appendChild(l_objTextarea);
-
-	l_objDiv.id = 'DescBox';
-	l_objDiv.style.position = 'absolute';
-	l_objDiv.style.left = event.clientX+30;
-	l_objDiv.style.top = event.clientY+10;
-	l_objDiv.style.border = 'thin solid #7F7F7F';
-	l_objDiv.style.boxShadow = '10px 10px 5px #888888';
-	l_objDiv.draggable = 'true';
-	l_objDiv.ondragstart = function(){StartMove(event)};
-	l_objDiv.ondragend = function(){EndMove(event)};
-	l_objImg.src = 'icons/' + p_icon + '.bmp';
-	l_objSpan.innerHTML = '&nbsp;&nbsp;' + p_name;
-	l_objCell_0_1.style.textAlign = 'right';
-	l_objImgExit.style.cursor = 'pointer';
-	l_objImgExit.src = 'icons/exit.bmp';
-	l_objImgExit.onclick = function(){CloseDescBox()};
-	l_objCell_1_0.colSpan = '2';
-	l_objTextarea.readOnly = true;
-	l_objTextarea.id = 'CubeDesc';
-	l_objTextarea.rows = '5';
-	l_objTextarea.cols = '80';
-	l_objTextarea.style.whiteSpace = 'normal';
-	l_objTextarea.maxLength = '3999';
-
-	GetDescription(p_type,p_attribute_type,p_sequence);
-}
-
-function CloseDescBox() {
-	l_obj = document.getElementById("DescBox");
-	if (l_obj) { l_obj.parentNode.removeChild(l_obj);}
-}
-
-function GetDescription(p_type,p_attribute_type,p_sequence) {
-	g_xmlhttp.open('POST','CubeSysServer.php',true);
-	g_xmlhttp.send( {
-		Service: "GetCubeDsc",
-		Parameters: {
-			Type: {
-				TypeName: p_type,
-				AttributeTypeName: p_attribute_type,
-				Sequence: p_sequence
-			}
-		}
-	} );
-}
 
 function ToUpperCase(p_obj) 
 {
@@ -540,7 +468,7 @@ function ResetField<<ATTRIBUTE:C>>(p_field_id) {
 -->
 </script>
 </head><body oncontextmenu="return false;" onload="InitBody()" ondrop="drop(event)" ondragover="allowDrop(event)">
-<div><img src="icons/<<TYPE7:L>>_large.bmp" /><span[[IF:CHILD(DESCRIPTION_TYPE)]] style="cursor:help" oncontextmenu="OpenDescBox('<<TYPE7:U>>','<<TYPE:C>>','<<TYPE:U>>','_',-1)"[[ENDIF]]> <<TYPE:U>>[[LOOP,TYPE_SPECIALISATION_GROUP]][[LOOP,*ATTRIBUTE]][[IF:CHILD(ATTRIBUTE_GROUP)]] <b>.</b>[[ELSE]] /[[ENDIF]]
+<div><img src="icons/<<TYPE7:L>>_large.bmp" /><span[[IF:CHILD(DESCRIPTION_TYPE)]] style="cursor:help" oncontextmenu="parent.OpenDescBox('<<TYPE7:U>>','<<TYPE:C>>','<<TYPE:U>>','_',-1)"[[ENDIF]]> <<TYPE:U>>[[LOOP,TYPE_SPECIALISATION_GROUP]][[LOOP,*ATTRIBUTE]][[IF:CHILD(ATTRIBUTE_GROUP)]] <b>.</b>[[ELSE]] /[[ENDIF]]
 <select id="Input<<ATTRIBUTE:C>>" type="text" onchange="[[IF:CHILD(*ATTRIBUTE_GROUP)]]ResetField[[LOOP,*ATTRIBUTE_GROUP]][[LOOP,^ATTRIBUTE]]<<^ATTRIBUTE:C>>[[ENDLOOP,^ATTRIBUTE]][[ENDLOOP,*ATTRIBUTE_GROUP]]('Input<<ATTRIBUTE:C>>')[[ELSE]]ProcessTypeSpecialisation()[[ENDIF]]">
 	<option value=" " selected>&lt;[[LOOP,ATTRIBUTE_TYPE_SPECIALISATION_GROUP]]<<ATTRIBUTE_TYPE_SPECIALISATION_GROUP:L>>[[ENDLOOP,ATTRIBUTE_TYPE_SPECIALISATION_GROUP]]&gt;</option>[[LOOP,INFORMATION_TYPE_ELEMENT]][[LOOP,PERMITTED_VALUE]]
 	<option [[IF,*ATTRIBUTE:CHILD(ATTRIBUTE_GROUP)]]id="Val<<ATTRIBUTE:C>>-<<PERMITTED_VALUE>>" style="display:none" [[ENDIF]]value="<<PERMITTED_VALUE>>"><<PERMITTED_VALUE1>></option>[[ENDLOOP,PERMITTED_VALUE]][[ENDLOOP,INFORMATION_TYPE_ELEMENT]]
