@@ -17,7 +17,7 @@ echo Start > %logfile%
 ::goto Application 
 echo Extract Cube Model
 sqlplus.exe cuberoot/composys@composys @Systems\CubeRoot\ModelExport.sql %sysdir%\CubeModel.cgm %sysname% REPLACE >> %logfile% 2>&1
-::goto End
+goto End
 :Models
 echo Generate Models.
 CubeGen.exe %sysdir%\CubeModel.cgm Templates\Model0.cgt %sysdir%\CubeModel0.cgm %sysname% >> %logfile% 2>&1

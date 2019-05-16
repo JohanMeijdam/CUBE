@@ -796,12 +796,12 @@ function drop(p_event) {
 <div style="position:fixed;top:8px;left:8px;right:8px;bottom:8px;">
 <iframe src="composys_header.html" style="position:absolute;height:76px;width:100%;"></iframe>
 <div class="header0" style="position:absolute;top:76px;left:0px;width:40%;height:30px;">
-TREE VIEW</div>
+Treeview</div>
 <div style="overflow:auto;position:absolute;top:106px;bottom:0px;left:0px;width:40%;">
 <div style="position:absolute;top:8px;">
 <span id="TreeBody"><span/></span>
 </div></div>
 <div class="header0" style="overflow:hidden;position:absolute;top:76px;left:40%;right:0;height:30px;">
-HOME</div><div style="overflow:auto;position:absolute;top:106px;bottom:0px;left:40%;right:0;background-color:white;border-left: 2px solid darkslategray;">
+Detail</div><div style="overflow:auto;position:absolute;top:106px;bottom:0px;left:40%;right:0;background-color:white;border-left: 2px solid darkslategray;">
 <iframe id="DetailFrame" style="position:absolute;height:100%;width:100%;"></iframe>
 </div></body></html>

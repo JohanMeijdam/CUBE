@@ -549,6 +549,9 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 	PROCEDURE get_typ_rtt_items (
 			p_cube_row IN OUT c_cube_row,
 			p_name IN VARCHAR2);
+	PROCEDURE get_typ_jsn_items (
+			p_cube_row IN OUT c_cube_row,
+			p_name IN VARCHAR2);
 	PROCEDURE get_typ_tyr_items (
 			p_cube_row IN OUT c_cube_row,
 			p_name IN VARCHAR2);
@@ -562,6 +565,9 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_cube_row IN OUT c_cube_row,
 			p_name IN VARCHAR2);
 	PROCEDURE get_typ_typ_items (
+			p_cube_row IN OUT c_cube_row,
+			p_name IN VARCHAR2);
+	PROCEDURE count_typ_jsn (
 			p_cube_row IN OUT c_cube_row,
 			p_name IN VARCHAR2);
 	PROCEDURE count_typ_dct (
@@ -881,6 +887,85 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_xf_tsp_typ_name IN VARCHAR2,
 			p_xf_tsp_tsg_code IN VARCHAR2,
 			p_xk_tsp_code IN VARCHAR2);
+	PROCEDURE get_jsn (
+			p_cube_row IN OUT c_cube_row,
+			p_fk_typ_name IN VARCHAR2,
+			p_name IN VARCHAR2,
+			p_location IN NUMBER);
+	PROCEDURE get_jsn_fkey (
+			p_cube_row IN OUT c_cube_row,
+			p_fk_typ_name IN VARCHAR2,
+			p_name IN VARCHAR2,
+			p_location IN NUMBER);
+	PROCEDURE get_jsn_joa_items (
+			p_cube_row IN OUT c_cube_row,
+			p_fk_typ_name IN VARCHAR2,
+			p_name IN VARCHAR2,
+			p_location IN NUMBER);
+	PROCEDURE get_jsn_jsn_items (
+			p_cube_row IN OUT c_cube_row,
+			p_fk_typ_name IN VARCHAR2,
+			p_name IN VARCHAR2,
+			p_location IN NUMBER);
+	PROCEDURE move_jsn (
+			p_cube_pos_action IN VARCHAR2,
+			p_fk_typ_name IN VARCHAR2,
+			p_name IN VARCHAR2,
+			p_location IN NUMBER,
+			x_fk_typ_name IN VARCHAR2,
+			x_name IN VARCHAR2,
+			x_location IN NUMBER);
+	PROCEDURE insert_jsn (
+			p_cube_pos_action IN VARCHAR2,
+			p_fk_bot_name IN VARCHAR2,
+			p_fk_typ_name IN VARCHAR2,
+			p_fk_jsn_name IN VARCHAR2,
+			p_fk_jsn_location IN NUMBER,
+			p_cube_tsg_type IN VARCHAR2,
+			p_name IN VARCHAR2,
+			p_location IN NUMBER,
+			x_fk_typ_name IN VARCHAR2,
+			x_name IN VARCHAR2,
+			x_location IN NUMBER);
+	PROCEDURE update_jsn (
+			p_fk_bot_name IN VARCHAR2,
+			p_fk_typ_name IN VARCHAR2,
+			p_fk_jsn_name IN VARCHAR2,
+			p_fk_jsn_location IN NUMBER,
+			p_cube_tsg_type IN VARCHAR2,
+			p_name IN VARCHAR2,
+			p_location IN NUMBER);
+	PROCEDURE delete_jsn (
+			p_fk_typ_name IN VARCHAR2,
+			p_name IN VARCHAR2,
+			p_location IN NUMBER);
+	PROCEDURE get_joa (
+			p_cube_row IN OUT c_cube_row,
+			p_fk_typ_name IN VARCHAR2,
+			p_fk_jsn_name IN VARCHAR2,
+			p_fk_jsn_location IN NUMBER,
+			p_xf_atb_typ_name IN VARCHAR2,
+			p_xk_atb_name IN VARCHAR2);
+	PROCEDURE insert_joa (
+			p_fk_bot_name IN VARCHAR2,
+			p_fk_typ_name IN VARCHAR2,
+			p_fk_jsn_name IN VARCHAR2,
+			p_fk_jsn_location IN NUMBER,
+			p_xf_atb_typ_name IN VARCHAR2,
+			p_xk_atb_name IN VARCHAR2);
+	PROCEDURE update_joa (
+			p_fk_bot_name IN VARCHAR2,
+			p_fk_typ_name IN VARCHAR2,
+			p_fk_jsn_name IN VARCHAR2,
+			p_fk_jsn_location IN NUMBER,
+			p_xf_atb_typ_name IN VARCHAR2,
+			p_xk_atb_name IN VARCHAR2);
+	PROCEDURE delete_joa (
+			p_fk_typ_name IN VARCHAR2,
+			p_fk_jsn_name IN VARCHAR2,
+			p_fk_jsn_location IN NUMBER,
+			p_xf_atb_typ_name IN VARCHAR2,
+			p_xk_atb_name IN VARCHAR2);
 	PROCEDURE get_tyr (
 			p_cube_row IN OUT c_cube_row,
 			p_fk_typ_name IN VARCHAR2,
@@ -1352,6 +1437,23 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			ORDER BY fk_typ_name, xf_tsp_typ_name, xf_tsp_tsg_code, xk_tsp_code;
 	END;
 
+	PROCEDURE get_typ_jsn_items (
+			p_cube_row IN OUT c_cube_row,
+			p_name IN VARCHAR2) IS
+	BEGIN
+		OPEN p_cube_row FOR
+			SELECT
+			  cube_sequence,
+			  fk_typ_name,
+			  name,
+			  location
+			FROM v_json_object
+			WHERE fk_typ_name = p_name
+			  AND fk_jsn_name IS NULL
+			  AND fk_jsn_location IS NULL
+			ORDER BY fk_typ_name, cube_sequence;
+	END;
+
 	PROCEDURE get_typ_tyr_items (
 			p_cube_row IN OUT c_cube_row,
 			p_name IN VARCHAR2) IS
@@ -1418,6 +1520,19 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			FROM v_type
 			WHERE fk_typ_name = p_name
 			ORDER BY cube_sequence;
+	END;
+
+	PROCEDURE count_typ_jsn (
+			p_cube_row IN OUT c_cube_row,
+			p_name IN VARCHAR2) IS
+	BEGIN
+		OPEN p_cube_row FOR
+			SELECT
+			  COUNT(1) type_count
+			FROM v_json_object
+			WHERE fk_typ_name = p_name
+			  AND fk_jsn_name IS NULL
+			  AND fk_jsn_location IS NULL;
 	END;
 
 	PROCEDURE count_typ_dct (
@@ -2804,6 +2919,381 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 		  AND xf_tsp_typ_name = p_xf_tsp_typ_name
 		  AND xf_tsp_tsg_code = p_xf_tsp_tsg_code
 		  AND xk_tsp_code = p_xk_tsp_code;
+	END;
+
+	PROCEDURE get_jsn (
+			p_cube_row IN OUT c_cube_row,
+			p_fk_typ_name IN VARCHAR2,
+			p_name IN VARCHAR2,
+			p_location IN NUMBER) IS
+	BEGIN
+		OPEN p_cube_row FOR
+			SELECT
+			  fk_bot_name,
+			  fk_jsn_name,
+			  fk_jsn_location,
+			  cube_tsg_type
+			FROM v_json_object
+			WHERE fk_typ_name = p_fk_typ_name
+			  AND name = p_name
+			  AND location = p_location;
+	END;
+
+	PROCEDURE get_jsn_fkey (
+			p_cube_row IN OUT c_cube_row,
+			p_fk_typ_name IN VARCHAR2,
+			p_name IN VARCHAR2,
+			p_location IN NUMBER) IS
+	BEGIN
+		OPEN p_cube_row FOR
+			SELECT
+			  fk_bot_name
+			FROM v_json_object
+			WHERE fk_typ_name = p_fk_typ_name
+			  AND name = p_name
+			  AND location = p_location;
+	END;
+
+	PROCEDURE get_jsn_joa_items (
+			p_cube_row IN OUT c_cube_row,
+			p_fk_typ_name IN VARCHAR2,
+			p_name IN VARCHAR2,
+			p_location IN NUMBER) IS
+	BEGIN
+		OPEN p_cube_row FOR
+			SELECT
+			  fk_typ_name,
+			  fk_jsn_name,
+			  fk_jsn_location,
+			  xf_atb_typ_name,
+			  xk_atb_name
+			FROM v_json_object_attribute
+			WHERE fk_typ_name = p_fk_typ_name
+			  AND fk_jsn_name = p_name
+			  AND fk_jsn_location = p_location
+			ORDER BY fk_typ_name, fk_jsn_name, fk_jsn_location, xf_atb_typ_name, xk_atb_name;
+	END;
+
+	PROCEDURE get_jsn_jsn_items (
+			p_cube_row IN OUT c_cube_row,
+			p_fk_typ_name IN VARCHAR2,
+			p_name IN VARCHAR2,
+			p_location IN NUMBER) IS
+	BEGIN
+		OPEN p_cube_row FOR
+			SELECT
+			  cube_sequence,
+			  fk_typ_name,
+			  name,
+			  location
+			FROM v_json_object
+			WHERE fk_typ_name = p_fk_typ_name
+			  AND fk_jsn_name = p_name
+			  AND fk_jsn_location = p_location
+			ORDER BY fk_typ_name, cube_sequence;
+	END;
+
+	PROCEDURE check_no_part_jsn (
+			p_fk_typ_name IN VARCHAR2,
+			p_name IN VARCHAR2,
+			p_location IN NUMBER,
+			x_name IN VARCHAR2,
+			x_location IN NUMBER) IS
+		l_name v_json_object.name%TYPE;
+		l_location v_json_object.location%TYPE;
+	BEGIN
+		l_name := x_name;
+		l_location := x_location;
+		LOOP
+			IF l_name IS NULL
+			  AND l_location IS NULL THEN
+				EXIT; -- OK
+			END IF;
+			IF l_name = p_name
+			  AND l_location = p_location THEN
+				RAISE_APPLICATION_ERROR (-20003, 'Target Type json_object in hierarchy of moving object');
+			END IF;
+			SELECT fk_jsn_name, fk_jsn_location
+			INTO l_name, l_location
+			FROM v_json_object
+			WHERE fk_typ_name = p_fk_typ_name
+			  AND name = l_name
+			  AND location = l_location;
+		END LOOP;
+	END;
+
+	PROCEDURE determine_position_jsn (
+			p_cube_sequence OUT NUMBER,
+			p_cube_pos_action IN VARCHAR2,
+			p_fk_typ_name IN VARCHAR2,
+			p_fk_jsn_name IN VARCHAR2,
+			p_fk_jsn_location IN NUMBER,
+			p_name IN VARCHAR2,
+			p_location IN NUMBER) IS
+		l_cube_pos_action VARCHAR2(1);
+		l_cube_position_sequ NUMBER(8);
+		l_cube_near_sequ NUMBER(8);
+		l_cube_count NUMBER(8) := 1024;
+	BEGIN
+		-- A=After B=Before F=First L=Last
+		CASE p_cube_pos_action
+		WHEN 'F' THEN
+			l_cube_position_sequ := 0;
+			l_cube_pos_action := 'A';
+		WHEN 'L' THEN
+			l_cube_position_sequ := 99999999;
+			l_cube_pos_action := 'B';
+		ELSE
+			l_cube_pos_action := p_cube_pos_action;
+		END CASE;
+		LOOP
+			IF p_cube_pos_action IN ('B', 'A') THEN
+				-- Read sequence number of the target.
+				SELECT NVL (MAX (cube_sequence), DECODE (p_cube_pos_action, 'B', 99999999, 0))
+				INTO l_cube_position_sequ
+				FROM v_json_object
+				WHERE fk_typ_name = p_fk_typ_name
+				  AND name = p_name
+				  AND location = p_location;
+			END IF;
+			-- read sequence number near the target.
+			SELECT DECODE (l_cube_pos_action, 'B', NVL (MAX (cube_sequence), 0), NVL (MIN (cube_sequence), 99999999))
+			INTO l_cube_near_sequ
+			FROM v_json_object
+			WHERE fk_typ_name = p_fk_typ_name
+			  AND 	    ( 	    ( fk_jsn_name IS NULL
+					  AND p_fk_jsn_name IS NULL )
+				   OR 	    ( fk_jsn_location IS NULL
+					  AND p_fk_jsn_location IS NULL )
+				   OR fk_jsn_name = p_fk_jsn_name
+				   OR fk_jsn_location = p_fk_jsn_location )
+			  AND 	    ( 	    ( l_cube_pos_action = 'B'
+					  AND cube_sequence < l_cube_position_sequ )
+				   OR 	    ( l_cube_pos_action = 'A'
+					  AND cube_sequence > l_cube_position_sequ ) );
+			IF ABS (l_cube_position_sequ - l_cube_near_sequ) > 1 THEN
+				p_cube_sequence := l_cube_position_sequ - (l_cube_position_sequ - l_cube_near_sequ) / 2; -- Formula both directions OK.
+				EXIT;
+			ELSE
+				-- renumber.
+				FOR r_jsn IN (
+					SELECT
+					  rowid row_id
+					FROM v_json_object
+					WHERE fk_typ_name = p_fk_typ_name
+					  AND 	    ( 	    ( fk_jsn_name IS NULL
+							  AND p_fk_jsn_name IS NULL )
+						   OR 	    ( fk_jsn_location IS NULL
+							  AND p_fk_jsn_location IS NULL )
+						   OR fk_jsn_name = p_fk_jsn_name
+						   OR fk_jsn_location = p_fk_jsn_location )
+					ORDER BY cube_sequence)
+				LOOP
+					UPDATE v_json_object SET
+						cube_sequence = l_cube_count
+					WHERE rowid = r_jsn.row_id;
+					l_cube_count := l_cube_count + 1024;
+				END LOOP;
+			END IF;
+		END LOOP;
+	END;
+
+	PROCEDURE move_jsn (
+			p_cube_pos_action IN VARCHAR2,
+			p_fk_typ_name IN VARCHAR2,
+			p_name IN VARCHAR2,
+			p_location IN NUMBER,
+			x_fk_typ_name IN VARCHAR2,
+			x_name IN VARCHAR2,
+			x_location IN NUMBER) IS
+		l_cube_sequence NUMBER(8);
+		l_fk_jsn_name v_json_object.fk_jsn_name%TYPE;
+		l_fk_jsn_location v_json_object.fk_jsn_location%TYPE;
+	BEGIN
+		-- A=After B=Before F=First L=Last
+		IF NVL (p_cube_pos_action, ' ') NOT IN ('A', 'B', 'F', 'L') THEN
+			RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
+		END IF;
+		-- Get parent id of the target.
+		IF p_cube_pos_action IN ('B', 'A') THEN
+			SELECT fk_jsn_name, fk_jsn_location
+			INTO l_fk_jsn_name, l_fk_jsn_location
+			FROM v_json_object
+			WHERE fk_typ_name = x_fk_typ_name
+			  AND name = x_name
+			  AND location = x_location;
+		ELSE
+			l_fk_jsn_name := x_name;
+			l_fk_jsn_location := x_location;
+		END IF;
+		check_no_part_jsn (p_fk_typ_name, p_name, p_location, l_fk_jsn_name, l_fk_jsn_location);
+		determine_position_jsn (l_cube_sequence, p_cube_pos_action, x_fk_typ_name, l_fk_jsn_name, l_fk_jsn_location, x_name, x_location);
+		UPDATE v_json_object SET
+			fk_jsn_name = l_fk_jsn_name,
+			fk_jsn_location = l_fk_jsn_location,
+			cube_sequence = l_cube_sequence
+		WHERE fk_typ_name = p_fk_typ_name
+		  AND name = p_name
+		  AND location = p_location;
+		IF SQL%NOTFOUND THEN
+			RAISE_APPLICATION_ERROR (-20002, 'Type json_object not found');
+		END IF;
+	END;
+
+	PROCEDURE insert_jsn (
+			p_cube_pos_action IN VARCHAR2,
+			p_fk_bot_name IN VARCHAR2,
+			p_fk_typ_name IN VARCHAR2,
+			p_fk_jsn_name IN VARCHAR2,
+			p_fk_jsn_location IN NUMBER,
+			p_cube_tsg_type IN VARCHAR2,
+			p_name IN VARCHAR2,
+			p_location IN NUMBER,
+			x_fk_typ_name IN VARCHAR2,
+			x_name IN VARCHAR2,
+			x_location IN NUMBER) IS
+		l_cube_sequence NUMBER(8);
+	BEGIN
+		-- A=After B=Before F=First L=Last
+		IF NVL (p_cube_pos_action, ' ') NOT IN ('A', 'B', 'F', 'L') THEN
+			RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
+		END IF;
+		determine_position_jsn (l_cube_sequence, p_cube_pos_action, x_fk_typ_name, p_fk_jsn_name, p_fk_jsn_location, x_name, x_location);
+		INSERT INTO v_json_object (
+			cube_id,
+			cube_sequence,
+			cube_level,
+			fk_bot_name,
+			fk_typ_name,
+			fk_jsn_name,
+			fk_jsn_location,
+			cube_tsg_type,
+			name,
+			location)
+		VALUES (
+			NULL,
+			l_cube_sequence,
+			NULL,
+			p_fk_bot_name,
+			p_fk_typ_name,
+			p_fk_jsn_name,
+			p_fk_jsn_location,
+			p_cube_tsg_type,
+			p_name,
+			p_location);
+	EXCEPTION
+		WHEN DUP_VAL_ON_INDEX THEN
+			RAISE_APPLICATION_ERROR (-20001, 'Type json_object already exists');
+	END;
+
+	PROCEDURE update_jsn (
+			p_fk_bot_name IN VARCHAR2,
+			p_fk_typ_name IN VARCHAR2,
+			p_fk_jsn_name IN VARCHAR2,
+			p_fk_jsn_location IN NUMBER,
+			p_cube_tsg_type IN VARCHAR2,
+			p_name IN VARCHAR2,
+			p_location IN NUMBER) IS
+	BEGIN
+		UPDATE v_json_object SET
+			fk_bot_name = p_fk_bot_name,
+			fk_jsn_name = p_fk_jsn_name,
+			fk_jsn_location = p_fk_jsn_location,
+			cube_tsg_type = p_cube_tsg_type
+		WHERE fk_typ_name = p_fk_typ_name
+		  AND name = p_name
+		  AND location = p_location;
+	END;
+
+	PROCEDURE delete_jsn (
+			p_fk_typ_name IN VARCHAR2,
+			p_name IN VARCHAR2,
+			p_location IN NUMBER) IS
+	BEGIN
+		DELETE v_json_object
+		WHERE fk_typ_name = p_fk_typ_name
+		  AND name = p_name
+		  AND location = p_location;
+	END;
+
+	PROCEDURE get_joa (
+			p_cube_row IN OUT c_cube_row,
+			p_fk_typ_name IN VARCHAR2,
+			p_fk_jsn_name IN VARCHAR2,
+			p_fk_jsn_location IN NUMBER,
+			p_xf_atb_typ_name IN VARCHAR2,
+			p_xk_atb_name IN VARCHAR2) IS
+	BEGIN
+		OPEN p_cube_row FOR
+			SELECT
+			  fk_bot_name
+			FROM v_json_object_attribute
+			WHERE fk_typ_name = p_fk_typ_name
+			  AND fk_jsn_name = p_fk_jsn_name
+			  AND fk_jsn_location = p_fk_jsn_location
+			  AND xf_atb_typ_name = p_xf_atb_typ_name
+			  AND xk_atb_name = p_xk_atb_name;
+	END;
+
+	PROCEDURE insert_joa (
+			p_fk_bot_name IN VARCHAR2,
+			p_fk_typ_name IN VARCHAR2,
+			p_fk_jsn_name IN VARCHAR2,
+			p_fk_jsn_location IN NUMBER,
+			p_xf_atb_typ_name IN VARCHAR2,
+			p_xk_atb_name IN VARCHAR2) IS
+	BEGIN
+		INSERT INTO v_json_object_attribute (
+			cube_id,
+			fk_bot_name,
+			fk_typ_name,
+			fk_jsn_name,
+			fk_jsn_location,
+			xf_atb_typ_name,
+			xk_atb_name)
+		VALUES (
+			NULL,
+			p_fk_bot_name,
+			p_fk_typ_name,
+			p_fk_jsn_name,
+			p_fk_jsn_location,
+			p_xf_atb_typ_name,
+			p_xk_atb_name);
+	EXCEPTION
+		WHEN DUP_VAL_ON_INDEX THEN
+			RAISE_APPLICATION_ERROR (-20001, 'Type json_object_attribute already exists');
+	END;
+
+	PROCEDURE update_joa (
+			p_fk_bot_name IN VARCHAR2,
+			p_fk_typ_name IN VARCHAR2,
+			p_fk_jsn_name IN VARCHAR2,
+			p_fk_jsn_location IN NUMBER,
+			p_xf_atb_typ_name IN VARCHAR2,
+			p_xk_atb_name IN VARCHAR2) IS
+	BEGIN
+		UPDATE v_json_object_attribute SET
+			fk_bot_name = p_fk_bot_name
+		WHERE fk_typ_name = p_fk_typ_name
+		  AND fk_jsn_name = p_fk_jsn_name
+		  AND fk_jsn_location = p_fk_jsn_location
+		  AND xf_atb_typ_name = p_xf_atb_typ_name
+		  AND xk_atb_name = p_xk_atb_name;
+	END;
+
+	PROCEDURE delete_joa (
+			p_fk_typ_name IN VARCHAR2,
+			p_fk_jsn_name IN VARCHAR2,
+			p_fk_jsn_location IN NUMBER,
+			p_xf_atb_typ_name IN VARCHAR2,
+			p_xk_atb_name IN VARCHAR2) IS
+	BEGIN
+		DELETE v_json_object_attribute
+		WHERE fk_typ_name = p_fk_typ_name
+		  AND fk_jsn_name = p_fk_jsn_name
+		  AND fk_jsn_location = p_fk_jsn_location
+		  AND xf_atb_typ_name = p_xf_atb_typ_name
+		  AND xk_atb_name = p_xk_atb_name;
 	END;
 
 	PROCEDURE get_tyr (

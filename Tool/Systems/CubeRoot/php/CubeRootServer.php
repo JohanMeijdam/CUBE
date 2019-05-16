@@ -906,6 +906,33 @@ case 'GetTypItems':
 	echo $ResponseText;
 	echo ',';
 
+	$stid = oci_parse($conn, "BEGIN pkg_bot.get_typ_jsn_items (
+		:p_cube_row,
+		:p_name);
+	END;");
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
+
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'LIST_JSN';
+	$r = perform_db_request();
+	if (!$r) { 
+		echo ']';
+		return;
+	}
+	$ResponseObj->Rows = array();
+	while ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Key = new \stdClass();
+		$RowObj->Key->FkTypName = $row["FK_TYP_NAME"];
+		$RowObj->Key->Name = $row["NAME"];
+		$RowObj->Key->Location = $row["LOCATION"];
+		$RowObj->Display = $row["NAME"].' '.$row["LOCATION"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ',';
+
 	$stid = oci_parse($conn, "BEGIN pkg_bot.get_typ_tyr_items (
 		:p_cube_row,
 		:p_name);
@@ -1038,6 +1065,30 @@ case 'GetTypItems':
 
 case 'CountTypRestrictedItems':
 	echo '[';
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.count_typ_jsn (
+		:p_cube_row,
+		:p_name);
+	END;");
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
+
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'COUNT_JSN';
+	$r = perform_db_request();
+	if (!$r) { 
+		echo ']';
+		return;
+	}
+	$ResponseObj->Rows = array();
+	if ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Data = new \stdClass();
+		$RowObj->Data->TypeCount = $row["TYPE_COUNT"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ',';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.count_typ_dct (
 		:p_cube_row,
@@ -2708,6 +2759,411 @@ case 'DeleteRtt':
 
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'DELETE_RTT';
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		echo ']';
+		return;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
+	break;
+
+case 'GetJsn':
+	echo '[';
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.get_jsn (
+		:p_cube_row,
+		:p_fk_typ_name,
+		:p_name,
+		:p_location);
+	END;");
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
+	oci_bind_by_name($stid,":p_location",$RequestObj->Parameters->Type->Location);
+
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'SELECT_JSN';
+	$r = perform_db_request();
+	if (!$r) { 
+		echo ']';
+		return;
+	}
+	$ResponseObj->Rows = array();
+	if ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Data = new \stdClass();
+		$RowObj->Data->FkBotName = $row["FK_BOT_NAME"];
+		$RowObj->Data->FkJsnName = $row["FK_JSN_NAME"];
+		$RowObj->Data->FkJsnLocation = $row["FK_JSN_LOCATION"];
+		$RowObj->Data->CubeTsgType = $row["CUBE_TSG_TYPE"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
+	break;
+
+case 'GetJsnFkey':
+	echo '[';
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.get_jsn_fkey (
+		:p_cube_row,
+		:p_fk_typ_name,
+		:p_name,
+		:p_location);
+	END;");
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
+	oci_bind_by_name($stid,":p_location",$RequestObj->Parameters->Type->Location);
+
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'SELECT_FKEY_JSN';
+	$r = perform_db_request();
+	if (!$r) { 
+		echo ']';
+		return;
+	}
+	$ResponseObj->Rows = array();
+	if ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Data = new \stdClass();
+		$RowObj->Data->FkBotName = $row["FK_BOT_NAME"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
+	break;
+
+case 'GetJsnItems':
+	echo '[';
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.get_jsn_joa_items (
+		:p_cube_row,
+		:p_fk_typ_name,
+		:p_name,
+		:p_location);
+	END;");
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
+	oci_bind_by_name($stid,":p_location",$RequestObj->Parameters->Type->Location);
+
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'LIST_JOA';
+	$r = perform_db_request();
+	if (!$r) { 
+		echo ']';
+		return;
+	}
+	$ResponseObj->Rows = array();
+	while ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Key = new \stdClass();
+		$RowObj->Key->FkTypName = $row["FK_TYP_NAME"];
+		$RowObj->Key->FkJsnName = $row["FK_JSN_NAME"];
+		$RowObj->Key->FkJsnLocation = $row["FK_JSN_LOCATION"];
+		$RowObj->Key->XfAtbTypName = $row["XF_ATB_TYP_NAME"];
+		$RowObj->Key->XkAtbName = $row["XK_ATB_NAME"];
+		$RowObj->Display = $row["XF_ATB_TYP_NAME"].' '.$row["XK_ATB_NAME"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ',';
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.get_jsn_jsn_items (
+		:p_cube_row,
+		:p_fk_typ_name,
+		:p_name,
+		:p_location);
+	END;");
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
+	oci_bind_by_name($stid,":p_location",$RequestObj->Parameters->Type->Location);
+
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'LIST_JSN';
+	$r = perform_db_request();
+	if (!$r) { 
+		echo ']';
+		return;
+	}
+	$ResponseObj->Rows = array();
+	while ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Key = new \stdClass();
+		$RowObj->Key->FkTypName = $row["FK_TYP_NAME"];
+		$RowObj->Key->Name = $row["NAME"];
+		$RowObj->Key->Location = $row["LOCATION"];
+		$RowObj->Display = $row["NAME"].' '.$row["LOCATION"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
+	break;
+
+case 'MoveJsn':
+	echo '[';
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.move_jsn (
+		:p_cube_pos_action,
+		:p_fk_typ_name,
+		:p_name,
+		:p_location,
+		:x_fk_typ_name,
+		:x_name,
+		:x_location);
+	END;");
+	oci_bind_by_name($stid,":p_cube_pos_action",$RequestObj->Parameters->Option->CubePosAction);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
+	oci_bind_by_name($stid,":p_location",$RequestObj->Parameters->Type->Location);
+	oci_bind_by_name($stid,":x_fk_typ_name",$RequestObj->Parameters->Ref->FkTypName);
+	oci_bind_by_name($stid,":x_name",$RequestObj->Parameters->Ref->Name);
+	oci_bind_by_name($stid,":x_location",$RequestObj->Parameters->Ref->Location);
+
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'MOVE_JSN';
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		echo ']';
+		return;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
+	break;
+
+case 'CreateJsn':
+	echo '[';
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.insert_jsn (
+		:p_cube_pos_action,
+		:p_fk_bot_name,
+		:p_fk_typ_name,
+		:p_fk_jsn_name,
+		:p_fk_jsn_location,
+		:p_cube_tsg_type,
+		:p_name,
+		:p_location,
+		:x_fk_typ_name,
+		:x_name,
+		:x_location);
+	END;");
+	oci_bind_by_name($stid,":p_cube_pos_action",$RequestObj->Parameters->Option->CubePosAction);
+	oci_bind_by_name($stid,":p_fk_bot_name",$RequestObj->Parameters->Type->FkBotName);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_fk_jsn_name",$RequestObj->Parameters->Type->FkJsnName);
+	oci_bind_by_name($stid,":p_fk_jsn_location",$RequestObj->Parameters->Type->FkJsnLocation);
+	oci_bind_by_name($stid,":p_cube_tsg_type",$RequestObj->Parameters->Type->CubeTsgType);
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
+	oci_bind_by_name($stid,":p_location",$RequestObj->Parameters->Type->Location);
+	oci_bind_by_name($stid,":x_fk_typ_name",$RequestObj->Parameters->Ref->FkTypName);
+	oci_bind_by_name($stid,":x_name",$RequestObj->Parameters->Ref->Name);
+	oci_bind_by_name($stid,":x_location",$RequestObj->Parameters->Ref->Location);
+
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'CREATE_JSN';
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		echo ']';
+		return;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
+	break;
+
+case 'UpdateJsn':
+	echo '[';
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.update_jsn (
+		:p_fk_bot_name,
+		:p_fk_typ_name,
+		:p_fk_jsn_name,
+		:p_fk_jsn_location,
+		:p_cube_tsg_type,
+		:p_name,
+		:p_location);
+	END;");
+	oci_bind_by_name($stid,":p_fk_bot_name",$RequestObj->Parameters->Type->FkBotName);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_fk_jsn_name",$RequestObj->Parameters->Type->FkJsnName);
+	oci_bind_by_name($stid,":p_fk_jsn_location",$RequestObj->Parameters->Type->FkJsnLocation);
+	oci_bind_by_name($stid,":p_cube_tsg_type",$RequestObj->Parameters->Type->CubeTsgType);
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
+	oci_bind_by_name($stid,":p_location",$RequestObj->Parameters->Type->Location);
+
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'UPDATE_JSN';
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		echo ']';
+		return;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
+	break;
+
+case 'DeleteJsn':
+	echo '[';
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.delete_jsn (
+		:p_fk_typ_name,
+		:p_name,
+		:p_location);
+	END;");
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
+	oci_bind_by_name($stid,":p_location",$RequestObj->Parameters->Type->Location);
+
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'DELETE_JSN';
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		echo ']';
+		return;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
+	break;
+
+case 'GetJoa':
+	echo '[';
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.get_joa (
+		:p_cube_row,
+		:p_fk_typ_name,
+		:p_fk_jsn_name,
+		:p_fk_jsn_location,
+		:p_xf_atb_typ_name,
+		:p_xk_atb_name);
+	END;");
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_fk_jsn_name",$RequestObj->Parameters->Type->FkJsnName);
+	oci_bind_by_name($stid,":p_fk_jsn_location",$RequestObj->Parameters->Type->FkJsnLocation);
+	oci_bind_by_name($stid,":p_xf_atb_typ_name",$RequestObj->Parameters->Type->XfAtbTypName);
+	oci_bind_by_name($stid,":p_xk_atb_name",$RequestObj->Parameters->Type->XkAtbName);
+
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'SELECT_JOA';
+	$r = perform_db_request();
+	if (!$r) { 
+		echo ']';
+		return;
+	}
+	$ResponseObj->Rows = array();
+	if ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Data = new \stdClass();
+		$RowObj->Data->FkBotName = $row["FK_BOT_NAME"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
+	break;
+
+case 'CreateJoa':
+	echo '[';
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.insert_joa (
+		:p_fk_bot_name,
+		:p_fk_typ_name,
+		:p_fk_jsn_name,
+		:p_fk_jsn_location,
+		:p_xf_atb_typ_name,
+		:p_xk_atb_name);
+	END;");
+	oci_bind_by_name($stid,":p_fk_bot_name",$RequestObj->Parameters->Type->FkBotName);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_fk_jsn_name",$RequestObj->Parameters->Type->FkJsnName);
+	oci_bind_by_name($stid,":p_fk_jsn_location",$RequestObj->Parameters->Type->FkJsnLocation);
+	oci_bind_by_name($stid,":p_xf_atb_typ_name",$RequestObj->Parameters->Type->XfAtbTypName);
+	oci_bind_by_name($stid,":p_xk_atb_name",$RequestObj->Parameters->Type->XkAtbName);
+
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'CREATE_JOA';
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		echo ']';
+		return;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
+	break;
+
+case 'UpdateJoa':
+	echo '[';
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.update_joa (
+		:p_fk_bot_name,
+		:p_fk_typ_name,
+		:p_fk_jsn_name,
+		:p_fk_jsn_location,
+		:p_xf_atb_typ_name,
+		:p_xk_atb_name);
+	END;");
+	oci_bind_by_name($stid,":p_fk_bot_name",$RequestObj->Parameters->Type->FkBotName);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_fk_jsn_name",$RequestObj->Parameters->Type->FkJsnName);
+	oci_bind_by_name($stid,":p_fk_jsn_location",$RequestObj->Parameters->Type->FkJsnLocation);
+	oci_bind_by_name($stid,":p_xf_atb_typ_name",$RequestObj->Parameters->Type->XfAtbTypName);
+	oci_bind_by_name($stid,":p_xk_atb_name",$RequestObj->Parameters->Type->XkAtbName);
+
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'UPDATE_JOA';
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		echo ']';
+		return;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
+	break;
+
+case 'DeleteJoa':
+	echo '[';
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.delete_joa (
+		:p_fk_typ_name,
+		:p_fk_jsn_name,
+		:p_fk_jsn_location,
+		:p_xf_atb_typ_name,
+		:p_xk_atb_name);
+	END;");
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_fk_jsn_name",$RequestObj->Parameters->Type->FkJsnName);
+	oci_bind_by_name($stid,":p_fk_jsn_location",$RequestObj->Parameters->Type->FkJsnLocation);
+	oci_bind_by_name($stid,":p_xf_atb_typ_name",$RequestObj->Parameters->Type->XfAtbTypName);
+	oci_bind_by_name($stid,":p_xk_atb_name",$RequestObj->Parameters->Type->XkAtbName);
+
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'DELETE_JOA';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
