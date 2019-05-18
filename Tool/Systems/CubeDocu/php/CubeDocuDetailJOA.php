@@ -24,46 +24,42 @@ g_xmlhttp.onreadystatechange = function() {
 			}
 			for (i in l_json_array) {
 				switch (l_json_array[i].ResultName) {
-					case "SELECT_TYR":
+					case "SELECT_JOA":
 						var l_json_values = l_json_array[i].Rows[0].Data;
 						document.getElementById("InputFkBotName").value=l_json_values.FkBotName;
-						document.getElementById("InputCardinality").value=l_json_values.Cardinality;
 						break;
-					case "CREATE_TYR":
+					case "CREATE_JOA":
 						document.getElementById("InputFkBotName").readOnly=true;
 						document.getElementById("InputFkTypName").readOnly=true;
-						document.getElementById("InputXkTypName").readOnly=true;
+						document.getElementById("InputFkJsnName").readOnly=true;
+						document.getElementById("InputFkJsnLocation").readOnly=true;
+						document.getElementById("InputXfAtbTypName").readOnly=true;
+						document.getElementById("InputXkAtbName").readOnly=true;
 						document.getElementById("RefSelect001").disabled=true;
 						document.getElementById("ButtonCreate").disabled=true;
-						document.getElementById("ButtonUpdate").disabled=false;
 						document.getElementById("ButtonDelete").disabled=false;
 						var l_objNode = parent.document.getElementById(g_parent_node_id);
-						var l_json_node_id = {FkTypName:document.getElementById("InputFkTypName").value,XkTypName:document.getElementById("InputXkTypName").value};
-						g_node_id = '{"TYP_TYR":'+JSON.stringify(l_json_node_id)+'}';
+						var l_json_node_id = {FkTypName:document.getElementById("InputFkTypName").value,FkJsnName:document.getElementById("InputFkJsnName").value,FkJsnLocation:document.getElementById("InputFkJsnLocation").value,XfAtbTypName:document.getElementById("InputXfAtbTypName").value,XkAtbName:document.getElementById("InputXkAtbName").value};
+						g_node_id = '{"TYP_JOA":'+JSON.stringify(l_json_node_id)+'}';
 						if (l_objNode != null) {
 							if (l_objNode.firstChild._state == 'O') {
-								if (l_json_array[i].Rows.length == 0) {
-									var l_position = 'L';
-									l_objNodePos = null;
-								} else {
-									var l_position = 'B';
-									var l_objNodePos = parent.document.getElementById('{"TYP_TYR":'+JSON.stringify(l_json_array[i].Rows[0].Key)+'}');
-								}
+								var l_position = 'L';
+								l_objNodePos = null;
 								parent.AddTreeviewNode(
 									l_objNode,
-									'TYP_TYR',
+									'TYP_JOA',
 									l_json_node_id,
-									'icons/reuse.bmp', 
-									document.getElementById("InputXkTypName").value.toLowerCase(),
+									'icons/atb_ref.bmp', 
+									document.getElementById("InputXfAtbTypName").value.toLowerCase()+' '+document.getElementById("InputXkAtbName").value.toLowerCase(),
 									'N',
 									l_position,
 									l_objNodePos);
 							}
 						}
 						break;
-					case "UPDATE_TYR":
+					case "UPDATE_JOA":
 						break;
-					case "DELETE_TYR":
+					case "DELETE_JOA":
 						document.getElementById("ButtonCreate").disabled=false;
 						document.getElementById("ButtonUpdate").disabled=true;
 						document.getElementById("ButtonDelete").disabled=true;
@@ -75,10 +71,10 @@ g_xmlhttp.onreadystatechange = function() {
 							l_objNode.parentNode.removeChild(l_objNode);
 						}
 						break;
-					case "LIST_TYP":
-						OpenListBox(l_json_array[i].Rows,'type','Type','Y');
+					case "LIST_ATB":
+						OpenListBox(l_json_array[i].Rows,'attrib','Attribute','Y');
 						break;
-					case "SELECT_FKEY_TYP":
+					case "SELECT_FKEY_JSN":
 						var l_json_values = l_json_array[i].Rows[0].Data;
 						document.getElementById("InputFkBotName").value=l_json_values.FkBotName;
 						break;
@@ -111,77 +107,94 @@ function InitBody() {
 	switch (l_json_argument.nodeType) {
 	case "D":
 		g_node_id = JSON.stringify(l_json_argument.objectId);
-		document.getElementById("InputFkTypName").value=l_json_objectKey.TYP_TYR.FkTypName;
-		document.getElementById("InputXkTypName").value=l_json_objectKey.TYP_TYR.XkTypName;
+		document.getElementById("InputFkTypName").value=l_json_objectKey.TYP_JOA.FkTypName;
+		document.getElementById("InputFkJsnName").value=l_json_objectKey.TYP_JOA.FkJsnName;
+		document.getElementById("InputFkJsnLocation").value=l_json_objectKey.TYP_JOA.FkJsnLocation;
+		document.getElementById("InputXfAtbTypName").value=l_json_objectKey.TYP_JOA.XfAtbTypName;
+		document.getElementById("InputXkAtbName").value=l_json_objectKey.TYP_JOA.XkAtbName;
 		document.getElementById("ButtonCreate").disabled=true;
 		performTrans( {
-			Service: "GetTyr",
+			Service: "GetJoa",
 			Parameters: {
-				Type: l_json_objectKey.TYP_TYR
+				Type: l_json_objectKey.TYP_JOA
 			}
 		} );
+		document.getElementById("ButtonUpdate").disabled=true;
 		document.getElementById("InputFkBotName").readOnly=true;
 		document.getElementById("InputFkTypName").readOnly=true;
-		document.getElementById("InputXkTypName").readOnly=true;
+		document.getElementById("InputFkJsnName").readOnly=true;
+		document.getElementById("InputFkJsnLocation").readOnly=true;
+		document.getElementById("InputXfAtbTypName").readOnly=true;
+		document.getElementById("InputXkAtbName").readOnly=true;
 		document.getElementById("RefSelect001").disabled=true;
 		break;
 	case "N":
 		g_parent_node_id = JSON.stringify(l_json_argument.objectId);
-		document.getElementById("InputFkTypName").value=l_json_objectKey.TYP_TYP.Name;
+		document.getElementById("InputFkTypName").value=l_json_objectKey.TYP_JSN.FkTypName;
+		document.getElementById("InputFkJsnName").value=l_json_objectKey.TYP_JSN.Name;
+		document.getElementById("InputFkJsnLocation").value=l_json_objectKey.TYP_JSN.Location;
 		document.getElementById("ButtonUpdate").disabled=true;
 		document.getElementById("ButtonDelete").disabled=true;
 		performTrans( {
-			Service: "GetTypFkey",
+			Service: "GetJsnFkey",
 			Parameters: {
-				Type: l_json_objectKey.TYP_TYP
+				Type: l_json_objectKey.TYP_JSN
 			}
 		} );
 		document.getElementById("InputFkBotName").readOnly=true;
 		document.getElementById("InputFkTypName").readOnly=true;
+		document.getElementById("InputFkJsnName").readOnly=true;
+		document.getElementById("InputFkJsnLocation").readOnly=true;
 		break;
 	default:
 		alert ('Error InitBody: '+l_argument[1]);
 	}
-	document.getElementById("InputCardinality").value='N';
 }
 
-function CreateTyr() {
+function CreateJoa() {
 	var Type = {
 		FkBotName: document.getElementById("InputFkBotName").value,
 		FkTypName: document.getElementById("InputFkTypName").value,
-		Cardinality: document.getElementById("InputCardinality").value,
-		XkTypName: document.getElementById("InputXkTypName").value
+		FkJsnName: document.getElementById("InputFkJsnName").value,
+		FkJsnLocation: document.getElementById("InputFkJsnLocation").value,
+		XfAtbTypName: document.getElementById("InputXfAtbTypName").value,
+		XkAtbName: document.getElementById("InputXkAtbName").value
 	};
 	performTrans( {
-		Service: "CreateTyr",
+		Service: "CreateJoa",
 		Parameters: {
 			Type
 		}
 	} );
 }
 
-function UpdateTyr() {
+function UpdateJoa() {
 	var Type = {
 		FkBotName: document.getElementById("InputFkBotName").value,
 		FkTypName: document.getElementById("InputFkTypName").value,
-		Cardinality: document.getElementById("InputCardinality").value,
-		XkTypName: document.getElementById("InputXkTypName").value
+		FkJsnName: document.getElementById("InputFkJsnName").value,
+		FkJsnLocation: document.getElementById("InputFkJsnLocation").value,
+		XfAtbTypName: document.getElementById("InputXfAtbTypName").value,
+		XkAtbName: document.getElementById("InputXkAtbName").value
 	};
 	performTrans( {
-		Service: "UpdateTyr",
+		Service: "UpdateJoa",
 		Parameters: {
 			Type
 		}
 	} );
 }
 
-function DeleteTyr() {
+function DeleteJoa() {
 	var Type = {
 		FkTypName: document.getElementById("InputFkTypName").value,
-		XkTypName: document.getElementById("InputXkTypName").value
+		FkJsnName: document.getElementById("InputFkJsnName").value,
+		FkJsnLocation: document.getElementById("InputFkJsnLocation").value,
+		XfAtbTypName: document.getElementById("InputXfAtbTypName").value,
+		XkAtbName: document.getElementById("InputXkAtbName").value
 	};
 	performTrans( {
-		Service: "DeleteTyr",
+		Service: "DeleteJoa",
 		Parameters: {
 			Type
 		}
@@ -268,9 +281,14 @@ function UpdateForeignKey(p_obj) {
 	switch (document.body._ListBoxCode){
 	case "Ref001":
 		if (l_values == '') {
-			document.getElementById("InputXkTypName").value = '';
+			document.getElementById("InputXfAtbTypName").value = '';
 		} else {
-			document.getElementById("InputXkTypName").value = l_json_values.Name;
+			document.getElementById("InputXfAtbTypName").value = l_json_values.FkTypName;
+		}
+		if (l_values == '') {
+			document.getElementById("InputXkAtbName").value = '';
+		} else {
+			document.getElementById("InputXkAtbName").value = l_json_values.Name;
 		}
 		break;
 	default:
@@ -283,8 +301,17 @@ function StartSelect001(p_event) {
 	document.body._SelectLeft = p_event.clientX;
 	document.body._SelectTop = p_event.clientY;
 	document.body._ListBoxCode = 'Ref001';
+	var Parameters = {
+		Option: {
+			CubeScopeLevel:0
+		},
+		Type: {
+			FkTypName:document.getElementById("InputFkTypName").value
+		}
+	};
 	performTrans( {
-		Service: "GetTypListAll"
+		Service: "GetAtbForTypList",
+		Parameters
 	} );
 }
 
@@ -331,34 +358,30 @@ function drop(p_event) {
 -->
 </script>
 </head><body oncontextmenu="return false;" onload="InitBody()" ondrop="drop(event)" ondragover="allowDrop(event)">
-<div><img src="icons/reuse_large.bmp" /><span> TYPE_REUSE</span></div>
+<div><img src="icons/atb_ref_large.bmp" /><span> JSON_OBJECT_ATTRIBUTE</span></div>
 <hr/>
 <table>
 <tr><td>BusinessObjectType.Name</td><td><div style="max-width:30em;">
 <input id="InputFkBotName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
 <tr><td><u>Type.Name</u></td><td><div style="max-width:30em;">
 <input id="InputFkTypName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td>Cardinality</td><td><div>
-<select id="InputCardinality" type="text">
-	<option value=" " selected> </option>
-	<option value="1">1</option>
-	<option value="2">2</option>
-	<option value="3">3</option>
-	<option value="4">4</option>
-	<option value="5">5</option>
-	<option value="N">Many</option>
-</select></div></td></tr>
-<tr><td height=6></td></tr><tr><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/type.bmp"/> Type (Refer)</legend>
+<tr><td><u>JsonObject.Name</u></td><td><div style="max-width:32em;">
+<input id="InputFkJsnName" type="text" maxlength="32" style="width:100%;"></input></div></td></tr>
+<tr><td><u>JsonObject.Location</u></td><td><div style="max-width:9em;">
+<input id="InputFkJsnLocation" type="text" maxlength="9" style="width:100%;"></input></div></td></tr>
+<tr><td height=6></td></tr><tr><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/attrib.bmp"/> Attribute (Concerns)</legend>
 <table style="width:100%;">
 <tr><td><u>Type.Name</u></td><td style="width:100%;"><div style="max-width:30em;">
-<input id="InputXkTypName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" readonly></input></div></td>
+<input id="InputXfAtbTypName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" readonly></input></div></td>
 <td><button id="RefSelect001" type="button" onclick="StartSelect001(event)">Select</button></td></tr>
+<tr><td><u>Attribute.Name</u></td><td style="width:100%;"><div style="max-width:30em;">
+<input id="InputXkAtbName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" readonly></input></div></td></tr>
 </table></fieldset></td></tr>
 <tr><td><br></td><td style="width:100%;"></td></tr>
 <tr><td/><td>
-<button id="ButtonCreate" type="button" onclick="CreateTyr()">Create</button>&nbsp;&nbsp;&nbsp;
-<button id="ButtonUpdate" type="button" onclick="UpdateTyr()">Update</button>&nbsp;&nbsp;&nbsp;
-<button id="ButtonDelete" type="button" onclick="DeleteTyr()">Delete</button></td></tr>
+<button id="ButtonCreate" type="button" onclick="CreateJoa()">Create</button>&nbsp;&nbsp;&nbsp;
+<button id="ButtonUpdate" type="button" onclick="UpdateJoa()">Update</button>&nbsp;&nbsp;&nbsp;
+<button id="ButtonDelete" type="button" onclick="DeleteJoa()">Delete</button></td></tr>
 </table>
 <input id="InputCubeId" type="hidden"></input>
 </body>

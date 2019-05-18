@@ -3,7 +3,7 @@
 		-	Json Object modelleren
 			-	Primary key van ander SPECIALISATION_TYPE wordt niet teruggegeven naar tree, omdat in detail pagina veld niet is gevuld.
 				-	Bij create en update vanuit detail pagina het nieuwe record teruggeven. (dat is sowieso nodig voor de derivations).
-					-	Gebruik van JSON ipv <|> structuur. 
+					OK	Gebruik van JSON ipv <|> structuur. 
 -	Hoe hergebruik van object modelleren?
 	-	BO type REUSABLE_TYPE toevoegen.
 		OK	BO INT_EXT vervangen door TYPE

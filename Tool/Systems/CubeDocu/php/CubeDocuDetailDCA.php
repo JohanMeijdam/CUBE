@@ -6,101 +6,127 @@ $_SESSION['views']=0;
 <link rel="stylesheet" href="base_css.php" />
 <script language='javascript' type='text/javascript'>
 <!--
-var g_option;
-g_xmlhttp = new XMLHttpRequest();
+var g_option = null;
+var g_json_option = null;
+var g_parent_node_id = null;
+var g_node_id = null;
+
+var g_xmlhttp = new XMLHttpRequest();
 g_xmlhttp.onreadystatechange = function() {
 	if(g_xmlhttp.readyState == 4) {
-		var l_argument = g_xmlhttp.responseText.split("<|||>");
-		switch (l_argument[0]) {
-		case "SELECT_DCA":
-			var l_values = l_argument[1].split("<|>");
-			document.getElementById("InputFkBotName").value=l_values[0];
-			document.getElementById("InputText").value=l_values[1];
-			break;
-		case "CREATE_DCA":
-			document.getElementById("InputFkBotName").readOnly=true;
-			document.getElementById("InputFkTypName").readOnly=true;
-			document.getElementById("InputFkAtbName").readOnly=true;
-			document.getElementById("ButtonCreate").disabled=true;
-			document.getElementById("ButtonUpdate").disabled=false;
-			document.getElementById("ButtonDelete").disabled=false;
-			l_objNode = parent.TREE.document.getElementById(document._nodeId);
-			document._nodeId = 'TYP_DCA<||>'+document.getElementById("InputFkTypName").value+'<|>'+document.getElementById("InputFkAtbName").value;
-			if (l_objNode != null) {
-				if (l_objNode.firstChild._state == 'O') {
-					var l_position = 'L';
-					l_objNodePos = null;
-					parent.TREE.AddTreeviewNode(
-						l_objNode,
-						'TYP_DCA',
-						document._nodeId,
-						'icons/desc.bmp', 
-						' ',
-						'N',
-						l_position,
-						l_objNodePos);
+		if(g_xmlhttp.status == 200) {
+			var g_responseText = g_xmlhttp.responseText;
+			try {
+				var l_json_array = JSON.parse(g_responseText);
+			}
+			catch (err) {
+				alert ('JSON parse error:\n'+g_responseText);
+			}
+			for (i in l_json_array) {
+				switch (l_json_array[i].ResultName) {
+					case "SELECT_DCA":
+						var l_json_values = l_json_array[i].Rows[0].Data;
+						document.getElementById("InputFkBotName").value=l_json_values.FkBotName;
+						document.getElementById("InputText").value=l_json_values.Text;
+						break;
+					case "CREATE_DCA":
+						document.getElementById("InputFkBotName").readOnly=true;
+						document.getElementById("InputFkTypName").readOnly=true;
+						document.getElementById("InputFkAtbName").readOnly=true;
+						document.getElementById("ButtonCreate").disabled=true;
+						document.getElementById("ButtonUpdate").disabled=false;
+						document.getElementById("ButtonDelete").disabled=false;
+						var l_objNode = parent.document.getElementById(g_parent_node_id);
+						var l_json_node_id = {FkTypName:document.getElementById("InputFkTypName").value,FkAtbName:document.getElementById("InputFkAtbName").value};
+						g_node_id = '{"TYP_DCA":'+JSON.stringify(l_json_node_id)+'}';
+						if (l_objNode != null) {
+							if (l_objNode.firstChild._state == 'O') {
+								var l_position = 'L';
+								l_objNodePos = null;
+								parent.AddTreeviewNode(
+									l_objNode,
+									'TYP_DCA',
+									l_json_node_id,
+									'icons/desc.bmp', 
+									' ',
+									'N',
+									l_position,
+									l_objNodePos);
+							}
+						}
+						break;
+					case "UPDATE_DCA":
+						break;
+					case "DELETE_DCA":
+						document.getElementById("ButtonCreate").disabled=false;
+						document.getElementById("ButtonUpdate").disabled=true;
+						document.getElementById("ButtonDelete").disabled=true;
+						var l_objNode = parent.document.getElementById(g_node_id);
+						if (g_parent_node_id == null) {
+							g_parent_node_id = l_objNode.parentNode.parentNode.id;
+						} 
+						if (l_objNode != null) {
+							l_objNode.parentNode.removeChild(l_objNode);
+						}
+						break;
+					case "SELECT_FKEY_ATB":
+						var l_json_values = l_json_array[i].Rows[0].Data;
+						document.getElementById("InputFkBotName").value=l_json_values.FkBotName;
+						break;
+					case "ERROR":
+						alert ('Server error:\n'+l_json_array[i].ErrorText);
+						break;
+					default:
+						alert ('Unknown reply:\n'+g_responseText);
 				}
 			}
-			break;
-		case "UPDATE_DCA":
-			break;
-		case "DELETE_DCA":
-			document.getElementById("ButtonUpdate").disabled=true;
-			document.getElementById("ButtonDelete").disabled=true;
-			l_objNode = parent.TREE.document.getElementById(document._nodeId);
-			if (l_objNode != null) {
-				l_objNode = l_objNode;
-				l_objNode.parentNode.removeChild(l_objNode);
-			}
-			break;
-		case "SELECT_FKEY_ATB":
-			var l_values = l_argument[1].split("<|>");
-			document.getElementById("InputFkBotName").value=l_values[0];
-			break;
-		case "ERROR":
-			alert ('Error: '+l_argument[1]);
-			break;
-		case "SELECT_CUBE_DSC":
-			document.getElementById("CubeDesc").value = l_argument[1];
-			break;
-		default:
-			alert (g_xmlhttp.responseText);	
-		}			
+		} else {
+			alert ('Request error:\n'+g_xmlhttp.statusText);
+		}
+		
 	}
 }
 
-function performTrans(p_message) {
+function performTrans(p_json_parm) {
+	var l_requestText = JSON.stringify(p_json_parm);
 	g_xmlhttp.open('POST','CubeDocuServer.php',true);
-	g_xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-	g_xmlhttp.send(p_message);
+	g_xmlhttp.send(l_requestText);
 }
 
 function InitBody() {
-	var l_argument = decodeURIComponent(document.location.href).split("<|||>");
+	var l_json_argument = JSON.parse(decodeURIComponent(location.href.split("?")[1]));
 	document.body._FlagDragging = 0;
 	document.body._DraggingId = ' ';
 	document.body._ListBoxCode="Ref000";
-	document._nodeId = l_argument[2];
-	document._argument = document._nodeId.split("<||>")[1];
-	if (document._argument != null) {
-		var values = document._argument.split("<|>");
-	}
-	switch (l_argument[1]) {
+	var l_json_objectKey = l_json_argument.objectId;
+	switch (l_json_argument.nodeType) {
 	case "D":
-		document.getElementById("InputFkTypName").value=values[0];
-		document.getElementById("InputFkAtbName").value=values[1];
+		g_node_id = JSON.stringify(l_json_argument.objectId);
+		document.getElementById("InputFkTypName").value=l_json_objectKey.TYP_DCA.FkTypName;
+		document.getElementById("InputFkAtbName").value=l_json_objectKey.TYP_DCA.FkAtbName;
 		document.getElementById("ButtonCreate").disabled=true;
-		performTrans('GetDca'+'<|||>'+document._argument);
+		performTrans( {
+			Service: "GetDca",
+			Parameters: {
+				Type: l_json_objectKey.TYP_DCA
+			}
+		} );
 		document.getElementById("InputFkBotName").readOnly=true;
 		document.getElementById("InputFkTypName").readOnly=true;
 		document.getElementById("InputFkAtbName").readOnly=true;
 		break;
 	case "N":
-		document.getElementById("InputFkTypName").value=values[0];
-		document.getElementById("InputFkAtbName").value=values[1];
+		g_parent_node_id = JSON.stringify(l_json_argument.objectId);
+		document.getElementById("InputFkTypName").value=l_json_objectKey.TYP_ATB.FkTypName;
+		document.getElementById("InputFkAtbName").value=l_json_objectKey.TYP_ATB.Name;
 		document.getElementById("ButtonUpdate").disabled=true;
 		document.getElementById("ButtonDelete").disabled=true;
-		performTrans('GetAtbFkey'+'<|||>'+document._argument);
+		performTrans( {
+			Service: "GetAtbFkey",
+			Parameters: {
+				Type: l_json_objectKey.TYP_ATB
+			}
+		} );
 		document.getElementById("InputFkBotName").readOnly=true;
 		document.getElementById("InputFkTypName").readOnly=true;
 		document.getElementById("InputFkAtbName").readOnly=true;
@@ -111,90 +137,48 @@ function InitBody() {
 }
 
 function CreateDca() {
-	var l_parameters = 
-		document.getElementById("InputFkBotName").value+'<|>'+
-		document.getElementById("InputFkTypName").value+'<|>'+
-		document.getElementById("InputFkAtbName").value+'<|>'+
-		document.getElementById("InputText").value;
-	performTrans('CreateDca<|||>'+l_parameters);
+	var Type = {
+		FkBotName: document.getElementById("InputFkBotName").value,
+		FkTypName: document.getElementById("InputFkTypName").value,
+		FkAtbName: document.getElementById("InputFkAtbName").value,
+		Text: document.getElementById("InputText").value
+	};
+	performTrans( {
+		Service: "CreateDca",
+		Parameters: {
+			Type
+		}
+	} );
 }
 
 function UpdateDca() {
-	var l_parameters = 
-		document.getElementById("InputFkBotName").value+'<|>'+
-		document.getElementById("InputFkTypName").value+'<|>'+
-		document.getElementById("InputFkAtbName").value+'<|>'+
-		document.getElementById("InputText").value;
-	performTrans('UpdateDca<|||>'+l_parameters);
+	var Type = {
+		FkBotName: document.getElementById("InputFkBotName").value,
+		FkTypName: document.getElementById("InputFkTypName").value,
+		FkAtbName: document.getElementById("InputFkAtbName").value,
+		Text: document.getElementById("InputText").value
+	};
+	performTrans( {
+		Service: "UpdateDca",
+		Parameters: {
+			Type
+		}
+	} );
 }
 
 function DeleteDca() {
-	var l_parameters = 
-		document.getElementById("InputFkTypName").value+'<|>'+
-		document.getElementById("InputFkAtbName").value;
-	performTrans('DeleteDca<|||>'+l_parameters);
+	var Type = {
+		FkTypName: document.getElementById("InputFkTypName").value,
+		FkAtbName: document.getElementById("InputFkAtbName").value
+	};
+	performTrans( {
+		Service: "DeleteDca",
+		Parameters: {
+			Type
+		}
+	} );
 }
 
-function OpenDescBox(p_icon,p_name,p_type,p_attribute_type,p_sequence) {
-
-	CloseDescBox();
-
-	var l_objDiv = document.createElement('DIV');
-	var l_objTable = document.createElement('TABLE');
-	var l_objImg = document.createElement('IMG');
-	var l_objSpan = document.createElement('SPAN');
-	var l_objImgExit = document.createElement('IMG');
-	var l_objTextarea = document.createElement('TEXTAREA');
-
-	document.body.appendChild(l_objDiv);
-
-	l_objDiv.appendChild(l_objTable);
-	l_objRow_0 = l_objTable.insertRow();
-	l_objCell_0_0 = l_objRow_0.insertCell();
-	l_objCell_0_1 = l_objRow_0.insertCell();
-	l_objRow_1 = l_objTable.insertRow();
-	l_objCell_1_0 = l_objRow_1.insertCell();
-	l_objCell_0_0.appendChild(l_objImg);
-	l_objCell_0_0.appendChild(l_objSpan);
-	l_objCell_0_1.appendChild(l_objImgExit);
-	l_objCell_1_0.appendChild(l_objTextarea);
-
-	l_objDiv.id = 'DescBox';
-	l_objDiv.style.position = 'absolute';
-	l_objDiv.style.left = event.clientX+30;
-	l_objDiv.style.top = event.clientY+10;
-	l_objDiv.style.border = 'thin solid #7F7F7F';
-	l_objDiv.style.boxShadow = '10px 10px 5px #888888';
-	l_objDiv.draggable = 'true';
-	l_objDiv.ondragstart = function(){StartMove(event)};
-	l_objDiv.ondragend = function(){EndMove(event)};
-	l_objImg.src = 'icons/' + p_icon + '.bmp';
-	l_objSpan.innerHTML = '&nbsp;&nbsp;' + p_name;
-	l_objCell_0_1.style.textAlign = 'right';
-	l_objImgExit.style.cursor = 'pointer';
-	l_objImgExit.src = 'icons/exit.bmp';
-	l_objImgExit.onclick = function(){CloseDescBox()};
-	l_objCell_1_0.colSpan = '2';
-	l_objTextarea.readOnly = true;
-	l_objTextarea.id = 'CubeDesc';
-	l_objTextarea.rows = '5';
-	l_objTextarea.cols = '80';
-	l_objTextarea.style.whiteSpace = 'normal';
-	l_objTextarea.maxLength = '3999';
-
-	GetDescription(p_type,p_attribute_type,p_sequence);
-}
-
-function CloseDescBox() {
-	l_obj = document.getElementById("DescBox");
-	if (l_obj) { l_obj.parentNode.removeChild(l_obj);}
-}
-
-function GetDescription(p_type,p_attribute_type,p_sequence) {
-	g_xmlhttp.open('POST','CubeSysServer.php',true);
-	g_xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-	g_xmlhttp.send('GetCubeDsc'+'<|||>'+p_type+'<|>'+p_attribute_type+'<|>'+p_sequence);
-}
 
 function ToUpperCase(p_obj) 
 {
@@ -205,7 +189,6 @@ function ToUpperCase(p_obj)
 function ReplaceSpaces(p_obj) 
 {
 	p_obj.value = p_obj.value.replace(/^\s+|\s+$/g, "").replace(/ /g ,"_");
-
 }
 
 function StartMove(p_event) {
