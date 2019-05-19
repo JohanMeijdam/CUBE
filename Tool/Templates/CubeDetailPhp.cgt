@@ -26,6 +26,7 @@ Change log:
 10-06-2018 - PARENT(TYPE:0=<<REFERENCE_TYPE>>) instead of EVAL variable.
 16-10-2018 - JSON instead of <|> struct
 27-02-2019 - Restructured
+19-05-2019 - name recursive foreign key fix
 [[TEXT,DETAIL_RECURSIVE_PARMS]]
 		Option: {[[IF,REFERENCE:4=PRA]]
 			CubeUpOrDown:"U",
@@ -195,7 +196,7 @@ function InitBody() {
 		break;[[IF,TYPE:3=Y]]  
 	case "R":
 		g_parent_node_id = JSON.stringify(l_json_argument.objectId);[[IF,TYPE:2=Y]][[LOOP,ATTRIBUTE:3=F[AND]CHILD(ATTRIBUTE_SOURCE:1=Y)[OR]3=R]]
-		document.getElementById("Input<<ATTRIBUTE:C>>").value=l_json_objectKey.TYP_<<TYPE1>>.[[LOOP,ATTRIBUTE_SOURCE]]<<ATTRIBUTE_SOURCE:C>>[[ENDLOOP,ATTRIBUTE_SOURCE]];[[ENDLOOP,ATTRIBUTE]][[ELSE]][[LOOP,ATTRIBUTE:3=R]]
+		document.getElementById("Input<<ATTRIBUTE:C>>").value=l_json_objectKey.TYP_<<TYPE1>>.[[IF:3=F]]<<ATTRIBUTE:C>>[[ELSE]][[LOOP,ATTRIBUTE_SOURCE]]<<ATTRIBUTE_SOURCE:C>>[[ENDLOOP,ATTRIBUTE_SOURCE]][[ENDIF]];[[ENDLOOP,ATTRIBUTE]][[ELSE]][[LOOP,ATTRIBUTE:3=R]]
 		document.getElementById("Input<<ATTRIBUTE:C>>").value=l_json_objectKey.TYP_<<TYPE1>>.[[LOOP,ATTRIBUTE_SOURCE]]<<ATTRIBUTE_SOURCE:C>>[[ENDLOOP,ATTRIBUTE_SOURCE]];[[ENDLOOP,ATTRIBUTE]][[ENDIF]]
 		document.getElementById("ButtonUpdate").disabled=true;
 		document.getElementById("ButtonDelete").disabled=true;[[IF:CHILD(ATTRIBUTE:1=N[AND]3=F)]]
@@ -475,13 +476,13 @@ function ResetField<<ATTRIBUTE:C>>(p_field_id) {
 </select>[[ENDLOOP,*ATTRIBUTE]][[REPEAT]][[ENDLOOP,TYPE_SPECIALISATION_GROUP]]</span></div>
 <hr/>
 <table[[IF:CHILD(TYPE_SPECIALISATION_GROUP)]] id="TableMain" style="display:none"[[ENDIF]]>[[LOOP,ATTRIBUTE:!3=X[AND]4=N[AND]!CHILD(ATTRIBUTE_TYPE_SPECIALISATION_GROUP)]]
-<tr[[IF:CHILD(RESTRICTION_TYPE_SPEC_ATB)]] id="RowAtb<<ATTRIBUTE:C>>"[[ENDIF]]><td[[IF:CHILD(INFORMATION_TYPE_ELEMENT:2=TEXT[AND]!8=LIN)[OR]CHILD(DESCRIPTION_ATTRIBUTE)]] style="[[IF:CHILD(INFORMATION_TYPE_ELEMENT:2=TEXT[AND]!8=LIN)]]padding-top:10px;[[ENDIF]][[IF:CHILD(DESCRIPTION_ATTRIBUTE)]]cursor:help;[[ENDIF]]"[[ENDIF]][[IF:CHILD(DESCRIPTION_ATTRIBUTE)]] oncontextmenu="OpenDescBox('<<TYPE7:U>>','<<TYPE:C>>.<<ATTRIBUTE:C>>','<<TYPE:U>>','<<ATTRIBUTE:U>>',-1)"[[ENDIF]]>[[IF:1=Y]]<u>[[ENDIF]][[IF:3=N]]<<ATTRIBUTE:C>>[[ELSE]]<<TEXT,DETAIL_ROOT_NAME>>[[ENDIF]][[IF:1=Y]]</u>[[ENDIF]]</td>[[LOOP,INFORMATION_TYPE_ELEMENT]][[IF:2=TEXT[AND]!8=LIN]]</tr><tr><td colspan="2">[[ELSE]]<td>[[ENDIF]][[IF,ATTRIBUTE:!3=F[AND]!3=R[AND]CHILD(INFORMATION_TYPE_ELEMENT:CHILD(PERMITTED_VALUE))]]<div>
+<tr[[IF:CHILD(RESTRICTION_TYPE_SPEC_ATB)]] id="RowAtb<<ATTRIBUTE:C>>"[[ENDIF]]><td[[IF:CHILD(INFORMATION_TYPE_ELEMENT:2=TEXT[AND]!8=LIN)[OR]CHILD(DESCRIPTION_ATTRIBUTE)]] style="[[IF:CHILD(INFORMATION_TYPE_ELEMENT:2=TEXT[AND]!8=LIN)]]padding-top:10px;[[ENDIF]][[IF:CHILD(DESCRIPTION_ATTRIBUTE)]]cursor:help;[[ENDIF]]"[[ENDIF]][[IF:CHILD(DESCRIPTION_ATTRIBUTE)]] oncontextmenu="parent.OpenDescBox('<<TYPE7:U>>','<<TYPE:C>>.<<ATTRIBUTE:C>>','<<TYPE:U>>','<<ATTRIBUTE:U>>',-1)"[[ENDIF]]>[[IF:1=Y]]<u>[[ENDIF]][[IF:3=N]]<<ATTRIBUTE:C>>[[ELSE]]<<TEXT,DETAIL_ROOT_NAME>>[[ENDIF]][[IF:1=Y]]</u>[[ENDIF]]</td>[[LOOP,INFORMATION_TYPE_ELEMENT]][[IF:2=TEXT[AND]!8=LIN]]</tr><tr><td colspan="2">[[ELSE]]<td>[[ENDIF]][[IF,ATTRIBUTE:!3=F[AND]!3=R[AND]CHILD(INFORMATION_TYPE_ELEMENT:CHILD(PERMITTED_VALUE))]]<div>
 <select id="Input<<ATTRIBUTE:C>>" type="text">
 	<option value=" " selected> </option>[[LOOP,PERMITTED_VALUE]]
 	<option value="<<PERMITTED_VALUE>>"><<PERMITTED_VALUE1>></option>[[ENDLOOP,PERMITTED_VALUE]]
 </select>[[ELSE]]<div[[IF:!2=TEXT[OR]8=LIN]]<<TEXT,DETAIL_STYLE_MAX-WIDTH>>[[ENDIF]]>
 <[[IF:2=TEXT[AND]!8=LIN]]textarea[[ELSE]]input[[ENDIF]] id="Input<<ATTRIBUTE:C>>" type="text"<<TEXT,DETAIL_MAXLENGTH>>[[IF:2=TEXT[AND]!8=LIN]] rows="[[IF:8=COD]]11[[ELSE]]5[[ENDIF]]"[[ENDIF]] style="[[IF:2=TEXT[AND]!8=LIN]][[IF:8=COD]]overflow:auto;white-space:pre;font-family:courier new;font-size:12px;[[ELSE]]white-space:normal;[[ENDIF]][[ENDIF]]width:100%;"<<TEXT,DETAIL_ONCHANGE>>[[IF,ATTRIBUTE:CHILD(DERIVATION)[OR]CHILD(DENORMALIZATION)[OR]CHILD(AGGREGATION)]] readonly[[ENDIF]]></[[IF:2=TEXT[AND]!8=LIN]]textarea[[ELSE]]input[[ENDIF]]>[[ENDIF]]</div></td>[[ENDLOOP,INFORMATION_TYPE_ELEMENT]]</tr>[[ENDLOOP,ATTRIBUTE]][[LOOP,REFERENCE]]
-<tr><td height=6></td></tr><tr[[IF:CHILD(RESTRICTION_TYPE_SPEC_REF)]] id="RowRef[[LOOP,REFERENCE_TYPE]]<<REFERENCE_TYPE:C>>[[ENDLOOP,REFERENCE_TYPE]]<<REFERENCE3>>"[[ENDIF]]><td colspan=2><fieldset><legend[[IF:CHILD(DESCRIPTION_REFERENCE)]] style="cursor:help" oncontextmenu="OpenDescBox('<<TYPE7:U>>','<<TYPE:C>>.[[LOOP,REFERENCE_TYPE]]<<REFERENCE_TYPE:C>> (<<REFERENCE:C>>)','<<TYPE:U>>','<<REFERENCE_TYPE>>[[ENDLOOP,REFERENCE_TYPE]]',<<REFERENCE3>>)"[[ENDIF]]>[[LOOP,REFERENCE_TYPE]]<img style="border:1 solid transparent;" src="icons/<<REFERENCE_TYPE7:L>>.bmp"/> <<REFERENCE_TYPE:C>>[[ENDLOOP,REFERENCE_TYPE]] (<<REFERENCE:C>>)</legend>
+<tr><td height=6></td></tr><tr[[IF:CHILD(RESTRICTION_TYPE_SPEC_REF)]] id="RowRef[[LOOP,REFERENCE_TYPE]]<<REFERENCE_TYPE:C>>[[ENDLOOP,REFERENCE_TYPE]]<<REFERENCE3>>"[[ENDIF]]><td colspan=2><fieldset><legend[[IF:CHILD(DESCRIPTION_REFERENCE)]] style="cursor:help" oncontextmenu="parent.OpenDescBox('<<TYPE7:U>>','<<TYPE:C>>.[[LOOP,REFERENCE_TYPE]]<<REFERENCE_TYPE:C>> (<<REFERENCE:C>>)','<<TYPE:U>>','<<REFERENCE_TYPE>>[[ENDLOOP,REFERENCE_TYPE]]',<<REFERENCE3>>)"[[ENDIF]]>[[LOOP,REFERENCE_TYPE]]<img style="border:1 solid transparent;" src="icons/<<REFERENCE_TYPE7:L>>.bmp"/> <<REFERENCE_TYPE:C>>[[ENDLOOP,REFERENCE_TYPE]] (<<REFERENCE:C>>)</legend>
 <table style="width:100%;">[[LOOP,FKEY]]
 <tr><td>[[IF,REFERENCE:1=Y]]<u>[[ENDIF]]<<TEXT,DETAIL_ROOT_NAME>>[[IF,REFERENCE:1=Y]]</u>[[ENDIF]]</td><td style="width:100%;">[[LOOP,INFORMATION_TYPE_ELEMENT]]<div<<TEXT,DETAIL_STYLE_MAX-WIDTH>>>
 <input id="Input<<FKEY:C>>" type="text"<<TEXT,DETAIL_MAXLENGTH>> style="width:100%;"<<TEXT,DETAIL_ONCHANGE>> readonly></input></div>[[ENDLOOP,INFORMATION_TYPE_ELEMENT]]</td>[[IF:FIRST]]

@@ -251,7 +251,7 @@ function ProcessTypeSpecialisation() {
 <input id="InputName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
 <tr id="RowAtbDirectory"><td>Directory</td><td><div style="max-width:80em;">
 <input id="InputDirectory" type="text" maxlength="80" style="width:100%;" onchange="ReplaceSpaces(this);"></input></div></td></tr>
-<tr id="RowAtbApiUrl"><td style="cursor:help;" oncontextmenu="OpenDescBox('BOTYPE','BusinessObjectType.ApiUrl','BUSINESS_OBJECT_TYPE','API_URL',-1)">ApiUrl</td><td><div style="max-width:300em;">
+<tr id="RowAtbApiUrl"><td style="cursor:help;" oncontextmenu="parent.OpenDescBox('BOTYPE','BusinessObjectType.ApiUrl','BUSINESS_OBJECT_TYPE','API_URL',-1)">ApiUrl</td><td><div style="max-width:300em;">
 <input id="InputApiUrl" type="text" maxlength="300" style="width:100%;" onchange="ReplaceSpaces(this);"></input></div></td></tr>
 <tr><td><br></td><td style="width:100%;"></td></tr>
 <tr><td/><td>

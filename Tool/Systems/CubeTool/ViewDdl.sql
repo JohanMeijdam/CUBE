@@ -604,7 +604,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			SELECT fk_bot_name
 			  INTO p_typ.fk_bot_name
 			FROM t_type
-			WHERE name = p_typ.fk_typ_name;
+			WHERE fk_bot_name = p_typ.fk_bot_name
+			  AND name = p_typ.fk_typ_name;
 		END IF;
 		get_denorm_typ_typ (p_typ);
 		INSERT INTO t_type (
@@ -1079,12 +1080,13 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 	PROCEDURE insert_jsn (p_jsn IN OUT NOCOPY v_json_object%ROWTYPE) IS
 	BEGIN
 		p_jsn.cube_id := 'JSN-' || TO_CHAR(jsn_seq.NEXTVAL,'FM000000000000');
-		IF p_jsn.fk_jsn_name IS NOT NULL AND p_jsn.fk_jsn_location IS NOT NULL  THEN
+		IF p_jsn.fk_jsn_name IS NOT NULL OR p_jsn.fk_jsn_location IS NOT NULL  THEN
 			-- Recursive
 			SELECT fk_bot_name
 			  INTO p_jsn.fk_bot_name
 			FROM t_json_object
-			WHERE name = p_jsn.fk_jsn_name
+			WHERE fk_typ_name = p_jsn.fk_typ_name
+			  AND name = p_jsn.fk_jsn_name
 			  AND location = p_jsn.fk_jsn_location;
 			ELSE
 				-- Parent
@@ -1346,7 +1348,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			SELECT fk_bot_name
 			  INTO p_tsg.fk_bot_name
 			FROM t_type_specialisation_group
-			WHERE code = p_tsg.fk_tsg_code;
+			WHERE fk_typ_name = p_tsg.fk_typ_name
+			  AND code = p_tsg.fk_tsg_code;
 			ELSE
 				-- Parent
 			SELECT fk_bot_name

@@ -390,7 +390,7 @@ function drop(p_event) {
 <input id="InputFkRefSequence" type="text" maxlength="2" style="width:100%;"></input></div></td></tr>
 <tr><td><u>Reference.Name</u></td><td><div style="max-width:30em;">
 <input id="InputFkRefTypName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td style="cursor:help;" oncontextmenu="OpenDescBox('RESTRICT','RestrictionTypeSpecRef.IncludeOrExclude','RESTRICTION_TYPE_SPEC_REF','INCLUDE_OR_EXCLUDE',-1)">IncludeOrExclude</td><td><div>
+<tr><td style="cursor:help;" oncontextmenu="parent.OpenDescBox('RESTRICT','RestrictionTypeSpecRef.IncludeOrExclude','RESTRICTION_TYPE_SPEC_REF','INCLUDE_OR_EXCLUDE',-1)">IncludeOrExclude</td><td><div>
 <select id="InputIncludeOrExclude" type="text">
 	<option value=" " selected> </option>
 	<option value="IN">Include</option>

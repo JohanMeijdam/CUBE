@@ -329,7 +329,7 @@ function drop(p_event) {
 </select></div></td></tr>
 <tr><td>Icon</td><td><div style="max-width:8em;">
 <input id="InputIcon" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td style="cursor:help;" oncontextmenu="OpenDescBox('TYPE','Type.Transferable','TYPE','TRANSFERABLE',-1)">Transferable</td><td><div>
+<tr><td style="cursor:help;" oncontextmenu="parent.OpenDescBox('TYPE','Type.Transferable','TYPE','TRANSFERABLE',-1)">Transferable</td><td><div>
 <select id="InputTransferable" type="text">
 	<option value=" " selected> </option>
 	<option value="Y">Yes</option>

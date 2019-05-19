@@ -149,7 +149,7 @@ function InitBody() {
 		break;  
 	case "R":
 		g_parent_node_id = JSON.stringify(l_json_argument.objectId);
-		document.getElementById("InputFkTypName").value=l_json_objectKey.TYP_JSN.Name;
+		document.getElementById("InputFkTypName").value=l_json_objectKey.TYP_JSN.FkTypName;
 		document.getElementById("InputFkJsnName").value=l_json_objectKey.TYP_JSN.Name;
 		document.getElementById("InputFkJsnLocation").value=l_json_objectKey.TYP_JSN.Location;
 		document.getElementById("ButtonUpdate").disabled=true;
@@ -316,9 +316,9 @@ function ProcessTypeSpecialisation() {
 <input id="InputFkJsnName" type="text" maxlength="32" style="width:100%;"></input></div></td></tr>
 <tr><td>JsonObject.Location</td><td><div style="max-width:9em;">
 <input id="InputFkJsnLocation" type="text" maxlength="9" style="width:100%;"></input></div></td></tr>
-<tr id="RowAtbName"><td style="cursor:help;" oncontextmenu="OpenDescBox('BRACES','JsonObject.Name','JSON_OBJECT','NAME',-1)"><u>Name</u></td><td><div style="max-width:32em;">
+<tr id="RowAtbName"><td style="cursor:help;" oncontextmenu="parent.OpenDescBox('BRACES','JsonObject.Name','JSON_OBJECT','NAME',-1)"><u>Name</u></td><td><div style="max-width:32em;">
 <input id="InputName" type="text" maxlength="32" style="width:100%;"></input></div></td></tr>
-<tr id="RowAtbLocation"><td style="cursor:help;" oncontextmenu="OpenDescBox('BRACES','JsonObject.Location','JSON_OBJECT','LOCATION',-1)"><u>Location</u></td><td><div style="max-width:9em;">
+<tr id="RowAtbLocation"><td style="cursor:help;" oncontextmenu="parent.OpenDescBox('BRACES','JsonObject.Location','JSON_OBJECT','LOCATION',-1)"><u>Location</u></td><td><div style="max-width:9em;">
 <input id="InputLocation" type="text" maxlength="9" style="width:100%;"></input></div></td></tr>
 <tr><td><br></td><td style="width:100%;"></td></tr>
 <tr><td/><td>
