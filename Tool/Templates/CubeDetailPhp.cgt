@@ -129,7 +129,7 @@ g_xmlhttp.onreadystatechange = function() {
 						}
 						break;[[LOOP,REFERENCE]][[LOOP,REFERENCE_TYPE]]
 					case "LIST_<<REFERENCE_TYPE1:U>>":
-						OpenListBox(l_json_array[i].Rows,'<<REFERENCE_TYPE7:L>>','<<REFERENCE_TYPE:C>>',[[IF,REFERENCE:1='Y']]'N'[[ELSE]]'Y'[[ENDIF]]);
+						OpenListBox(l_json_array[i].Rows,'<<REFERENCE_TYPE7:L>>','<<REFERENCE_TYPE:C>>',[[IF,REFERENCE:1=Y]]'N'[[ELSE]]'Y'[[ENDIF]]);
 						break;[[ENDLOOP,REFERENCE_TYPE]][[ENDLOOP,REFERENCE]][[IF:CHILD(ATTRIBUTE:3=F[AND]CHILD(ATTRIBUTE_SOURCE:1=N))]]
 					case "SELECT_FKEY_<<TYPE(N-1)1:U>>":
 						var l_json_values = l_json_array[i].Rows[0].Data;[[LOOP,ATTRIBUTE:3=F[AND]CHILD(ATTRIBUTE_SOURCE:1=N)]]
@@ -318,7 +318,7 @@ function OpenListBox(p_json_rows,p_icon,p_header,p_optional) {
 		l_objCell_1_0.colSpan = '2';
 
 
-		l_objSelect.size = Math.min(p_json_rows.length-1,16)
+		l_objSelect.size = Math.min(p_json_rows.length,16)
 		l_objSelect.onclick = function(){UpdateForeignKey(this)};
 
 		if (p_optional == 'Y') {
@@ -394,7 +394,7 @@ function StartSelect<<REFERENCE:S>>(p_event) {
 		Option: {
 			CubeScopeLevel:<<REFERENCE6>>
 		},[[ENDIF]]
-		Type: {[[FOR,REFERENCE:N>N]][[LOOP,REFERENCE_SCOPE_ATTRIBUTE]]
+		Ref: {[[FOR,REFERENCE:N>N]][[LOOP,REFERENCE_SCOPE_ATTRIBUTE]]
 			<<REFERENCE_SCOPE_ATTRIBUTE:C>>:document.getElementById("Input<<REFERENCE_SCOPE_ATTRIBUTE:C>>").value[[IF:!LAST]],[[ENDIF]][[ENDLOOP,REFERENCE_SCOPE_ATTRIBUTE]][[ENDFOR]]
 		}
 	};[[ENDIF]]

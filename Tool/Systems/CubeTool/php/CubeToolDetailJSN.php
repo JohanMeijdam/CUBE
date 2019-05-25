@@ -54,7 +54,7 @@ g_xmlhttp.onreadystatechange = function() {
 									'TYP_JSN',
 									l_json_node_id,
 									'icons/braces.bmp', 
-									document.getElementById("InputName").value.toLowerCase()+' '+document.getElementById("InputLocation").value.toLowerCase(),
+									document.getElementById("InputCubeTsgType").value.toLowerCase()+' '+document.getElementById("InputName").value.toLowerCase()+' '+document.getElementById("InputLocation").value.toLowerCase(),
 									'N',
 									l_position,
 									l_objNodePos);
@@ -62,6 +62,10 @@ g_xmlhttp.onreadystatechange = function() {
 						}
 						break;
 					case "UPDATE_JSN":
+						var l_objNode = parent.document.getElementById(g_node_id);
+						if (l_objNode != null) {
+							l_objNode.children[1].lastChild.nodeValue = ' '+document.getElementById("InputCubeTsgType").value.toLowerCase()+' '+document.getElementById("InputName").value.toLowerCase()+' '+document.getElementById("InputLocation").value.toLowerCase();
+					}
 						break;
 					case "DELETE_JSN":
 						document.getElementById("ButtonCreate").disabled=false;

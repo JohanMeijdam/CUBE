@@ -371,9 +371,9 @@ function drop(p_event) {
 <input id="InputFkBotName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
 <tr><td><u>Type.Name</u></td><td><div style="max-width:30em;">
 <input id="InputFkTypName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td style="cursor:help;" oncontextmenu="OpenDescBox('ATTRIB','Attribute.Name','ATTRIBUTE','NAME',-1)"><u>Name</u></td><td><div style="max-width:30em;">
+<tr><td style="cursor:help;" oncontextmenu="parent.OpenDescBox('ATTRIB','Attribute.Name','ATTRIBUTE','NAME',-1)"><u>Name</u></td><td><div style="max-width:30em;">
 <input id="InputName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td style="cursor:help;" oncontextmenu="OpenDescBox('ATTRIB','Attribute.PrimaryKey','ATTRIBUTE','PRIMARY_KEY',-1)">PrimaryKey</td><td><div>
+<tr><td style="cursor:help;" oncontextmenu="parent.OpenDescBox('ATTRIB','Attribute.PrimaryKey','ATTRIBUTE','PRIMARY_KEY',-1)">PrimaryKey</td><td><div>
 <select id="InputPrimaryKey" type="text">
 	<option value=" " selected> </option>
 	<option value="Y">Yes</option>
@@ -397,9 +397,9 @@ function drop(p_event) {
 	<option value="Y">Yes</option>
 	<option value="N">No</option>
 </select></div></td></tr>
-<tr><td style="cursor:help;" oncontextmenu="OpenDescBox('ATTRIB','Attribute.DefaultValue','ATTRIBUTE','DEFAULT_VALUE',-1)">DefaultValue</td><td><div style="max-width:40em;">
+<tr><td style="cursor:help;" oncontextmenu="parent.OpenDescBox('ATTRIB','Attribute.DefaultValue','ATTRIBUTE','DEFAULT_VALUE',-1)">DefaultValue</td><td><div style="max-width:40em;">
 <input id="InputDefaultValue" type="text" maxlength="40" style="width:100%;"></input></div></td></tr>
-<tr><td style="cursor:help;" oncontextmenu="OpenDescBox('ATTRIB','Attribute.Unchangeable','ATTRIBUTE','UNCHANGEABLE',-1)">Unchangeable</td><td><div>
+<tr><td style="cursor:help;" oncontextmenu="parent.OpenDescBox('ATTRIB','Attribute.Unchangeable','ATTRIBUTE','UNCHANGEABLE',-1)">Unchangeable</td><td><div>
 <select id="InputUnchangeable" type="text">
 	<option value=" " selected> </option>
 	<option value="Y">Yes</option>

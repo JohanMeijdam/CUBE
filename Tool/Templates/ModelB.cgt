@@ -18,14 +18,16 @@ Change log:
 11-03-2018 - ATTRIBUTE Unchangeable for foreign key's
 [[BODY]]! CubeModelB[[* 
 Adding Internal Foreign Keys
-Adding Technical Attributes    *]]
+Adding Technical Attributes
+Adding Restriction Attributes*]]
 !
 ! Derivation 1=Classe (R,F,X,A,L). Bij X de relatie. Bij A het onderliggende type/relatie . 
 ![[LOOP,META_MODEL]]
 +META_MODEL:[[VALUE,META_MODEL:0>N:|]];[[LOOP,META_TYPE]]
 	+META_TYPE:[[VALUE,META_TYPE:0>N:|]];[[LOOP,PROPERTY]]
 		=PROPERTY:[[VALUE,PROPERTY:0>N:|]];[[ENDLOOP,PROPERTY]][[LOOP,ASSOCIATION]]
-		=ASSOCIATION:[[VALUE,ASSOCIATION:0>N:|]];[[ENDLOOP,ASSOCIATION]][[REPEAT:TAB]]
+		=ASSOCIATION:[[VALUE,ASSOCIATION:0>N:|]];[[ENDLOOP,ASSOCIATION]][[IF:0=RESTRICTION_TYPE_SPEC_ATB[OR]0=RESTRICTION_TYPE_SPEC_REF]]
+		=ASSOCIATION:RESTRICTION_ATTRIBUTE|Reference|ATTRIBUTE|;[[ENDIF]][[REPEAT:TAB]]
 	-META_TYPE:;[[ENDLOOP,META_TYPE]]
 -META_MODEL:;[[ENDLOOP,META_MODEL]]
 +INFORMATION_TYPE[CUBE-ID-ITP]:CUBE_ID;

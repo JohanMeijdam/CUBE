@@ -13,7 +13,7 @@ echo Start > %logfile%
 ::goto Models
 ::goto Scripts
 ::goto Database
-goto Views
+::goto Views
 ::goto ModelImport
 ::goto ModelExport
 ::goto Packages
@@ -30,6 +30,7 @@ CubeGen.exe %sysdir%\CubeModelB.cgm Templates\BoModel.cgt %sysdir%\CubeBoModel.c
 CubeGen.exe %sysdir%\CubeBoModel.cgm Templates\DbModel.cgt %sysdir%\CubeDbModel.cgm %sysname% >> %logfile% 2>&1
 CubeGen.exe %sysdir%\CubeBoModel.cgm Templates\ServerSpecModel.cgt %sysdir%\CubeServerSpecModel.cgm %sysname% >> %logfile% 2>&1
 CubeGen.exe %sysdir%\CubeServerSpecModel.cgm Templates\ServerImplModel.cgt %sysdir%\CubeServerImplModel.cgm %sysname% >> %logfile% 2>&1
+::Goto End
 :Scripts
 echo Generate Scripts.
 CubeGen.exe %sysdir%\CubeBoModel.cgm Templates\ModelImport.cgt %sysdir%\ModelImport.pl %sysname% >> %logfile% 2>&1
@@ -46,7 +47,7 @@ sqlplus.exe %db_schema%/%db_password%@%db_name% @%sysdir%\AlterTableDdl.sql >> %
 echo Generate Database Views.
 CubeGen.exe %sysdir%\CubeBoModel.cgm Templates\View.cgt %sysdir%\ViewDdl.sql %sysname% >> %logfile% 2>&1
 sqlplus.exe %db_schema%/%db_password%@%db_name% @%sysdir%\ViewDdl.sql >> %logfile% 2>&1
-goto End
+::goto End
 :ModelImport 
 echo Import Model.
 ::::::perl Systems\CubeRoot\ModelImport.pl %sysdir%\ToolModel.cgm %sysdir%\ToolModelImport.sql >> %logfile% 2>&1

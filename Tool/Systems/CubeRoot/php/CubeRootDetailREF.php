@@ -404,7 +404,7 @@ function drop(p_event) {
 <input id="InputFkTypName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
 <tr><td>Name</td><td><div style="max-width:30em;">
 <input id="InputName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td style="cursor:help;" oncontextmenu="OpenDescBox('REF','Reference.PrimaryKey','REFERENCE','PRIMARY_KEY',-1)">PrimaryKey</td><td><div>
+<tr><td style="cursor:help;" oncontextmenu="parent.OpenDescBox('REF','Reference.PrimaryKey','REFERENCE','PRIMARY_KEY',-1)">PrimaryKey</td><td><div>
 <select id="InputPrimaryKey" type="text">
 	<option value=" " selected> </option>
 	<option value="Y">Yes</option>
@@ -419,7 +419,7 @@ function drop(p_event) {
 </select></div></td></tr>
 <tr><td><u>Sequence</u></td><td><div style="max-width:2em;">
 <input id="InputSequence" type="text" maxlength="2" style="width:100%;"></input></div></td></tr>
-<tr><td style="cursor:help;" oncontextmenu="OpenDescBox('REF','Reference.Scope','REFERENCE','SCOPE',-1)">Scope</td><td><div>
+<tr><td style="cursor:help;" oncontextmenu="parent.OpenDescBox('REF','Reference.Scope','REFERENCE','SCOPE',-1)">Scope</td><td><div>
 <select id="InputScope" type="text">
 	<option value=" " selected> </option>
 	<option value="ALL">All</option>
@@ -429,21 +429,21 @@ function drop(p_event) {
 	<option value="CHA">Children all</option>
 	<option value="CH1">Children first level</option>
 </select></div></td></tr>
-<tr><td style="cursor:help;" oncontextmenu="OpenDescBox('REF','Reference.Unchangeable','REFERENCE','UNCHANGEABLE',-1)">Unchangeable</td><td><div>
+<tr><td style="cursor:help;" oncontextmenu="parent.OpenDescBox('REF','Reference.Unchangeable','REFERENCE','UNCHANGEABLE',-1)">Unchangeable</td><td><div>
 <select id="InputUnchangeable" type="text">
 	<option value=" " selected> </option>
 	<option value="Y">Yes</option>
 	<option value="N">No</option>
 </select></div></td></tr>
-<tr><td style="cursor:help;" oncontextmenu="OpenDescBox('REF','Reference.WithinScopeLevel','REFERENCE','WITHIN_SCOPE_LEVEL',-1)">WithinScopeLevel</td><td><div style="max-width:2em;">
+<tr><td style="cursor:help;" oncontextmenu="parent.OpenDescBox('REF','Reference.WithinScopeLevel','REFERENCE','WITHIN_SCOPE_LEVEL',-1)">WithinScopeLevel</td><td><div style="max-width:2em;">
 <input id="InputWithinScopeLevel" type="text" maxlength="2" style="width:100%;" onchange="ToUpperCase(this);"></input></div></td></tr>
-<tr><td height=6></td></tr><tr><td colspan=2><fieldset><legend style="cursor:help" oncontextmenu="OpenDescBox('REF','Reference.Type (Refer)','REFERENCE','TYPE',0)"><img style="border:1 solid transparent;" src="icons/type.bmp"/> Type (Refer)</legend>
+<tr><td height=6></td></tr><tr><td colspan=2><fieldset><legend style="cursor:help" oncontextmenu="parent.OpenDescBox('REF','Reference.Type (Refer)','REFERENCE','TYPE',0)"><img style="border:1 solid transparent;" src="icons/type.bmp"/> Type (Refer)</legend>
 <table style="width:100%;">
 <tr><td><u>Type.Name</u></td><td style="width:100%;"><div style="max-width:30em;">
 <input id="InputXkTypName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" readonly></input></div></td>
 <td><button id="RefSelect001" type="button" onclick="StartSelect001(event)">Select</button></td></tr>
 </table></fieldset></td></tr>
-<tr><td height=6></td></tr><tr><td colspan=2><fieldset><legend style="cursor:help" oncontextmenu="OpenDescBox('REF','Reference.Type (WithinScopeOf)','REFERENCE','TYPE',1)"><img style="border:1 solid transparent;" src="icons/type.bmp"/> Type (WithinScopeOf)</legend>
+<tr><td height=6></td></tr><tr><td colspan=2><fieldset><legend style="cursor:help" oncontextmenu="parent.OpenDescBox('REF','Reference.Type (WithinScopeOf)','REFERENCE','TYPE',1)"><img style="border:1 solid transparent;" src="icons/type.bmp"/> Type (WithinScopeOf)</legend>
 <table style="width:100%;">
 <tr><td>Type.Name</td><td style="width:100%;"><div style="max-width:30em;">
 <input id="InputXkTypName1" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" readonly></input></div></td>

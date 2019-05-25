@@ -498,7 +498,7 @@ case 'GetDirBotItems':
 		$RowObj = new \stdClass();
 		$RowObj->Key = new \stdClass();
 		$RowObj->Key->Name = $row["NAME"];
-		$RowObj->Display = $row["NAME"];
+		$RowObj->Display = $row["NAME"].' '.$row["CUBE_TSG_TYPE"];
 		$ResponseObj->Rows[] = $RowObj;
 	}
 	$ResponseText = json_encode($ResponseObj);
@@ -523,7 +523,7 @@ case 'GetBotList':
 		$RowObj = new \stdClass();
 		$RowObj->Key = new \stdClass();
 		$RowObj->Key->Name = $row["NAME"];
-		$RowObj->Display = $row["NAME"];
+		$RowObj->Display = $row["NAME"].' '.$row["CUBE_TSG_TYPE"];
 		$ResponseObj->Rows[] = $RowObj;
 	}
 	$ResponseText = json_encode($ResponseObj);
@@ -926,7 +926,7 @@ case 'GetTypItems':
 		$RowObj->Key->FkTypName = $row["FK_TYP_NAME"];
 		$RowObj->Key->Name = $row["NAME"];
 		$RowObj->Key->Location = $row["LOCATION"];
-		$RowObj->Display = $row["NAME"].' '.$row["LOCATION"];
+		$RowObj->Display = $row["CUBE_TSG_TYPE"].' '.$row["NAME"].' '.$row["LOCATION"];
 		$ResponseObj->Rows[] = $RowObj;
 	}
 	$ResponseText = json_encode($ResponseObj);
@@ -1378,7 +1378,7 @@ case 'GetAtbItems':
 		$RowObj->Key = new \stdClass();
 		$RowObj->Key->FkTypName = $row["FK_TYP_NAME"];
 		$RowObj->Key->FkAtbName = $row["FK_ATB_NAME"];
-		$RowObj->Display = ' ';
+		$RowObj->Display = $row["CUBE_TSG_TYPE"];
 		$ResponseObj->Rows[] = $RowObj;
 	}
 	$ResponseText = json_encode($ResponseObj);
@@ -2900,7 +2900,7 @@ case 'GetJsnItems':
 		$RowObj->Key->FkTypName = $row["FK_TYP_NAME"];
 		$RowObj->Key->Name = $row["NAME"];
 		$RowObj->Key->Location = $row["LOCATION"];
-		$RowObj->Display = $row["NAME"].' '.$row["LOCATION"];
+		$RowObj->Display = $row["CUBE_TSG_TYPE"].' '.$row["NAME"].' '.$row["LOCATION"];
 		$ResponseObj->Rows[] = $RowObj;
 	}
 	$ResponseText = json_encode($ResponseObj);

@@ -78,7 +78,7 @@ g_xmlhttp.onreadystatechange = function() {
 						}
 						break;
 					case "LIST_TSP":
-						OpenListBox(l_json_array[i].Rows,'typespec','TypeSpecialisation','Y');
+						OpenListBox(l_json_array[i].Rows,'typespec','TypeSpecialisation','N');
 						break;
 					case "SELECT_FKEY_TYP":
 						var l_json_values = l_json_array[i].Rows[0].Data;
@@ -245,7 +245,7 @@ function OpenListBox(p_json_rows,p_icon,p_header,p_optional) {
 		l_objCell_1_0.colSpan = '2';
 
 
-		l_objSelect.size = Math.min(p_json_rows.length-1,16)
+		l_objSelect.size = Math.min(p_json_rows.length,16)
 		l_objSelect.onclick = function(){UpdateForeignKey(this)};
 
 		if (p_optional == 'Y') {
@@ -309,7 +309,7 @@ function StartSelect001(p_event) {
 		Option: {
 			CubeScopeLevel:1
 		},
-		Type: {
+		Ref: {
 			FkTypName:document.getElementById("InputFkTypName").value
 		}
 	};

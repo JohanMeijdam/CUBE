@@ -379,7 +379,7 @@ function drop(p_event) {
 <input id="InputFkTypName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
 <tr><td><u>Attribute.Name</u></td><td><div style="max-width:30em;">
 <input id="InputFkAtbName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td style="cursor:help;" oncontextmenu="OpenDescBox('RESTRICT','RestrictionTypeSpecAtb.IncludeOrExclude','RESTRICTION_TYPE_SPEC_ATB','INCLUDE_OR_EXCLUDE',-1)">IncludeOrExclude</td><td><div>
+<tr><td style="cursor:help;" oncontextmenu="parent.OpenDescBox('RESTRICT','RestrictionTypeSpecAtb.IncludeOrExclude','RESTRICTION_TYPE_SPEC_ATB','INCLUDE_OR_EXCLUDE',-1)">IncludeOrExclude</td><td><div>
 <select id="InputIncludeOrExclude" type="text">
 	<option value=" " selected> </option>
 	<option value="IN">Include</option>

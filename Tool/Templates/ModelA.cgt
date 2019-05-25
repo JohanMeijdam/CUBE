@@ -1,6 +1,7 @@
 ModelA template
 -	Implementing external foreign keys.
 -	Adding ATTRIBUTE_NUMBER for the normal attributes.
+-	Replace including RESTRICTION_TYPE_SPECs by excluding RESTRICTION_TYPE_SPECs
 29-07-2016 - Template clean up:
 -	Template Created
 29-10-2017 - Content of model A template moved in.

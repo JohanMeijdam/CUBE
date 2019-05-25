@@ -52,7 +52,7 @@ g_xmlhttp.onreadystatechange = function() {
 									'TYP_DER',
 									l_json_node_id,
 									'icons/deriv.bmp', 
-									' ',
+									document.getElementById("InputCubeTsgType").value.toLowerCase(),
 									'N',
 									l_position,
 									l_objNodePos);
@@ -60,6 +60,10 @@ g_xmlhttp.onreadystatechange = function() {
 						}
 						break;
 					case "UPDATE_DER":
+						var l_objNode = parent.document.getElementById(g_node_id);
+						if (l_objNode != null) {
+							l_objNode.children[1].lastChild.nodeValue = ' '+document.getElementById("InputCubeTsgType").value.toLowerCase();
+					}
 						break;
 					case "DELETE_DER":
 						document.getElementById("ButtonCreate").disabled=false;
@@ -242,7 +246,7 @@ function OpenListBox(p_json_rows,p_icon,p_header,p_optional) {
 		l_objCell_1_0.colSpan = '2';
 
 
-		l_objSelect.size = Math.min(p_json_rows.length-1,16)
+		l_objSelect.size = Math.min(p_json_rows.length,16)
 		l_objSelect.onclick = function(){UpdateForeignKey(this)};
 
 		if (p_optional == 'Y') {

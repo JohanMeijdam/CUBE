@@ -82,7 +82,7 @@ g_xmlhttp.onreadystatechange = function() {
 						}
 						break;
 					case "LIST_TYP":
-						OpenListBox(l_json_array[i].Rows,'type','Type','Y');
+						OpenListBox(l_json_array[i].Rows,'type','Type','N');
 						break;
 					case "LIST_TYP":
 						OpenListBox(l_json_array[i].Rows,'type','Type','Y');
@@ -281,7 +281,7 @@ function OpenListBox(p_json_rows,p_icon,p_header,p_optional) {
 		l_objCell_1_0.colSpan = '2';
 
 
-		l_objSelect.size = Math.min(p_json_rows.length-1,16)
+		l_objSelect.size = Math.min(p_json_rows.length,16)
 		l_objSelect.onclick = function(){UpdateForeignKey(this)};
 
 		if (p_optional == 'Y') {

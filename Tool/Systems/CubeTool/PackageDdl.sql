@@ -1165,7 +1165,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 		OPEN p_cube_row FOR
 			SELECT
 			  cube_sequence,
-			  name
+			  name,
+			  cube_tsg_type
 			FROM v_business_object_type
 			ORDER BY cube_sequence;
 	END;
@@ -1176,7 +1177,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 		OPEN p_cube_row FOR
 			SELECT
 			  cube_sequence,
-			  name
+			  name,
+			  cube_tsg_type
 			FROM v_business_object_type
 			ORDER BY cube_sequence;
 	END;
@@ -1445,6 +1447,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			SELECT
 			  cube_sequence,
 			  fk_typ_name,
+			  cube_tsg_type,
 			  name,
 			  location
 			FROM v_json_object
@@ -1841,11 +1844,12 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 		OPEN p_cube_row FOR
 			SELECT
 			  fk_typ_name,
-			  fk_atb_name
+			  fk_atb_name,
+			  cube_tsg_type
 			FROM v_derivation
 			WHERE fk_typ_name = p_fk_typ_name
 			  AND fk_atb_name = p_name
-			ORDER BY fk_typ_name, fk_atb_name;
+			ORDER BY fk_typ_name, fk_atb_name, cube_tsg_type;
 	END;
 
 	PROCEDURE get_atb_dca_items (
@@ -2984,6 +2988,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			SELECT
 			  cube_sequence,
 			  fk_typ_name,
+			  cube_tsg_type,
 			  name,
 			  location
 			FROM v_json_object
