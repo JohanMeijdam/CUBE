@@ -231,7 +231,7 @@ function Create<<TYPE1:C>>() {
 			}
 		} );
 	} else {
-		var Ref = g_json_option.Type;
+		var Ref = g_json_option.Type.TYP_<<TYPE1>>;
 		performTrans( {
 			Service: "Create<<TYPE1:C>>",
 				Parameters: {

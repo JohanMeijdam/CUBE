@@ -16,6 +16,7 @@ Change log:
 28-11-2017 - ATTRIBUTE_ROOT_TYPE added.
 30-12-2017 - Default value on attribute level.
 11-03-2018 - ATTRIBUTE Unchangeable for foreign key's
+25-05-2019 - RESTRICTION_ATTRIBUTE added.
 [[BODY]]! CubeModelB[[* 
 Adding Internal Foreign Keys
 Adding Technical Attributes

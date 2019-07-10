@@ -24,11 +24,11 @@ g_xmlhttp.onreadystatechange = function() {
 			}
 			for (i in l_json_array) {
 				switch (l_json_array[i].ResultName) {
-					case "SELECT_JOA":
+					case "SELECT_JPA":
 						var l_json_values = l_json_array[i].Rows[0].Data;
 						document.getElementById("InputFkBotName").value=l_json_values.FkBotName;
 						break;
-					case "CREATE_JOA":
+					case "CREATE_JPA":
 						document.getElementById("InputFkBotName").readOnly=true;
 						document.getElementById("InputFkTypName").readOnly=true;
 						document.getElementById("InputFkJsnName").readOnly=true;
@@ -40,14 +40,14 @@ g_xmlhttp.onreadystatechange = function() {
 						document.getElementById("ButtonDelete").disabled=false;
 						var l_objNode = parent.document.getElementById(g_parent_node_id);
 						var l_json_node_id = {FkTypName:document.getElementById("InputFkTypName").value,FkJsnName:document.getElementById("InputFkJsnName").value,FkJsnLocation:document.getElementById("InputFkJsnLocation").value,XfAtbTypName:document.getElementById("InputXfAtbTypName").value,XkAtbName:document.getElementById("InputXkAtbName").value};
-						g_node_id = '{"TYP_JOA":'+JSON.stringify(l_json_node_id)+'}';
+						g_node_id = '{"TYP_JPA":'+JSON.stringify(l_json_node_id)+'}';
 						if (l_objNode != null) {
 							if (l_objNode.firstChild._state == 'O') {
 								var l_position = 'L';
 								l_objNodePos = null;
 								parent.AddTreeviewNode(
 									l_objNode,
-									'TYP_JOA',
+									'TYP_JPA',
 									l_json_node_id,
 									'icons/atb_ref.bmp', 
 									document.getElementById("InputXfAtbTypName").value.toLowerCase()+' '+document.getElementById("InputXkAtbName").value.toLowerCase(),
@@ -57,9 +57,9 @@ g_xmlhttp.onreadystatechange = function() {
 							}
 						}
 						break;
-					case "UPDATE_JOA":
+					case "UPDATE_JPA":
 						break;
-					case "DELETE_JOA":
+					case "DELETE_JPA":
 						document.getElementById("ButtonCreate").disabled=false;
 						document.getElementById("ButtonUpdate").disabled=true;
 						document.getElementById("ButtonDelete").disabled=true;
@@ -94,7 +94,7 @@ g_xmlhttp.onreadystatechange = function() {
 
 function performTrans(p_json_parm) {
 	var l_requestText = JSON.stringify(p_json_parm);
-	g_xmlhttp.open('POST','CubeToolServer.php',true);
+	g_xmlhttp.open('POST','CubeRootServer.php',true);
 	g_xmlhttp.send(l_requestText);
 }
 
@@ -107,16 +107,16 @@ function InitBody() {
 	switch (l_json_argument.nodeType) {
 	case "D":
 		g_node_id = JSON.stringify(l_json_argument.objectId);
-		document.getElementById("InputFkTypName").value=l_json_objectKey.TYP_JOA.FkTypName;
-		document.getElementById("InputFkJsnName").value=l_json_objectKey.TYP_JOA.FkJsnName;
-		document.getElementById("InputFkJsnLocation").value=l_json_objectKey.TYP_JOA.FkJsnLocation;
-		document.getElementById("InputXfAtbTypName").value=l_json_objectKey.TYP_JOA.XfAtbTypName;
-		document.getElementById("InputXkAtbName").value=l_json_objectKey.TYP_JOA.XkAtbName;
+		document.getElementById("InputFkTypName").value=l_json_objectKey.TYP_JPA.FkTypName;
+		document.getElementById("InputFkJsnName").value=l_json_objectKey.TYP_JPA.FkJsnName;
+		document.getElementById("InputFkJsnLocation").value=l_json_objectKey.TYP_JPA.FkJsnLocation;
+		document.getElementById("InputXfAtbTypName").value=l_json_objectKey.TYP_JPA.XfAtbTypName;
+		document.getElementById("InputXkAtbName").value=l_json_objectKey.TYP_JPA.XkAtbName;
 		document.getElementById("ButtonCreate").disabled=true;
 		performTrans( {
-			Service: "GetJoa",
+			Service: "GetJpa",
 			Parameters: {
-				Type: l_json_objectKey.TYP_JOA
+				Type: l_json_objectKey.TYP_JPA
 			}
 		} );
 		document.getElementById("ButtonUpdate").disabled=true;
@@ -151,7 +151,7 @@ function InitBody() {
 	}
 }
 
-function CreateJoa() {
+function CreateJpa() {
 	var Type = {
 		FkBotName: document.getElementById("InputFkBotName").value,
 		FkTypName: document.getElementById("InputFkTypName").value,
@@ -161,14 +161,14 @@ function CreateJoa() {
 		XkAtbName: document.getElementById("InputXkAtbName").value
 	};
 	performTrans( {
-		Service: "CreateJoa",
+		Service: "CreateJpa",
 		Parameters: {
 			Type
 		}
 	} );
 }
 
-function UpdateJoa() {
+function UpdateJpa() {
 	var Type = {
 		FkBotName: document.getElementById("InputFkBotName").value,
 		FkTypName: document.getElementById("InputFkTypName").value,
@@ -178,14 +178,14 @@ function UpdateJoa() {
 		XkAtbName: document.getElementById("InputXkAtbName").value
 	};
 	performTrans( {
-		Service: "UpdateJoa",
+		Service: "UpdateJpa",
 		Parameters: {
 			Type
 		}
 	} );
 }
 
-function DeleteJoa() {
+function DeleteJpa() {
 	var Type = {
 		FkTypName: document.getElementById("InputFkTypName").value,
 		FkJsnName: document.getElementById("InputFkJsnName").value,
@@ -194,7 +194,7 @@ function DeleteJoa() {
 		XkAtbName: document.getElementById("InputXkAtbName").value
 	};
 	performTrans( {
-		Service: "DeleteJoa",
+		Service: "DeleteJpa",
 		Parameters: {
 			Type
 		}
@@ -358,16 +358,16 @@ function drop(p_event) {
 -->
 </script>
 </head><body oncontextmenu="return false;" onload="InitBody()" ondrop="drop(event)" ondragover="allowDrop(event)">
-<div><img src="icons/atb_ref_large.bmp" /><span> JSON_OBJECT_ATTRIBUTE</span></div>
+<div><img src="icons/atb_ref_large.bmp" /><span> JSON_PATH_ATTRIBUTE</span></div>
 <hr/>
 <table>
 <tr><td>BusinessObjectType.Name</td><td><div style="max-width:30em;">
 <input id="InputFkBotName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
 <tr><td><u>Type.Name</u></td><td><div style="max-width:30em;">
 <input id="InputFkTypName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td><u>JsonObject.Name</u></td><td><div style="max-width:32em;">
+<tr><td><u>JsonPath.Name</u></td><td><div style="max-width:32em;">
 <input id="InputFkJsnName" type="text" maxlength="32" style="width:100%;"></input></div></td></tr>
-<tr><td><u>JsonObject.Location</u></td><td><div style="max-width:9em;">
+<tr><td><u>JsonPath.Location</u></td><td><div style="max-width:9em;">
 <input id="InputFkJsnLocation" type="text" maxlength="9" style="width:100%;"></input></div></td></tr>
 <tr><td height=6></td></tr><tr><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/attrib.bmp"/> Attribute (Concerns)</legend>
 <table style="width:100%;">
@@ -379,9 +379,9 @@ function drop(p_event) {
 </table></fieldset></td></tr>
 <tr><td><br></td><td style="width:100%;"></td></tr>
 <tr><td/><td>
-<button id="ButtonCreate" type="button" onclick="CreateJoa()">Create</button>&nbsp;&nbsp;&nbsp;
-<button id="ButtonUpdate" type="button" onclick="UpdateJoa()">Update</button>&nbsp;&nbsp;&nbsp;
-<button id="ButtonDelete" type="button" onclick="DeleteJoa()">Delete</button></td></tr>
+<button id="ButtonCreate" type="button" onclick="CreateJpa()">Create</button>&nbsp;&nbsp;&nbsp;
+<button id="ButtonUpdate" type="button" onclick="UpdateJpa()">Update</button>&nbsp;&nbsp;&nbsp;
+<button id="ButtonDelete" type="button" onclick="DeleteJpa()">Delete</button></td></tr>
 </table>
 <input id="InputCubeId" type="hidden"></input>
 </body>

@@ -54,7 +54,7 @@ g_xmlhttp.onreadystatechange = function() {
 									'TYP_JSN',
 									l_json_node_id,
 									'icons/braces.bmp', 
-									document.getElementById("InputName").value.toLowerCase()+' '+document.getElementById("InputLocation").value.toLowerCase(),
+									document.getElementById("InputCubeTsgType").value.toLowerCase()+' '+document.getElementById("InputName").value.toLowerCase()+' '+document.getElementById("InputLocation").value.toLowerCase(),
 									'N',
 									l_position,
 									l_objNodePos);
@@ -62,6 +62,10 @@ g_xmlhttp.onreadystatechange = function() {
 						}
 						break;
 					case "UPDATE_JSN":
+						var l_objNode = parent.document.getElementById(g_node_id);
+						if (l_objNode != null) {
+							l_objNode.children[1].lastChild.nodeValue = ' '+document.getElementById("InputCubeTsgType").value.toLowerCase()+' '+document.getElementById("InputName").value.toLowerCase()+' '+document.getElementById("InputLocation").value.toLowerCase();
+					}
 						break;
 					case "DELETE_JSN":
 						document.getElementById("ButtonCreate").disabled=false;
@@ -194,7 +198,7 @@ function CreateJsn() {
 			}
 		} );
 	} else {
-		var Ref = g_json_option.Type;
+		var Ref = g_json_option.Type.TYP_JSN;
 		performTrans( {
 			Service: "CreateJsn",
 				Parameters: {
@@ -299,7 +303,7 @@ function ProcessTypeSpecialisation() {
 -->
 </script>
 </head><body oncontextmenu="return false;" onload="InitBody()" ondrop="drop(event)" ondragover="allowDrop(event)">
-<div><img src="icons/braces_large.bmp" /><span> JSON_OBJECT /
+<div><img src="icons/braces_large.bmp" /><span> JSON_PATH /
 <select id="InputCubeTsgType" type="text" onchange="ProcessTypeSpecialisation()">
 	<option value=" " selected>&lt;type&gt;</option>
 	<option value="OBJECT">OBJECT</option>
@@ -312,13 +316,13 @@ function ProcessTypeSpecialisation() {
 <input id="InputFkBotName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
 <tr><td><u>Type.Name</u></td><td><div style="max-width:30em;">
 <input id="InputFkTypName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td>JsonObject.Name</td><td><div style="max-width:32em;">
+<tr><td>JsonPath.Name</td><td><div style="max-width:32em;">
 <input id="InputFkJsnName" type="text" maxlength="32" style="width:100%;"></input></div></td></tr>
-<tr><td>JsonObject.Location</td><td><div style="max-width:9em;">
+<tr><td>JsonPath.Location</td><td><div style="max-width:9em;">
 <input id="InputFkJsnLocation" type="text" maxlength="9" style="width:100%;"></input></div></td></tr>
-<tr id="RowAtbName"><td style="cursor:help;" oncontextmenu="parent.OpenDescBox('BRACES','JsonObject.Name','JSON_OBJECT','NAME',-1)"><u>Name</u></td><td><div style="max-width:32em;">
+<tr id="RowAtbName"><td style="cursor:help;" oncontextmenu="parent.OpenDescBox('BRACES','JsonPath.Name','JSON_PATH','NAME',-1)"><u>Name</u></td><td><div style="max-width:32em;">
 <input id="InputName" type="text" maxlength="32" style="width:100%;"></input></div></td></tr>
-<tr id="RowAtbLocation"><td style="cursor:help;" oncontextmenu="parent.OpenDescBox('BRACES','JsonObject.Location','JSON_OBJECT','LOCATION',-1)"><u>Location</u></td><td><div style="max-width:9em;">
+<tr id="RowAtbLocation"><td style="cursor:help;" oncontextmenu="parent.OpenDescBox('BRACES','JsonPath.Location','JSON_PATH','LOCATION',-1)"><u>Location</u></td><td><div style="max-width:9em;">
 <input id="InputLocation" type="text" maxlength="9" style="width:100%;"></input></div></td></tr>
 <tr><td><br></td><td style="width:100%;"></td></tr>
 <tr><td/><td>

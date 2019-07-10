@@ -886,7 +886,7 @@ case 'GetDirPrdItems':
 		$RowObj->Key = new \stdClass();
 		$RowObj->Key->Code = $row["CODE"];
 		$RowObj->Key->Naam = $row["NAAM"];
-		$RowObj->Display = $row["CODE"].' '.$row["NAAM"];
+		$RowObj->Display = $row["CUBE_TSG_ZZZ"].' '.$row["CUBE_TSG_YYY"].' '.$row["CODE"].' '.$row["NAAM"].' '.$row["OMSCHRIJVING"];
 		$ResponseObj->Rows[] = $RowObj;
 	}
 	$ResponseText = json_encode($ResponseObj);
@@ -921,6 +921,7 @@ case 'GetPrd':
 		$RowObj->Data->CubeTsgYyy = $row["CUBE_TSG_YYY"];
 		$RowObj->Data->Datum = $row["DATUM"];
 		$RowObj->Data->Omschrijving = $row["OMSCHRIJVING"];
+		$RowObj->Data->XkAaaNaam = $row["XK_AAA_NAAM"];
 		$ResponseObj->Rows[] = $RowObj;
 	}
 	$ResponseText = json_encode($ResponseObj);
@@ -999,7 +1000,8 @@ case 'CreatePrd':
 		:p_code,
 		:p_naam,
 		:p_datum,
-		:p_omschrijving);
+		:p_omschrijving,
+		:p_xk_aaa_naam);
 	END;");
 	oci_bind_by_name($stid,":p_cube_tsg_zzz",$RequestObj->Parameters->Type->CubeTsgZzz);
 	oci_bind_by_name($stid,":p_cube_tsg_yyy",$RequestObj->Parameters->Type->CubeTsgYyy);
@@ -1007,6 +1009,7 @@ case 'CreatePrd':
 	oci_bind_by_name($stid,":p_naam",$RequestObj->Parameters->Type->Naam);
 	oci_bind_by_name($stid,":p_datum",$RequestObj->Parameters->Type->Datum);
 	oci_bind_by_name($stid,":p_omschrijving",$RequestObj->Parameters->Type->Omschrijving);
+	oci_bind_by_name($stid,":p_xk_aaa_naam",$RequestObj->Parameters->Type->XkAaaNaam);
 
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'CREATE_PRD';
@@ -1031,7 +1034,8 @@ case 'UpdatePrd':
 		:p_code,
 		:p_naam,
 		:p_datum,
-		:p_omschrijving);
+		:p_omschrijving,
+		:p_xk_aaa_naam);
 	END;");
 	oci_bind_by_name($stid,":p_cube_tsg_zzz",$RequestObj->Parameters->Type->CubeTsgZzz);
 	oci_bind_by_name($stid,":p_cube_tsg_yyy",$RequestObj->Parameters->Type->CubeTsgYyy);
@@ -1039,6 +1043,7 @@ case 'UpdatePrd':
 	oci_bind_by_name($stid,":p_naam",$RequestObj->Parameters->Type->Naam);
 	oci_bind_by_name($stid,":p_datum",$RequestObj->Parameters->Type->Datum);
 	oci_bind_by_name($stid,":p_omschrijving",$RequestObj->Parameters->Type->Omschrijving);
+	oci_bind_by_name($stid,":p_xk_aaa_naam",$RequestObj->Parameters->Type->XkAaaNaam);
 
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'UPDATE_PRD';

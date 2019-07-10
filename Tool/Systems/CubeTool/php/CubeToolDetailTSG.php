@@ -195,7 +195,7 @@ function CreateTsg() {
 			}
 		} );
 	} else {
-		var Ref = g_json_option.Type;
+		var Ref = g_json_option.Type.TYP_TSG;
 		performTrans( {
 			Service: "CreateTsg",
 				Parameters: {

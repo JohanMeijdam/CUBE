@@ -367,8 +367,8 @@ print IMPORT "DELETE v_reference;\n";
 print IMPORT "DELETE v_description_reference;\n";
 print IMPORT "DELETE v_restriction_type_spec_ref;\n";
 print IMPORT "DELETE v_restriction_type_spec_typ;\n";
-print IMPORT "DELETE v_json_object;\n";
-print IMPORT "DELETE v_json_object_attribute;\n";
+print IMPORT "DELETE v_json_path;\n";
+print IMPORT "DELETE v_json_path_attribute;\n";
 print IMPORT "DELETE v_type_reuse;\n";
 print IMPORT "DELETE v_partition;\n";
 print IMPORT "DELETE v_subtype;\n";
@@ -595,7 +595,7 @@ my (@FkeyValues);
 						$j = $NodeNext[$j];
 					}
 				}
-				case "JSON_OBJECT" {
+				case "JSON_PATH" {
 					$j = $NodeFirst[$_[0]];
 					$Sequence = 0;
 					while (1) {
@@ -603,12 +603,12 @@ my (@FkeyValues);
 							last;
 						}
 						$Sequence++;
-						if ($NodeString[$NodeParent[$NodeParent[$_[0]]]] eq 'JSON_OBJECT') {
+						if ($NodeString[$NodeParent[$NodeParent[$_[0]]]] eq 'JSON_PATH') {
 							$FKeyFlag = 1;
 						} else {
 							$FKeyFlag = 0;
 						}
-						print IMPORT "INSERT INTO v_json_object (CUBE_SEQUENCE, FK_BOT_NAME, FK_TYP_NAME, FK_JSN_NAME, FK_JSN_LOCATION, CUBE_TSG_TYPE, NAME, LOCATION)\n"; 
+						print IMPORT "INSERT INTO v_json_path (CUBE_SEQUENCE, FK_BOT_NAME, FK_TYP_NAME, FK_JSN_NAME, FK_JSN_LOCATION, CUBE_TSG_TYPE, NAME, LOCATION)\n"; 
 						print IMPORT "	VALUES ($Sequence, '$_[1]', '$_[2]', '".SwitchFlag($FKeyFlag,$_[3])."', ".SwitchFlag($FKeyFlag,$_[4]).", '".ReplX($NodeString[$j])."', '".ReplX($NodeValue[$NodeValuePntr[$j]])."', ".ReplX($NodeValue[$NodeValuePntr[$j]+1]).");\n";
 						print IMPORT "\n";
 						$FkeyValues[0] = $_[1];
@@ -620,13 +620,13 @@ my (@FkeyValues);
 						$j = $NodeNext[$j];
 					}
 				}
-				case "JSON_OBJECT_ATTRIBUTE" {
+				case "JSON_PATH_ATTRIBUTE" {
 					$j = $NodeFirst[$_[0]];
 					while (1) {
 						if ($j == -1) {
 							last;
 						}
-						print IMPORT "INSERT INTO v_json_object_attribute (FK_BOT_NAME, FK_TYP_NAME, FK_JSN_NAME, FK_JSN_LOCATION, XF_ATB_TYP_NAME, XK_ATB_NAME)\n"; 
+						print IMPORT "INSERT INTO v_json_path_attribute (FK_BOT_NAME, FK_TYP_NAME, FK_JSN_NAME, FK_JSN_LOCATION, XF_ATB_TYP_NAME, XK_ATB_NAME)\n"; 
 						print IMPORT "	VALUES ('$_[1]', '$_[2]', '$_[3]', $_[4], '".ReplX(GetXkey($j,'ATTRIBUTE','TYPE',001))."', '".ReplX(GetXkey($j,'ATTRIBUTE','ATTRIBUTE',001))."');\n";
 						print IMPORT "\n";
 						$j = $NodeNext[$j];

@@ -137,7 +137,7 @@ function CreateSbt() {
 			}
 		} );
 	} else {
-		var Ref = g_json_option.Type;
+		var Ref = g_json_option.Type.TYP_SBT;
 		performTrans( {
 			Service: "CreateSbt",
 				Parameters: {

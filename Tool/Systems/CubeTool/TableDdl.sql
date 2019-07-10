@@ -56,10 +56,6 @@ DROP SEQUENCE jsn_seq
 /
 CREATE SEQUENCE jsn_seq START WITH 100000
 /
-DROP SEQUENCE joa_seq
-/
-CREATE SEQUENCE joa_seq START WITH 100000
-/
 DROP SEQUENCE tyr_seq
 /
 CREATE SEQUENCE tyr_seq START WITH 100000
@@ -124,11 +120,9 @@ ALTER TABLE t_restriction_type_spec_ref DROP CONSTRAINT rtr_ref_fk
 /
 ALTER TABLE t_restriction_type_spec_typ DROP CONSTRAINT rtt_typ_fk
 /
-ALTER TABLE t_json_object DROP CONSTRAINT jsn_typ_fk
+ALTER TABLE t_json_path DROP CONSTRAINT jsn_typ_fk
 /
-ALTER TABLE t_json_object DROP CONSTRAINT jsn_jsn_fk
-/
-ALTER TABLE t_json_object_attribute DROP CONSTRAINT joa_jsn_fk
+ALTER TABLE t_json_path DROP CONSTRAINT jsn_jsn_fk
 /
 ALTER TABLE t_type_reuse DROP CONSTRAINT tyr_typ_fk
 /
@@ -174,9 +168,7 @@ DROP TABLE t_restriction_type_spec_ref
 /
 DROP TABLE t_restriction_type_spec_typ
 /
-DROP TABLE t_json_object
-/
-DROP TABLE t_json_object_attribute
+DROP TABLE t_json_path
 /
 DROP TABLE t_type_reuse
 /
@@ -405,7 +397,7 @@ CREATE TABLE t_restriction_type_spec_typ (
 		REFERENCES t_type (name)
 		ON DELETE CASCADE )
 /
-CREATE TABLE t_json_object (
+CREATE TABLE t_json_path (
 	cube_id VARCHAR2(16),
 	cube_sequence NUMBER(8),
 	cube_level NUMBER(8) DEFAULT '1',
@@ -413,33 +405,25 @@ CREATE TABLE t_json_object (
 	fk_typ_name VARCHAR2(30),
 	fk_jsn_name VARCHAR2(32),
 	fk_jsn_location NUMBER(8) DEFAULT '0',
-	cube_tsg_type VARCHAR2(8) DEFAULT 'OBJECT',
+	fk_jsn_atb_typ_name VARCHAR2(30),
+	fk_jsn_atb_name VARCHAR2(30),
+	fk_jsn_typ_name VARCHAR2(30),
+	cube_tsg_obj_arr VARCHAR2(8) DEFAULT 'OBJ',
+	cube_tsg_type VARCHAR2(8) DEFAULT 'GRP',
 	name VARCHAR2(32),
 	location NUMBER(8) DEFAULT '0',
+	xf_atb_typ_name VARCHAR2(30),
+	xk_atb_name VARCHAR2(30),
+	xk_typ_name VARCHAR2(30),
 	CONSTRAINT jsn_pk
-		PRIMARY KEY (fk_typ_name, name, location),
+		PRIMARY KEY (fk_typ_name, name, location, xf_atb_typ_name, xk_atb_name, xk_typ_name),
 	CONSTRAINT jsn_typ_fk
 		FOREIGN KEY (fk_typ_name)
 		REFERENCES t_type (name)
 		ON DELETE CASCADE,
 	CONSTRAINT jsn_jsn_fk
-		FOREIGN KEY (fk_typ_name, fk_jsn_name, fk_jsn_location)
-		REFERENCES t_json_object (fk_typ_name, name, location)
-		ON DELETE CASCADE )
-/
-CREATE TABLE t_json_object_attribute (
-	cube_id VARCHAR2(16),
-	fk_bot_name VARCHAR2(30),
-	fk_typ_name VARCHAR2(30),
-	fk_jsn_name VARCHAR2(32),
-	fk_jsn_location NUMBER(8) DEFAULT '0',
-	xf_atb_typ_name VARCHAR2(30),
-	xk_atb_name VARCHAR2(30),
-	CONSTRAINT joa_pk
-		PRIMARY KEY (fk_typ_name, fk_jsn_name, fk_jsn_location, xf_atb_typ_name, xk_atb_name),
-	CONSTRAINT joa_jsn_fk
-		FOREIGN KEY (fk_typ_name, fk_jsn_name, fk_jsn_location)
-		REFERENCES t_json_object (fk_typ_name, name, location)
+		FOREIGN KEY (fk_typ_name, fk_jsn_name, fk_jsn_location, fk_jsn_atb_typ_name, fk_jsn_atb_name, fk_jsn_typ_name)
+		REFERENCES t_json_path (fk_typ_name, name, location, xf_atb_typ_name, xk_atb_name, xk_typ_name)
 		ON DELETE CASCADE )
 /
 CREATE TABLE t_type_reuse (

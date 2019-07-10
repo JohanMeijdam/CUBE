@@ -62,7 +62,6 @@ g_xmlhttp.onreadystatechange = function() {
 					case 'LIST_JSN': AddTreeviewChildren(l_json_array[i].Rows,'TYP_JSN','icons/braces.bmp'); break;
 					case 'COUNT_JSN': CheckMenuItem('TYP_JSN',l_json_array[i].Rows[0].Data.TypeCount); break;
 					case 'MOVE_JSN': MoveNode (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.body._moveAction); break;
-					case 'LIST_JOA': AddTreeviewChildren(l_json_array[i].Rows,'TYP_JOA','icons/atb_ref.bmp'); break;
 					case 'LIST_TYR': AddTreeviewChildren(l_json_array[i].Rows,'TYP_TYR','icons/reuse.bmp'); break;
 					case 'LIST_PAR': AddTreeviewChildren(l_json_array[i].Rows,'TYP_PAR','icons/partit.bmp'); break;
 					case 'LIST_STP': AddTreeviewChildren(l_json_array[i].Rows,'TYP_STP','icons/subtype.bmp'); break;
@@ -151,8 +150,8 @@ function DefineTypePosition (p_parentType, p_type, p_switch) {
 		switch (p_type) { case 'TYP_DCR': l_index = 2; break; case 'TYP_RTR': l_index = 3; break;}
 		var l_count = 2; break;
 	case 'TYP_JSN':
-		switch (p_type) { case 'TYP_JOA': l_index = 2; break;case 'TYP_JSN': l_index = 3; break;}
-		var l_count = 2; break;
+		switch (p_type) {case 'TYP_JSN': l_index = 2; break;}
+		var l_count = 1; break;
 	case 'TYP_PAR':
 		switch (p_type) { case 'TYP_STP': l_index = 2; break;}
 		var l_count = 1; break;
@@ -733,7 +732,7 @@ function OpenMenu(p_obj) {
 		AddMenuItem(g_objMenuList, 'add attribute', 'icons/attrib.bmp','CubeAdd','N','TYP_ATB',0,'N',2);
 		AddMenuItem(g_objMenuList, 'add reference', 'icons/ref.bmp','CubeAdd','N','TYP_REF',0,'N',3);
 		AddMenuItem(g_objMenuList, 'add restriction_type_spec_typ', 'icons/restrict.bmp','DetailRTT','N','TYP_RTT',0,'N',4);
-		AddMenuItem(g_objMenuList, 'add json_object', 'icons/braces.bmp','CubeAdd','N','TYP_JSN',1,'N',5);
+		AddMenuItem(g_objMenuList, 'add json_path', 'icons/braces.bmp','CubeAdd','N','TYP_JSN',1,'N',5);
 		AddMenuItem(g_objMenuList, 'add type_reuse', 'icons/reuse.bmp','DetailTYR','N','TYP_TYR',0,'N',6);
 		AddMenuItem(g_objMenuList, 'add partition', 'icons/partit.bmp','DetailPAR','N','TYP_PAR',0,'N',7);
 		AddMenuItem(g_objMenuList, 'add type_specialisation_group', 'icons/tspgroup.bmp','CubeAdd','N','TYP_TSG',0,'N',8);
@@ -770,8 +769,7 @@ function OpenMenu(p_obj) {
 		if (l_childCount > 1 || l_type_id == l_parent_type_id) {
 			AddMenuItem(g_objMenuList, 'change parent', 'icons/cube_change_par.bmp','CubeChangePar','','CUBE_P_JSN',0,'Y',0);
 		}
-		AddMenuItem(g_objMenuList, 'add json_object_attribute', 'icons/atb_ref.bmp','DetailJOA','N','TYP_JOA',0,'N',2);
-		AddMenuItem(g_objMenuList, 'add json_object', 'icons/braces.bmp','CubeAdd','R','TYP_JSN',0,'N',3);
+		AddMenuItem(g_objMenuList, 'add json_path', 'icons/braces.bmp','CubeAdd','R','TYP_JSN',0,'N',2);
 		break;
  	case 'TYP_PAR':
 		AddMenuItem(g_objMenuList, 'add subtype', 'icons/subtype.bmp','CubeAdd','N','TYP_STP',0,'N',2);

@@ -132,7 +132,7 @@ function CreateArg() {
 			}
 		} );
 	} else {
-		var Ref = g_json_option.Type;
+		var Ref = g_json_option.Type.TYP_ARG;
 		performTrans( {
 			Service: "CreateArg",
 				Parameters: {

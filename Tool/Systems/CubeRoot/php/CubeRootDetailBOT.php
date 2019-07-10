@@ -48,7 +48,7 @@ g_xmlhttp.onreadystatechange = function() {
 									'TYP_BOT',
 									l_json_node_id,
 									'icons/botype.bmp', 
-									document.getElementById("InputName").value.toLowerCase(),
+									document.getElementById("InputName").value.toLowerCase()+' '+document.getElementById("InputCubeTsgType").value.toLowerCase(),
 									'N',
 									l_position,
 									l_objNodePos);
@@ -56,6 +56,10 @@ g_xmlhttp.onreadystatechange = function() {
 						}
 						break;
 					case "UPDATE_BOT":
+						var l_objNode = parent.document.getElementById(g_node_id);
+						if (l_objNode != null) {
+							l_objNode.children[1].lastChild.nodeValue = ' '+document.getElementById("InputName").value.toLowerCase()+' '+document.getElementById("InputCubeTsgType").value.toLowerCase();
+					}
 						break;
 					case "DELETE_BOT":
 						document.getElementById("ButtonCreate").disabled=false;
@@ -140,7 +144,7 @@ function CreateBot() {
 			}
 		} );
 	} else {
-		var Ref = g_json_option.Type;
+		var Ref = g_json_option.Type.TYP_BOT;
 		performTrans( {
 			Service: "CreateBot",
 				Parameters: {

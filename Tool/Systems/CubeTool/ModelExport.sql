@@ -303,52 +303,44 @@ DECLARE
 	END;
 
 
-	PROCEDURE report_joa (p_jsn IN t_json_object%ROWTYPE) IS
+	PROCEDURE report_jsn_recursive (p_jsn IN t_json_path%ROWTYPE) IS
 	BEGIN
-		FOR r_joa IN (
+		FOR r_jsn IN (
 			SELECT *				
-			FROM t_json_object_attribute
+			FROM t_json_path
 			WHERE fk_bot_name = p_jsn.fk_bot_name
 			  AND fk_typ_name = p_jsn.fk_typ_name
 			  AND fk_jsn_name = p_jsn.name
 			  AND fk_jsn_location = p_jsn.location
-			ORDER BY cube_id )
+			  AND fk_jsn_atb_typ_name = p_jsn.xf_atb_typ_name
+			  AND fk_jsn_atb_name = p_jsn.xk_atb_name
+			  AND fk_jsn_typ_name = p_jsn.xk_typ_name
+			ORDER BY cube_sequence )
 		LOOP
-			DBMS_OUTPUT.PUT_LINE (ftabs || '+JSON_OBJECT_ATTRIBUTE[' || r_joa.cube_id || ']:' || ';');
+			DBMS_OUTPUT.PUT_LINE (ftabs || '+JSON_PATH[' || r_jsn.cube_id || ']:' || fenperc(r_jsn.cube_tsg_obj_arr) || '|' || fenperc(r_jsn.cube_tsg_type) || '|' || fenperc(r_jsn.name) || '|' || fenperc(r_jsn.location) || ';');
 				l_level := l_level + 1;
+				report_jsn_recursive (r_jsn);
 				BEGIN
 					SELECT cube_id INTO l_cube_id FROM t_attribute
-					WHERE fk_typ_name = r_joa.xf_atb_typ_name
-					  AND name = r_joa.xk_atb_name;
+					WHERE fk_typ_name = r_jsn.xf_atb_typ_name
+					  AND name = r_jsn.xk_atb_name;
 
 					DBMS_OUTPUT.PUT_LINE (ftabs || '>ATTRIBUTE:' || l_cube_id || ';');
 				EXCEPTION
 					WHEN NO_DATA_FOUND THEN
 						NULL; 
 				END;
-				l_level := l_level - 1;
-			DBMS_OUTPUT.PUT_LINE (ftabs || '-JSON_OBJECT_ATTRIBUTE:' || ';');
-		END LOOP;
-	END;
+				BEGIN
+					SELECT cube_id INTO l_cube_id FROM t_type
+					WHERE name = r_jsn.xk_typ_name;
 
-
-	PROCEDURE report_jsn_recursive (p_jsn IN t_json_object%ROWTYPE) IS
-	BEGIN
-		FOR r_jsn IN (
-			SELECT *				
-			FROM t_json_object
-			WHERE fk_bot_name = p_jsn.fk_bot_name
-			  AND fk_typ_name = p_jsn.fk_typ_name
-			  AND fk_jsn_name = p_jsn.name
-			  AND fk_jsn_location = p_jsn.location
-			ORDER BY cube_sequence )
-		LOOP
-			DBMS_OUTPUT.PUT_LINE (ftabs || '+JSON_OBJECT[' || r_jsn.cube_id || ']:' || fenperc(r_jsn.cube_tsg_type) || '|' || fenperc(r_jsn.name) || '|' || fenperc(r_jsn.location) || ';');
-				l_level := l_level + 1;
-				report_joa (r_jsn);
-				report_jsn_recursive (r_jsn);
+					DBMS_OUTPUT.PUT_LINE (ftabs || '>JSON_PATH_TYPE:' || l_cube_id || ';');
+				EXCEPTION
+					WHEN NO_DATA_FOUND THEN
+						NULL; 
+				END;
 				l_level := l_level - 1;
-			DBMS_OUTPUT.PUT_LINE (ftabs || '-JSON_OBJECT:' || r_jsn.cube_tsg_type || ';');
+			DBMS_OUTPUT.PUT_LINE (ftabs || '-JSON_PATH:' || r_jsn.cube_tsg_obj_arr || ';');
 		END LOOP;
 	END;
 
@@ -357,19 +349,40 @@ DECLARE
 	BEGIN
 		FOR r_jsn IN (
 			SELECT *				
-			FROM t_json_object
+			FROM t_json_path
 			WHERE fk_bot_name = p_typ.fk_bot_name
 			  AND fk_typ_name = p_typ.name
 			  AND fk_jsn_name IS NULL
 			  AND fk_jsn_location IS NULL
+			  AND fk_jsn_atb_typ_name IS NULL
+			  AND fk_jsn_atb_name IS NULL
+			  AND fk_jsn_typ_name IS NULL
 			ORDER BY cube_sequence )
 		LOOP
-			DBMS_OUTPUT.PUT_LINE (ftabs || '+JSON_OBJECT[' || r_jsn.cube_id || ']:' || fenperc(r_jsn.cube_tsg_type) || '|' || fenperc(r_jsn.name) || '|' || fenperc(r_jsn.location) || ';');
+			DBMS_OUTPUT.PUT_LINE (ftabs || '+JSON_PATH[' || r_jsn.cube_id || ']:' || fenperc(r_jsn.cube_tsg_obj_arr) || '|' || fenperc(r_jsn.cube_tsg_type) || '|' || fenperc(r_jsn.name) || '|' || fenperc(r_jsn.location) || ';');
 				l_level := l_level + 1;
-				report_joa (r_jsn);
 				report_jsn_recursive (r_jsn);
+				BEGIN
+					SELECT cube_id INTO l_cube_id FROM t_attribute
+					WHERE fk_typ_name = r_jsn.xf_atb_typ_name
+					  AND name = r_jsn.xk_atb_name;
+
+					DBMS_OUTPUT.PUT_LINE (ftabs || '>ATTRIBUTE:' || l_cube_id || ';');
+				EXCEPTION
+					WHEN NO_DATA_FOUND THEN
+						NULL; 
+				END;
+				BEGIN
+					SELECT cube_id INTO l_cube_id FROM t_type
+					WHERE name = r_jsn.xk_typ_name;
+
+					DBMS_OUTPUT.PUT_LINE (ftabs || '>JSON_PATH_TYPE:' || l_cube_id || ';');
+				EXCEPTION
+					WHEN NO_DATA_FOUND THEN
+						NULL; 
+				END;
 				l_level := l_level - 1;
-			DBMS_OUTPUT.PUT_LINE (ftabs || '-JSON_OBJECT:' || r_jsn.cube_tsg_type || ';');
+			DBMS_OUTPUT.PUT_LINE (ftabs || '-JSON_PATH:' || r_jsn.cube_tsg_obj_arr || ';');
 		END LOOP;
 	END;
 
@@ -762,14 +775,14 @@ BEGIN
 	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:0|IncludeOrExclude|'||REPLACE('Indication%20that%20the%20child%20type%20is%20valid%20(included)%20or%20invalid%20(excluded)%20for%20the%20concerning%20type%20specialisation.','%20',' ')||' Values: IN(Include), EX(Exclude);');
 	DBMS_OUTPUT.PUT_LINE ('				=ASSOCIATION:TYPE_SPECIALISATION|IsValidFor|TYPE_SPECIALISATION|;');
 	DBMS_OUTPUT.PUT_LINE ('			-META_TYPE:RESTRICTION_TYPE_SPEC_TYP;');
-	DBMS_OUTPUT.PUT_LINE ('			+META_TYPE:JSON_OBJECT|;');
-	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:0|CubeTsgType| Values: OBJECT(OBJECT), ARRAY(ARRAY), ATRIBREF(ATTRIBUTE_REFERENCE);');
-	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:1|Name|'||REPLACE('The%20tag%20of%20the%20object.','%20',' ')||';');
-	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:2|Location|'||REPLACE('The%20index%20of%20the%20array.%20The%20first%20item%20is%200.','%20',' ')||';');
-	DBMS_OUTPUT.PUT_LINE ('				+META_TYPE:JSON_OBJECT_ATTRIBUTE|;');
-	DBMS_OUTPUT.PUT_LINE ('					=ASSOCIATION:ATTRIBUTE|Concerns|ATTRIBUTE|;');
-	DBMS_OUTPUT.PUT_LINE ('				-META_TYPE:JSON_OBJECT_ATTRIBUTE;');
-	DBMS_OUTPUT.PUT_LINE ('			-META_TYPE:JSON_OBJECT;');
+	DBMS_OUTPUT.PUT_LINE ('			+META_TYPE:JSON_PATH|;');
+	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:0|CubeTsgObjArr| Values: OBJ(OBJECT), ARR(ARRAY);');
+	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:1|CubeTsgType| Values: GRP(GROUP), ATRIBREF(ATTRIBUTE_REFERENCE), TYPEREF(TYPE_REFERENCE);');
+	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:2|Name|'||REPLACE('The%20tag%20of%20the%20object.','%20',' ')||';');
+	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:3|Location|'||REPLACE('The%20index%20of%20the%20array.%20The%20first%20item%20is%200.','%20',' ')||';');
+	DBMS_OUTPUT.PUT_LINE ('				=ASSOCIATION:ATTRIBUTE|Concerns|ATTRIBUTE|;');
+	DBMS_OUTPUT.PUT_LINE ('				=ASSOCIATION:JSON_PATH_TYPE|Concerns|TYPE|;');
+	DBMS_OUTPUT.PUT_LINE ('			-META_TYPE:JSON_PATH;');
 	DBMS_OUTPUT.PUT_LINE ('			+META_TYPE:TYPE_REUSE|;');
 	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:0|Cardinality| Values: 1(1), 2(2), 3(3), 4(4), 5(5), N(Many);');
 	DBMS_OUTPUT.PUT_LINE ('				=ASSOCIATION:TYPE_REUSE_TYPE|Refer|TYPE|;');

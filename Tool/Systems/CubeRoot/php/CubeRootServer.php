@@ -498,7 +498,7 @@ case 'GetDirBotItems':
 		$RowObj = new \stdClass();
 		$RowObj->Key = new \stdClass();
 		$RowObj->Key->Name = $row["NAME"];
-		$RowObj->Display = $row["NAME"];
+		$RowObj->Display = $row["NAME"].' '.$row["CUBE_TSG_TYPE"];
 		$ResponseObj->Rows[] = $RowObj;
 	}
 	$ResponseText = json_encode($ResponseObj);
@@ -523,7 +523,7 @@ case 'GetBotList':
 		$RowObj = new \stdClass();
 		$RowObj->Key = new \stdClass();
 		$RowObj->Key->Name = $row["NAME"];
-		$RowObj->Display = $row["NAME"];
+		$RowObj->Display = $row["NAME"].' '.$row["CUBE_TSG_TYPE"];
 		$ResponseObj->Rows[] = $RowObj;
 	}
 	$ResponseText = json_encode($ResponseObj);
@@ -926,7 +926,7 @@ case 'GetTypItems':
 		$RowObj->Key->FkTypName = $row["FK_TYP_NAME"];
 		$RowObj->Key->Name = $row["NAME"];
 		$RowObj->Key->Location = $row["LOCATION"];
-		$RowObj->Display = $row["NAME"].' '.$row["LOCATION"];
+		$RowObj->Display = $row["CUBE_TSG_TYPE"].' '.$row["NAME"].' '.$row["LOCATION"];
 		$ResponseObj->Rows[] = $RowObj;
 	}
 	$ResponseText = json_encode($ResponseObj);
@@ -1378,7 +1378,7 @@ case 'GetAtbItems':
 		$RowObj->Key = new \stdClass();
 		$RowObj->Key->FkTypName = $row["FK_TYP_NAME"];
 		$RowObj->Key->FkAtbName = $row["FK_ATB_NAME"];
-		$RowObj->Display = ' ';
+		$RowObj->Display = $row["CUBE_TSG_TYPE"];
 		$ResponseObj->Rows[] = $RowObj;
 	}
 	$ResponseText = json_encode($ResponseObj);
@@ -2843,7 +2843,7 @@ case 'GetJsnFkey':
 case 'GetJsnItems':
 	echo '[';
 
-	$stid = oci_parse($conn, "BEGIN pkg_bot.get_jsn_joa_items (
+	$stid = oci_parse($conn, "BEGIN pkg_bot.get_jsn_jpa_items (
 		:p_cube_row,
 		:p_fk_typ_name,
 		:p_name,
@@ -2854,7 +2854,7 @@ case 'GetJsnItems':
 	oci_bind_by_name($stid,":p_location",$RequestObj->Parameters->Type->Location);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'LIST_JOA';
+	$ResponseObj->ResultName = 'LIST_JPA';
 	$r = perform_db_request();
 	if (!$r) { 
 		echo ']';
@@ -2900,7 +2900,7 @@ case 'GetJsnItems':
 		$RowObj->Key->FkTypName = $row["FK_TYP_NAME"];
 		$RowObj->Key->Name = $row["NAME"];
 		$RowObj->Key->Location = $row["LOCATION"];
-		$RowObj->Display = $row["NAME"].' '.$row["LOCATION"];
+		$RowObj->Display = $row["CUBE_TSG_TYPE"].' '.$row["NAME"].' '.$row["LOCATION"];
 		$ResponseObj->Rows[] = $RowObj;
 	}
 	$ResponseText = json_encode($ResponseObj);
@@ -3045,10 +3045,10 @@ case 'DeleteJsn':
 
 	break;
 
-case 'GetJoa':
+case 'GetJpa':
 	echo '[';
 
-	$stid = oci_parse($conn, "BEGIN pkg_bot.get_joa (
+	$stid = oci_parse($conn, "BEGIN pkg_bot.get_jpa (
 		:p_cube_row,
 		:p_fk_typ_name,
 		:p_fk_jsn_name,
@@ -3063,7 +3063,7 @@ case 'GetJoa':
 	oci_bind_by_name($stid,":p_xk_atb_name",$RequestObj->Parameters->Type->XkAtbName);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'SELECT_JOA';
+	$ResponseObj->ResultName = 'SELECT_JPA';
 	$r = perform_db_request();
 	if (!$r) { 
 		echo ']';
@@ -3082,10 +3082,10 @@ case 'GetJoa':
 
 	break;
 
-case 'CreateJoa':
+case 'CreateJpa':
 	echo '[';
 
-	$stid = oci_parse($conn, "BEGIN pkg_bot.insert_joa (
+	$stid = oci_parse($conn, "BEGIN pkg_bot.insert_jpa (
 		:p_fk_bot_name,
 		:p_fk_typ_name,
 		:p_fk_jsn_name,
@@ -3101,7 +3101,7 @@ case 'CreateJoa':
 	oci_bind_by_name($stid,":p_xk_atb_name",$RequestObj->Parameters->Type->XkAtbName);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'CREATE_JOA';
+	$ResponseObj->ResultName = 'CREATE_JPA';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -3114,10 +3114,10 @@ case 'CreateJoa':
 
 	break;
 
-case 'UpdateJoa':
+case 'UpdateJpa':
 	echo '[';
 
-	$stid = oci_parse($conn, "BEGIN pkg_bot.update_joa (
+	$stid = oci_parse($conn, "BEGIN pkg_bot.update_jpa (
 		:p_fk_bot_name,
 		:p_fk_typ_name,
 		:p_fk_jsn_name,
@@ -3133,7 +3133,7 @@ case 'UpdateJoa':
 	oci_bind_by_name($stid,":p_xk_atb_name",$RequestObj->Parameters->Type->XkAtbName);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'UPDATE_JOA';
+	$ResponseObj->ResultName = 'UPDATE_JPA';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -3146,10 +3146,10 @@ case 'UpdateJoa':
 
 	break;
 
-case 'DeleteJoa':
+case 'DeleteJpa':
 	echo '[';
 
-	$stid = oci_parse($conn, "BEGIN pkg_bot.delete_joa (
+	$stid = oci_parse($conn, "BEGIN pkg_bot.delete_jpa (
 		:p_fk_typ_name,
 		:p_fk_jsn_name,
 		:p_fk_jsn_location,
@@ -3163,7 +3163,7 @@ case 'DeleteJoa':
 	oci_bind_by_name($stid,":p_xk_atb_name",$RequestObj->Parameters->Type->XkAtbName);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'DELETE_JOA';
+	$ResponseObj->ResultName = 'DELETE_JPA';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);

@@ -159,7 +159,7 @@ function CreateStp() {
 			}
 		} );
 	} else {
-		var Ref = g_json_option.Type;
+		var Ref = g_json_option.Type.TYP_STP;
 		performTrans( {
 			Service: "CreateStp",
 				Parameters: {

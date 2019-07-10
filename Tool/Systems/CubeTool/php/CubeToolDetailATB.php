@@ -175,7 +175,7 @@ function CreateAtb() {
 			}
 		} );
 	} else {
-		var Ref = g_json_option.Type;
+		var Ref = g_json_option.Type.TYP_ATB;
 		performTrans( {
 			Service: "CreateAtb",
 				Parameters: {

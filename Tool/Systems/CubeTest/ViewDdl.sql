@@ -521,7 +521,8 @@ CREATE OR REPLACE VIEW v_prod AS
 		code,
 		naam,
 		datum,
-		omschrijving
+		omschrijving,
+		xk_aaa_naam
 	FROM t_prod
 /
 CREATE OR REPLACE VIEW v_prod2 AS 
@@ -600,7 +601,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_prd_trg IS
 			code,
 			naam,
 			datum,
-			omschrijving)
+			omschrijving,
+			xk_aaa_naam)
 		VALUES (
 			p_prd.cube_id,
 			p_prd.cube_tsg_zzz,
@@ -608,14 +610,16 @@ CREATE OR REPLACE PACKAGE BODY pkg_prd_trg IS
 			p_prd.code,
 			p_prd.naam,
 			p_prd.datum,
-			p_prd.omschrijving);
+			p_prd.omschrijving,
+			p_prd.xk_aaa_naam);
 	END;
 
 	PROCEDURE update_prd (p_cube_rowid UROWID, p_prd_old IN OUT NOCOPY v_prod%ROWTYPE, p_prd_new IN OUT NOCOPY v_prod%ROWTYPE) IS
 	BEGIN
 		UPDATE t_prod SET 
 			datum = p_prd_new.datum,
-			omschrijving = p_prd_new.omschrijving
+			omschrijving = p_prd_new.omschrijving,
+			xk_aaa_naam = p_prd_new.xk_aaa_naam
 		WHERE rowid = p_cube_rowid;
 	END;
 
@@ -660,12 +664,14 @@ CREATE OR REPLACE PACKAGE BODY pkg_prd_trg IS
 	PROCEDURE insert_pa2 (p_pa2 IN OUT NOCOPY v_part2%ROWTYPE) IS
 	BEGIN
 		p_pa2.cube_id := 'PA2-' || TO_CHAR(pa2_seq.NEXTVAL,'FM000000000000');
-		IF p_pa2.fk_pa2_code IS NOT NULL AND p_pa2.fk_pa2_naam IS NOT NULL  THEN
+		IF p_pa2.fk_pa2_code IS NOT NULL OR p_pa2.fk_pa2_naam IS NOT NULL  THEN
 			-- Recursive
 			SELECT fk_prd_code, fk_prd_naam, fk_pr2_code, fk_pr2_naam
 			  INTO p_pa2.fk_prd_code, p_pa2.fk_prd_naam, p_pa2.fk_pr2_code, p_pa2.fk_pr2_naam
 			FROM t_part2
-			WHERE code = p_pa2.fk_pa2_code
+			WHERE fk_pr2_code = p_pa2.fk_pr2_code
+			  AND fk_pr2_naam = p_pa2.fk_pr2_naam
+			  AND code = p_pa2.fk_pa2_code
 			  AND naam = p_pa2.fk_pa2_naam;
 			ELSE
 				-- Parent
@@ -791,12 +797,14 @@ CREATE OR REPLACE PACKAGE BODY pkg_prd_trg IS
 	PROCEDURE insert_prt (p_prt IN OUT NOCOPY v_part%ROWTYPE) IS
 	BEGIN
 		p_prt.cube_id := 'PRT-' || TO_CHAR(prt_seq.NEXTVAL,'FM000000000000');
-		IF p_prt.fk_prt_code IS NOT NULL AND p_prt.fk_prt_naam IS NOT NULL  THEN
+		IF p_prt.fk_prt_code IS NOT NULL OR p_prt.fk_prt_naam IS NOT NULL  THEN
 			-- Recursive
 			SELECT fk_prd_code, fk_prd_naam
 			  INTO p_prt.fk_prd_code, p_prt.fk_prd_naam
 			FROM t_part
-			WHERE code = p_prt.fk_prt_code
+			WHERE fk_prd_code = p_prt.fk_prd_code
+			  AND fk_prd_naam = p_prt.fk_prd_naam
+			  AND code = p_prt.fk_prt_code
 			  AND naam = p_prt.fk_prt_naam;
 		END IF;
 		get_denorm_prt_prt (p_prt);
@@ -923,6 +931,7 @@ BEGIN
 		r_prd_new.naam := :NEW.naam;
 		r_prd_new.datum := :NEW.datum;
 		r_prd_new.omschrijving := :NEW.omschrijving;
+		r_prd_new.xk_aaa_naam := :NEW.xk_aaa_naam;
 	END IF;
 	IF UPDATING THEN
 		r_prd_new.cube_id := :OLD.cube_id;
@@ -937,6 +946,7 @@ BEGIN
 		r_prd_old.naam := :OLD.naam;
 		r_prd_old.datum := :OLD.datum;
 		r_prd_old.omschrijving := :OLD.omschrijving;
+		r_prd_old.xk_aaa_naam := :OLD.xk_aaa_naam;
 	END IF;
 
 	IF INSERTING THEN 

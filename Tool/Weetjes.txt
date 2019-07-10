@@ -1,0 +1,5 @@
+Foszilla:
+	Host:ftp://composys.nl
+	Gebruikersnaam:composysnl
+	Wachtwoord:H00rnseH0p
+	Poort:<leeg>

@@ -919,14 +919,16 @@ CREATE OR REPLACE PACKAGE pkg_prd IS
 			p_code IN VARCHAR2,
 			p_naam IN VARCHAR2,
 			p_datum IN DATE,
-			p_omschrijving IN VARCHAR2);
+			p_omschrijving IN VARCHAR2,
+			p_xk_aaa_naam IN VARCHAR2);
 	PROCEDURE update_prd (
 			p_cube_tsg_zzz IN VARCHAR2,
 			p_cube_tsg_yyy IN VARCHAR2,
 			p_code IN VARCHAR2,
 			p_naam IN VARCHAR2,
 			p_datum IN DATE,
-			p_omschrijving IN VARCHAR2);
+			p_omschrijving IN VARCHAR2,
+			p_xk_aaa_naam IN VARCHAR2);
 	PROCEDURE delete_prd (
 			p_code IN VARCHAR2,
 			p_naam IN VARCHAR2);
@@ -1070,10 +1072,13 @@ CREATE OR REPLACE PACKAGE BODY pkg_prd IS
 	BEGIN
 		OPEN p_cube_row FOR
 			SELECT
+			  cube_tsg_zzz,
+			  cube_tsg_yyy,
 			  code,
-			  naam
+			  naam,
+			  omschrijving
 			FROM v_prod
-			ORDER BY code, naam;
+			ORDER BY cube_tsg_zzz, cube_tsg_yyy, code, naam, omschrijving;
 	END;
 
 	PROCEDURE get_prd (
@@ -1086,7 +1091,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_prd IS
 			  cube_tsg_zzz,
 			  cube_tsg_yyy,
 			  datum,
-			  omschrijving
+			  omschrijving,
+			  xk_aaa_naam
 			FROM v_prod
 			WHERE code = p_code
 			  AND naam = p_naam;
@@ -1130,7 +1136,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_prd IS
 			p_code IN VARCHAR2,
 			p_naam IN VARCHAR2,
 			p_datum IN DATE,
-			p_omschrijving IN VARCHAR2) IS
+			p_omschrijving IN VARCHAR2,
+			p_xk_aaa_naam IN VARCHAR2) IS
 	BEGIN
 		INSERT INTO v_prod (
 			cube_id,
@@ -1139,7 +1146,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_prd IS
 			code,
 			naam,
 			datum,
-			omschrijving)
+			omschrijving,
+			xk_aaa_naam)
 		VALUES (
 			NULL,
 			p_cube_tsg_zzz,
@@ -1147,7 +1155,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_prd IS
 			p_code,
 			p_naam,
 			p_datum,
-			p_omschrijving);
+			p_omschrijving,
+			p_xk_aaa_naam);
 	EXCEPTION
 		WHEN DUP_VAL_ON_INDEX THEN
 			RAISE_APPLICATION_ERROR (-20001, 'Type prod already exists');
@@ -1159,13 +1168,15 @@ CREATE OR REPLACE PACKAGE BODY pkg_prd IS
 			p_code IN VARCHAR2,
 			p_naam IN VARCHAR2,
 			p_datum IN DATE,
-			p_omschrijving IN VARCHAR2) IS
+			p_omschrijving IN VARCHAR2,
+			p_xk_aaa_naam IN VARCHAR2) IS
 	BEGIN
 		UPDATE v_prod SET
 			cube_tsg_zzz = p_cube_tsg_zzz,
 			cube_tsg_yyy = p_cube_tsg_yyy,
 			datum = p_datum,
-			omschrijving = p_omschrijving
+			omschrijving = p_omschrijving,
+			xk_aaa_naam = p_xk_aaa_naam
 		WHERE code = p_code
 		  AND naam = p_naam;
 	END;

@@ -431,11 +431,12 @@ BEGIN
 		'CREATE TABLE t_prod (
 			cube_id VARCHAR2(16),
 			cube_tsg_zzz VARCHAR2(8) DEFAULT ''QQQ'',
-			cube_tsg_yyy VARCHAR2(8) DEFAULT ''QQQ'',
+			cube_tsg_yyy VARCHAR2(8) DEFAULT ''RRR'',
 			code VARCHAR2(8),
 			naam VARCHAR2(40),
 			datum DATE,
-			omschrijving VARCHAR2(120))';
+			omschrijving VARCHAR2(120),
+			xk_aaa_naam VARCHAR2(40))';
 		DBMS_OUTPUT.PUT_LINE('Table T_PROD created');
 	ELSE
 
@@ -456,7 +457,7 @@ BEGIN
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_PROD' AND column_name = 'CUBE_TSG_YYY';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
-			'ALTER TABLE t_prod ADD cube_tsg_yyy VARCHAR2(8) DEFAULT ''QQQ''';
+			'ALTER TABLE t_prod ADD cube_tsg_yyy VARCHAR2(8) DEFAULT ''RRR''';
 			DBMS_OUTPUT.PUT_LINE('Column T_PROD.CUBE_TSG_YYY created');
 		END IF;
 
@@ -486,6 +487,13 @@ BEGIN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_prod ADD omschrijving VARCHAR2(120)';
 			DBMS_OUTPUT.PUT_LINE('Column T_PROD.OMSCHRIJVING created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_PROD' AND column_name = 'XK_AAA_NAAM';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_prod ADD xk_aaa_naam VARCHAR2(40)';
+			DBMS_OUTPUT.PUT_LINE('Column T_PROD.XK_AAA_NAAM created');
 		END IF;
 
 		FOR r_key IN (SELECT constraint_name FROM all_constraints WHERE owner = 'CUBETEST' AND table_name = 'T_PROD' AND constraint_type IN ('P','U','R') ORDER BY constraint_type DESC)
@@ -1129,15 +1137,17 @@ BEGIN
 			'CODE','VARCHAR2(8)',
 			'NAAM','VARCHAR2(40)',
 			'DATUM','DATE',
-			'OMSCHRIJVING','VARCHAR2(120)',NULL) new_domain,
+			'OMSCHRIJVING','VARCHAR2(120)',
+			'XK_AAA_NAAM','VARCHAR2(40)',NULL) new_domain,
 		DECODE(column_name,
 			'CUBE_ID',NULL,
 			'CUBE_TSG_ZZZ','''QQQ''',
-			'CUBE_TSG_YYY','''QQQ''',
+			'CUBE_TSG_YYY','''RRR''',
 			'CODE',NULL,
 			'NAAM',NULL,
 			'DATUM',NULL,
-			'OMSCHRIJVING',NULL,NULL) new_default_value
+			'OMSCHRIJVING',NULL,
+			'XK_AAA_NAAM',NULL,NULL) new_default_value
   		FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_PROD')
 	LOOP
 		IF r_field.old_domain <> r_field.new_domain THEN
@@ -1175,7 +1185,8 @@ BEGIN
 							'CODE',
 							'NAAM',
 							'DATUM',
-							'OMSCHRIJVING'))
+							'OMSCHRIJVING',
+							'XK_AAA_NAAM'))
 	LOOP
 		EXECUTE IMMEDIATE
 		'ALTER TABLE t_prod DROP COLUMN ' || r_field.column_name;

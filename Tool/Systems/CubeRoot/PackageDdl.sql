@@ -897,7 +897,7 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_fk_typ_name IN VARCHAR2,
 			p_name IN VARCHAR2,
 			p_location IN NUMBER);
-	PROCEDURE get_jsn_joa_items (
+	PROCEDURE get_jsn_jpa_items (
 			p_cube_row IN OUT c_cube_row,
 			p_fk_typ_name IN VARCHAR2,
 			p_name IN VARCHAR2,
@@ -939,28 +939,28 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_fk_typ_name IN VARCHAR2,
 			p_name IN VARCHAR2,
 			p_location IN NUMBER);
-	PROCEDURE get_joa (
+	PROCEDURE get_jpa (
 			p_cube_row IN OUT c_cube_row,
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_jsn_name IN VARCHAR2,
 			p_fk_jsn_location IN NUMBER,
 			p_xf_atb_typ_name IN VARCHAR2,
 			p_xk_atb_name IN VARCHAR2);
-	PROCEDURE insert_joa (
+	PROCEDURE insert_jpa (
 			p_fk_bot_name IN VARCHAR2,
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_jsn_name IN VARCHAR2,
 			p_fk_jsn_location IN NUMBER,
 			p_xf_atb_typ_name IN VARCHAR2,
 			p_xk_atb_name IN VARCHAR2);
-	PROCEDURE update_joa (
+	PROCEDURE update_jpa (
 			p_fk_bot_name IN VARCHAR2,
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_jsn_name IN VARCHAR2,
 			p_fk_jsn_location IN NUMBER,
 			p_xf_atb_typ_name IN VARCHAR2,
 			p_xk_atb_name IN VARCHAR2);
-	PROCEDURE delete_joa (
+	PROCEDURE delete_jpa (
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_jsn_name IN VARCHAR2,
 			p_fk_jsn_location IN NUMBER,
@@ -1165,7 +1165,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 		OPEN p_cube_row FOR
 			SELECT
 			  cube_sequence,
-			  name
+			  name,
+			  cube_tsg_type
 			FROM v_business_object_type
 			ORDER BY cube_sequence;
 	END;
@@ -1176,7 +1177,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 		OPEN p_cube_row FOR
 			SELECT
 			  cube_sequence,
-			  name
+			  name,
+			  cube_tsg_type
 			FROM v_business_object_type
 			ORDER BY cube_sequence;
 	END;
@@ -1445,9 +1447,10 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			SELECT
 			  cube_sequence,
 			  fk_typ_name,
+			  cube_tsg_type,
 			  name,
 			  location
-			FROM v_json_object
+			FROM v_json_path
 			WHERE fk_typ_name = p_name
 			  AND fk_jsn_name IS NULL
 			  AND fk_jsn_location IS NULL
@@ -1529,7 +1532,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 		OPEN p_cube_row FOR
 			SELECT
 			  COUNT(1) type_count
-			FROM v_json_object
+			FROM v_json_path
 			WHERE fk_typ_name = p_name
 			  AND fk_jsn_name IS NULL
 			  AND fk_jsn_location IS NULL;
@@ -1841,11 +1844,12 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 		OPEN p_cube_row FOR
 			SELECT
 			  fk_typ_name,
-			  fk_atb_name
+			  fk_atb_name,
+			  cube_tsg_type
 			FROM v_derivation
 			WHERE fk_typ_name = p_fk_typ_name
 			  AND fk_atb_name = p_name
-			ORDER BY fk_typ_name, fk_atb_name;
+			ORDER BY fk_typ_name, fk_atb_name, cube_tsg_type;
 	END;
 
 	PROCEDURE get_atb_dca_items (
@@ -2933,7 +2937,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			  fk_jsn_name,
 			  fk_jsn_location,
 			  cube_tsg_type
-			FROM v_json_object
+			FROM v_json_path
 			WHERE fk_typ_name = p_fk_typ_name
 			  AND name = p_name
 			  AND location = p_location;
@@ -2948,13 +2952,13 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 		OPEN p_cube_row FOR
 			SELECT
 			  fk_bot_name
-			FROM v_json_object
+			FROM v_json_path
 			WHERE fk_typ_name = p_fk_typ_name
 			  AND name = p_name
 			  AND location = p_location;
 	END;
 
-	PROCEDURE get_jsn_joa_items (
+	PROCEDURE get_jsn_jpa_items (
 			p_cube_row IN OUT c_cube_row,
 			p_fk_typ_name IN VARCHAR2,
 			p_name IN VARCHAR2,
@@ -2967,7 +2971,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			  fk_jsn_location,
 			  xf_atb_typ_name,
 			  xk_atb_name
-			FROM v_json_object_attribute
+			FROM v_json_path_attribute
 			WHERE fk_typ_name = p_fk_typ_name
 			  AND fk_jsn_name = p_name
 			  AND fk_jsn_location = p_location
@@ -2984,9 +2988,10 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			SELECT
 			  cube_sequence,
 			  fk_typ_name,
+			  cube_tsg_type,
 			  name,
 			  location
-			FROM v_json_object
+			FROM v_json_path
 			WHERE fk_typ_name = p_fk_typ_name
 			  AND fk_jsn_name = p_name
 			  AND fk_jsn_location = p_location
@@ -2999,8 +3004,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_location IN NUMBER,
 			x_name IN VARCHAR2,
 			x_location IN NUMBER) IS
-		l_name v_json_object.name%TYPE;
-		l_location v_json_object.location%TYPE;
+		l_name v_json_path.name%TYPE;
+		l_location v_json_path.location%TYPE;
 	BEGIN
 		l_name := x_name;
 		l_location := x_location;
@@ -3011,11 +3016,11 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			END IF;
 			IF l_name = p_name
 			  AND l_location = p_location THEN
-				RAISE_APPLICATION_ERROR (-20003, 'Target Type json_object in hierarchy of moving object');
+				RAISE_APPLICATION_ERROR (-20003, 'Target Type json_path in hierarchy of moving object');
 			END IF;
 			SELECT fk_jsn_name, fk_jsn_location
 			INTO l_name, l_location
-			FROM v_json_object
+			FROM v_json_path
 			WHERE fk_typ_name = p_fk_typ_name
 			  AND name = l_name
 			  AND location = l_location;
@@ -3051,7 +3056,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 				-- Read sequence number of the target.
 				SELECT NVL (MAX (cube_sequence), DECODE (p_cube_pos_action, 'B', 99999999, 0))
 				INTO l_cube_position_sequ
-				FROM v_json_object
+				FROM v_json_path
 				WHERE fk_typ_name = p_fk_typ_name
 				  AND name = p_name
 				  AND location = p_location;
@@ -3059,7 +3064,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			-- read sequence number near the target.
 			SELECT DECODE (l_cube_pos_action, 'B', NVL (MAX (cube_sequence), 0), NVL (MIN (cube_sequence), 99999999))
 			INTO l_cube_near_sequ
-			FROM v_json_object
+			FROM v_json_path
 			WHERE fk_typ_name = p_fk_typ_name
 			  AND 	    ( 	    ( fk_jsn_name IS NULL
 					  AND p_fk_jsn_name IS NULL )
@@ -3079,7 +3084,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 				FOR r_jsn IN (
 					SELECT
 					  rowid row_id
-					FROM v_json_object
+					FROM v_json_path
 					WHERE fk_typ_name = p_fk_typ_name
 					  AND 	    ( 	    ( fk_jsn_name IS NULL
 							  AND p_fk_jsn_name IS NULL )
@@ -3089,7 +3094,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 						   OR fk_jsn_location = p_fk_jsn_location )
 					ORDER BY cube_sequence)
 				LOOP
-					UPDATE v_json_object SET
+					UPDATE v_json_path SET
 						cube_sequence = l_cube_count
 					WHERE rowid = r_jsn.row_id;
 					l_cube_count := l_cube_count + 1024;
@@ -3107,8 +3112,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			x_name IN VARCHAR2,
 			x_location IN NUMBER) IS
 		l_cube_sequence NUMBER(8);
-		l_fk_jsn_name v_json_object.fk_jsn_name%TYPE;
-		l_fk_jsn_location v_json_object.fk_jsn_location%TYPE;
+		l_fk_jsn_name v_json_path.fk_jsn_name%TYPE;
+		l_fk_jsn_location v_json_path.fk_jsn_location%TYPE;
 	BEGIN
 		-- A=After B=Before F=First L=Last
 		IF NVL (p_cube_pos_action, ' ') NOT IN ('A', 'B', 'F', 'L') THEN
@@ -3118,7 +3123,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 		IF p_cube_pos_action IN ('B', 'A') THEN
 			SELECT fk_jsn_name, fk_jsn_location
 			INTO l_fk_jsn_name, l_fk_jsn_location
-			FROM v_json_object
+			FROM v_json_path
 			WHERE fk_typ_name = x_fk_typ_name
 			  AND name = x_name
 			  AND location = x_location;
@@ -3128,7 +3133,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 		END IF;
 		check_no_part_jsn (p_fk_typ_name, p_name, p_location, l_fk_jsn_name, l_fk_jsn_location);
 		determine_position_jsn (l_cube_sequence, p_cube_pos_action, x_fk_typ_name, l_fk_jsn_name, l_fk_jsn_location, x_name, x_location);
-		UPDATE v_json_object SET
+		UPDATE v_json_path SET
 			fk_jsn_name = l_fk_jsn_name,
 			fk_jsn_location = l_fk_jsn_location,
 			cube_sequence = l_cube_sequence
@@ -3136,7 +3141,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 		  AND name = p_name
 		  AND location = p_location;
 		IF SQL%NOTFOUND THEN
-			RAISE_APPLICATION_ERROR (-20002, 'Type json_object not found');
+			RAISE_APPLICATION_ERROR (-20002, 'Type json_path not found');
 		END IF;
 	END;
 
@@ -3159,7 +3164,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
 		END IF;
 		determine_position_jsn (l_cube_sequence, p_cube_pos_action, x_fk_typ_name, p_fk_jsn_name, p_fk_jsn_location, x_name, x_location);
-		INSERT INTO v_json_object (
+		INSERT INTO v_json_path (
 			cube_id,
 			cube_sequence,
 			cube_level,
@@ -3183,7 +3188,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_location);
 	EXCEPTION
 		WHEN DUP_VAL_ON_INDEX THEN
-			RAISE_APPLICATION_ERROR (-20001, 'Type json_object already exists');
+			RAISE_APPLICATION_ERROR (-20001, 'Type json_path already exists');
 	END;
 
 	PROCEDURE update_jsn (
@@ -3195,7 +3200,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_name IN VARCHAR2,
 			p_location IN NUMBER) IS
 	BEGIN
-		UPDATE v_json_object SET
+		UPDATE v_json_path SET
 			fk_bot_name = p_fk_bot_name,
 			fk_jsn_name = p_fk_jsn_name,
 			fk_jsn_location = p_fk_jsn_location,
@@ -3210,13 +3215,13 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_name IN VARCHAR2,
 			p_location IN NUMBER) IS
 	BEGIN
-		DELETE v_json_object
+		DELETE v_json_path
 		WHERE fk_typ_name = p_fk_typ_name
 		  AND name = p_name
 		  AND location = p_location;
 	END;
 
-	PROCEDURE get_joa (
+	PROCEDURE get_jpa (
 			p_cube_row IN OUT c_cube_row,
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_jsn_name IN VARCHAR2,
@@ -3227,7 +3232,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 		OPEN p_cube_row FOR
 			SELECT
 			  fk_bot_name
-			FROM v_json_object_attribute
+			FROM v_json_path_attribute
 			WHERE fk_typ_name = p_fk_typ_name
 			  AND fk_jsn_name = p_fk_jsn_name
 			  AND fk_jsn_location = p_fk_jsn_location
@@ -3235,7 +3240,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			  AND xk_atb_name = p_xk_atb_name;
 	END;
 
-	PROCEDURE insert_joa (
+	PROCEDURE insert_jpa (
 			p_fk_bot_name IN VARCHAR2,
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_jsn_name IN VARCHAR2,
@@ -3243,7 +3248,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_xf_atb_typ_name IN VARCHAR2,
 			p_xk_atb_name IN VARCHAR2) IS
 	BEGIN
-		INSERT INTO v_json_object_attribute (
+		INSERT INTO v_json_path_attribute (
 			cube_id,
 			fk_bot_name,
 			fk_typ_name,
@@ -3261,10 +3266,10 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_xk_atb_name);
 	EXCEPTION
 		WHEN DUP_VAL_ON_INDEX THEN
-			RAISE_APPLICATION_ERROR (-20001, 'Type json_object_attribute already exists');
+			RAISE_APPLICATION_ERROR (-20001, 'Type json_path_attribute already exists');
 	END;
 
-	PROCEDURE update_joa (
+	PROCEDURE update_jpa (
 			p_fk_bot_name IN VARCHAR2,
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_jsn_name IN VARCHAR2,
@@ -3272,7 +3277,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_xf_atb_typ_name IN VARCHAR2,
 			p_xk_atb_name IN VARCHAR2) IS
 	BEGIN
-		UPDATE v_json_object_attribute SET
+		UPDATE v_json_path_attribute SET
 			fk_bot_name = p_fk_bot_name
 		WHERE fk_typ_name = p_fk_typ_name
 		  AND fk_jsn_name = p_fk_jsn_name
@@ -3281,14 +3286,14 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 		  AND xk_atb_name = p_xk_atb_name;
 	END;
 
-	PROCEDURE delete_joa (
+	PROCEDURE delete_jpa (
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_jsn_name IN VARCHAR2,
 			p_fk_jsn_location IN NUMBER,
 			p_xf_atb_typ_name IN VARCHAR2,
 			p_xk_atb_name IN VARCHAR2) IS
 	BEGIN
-		DELETE v_json_object_attribute
+		DELETE v_json_path_attribute
 		WHERE fk_typ_name = p_fk_typ_name
 		  AND fk_jsn_name = p_fk_jsn_name
 		  AND fk_jsn_location = p_fk_jsn_location

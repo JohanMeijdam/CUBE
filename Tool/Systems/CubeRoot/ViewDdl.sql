@@ -405,7 +405,7 @@ CREATE OR REPLACE VIEW v_restriction_type_spec_typ AS
 		xk_tsp_code
 	FROM t_restriction_type_spec_typ
 /
-CREATE OR REPLACE VIEW v_json_object AS 
+CREATE OR REPLACE VIEW v_json_path AS 
 	SELECT
 		cube_id,
 		cube_sequence,
@@ -417,9 +417,9 @@ CREATE OR REPLACE VIEW v_json_object AS
 		cube_tsg_type,
 		name,
 		location
-	FROM t_json_object
+	FROM t_json_path
 /
-CREATE OR REPLACE VIEW v_json_object_attribute AS 
+CREATE OR REPLACE VIEW v_json_path_attribute AS 
 	SELECT
 		cube_id,
 		fk_bot_name,
@@ -428,7 +428,7 @@ CREATE OR REPLACE VIEW v_json_object_attribute AS
 		fk_jsn_location,
 		xf_atb_typ_name,
 		xk_atb_name
-	FROM t_json_object_attribute
+	FROM t_json_path_attribute
 /
 CREATE OR REPLACE VIEW v_type_reuse AS 
 	SELECT
@@ -528,14 +528,14 @@ CREATE OR REPLACE PACKAGE pkg_bot_trg IS
 	PROCEDURE insert_rtt (p_rtt IN OUT NOCOPY v_restriction_type_spec_typ%ROWTYPE);
 	PROCEDURE update_rtt (p_cube_rowid IN UROWID, p_rtt_old IN OUT NOCOPY v_restriction_type_spec_typ%ROWTYPE, p_rtt_new IN OUT NOCOPY v_restriction_type_spec_typ%ROWTYPE);
 	PROCEDURE delete_rtt (p_cube_rowid IN UROWID, p_rtt IN OUT NOCOPY v_restriction_type_spec_typ%ROWTYPE);
-	PROCEDURE insert_jsn (p_jsn IN OUT NOCOPY v_json_object%ROWTYPE);
-	PROCEDURE update_jsn (p_cube_rowid IN UROWID, p_jsn_old IN OUT NOCOPY v_json_object%ROWTYPE, p_jsn_new IN OUT NOCOPY v_json_object%ROWTYPE);
-	PROCEDURE delete_jsn (p_cube_rowid IN UROWID, p_jsn IN OUT NOCOPY v_json_object%ROWTYPE);
-	PROCEDURE denorm_jsn_jsn (p_jsn IN OUT NOCOPY v_json_object%ROWTYPE, p_jsn_in IN v_json_object%ROWTYPE);
-	PROCEDURE get_denorm_jsn_jsn (p_jsn IN OUT NOCOPY v_json_object%ROWTYPE);
-	PROCEDURE insert_joa (p_joa IN OUT NOCOPY v_json_object_attribute%ROWTYPE);
-	PROCEDURE update_joa (p_cube_rowid IN UROWID, p_joa_old IN OUT NOCOPY v_json_object_attribute%ROWTYPE, p_joa_new IN OUT NOCOPY v_json_object_attribute%ROWTYPE);
-	PROCEDURE delete_joa (p_cube_rowid IN UROWID, p_joa IN OUT NOCOPY v_json_object_attribute%ROWTYPE);
+	PROCEDURE insert_jsn (p_jsn IN OUT NOCOPY v_json_path%ROWTYPE);
+	PROCEDURE update_jsn (p_cube_rowid IN UROWID, p_jsn_old IN OUT NOCOPY v_json_path%ROWTYPE, p_jsn_new IN OUT NOCOPY v_json_path%ROWTYPE);
+	PROCEDURE delete_jsn (p_cube_rowid IN UROWID, p_jsn IN OUT NOCOPY v_json_path%ROWTYPE);
+	PROCEDURE denorm_jsn_jsn (p_jsn IN OUT NOCOPY v_json_path%ROWTYPE, p_jsn_in IN v_json_path%ROWTYPE);
+	PROCEDURE get_denorm_jsn_jsn (p_jsn IN OUT NOCOPY v_json_path%ROWTYPE);
+	PROCEDURE insert_jpa (p_jpa IN OUT NOCOPY v_json_path_attribute%ROWTYPE);
+	PROCEDURE update_jpa (p_cube_rowid IN UROWID, p_jpa_old IN OUT NOCOPY v_json_path_attribute%ROWTYPE, p_jpa_new IN OUT NOCOPY v_json_path_attribute%ROWTYPE);
+	PROCEDURE delete_jpa (p_cube_rowid IN UROWID, p_jpa IN OUT NOCOPY v_json_path_attribute%ROWTYPE);
 	PROCEDURE insert_tyr (p_tyr IN OUT NOCOPY v_type_reuse%ROWTYPE);
 	PROCEDURE update_tyr (p_cube_rowid IN UROWID, p_tyr_old IN OUT NOCOPY v_type_reuse%ROWTYPE, p_tyr_new IN OUT NOCOPY v_type_reuse%ROWTYPE);
 	PROCEDURE delete_tyr (p_cube_rowid IN UROWID, p_tyr IN OUT NOCOPY v_type_reuse%ROWTYPE);
@@ -604,7 +604,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			SELECT fk_bot_name
 			  INTO p_typ.fk_bot_name
 			FROM t_type
-			WHERE name = p_typ.fk_typ_name;
+			WHERE fk_bot_name = p_typ.fk_bot_name
+			  AND name = p_typ.fk_typ_name;
 		END IF;
 		get_denorm_typ_typ (p_typ);
 		INSERT INTO t_type (
@@ -1076,15 +1077,16 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 		WHERE rowid = p_cube_rowid;
 	END;
 
-	PROCEDURE insert_jsn (p_jsn IN OUT NOCOPY v_json_object%ROWTYPE) IS
+	PROCEDURE insert_jsn (p_jsn IN OUT NOCOPY v_json_path%ROWTYPE) IS
 	BEGIN
 		p_jsn.cube_id := 'CUBE-JSN-' || TO_CHAR(jsn_seq.NEXTVAL,'FM0000000');
-		IF p_jsn.fk_jsn_name IS NOT NULL AND p_jsn.fk_jsn_location IS NOT NULL  THEN
+		IF p_jsn.fk_jsn_name IS NOT NULL OR p_jsn.fk_jsn_location IS NOT NULL  THEN
 			-- Recursive
 			SELECT fk_bot_name
 			  INTO p_jsn.fk_bot_name
-			FROM t_json_object
-			WHERE name = p_jsn.fk_jsn_name
+			FROM t_json_path
+			WHERE fk_typ_name = p_jsn.fk_typ_name
+			  AND name = p_jsn.fk_jsn_name
 			  AND location = p_jsn.fk_jsn_location;
 			ELSE
 				-- Parent
@@ -1095,7 +1097,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			
 		END IF;
 		get_denorm_jsn_jsn (p_jsn);
-		INSERT INTO t_json_object (
+		INSERT INTO t_json_path (
 			cube_id,
 			cube_sequence,
 			cube_level,
@@ -1119,23 +1121,23 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			NVL(p_jsn.location,0));
 	END;
 
-	PROCEDURE update_jsn (p_cube_rowid UROWID, p_jsn_old IN OUT NOCOPY v_json_object%ROWTYPE, p_jsn_new IN OUT NOCOPY v_json_object%ROWTYPE) IS
+	PROCEDURE update_jsn (p_cube_rowid UROWID, p_jsn_old IN OUT NOCOPY v_json_path%ROWTYPE, p_jsn_new IN OUT NOCOPY v_json_path%ROWTYPE) IS
 
 		CURSOR c_jsn IS
-			SELECT ROWID cube_row_id, jsn.* FROM v_json_object jsn
+			SELECT ROWID cube_row_id, jsn.* FROM v_json_path jsn
 			WHERE fk_typ_name = p_jsn_old.fk_typ_name
 			  AND fk_jsn_name = p_jsn_old.name
 			  AND fk_jsn_location = p_jsn_old.location;
 		
 		l_jsn_rowid UROWID;
-		r_jsn_old v_json_object%ROWTYPE;
-		r_jsn_new v_json_object%ROWTYPE;
+		r_jsn_old v_json_path%ROWTYPE;
+		r_jsn_new v_json_path%ROWTYPE;
 	BEGIN
 		IF NVL(p_jsn_old.fk_jsn_name,' ') <> NVL(p_jsn_new.fk_jsn_name,' ') 
 		OR NVL(p_jsn_old.fk_jsn_location,0) <> NVL(p_jsn_new.fk_jsn_location,0)  THEN
 			get_denorm_jsn_jsn (p_jsn_new);
 		END IF;
-		UPDATE t_json_object SET 
+		UPDATE t_json_path SET 
 			cube_sequence = p_jsn_new.cube_sequence,
 			cube_level = p_jsn_new.cube_level,
 			fk_jsn_name = p_jsn_new.fk_jsn_name,
@@ -1165,26 +1167,26 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 		END IF;
 	END;
 
-	PROCEDURE delete_jsn (p_cube_rowid UROWID, p_jsn IN OUT NOCOPY v_json_object%ROWTYPE) IS
+	PROCEDURE delete_jsn (p_cube_rowid UROWID, p_jsn IN OUT NOCOPY v_json_path%ROWTYPE) IS
 	BEGIN
-		DELETE t_json_object 
+		DELETE t_json_path 
 		WHERE rowid = p_cube_rowid;
 	END;
 
-	PROCEDURE denorm_jsn_jsn (p_jsn IN OUT NOCOPY v_json_object%ROWTYPE, p_jsn_in IN v_json_object%ROWTYPE) IS
+	PROCEDURE denorm_jsn_jsn (p_jsn IN OUT NOCOPY v_json_path%ROWTYPE, p_jsn_in IN v_json_path%ROWTYPE) IS
 	BEGIN
 		p_jsn.cube_level := NVL (p_jsn_in.cube_level, 0) + 1;
 	END;
 
-	PROCEDURE get_denorm_jsn_jsn (p_jsn IN OUT NOCOPY v_json_object%ROWTYPE) IS
+	PROCEDURE get_denorm_jsn_jsn (p_jsn IN OUT NOCOPY v_json_path%ROWTYPE) IS
 
 		CURSOR c_jsn IS 
-			SELECT * FROM v_json_object
+			SELECT * FROM v_json_path
 			WHERE fk_typ_name = p_jsn.fk_typ_name
 			  AND name = p_jsn.fk_jsn_name
 			  AND location = p_jsn.fk_jsn_location;
 		
-		r_jsn v_json_object%ROWTYPE;
+		r_jsn v_json_path%ROWTYPE;
 	BEGIN
 		IF p_jsn.fk_jsn_name IS NOT NULL AND p_jsn.fk_jsn_location IS NOT NULL THEN
 			OPEN c_jsn;
@@ -1199,16 +1201,16 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 		denorm_jsn_jsn (p_jsn, r_jsn);
 	END;
 
-	PROCEDURE insert_joa (p_joa IN OUT NOCOPY v_json_object_attribute%ROWTYPE) IS
+	PROCEDURE insert_jpa (p_jpa IN OUT NOCOPY v_json_path_attribute%ROWTYPE) IS
 	BEGIN
-		p_joa.cube_id := 'CUBE-JOA-' || TO_CHAR(joa_seq.NEXTVAL,'FM0000000');
+		p_jpa.cube_id := 'CUBE-JPA-' || TO_CHAR(jpa_seq.NEXTVAL,'FM0000000');
 		SELECT fk_bot_name
-		  INTO p_joa.fk_bot_name
-		FROM t_json_object
-		WHERE fk_typ_name = p_joa.fk_typ_name
-		  AND name = p_joa.fk_jsn_name
-		  AND location = p_joa.fk_jsn_location;
-		INSERT INTO t_json_object_attribute (
+		  INTO p_jpa.fk_bot_name
+		FROM t_json_path
+		WHERE fk_typ_name = p_jpa.fk_typ_name
+		  AND name = p_jpa.fk_jsn_name
+		  AND location = p_jpa.fk_jsn_location;
+		INSERT INTO t_json_path_attribute (
 			cube_id,
 			fk_bot_name,
 			fk_typ_name,
@@ -1217,23 +1219,23 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			xf_atb_typ_name,
 			xk_atb_name)
 		VALUES (
-			p_joa.cube_id,
-			p_joa.fk_bot_name,
-			p_joa.fk_typ_name,
-			p_joa.fk_jsn_name,
-			p_joa.fk_jsn_location,
-			p_joa.xf_atb_typ_name,
-			p_joa.xk_atb_name);
+			p_jpa.cube_id,
+			p_jpa.fk_bot_name,
+			p_jpa.fk_typ_name,
+			p_jpa.fk_jsn_name,
+			p_jpa.fk_jsn_location,
+			p_jpa.xf_atb_typ_name,
+			p_jpa.xk_atb_name);
 	END;
 
-	PROCEDURE update_joa (p_cube_rowid UROWID, p_joa_old IN OUT NOCOPY v_json_object_attribute%ROWTYPE, p_joa_new IN OUT NOCOPY v_json_object_attribute%ROWTYPE) IS
+	PROCEDURE update_jpa (p_cube_rowid UROWID, p_jpa_old IN OUT NOCOPY v_json_path_attribute%ROWTYPE, p_jpa_new IN OUT NOCOPY v_json_path_attribute%ROWTYPE) IS
 	BEGIN
 		NULL;
 	END;
 
-	PROCEDURE delete_joa (p_cube_rowid UROWID, p_joa IN OUT NOCOPY v_json_object_attribute%ROWTYPE) IS
+	PROCEDURE delete_jpa (p_cube_rowid UROWID, p_jpa IN OUT NOCOPY v_json_path_attribute%ROWTYPE) IS
 	BEGIN
-		DELETE t_json_object_attribute 
+		DELETE t_json_path_attribute 
 		WHERE rowid = p_cube_rowid;
 	END;
 
@@ -1346,7 +1348,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			SELECT fk_bot_name
 			  INTO p_tsg.fk_bot_name
 			FROM t_type_specialisation_group
-			WHERE code = p_tsg.fk_tsg_code;
+			WHERE fk_typ_name = p_tsg.fk_typ_name
+			  AND code = p_tsg.fk_tsg_code;
 			ELSE
 				-- Parent
 			SELECT fk_bot_name
@@ -2012,12 +2015,12 @@ END;
 SHOW ERRORS
 
 CREATE OR REPLACE TRIGGER trg_jsn
-INSTEAD OF INSERT OR DELETE OR UPDATE ON v_json_object
+INSTEAD OF INSERT OR DELETE OR UPDATE ON v_json_path
 FOR EACH ROW
 DECLARE
 	l_cube_rowid UROWID;
-	r_jsn_new v_json_object%ROWTYPE;
-	r_jsn_old v_json_object%ROWTYPE;
+	r_jsn_new v_json_path%ROWTYPE;
+	r_jsn_old v_json_path%ROWTYPE;
 BEGIN
 	IF INSERTING OR UPDATING THEN
 		r_jsn_new.cube_sequence := :NEW.cube_sequence;
@@ -2034,7 +2037,7 @@ BEGIN
 		r_jsn_new.cube_level := :OLD.cube_level;
 	END IF;
 	IF UPDATING OR DELETING THEN
-		SELECT rowid INTO l_cube_rowid FROM t_json_object
+		SELECT rowid INTO l_cube_rowid FROM t_json_path
 		WHERE fk_typ_name = :OLD.fk_typ_name
 		  AND name = :OLD.name
 		  AND location = :OLD.location;
@@ -2059,46 +2062,46 @@ END;
 /
 SHOW ERRORS
 
-CREATE OR REPLACE TRIGGER trg_joa
-INSTEAD OF INSERT OR DELETE OR UPDATE ON v_json_object_attribute
+CREATE OR REPLACE TRIGGER trg_jpa
+INSTEAD OF INSERT OR DELETE OR UPDATE ON v_json_path_attribute
 FOR EACH ROW
 DECLARE
 	l_cube_rowid UROWID;
-	r_joa_new v_json_object_attribute%ROWTYPE;
-	r_joa_old v_json_object_attribute%ROWTYPE;
+	r_jpa_new v_json_path_attribute%ROWTYPE;
+	r_jpa_old v_json_path_attribute%ROWTYPE;
 BEGIN
 	IF INSERTING OR UPDATING THEN
-		r_joa_new.fk_bot_name := REPLACE(:NEW.fk_bot_name,' ','_');
-		r_joa_new.fk_typ_name := REPLACE(:NEW.fk_typ_name,' ','_');
-		r_joa_new.fk_jsn_name := :NEW.fk_jsn_name;
-		r_joa_new.fk_jsn_location := :NEW.fk_jsn_location;
-		r_joa_new.xf_atb_typ_name := REPLACE(:NEW.xf_atb_typ_name,' ','_');
-		r_joa_new.xk_atb_name := REPLACE(:NEW.xk_atb_name,' ','_');
+		r_jpa_new.fk_bot_name := REPLACE(:NEW.fk_bot_name,' ','_');
+		r_jpa_new.fk_typ_name := REPLACE(:NEW.fk_typ_name,' ','_');
+		r_jpa_new.fk_jsn_name := :NEW.fk_jsn_name;
+		r_jpa_new.fk_jsn_location := :NEW.fk_jsn_location;
+		r_jpa_new.xf_atb_typ_name := REPLACE(:NEW.xf_atb_typ_name,' ','_');
+		r_jpa_new.xk_atb_name := REPLACE(:NEW.xk_atb_name,' ','_');
 	END IF;
 	IF UPDATING THEN
-		r_joa_new.cube_id := :OLD.cube_id;
+		r_jpa_new.cube_id := :OLD.cube_id;
 	END IF;
 	IF UPDATING OR DELETING THEN
-		SELECT rowid INTO l_cube_rowid FROM t_json_object_attribute
+		SELECT rowid INTO l_cube_rowid FROM t_json_path_attribute
 		WHERE fk_typ_name = :OLD.fk_typ_name
 		  AND fk_jsn_name = :OLD.fk_jsn_name
 		  AND fk_jsn_location = :OLD.fk_jsn_location
 		  AND xf_atb_typ_name = :OLD.xf_atb_typ_name
 		  AND xk_atb_name = :OLD.xk_atb_name;
-		r_joa_old.fk_bot_name := :OLD.fk_bot_name;
-		r_joa_old.fk_typ_name := :OLD.fk_typ_name;
-		r_joa_old.fk_jsn_name := :OLD.fk_jsn_name;
-		r_joa_old.fk_jsn_location := :OLD.fk_jsn_location;
-		r_joa_old.xf_atb_typ_name := :OLD.xf_atb_typ_name;
-		r_joa_old.xk_atb_name := :OLD.xk_atb_name;
+		r_jpa_old.fk_bot_name := :OLD.fk_bot_name;
+		r_jpa_old.fk_typ_name := :OLD.fk_typ_name;
+		r_jpa_old.fk_jsn_name := :OLD.fk_jsn_name;
+		r_jpa_old.fk_jsn_location := :OLD.fk_jsn_location;
+		r_jpa_old.xf_atb_typ_name := :OLD.xf_atb_typ_name;
+		r_jpa_old.xk_atb_name := :OLD.xk_atb_name;
 	END IF;
 
 	IF INSERTING THEN 
-		pkg_bot_trg.insert_joa (r_joa_new);
+		pkg_bot_trg.insert_jpa (r_jpa_new);
 	ELSIF UPDATING THEN
-		pkg_bot_trg.update_joa (l_cube_rowid, r_joa_old, r_joa_new);
+		pkg_bot_trg.update_jpa (l_cube_rowid, r_jpa_old, r_jpa_new);
 	ELSIF DELETING THEN
-		pkg_bot_trg.delete_joa (l_cube_rowid, r_joa_old);
+		pkg_bot_trg.delete_jpa (l_cube_rowid, r_jpa_old);
 	END IF;
 END;
 /

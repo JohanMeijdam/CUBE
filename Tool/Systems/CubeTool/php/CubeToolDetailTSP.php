@@ -174,7 +174,7 @@ function CreateTsp() {
 			}
 		} );
 	} else {
-		var Ref = g_json_option.Type;
+		var Ref = g_json_option.Type.TYP_TSP;
 		performTrans( {
 			Service: "CreateTsp",
 				Parameters: {

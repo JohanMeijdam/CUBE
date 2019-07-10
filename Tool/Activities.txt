@@ -2,12 +2,18 @@
 	OK	Cube metamodel uitbreiden met Json Objecten
 		-	Json Object modelleren
 			-	Primary key van ander SPECIALISATION_TYPE wordt niet teruggegeven naar tree, omdat in detail pagina veld niet is gevuld.
-				-	Bij create en update vanuit detail pagina het nieuwe record teruggeven. (dat is sowieso nodig voor de derivations).
+				-	Bij create en update vanuit detail pagina het nieuwe record lezen en tonen. (dat is sowieso nodig voor de derivations).
 					OK	Gebruik van JSON ipv <|> structuur. 
+-	Recursive type restriction toevoegen
 -	Hoe hergebruik van object modelleren?
 	-	BO type REUSABLE_TYPE toevoegen.
 		OK	BO INT_EXT vervangen door TYPE
 			-	REUSABLE_TYPE BO niet in root van treeview tonen. 
 
 -	restriction for recursive reference
--	Reserved names in Oracle e.d. 				
+-	Reserved names in Oracle e.d. 	
+-	Refential integrity, Kan niet varanderen als er een verwijziging naar is (inclusief rekening houden met scoping)			
+
+-	Database scripts verbeteren mbt schoning.
+
+-	BUG: Restiction JSON attribute LOCATION wordt niet meteen zichtbaar in treeview!!

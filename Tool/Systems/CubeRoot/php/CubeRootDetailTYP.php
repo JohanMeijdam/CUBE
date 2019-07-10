@@ -188,7 +188,7 @@ function CreateTyp() {
 			}
 		} );
 	} else {
-		var Ref = g_json_option.Type;
+		var Ref = g_json_option.Type.TYP_TYP;
 		performTrans( {
 			Service: "CreateTyp",
 				Parameters: {

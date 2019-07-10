@@ -121,11 +121,12 @@ CREATE TABLE t_ccc (
 CREATE TABLE t_prod (
 	cube_id VARCHAR2(16),
 	cube_tsg_zzz VARCHAR2(8) DEFAULT 'QQQ',
-	cube_tsg_yyy VARCHAR2(8) DEFAULT 'QQQ',
+	cube_tsg_yyy VARCHAR2(8) DEFAULT 'RRR',
 	code VARCHAR2(8),
 	naam VARCHAR2(40),
 	datum DATE,
 	omschrijving VARCHAR2(120),
+	xk_aaa_naam VARCHAR2(40),
 	CONSTRAINT prd_pk
 		PRIMARY KEY (code, naam) )
 /

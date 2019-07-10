@@ -10,9 +10,9 @@ set wwwroot=C:\inetpub\wwwroot
 set sysroot=%wwwroot%\%sysname%
 
 echo Start > %logfile%
-::goto :Database
+goto :Database
 ::goto :Packages
-goto :Application
+::goto :Application
 ::goto :ModelImport
 ::goto :ModelExport
 ::goto :System
