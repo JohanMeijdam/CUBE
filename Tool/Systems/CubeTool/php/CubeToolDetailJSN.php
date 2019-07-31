@@ -423,8 +423,17 @@ function StartSelect002(p_event) {
 	document.body._SelectLeft = p_event.clientX;
 	document.body._SelectTop = p_event.clientY;
 	document.body._ListBoxCode = 'Ref002';
+	var Parameters = {
+		Option: {
+			CubeScopeLevel:0
+		},
+		Ref: {
+			FkTypName:document.getElementById("InputFkTypName").value
+		}
+	};
 	performTrans( {
-		Service: "GetTypForTypListAll"
+		Service: "GetTypForTypListAll",
+		Parameters
 	} );
 }
 
@@ -487,9 +496,12 @@ function ProcessTypeSpecialisation() {
 			document.getElementById("RowRefType0").style.display="none";
 			break;
 		case "ATRIBREF":
+			document.getElementById("RowAtbXfAtbTypName").style.display="none";
+			document.getElementById("RowAtbXkAtbName").style.display="none";
 			document.getElementById("RowRefType0").style.display="none";
 			break;
 		case "TYPEREF":
+			document.getElementById("RowAtbXkTypName").style.display="none";
 			document.getElementById("RowRefAttribute0").style.display="none";
 			break;
 		}
@@ -521,11 +533,11 @@ function ProcessTypeSpecialisation() {
 <input id="InputFkJsnName" type="text" maxlength="32" style="width:100%;"></input></div></td></tr>
 <tr><td>JsonPath.Location</td><td><div style="max-width:9em;">
 <input id="InputFkJsnLocation" type="text" maxlength="9" style="width:100%;"></input></div></td></tr>
-<tr><td>JsonPath.Name</td><td><div style="max-width:30em;">
+<tr><td>Type.Name</td><td><div style="max-width:30em;">
 <input id="InputFkJsnAtbTypName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td>JsonPath.Name</td><td><div style="max-width:30em;">
+<tr><td>Attribute.Name</td><td><div style="max-width:30em;">
 <input id="InputFkJsnAtbName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td>JsonPath.Name</td><td><div style="max-width:30em;">
+<tr><td>Type.Name</td><td><div style="max-width:30em;">
 <input id="InputFkJsnTypName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
 <tr id="RowAtbName"><td style="cursor:help;" oncontextmenu="parent.OpenDescBox('BRACES','JsonPath.Name','JSON_PATH','NAME',-1)"><u>Name</u></td><td><div style="max-width:32em;">
 <input id="InputName" type="text" maxlength="32" style="width:100%;"></input></div></td></tr>

@@ -1084,8 +1084,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			  AND xf_atb_typ_name = p_jsn.fk_jsn_atb_typ_name
 			  AND xk_atb_name = p_jsn.fk_jsn_atb_name
 			  AND xk_typ_name = p_jsn.fk_jsn_typ_name;
-			ELSE
-				-- Parent
+		ELSE
+			-- Parent
 			SELECT fk_bot_name
 			  INTO p_jsn.fk_bot_name
 			FROM t_type
@@ -1126,9 +1126,9 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			p_jsn.cube_tsg_type,
 			NVL(p_jsn.name,' '),
 			NVL(p_jsn.location,0),
-			p_jsn.xf_atb_typ_name,
-			p_jsn.xk_atb_name,
-			p_jsn.xk_typ_name);
+			NVL(p_jsn.xf_atb_typ_name,' '),
+			NVL(p_jsn.xk_atb_name,' '),
+			NVL(p_jsn.xk_typ_name,' '));
 	END;
 
 	PROCEDURE update_jsn (p_cube_rowid UROWID, p_jsn_old IN OUT NOCOPY v_json_path%ROWTYPE, p_jsn_new IN OUT NOCOPY v_json_path%ROWTYPE) IS
@@ -1341,8 +1341,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			FROM t_type_specialisation_group
 			WHERE fk_typ_name = p_tsg.fk_typ_name
 			  AND code = p_tsg.fk_tsg_code;
-			ELSE
-				-- Parent
+		ELSE
+			-- Parent
 			SELECT fk_bot_name
 			  INTO p_tsg.fk_bot_name
 			FROM t_type

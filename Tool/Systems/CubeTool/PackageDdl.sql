@@ -536,7 +536,8 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_cube_row IN OUT c_cube_row);
 	PROCEDURE get_typ_for_typ_list_all (
 			p_cube_row IN OUT c_cube_row,
-			p_cube_scope_level IN NUMBER);
+			p_cube_scope_level IN NUMBER,
+			x_fk_typ_name IN VARCHAR2);
 	PROCEDURE get_typ (
 			p_cube_row IN OUT c_cube_row,
 			p_name IN VARCHAR2);
@@ -1371,9 +1372,12 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 
 	PROCEDURE get_typ_for_typ_list_all (
 			p_cube_row IN OUT c_cube_row,
-			p_cube_scope_level IN NUMBER) IS
+			p_cube_scope_level IN NUMBER,
+			x_fk_typ_name IN VARCHAR2) IS
 		l_cube_scope_level NUMBER(1) := 0;
+		l_name v_type.name%TYPE;
 	BEGIN
+		l_name := x_fk_typ_name;
 		IF p_cube_scope_level > 0 THEN
 			LOOP
 				IF p_cube_scope_level = l_cube_scope_level THEN
@@ -1403,6 +1407,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			  name,
 			  code
 			FROM v_type
+			WHERE fk_typ_name = l_name
 			ORDER BY cube_sequence;
 	END;
 

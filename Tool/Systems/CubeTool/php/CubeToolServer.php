@@ -760,9 +760,11 @@ case 'GetTypForTypListAll':
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.get_typ_for_typ_list_all (
 		:p_cube_row,
-		:p_cube_scope_level);
+		:p_cube_scope_level,
+		:x_fk_typ_name);
 	END;");
 	oci_bind_by_name($stid,":p_cube_scope_level",$RequestObj->Parameters->Option->CubeScopeLevel);
+	oci_bind_by_name($stid,":x_fk_typ_name",$RequestObj->Parameters->Ref->FkTypName);
 
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'LIST_TYP';

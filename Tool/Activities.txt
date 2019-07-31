@@ -12,8 +12,11 @@
 
 -	restriction for recursive reference
 -	Reserved names in Oracle e.d. 	
--	Refential integrity, Kan niet varanderen als er een verwijziging naar is (inclusief rekening houden met scoping)			
+-	Refential integrity, Kan niet varanderen als er een verwijziging naar is (inclusief rekening houden met scoping)
+
+-	Parent level for recursive type (default is the first level parent)			
 
 -	Database scripts verbeteren mbt schoning.
 
--	BUG: Restiction JSON attribute LOCATION wordt niet meteen zichtbaar in treeview!!
+-	BUG: Restriction JSON attribute LOCATION wordt niet meteen zichtbaar in treeview!!
+-
