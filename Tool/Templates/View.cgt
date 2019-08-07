@@ -145,7 +145,7 @@ BEGIN
 		ELSE
 			r_<<TYPE1:L>>_new.<<ATTRIBUTE:L>> := REPLACE(:NEW.<<ATTRIBUTE:L>>,' ','_');
 		END IF;[[ELSE]]
-		r_<<TYPE1:L>>_new.<<ATTRIBUTE:L>> := :NEW.<<ATTRIBUTE:L>>[[ENDIF]]
+		r_<<TYPE1:L>>_new.<<ATTRIBUTE:L>> := :NEW.<<ATTRIBUTE:L>>;[[ENDIF]][[ENDLOOP,ATTRIBUTE]]
 	END IF;[[IF:CHILD(ATTRIBUTE:CHILD(DERIVATION:!0=SQ))]][[* In case of a derivation the old value is taken by default *]]
 	IF UPDATING THEN[[LOOP,ATTRIBUTE:CHILD(DERIVATION:!0=SQ)]]
 		r_<<TYPE1:L>>_new.<<ATTRIBUTE:L>> := :OLD.<<ATTRIBUTE:L>>;[[ENDLOOP,ATTRIBUTE]]
