@@ -13,7 +13,7 @@ echo Start > %logfile%
 ::goto Models
 ::goto Scripts
 ::goto Database
-::goto Views
+goto Views
 ::goto ModelImport
 ::goto ModelExport
 ::goto Packages
@@ -47,7 +47,7 @@ sqlplus.exe %db_schema%/%db_password%@%db_name% @%sysdir%\AlterTableDdl.sql >> %
 echo Generate Database Views.
 CubeGen.exe %sysdir%\CubeBoModel.cgm Templates\View.cgt %sysdir%\ViewDdl.sql %sysname% >> %logfile% 2>&1
 sqlplus.exe %db_schema%/%db_password%@%db_name% @%sysdir%\ViewDdl.sql >> %logfile% 2>&1
-::goto End
+goto End
 :ModelImport 
 echo Import Model.
 ::::::perl Systems\CubeRoot\ModelImport.pl %sysdir%\ToolModel.cgm %sysdir%\ToolModelImport.sql >> %logfile% 2>&1

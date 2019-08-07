@@ -8,7 +8,8 @@
 -	Hoe hergebruik van object modelleren?
 	-	BO type REUSABLE_TYPE toevoegen.
 		OK	BO INT_EXT vervangen door TYPE
-			-	REUSABLE_TYPE BO niet in root van treeview tonen. 
+			-	REUSABLE_TYPE BO niet in root van treeview tonen.
+-	Onderdeel kan ook herbruikbaar zijn ivm scope waarbinnen. Bijv de SPECT_TYPE_RESTRICTION			
 
 -	restriction for recursive reference
 -	Reserved names in Oracle e.d. 	

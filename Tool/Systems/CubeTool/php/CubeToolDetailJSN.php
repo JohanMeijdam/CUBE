@@ -485,23 +485,28 @@ function ProcessTypeSpecialisation() {
 		switch (document.getElementById("InputCubeTsgObjArr").value) {
 		case "OBJ":
 			document.getElementById("RowAtbLocation").style.display="none";
+			document.getElementById("InputLocation").value="0";
 			break;
 		case "ARR":
 			document.getElementById("RowAtbName").style.display="none";
+			document.getElementById("InputName").value=" ";
 			break;
 		}
 		switch (document.getElementById("InputCubeTsgType").value) {
 		case "GRP":
+			document.getElementById("InputXfAtbTypName").value=" ";
+			document.getElementById("InputXkAtbName").value=" ";
+			document.getElementById("InputXkTypName").value=" ";
 			document.getElementById("RowRefAttribute0").style.display="none";
 			document.getElementById("RowRefType0").style.display="none";
 			break;
 		case "ATRIBREF":
-			document.getElementById("RowAtbXfAtbTypName").style.display="none";
-			document.getElementById("RowAtbXkAtbName").style.display="none";
+			document.getElementById("InputXkTypName").value=" ";
 			document.getElementById("RowRefType0").style.display="none";
 			break;
 		case "TYPEREF":
-			document.getElementById("RowAtbXkTypName").style.display="none";
+			document.getElementById("InputXfAtbTypName").value=" ";
+			document.getElementById("InputXkAtbName").value=" ";
 			document.getElementById("RowRefAttribute0").style.display="none";
 			break;
 		}
