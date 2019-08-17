@@ -12,8 +12,8 @@ set sysroot=%wwwroot%\%sysname%
 echo Start > %logfile%
 ::goto Models
 ::goto Scripts
-::goto Database
-goto Views
+goto Database
+::goto Views
 ::goto ModelImport
 ::goto ModelExport
 ::goto Packages

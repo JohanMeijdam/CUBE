@@ -164,7 +164,11 @@ DECLARE
 	r_itp_old v_information_type%ROWTYPE;
 BEGIN
 	IF INSERTING OR UPDATING THEN
-		r_itp_new.name := REPLACE(:NEW.name,' ','_');
+		IF :NEW.name = ' ' THEN
+			r_itp_new.name := ' ';
+		ELSE
+			r_itp_new.name := REPLACE(:NEW.name,' ','_');
+		END IF;
 	END IF;
 	IF UPDATING THEN
 		r_itp_new.cube_id := :OLD.cube_id;
@@ -195,16 +199,32 @@ DECLARE
 	r_ite_old v_information_type_element%ROWTYPE;
 BEGIN
 	IF INSERTING OR UPDATING THEN
-		r_ite_new.fk_itp_name := REPLACE(:NEW.fk_itp_name,' ','_');
+		IF :NEW.fk_itp_name = ' ' THEN
+			r_ite_new.fk_itp_name := ' ';
+		ELSE
+			r_ite_new.fk_itp_name := REPLACE(:NEW.fk_itp_name,' ','_');
+		END IF;
 		r_ite_new.sequence := :NEW.sequence;
-		r_ite_new.suffix := REPLACE(:NEW.suffix,' ','_');
-		r_ite_new.domain := REPLACE(:NEW.domain,' ','_');
+		IF :NEW.suffix = ' ' THEN
+			r_ite_new.suffix := ' ';
+		ELSE
+			r_ite_new.suffix := REPLACE(:NEW.suffix,' ','_');
+		END IF;
+		IF :NEW.domain = ' ' THEN
+			r_ite_new.domain := ' ';
+		ELSE
+			r_ite_new.domain := REPLACE(:NEW.domain,' ','_');
+		END IF;
 		r_ite_new.length := :NEW.length;
 		r_ite_new.decimals := :NEW.decimals;
 		r_ite_new.case_sensitive := :NEW.case_sensitive;
 		r_ite_new.default_value := :NEW.default_value;
 		r_ite_new.spaces_allowed := :NEW.spaces_allowed;
-		r_ite_new.presentation := REPLACE(:NEW.presentation,' ','_');
+		IF :NEW.presentation = ' ' THEN
+			r_ite_new.presentation := ' ';
+		ELSE
+			r_ite_new.presentation := REPLACE(:NEW.presentation,' ','_');
+		END IF;
 	END IF;
 	IF UPDATING THEN
 		r_ite_new.cube_id := :OLD.cube_id;
@@ -246,9 +266,17 @@ DECLARE
 BEGIN
 	IF INSERTING OR UPDATING THEN
 		r_val_new.cube_sequence := :NEW.cube_sequence;
-		r_val_new.fk_itp_name := REPLACE(:NEW.fk_itp_name,' ','_');
+		IF :NEW.fk_itp_name = ' ' THEN
+			r_val_new.fk_itp_name := ' ';
+		ELSE
+			r_val_new.fk_itp_name := REPLACE(:NEW.fk_itp_name,' ','_');
+		END IF;
 		r_val_new.fk_ite_sequence := :NEW.fk_ite_sequence;
-		r_val_new.code := REPLACE(:NEW.code,' ','_');
+		IF :NEW.code = ' ' THEN
+			r_val_new.code := ' ';
+		ELSE
+			r_val_new.code := REPLACE(:NEW.code,' ','_');
+		END IF;
 		r_val_new.prompt := :NEW.prompt;
 	END IF;
 	IF UPDATING THEN
@@ -414,21 +442,17 @@ CREATE OR REPLACE VIEW v_json_path AS
 		fk_typ_name,
 		fk_jsn_name,
 		fk_jsn_location,
+		fk_jsn_atb_typ_name,
+		fk_jsn_atb_name,
+		fk_jsn_typ_name,
+		cube_tsg_obj_arr,
 		cube_tsg_type,
 		name,
-		location
-	FROM t_json_path
-/
-CREATE OR REPLACE VIEW v_json_path_attribute AS 
-	SELECT
-		cube_id,
-		fk_bot_name,
-		fk_typ_name,
-		fk_jsn_name,
-		fk_jsn_location,
+		location,
 		xf_atb_typ_name,
-		xk_atb_name
-	FROM t_json_path_attribute
+		xk_atb_name,
+		xk_typ_name
+	FROM t_json_path
 /
 CREATE OR REPLACE VIEW v_type_reuse AS 
 	SELECT
@@ -533,9 +557,6 @@ CREATE OR REPLACE PACKAGE pkg_bot_trg IS
 	PROCEDURE delete_jsn (p_cube_rowid IN UROWID, p_jsn IN OUT NOCOPY v_json_path%ROWTYPE);
 	PROCEDURE denorm_jsn_jsn (p_jsn IN OUT NOCOPY v_json_path%ROWTYPE, p_jsn_in IN v_json_path%ROWTYPE);
 	PROCEDURE get_denorm_jsn_jsn (p_jsn IN OUT NOCOPY v_json_path%ROWTYPE);
-	PROCEDURE insert_jpa (p_jpa IN OUT NOCOPY v_json_path_attribute%ROWTYPE);
-	PROCEDURE update_jpa (p_cube_rowid IN UROWID, p_jpa_old IN OUT NOCOPY v_json_path_attribute%ROWTYPE, p_jpa_new IN OUT NOCOPY v_json_path_attribute%ROWTYPE);
-	PROCEDURE delete_jpa (p_cube_rowid IN UROWID, p_jpa IN OUT NOCOPY v_json_path_attribute%ROWTYPE);
 	PROCEDURE insert_tyr (p_tyr IN OUT NOCOPY v_type_reuse%ROWTYPE);
 	PROCEDURE update_tyr (p_cube_rowid IN UROWID, p_tyr_old IN OUT NOCOPY v_type_reuse%ROWTYPE, p_tyr_new IN OUT NOCOPY v_type_reuse%ROWTYPE);
 	PROCEDURE delete_tyr (p_cube_rowid IN UROWID, p_tyr IN OUT NOCOPY v_type_reuse%ROWTYPE);
@@ -1080,16 +1101,19 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 	PROCEDURE insert_jsn (p_jsn IN OUT NOCOPY v_json_path%ROWTYPE) IS
 	BEGIN
 		p_jsn.cube_id := 'CUBE-JSN-' || TO_CHAR(jsn_seq.NEXTVAL,'FM0000000');
-		IF p_jsn.fk_jsn_name IS NOT NULL OR p_jsn.fk_jsn_location IS NOT NULL  THEN
+		IF p_jsn.fk_jsn_name IS NOT NULL OR p_jsn.fk_jsn_location IS NOT NULL OR p_jsn.fk_jsn_atb_typ_name IS NOT NULL OR p_jsn.fk_jsn_atb_name IS NOT NULL OR p_jsn.fk_jsn_typ_name IS NOT NULL  THEN
 			-- Recursive
 			SELECT fk_bot_name
 			  INTO p_jsn.fk_bot_name
 			FROM t_json_path
 			WHERE fk_typ_name = p_jsn.fk_typ_name
 			  AND name = p_jsn.fk_jsn_name
-			  AND location = p_jsn.fk_jsn_location;
-			ELSE
-				-- Parent
+			  AND location = p_jsn.fk_jsn_location
+			  AND xf_atb_typ_name = p_jsn.fk_jsn_atb_typ_name
+			  AND xk_atb_name = p_jsn.fk_jsn_atb_name
+			  AND xk_typ_name = p_jsn.fk_jsn_typ_name;
+		ELSE
+			-- Parent
 			SELECT fk_bot_name
 			  INTO p_jsn.fk_bot_name
 			FROM t_type
@@ -1105,9 +1129,16 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			fk_typ_name,
 			fk_jsn_name,
 			fk_jsn_location,
+			fk_jsn_atb_typ_name,
+			fk_jsn_atb_name,
+			fk_jsn_typ_name,
+			cube_tsg_obj_arr,
 			cube_tsg_type,
 			name,
-			location)
+			location,
+			xf_atb_typ_name,
+			xk_atb_name,
+			xk_typ_name)
 		VALUES (
 			p_jsn.cube_id,
 			p_jsn.cube_sequence,
@@ -1116,9 +1147,16 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			p_jsn.fk_typ_name,
 			p_jsn.fk_jsn_name,
 			p_jsn.fk_jsn_location,
+			p_jsn.fk_jsn_atb_typ_name,
+			p_jsn.fk_jsn_atb_name,
+			p_jsn.fk_jsn_typ_name,
+			p_jsn.cube_tsg_obj_arr,
 			p_jsn.cube_tsg_type,
 			NVL(p_jsn.name,' '),
-			NVL(p_jsn.location,0));
+			NVL(p_jsn.location,0),
+			NVL(p_jsn.xf_atb_typ_name,' '),
+			NVL(p_jsn.xk_atb_name,' '),
+			NVL(p_jsn.xk_typ_name,' '));
 	END;
 
 	PROCEDURE update_jsn (p_cube_rowid UROWID, p_jsn_old IN OUT NOCOPY v_json_path%ROWTYPE, p_jsn_new IN OUT NOCOPY v_json_path%ROWTYPE) IS
@@ -1127,21 +1165,30 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			SELECT ROWID cube_row_id, jsn.* FROM v_json_path jsn
 			WHERE fk_typ_name = p_jsn_old.fk_typ_name
 			  AND fk_jsn_name = p_jsn_old.name
-			  AND fk_jsn_location = p_jsn_old.location;
+			  AND fk_jsn_location = p_jsn_old.location
+			  AND fk_jsn_atb_typ_name = p_jsn_old.xf_atb_typ_name
+			  AND fk_jsn_atb_name = p_jsn_old.xk_atb_name
+			  AND fk_jsn_typ_name = p_jsn_old.xk_typ_name;
 		
 		l_jsn_rowid UROWID;
 		r_jsn_old v_json_path%ROWTYPE;
 		r_jsn_new v_json_path%ROWTYPE;
 	BEGIN
 		IF NVL(p_jsn_old.fk_jsn_name,' ') <> NVL(p_jsn_new.fk_jsn_name,' ') 
-		OR NVL(p_jsn_old.fk_jsn_location,0) <> NVL(p_jsn_new.fk_jsn_location,0)  THEN
+		OR NVL(p_jsn_old.fk_jsn_location,0) <> NVL(p_jsn_new.fk_jsn_location,0) 
+		OR NVL(p_jsn_old.fk_jsn_atb_typ_name,' ') <> NVL(p_jsn_new.fk_jsn_atb_typ_name,' ') 
+		OR NVL(p_jsn_old.fk_jsn_atb_name,' ') <> NVL(p_jsn_new.fk_jsn_atb_name,' ') 
+		OR NVL(p_jsn_old.fk_jsn_typ_name,' ') <> NVL(p_jsn_new.fk_jsn_typ_name,' ')  THEN
 			get_denorm_jsn_jsn (p_jsn_new);
 		END IF;
 		UPDATE t_json_path SET 
 			cube_sequence = p_jsn_new.cube_sequence,
 			cube_level = p_jsn_new.cube_level,
 			fk_jsn_name = p_jsn_new.fk_jsn_name,
-			fk_jsn_location = p_jsn_new.fk_jsn_location
+			fk_jsn_location = p_jsn_new.fk_jsn_location,
+			fk_jsn_atb_typ_name = p_jsn_new.fk_jsn_atb_typ_name,
+			fk_jsn_atb_name = p_jsn_new.fk_jsn_atb_name,
+			fk_jsn_typ_name = p_jsn_new.fk_jsn_typ_name
 		WHERE rowid = p_cube_rowid;
 		IF NVL(p_jsn_old.cube_level,0) <> NVL(p_jsn_new.cube_level,0) THEN
 			OPEN c_jsn;
@@ -1155,9 +1202,16 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 					r_jsn_old.fk_typ_name,
 					r_jsn_old.fk_jsn_name,
 					r_jsn_old.fk_jsn_location,
+					r_jsn_old.fk_jsn_atb_typ_name,
+					r_jsn_old.fk_jsn_atb_name,
+					r_jsn_old.fk_jsn_typ_name,
+					r_jsn_old.cube_tsg_obj_arr,
 					r_jsn_old.cube_tsg_type,
 					r_jsn_old.name,
-					r_jsn_old.location;
+					r_jsn_old.location,
+					r_jsn_old.xf_atb_typ_name,
+					r_jsn_old.xk_atb_name,
+					r_jsn_old.xk_typ_name;
 				EXIT WHEN c_jsn%NOTFOUND;
 				r_jsn_new := r_jsn_old;
 				denorm_jsn_jsn (r_jsn_new, p_jsn_new);
@@ -1184,11 +1238,14 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			SELECT * FROM v_json_path
 			WHERE fk_typ_name = p_jsn.fk_typ_name
 			  AND name = p_jsn.fk_jsn_name
-			  AND location = p_jsn.fk_jsn_location;
+			  AND location = p_jsn.fk_jsn_location
+			  AND xf_atb_typ_name = p_jsn.fk_jsn_atb_typ_name
+			  AND xk_atb_name = p_jsn.fk_jsn_atb_name
+			  AND xk_typ_name = p_jsn.fk_jsn_typ_name;
 		
 		r_jsn v_json_path%ROWTYPE;
 	BEGIN
-		IF p_jsn.fk_jsn_name IS NOT NULL AND p_jsn.fk_jsn_location IS NOT NULL THEN
+		IF p_jsn.fk_jsn_name IS NOT NULL AND p_jsn.fk_jsn_location IS NOT NULL AND p_jsn.fk_jsn_atb_typ_name IS NOT NULL AND p_jsn.fk_jsn_atb_name IS NOT NULL AND p_jsn.fk_jsn_typ_name IS NOT NULL THEN
 			OPEN c_jsn;
 			FETCH c_jsn INTO r_jsn;
 			IF c_jsn%NOTFOUND THEN
@@ -1199,44 +1256,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			r_jsn := NULL;
 		END IF;
 		denorm_jsn_jsn (p_jsn, r_jsn);
-	END;
-
-	PROCEDURE insert_jpa (p_jpa IN OUT NOCOPY v_json_path_attribute%ROWTYPE) IS
-	BEGIN
-		p_jpa.cube_id := 'CUBE-JPA-' || TO_CHAR(jpa_seq.NEXTVAL,'FM0000000');
-		SELECT fk_bot_name
-		  INTO p_jpa.fk_bot_name
-		FROM t_json_path
-		WHERE fk_typ_name = p_jpa.fk_typ_name
-		  AND name = p_jpa.fk_jsn_name
-		  AND location = p_jpa.fk_jsn_location;
-		INSERT INTO t_json_path_attribute (
-			cube_id,
-			fk_bot_name,
-			fk_typ_name,
-			fk_jsn_name,
-			fk_jsn_location,
-			xf_atb_typ_name,
-			xk_atb_name)
-		VALUES (
-			p_jpa.cube_id,
-			p_jpa.fk_bot_name,
-			p_jpa.fk_typ_name,
-			p_jpa.fk_jsn_name,
-			p_jpa.fk_jsn_location,
-			p_jpa.xf_atb_typ_name,
-			p_jpa.xk_atb_name);
-	END;
-
-	PROCEDURE update_jpa (p_cube_rowid UROWID, p_jpa_old IN OUT NOCOPY v_json_path_attribute%ROWTYPE, p_jpa_new IN OUT NOCOPY v_json_path_attribute%ROWTYPE) IS
-	BEGIN
-		NULL;
-	END;
-
-	PROCEDURE delete_jpa (p_cube_rowid UROWID, p_jpa IN OUT NOCOPY v_json_path_attribute%ROWTYPE) IS
-	BEGIN
-		DELETE t_json_path_attribute 
-		WHERE rowid = p_cube_rowid;
 	END;
 
 	PROCEDURE insert_tyr (p_tyr IN OUT NOCOPY v_type_reuse%ROWTYPE) IS
@@ -1350,8 +1369,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			FROM t_type_specialisation_group
 			WHERE fk_typ_name = p_tsg.fk_typ_name
 			  AND code = p_tsg.fk_tsg_code;
-			ELSE
-				-- Parent
+		ELSE
+			-- Parent
 			SELECT fk_bot_name
 			  INTO p_tsg.fk_bot_name
 			FROM t_type
@@ -1560,10 +1579,22 @@ DECLARE
 BEGIN
 	IF INSERTING OR UPDATING THEN
 		r_bot_new.cube_sequence := :NEW.cube_sequence;
-		r_bot_new.name := REPLACE(:NEW.name,' ','_');
+		IF :NEW.name = ' ' THEN
+			r_bot_new.name := ' ';
+		ELSE
+			r_bot_new.name := REPLACE(:NEW.name,' ','_');
+		END IF;
 		r_bot_new.cube_tsg_type := :NEW.cube_tsg_type;
-		r_bot_new.directory := REPLACE(:NEW.directory,' ','_');
-		r_bot_new.api_url := REPLACE(:NEW.api_url,' ','_');
+		IF :NEW.directory = ' ' THEN
+			r_bot_new.directory := ' ';
+		ELSE
+			r_bot_new.directory := REPLACE(:NEW.directory,' ','_');
+		END IF;
+		IF :NEW.api_url = ' ' THEN
+			r_bot_new.api_url := ' ';
+		ELSE
+			r_bot_new.api_url := REPLACE(:NEW.api_url,' ','_');
+		END IF;
 	END IF;
 	IF UPDATING THEN
 		r_bot_new.cube_id := :OLD.cube_id;
@@ -1599,16 +1630,36 @@ DECLARE
 BEGIN
 	IF INSERTING OR UPDATING THEN
 		r_typ_new.cube_sequence := :NEW.cube_sequence;
-		r_typ_new.fk_bot_name := REPLACE(:NEW.fk_bot_name,' ','_');
-		r_typ_new.fk_typ_name := REPLACE(:NEW.fk_typ_name,' ','_');
-		r_typ_new.name := REPLACE(:NEW.name,' ','_');
-		r_typ_new.code := REPLACE(:NEW.code,' ','_');
+		IF :NEW.fk_bot_name = ' ' THEN
+			r_typ_new.fk_bot_name := ' ';
+		ELSE
+			r_typ_new.fk_bot_name := REPLACE(:NEW.fk_bot_name,' ','_');
+		END IF;
+		IF :NEW.fk_typ_name = ' ' THEN
+			r_typ_new.fk_typ_name := ' ';
+		ELSE
+			r_typ_new.fk_typ_name := REPLACE(:NEW.fk_typ_name,' ','_');
+		END IF;
+		IF :NEW.name = ' ' THEN
+			r_typ_new.name := ' ';
+		ELSE
+			r_typ_new.name := REPLACE(:NEW.name,' ','_');
+		END IF;
+		IF :NEW.code = ' ' THEN
+			r_typ_new.code := ' ';
+		ELSE
+			r_typ_new.code := REPLACE(:NEW.code,' ','_');
+		END IF;
 		r_typ_new.flag_partial_key := :NEW.flag_partial_key;
 		r_typ_new.flag_recursive := :NEW.flag_recursive;
 		r_typ_new.recursive_cardinality := :NEW.recursive_cardinality;
 		r_typ_new.cardinality := :NEW.cardinality;
 		r_typ_new.sort_order := :NEW.sort_order;
-		r_typ_new.icon := REPLACE(:NEW.icon,' ','_');
+		IF :NEW.icon = ' ' THEN
+			r_typ_new.icon := ' ';
+		ELSE
+			r_typ_new.icon := REPLACE(:NEW.icon,' ','_');
+		END IF;
 		r_typ_new.transferable := :NEW.transferable;
 	END IF;
 	IF UPDATING THEN
@@ -1653,16 +1704,36 @@ DECLARE
 BEGIN
 	IF INSERTING OR UPDATING THEN
 		r_atb_new.cube_sequence := :NEW.cube_sequence;
-		r_atb_new.fk_bot_name := REPLACE(:NEW.fk_bot_name,' ','_');
-		r_atb_new.fk_typ_name := REPLACE(:NEW.fk_typ_name,' ','_');
-		r_atb_new.name := REPLACE(:NEW.name,' ','_');
+		IF :NEW.fk_bot_name = ' ' THEN
+			r_atb_new.fk_bot_name := ' ';
+		ELSE
+			r_atb_new.fk_bot_name := REPLACE(:NEW.fk_bot_name,' ','_');
+		END IF;
+		IF :NEW.fk_typ_name = ' ' THEN
+			r_atb_new.fk_typ_name := ' ';
+		ELSE
+			r_atb_new.fk_typ_name := REPLACE(:NEW.fk_typ_name,' ','_');
+		END IF;
+		IF :NEW.name = ' ' THEN
+			r_atb_new.name := ' ';
+		ELSE
+			r_atb_new.name := REPLACE(:NEW.name,' ','_');
+		END IF;
 		r_atb_new.primary_key := :NEW.primary_key;
-		r_atb_new.code_display_key := REPLACE(:NEW.code_display_key,' ','_');
+		IF :NEW.code_display_key = ' ' THEN
+			r_atb_new.code_display_key := ' ';
+		ELSE
+			r_atb_new.code_display_key := REPLACE(:NEW.code_display_key,' ','_');
+		END IF;
 		r_atb_new.code_foreign_key := :NEW.code_foreign_key;
 		r_atb_new.flag_hidden := :NEW.flag_hidden;
 		r_atb_new.default_value := :NEW.default_value;
 		r_atb_new.unchangeable := :NEW.unchangeable;
-		r_atb_new.xk_itp_name := REPLACE(:NEW.xk_itp_name,' ','_');
+		IF :NEW.xk_itp_name = ' ' THEN
+			r_atb_new.xk_itp_name := ' ';
+		ELSE
+			r_atb_new.xk_itp_name := REPLACE(:NEW.xk_itp_name,' ','_');
+		END IF;
 	END IF;
 	IF UPDATING THEN
 		r_atb_new.cube_id := :OLD.cube_id;
@@ -1704,13 +1775,37 @@ DECLARE
 	r_der_old v_derivation%ROWTYPE;
 BEGIN
 	IF INSERTING OR UPDATING THEN
-		r_der_new.fk_bot_name := REPLACE(:NEW.fk_bot_name,' ','_');
-		r_der_new.fk_typ_name := REPLACE(:NEW.fk_typ_name,' ','_');
-		r_der_new.fk_atb_name := REPLACE(:NEW.fk_atb_name,' ','_');
+		IF :NEW.fk_bot_name = ' ' THEN
+			r_der_new.fk_bot_name := ' ';
+		ELSE
+			r_der_new.fk_bot_name := REPLACE(:NEW.fk_bot_name,' ','_');
+		END IF;
+		IF :NEW.fk_typ_name = ' ' THEN
+			r_der_new.fk_typ_name := ' ';
+		ELSE
+			r_der_new.fk_typ_name := REPLACE(:NEW.fk_typ_name,' ','_');
+		END IF;
+		IF :NEW.fk_atb_name = ' ' THEN
+			r_der_new.fk_atb_name := ' ';
+		ELSE
+			r_der_new.fk_atb_name := REPLACE(:NEW.fk_atb_name,' ','_');
+		END IF;
 		r_der_new.cube_tsg_type := :NEW.cube_tsg_type;
-		r_der_new.aggregate_function := REPLACE(:NEW.aggregate_function,' ','_');
-		r_der_new.xk_typ_name := REPLACE(:NEW.xk_typ_name,' ','_');
-		r_der_new.xk_typ_name_1 := REPLACE(:NEW.xk_typ_name_1,' ','_');
+		IF :NEW.aggregate_function = ' ' THEN
+			r_der_new.aggregate_function := ' ';
+		ELSE
+			r_der_new.aggregate_function := REPLACE(:NEW.aggregate_function,' ','_');
+		END IF;
+		IF :NEW.xk_typ_name = ' ' THEN
+			r_der_new.xk_typ_name := ' ';
+		ELSE
+			r_der_new.xk_typ_name := REPLACE(:NEW.xk_typ_name,' ','_');
+		END IF;
+		IF :NEW.xk_typ_name_1 = ' ' THEN
+			r_der_new.xk_typ_name_1 := ' ';
+		ELSE
+			r_der_new.xk_typ_name_1 := REPLACE(:NEW.xk_typ_name_1,' ','_');
+		END IF;
 	END IF;
 	IF UPDATING THEN
 		r_der_new.cube_id := :OLD.cube_id;
@@ -1748,9 +1843,21 @@ DECLARE
 	r_dca_old v_description_attribute%ROWTYPE;
 BEGIN
 	IF INSERTING OR UPDATING THEN
-		r_dca_new.fk_bot_name := REPLACE(:NEW.fk_bot_name,' ','_');
-		r_dca_new.fk_typ_name := REPLACE(:NEW.fk_typ_name,' ','_');
-		r_dca_new.fk_atb_name := REPLACE(:NEW.fk_atb_name,' ','_');
+		IF :NEW.fk_bot_name = ' ' THEN
+			r_dca_new.fk_bot_name := ' ';
+		ELSE
+			r_dca_new.fk_bot_name := REPLACE(:NEW.fk_bot_name,' ','_');
+		END IF;
+		IF :NEW.fk_typ_name = ' ' THEN
+			r_dca_new.fk_typ_name := ' ';
+		ELSE
+			r_dca_new.fk_typ_name := REPLACE(:NEW.fk_typ_name,' ','_');
+		END IF;
+		IF :NEW.fk_atb_name = ' ' THEN
+			r_dca_new.fk_atb_name := ' ';
+		ELSE
+			r_dca_new.fk_atb_name := REPLACE(:NEW.fk_atb_name,' ','_');
+		END IF;
 		r_dca_new.text := :NEW.text;
 	END IF;
 	IF UPDATING THEN
@@ -1786,13 +1893,41 @@ DECLARE
 	r_rta_old v_restriction_type_spec_atb%ROWTYPE;
 BEGIN
 	IF INSERTING OR UPDATING THEN
-		r_rta_new.fk_bot_name := REPLACE(:NEW.fk_bot_name,' ','_');
-		r_rta_new.fk_typ_name := REPLACE(:NEW.fk_typ_name,' ','_');
-		r_rta_new.fk_atb_name := REPLACE(:NEW.fk_atb_name,' ','_');
-		r_rta_new.include_or_exclude := REPLACE(:NEW.include_or_exclude,' ','_');
-		r_rta_new.xf_tsp_typ_name := REPLACE(:NEW.xf_tsp_typ_name,' ','_');
-		r_rta_new.xf_tsp_tsg_code := REPLACE(:NEW.xf_tsp_tsg_code,' ','_');
-		r_rta_new.xk_tsp_code := REPLACE(:NEW.xk_tsp_code,' ','_');
+		IF :NEW.fk_bot_name = ' ' THEN
+			r_rta_new.fk_bot_name := ' ';
+		ELSE
+			r_rta_new.fk_bot_name := REPLACE(:NEW.fk_bot_name,' ','_');
+		END IF;
+		IF :NEW.fk_typ_name = ' ' THEN
+			r_rta_new.fk_typ_name := ' ';
+		ELSE
+			r_rta_new.fk_typ_name := REPLACE(:NEW.fk_typ_name,' ','_');
+		END IF;
+		IF :NEW.fk_atb_name = ' ' THEN
+			r_rta_new.fk_atb_name := ' ';
+		ELSE
+			r_rta_new.fk_atb_name := REPLACE(:NEW.fk_atb_name,' ','_');
+		END IF;
+		IF :NEW.include_or_exclude = ' ' THEN
+			r_rta_new.include_or_exclude := ' ';
+		ELSE
+			r_rta_new.include_or_exclude := REPLACE(:NEW.include_or_exclude,' ','_');
+		END IF;
+		IF :NEW.xf_tsp_typ_name = ' ' THEN
+			r_rta_new.xf_tsp_typ_name := ' ';
+		ELSE
+			r_rta_new.xf_tsp_typ_name := REPLACE(:NEW.xf_tsp_typ_name,' ','_');
+		END IF;
+		IF :NEW.xf_tsp_tsg_code = ' ' THEN
+			r_rta_new.xf_tsp_tsg_code := ' ';
+		ELSE
+			r_rta_new.xf_tsp_tsg_code := REPLACE(:NEW.xf_tsp_tsg_code,' ','_');
+		END IF;
+		IF :NEW.xk_tsp_code = ' ' THEN
+			r_rta_new.xk_tsp_code := ' ';
+		ELSE
+			r_rta_new.xk_tsp_code := REPLACE(:NEW.xk_tsp_code,' ','_');
+		END IF;
 	END IF;
 	IF UPDATING THEN
 		r_rta_new.cube_id := :OLD.cube_id;
@@ -1834,17 +1969,45 @@ DECLARE
 BEGIN
 	IF INSERTING OR UPDATING THEN
 		r_ref_new.cube_sequence := :NEW.cube_sequence;
-		r_ref_new.fk_bot_name := REPLACE(:NEW.fk_bot_name,' ','_');
-		r_ref_new.fk_typ_name := REPLACE(:NEW.fk_typ_name,' ','_');
-		r_ref_new.name := REPLACE(:NEW.name,' ','_');
+		IF :NEW.fk_bot_name = ' ' THEN
+			r_ref_new.fk_bot_name := ' ';
+		ELSE
+			r_ref_new.fk_bot_name := REPLACE(:NEW.fk_bot_name,' ','_');
+		END IF;
+		IF :NEW.fk_typ_name = ' ' THEN
+			r_ref_new.fk_typ_name := ' ';
+		ELSE
+			r_ref_new.fk_typ_name := REPLACE(:NEW.fk_typ_name,' ','_');
+		END IF;
+		IF :NEW.name = ' ' THEN
+			r_ref_new.name := ' ';
+		ELSE
+			r_ref_new.name := REPLACE(:NEW.name,' ','_');
+		END IF;
 		r_ref_new.primary_key := :NEW.primary_key;
-		r_ref_new.code_display_key := REPLACE(:NEW.code_display_key,' ','_');
+		IF :NEW.code_display_key = ' ' THEN
+			r_ref_new.code_display_key := ' ';
+		ELSE
+			r_ref_new.code_display_key := REPLACE(:NEW.code_display_key,' ','_');
+		END IF;
 		r_ref_new.sequence := :NEW.sequence;
-		r_ref_new.scope := REPLACE(:NEW.scope,' ','_');
+		IF :NEW.scope = ' ' THEN
+			r_ref_new.scope := ' ';
+		ELSE
+			r_ref_new.scope := REPLACE(:NEW.scope,' ','_');
+		END IF;
 		r_ref_new.unchangeable := :NEW.unchangeable;
 		r_ref_new.within_scope_level := :NEW.within_scope_level;
-		r_ref_new.xk_typ_name := REPLACE(:NEW.xk_typ_name,' ','_');
-		r_ref_new.xk_typ_name_1 := REPLACE(:NEW.xk_typ_name_1,' ','_');
+		IF :NEW.xk_typ_name = ' ' THEN
+			r_ref_new.xk_typ_name := ' ';
+		ELSE
+			r_ref_new.xk_typ_name := REPLACE(:NEW.xk_typ_name,' ','_');
+		END IF;
+		IF :NEW.xk_typ_name_1 = ' ' THEN
+			r_ref_new.xk_typ_name_1 := ' ';
+		ELSE
+			r_ref_new.xk_typ_name_1 := REPLACE(:NEW.xk_typ_name_1,' ','_');
+		END IF;
 	END IF;
 	IF UPDATING THEN
 		r_ref_new.cube_id := :OLD.cube_id;
@@ -1888,10 +2051,22 @@ DECLARE
 	r_dcr_old v_description_reference%ROWTYPE;
 BEGIN
 	IF INSERTING OR UPDATING THEN
-		r_dcr_new.fk_bot_name := REPLACE(:NEW.fk_bot_name,' ','_');
-		r_dcr_new.fk_typ_name := REPLACE(:NEW.fk_typ_name,' ','_');
+		IF :NEW.fk_bot_name = ' ' THEN
+			r_dcr_new.fk_bot_name := ' ';
+		ELSE
+			r_dcr_new.fk_bot_name := REPLACE(:NEW.fk_bot_name,' ','_');
+		END IF;
+		IF :NEW.fk_typ_name = ' ' THEN
+			r_dcr_new.fk_typ_name := ' ';
+		ELSE
+			r_dcr_new.fk_typ_name := REPLACE(:NEW.fk_typ_name,' ','_');
+		END IF;
 		r_dcr_new.fk_ref_sequence := :NEW.fk_ref_sequence;
-		r_dcr_new.fk_ref_typ_name := REPLACE(:NEW.fk_ref_typ_name,' ','_');
+		IF :NEW.fk_ref_typ_name = ' ' THEN
+			r_dcr_new.fk_ref_typ_name := ' ';
+		ELSE
+			r_dcr_new.fk_ref_typ_name := REPLACE(:NEW.fk_ref_typ_name,' ','_');
+		END IF;
 		r_dcr_new.text := :NEW.text;
 	END IF;
 	IF UPDATING THEN
@@ -1929,14 +2104,42 @@ DECLARE
 	r_rtr_old v_restriction_type_spec_ref%ROWTYPE;
 BEGIN
 	IF INSERTING OR UPDATING THEN
-		r_rtr_new.fk_bot_name := REPLACE(:NEW.fk_bot_name,' ','_');
-		r_rtr_new.fk_typ_name := REPLACE(:NEW.fk_typ_name,' ','_');
+		IF :NEW.fk_bot_name = ' ' THEN
+			r_rtr_new.fk_bot_name := ' ';
+		ELSE
+			r_rtr_new.fk_bot_name := REPLACE(:NEW.fk_bot_name,' ','_');
+		END IF;
+		IF :NEW.fk_typ_name = ' ' THEN
+			r_rtr_new.fk_typ_name := ' ';
+		ELSE
+			r_rtr_new.fk_typ_name := REPLACE(:NEW.fk_typ_name,' ','_');
+		END IF;
 		r_rtr_new.fk_ref_sequence := :NEW.fk_ref_sequence;
-		r_rtr_new.fk_ref_typ_name := REPLACE(:NEW.fk_ref_typ_name,' ','_');
-		r_rtr_new.include_or_exclude := REPLACE(:NEW.include_or_exclude,' ','_');
-		r_rtr_new.xf_tsp_typ_name := REPLACE(:NEW.xf_tsp_typ_name,' ','_');
-		r_rtr_new.xf_tsp_tsg_code := REPLACE(:NEW.xf_tsp_tsg_code,' ','_');
-		r_rtr_new.xk_tsp_code := REPLACE(:NEW.xk_tsp_code,' ','_');
+		IF :NEW.fk_ref_typ_name = ' ' THEN
+			r_rtr_new.fk_ref_typ_name := ' ';
+		ELSE
+			r_rtr_new.fk_ref_typ_name := REPLACE(:NEW.fk_ref_typ_name,' ','_');
+		END IF;
+		IF :NEW.include_or_exclude = ' ' THEN
+			r_rtr_new.include_or_exclude := ' ';
+		ELSE
+			r_rtr_new.include_or_exclude := REPLACE(:NEW.include_or_exclude,' ','_');
+		END IF;
+		IF :NEW.xf_tsp_typ_name = ' ' THEN
+			r_rtr_new.xf_tsp_typ_name := ' ';
+		ELSE
+			r_rtr_new.xf_tsp_typ_name := REPLACE(:NEW.xf_tsp_typ_name,' ','_');
+		END IF;
+		IF :NEW.xf_tsp_tsg_code = ' ' THEN
+			r_rtr_new.xf_tsp_tsg_code := ' ';
+		ELSE
+			r_rtr_new.xf_tsp_tsg_code := REPLACE(:NEW.xf_tsp_tsg_code,' ','_');
+		END IF;
+		IF :NEW.xk_tsp_code = ' ' THEN
+			r_rtr_new.xk_tsp_code := ' ';
+		ELSE
+			r_rtr_new.xk_tsp_code := REPLACE(:NEW.xk_tsp_code,' ','_');
+		END IF;
 	END IF;
 	IF UPDATING THEN
 		r_rtr_new.cube_id := :OLD.cube_id;
@@ -1979,12 +2182,36 @@ DECLARE
 	r_rtt_old v_restriction_type_spec_typ%ROWTYPE;
 BEGIN
 	IF INSERTING OR UPDATING THEN
-		r_rtt_new.fk_bot_name := REPLACE(:NEW.fk_bot_name,' ','_');
-		r_rtt_new.fk_typ_name := REPLACE(:NEW.fk_typ_name,' ','_');
-		r_rtt_new.include_or_exclude := REPLACE(:NEW.include_or_exclude,' ','_');
-		r_rtt_new.xf_tsp_typ_name := REPLACE(:NEW.xf_tsp_typ_name,' ','_');
-		r_rtt_new.xf_tsp_tsg_code := REPLACE(:NEW.xf_tsp_tsg_code,' ','_');
-		r_rtt_new.xk_tsp_code := REPLACE(:NEW.xk_tsp_code,' ','_');
+		IF :NEW.fk_bot_name = ' ' THEN
+			r_rtt_new.fk_bot_name := ' ';
+		ELSE
+			r_rtt_new.fk_bot_name := REPLACE(:NEW.fk_bot_name,' ','_');
+		END IF;
+		IF :NEW.fk_typ_name = ' ' THEN
+			r_rtt_new.fk_typ_name := ' ';
+		ELSE
+			r_rtt_new.fk_typ_name := REPLACE(:NEW.fk_typ_name,' ','_');
+		END IF;
+		IF :NEW.include_or_exclude = ' ' THEN
+			r_rtt_new.include_or_exclude := ' ';
+		ELSE
+			r_rtt_new.include_or_exclude := REPLACE(:NEW.include_or_exclude,' ','_');
+		END IF;
+		IF :NEW.xf_tsp_typ_name = ' ' THEN
+			r_rtt_new.xf_tsp_typ_name := ' ';
+		ELSE
+			r_rtt_new.xf_tsp_typ_name := REPLACE(:NEW.xf_tsp_typ_name,' ','_');
+		END IF;
+		IF :NEW.xf_tsp_tsg_code = ' ' THEN
+			r_rtt_new.xf_tsp_tsg_code := ' ';
+		ELSE
+			r_rtt_new.xf_tsp_tsg_code := REPLACE(:NEW.xf_tsp_tsg_code,' ','_');
+		END IF;
+		IF :NEW.xk_tsp_code = ' ' THEN
+			r_rtt_new.xk_tsp_code := ' ';
+		ELSE
+			r_rtt_new.xk_tsp_code := REPLACE(:NEW.xk_tsp_code,' ','_');
+		END IF;
 	END IF;
 	IF UPDATING THEN
 		r_rtt_new.cube_id := :OLD.cube_id;
@@ -2024,13 +2251,52 @@ DECLARE
 BEGIN
 	IF INSERTING OR UPDATING THEN
 		r_jsn_new.cube_sequence := :NEW.cube_sequence;
-		r_jsn_new.fk_bot_name := REPLACE(:NEW.fk_bot_name,' ','_');
-		r_jsn_new.fk_typ_name := REPLACE(:NEW.fk_typ_name,' ','_');
+		IF :NEW.fk_bot_name = ' ' THEN
+			r_jsn_new.fk_bot_name := ' ';
+		ELSE
+			r_jsn_new.fk_bot_name := REPLACE(:NEW.fk_bot_name,' ','_');
+		END IF;
+		IF :NEW.fk_typ_name = ' ' THEN
+			r_jsn_new.fk_typ_name := ' ';
+		ELSE
+			r_jsn_new.fk_typ_name := REPLACE(:NEW.fk_typ_name,' ','_');
+		END IF;
 		r_jsn_new.fk_jsn_name := :NEW.fk_jsn_name;
 		r_jsn_new.fk_jsn_location := :NEW.fk_jsn_location;
+		IF :NEW.fk_jsn_atb_typ_name = ' ' THEN
+			r_jsn_new.fk_jsn_atb_typ_name := ' ';
+		ELSE
+			r_jsn_new.fk_jsn_atb_typ_name := REPLACE(:NEW.fk_jsn_atb_typ_name,' ','_');
+		END IF;
+		IF :NEW.fk_jsn_atb_name = ' ' THEN
+			r_jsn_new.fk_jsn_atb_name := ' ';
+		ELSE
+			r_jsn_new.fk_jsn_atb_name := REPLACE(:NEW.fk_jsn_atb_name,' ','_');
+		END IF;
+		IF :NEW.fk_jsn_typ_name = ' ' THEN
+			r_jsn_new.fk_jsn_typ_name := ' ';
+		ELSE
+			r_jsn_new.fk_jsn_typ_name := REPLACE(:NEW.fk_jsn_typ_name,' ','_');
+		END IF;
+		r_jsn_new.cube_tsg_obj_arr := :NEW.cube_tsg_obj_arr;
 		r_jsn_new.cube_tsg_type := :NEW.cube_tsg_type;
 		r_jsn_new.name := :NEW.name;
 		r_jsn_new.location := :NEW.location;
+		IF :NEW.xf_atb_typ_name = ' ' THEN
+			r_jsn_new.xf_atb_typ_name := ' ';
+		ELSE
+			r_jsn_new.xf_atb_typ_name := REPLACE(:NEW.xf_atb_typ_name,' ','_');
+		END IF;
+		IF :NEW.xk_atb_name = ' ' THEN
+			r_jsn_new.xk_atb_name := ' ';
+		ELSE
+			r_jsn_new.xk_atb_name := REPLACE(:NEW.xk_atb_name,' ','_');
+		END IF;
+		IF :NEW.xk_typ_name = ' ' THEN
+			r_jsn_new.xk_typ_name := ' ';
+		ELSE
+			r_jsn_new.xk_typ_name := REPLACE(:NEW.xk_typ_name,' ','_');
+		END IF;
 	END IF;
 	IF UPDATING THEN
 		r_jsn_new.cube_id := :OLD.cube_id;
@@ -2040,15 +2306,25 @@ BEGIN
 		SELECT rowid INTO l_cube_rowid FROM t_json_path
 		WHERE fk_typ_name = :OLD.fk_typ_name
 		  AND name = :OLD.name
-		  AND location = :OLD.location;
+		  AND location = :OLD.location
+		  AND xf_atb_typ_name = :OLD.xf_atb_typ_name
+		  AND xk_atb_name = :OLD.xk_atb_name
+		  AND xk_typ_name = :OLD.xk_typ_name;
 		r_jsn_old.cube_sequence := :OLD.cube_sequence;
 		r_jsn_old.fk_bot_name := :OLD.fk_bot_name;
 		r_jsn_old.fk_typ_name := :OLD.fk_typ_name;
 		r_jsn_old.fk_jsn_name := :OLD.fk_jsn_name;
 		r_jsn_old.fk_jsn_location := :OLD.fk_jsn_location;
+		r_jsn_old.fk_jsn_atb_typ_name := :OLD.fk_jsn_atb_typ_name;
+		r_jsn_old.fk_jsn_atb_name := :OLD.fk_jsn_atb_name;
+		r_jsn_old.fk_jsn_typ_name := :OLD.fk_jsn_typ_name;
+		r_jsn_old.cube_tsg_obj_arr := :OLD.cube_tsg_obj_arr;
 		r_jsn_old.cube_tsg_type := :OLD.cube_tsg_type;
 		r_jsn_old.name := :OLD.name;
 		r_jsn_old.location := :OLD.location;
+		r_jsn_old.xf_atb_typ_name := :OLD.xf_atb_typ_name;
+		r_jsn_old.xk_atb_name := :OLD.xk_atb_name;
+		r_jsn_old.xk_typ_name := :OLD.xk_typ_name;
 	END IF;
 
 	IF INSERTING THEN 
@@ -2057,51 +2333,6 @@ BEGIN
 		pkg_bot_trg.update_jsn (l_cube_rowid, r_jsn_old, r_jsn_new);
 	ELSIF DELETING THEN
 		pkg_bot_trg.delete_jsn (l_cube_rowid, r_jsn_old);
-	END IF;
-END;
-/
-SHOW ERRORS
-
-CREATE OR REPLACE TRIGGER trg_jpa
-INSTEAD OF INSERT OR DELETE OR UPDATE ON v_json_path_attribute
-FOR EACH ROW
-DECLARE
-	l_cube_rowid UROWID;
-	r_jpa_new v_json_path_attribute%ROWTYPE;
-	r_jpa_old v_json_path_attribute%ROWTYPE;
-BEGIN
-	IF INSERTING OR UPDATING THEN
-		r_jpa_new.fk_bot_name := REPLACE(:NEW.fk_bot_name,' ','_');
-		r_jpa_new.fk_typ_name := REPLACE(:NEW.fk_typ_name,' ','_');
-		r_jpa_new.fk_jsn_name := :NEW.fk_jsn_name;
-		r_jpa_new.fk_jsn_location := :NEW.fk_jsn_location;
-		r_jpa_new.xf_atb_typ_name := REPLACE(:NEW.xf_atb_typ_name,' ','_');
-		r_jpa_new.xk_atb_name := REPLACE(:NEW.xk_atb_name,' ','_');
-	END IF;
-	IF UPDATING THEN
-		r_jpa_new.cube_id := :OLD.cube_id;
-	END IF;
-	IF UPDATING OR DELETING THEN
-		SELECT rowid INTO l_cube_rowid FROM t_json_path_attribute
-		WHERE fk_typ_name = :OLD.fk_typ_name
-		  AND fk_jsn_name = :OLD.fk_jsn_name
-		  AND fk_jsn_location = :OLD.fk_jsn_location
-		  AND xf_atb_typ_name = :OLD.xf_atb_typ_name
-		  AND xk_atb_name = :OLD.xk_atb_name;
-		r_jpa_old.fk_bot_name := :OLD.fk_bot_name;
-		r_jpa_old.fk_typ_name := :OLD.fk_typ_name;
-		r_jpa_old.fk_jsn_name := :OLD.fk_jsn_name;
-		r_jpa_old.fk_jsn_location := :OLD.fk_jsn_location;
-		r_jpa_old.xf_atb_typ_name := :OLD.xf_atb_typ_name;
-		r_jpa_old.xk_atb_name := :OLD.xk_atb_name;
-	END IF;
-
-	IF INSERTING THEN 
-		pkg_bot_trg.insert_jpa (r_jpa_new);
-	ELSIF UPDATING THEN
-		pkg_bot_trg.update_jpa (l_cube_rowid, r_jpa_old, r_jpa_new);
-	ELSIF DELETING THEN
-		pkg_bot_trg.delete_jpa (l_cube_rowid, r_jpa_old);
 	END IF;
 END;
 /
@@ -2116,10 +2347,22 @@ DECLARE
 	r_tyr_old v_type_reuse%ROWTYPE;
 BEGIN
 	IF INSERTING OR UPDATING THEN
-		r_tyr_new.fk_bot_name := REPLACE(:NEW.fk_bot_name,' ','_');
-		r_tyr_new.fk_typ_name := REPLACE(:NEW.fk_typ_name,' ','_');
+		IF :NEW.fk_bot_name = ' ' THEN
+			r_tyr_new.fk_bot_name := ' ';
+		ELSE
+			r_tyr_new.fk_bot_name := REPLACE(:NEW.fk_bot_name,' ','_');
+		END IF;
+		IF :NEW.fk_typ_name = ' ' THEN
+			r_tyr_new.fk_typ_name := ' ';
+		ELSE
+			r_tyr_new.fk_typ_name := REPLACE(:NEW.fk_typ_name,' ','_');
+		END IF;
 		r_tyr_new.cardinality := :NEW.cardinality;
-		r_tyr_new.xk_typ_name := REPLACE(:NEW.xk_typ_name,' ','_');
+		IF :NEW.xk_typ_name = ' ' THEN
+			r_tyr_new.xk_typ_name := ' ';
+		ELSE
+			r_tyr_new.xk_typ_name := REPLACE(:NEW.xk_typ_name,' ','_');
+		END IF;
 	END IF;
 	IF UPDATING THEN
 		r_tyr_new.cube_id := :OLD.cube_id;
@@ -2154,9 +2397,21 @@ DECLARE
 	r_par_old v_partition%ROWTYPE;
 BEGIN
 	IF INSERTING OR UPDATING THEN
-		r_par_new.fk_bot_name := REPLACE(:NEW.fk_bot_name,' ','_');
-		r_par_new.fk_typ_name := REPLACE(:NEW.fk_typ_name,' ','_');
-		r_par_new.name := REPLACE(:NEW.name,' ','_');
+		IF :NEW.fk_bot_name = ' ' THEN
+			r_par_new.fk_bot_name := ' ';
+		ELSE
+			r_par_new.fk_bot_name := REPLACE(:NEW.fk_bot_name,' ','_');
+		END IF;
+		IF :NEW.fk_typ_name = ' ' THEN
+			r_par_new.fk_typ_name := ' ';
+		ELSE
+			r_par_new.fk_typ_name := REPLACE(:NEW.fk_typ_name,' ','_');
+		END IF;
+		IF :NEW.name = ' ' THEN
+			r_par_new.name := ' ';
+		ELSE
+			r_par_new.name := REPLACE(:NEW.name,' ','_');
+		END IF;
 	END IF;
 	IF UPDATING THEN
 		r_par_new.cube_id := :OLD.cube_id;
@@ -2191,10 +2446,26 @@ DECLARE
 BEGIN
 	IF INSERTING OR UPDATING THEN
 		r_stp_new.cube_sequence := :NEW.cube_sequence;
-		r_stp_new.fk_bot_name := REPLACE(:NEW.fk_bot_name,' ','_');
-		r_stp_new.fk_typ_name := REPLACE(:NEW.fk_typ_name,' ','_');
-		r_stp_new.fk_par_name := REPLACE(:NEW.fk_par_name,' ','_');
-		r_stp_new.name := REPLACE(:NEW.name,' ','_');
+		IF :NEW.fk_bot_name = ' ' THEN
+			r_stp_new.fk_bot_name := ' ';
+		ELSE
+			r_stp_new.fk_bot_name := REPLACE(:NEW.fk_bot_name,' ','_');
+		END IF;
+		IF :NEW.fk_typ_name = ' ' THEN
+			r_stp_new.fk_typ_name := ' ';
+		ELSE
+			r_stp_new.fk_typ_name := REPLACE(:NEW.fk_typ_name,' ','_');
+		END IF;
+		IF :NEW.fk_par_name = ' ' THEN
+			r_stp_new.fk_par_name := ' ';
+		ELSE
+			r_stp_new.fk_par_name := REPLACE(:NEW.fk_par_name,' ','_');
+		END IF;
+		IF :NEW.name = ' ' THEN
+			r_stp_new.name := ' ';
+		ELSE
+			r_stp_new.name := REPLACE(:NEW.name,' ','_');
+		END IF;
 	END IF;
 	IF UPDATING THEN
 		r_stp_new.cube_id := :OLD.cube_id;
@@ -2232,14 +2503,42 @@ DECLARE
 BEGIN
 	IF INSERTING OR UPDATING THEN
 		r_tsg_new.cube_sequence := :NEW.cube_sequence;
-		r_tsg_new.fk_bot_name := REPLACE(:NEW.fk_bot_name,' ','_');
-		r_tsg_new.fk_typ_name := REPLACE(:NEW.fk_typ_name,' ','_');
-		r_tsg_new.fk_tsg_code := REPLACE(:NEW.fk_tsg_code,' ','_');
-		r_tsg_new.code := REPLACE(:NEW.code,' ','_');
-		r_tsg_new.name := REPLACE(:NEW.name,' ','_');
+		IF :NEW.fk_bot_name = ' ' THEN
+			r_tsg_new.fk_bot_name := ' ';
+		ELSE
+			r_tsg_new.fk_bot_name := REPLACE(:NEW.fk_bot_name,' ','_');
+		END IF;
+		IF :NEW.fk_typ_name = ' ' THEN
+			r_tsg_new.fk_typ_name := ' ';
+		ELSE
+			r_tsg_new.fk_typ_name := REPLACE(:NEW.fk_typ_name,' ','_');
+		END IF;
+		IF :NEW.fk_tsg_code = ' ' THEN
+			r_tsg_new.fk_tsg_code := ' ';
+		ELSE
+			r_tsg_new.fk_tsg_code := REPLACE(:NEW.fk_tsg_code,' ','_');
+		END IF;
+		IF :NEW.code = ' ' THEN
+			r_tsg_new.code := ' ';
+		ELSE
+			r_tsg_new.code := REPLACE(:NEW.code,' ','_');
+		END IF;
+		IF :NEW.name = ' ' THEN
+			r_tsg_new.name := ' ';
+		ELSE
+			r_tsg_new.name := REPLACE(:NEW.name,' ','_');
+		END IF;
 		r_tsg_new.primary_key := :NEW.primary_key;
-		r_tsg_new.xf_atb_typ_name := REPLACE(:NEW.xf_atb_typ_name,' ','_');
-		r_tsg_new.xk_atb_name := REPLACE(:NEW.xk_atb_name,' ','_');
+		IF :NEW.xf_atb_typ_name = ' ' THEN
+			r_tsg_new.xf_atb_typ_name := ' ';
+		ELSE
+			r_tsg_new.xf_atb_typ_name := REPLACE(:NEW.xf_atb_typ_name,' ','_');
+		END IF;
+		IF :NEW.xk_atb_name = ' ' THEN
+			r_tsg_new.xk_atb_name := ' ';
+		ELSE
+			r_tsg_new.xk_atb_name := REPLACE(:NEW.xk_atb_name,' ','_');
+		END IF;
 	END IF;
 	IF UPDATING THEN
 		r_tsg_new.cube_id := :OLD.cube_id;
@@ -2281,14 +2580,46 @@ DECLARE
 BEGIN
 	IF INSERTING OR UPDATING THEN
 		r_tsp_new.cube_sequence := :NEW.cube_sequence;
-		r_tsp_new.fk_bot_name := REPLACE(:NEW.fk_bot_name,' ','_');
-		r_tsp_new.fk_typ_name := REPLACE(:NEW.fk_typ_name,' ','_');
-		r_tsp_new.fk_tsg_code := REPLACE(:NEW.fk_tsg_code,' ','_');
-		r_tsp_new.code := REPLACE(:NEW.code,' ','_');
-		r_tsp_new.name := REPLACE(:NEW.name,' ','_');
-		r_tsp_new.xf_tsp_typ_name := REPLACE(:NEW.xf_tsp_typ_name,' ','_');
-		r_tsp_new.xf_tsp_tsg_code := REPLACE(:NEW.xf_tsp_tsg_code,' ','_');
-		r_tsp_new.xk_tsp_code := REPLACE(:NEW.xk_tsp_code,' ','_');
+		IF :NEW.fk_bot_name = ' ' THEN
+			r_tsp_new.fk_bot_name := ' ';
+		ELSE
+			r_tsp_new.fk_bot_name := REPLACE(:NEW.fk_bot_name,' ','_');
+		END IF;
+		IF :NEW.fk_typ_name = ' ' THEN
+			r_tsp_new.fk_typ_name := ' ';
+		ELSE
+			r_tsp_new.fk_typ_name := REPLACE(:NEW.fk_typ_name,' ','_');
+		END IF;
+		IF :NEW.fk_tsg_code = ' ' THEN
+			r_tsp_new.fk_tsg_code := ' ';
+		ELSE
+			r_tsp_new.fk_tsg_code := REPLACE(:NEW.fk_tsg_code,' ','_');
+		END IF;
+		IF :NEW.code = ' ' THEN
+			r_tsp_new.code := ' ';
+		ELSE
+			r_tsp_new.code := REPLACE(:NEW.code,' ','_');
+		END IF;
+		IF :NEW.name = ' ' THEN
+			r_tsp_new.name := ' ';
+		ELSE
+			r_tsp_new.name := REPLACE(:NEW.name,' ','_');
+		END IF;
+		IF :NEW.xf_tsp_typ_name = ' ' THEN
+			r_tsp_new.xf_tsp_typ_name := ' ';
+		ELSE
+			r_tsp_new.xf_tsp_typ_name := REPLACE(:NEW.xf_tsp_typ_name,' ','_');
+		END IF;
+		IF :NEW.xf_tsp_tsg_code = ' ' THEN
+			r_tsp_new.xf_tsp_tsg_code := ' ';
+		ELSE
+			r_tsp_new.xf_tsp_tsg_code := REPLACE(:NEW.xf_tsp_tsg_code,' ','_');
+		END IF;
+		IF :NEW.xk_tsp_code = ' ' THEN
+			r_tsp_new.xk_tsp_code := ' ';
+		ELSE
+			r_tsp_new.xk_tsp_code := REPLACE(:NEW.xk_tsp_code,' ','_');
+		END IF;
 	END IF;
 	IF UPDATING THEN
 		r_tsp_new.cube_id := :OLD.cube_id;
@@ -2329,8 +2660,16 @@ DECLARE
 	r_dct_old v_description_type%ROWTYPE;
 BEGIN
 	IF INSERTING OR UPDATING THEN
-		r_dct_new.fk_bot_name := REPLACE(:NEW.fk_bot_name,' ','_');
-		r_dct_new.fk_typ_name := REPLACE(:NEW.fk_typ_name,' ','_');
+		IF :NEW.fk_bot_name = ' ' THEN
+			r_dct_new.fk_bot_name := ' ';
+		ELSE
+			r_dct_new.fk_bot_name := REPLACE(:NEW.fk_bot_name,' ','_');
+		END IF;
+		IF :NEW.fk_typ_name = ' ' THEN
+			r_dct_new.fk_typ_name := ' ';
+		ELSE
+			r_dct_new.fk_typ_name := REPLACE(:NEW.fk_typ_name,' ','_');
+		END IF;
 		r_dct_new.text := :NEW.text;
 	END IF;
 	IF UPDATING THEN
@@ -2359,9 +2698,11 @@ CREATE OR REPLACE VIEW v_system AS
 	SELECT
 		cube_id,
 		name,
+		cube_tsg_type,
 		database,
 		schema,
-		password
+		password,
+		table_prefix
 	FROM t_system
 /
 CREATE OR REPLACE VIEW v_system_bo_type AS 
@@ -2392,15 +2733,19 @@ CREATE OR REPLACE PACKAGE BODY pkg_sys_trg IS
 		INSERT INTO t_system (
 			cube_id,
 			name,
+			cube_tsg_type,
 			database,
 			schema,
-			password)
+			password,
+			table_prefix)
 		VALUES (
 			p_sys.cube_id,
 			p_sys.name,
+			p_sys.cube_tsg_type,
 			p_sys.database,
 			p_sys.schema,
-			p_sys.password);
+			p_sys.password,
+			p_sys.table_prefix);
 	END;
 
 	PROCEDURE update_sys (p_cube_rowid UROWID, p_sys_old IN OUT NOCOPY v_system%ROWTYPE, p_sys_new IN OUT NOCOPY v_system%ROWTYPE) IS
@@ -2408,7 +2753,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_sys_trg IS
 		UPDATE t_system SET 
 			database = p_sys_new.database,
 			schema = p_sys_new.schema,
-			password = p_sys_new.password
+			password = p_sys_new.password,
+			table_prefix = p_sys_new.table_prefix
 		WHERE rowid = p_cube_rowid;
 	END;
 
@@ -2458,10 +2804,32 @@ DECLARE
 	r_sys_old v_system%ROWTYPE;
 BEGIN
 	IF INSERTING OR UPDATING THEN
-		r_sys_new.name := REPLACE(:NEW.name,' ','_');
-		r_sys_new.database := REPLACE(:NEW.database,' ','_');
-		r_sys_new.schema := REPLACE(:NEW.schema,' ','_');
-		r_sys_new.password := REPLACE(:NEW.password,' ','_');
+		IF :NEW.name = ' ' THEN
+			r_sys_new.name := ' ';
+		ELSE
+			r_sys_new.name := REPLACE(:NEW.name,' ','_');
+		END IF;
+		r_sys_new.cube_tsg_type := :NEW.cube_tsg_type;
+		IF :NEW.database = ' ' THEN
+			r_sys_new.database := ' ';
+		ELSE
+			r_sys_new.database := REPLACE(:NEW.database,' ','_');
+		END IF;
+		IF :NEW.schema = ' ' THEN
+			r_sys_new.schema := ' ';
+		ELSE
+			r_sys_new.schema := REPLACE(:NEW.schema,' ','_');
+		END IF;
+		IF :NEW.password = ' ' THEN
+			r_sys_new.password := ' ';
+		ELSE
+			r_sys_new.password := REPLACE(:NEW.password,' ','_');
+		END IF;
+		IF :NEW.table_prefix = ' ' THEN
+			r_sys_new.table_prefix := ' ';
+		ELSE
+			r_sys_new.table_prefix := REPLACE(:NEW.table_prefix,' ','_');
+		END IF;
 	END IF;
 	IF UPDATING THEN
 		r_sys_new.cube_id := :OLD.cube_id;
@@ -2470,9 +2838,11 @@ BEGIN
 		SELECT rowid INTO l_cube_rowid FROM t_system
 		WHERE name = :OLD.name;
 		r_sys_old.name := :OLD.name;
+		r_sys_old.cube_tsg_type := :OLD.cube_tsg_type;
 		r_sys_old.database := :OLD.database;
 		r_sys_old.schema := :OLD.schema;
 		r_sys_old.password := :OLD.password;
+		r_sys_old.table_prefix := :OLD.table_prefix;
 	END IF;
 
 	IF INSERTING THEN 
@@ -2496,8 +2866,16 @@ DECLARE
 BEGIN
 	IF INSERTING OR UPDATING THEN
 		r_sbt_new.cube_sequence := :NEW.cube_sequence;
-		r_sbt_new.fk_sys_name := REPLACE(:NEW.fk_sys_name,' ','_');
-		r_sbt_new.xk_bot_name := REPLACE(:NEW.xk_bot_name,' ','_');
+		IF :NEW.fk_sys_name = ' ' THEN
+			r_sbt_new.fk_sys_name := ' ';
+		ELSE
+			r_sbt_new.fk_sys_name := REPLACE(:NEW.fk_sys_name,' ','_');
+		END IF;
+		IF :NEW.xk_bot_name = ' ' THEN
+			r_sbt_new.xk_bot_name := ' ';
+		ELSE
+			r_sbt_new.xk_bot_name := REPLACE(:NEW.xk_bot_name,' ','_');
+		END IF;
 	END IF;
 	IF UPDATING THEN
 		r_sbt_new.cube_id := :OLD.cube_id;

@@ -1,3 +1,4 @@
+
 -- TABLE DDL
 --
 DROP SEQUENCE cube_dsc_seq

@@ -1,5 +1,19 @@
+Change log:
+10-08-2019 - Just drop all from current owner;
+[[BODY]]
 -- TABLE DDL
---[[LOOP,DATABASE]][[LOOP,SEQUENCE]]
+--[[LOOP,DATABASE]][[*****
+COLUMN current_schema NEW_VALUE my_owner;
+SELECT sys_context('USERENV','CURRENT_SCHEMA') as current_schema FROM DUAL;
+
+select * from  all_tables where owner = '&my_owner';
+
+
+
+
+
+
+*****]][[LOOP,SEQUENCE]]
 DROP SEQUENCE <<SEQUENCE:L>>
 /
 CREATE SEQUENCE <<SEQUENCE:L>> START WITH <<SEQUENCE1>>
@@ -18,3 +32,4 @@ CREATE TABLE <<TABLE:L>> ([[LOOP,FIELD]]
 		ON DELETE CASCADE[[ENDIF]][[ENDLOOP,FOREIGN_KEY]] )
 /[[ENDLOOP,TABLE]][[ENDLOOP,DATABASE]]
 EXIT;
+[[ENDBODY]]

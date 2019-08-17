@@ -334,8 +334,6 @@ $FKeyTyp[0] = '';
 $ITyp = 0;
 $FKeyAtb = '';
 $FKeyRef = '';
-$FKeyJsn[0] = '';
-$IJsn = 0;
 $FKeyPar = '';
 $FKeyTsg[0] = '';
 $ITsg = 0;
@@ -368,7 +366,6 @@ print IMPORT "DELETE v_description_reference;\n";
 print IMPORT "DELETE v_restriction_type_spec_ref;\n";
 print IMPORT "DELETE v_restriction_type_spec_typ;\n";
 print IMPORT "DELETE v_json_path;\n";
-print IMPORT "DELETE v_json_path_attribute;\n";
 print IMPORT "DELETE v_type_reuse;\n";
 print IMPORT "DELETE v_partition;\n";
 print IMPORT "DELETE v_subtype;\n";
@@ -608,26 +605,8 @@ my (@FkeyValues);
 						} else {
 							$FKeyFlag = 0;
 						}
-						print IMPORT "INSERT INTO v_json_path (CUBE_SEQUENCE, FK_BOT_NAME, FK_TYP_NAME, FK_JSN_NAME, FK_JSN_LOCATION, CUBE_TSG_TYPE, NAME, LOCATION)\n"; 
-						print IMPORT "	VALUES ($Sequence, '$_[1]', '$_[2]', '".SwitchFlag($FKeyFlag,$_[3])."', ".SwitchFlag($FKeyFlag,$_[4]).", '".ReplX($NodeString[$j])."', '".ReplX($NodeValue[$NodeValuePntr[$j]])."', ".ReplX($NodeValue[$NodeValuePntr[$j]+1]).");\n";
-						print IMPORT "\n";
-						$FkeyValues[0] = $_[1];
-						$FkeyValues[1] = $_[2];
-						$FkeyValues[2] = ReplX($NodeValue[$NodeValuePntr[$j]]);
-						$FkeyValues[3] = ReplX($NodeValue[$NodeValuePntr[$j]+1]);
-						$i = $NodeFirst[$j];
-						CreateInsertStmnts($i,@FkeyValues);
-						$j = $NodeNext[$j];
-					}
-				}
-				case "JSON_PATH_ATTRIBUTE" {
-					$j = $NodeFirst[$_[0]];
-					while (1) {
-						if ($j == -1) {
-							last;
-						}
-						print IMPORT "INSERT INTO v_json_path_attribute (FK_BOT_NAME, FK_TYP_NAME, FK_JSN_NAME, FK_JSN_LOCATION, XF_ATB_TYP_NAME, XK_ATB_NAME)\n"; 
-						print IMPORT "	VALUES ('$_[1]', '$_[2]', '$_[3]', $_[4], '".ReplX(GetXkey($j,'ATTRIBUTE','TYPE',001))."', '".ReplX(GetXkey($j,'ATTRIBUTE','ATTRIBUTE',001))."');\n";
+						print IMPORT "INSERT INTO v_json_path (CUBE_SEQUENCE, FK_BOT_NAME, FK_TYP_NAME, FK_JSN_NAME, FK_JSN_LOCATION, FK_JSN_ATB_TYP_NAME, FK_JSN_ATB_NAME, FK_JSN_TYP_NAME, CUBE_TSG_OBJ_ARR, CUBE_TSG_TYPE, NAME, LOCATION, XF_ATB_TYP_NAME, XK_ATB_NAME, XK_TYP_NAME)\n"; 
+						print IMPORT "	VALUES ($Sequence, '$_[1]', '$_[2]', '".SwitchFlag($FKeyFlag,$_[3])."', ".SwitchFlag($FKeyFlag,$_[4]).", '".SwitchFlag($FKeyFlag,$_[5])."', '".SwitchFlag($FKeyFlag,$_[6])."', '".SwitchFlag($FKeyFlag,$_[7])."', '".ReplX($NodeString[$j])."', '".ReplX($NodeValue[$NodeValuePntr[$j]])."', '".ReplX($NodeValue[$NodeValuePntr[$j]+1])."', ".ReplX($NodeValue[$NodeValuePntr[$j]+2]).", '".ReplX(GetXkey($j,'ATTRIBUTE','TYPE',001))."', '".ReplX(GetXkey($j,'ATTRIBUTE','ATTRIBUTE',001))."', '".ReplX(GetXkey($j,'JSON_PATH_TYPE','TYPE',001))."');\n";
 						print IMPORT "\n";
 						$j = $NodeNext[$j];
 					}
@@ -734,8 +713,8 @@ my (@FkeyValues);
 						if ($j == -1) {
 							last;
 						}
-						print IMPORT "INSERT INTO v_system (NAME, DATABASE, SCHEMA, PASSWORD)\n"; 
-						print IMPORT "	VALUES ('".ReplX($NodeString[$j])."', '".ReplX($NodeValue[$NodeValuePntr[$j]])."', '".ReplX($NodeValue[$NodeValuePntr[$j]+1])."', '".ReplX($NodeValue[$NodeValuePntr[$j]+2])."');\n";
+						print IMPORT "INSERT INTO v_system (NAME, CUBE_TSG_TYPE, DATABASE, SCHEMA, PASSWORD, TABLE_PREFIX)\n"; 
+						print IMPORT "	VALUES ('".ReplX($NodeString[$j])."', '".ReplX($NodeValue[$NodeValuePntr[$j]])."', '".ReplX($NodeValue[$NodeValuePntr[$j]+1])."', '".ReplX($NodeValue[$NodeValuePntr[$j]+2])."', '".ReplX($NodeValue[$NodeValuePntr[$j]+3])."', '".ReplX($NodeValue[$NodeValuePntr[$j]+4])."');\n";
 						print IMPORT "\n";
 						$FkeyValues[0] = ReplX($NodeString[$j]);
 						$i = $NodeFirst[$j];

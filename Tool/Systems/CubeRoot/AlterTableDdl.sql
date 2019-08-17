@@ -186,19 +186,6 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
-	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBEROOT' AND sequence_name = 'JPA_SEQ';
-	IF l_count = 0 THEN
-
-		EXECUTE IMMEDIATE 
-		'CREATE SEQUENCE jpa_seq START WITH 100000';
-		DBMS_OUTPUT.PUT_LINE('Sequence JPA_SEQ created');
-
-	END IF;
-END;
-/
-DECLARE
-	l_count NUMBER(4);
-BEGIN
 	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBEROOT' AND sequence_name = 'TYR_SEQ';
 	IF l_count = 0 THEN
 
@@ -1522,9 +1509,16 @@ BEGIN
 			fk_typ_name VARCHAR2(30),
 			fk_jsn_name VARCHAR2(32),
 			fk_jsn_location NUMBER(8) DEFAULT ''0'',
-			cube_tsg_type VARCHAR2(8) DEFAULT ''OBJECT'',
+			fk_jsn_atb_typ_name VARCHAR2(30),
+			fk_jsn_atb_name VARCHAR2(30),
+			fk_jsn_typ_name VARCHAR2(30),
+			cube_tsg_obj_arr VARCHAR2(8) DEFAULT ''OBJ'',
+			cube_tsg_type VARCHAR2(8) DEFAULT ''GRP'',
 			name VARCHAR2(32),
-			location NUMBER(8) DEFAULT ''0'')';
+			location NUMBER(8) DEFAULT ''0'',
+			xf_atb_typ_name VARCHAR2(30),
+			xk_atb_name VARCHAR2(30),
+			xk_typ_name VARCHAR2(30))';
 		DBMS_OUTPUT.PUT_LINE('Table T_JSON_PATH created');
 	ELSE
 
@@ -1577,10 +1571,38 @@ BEGIN
 			DBMS_OUTPUT.PUT_LINE('Column T_JSON_PATH.FK_JSN_LOCATION created');
 		END IF;
 
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_JSON_PATH' AND column_name = 'FK_JSN_ATB_TYP_NAME';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_json_path ADD fk_jsn_atb_typ_name VARCHAR2(30)';
+			DBMS_OUTPUT.PUT_LINE('Column T_JSON_PATH.FK_JSN_ATB_TYP_NAME created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_JSON_PATH' AND column_name = 'FK_JSN_ATB_NAME';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_json_path ADD fk_jsn_atb_name VARCHAR2(30)';
+			DBMS_OUTPUT.PUT_LINE('Column T_JSON_PATH.FK_JSN_ATB_NAME created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_JSON_PATH' AND column_name = 'FK_JSN_TYP_NAME';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_json_path ADD fk_jsn_typ_name VARCHAR2(30)';
+			DBMS_OUTPUT.PUT_LINE('Column T_JSON_PATH.FK_JSN_TYP_NAME created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_JSON_PATH' AND column_name = 'CUBE_TSG_OBJ_ARR';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_json_path ADD cube_tsg_obj_arr VARCHAR2(8) DEFAULT ''OBJ''';
+			DBMS_OUTPUT.PUT_LINE('Column T_JSON_PATH.CUBE_TSG_OBJ_ARR created');
+		END IF;
+
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_JSON_PATH' AND column_name = 'CUBE_TSG_TYPE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
-			'ALTER TABLE t_json_path ADD cube_tsg_type VARCHAR2(8) DEFAULT ''OBJECT''';
+			'ALTER TABLE t_json_path ADD cube_tsg_type VARCHAR2(8) DEFAULT ''GRP''';
 			DBMS_OUTPUT.PUT_LINE('Column T_JSON_PATH.CUBE_TSG_TYPE created');
 		END IF;
 
@@ -1598,6 +1620,27 @@ BEGIN
 			DBMS_OUTPUT.PUT_LINE('Column T_JSON_PATH.LOCATION created');
 		END IF;
 
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_JSON_PATH' AND column_name = 'XF_ATB_TYP_NAME';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_json_path ADD xf_atb_typ_name VARCHAR2(30)';
+			DBMS_OUTPUT.PUT_LINE('Column T_JSON_PATH.XF_ATB_TYP_NAME created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_JSON_PATH' AND column_name = 'XK_ATB_NAME';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_json_path ADD xk_atb_name VARCHAR2(30)';
+			DBMS_OUTPUT.PUT_LINE('Column T_JSON_PATH.XK_ATB_NAME created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_JSON_PATH' AND column_name = 'XK_TYP_NAME';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_json_path ADD xk_typ_name VARCHAR2(30)';
+			DBMS_OUTPUT.PUT_LINE('Column T_JSON_PATH.XK_TYP_NAME created');
+		END IF;
+
 		FOR r_key IN (SELECT constraint_name FROM all_constraints WHERE owner = 'CUBEROOT' AND table_name = 'T_JSON_PATH' AND constraint_type IN ('P','U','R') ORDER BY constraint_type DESC)
 		LOOP
 			EXECUTE IMMEDIATE
@@ -1610,89 +1653,6 @@ BEGIN
 			EXECUTE IMMEDIATE
 			'DROP INDEX ' || r_index.index_name;
 			DBMS_OUTPUT.PUT_LINE('Index T_JSON_PATH.' || UPPER(r_index.index_name) || ' dropped');
-		END LOOP;
-	END IF;
-END;
-/
-DECLARE
-	l_count NUMBER(4);
-BEGIN
-	DBMS_OUTPUT.PUT_LINE('Prepare table T_JSON_PATH_ATTRIBUTE');
-	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = 'CUBEROOT' AND table_name = 'T_JSON_PATH_ATTRIBUTE';
-	IF l_count = 0 THEN
-		EXECUTE IMMEDIATE
-		'CREATE TABLE t_json_path_attribute (
-			cube_id VARCHAR2(16),
-			fk_bot_name VARCHAR2(30),
-			fk_typ_name VARCHAR2(30),
-			fk_jsn_name VARCHAR2(32),
-			fk_jsn_location NUMBER(8) DEFAULT ''0'',
-			xf_atb_typ_name VARCHAR2(30),
-			xk_atb_name VARCHAR2(30))';
-		DBMS_OUTPUT.PUT_LINE('Table T_JSON_PATH_ATTRIBUTE created');
-	ELSE
-
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_JSON_PATH_ATTRIBUTE' AND column_name = 'CUBE_ID';
-		IF l_count = 0 THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_json_path_attribute ADD cube_id VARCHAR2(16)';
-			DBMS_OUTPUT.PUT_LINE('Column T_JSON_PATH_ATTRIBUTE.CUBE_ID created');
-		END IF;
-
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_JSON_PATH_ATTRIBUTE' AND column_name = 'FK_BOT_NAME';
-		IF l_count = 0 THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_json_path_attribute ADD fk_bot_name VARCHAR2(30)';
-			DBMS_OUTPUT.PUT_LINE('Column T_JSON_PATH_ATTRIBUTE.FK_BOT_NAME created');
-		END IF;
-
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_JSON_PATH_ATTRIBUTE' AND column_name = 'FK_TYP_NAME';
-		IF l_count = 0 THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_json_path_attribute ADD fk_typ_name VARCHAR2(30)';
-			DBMS_OUTPUT.PUT_LINE('Column T_JSON_PATH_ATTRIBUTE.FK_TYP_NAME created');
-		END IF;
-
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_JSON_PATH_ATTRIBUTE' AND column_name = 'FK_JSN_NAME';
-		IF l_count = 0 THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_json_path_attribute ADD fk_jsn_name VARCHAR2(32)';
-			DBMS_OUTPUT.PUT_LINE('Column T_JSON_PATH_ATTRIBUTE.FK_JSN_NAME created');
-		END IF;
-
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_JSON_PATH_ATTRIBUTE' AND column_name = 'FK_JSN_LOCATION';
-		IF l_count = 0 THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_json_path_attribute ADD fk_jsn_location NUMBER(8) DEFAULT ''0''';
-			DBMS_OUTPUT.PUT_LINE('Column T_JSON_PATH_ATTRIBUTE.FK_JSN_LOCATION created');
-		END IF;
-
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_JSON_PATH_ATTRIBUTE' AND column_name = 'XF_ATB_TYP_NAME';
-		IF l_count = 0 THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_json_path_attribute ADD xf_atb_typ_name VARCHAR2(30)';
-			DBMS_OUTPUT.PUT_LINE('Column T_JSON_PATH_ATTRIBUTE.XF_ATB_TYP_NAME created');
-		END IF;
-
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_JSON_PATH_ATTRIBUTE' AND column_name = 'XK_ATB_NAME';
-		IF l_count = 0 THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_json_path_attribute ADD xk_atb_name VARCHAR2(30)';
-			DBMS_OUTPUT.PUT_LINE('Column T_JSON_PATH_ATTRIBUTE.XK_ATB_NAME created');
-		END IF;
-
-		FOR r_key IN (SELECT constraint_name FROM all_constraints WHERE owner = 'CUBEROOT' AND table_name = 'T_JSON_PATH_ATTRIBUTE' AND constraint_type IN ('P','U','R') ORDER BY constraint_type DESC)
-		LOOP
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_json_path_attribute DROP CONSTRAINT ' || r_key.constraint_name || ' CASCADE';
-			DBMS_OUTPUT.PUT_LINE('Primary Key T_JSON_PATH_ATTRIBUTE.' || UPPER(r_key.constraint_name) || ' dropped');
-		END LOOP;
-
-		FOR r_index IN (SELECT index_name FROM all_indexes WHERE owner = 'CUBEROOT' AND table_name = 'T_JSON_PATH_ATTRIBUTE')
-		LOOP
-			EXECUTE IMMEDIATE
-			'DROP INDEX ' || r_index.index_name;
-			DBMS_OUTPUT.PUT_LINE('Index T_JSON_PATH_ATTRIBUTE.' || UPPER(r_index.index_name) || ' dropped');
 		END LOOP;
 	END IF;
 END;
@@ -2189,9 +2149,11 @@ BEGIN
 		'CREATE TABLE t_system (
 			cube_id VARCHAR2(16),
 			name VARCHAR2(30),
+			cube_tsg_type VARCHAR2(8) DEFAULT ''PRIMARY'',
 			database VARCHAR2(30),
 			schema VARCHAR2(30),
-			password VARCHAR2(20))';
+			password VARCHAR2(20),
+			table_prefix VARCHAR2(4))';
 		DBMS_OUTPUT.PUT_LINE('Table T_SYSTEM created');
 	ELSE
 
@@ -2207,6 +2169,13 @@ BEGIN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_system ADD name VARCHAR2(30)';
 			DBMS_OUTPUT.PUT_LINE('Column T_SYSTEM.NAME created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_SYSTEM' AND column_name = 'CUBE_TSG_TYPE';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_system ADD cube_tsg_type VARCHAR2(8) DEFAULT ''PRIMARY''';
+			DBMS_OUTPUT.PUT_LINE('Column T_SYSTEM.CUBE_TSG_TYPE created');
 		END IF;
 
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_SYSTEM' AND column_name = 'DATABASE';
@@ -2228,6 +2197,13 @@ BEGIN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_system ADD password VARCHAR2(20)';
 			DBMS_OUTPUT.PUT_LINE('Column T_SYSTEM.PASSWORD created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_SYSTEM' AND column_name = 'TABLE_PREFIX';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_system ADD table_prefix VARCHAR2(4)';
+			DBMS_OUTPUT.PUT_LINE('Column T_SYSTEM.TABLE_PREFIX created');
 		END IF;
 
 		FOR r_key IN (SELECT constraint_name FROM all_constraints WHERE owner = 'CUBEROOT' AND table_name = 'T_SYSTEM' AND constraint_type IN ('P','U','R') ORDER BY constraint_type DESC)
@@ -2324,7 +2300,6 @@ BEGIN
 							'T_RESTRICTION_TYPE_SPEC_REF',
 							'T_RESTRICTION_TYPE_SPEC_TYP',
 							'T_JSON_PATH',
-							'T_JSON_PATH_ATTRIBUTE',
 							'T_TYPE_REUSE',
 							'T_PARTITION',
 							'T_SUBTYPE',
@@ -3329,9 +3304,16 @@ BEGIN
 			'FK_TYP_NAME','VARCHAR2(30)',
 			'FK_JSN_NAME','VARCHAR2(32)',
 			'FK_JSN_LOCATION','NUMBER(8)',
+			'FK_JSN_ATB_TYP_NAME','VARCHAR2(30)',
+			'FK_JSN_ATB_NAME','VARCHAR2(30)',
+			'FK_JSN_TYP_NAME','VARCHAR2(30)',
+			'CUBE_TSG_OBJ_ARR','VARCHAR2(8)',
 			'CUBE_TSG_TYPE','VARCHAR2(8)',
 			'NAME','VARCHAR2(32)',
-			'LOCATION','NUMBER(8)',NULL) new_domain,
+			'LOCATION','NUMBER(8)',
+			'XF_ATB_TYP_NAME','VARCHAR2(30)',
+			'XK_ATB_NAME','VARCHAR2(30)',
+			'XK_TYP_NAME','VARCHAR2(30)',NULL) new_domain,
 		DECODE(column_name,
 			'CUBE_ID',NULL,
 			'CUBE_SEQUENCE',NULL,
@@ -3340,9 +3322,16 @@ BEGIN
 			'FK_TYP_NAME',NULL,
 			'FK_JSN_NAME',NULL,
 			'FK_JSN_LOCATION','''0''',
-			'CUBE_TSG_TYPE','''OBJECT''',
+			'FK_JSN_ATB_TYP_NAME',NULL,
+			'FK_JSN_ATB_NAME',NULL,
+			'FK_JSN_TYP_NAME',NULL,
+			'CUBE_TSG_OBJ_ARR','''OBJ''',
+			'CUBE_TSG_TYPE','''GRP''',
 			'NAME',NULL,
-			'LOCATION','''0''',NULL) new_default_value
+			'LOCATION','''0''',
+			'XF_ATB_TYP_NAME',NULL,
+			'XK_ATB_NAME',NULL,
+			'XK_TYP_NAME',NULL,NULL) new_default_value
   		FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_JSON_PATH')
 	LOOP
 		IF r_field.old_domain <> r_field.new_domain THEN
@@ -3372,7 +3361,10 @@ BEGIN
 		PRIMARY KEY (
 			fk_typ_name,
 			name,
-			location )';
+			location,
+			xf_atb_typ_name,
+			xk_atb_name,
+			xk_typ_name )';
 	DBMS_OUTPUT.PUT_LINE('Primary Key T_JSON_PATH.JSN_PK created');
 	EXECUTE IMMEDIATE
 	'ALTER TABLE t_json_path ADD CONSTRAINT jsn_typ_fk
@@ -3381,8 +3373,8 @@ BEGIN
 		ON DELETE CASCADE';
 	EXECUTE IMMEDIATE
 	'ALTER TABLE t_json_path ADD CONSTRAINT jsn_jsn_fk
-		FOREIGN KEY (fk_typ_name, fk_jsn_name, fk_jsn_location)
-		REFERENCES t_json_path (fk_typ_name, name, location)
+		FOREIGN KEY (fk_typ_name, fk_jsn_name, fk_jsn_location, fk_jsn_atb_typ_name, fk_jsn_atb_name, fk_jsn_typ_name)
+		REFERENCES t_json_path (fk_typ_name, name, location, xf_atb_typ_name, xk_atb_name, xk_typ_name)
 		ON DELETE CASCADE';
 	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_JSON_PATH' AND column_name NOT IN (
 							'CUBE_ID',
@@ -3392,87 +3384,20 @@ BEGIN
 							'FK_TYP_NAME',
 							'FK_JSN_NAME',
 							'FK_JSN_LOCATION',
+							'FK_JSN_ATB_TYP_NAME',
+							'FK_JSN_ATB_NAME',
+							'FK_JSN_TYP_NAME',
+							'CUBE_TSG_OBJ_ARR',
 							'CUBE_TSG_TYPE',
 							'NAME',
-							'LOCATION'))
+							'LOCATION',
+							'XF_ATB_TYP_NAME',
+							'XK_ATB_NAME',
+							'XK_TYP_NAME'))
 	LOOP
 		EXECUTE IMMEDIATE
 		'ALTER TABLE t_json_path DROP COLUMN ' || r_field.column_name;
 		DBMS_OUTPUT.PUT_LINE('Field T_JSON_PATH.' || UPPER(r_field.column_name) || ' dropped');
-	END LOOP;
-END;
-/
-BEGIN
-	DBMS_OUTPUT.PUT_LINE('Maintain table T_JSON_PATH_ATTRIBUTE');
-	FOR r_field IN (SELECT column_name,
-		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
-		data_default old_default_value,
-  		DECODE(column_name,
-			'CUBE_ID','VARCHAR2(16)',
-			'FK_BOT_NAME','VARCHAR2(30)',
-			'FK_TYP_NAME','VARCHAR2(30)',
-			'FK_JSN_NAME','VARCHAR2(32)',
-			'FK_JSN_LOCATION','NUMBER(8)',
-			'XF_ATB_TYP_NAME','VARCHAR2(30)',
-			'XK_ATB_NAME','VARCHAR2(30)',NULL) new_domain,
-		DECODE(column_name,
-			'CUBE_ID',NULL,
-			'FK_BOT_NAME',NULL,
-			'FK_TYP_NAME',NULL,
-			'FK_JSN_NAME',NULL,
-			'FK_JSN_LOCATION','''0''',
-			'XF_ATB_TYP_NAME',NULL,
-			'XK_ATB_NAME',NULL,NULL) new_default_value
-  		FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_JSON_PATH_ATTRIBUTE')
-	LOOP
-		IF r_field.old_domain <> r_field.new_domain THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_json_path_attribute RENAME COLUMN ' || r_field.column_name || ' TO old#domain#field';
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_json_path_attribute ADD ' || r_field.column_name || ' ' || r_field.new_domain;
- 			IF r_field.new_domain = 'VARCHAR2' THEN  
-				EXECUTE IMMEDIATE
-				'UPDATE t_json_path_attribute SET ' || r_field.column_name || '= TRIM(old#domain#field)';
-			ELSE
-				EXECUTE IMMEDIATE
-				'UPDATE t_json_path_attribute SET ' || r_field.column_name || '= old#domain#field';
-			END IF;
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_json_path_attribute DROP COLUMN old#domain#field';
-			DBMS_OUTPUT.PUT_LINE('Field T_JSON_PATH_ATTRIBUTE.' || UPPER(r_field.column_name) || ' converted from ' || r_field.old_domain || ' to ' || r_field.new_domain);
-		END IF;
-		IF NOT((r_field.old_default_value IS NULL AND r_field.new_default_value IS NULL) OR r_field.old_default_value = r_field.new_default_value) THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_json_path_attribute MODIFY (' || r_field.column_name || ' DEFAULT ' || NVL(r_field.new_default_value,'NULL') || ')';
-			DBMS_OUTPUT.PUT_LINE('Field T_JSON_PATH_ATTRIBUTE.' || UPPER(r_field.column_name) || ' default value set to ' || NVL(r_field.new_default_value,'NULL'));
-		END IF;
-	END LOOP;
-	EXECUTE IMMEDIATE
-	'ALTER TABLE t_json_path_attribute ADD CONSTRAINT jpa_pk
-		PRIMARY KEY (
-			fk_typ_name,
-			fk_jsn_name,
-			fk_jsn_location,
-			xf_atb_typ_name,
-			xk_atb_name )';
-	DBMS_OUTPUT.PUT_LINE('Primary Key T_JSON_PATH_ATTRIBUTE.JPA_PK created');
-	EXECUTE IMMEDIATE
-	'ALTER TABLE t_json_path_attribute ADD CONSTRAINT jpa_jsn_fk
-		FOREIGN KEY (fk_typ_name, fk_jsn_name, fk_jsn_location)
-		REFERENCES t_json_path (fk_typ_name, name, location)
-		ON DELETE CASCADE';
-	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_JSON_PATH_ATTRIBUTE' AND column_name NOT IN (
-							'CUBE_ID',
-							'FK_BOT_NAME',
-							'FK_TYP_NAME',
-							'FK_JSN_NAME',
-							'FK_JSN_LOCATION',
-							'XF_ATB_TYP_NAME',
-							'XK_ATB_NAME'))
-	LOOP
-		EXECUTE IMMEDIATE
-		'ALTER TABLE t_json_path_attribute DROP COLUMN ' || r_field.column_name;
-		DBMS_OUTPUT.PUT_LINE('Field T_JSON_PATH_ATTRIBUTE.' || UPPER(r_field.column_name) || ' dropped');
 	END LOOP;
 END;
 /
@@ -3910,15 +3835,19 @@ BEGIN
   		DECODE(column_name,
 			'CUBE_ID','VARCHAR2(16)',
 			'NAME','VARCHAR2(30)',
+			'CUBE_TSG_TYPE','VARCHAR2(8)',
 			'DATABASE','VARCHAR2(30)',
 			'SCHEMA','VARCHAR2(30)',
-			'PASSWORD','VARCHAR2(20)',NULL) new_domain,
+			'PASSWORD','VARCHAR2(20)',
+			'TABLE_PREFIX','VARCHAR2(4)',NULL) new_domain,
 		DECODE(column_name,
 			'CUBE_ID',NULL,
 			'NAME',NULL,
+			'CUBE_TSG_TYPE','''PRIMARY''',
 			'DATABASE',NULL,
 			'SCHEMA',NULL,
-			'PASSWORD',NULL,NULL) new_default_value
+			'PASSWORD',NULL,
+			'TABLE_PREFIX',NULL,NULL) new_default_value
   		FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_SYSTEM')
 	LOOP
 		IF r_field.old_domain <> r_field.new_domain THEN
@@ -3951,9 +3880,11 @@ BEGIN
 	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_SYSTEM' AND column_name NOT IN (
 							'CUBE_ID',
 							'NAME',
+							'CUBE_TSG_TYPE',
 							'DATABASE',
 							'SCHEMA',
-							'PASSWORD'))
+							'PASSWORD',
+							'TABLE_PREFIX'))
 	LOOP
 		EXECUTE IMMEDIATE
 		'ALTER TABLE t_system DROP COLUMN ' || r_field.column_name;

@@ -1,5 +1,5 @@
 [[BODY]][[LOOP,SYSTEM:0=<<1>>]]<?php
-$conn = oci_pconnect("<<SYSTEM2>>", "<<SYSTEM3>>", "//localhost:1521/<<SYSTEM1>>");
+$conn = oci_pconnect("<<SYSTEM3>>", "<<SYSTEM4>>", "//localhost:1521/<<SYSTEM2>>");
 $stid = oci_parse($conn, "ALTER SESSION SET NLS_DATE_FORMAT = 'DD-MM-YYYY'");
 oci_execute($stid);
 $stid = oci_parse($conn, "ALTER SESSION SET NLS_NUMERIC_CHARACTERS=',.'");

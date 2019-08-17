@@ -10,12 +10,12 @@ echo Generate Models.
 :Database
 echo Generate Database.
 ..\CubeGen.exe <<SYSTEM>>\CubeDbModel.txt ..\Templates\TableTemplate.txt <<SYSTEM>>\TableDdl.sql >> %logfile% 2>&1
-C:\oracle\product\11.1.0\db_1\BIN\sqlplus.exe <<SYSTEM2:L>>/<<SYSTEM3:L>>@<<SYSTEM1:L>> @<<SYSTEM>>\TableDdl.sql >> %logfile% 2>&1
+C:\oracle\product\11.1.0\db_1\BIN\sqlplus.exe <<SYSTEM3:L>>/<<SYSTEM4:L>>@<<SYSTEM2:L>> @<<SYSTEM>>\TableDdl.sql >> %logfile% 2>&1
 ::goto :end
 :Packages
 echo Generate Packages.
 ..\CubeGen.exe <<SYSTEM>>\CubeBoModel.txt ..\Templates\PackageTemplate.txt <<SYSTEM>>\PackageDdl.sql >> %logfile% 2>&1
-C:\oracle\product\11.1.0\db_1\BIN\sqlplus.exe <<SYSTEM2:L>>/<<SYSTEM3:L>>@<<SYSTEM1:L>> @<<SYSTEM>>\PackageDdl.sql >> %logfile% 2>&1
+C:\oracle\product\11.1.0\db_1\BIN\sqlplus.exe <<SYSTEM3:L>>/<<SYSTEM4:L>>@<<SYSTEM2:L>> @<<SYSTEM>>\PackageDdl.sql >> %logfile% 2>&1
 ::goto :end
 :Application
 echo Generate Application.

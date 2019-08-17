@@ -62,8 +62,16 @@ DECLARE
 	r_cube_dsc_old v_cube_description%ROWTYPE;
 BEGIN
 	IF INSERTING OR UPDATING THEN
-		r_cube_dsc_new.type_name := REPLACE(:NEW.type_name,' ','_');
-		r_cube_dsc_new.attribute_type_name := REPLACE(:NEW.attribute_type_name,' ','_');
+		IF :NEW.type_name = ' ' THEN
+			r_cube_dsc_new.type_name := ' ';
+		ELSE
+			r_cube_dsc_new.type_name := REPLACE(:NEW.type_name,' ','_');
+		END IF;
+		IF :NEW.attribute_type_name = ' ' THEN
+			r_cube_dsc_new.attribute_type_name := ' ';
+		ELSE
+			r_cube_dsc_new.attribute_type_name := REPLACE(:NEW.attribute_type_name,' ','_');
+		END IF;
 		r_cube_dsc_new.sequence := :NEW.sequence;
 		r_cube_dsc_new.value := :NEW.value;
 	END IF;
