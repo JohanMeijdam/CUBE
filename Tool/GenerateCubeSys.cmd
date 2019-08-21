@@ -4,18 +4,17 @@ set c_logfile=Generate%c_sysname%.log
 set c_sysdir=Systems\%c_sysname%
 set c_phpdir=%c_sysdir%\php
 echo Start > %c_logfile%
-goto Models
 :CubeModel
 echo CubeSys: Extract CubeModel.
-sqlplus.exe cuberoot/composys@composys @Systems\CubeRoot\ModelExport.sql %c_sysdir%\CubeModel.cgm %c_sysname% REPLACE >> %c_logfile% 2>&1
+::sqlplus.exe cuberoot/composys@composys @Systems\CubeRoot\ModelExport.sql %c_sysdir%\CubeModel.cgm %c_sysname% REPLACE >> %c_logfile% 2>&1
 :Models
 echo CubeSys: Generate Models.
-CubeGen.exe %c_sysdir%\CubeModel.cgm Templates\Model0.cgt %c_sysdir%\CubeModel0.cgm %c_sysname% >> %c_logfile% 2>&1
-CubeGen.exe %c_sysdir%\CubeModel0.cgm Templates\ModelA.cgt %c_sysdir%\CubeModelA.cgm %c_sysname% >> %c_logfile% 2>&1
-goto end
-CubeGen.exe %c_sysdir%\CubeModelA.cgm Templates\ModelB.cgt %c_sysdir%\CubeModelB.cgm >> %c_logfile% 2>&1
-CubeGen.exe %c_sysdir%\CubeModelB.cgm Templates\BoModel.cgt %c_sysdir%\CubeBoModel.cgm >> %c_logfile% 2>&1
+::CubeGen.exe %c_sysdir%\CubeModel.cgm Templates\Model0.cgt %c_sysdir%\CubeModel0.cgm %c_sysname% >> %c_logfile% 2>&1
+::CubeGen.exe %c_sysdir%\CubeModel0.cgm Templates\ModelA.cgt %c_sysdir%\CubeModelA.cgm %c_sysname% >> %c_logfile% 2>&1
+::CubeGen.exe %c_sysdir%\CubeModelA.cgm Templates\ModelB.cgt %c_sysdir%\CubeModelB.cgm >> %c_logfile% 2>&1
+::CubeGen.exe %c_sysdir%\CubeModelB.cgm Templates\BoModel.cgt %c_sysdir%\CubeBoModel.cgm >> %c_logfile% 2>&1
 CubeGen.exe %c_sysdir%\CubeBoModel.cgm Templates\DbModel.cgt %c_sysdir%\CubeDbModel.cgm %c_sysname% >> %c_logfile% 2>&1
+goto end;
 CubeGen.exe %c_sysdir%\CubeBoModel.cgm Templates\ServerSpecModel.cgt %c_sysdir%\CubeServerSpecModel.cgm %c_sysname% >> %c_logfile% 2>&1
 CubeGen.exe %c_sysdir%\CubeServerSpecModel.cgm Templates\ServerImplModel.cgt %c_sysdir%\CubeServerImplModel.cgm %c_sysname% >> %c_logfile% 2>&1
 :Database

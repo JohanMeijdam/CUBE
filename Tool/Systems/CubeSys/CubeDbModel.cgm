@@ -1,14 +1,38 @@
 ! Cube Database Model
 !
-! Structure:
-!	DATABASE: 0=Name 1=DbSchema 2=Password
-!		SEQUENCE: 0=Name 2=StartValue
-!		TABLE: 0=Name 1=PrimaryKey
-!			FIELD: 0=Name 1=FlagPrimKey 2=Domain 3=DefaultValue
-!			FOREIGN_KEY: 0=Name, 1=RefTable 2=FlagCascadeDelete
-!				FIELD: 0=Name, 1=RefField
-!
-+DATABASE:||;
++META_MODEL:CUBE;
+	+META_TYPE:DATABASE|;
+		=PROPERTY:0|Name|;
+		=PROPERTY:0|Schema|;
+		=PROPERTY:0|Password|;
+		=PROPERTY:0|Prefix|;
+		+META_TYPE:SEQUENCE|;
+			=PROPERTY:0|Name|;
+			=PROPERTY:1|StartValue|;
+		-META_TYPE:;
+		+META_TYPE:TABLE|;
+			=PROPERTY:0|Name|;
+			=PROPERTY:1|PrimaryKey|;
+			+META_TYPE:FIELD|;
+				=PROPERTY:0|Name|;
+				=PROPERTY:1|FlagPrimKey|;
+				=PROPERTY:2|Domain|;
+				=PROPERTY:3|DefaultValue|;
+			-META_TYPE:;
+			+META_TYPE:FOREIGN_KEY|;
+				=PROPERTY:0|Name|;
+				=PROPERTY:1|RefTable|;
+				=PROPERTY:2|FlagCascadeDelete|;
+				+META_TYPE:FIELD|;
+					=PROPERTY:0|Name|;
+					=PROPERTY:1|RefField|;
+				-META_TYPE:;
+			-META_TYPE:;
+		-META_TYPE:;
+	-META_TYPE:;
+-META_MODEL:;
++DATABASE:|||CUBE_;
+	=SYSTEM:CubeSys;
 	=SEQUENCE:CUBE_DSC_SEQ|100000;
 	+TABLE:T_CUBE_DESCRIPTION|CUBE_DSC_PK;
 		=FIELD:CUBE_ID|N|VARCHAR2(16)|;

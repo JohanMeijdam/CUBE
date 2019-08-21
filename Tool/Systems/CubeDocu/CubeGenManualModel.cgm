@@ -220,9 +220,9 @@
 						-ATTRIBUTE:;
 						+ATTRIBUTE[CASE60-ATB-000000100021]:DESCRIPTION|N;
 						-ATTRIBUTE:;
-						=ATTRIBUTE[CASE60-ATB-000099900129]:STATUS|N;[[Extra Attribute to explain Sequence]]
+						=ATTRIBUTE[CASE60-ATB-000099900138]:STATUS|N;[[Extra Attribute to explain Sequence]]
 					-TYPE:;
-					=ATTRIBUTE[CASE60-ATB-000099900123]:STATUS|N;[[Extra Attribute to explain Sequence]]
+					=ATTRIBUTE[CASE60-ATB-000099900132]:STATUS|N;[[Extra Attribute to explain Sequence]]
 				-TYPE:;
 			-BUSINESS_OBJECT_TYPE:;
 		-CUBE_MODEL:;
@@ -305,9 +305,9 @@
 	-CUBE_GEN_TEMPLATE_FUNCTION:;
 	+CUBE_GEN_TEMPLATE_FUNCTION[CTF-000000100060]:FOR|N|Equal to FORV.|;
 	-CUBE_GEN_TEMPLATE_FUNCTION:;
-	+CUBE_GEN_TEMPLATE_FUNCTION[CTF-000000100040]:FORH|N|In the hierarchy selected by LOOP functions, the FORH function navigates on the same level (horizontal) through the model elements of the specified or actual type. The template segments for the selected model elements will be exported in the order of the loop specification, possibly separated by a specified string|%5B%5BFORH:%3Cloopspec%3E%5D%5D ... %5B%5BENDFOR%5D%5D%0A%5B%5BFORH,%3Ctag%3E:%3Cloopspec%3E%5D%5D ... %5B%5BENDFOR%5D%5D%0A%5B%5BFORH:%3Cloopspec%3E:%3Cseperator%3E%5D%5D ... %5B%5BENDFOR%5D%5D%0A%5B%5BFORH,%3Ctag%3E:%3Cloopspec%3E:%3Cseperator%3E%5D%5D ... %5B%5BENDFOR%5D%5D;
+	+CUBE_GEN_TEMPLATE_FUNCTION[CTF-000000100040]:FORH|N|In the hierarchy selected by LOOP functions, the FORH function navigates on the same level (horizontal) through the model elements of the specified (by the tag) or actual type. The template segments for the selected model elements will be exported in the order of the loop specification, possibly separated by a specified string.%0AIn case of just tag ROOT the FORH function navigates to the top of the hierarchy.|%5B%5BFORH:%3Cloopspec%3E%5D%5D ... %5B%5BENDFOR%5D%5D%0A%5B%5BFORH,%3Ctag%3E:%3Cloopspec%3E%5D%5D ... %5B%5BENDFOR%5D%5D%0A%5B%5BFORH:%3Cloopspec%3E:%3Cseperator%3E%5D%5D ... %5B%5BENDFOR%5D%5D%0A%5B%5BFORH,%3Ctag%3E:%3Cloopspec%3E:%3Cseperator%3E%5D%5D ... %5B%5BENDFOR%5D%5D%0A%5B%5BFORH,ROOT%5D%5D ... %5B%5BENDFOR%5D%5D;
 	-CUBE_GEN_TEMPLATE_FUNCTION:;
-	+CUBE_GEN_TEMPLATE_FUNCTION[CTF-000000100041]:FORV|N|In the hierarchy selected by LOOP functions, the FORV function navigates top down (vertical) through the model elements of the specified or actual type. The template segments for the selected model elements will be exported in the order of the loop specification, possibly separated by a specified string.%0A|%5B%5BFORV:%3Cloopspec%3E%5D%5D ... %5B%5BENDFOR%5D%5D%0A%5B%5BFORV,%3Ctag%3E:%3Cloopspec%3E%5D%5D ... %5B%5BENDFOR%5D%5D%0A%5B%5BFORV:%3Cloopspec%3E:%3Cseperator%3E%5D%5D ... %5B%5BENDFOR%5D%5D%0A%5B%5BFORV,%3Ctag%3E:%3Cloopspec%3E:%3Cseperator%3E%5D%5D ... %5B%5BENDFOR%5D%5D;
+	+CUBE_GEN_TEMPLATE_FUNCTION[CTF-000000100041]:FORV|N|In the hierarchy selected by LOOP functions, the FORV function navigates top down (vertical) through the model elements of the tag specified (by the tag) or actual type. The template segments for the selected model elements will be exported in the order of the loop specification, possibly separated by a specified string.%0AIn case of just tag ROOT the FORV function navigates to the top of the hierarchy.%0A%0A|%5B%5BFORV:%3Cloopspec%3E%5D%5D ... %5B%5BENDFOR%5D%5D%0A%5B%5BFORV,%3Ctag%3E:%3Cloopspec%3E%5D%5D ... %5B%5BENDFOR%5D%5D%0A%5B%5BFORV:%3Cloopspec%3E:%3Cseperator%3E%5D%5D ... %5B%5BENDFOR%5D%5D%0A%5B%5BFORV,%3Ctag%3E:%3Cloopspec%3E:%3Cseperator%3E%5D%5D ... %5B%5BENDFOR%5D%5D%0A%5B%5BFORV,ROOT%5D%5D ... %5B%5BENDFOR%5D%5D;
 	-CUBE_GEN_TEMPLATE_FUNCTION:;
 	+CUBE_GEN_TEMPLATE_FUNCTION[CTF-000000100149]:ID|Y|Check for the id of the actual model element.%0AThe %3Cvalue%3E can contain labels that will be replaced by a model element property value.|ID(%3Cvalue%3E)%0A%3Ctag%3E.ID(%3Cvalue%3E)%0A%3Ctag%3E(%3Clocation%3E).ID(%3Cvalue%3E);
 	-CUBE_GEN_TEMPLATE_FUNCTION:;

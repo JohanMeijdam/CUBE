@@ -1,6 +1,6 @@
 ModelA template
 -	Implementing external foreign keys.
--	Prefixing CubeSys BO / Types with '<<SUPPORT_TYPE>>_'
+-	Prefixing suport tytpe BO / Types with '<<SUPPORT_TYPE>>_'
 -	Adding ATTRIBUTE_NUMBER for the normal attributes.
 
 Change log:
