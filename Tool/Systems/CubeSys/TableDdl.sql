@@ -1,11 +1,36 @@
 
 -- TABLE DDL
 --
-DROP SEQUENCE cube_dsc_seq
+BEGIN
+	FOR r_s IN (
+		SELECT sequence_name FROM user_sequences
+		WHERE SUBSTR(sequence_name,1,INSTR(sequence_name,'_',4)) = 'SQ_CUBE_')
+	LOOP
+		EXECUTE IMMEDIATE 'DROP SEQUENCE '||r_s.sequence_name;
+	END LOOP;
+
+	FOR r_c IN (
+		SELECT table_name, constraint_name
+		FROM user_constraints
+		WHERE constraint_type = 'R'
+		  AND TABLE_NAME IN (
+			SELECT table_name 
+			FROM user_tables
+			WHERE SUBSTR(table_name,1,INSTR(table_name,'_',3)) = 'T_CUBE_'))
+	LOOP
+		EXECUTE IMMEDIATE 'ALTER TABLE '||r_c.table_name||' DROP CONSTRAINT '||r_c.constraint_name;
+	END LOOP;
+	
+	FOR r_t IN (
+			SELECT table_name 
+			FROM user_tables
+		WHERE SUBSTR(table_name,1,INSTR(table_name,'_',3)) = 'T_CUBE_')
+	LOOP
+		EXECUTE IMMEDIATE 'DROP TABLE '||r_t.table_name;
+	END LOOP;
+END;
 /
-CREATE SEQUENCE cube_dsc_seq START WITH 100000
-/
-DROP TABLE t_cube_description
+CREATE SEQUENCE sq_cube_dsc START WITH 100000
 /
 CREATE TABLE t_cube_description (
 	cube_id VARCHAR2(16),

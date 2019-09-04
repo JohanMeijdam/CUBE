@@ -3,7 +3,7 @@ session_start();
 $_SESSION['views']=0;
 ?><html>
 <head>
-<title>CUBE Tool</title>
+<title>CubeTest</title>
 <meta charset="UTF-8">
 <link rel="icon" href="icons/composys_icon.png">
 <link rel="stylesheet" href="base_css.php" />

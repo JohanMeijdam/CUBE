@@ -1,27 +1,26 @@
 -- CUBESYS Packages
 --
 BEGIN
-	FOR r_pck IN (
+	FOR r_p IN (
 		SELECT object_name
-		FROM all_procedures p
-		WHERE p.owner = 'CUBESYS'
-		  AND p.procedure_name = 'CUBE_PACKAGE' )
+		FROM all_procedures
+		WHERE procedure_name = 'CUBE_PKG_CUBESYS' )
 	LOOP
-		EXECUTE IMMEDIATE 'DROP PACKAGE CUBESYS.'||r_pck.object_name;
+		EXECUTE IMMEDIATE 'DROP PACKAGE '||r_p.object_name;
 	END LOOP;
 END;
 /
 CREATE OR REPLACE PACKAGE pkg_cube IS
-	FUNCTION cube_package RETURN VARCHAR2;
+	FUNCTION cube_pkg_cubesys RETURN VARCHAR2;
 	FUNCTION years(p_date DATE) RETURN NUMBER;
 	FUNCTION multiply(p_num_1 NUMBER, p_num_2 NUMBER) RETURN NUMBER;
 	FUNCTION add(p_num_1 NUMBER, p_num_2 NUMBER) RETURN NUMBER;
 END;
 /
 CREATE OR REPLACE PACKAGE BODY pkg_cube IS
-	FUNCTION cube_package RETURN VARCHAR2 IS
+	FUNCTION cube_pkg_cubesys RETURN VARCHAR2 IS
 	BEGIN
-		RETURN 'cube_package';
+		RETURN 'cube_pkg_cubesys';
 	END;
 	FUNCTION years(p_date DATE) RETURN NUMBER IS
 	BEGIN
@@ -40,7 +39,7 @@ END;
 CREATE OR REPLACE PACKAGE pkg_cube_dsc IS
 
 	TYPE c_cube_row IS REF CURSOR;
-	FUNCTION cube_package RETURN VARCHAR2;
+	FUNCTION cube_pkg_cubesys RETURN VARCHAR2;
 	PROCEDURE get_cube_dsc_root_items (
 			p_cube_row IN OUT c_cube_row);
 	PROCEDURE get_cube_dsc (
@@ -67,9 +66,9 @@ END;
 SHOW ERRORS;
 
 CREATE OR REPLACE PACKAGE BODY pkg_cube_dsc IS
-	FUNCTION cube_package RETURN VARCHAR2 IS
+	FUNCTION cube_pkg_cubesys RETURN VARCHAR2 IS
 	BEGIN
-		RETURN 'cube_package';
+		RETURN 'cube_pkg_cubesys';
 	END;
 
 	PROCEDURE get_cube_dsc_root_items (

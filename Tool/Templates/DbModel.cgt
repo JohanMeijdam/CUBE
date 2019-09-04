@@ -1,15 +1,15 @@
-[[* Change log:
+Change log:
 01-08-2016 - Foreign Keys to lowest level:
 -	Only primary key fields of parent in foreign key	
 30-12-2017 - Default value on attribute level.
-*]][[INCLUDE,templates\includes\general.cgt]][[BODY]]! Cube Database Model
+04-09-2018 - Sequence to SQ_name.
+[[INCLUDE,templates\includes\general.cgt]][[BODY]]! Cube Database Model
 !
 +META_MODEL:CUBE;
 	+META_TYPE:DATABASE|;
 		=PROPERTY:0|Name|;
 		=PROPERTY:0|Schema|;
 		=PROPERTY:0|Password|;
-		=PROPERTY:0|Prefix|;
 		+META_TYPE:SEQUENCE|;
 			=PROPERTY:0|Name|;
 			=PROPERTY:1|StartValue|;
@@ -17,6 +17,10 @@
 		+META_TYPE:TABLE|;
 			=PROPERTY:0|Name|;
 			=PROPERTY:1|PrimaryKey|;
+			+META_TYPE:NAME_PREFIX|;
+				=PROPERTY:0|Name|;
+				=PROPERTY:1|FlagOwn|;
+			-META_TYPE:;
 			+META_TYPE:FIELD|;
 				=PROPERTY:0|Name|;
 				=PROPERTY:1|FlagPrimKey|;
@@ -35,9 +39,9 @@
 		-META_TYPE:;
 	-META_TYPE:;
 -META_MODEL:;[[LOOP,SYSTEM:0=<<1>>]]
-+DATABASE:<<SYSTEM2>>|<<SYSTEM3>>|<<SYSTEM4>>|[[IF:1=SUPPORT]]<<SYSTEM5>>_[[ENDIF]];[[FOR,ROOT]][[LOOP,SYSTEM]]
-	=SYSTEM:<<SYSTEM>>;[[ENDLOOP,SYSTEM]][[ENDFOR]][[LOOP,SYSTEM_BO_TYPE]][[LOOP,BUSINESS_OBJECT_TYPE]][[LOOP,TYPE]]
-	=SEQUENCE:<<TYPE1>>_SEQ|100000;
++DATABASE:<<SYSTEM2>>|<<SYSTEM3>>|<<SYSTEM4>>;[[FOR,ROOT]][[LOOP,SYSTEM:1=SUPPORT]]
+	=NAME_PREFIX:<<SYSTEM5>>|[[IF:0=<<1>>]]Y[[ELSE]]N[[ENDIF]];[[ENDLOOP,SYSTEM]][[ENDFOR]][[LOOP,SYSTEM_BO_TYPE]][[LOOP,BUSINESS_OBJECT_TYPE]][[LOOP,TYPE]]
+	=SEQUENCE:SQ_<<TYPE1>>|100000;
 	+TABLE:T_<<TYPE>>|<<TYPE1>>_PK;[[LOOP,ATTRIBUTE]]
 		=FIELD:<<ATTRIBUTE>>|<<ATTRIBUTE1>>|<<TEXT,GEN_FULL_DOMAIN>>|<<ATTRIBUTE5>>;[[ENDLOOP,ATTRIBUTE]][[IF:!ROOT]]
 		+FOREIGN_KEY:<<TYPE1>>_<<TYPE(N-1)1>>_FK|T_<<TYPE(N-1)>>|Y;[[LOOP,ATTRIBUTE:3=F[AND]CHILD(ATTRIBUTE_SOURCE:1=Y)]]

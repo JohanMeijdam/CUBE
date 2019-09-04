@@ -713,8 +713,8 @@ my (@FkeyValues);
 						if ($j == -1) {
 							last;
 						}
-						print IMPORT "INSERT INTO v_system (NAME, DATABASE, SCHEMA, PASSWORD)\n"; 
-						print IMPORT "	VALUES ('".ReplX($NodeString[$j])."', '".ReplX($NodeValue[$NodeValuePntr[$j]])."', '".ReplX($NodeValue[$NodeValuePntr[$j]+1])."', '".ReplX($NodeValue[$NodeValuePntr[$j]+2])."');\n";
+						print IMPORT "INSERT INTO v_system (NAME, CUBE_TSG_TYPE, DATABASE, SCHEMA, PASSWORD, TABLE_PREFIX)\n"; 
+						print IMPORT "	VALUES ('".ReplX($NodeString[$j])."', '".ReplX($NodeValue[$NodeValuePntr[$j]])."', '".ReplX($NodeValue[$NodeValuePntr[$j]+1])."', '".ReplX($NodeValue[$NodeValuePntr[$j]+2])."', '".ReplX($NodeValue[$NodeValuePntr[$j]+3])."', '".ReplX($NodeValue[$NodeValuePntr[$j]+4])."');\n";
 						print IMPORT "\n";
 						$FkeyValues[0] = ReplX($NodeString[$j]);
 						$i = $NodeFirst[$j];

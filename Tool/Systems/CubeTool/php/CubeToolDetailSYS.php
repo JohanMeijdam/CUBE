@@ -26,9 +26,12 @@ g_xmlhttp.onreadystatechange = function() {
 				switch (l_json_array[i].ResultName) {
 					case "SELECT_SYS":
 						var l_json_values = l_json_array[i].Rows[0].Data;
+						document.getElementById("InputCubeTsgType").value=l_json_values.CubeTsgType;
 						document.getElementById("InputDatabase").value=l_json_values.Database;
 						document.getElementById("InputSchema").value=l_json_values.Schema;
 						document.getElementById("InputPassword").value=l_json_values.Password;
+						document.getElementById("InputTablePrefix").value=l_json_values.TablePrefix;
+						ProcessTypeSpecialisation();
 						break;
 					case "CREATE_SYS":
 						document.getElementById("InputName").readOnly=true;
@@ -52,7 +55,7 @@ g_xmlhttp.onreadystatechange = function() {
 									'TYP_SYS',
 									l_json_node_id,
 									'icons/system.bmp', 
-									document.getElementById("InputName").value.toLowerCase(),
+									document.getElementById("InputName").value.toLowerCase()+' '+document.getElementById("InputCubeTsgType").value.toLowerCase(),
 									'N',
 									l_position,
 									l_objNodePos);
@@ -60,6 +63,10 @@ g_xmlhttp.onreadystatechange = function() {
 						}
 						break;
 					case "UPDATE_SYS":
+						var l_objNode = parent.document.getElementById(g_node_id);
+						if (l_objNode != null) {
+							l_objNode.children[1].lastChild.nodeValue = ' '+document.getElementById("InputName").value.toLowerCase()+' '+document.getElementById("InputCubeTsgType").value.toLowerCase();
+					}
 						break;
 					case "DELETE_SYS":
 						document.getElementById("ButtonCreate").disabled=false;
@@ -111,6 +118,7 @@ function InitBody() {
 			}
 		} );
 		document.getElementById("InputName").readOnly=true;
+		document.getElementById("InputCubeTsgType").readOnly=true;
 		break;
 	case "N":
 		g_parent_node_id = JSON.stringify(l_json_argument.objectId);
@@ -125,9 +133,11 @@ function InitBody() {
 function CreateSys() {
 	var Type = {
 		Name: document.getElementById("InputName").value,
+		CubeTsgType: document.getElementById("InputCubeTsgType").value,
 		Database: document.getElementById("InputDatabase").value,
 		Schema: document.getElementById("InputSchema").value,
-		Password: document.getElementById("InputPassword").value
+		Password: document.getElementById("InputPassword").value,
+		TablePrefix: document.getElementById("InputTablePrefix").value
 	};
 	performTrans( {
 		Service: "CreateSys",
@@ -140,9 +150,11 @@ function CreateSys() {
 function UpdateSys() {
 	var Type = {
 		Name: document.getElementById("InputName").value,
+		CubeTsgType: document.getElementById("InputCubeTsgType").value,
 		Database: document.getElementById("InputDatabase").value,
 		Schema: document.getElementById("InputSchema").value,
-		Password: document.getElementById("InputPassword").value
+		Password: document.getElementById("InputPassword").value,
+		TablePrefix: document.getElementById("InputTablePrefix").value
 	};
 	performTrans( {
 		Service: "UpdateSys",
@@ -204,20 +216,44 @@ function drop(p_event) {
 		l_obj.style.top = l_y + 'px';
 	}
 }
+
+function ProcessTypeSpecialisation() {
+	if (document.getElementById("InputCubeTsgType").value != ' ') {
+		document.getElementById("InputCubeTsgType").disabled=true;
+		switch (document.getElementById("InputCubeTsgType").value) {
+		case "PRIMARY":
+			document.getElementById("RowAtbTablePrefix").style.display="none";
+			break;
+		case "SUPPORT":
+			document.getElementById("RowAtbDatabase").style.display="none";
+			document.getElementById("RowAtbSchema").style.display="none";
+			document.getElementById("RowAtbPassword").style.display="none";
+			break;
+		}
+		document.getElementById("TableMain").style.display="inline";
+	}
+}
 -->
 </script>
 </head><body oncontextmenu="return false;" onload="InitBody()" ondrop="drop(event)" ondragover="allowDrop(event)">
-<div><img src="icons/system_large.bmp" /><span> SYSTEM</span></div>
+<div><img src="icons/system_large.bmp" /><span> SYSTEM /
+<select id="InputCubeTsgType" type="text" onchange="ProcessTypeSpecialisation()">
+	<option value=" " selected>&lt;type&gt;</option>
+	<option value="PRIMARY">PRIMARY_SYSTEM</option>
+	<option value="SUPPORT">SUPPORTING_SYSTEM</option>
+</select></span></div>
 <hr/>
-<table>
+<table id="TableMain" style="display:none">
 <tr><td><u>Name</u></td><td><div style="max-width:30em;">
 <input id="InputName" type="text" maxlength="30" style="width:100%;" onchange="ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td>Database</td><td><div style="max-width:30em;">
+<tr id="RowAtbDatabase"><td style="cursor:help;" oncontextmenu="parent.OpenDescBox('SYSTEM','System.Database','SYSTEM','DATABASE',-1)">Database</td><td><div style="max-width:30em;">
 <input id="InputDatabase" type="text" maxlength="30" style="width:100%;" onchange="ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td>Schema</td><td><div style="max-width:30em;">
+<tr id="RowAtbSchema"><td>Schema</td><td><div style="max-width:30em;">
 <input id="InputSchema" type="text" maxlength="30" style="width:100%;" onchange="ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td>Password</td><td><div style="max-width:20em;">
+<tr id="RowAtbPassword"><td>Password</td><td><div style="max-width:20em;">
 <input id="InputPassword" type="text" maxlength="20" style="width:100%;" onchange="ReplaceSpaces(this);"></input></div></td></tr>
+<tr id="RowAtbTablePrefix"><td>TablePrefix</td><td><div style="max-width:4em;">
+<input id="InputTablePrefix" type="text" maxlength="4" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
 <tr><td><br></td><td style="width:100%;"></td></tr>
 <tr><td/><td>
 <button id="ButtonCreate" type="button" onclick="CreateSys()">Create</button>&nbsp;&nbsp;&nbsp;

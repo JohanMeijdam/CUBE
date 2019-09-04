@@ -655,7 +655,7 @@ DECLARE
 			WHERE g_system_name = 'ALL' OR name = g_system_name
 			ORDER BY name )
 		LOOP
-			DBMS_OUTPUT.PUT_LINE (ftabs || '+SYSTEM[' || r_sys.cube_id || ']:' || fenperc(r_sys.name) || '|' || fenperc(r_sys.database) || '|' || fenperc(r_sys.schema) || '|' || fenperc(r_sys.password) || ';');
+			DBMS_OUTPUT.PUT_LINE (ftabs || '+SYSTEM[' || r_sys.cube_id || ']:' || fenperc(r_sys.name) || '|' || fenperc(r_sys.cube_tsg_type) || '|' || fenperc(r_sys.database) || '|' || fenperc(r_sys.schema) || '|' || fenperc(r_sys.password) || '|' || fenperc(r_sys.table_prefix) || ';');
 				l_level := l_level + 1;
 				report_sbt (r_sys);
 				l_level := l_level - 1;
@@ -811,9 +811,11 @@ BEGIN
 	DBMS_OUTPUT.PUT_LINE ('	-META_TYPE:BUSINESS_OBJECT_TYPE;');
 	DBMS_OUTPUT.PUT_LINE ('	+META_TYPE:SYSTEM|;');
 	DBMS_OUTPUT.PUT_LINE ('		=PROPERTY:0|Name|;');
-	DBMS_OUTPUT.PUT_LINE ('		=PROPERTY:1|Database|;');
-	DBMS_OUTPUT.PUT_LINE ('		=PROPERTY:2|Schema|;');
-	DBMS_OUTPUT.PUT_LINE ('		=PROPERTY:3|Password|;');
+	DBMS_OUTPUT.PUT_LINE ('		=PROPERTY:1|CubeTsgType| Values: PRIMARY(PRIMARY_SYSTEM), SUPPORT(SUPPORTING_SYSTEM);');
+	DBMS_OUTPUT.PUT_LINE ('		=PROPERTY:2|Database|'||REPLACE('The%20name%20of%20the%20database%20where%20the%20tables%20of%20the%20system%20will%20be%20implemented.','%20',' ')||';');
+	DBMS_OUTPUT.PUT_LINE ('		=PROPERTY:3|Schema|;');
+	DBMS_OUTPUT.PUT_LINE ('		=PROPERTY:4|Password|;');
+	DBMS_OUTPUT.PUT_LINE ('		=PROPERTY:5|TablePrefix|;');
 	DBMS_OUTPUT.PUT_LINE ('		+META_TYPE:SYSTEM_BO_TYPE|;');
 	DBMS_OUTPUT.PUT_LINE ('			=ASSOCIATION:BUSINESS_OBJECT_TYPE|Has|BUSINESS_OBJECT_TYPE|;');
 	DBMS_OUTPUT.PUT_LINE ('		-META_TYPE:SYSTEM_BO_TYPE;');

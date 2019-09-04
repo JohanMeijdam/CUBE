@@ -4232,7 +4232,7 @@ case 'GetDirSysItems':
 		$RowObj = new \stdClass();
 		$RowObj->Key = new \stdClass();
 		$RowObj->Key->Name = $row["NAME"];
-		$RowObj->Display = $row["NAME"];
+		$RowObj->Display = $row["NAME"].' '.$row["CUBE_TSG_TYPE"];
 		$ResponseObj->Rows[] = $RowObj;
 	}
 	$ResponseText = json_encode($ResponseObj);
@@ -4261,9 +4261,11 @@ case 'GetSys':
 	if ($row = oci_fetch_assoc($curs)) {
 		$RowObj = new \stdClass();
 		$RowObj->Data = new \stdClass();
+		$RowObj->Data->CubeTsgType = $row["CUBE_TSG_TYPE"];
 		$RowObj->Data->Database = $row["DATABASE"];
 		$RowObj->Data->Schema = $row["SCHEMA"];
 		$RowObj->Data->Password = $row["PASSWORD"];
+		$RowObj->Data->TablePrefix = $row["TABLE_PREFIX"];
 		$ResponseObj->Rows[] = $RowObj;
 	}
 	$ResponseText = json_encode($ResponseObj);
@@ -4308,15 +4310,19 @@ case 'CreateSys':
 
 	$stid = oci_parse($conn, "BEGIN pkg_sys.insert_sys (
 		:p_name,
+		:p_cube_tsg_type,
 		:p_database,
 		:p_schema,
 		:p_password,
+		:p_table_prefix,
 		:p_cube_row);
 	END;");
 	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
+	oci_bind_by_name($stid,":p_cube_tsg_type",$RequestObj->Parameters->Type->CubeTsgType);
 	oci_bind_by_name($stid,":p_database",$RequestObj->Parameters->Type->Database);
 	oci_bind_by_name($stid,":p_schema",$RequestObj->Parameters->Type->Schema);
 	oci_bind_by_name($stid,":p_password",$RequestObj->Parameters->Type->Password);
+	oci_bind_by_name($stid,":p_table_prefix",$RequestObj->Parameters->Type->TablePrefix);
 
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'CREATE_SYS';
@@ -4343,14 +4349,18 @@ case 'UpdateSys':
 
 	$stid = oci_parse($conn, "BEGIN pkg_sys.update_sys (
 		:p_name,
+		:p_cube_tsg_type,
 		:p_database,
 		:p_schema,
-		:p_password);
+		:p_password,
+		:p_table_prefix);
 	END;");
 	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
+	oci_bind_by_name($stid,":p_cube_tsg_type",$RequestObj->Parameters->Type->CubeTsgType);
 	oci_bind_by_name($stid,":p_database",$RequestObj->Parameters->Type->Database);
 	oci_bind_by_name($stid,":p_schema",$RequestObj->Parameters->Type->Schema);
 	oci_bind_by_name($stid,":p_password",$RequestObj->Parameters->Type->Password);
+	oci_bind_by_name($stid,":p_table_prefix",$RequestObj->Parameters->Type->TablePrefix);
 
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'UPDATE_SYS';

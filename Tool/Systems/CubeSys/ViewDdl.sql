@@ -1,5 +1,23 @@
 -- DB VIEW DDL
 --
+BEGIN
+	FOR r_v IN (
+		SELECT view_name 
+		FROM user_views
+		WHERE SUBSTR(view_name,1,INSTR(view_name,'_',3)) = 'V_CUBE_')
+	LOOP
+		EXECUTE IMMEDIATE 'DROP VIEW '||r_v.view_name;
+	END LOOP;
+	
+	FOR r_p IN (
+		SELECT object_name
+		FROM user_procedures
+		WHERE procedure_name = 'CUBE_TRG_CUBESYS' )
+	LOOP
+		EXECUTE IMMEDIATE 'DROP PACKAGE '||r_p.object_name;
+	END LOOP;
+END;
+/
 CREATE OR REPLACE VIEW v_cube_description AS 
 	SELECT
 		cube_id,
@@ -11,6 +29,7 @@ CREATE OR REPLACE VIEW v_cube_description AS
 /
 
 CREATE OR REPLACE PACKAGE pkg_cube_dsc_trg IS
+	FUNCTION cube_trg_cubesys RETURN VARCHAR2;
 	PROCEDURE insert_cube_dsc (p_cube_dsc IN OUT NOCOPY v_cube_description%ROWTYPE);
 	PROCEDURE update_cube_dsc (p_cube_rowid IN UROWID, p_cube_dsc_old IN OUT NOCOPY v_cube_description%ROWTYPE, p_cube_dsc_new IN OUT NOCOPY v_cube_description%ROWTYPE);
 	PROCEDURE delete_cube_dsc (p_cube_rowid IN UROWID, p_cube_dsc IN OUT NOCOPY v_cube_description%ROWTYPE);
@@ -20,9 +39,14 @@ SHOW ERRORS;
 
 CREATE OR REPLACE PACKAGE BODY pkg_cube_dsc_trg IS
 
+	FUNCTION cube_trg_cubesys RETURN VARCHAR2 IS
+	BEGIN
+		RETURN 'cube_trg_cubesys';
+	END;
+
 	PROCEDURE insert_cube_dsc (p_cube_dsc IN OUT NOCOPY v_cube_description%ROWTYPE) IS
 	BEGIN
-		p_cube_dsc.cube_id := 'CUBE_DSC-' || TO_CHAR(cube_dsc_seq.NEXTVAL,'FM0000000');
+		p_cube_dsc.cube_id := 'CUBE_DSC-' || TO_CHAR(sq_cube_dsc.NEXTVAL,'FM0000000');
 		INSERT INTO t_cube_description (
 			cube_id,
 			type_name,

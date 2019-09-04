@@ -30,17 +30,19 @@ g_xmlhttp.onreadystatechange = function() {
 						document.getElementById("InputCubeTsgYyy").value=l_json_values.CubeTsgYyy;
 						document.getElementById("InputDatum").value=l_json_values.Datum;
 						document.getElementById("InputOmschrijving").value=l_json_values.Omschrijving;
-						document.getElementById("InputXkAaaNaam").value=l_json_values.XkAaaNaam;
 						ProcessTypeSpecialisation();
 						break;
 					case "CREATE_PRD":
 						document.getElementById("InputCode").readOnly=true;
 						document.getElementById("InputNaam").readOnly=true;
+						document.getElementById("InputNummer").readOnly=true;
+						document.getElementById("InputXkAaaNaam").readOnly=true;
+						document.getElementById("RefSelect001").disabled=true;
 						document.getElementById("ButtonCreate").disabled=true;
 						document.getElementById("ButtonUpdate").disabled=false;
 						document.getElementById("ButtonDelete").disabled=false;
 						var l_objNode = parent.document.getElementById(g_parent_node_id);
-						var l_json_node_id = {Code:document.getElementById("InputCode").value,Naam:document.getElementById("InputNaam").value};
+						var l_json_node_id = {Code:document.getElementById("InputCode").value,Naam:document.getElementById("InputNaam").value,Nummer:document.getElementById("InputNummer").value,XkAaaNaam:document.getElementById("InputXkAaaNaam").value};
 						g_node_id = '{"TYP_PRD":'+JSON.stringify(l_json_node_id)+'}';
 						if (l_objNode != null) {
 							if (l_objNode.firstChild._state == 'O') {
@@ -51,7 +53,7 @@ g_xmlhttp.onreadystatechange = function() {
 									'TYP_PRD',
 									l_json_node_id,
 									'icons/produkt.bmp', 
-									document.getElementById("InputCubeTsgZzz").value.toLowerCase()+' '+document.getElementById("InputCubeTsgYyy").value.toLowerCase()+' '+document.getElementById("InputCode").value.toLowerCase()+' '+document.getElementById("InputNaam").value.toLowerCase()+' '+document.getElementById("InputOmschrijving").value.toLowerCase(),
+									document.getElementById("InputCubeTsgZzz").value.toLowerCase()+' '+document.getElementById("InputCubeTsgYyy").value.toLowerCase()+' '+document.getElementById("InputCode").value.toLowerCase()+' '+document.getElementById("InputNaam").value.toLowerCase()+' '+document.getElementById("InputNummer").value.toLowerCase()+' '+document.getElementById("InputOmschrijving").value.toLowerCase()+' '+document.getElementById("InputXkAaaNaam").value.toLowerCase(),
 									'N',
 									l_position,
 									l_objNodePos);
@@ -61,7 +63,7 @@ g_xmlhttp.onreadystatechange = function() {
 					case "UPDATE_PRD":
 						var l_objNode = parent.document.getElementById(g_node_id);
 						if (l_objNode != null) {
-							l_objNode.children[1].lastChild.nodeValue = ' '+document.getElementById("InputCubeTsgZzz").value.toLowerCase()+' '+document.getElementById("InputCubeTsgYyy").value.toLowerCase()+' '+document.getElementById("InputCode").value.toLowerCase()+' '+document.getElementById("InputNaam").value.toLowerCase()+' '+document.getElementById("InputOmschrijving").value.toLowerCase();
+							l_objNode.children[1].lastChild.nodeValue = ' '+document.getElementById("InputCubeTsgZzz").value.toLowerCase()+' '+document.getElementById("InputCubeTsgYyy").value.toLowerCase()+' '+document.getElementById("InputCode").value.toLowerCase()+' '+document.getElementById("InputNaam").value.toLowerCase()+' '+document.getElementById("InputNummer").value.toLowerCase()+' '+document.getElementById("InputOmschrijving").value.toLowerCase()+' '+document.getElementById("InputXkAaaNaam").value.toLowerCase();
 					}
 						break;
 					case "DELETE_PRD":
@@ -77,7 +79,7 @@ g_xmlhttp.onreadystatechange = function() {
 						}
 						break;
 					case "LIST_AAA":
-						OpenListBox(l_json_array[i].Rows,'produkt','Aaa','Y');
+						OpenListBox(l_json_array[i].Rows,'produkt','Aaa','N');
 						break;
 					case "ERROR":
 						alert ('Server error:\n'+l_json_array[i].ErrorText);
@@ -110,6 +112,8 @@ function InitBody() {
 		g_node_id = JSON.stringify(l_json_argument.objectId);
 		document.getElementById("InputCode").value=l_json_objectKey.TYP_PRD.Code;
 		document.getElementById("InputNaam").value=l_json_objectKey.TYP_PRD.Naam;
+		document.getElementById("InputNummer").value=l_json_objectKey.TYP_PRD.Nummer;
+		document.getElementById("InputXkAaaNaam").value=l_json_objectKey.TYP_PRD.XkAaaNaam;
 		document.getElementById("ButtonCreate").disabled=true;
 		performTrans( {
 			Service: "GetPrd",
@@ -121,6 +125,9 @@ function InitBody() {
 		document.getElementById("InputCubeTsgYyy").readOnly=true;
 		document.getElementById("InputCode").readOnly=true;
 		document.getElementById("InputNaam").readOnly=true;
+		document.getElementById("InputNummer").readOnly=true;
+		document.getElementById("InputXkAaaNaam").readOnly=true;
+		document.getElementById("RefSelect001").disabled=true;
 		break;
 	case "N":
 		g_parent_node_id = JSON.stringify(l_json_argument.objectId);
@@ -138,6 +145,7 @@ function CreatePrd() {
 		CubeTsgYyy: document.getElementById("InputCubeTsgYyy").value,
 		Code: document.getElementById("InputCode").value,
 		Naam: document.getElementById("InputNaam").value,
+		Nummer: document.getElementById("InputNummer").value,
 		Datum: document.getElementById("InputDatum").value,
 		Omschrijving: document.getElementById("InputOmschrijving").value,
 		XkAaaNaam: document.getElementById("InputXkAaaNaam").value
@@ -156,6 +164,7 @@ function UpdatePrd() {
 		CubeTsgYyy: document.getElementById("InputCubeTsgYyy").value,
 		Code: document.getElementById("InputCode").value,
 		Naam: document.getElementById("InputNaam").value,
+		Nummer: document.getElementById("InputNummer").value,
 		Datum: document.getElementById("InputDatum").value,
 		Omschrijving: document.getElementById("InputOmschrijving").value,
 		XkAaaNaam: document.getElementById("InputXkAaaNaam").value
@@ -171,7 +180,9 @@ function UpdatePrd() {
 function DeletePrd() {
 	var Type = {
 		Code: document.getElementById("InputCode").value,
-		Naam: document.getElementById("InputNaam").value
+		Naam: document.getElementById("InputNaam").value,
+		Nummer: document.getElementById("InputNummer").value,
+		XkAaaNaam: document.getElementById("InputXkAaaNaam").value
 	};
 	performTrans( {
 		Service: "DeletePrd",
@@ -327,8 +338,14 @@ function ProcessTypeSpecialisation() {
 		document.getElementById("InputCubeTsgZzz").disabled=true;
 		document.getElementById("InputCubeTsgYyy").disabled=true;
 		switch (document.getElementById("InputCubeTsgYyy").value) {
+		case "RRR":
+			document.getElementById("RowAtbNaam").style.display="none";
+			document.getElementById("InputNaam").value=" ";
+			break;
 		case "SSS":
-			document.getElementById("RowAtbOmschrijving").style.display="none";
+			document.getElementById("RowAtbNummer").style.display="none";
+			document.getElementById("InputNummer").value="0";
+			document.getElementById("InputXkAaaNaam").value=" ";
 			document.getElementById("RowRefAaa0").style.display="none";
 			break;
 		}
@@ -372,15 +389,17 @@ function ResetFieldCubeTsgYyy(p_field_id) {
 <table id="TableMain" style="display:none">
 <tr><td><u>Code</u></td><td><div style="max-width:8em;">
 <input id="InputCode" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td><u>Naam</u></td><td><div style="max-width:40em;">
+<tr id="RowAtbNaam"><td><u>Naam</u></td><td><div style="max-width:40em;">
 <input id="InputNaam" type="text" maxlength="40" style="width:100%;"></input></div></td></tr>
+<tr id="RowAtbNummer"><td><u>Nummer</u></td><td><div style="max-width:9em;">
+<input id="InputNummer" type="text" maxlength="9" style="width:100%;"></input></div></td></tr>
 <tr><td>Datum</td><td><div style="max-width:12ch;">
 <input id="InputDatum" type="text" maxlength="10" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr id="RowAtbOmschrijving"><td>Omschrijving</td><td><div style="max-width:120em;">
+<tr><td>Omschrijving</td><td><div style="max-width:120em;">
 <input id="InputOmschrijving" type="text" maxlength="120" style="width:100%;"></input></div></td></tr>
 <tr><td height=6></td></tr><tr id="RowRefAaa0"><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/produkt.bmp"/> Aaa (IsVoor)</legend>
 <table style="width:100%;">
-<tr><td>Aaa.Naam</td><td style="width:100%;"><div style="max-width:40em;">
+<tr><td><u>Aaa.Naam</u></td><td style="width:100%;"><div style="max-width:40em;">
 <input id="InputXkAaaNaam" type="text" maxlength="40" style="width:100%;" readonly></input></div></td>
 <td><button id="RefSelect001" type="button" onclick="StartSelect001(event)">Select</button></td></tr>
 </table></fieldset></td></tr>

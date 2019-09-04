@@ -114,9 +114,11 @@
 	-META_TYPE:BUSINESS_OBJECT_TYPE;
 	+META_TYPE:SYSTEM|;
 		=PROPERTY:0|Name|;
-		=PROPERTY:1|Database|;
-		=PROPERTY:2|Schema|;
-		=PROPERTY:3|Password|;
+		=PROPERTY:1|CubeTsgType| Values: PRIMARY(PRIMARY_SYSTEM), SUPPORT(SUPPORTING_SYSTEM);
+		=PROPERTY:2|Database|The name of the database where the tables of the system will be implemented.;
+		=PROPERTY:3|Schema|;
+		=PROPERTY:4|Password|;
+		=PROPERTY:5|TablePrefix|;
 		+META_TYPE:SYSTEM_BO_TYPE|;
 			=ASSOCIATION:BUSINESS_OBJECT_TYPE|Has|BUSINESS_OBJECT_TYPE|;
 		-META_TYPE:SYSTEM_BO_TYPE;

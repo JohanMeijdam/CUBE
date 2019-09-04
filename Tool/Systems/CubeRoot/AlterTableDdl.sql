@@ -4,12 +4,12 @@ SET SERVEROUTPUT ON;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
-	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBEROOT' AND sequence_name = 'ITP_SEQ';
+	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBEROOT' AND sequence_name = 'SQ_ITP';
 	IF l_count = 0 THEN
 
 		EXECUTE IMMEDIATE 
-		'CREATE SEQUENCE itp_seq START WITH 100000';
-		DBMS_OUTPUT.PUT_LINE('Sequence ITP_SEQ created');
+		'CREATE SEQUENCE sq_itp START WITH 100000';
+		DBMS_OUTPUT.PUT_LINE('Sequence SQ_ITP created');
 
 	END IF;
 END;
@@ -17,12 +17,12 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
-	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBEROOT' AND sequence_name = 'ITE_SEQ';
+	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBEROOT' AND sequence_name = 'SQ_ITE';
 	IF l_count = 0 THEN
 
 		EXECUTE IMMEDIATE 
-		'CREATE SEQUENCE ite_seq START WITH 100000';
-		DBMS_OUTPUT.PUT_LINE('Sequence ITE_SEQ created');
+		'CREATE SEQUENCE sq_ite START WITH 100000';
+		DBMS_OUTPUT.PUT_LINE('Sequence SQ_ITE created');
 
 	END IF;
 END;
@@ -30,12 +30,12 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
-	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBEROOT' AND sequence_name = 'VAL_SEQ';
+	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBEROOT' AND sequence_name = 'SQ_VAL';
 	IF l_count = 0 THEN
 
 		EXECUTE IMMEDIATE 
-		'CREATE SEQUENCE val_seq START WITH 100000';
-		DBMS_OUTPUT.PUT_LINE('Sequence VAL_SEQ created');
+		'CREATE SEQUENCE sq_val START WITH 100000';
+		DBMS_OUTPUT.PUT_LINE('Sequence SQ_VAL created');
 
 	END IF;
 END;
@@ -43,12 +43,12 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
-	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBEROOT' AND sequence_name = 'BOT_SEQ';
+	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBEROOT' AND sequence_name = 'SQ_BOT';
 	IF l_count = 0 THEN
 
 		EXECUTE IMMEDIATE 
-		'CREATE SEQUENCE bot_seq START WITH 100000';
-		DBMS_OUTPUT.PUT_LINE('Sequence BOT_SEQ created');
+		'CREATE SEQUENCE sq_bot START WITH 100000';
+		DBMS_OUTPUT.PUT_LINE('Sequence SQ_BOT created');
 
 	END IF;
 END;
@@ -56,12 +56,12 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
-	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBEROOT' AND sequence_name = 'TYP_SEQ';
+	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBEROOT' AND sequence_name = 'SQ_TYP';
 	IF l_count = 0 THEN
 
 		EXECUTE IMMEDIATE 
-		'CREATE SEQUENCE typ_seq START WITH 100000';
-		DBMS_OUTPUT.PUT_LINE('Sequence TYP_SEQ created');
+		'CREATE SEQUENCE sq_typ START WITH 100000';
+		DBMS_OUTPUT.PUT_LINE('Sequence SQ_TYP created');
 
 	END IF;
 END;
@@ -69,12 +69,12 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
-	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBEROOT' AND sequence_name = 'ATB_SEQ';
+	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBEROOT' AND sequence_name = 'SQ_ATB';
 	IF l_count = 0 THEN
 
 		EXECUTE IMMEDIATE 
-		'CREATE SEQUENCE atb_seq START WITH 100000';
-		DBMS_OUTPUT.PUT_LINE('Sequence ATB_SEQ created');
+		'CREATE SEQUENCE sq_atb START WITH 100000';
+		DBMS_OUTPUT.PUT_LINE('Sequence SQ_ATB created');
 
 	END IF;
 END;
@@ -82,12 +82,12 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
-	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBEROOT' AND sequence_name = 'DER_SEQ';
+	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBEROOT' AND sequence_name = 'SQ_DER';
 	IF l_count = 0 THEN
 
 		EXECUTE IMMEDIATE 
-		'CREATE SEQUENCE der_seq START WITH 100000';
-		DBMS_OUTPUT.PUT_LINE('Sequence DER_SEQ created');
+		'CREATE SEQUENCE sq_der START WITH 100000';
+		DBMS_OUTPUT.PUT_LINE('Sequence SQ_DER created');
 
 	END IF;
 END;
@@ -95,12 +95,12 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
-	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBEROOT' AND sequence_name = 'DCA_SEQ';
+	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBEROOT' AND sequence_name = 'SQ_DCA';
 	IF l_count = 0 THEN
 
 		EXECUTE IMMEDIATE 
-		'CREATE SEQUENCE dca_seq START WITH 100000';
-		DBMS_OUTPUT.PUT_LINE('Sequence DCA_SEQ created');
+		'CREATE SEQUENCE sq_dca START WITH 100000';
+		DBMS_OUTPUT.PUT_LINE('Sequence SQ_DCA created');
 
 	END IF;
 END;
@@ -108,12 +108,12 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
-	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBEROOT' AND sequence_name = 'RTA_SEQ';
+	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBEROOT' AND sequence_name = 'SQ_RTA';
 	IF l_count = 0 THEN
 
 		EXECUTE IMMEDIATE 
-		'CREATE SEQUENCE rta_seq START WITH 100000';
-		DBMS_OUTPUT.PUT_LINE('Sequence RTA_SEQ created');
+		'CREATE SEQUENCE sq_rta START WITH 100000';
+		DBMS_OUTPUT.PUT_LINE('Sequence SQ_RTA created');
 
 	END IF;
 END;
@@ -121,12 +121,12 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
-	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBEROOT' AND sequence_name = 'REF_SEQ';
+	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBEROOT' AND sequence_name = 'SQ_REF';
 	IF l_count = 0 THEN
 
 		EXECUTE IMMEDIATE 
-		'CREATE SEQUENCE ref_seq START WITH 100000';
-		DBMS_OUTPUT.PUT_LINE('Sequence REF_SEQ created');
+		'CREATE SEQUENCE sq_ref START WITH 100000';
+		DBMS_OUTPUT.PUT_LINE('Sequence SQ_REF created');
 
 	END IF;
 END;
@@ -134,12 +134,12 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
-	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBEROOT' AND sequence_name = 'DCR_SEQ';
+	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBEROOT' AND sequence_name = 'SQ_DCR';
 	IF l_count = 0 THEN
 
 		EXECUTE IMMEDIATE 
-		'CREATE SEQUENCE dcr_seq START WITH 100000';
-		DBMS_OUTPUT.PUT_LINE('Sequence DCR_SEQ created');
+		'CREATE SEQUENCE sq_dcr START WITH 100000';
+		DBMS_OUTPUT.PUT_LINE('Sequence SQ_DCR created');
 
 	END IF;
 END;
@@ -147,12 +147,12 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
-	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBEROOT' AND sequence_name = 'RTR_SEQ';
+	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBEROOT' AND sequence_name = 'SQ_RTR';
 	IF l_count = 0 THEN
 
 		EXECUTE IMMEDIATE 
-		'CREATE SEQUENCE rtr_seq START WITH 100000';
-		DBMS_OUTPUT.PUT_LINE('Sequence RTR_SEQ created');
+		'CREATE SEQUENCE sq_rtr START WITH 100000';
+		DBMS_OUTPUT.PUT_LINE('Sequence SQ_RTR created');
 
 	END IF;
 END;
@@ -160,12 +160,12 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
-	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBEROOT' AND sequence_name = 'RTT_SEQ';
+	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBEROOT' AND sequence_name = 'SQ_RTT';
 	IF l_count = 0 THEN
 
 		EXECUTE IMMEDIATE 
-		'CREATE SEQUENCE rtt_seq START WITH 100000';
-		DBMS_OUTPUT.PUT_LINE('Sequence RTT_SEQ created');
+		'CREATE SEQUENCE sq_rtt START WITH 100000';
+		DBMS_OUTPUT.PUT_LINE('Sequence SQ_RTT created');
 
 	END IF;
 END;
@@ -173,12 +173,12 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
-	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBEROOT' AND sequence_name = 'JSN_SEQ';
+	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBEROOT' AND sequence_name = 'SQ_JSN';
 	IF l_count = 0 THEN
 
 		EXECUTE IMMEDIATE 
-		'CREATE SEQUENCE jsn_seq START WITH 100000';
-		DBMS_OUTPUT.PUT_LINE('Sequence JSN_SEQ created');
+		'CREATE SEQUENCE sq_jsn START WITH 100000';
+		DBMS_OUTPUT.PUT_LINE('Sequence SQ_JSN created');
 
 	END IF;
 END;
@@ -186,12 +186,12 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
-	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBEROOT' AND sequence_name = 'TYR_SEQ';
+	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBEROOT' AND sequence_name = 'SQ_TYR';
 	IF l_count = 0 THEN
 
 		EXECUTE IMMEDIATE 
-		'CREATE SEQUENCE tyr_seq START WITH 100000';
-		DBMS_OUTPUT.PUT_LINE('Sequence TYR_SEQ created');
+		'CREATE SEQUENCE sq_tyr START WITH 100000';
+		DBMS_OUTPUT.PUT_LINE('Sequence SQ_TYR created');
 
 	END IF;
 END;
@@ -199,12 +199,12 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
-	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBEROOT' AND sequence_name = 'PAR_SEQ';
+	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBEROOT' AND sequence_name = 'SQ_PAR';
 	IF l_count = 0 THEN
 
 		EXECUTE IMMEDIATE 
-		'CREATE SEQUENCE par_seq START WITH 100000';
-		DBMS_OUTPUT.PUT_LINE('Sequence PAR_SEQ created');
+		'CREATE SEQUENCE sq_par START WITH 100000';
+		DBMS_OUTPUT.PUT_LINE('Sequence SQ_PAR created');
 
 	END IF;
 END;
@@ -212,12 +212,12 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
-	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBEROOT' AND sequence_name = 'STP_SEQ';
+	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBEROOT' AND sequence_name = 'SQ_STP';
 	IF l_count = 0 THEN
 
 		EXECUTE IMMEDIATE 
-		'CREATE SEQUENCE stp_seq START WITH 100000';
-		DBMS_OUTPUT.PUT_LINE('Sequence STP_SEQ created');
+		'CREATE SEQUENCE sq_stp START WITH 100000';
+		DBMS_OUTPUT.PUT_LINE('Sequence SQ_STP created');
 
 	END IF;
 END;
@@ -225,12 +225,12 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
-	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBEROOT' AND sequence_name = 'TSG_SEQ';
+	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBEROOT' AND sequence_name = 'SQ_TSG';
 	IF l_count = 0 THEN
 
 		EXECUTE IMMEDIATE 
-		'CREATE SEQUENCE tsg_seq START WITH 100000';
-		DBMS_OUTPUT.PUT_LINE('Sequence TSG_SEQ created');
+		'CREATE SEQUENCE sq_tsg START WITH 100000';
+		DBMS_OUTPUT.PUT_LINE('Sequence SQ_TSG created');
 
 	END IF;
 END;
@@ -238,12 +238,12 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
-	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBEROOT' AND sequence_name = 'TSP_SEQ';
+	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBEROOT' AND sequence_name = 'SQ_TSP';
 	IF l_count = 0 THEN
 
 		EXECUTE IMMEDIATE 
-		'CREATE SEQUENCE tsp_seq START WITH 100000';
-		DBMS_OUTPUT.PUT_LINE('Sequence TSP_SEQ created');
+		'CREATE SEQUENCE sq_tsp START WITH 100000';
+		DBMS_OUTPUT.PUT_LINE('Sequence SQ_TSP created');
 
 	END IF;
 END;
@@ -251,12 +251,12 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
-	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBEROOT' AND sequence_name = 'DCT_SEQ';
+	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBEROOT' AND sequence_name = 'SQ_DCT';
 	IF l_count = 0 THEN
 
 		EXECUTE IMMEDIATE 
-		'CREATE SEQUENCE dct_seq START WITH 100000';
-		DBMS_OUTPUT.PUT_LINE('Sequence DCT_SEQ created');
+		'CREATE SEQUENCE sq_dct START WITH 100000';
+		DBMS_OUTPUT.PUT_LINE('Sequence SQ_DCT created');
 
 	END IF;
 END;
@@ -264,12 +264,12 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
-	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBEROOT' AND sequence_name = 'SYS_SEQ';
+	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBEROOT' AND sequence_name = 'SQ_SYS';
 	IF l_count = 0 THEN
 
 		EXECUTE IMMEDIATE 
-		'CREATE SEQUENCE sys_seq START WITH 100000';
-		DBMS_OUTPUT.PUT_LINE('Sequence SYS_SEQ created');
+		'CREATE SEQUENCE sq_sys START WITH 100000';
+		DBMS_OUTPUT.PUT_LINE('Sequence SQ_SYS created');
 
 	END IF;
 END;
@@ -277,12 +277,12 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
-	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBEROOT' AND sequence_name = 'SBT_SEQ';
+	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBEROOT' AND sequence_name = 'SQ_SBT';
 	IF l_count = 0 THEN
 
 		EXECUTE IMMEDIATE 
-		'CREATE SEQUENCE sbt_seq START WITH 100000';
-		DBMS_OUTPUT.PUT_LINE('Sequence SBT_SEQ created');
+		'CREATE SEQUENCE sq_sbt START WITH 100000';
+		DBMS_OUTPUT.PUT_LINE('Sequence SQ_SBT created');
 
 	END IF;
 END;

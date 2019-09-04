@@ -1,68 +1,47 @@
+
 -- TABLE DDL
 --
-DROP SEQUENCE aaa_seq
+BEGIN
+	FOR r_s IN (
+		SELECT sequence_name FROM user_sequences)
+	LOOP
+		EXECUTE IMMEDIATE 'DROP SEQUENCE '||r_s.sequence_name;
+	END LOOP;
+
+	FOR r_c IN (
+		SELECT table_name, constraint_name
+		FROM user_constraints
+		WHERE constraint_type = 'R'
+		  AND TABLE_NAME IN (
+			SELECT table_name 
+			FROM user_tables))
+	LOOP
+		EXECUTE IMMEDIATE 'ALTER TABLE '||r_c.table_name||' DROP CONSTRAINT '||r_c.constraint_name;
+	END LOOP;
+	
+	FOR r_t IN (
+			SELECT table_name 
+			FROM user_tables)
+	LOOP
+		EXECUTE IMMEDIATE 'DROP TABLE '||r_t.table_name;
+	END LOOP;
+END;
 /
-CREATE SEQUENCE aaa_seq START WITH 100000
+CREATE SEQUENCE sq_aaa START WITH 100000
 /
-DROP SEQUENCE aad_seq
+CREATE SEQUENCE sq_aad START WITH 100000
 /
-CREATE SEQUENCE aad_seq START WITH 100000
+CREATE SEQUENCE sq_bbb START WITH 100000
 /
-DROP SEQUENCE bbb_seq
+CREATE SEQUENCE sq_ccc START WITH 100000
 /
-CREATE SEQUENCE bbb_seq START WITH 100000
+CREATE SEQUENCE sq_prd START WITH 100000
 /
-DROP SEQUENCE ccc_seq
+CREATE SEQUENCE sq_pr2 START WITH 100000
 /
-CREATE SEQUENCE ccc_seq START WITH 100000
+CREATE SEQUENCE sq_pa2 START WITH 100000
 /
-DROP SEQUENCE prd_seq
-/
-CREATE SEQUENCE prd_seq START WITH 100000
-/
-DROP SEQUENCE pr2_seq
-/
-CREATE SEQUENCE pr2_seq START WITH 100000
-/
-DROP SEQUENCE pa2_seq
-/
-CREATE SEQUENCE pa2_seq START WITH 100000
-/
-DROP SEQUENCE prt_seq
-/
-CREATE SEQUENCE prt_seq START WITH 100000
-/
-ALTER TABLE t_aaa DROP CONSTRAINT aaa_aaa_fk
-/
-ALTER TABLE t_aaa_deel DROP CONSTRAINT aad_aaa_fk
-/
-ALTER TABLE t_ccc DROP CONSTRAINT ccc_ccc_fk
-/
-ALTER TABLE t_prod2 DROP CONSTRAINT pr2_prd_fk
-/
-ALTER TABLE t_part2 DROP CONSTRAINT pa2_pr2_fk
-/
-ALTER TABLE t_part2 DROP CONSTRAINT pa2_pa2_fk
-/
-ALTER TABLE t_part DROP CONSTRAINT prt_prd_fk
-/
-ALTER TABLE t_part DROP CONSTRAINT prt_prt_fk
-/
-DROP TABLE t_aaa
-/
-DROP TABLE t_aaa_deel
-/
-DROP TABLE t_bbb
-/
-DROP TABLE t_ccc
-/
-DROP TABLE t_prod
-/
-DROP TABLE t_prod2
-/
-DROP TABLE t_part2
-/
-DROP TABLE t_part
+CREATE SEQUENCE sq_prt START WITH 100000
 /
 CREATE TABLE t_aaa (
 	cube_id VARCHAR2(16),
@@ -124,24 +103,27 @@ CREATE TABLE t_prod (
 	cube_tsg_yyy VARCHAR2(8) DEFAULT 'RRR',
 	code VARCHAR2(8),
 	naam VARCHAR2(40),
+	nummer NUMBER(8) DEFAULT '0',
 	datum DATE,
 	omschrijving VARCHAR2(120),
 	xk_aaa_naam VARCHAR2(40),
 	CONSTRAINT prd_pk
-		PRIMARY KEY (code, naam) )
+		PRIMARY KEY (code, naam, nummer, xk_aaa_naam) )
 /
 CREATE TABLE t_prod2 (
 	cube_id VARCHAR2(16),
 	fk_prd_code VARCHAR2(8),
 	fk_prd_naam VARCHAR2(40),
+	fk_prd_nummer NUMBER(8) DEFAULT '0',
+	fk_prd_aaa_naam VARCHAR2(40),
 	code VARCHAR2(8),
 	naam VARCHAR2(40),
 	omschrijving VARCHAR2(120),
 	CONSTRAINT pr2_pk
 		PRIMARY KEY (code, naam),
 	CONSTRAINT pr2_prd_fk
-		FOREIGN KEY (fk_prd_code, fk_prd_naam)
-		REFERENCES t_prod (code, naam)
+		FOREIGN KEY (fk_prd_code, fk_prd_naam, fk_prd_nummer, fk_prd_aaa_naam)
+		REFERENCES t_prod (code, naam, nummer, xk_aaa_naam)
 		ON DELETE CASCADE )
 /
 CREATE TABLE t_part2 (
@@ -149,6 +131,8 @@ CREATE TABLE t_part2 (
 	cube_level NUMBER(8) DEFAULT '1',
 	fk_prd_code VARCHAR2(8),
 	fk_prd_naam VARCHAR2(40),
+	fk_prd_nummer NUMBER(8) DEFAULT '0',
+	fk_prd_aaa_naam VARCHAR2(40),
 	fk_pr2_code VARCHAR2(8),
 	fk_pr2_naam VARCHAR2(40),
 	fk_pa2_code VARCHAR2(8),
@@ -174,6 +158,8 @@ CREATE TABLE t_part (
 	cube_level NUMBER(8) DEFAULT '1',
 	fk_prd_code VARCHAR2(8),
 	fk_prd_naam VARCHAR2(40),
+	fk_prd_nummer NUMBER(8) DEFAULT '0',
+	fk_prd_aaa_naam VARCHAR2(40),
 	fk_prt_code VARCHAR2(8),
 	fk_prt_naam VARCHAR2(40),
 	code VARCHAR2(8),
@@ -184,8 +170,8 @@ CREATE TABLE t_part (
 	CONSTRAINT prt_pk
 		PRIMARY KEY (code, naam),
 	CONSTRAINT prt_prd_fk
-		FOREIGN KEY (fk_prd_code, fk_prd_naam)
-		REFERENCES t_prod (code, naam)
+		FOREIGN KEY (fk_prd_code, fk_prd_naam, fk_prd_nummer, fk_prd_aaa_naam)
+		REFERENCES t_prod (code, naam, nummer, xk_aaa_naam)
 		ON DELETE CASCADE,
 	CONSTRAINT prt_prt_fk
 		FOREIGN KEY (fk_prt_code, fk_prt_naam)

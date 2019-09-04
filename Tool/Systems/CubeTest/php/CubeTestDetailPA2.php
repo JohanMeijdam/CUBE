@@ -28,6 +28,8 @@ g_xmlhttp.onreadystatechange = function() {
 						var l_json_values = l_json_array[i].Rows[0].Data;
 						document.getElementById("InputFkPrdCode").value=l_json_values.FkPrdCode;
 						document.getElementById("InputFkPrdNaam").value=l_json_values.FkPrdNaam;
+						document.getElementById("InputFkPrdNummer").value=l_json_values.FkPrdNummer;
+						document.getElementById("InputFkPrdAaaNaam").value=l_json_values.FkPrdAaaNaam;
 						document.getElementById("InputFkPr2Code").value=l_json_values.FkPr2Code;
 						document.getElementById("InputFkPr2Naam").value=l_json_values.FkPr2Naam;
 						document.getElementById("InputFkPa2Code").value=l_json_values.FkPa2Code;
@@ -39,6 +41,8 @@ g_xmlhttp.onreadystatechange = function() {
 					case "CREATE_PA2":
 						document.getElementById("InputFkPrdCode").readOnly=true;
 						document.getElementById("InputFkPrdNaam").readOnly=true;
+						document.getElementById("InputFkPrdNummer").readOnly=true;
+						document.getElementById("InputFkPrdAaaNaam").readOnly=true;
 						document.getElementById("InputFkPr2Code").readOnly=true;
 						document.getElementById("InputFkPr2Naam").readOnly=true;
 						document.getElementById("InputFkPa2Code").readOnly=true;
@@ -88,11 +92,15 @@ g_xmlhttp.onreadystatechange = function() {
 						var l_json_values = l_json_array[i].Rows[0].Data;
 						document.getElementById("InputFkPrdCode").value=l_json_values.FkPrdCode;
 						document.getElementById("InputFkPrdNaam").value=l_json_values.FkPrdNaam;
+						document.getElementById("InputFkPrdNummer").value=l_json_values.FkPrdNummer;
+						document.getElementById("InputFkPrdAaaNaam").value=l_json_values.FkPrdAaaNaam;
 						break;
 					case "SELECT_FKEY_PA2":
 						var l_json_values = l_json_array[i].Rows[0].Data;
 						document.getElementById("InputFkPrdCode").value=l_json_values.FkPrdCode;
 						document.getElementById("InputFkPrdNaam").value=l_json_values.FkPrdNaam;
+						document.getElementById("InputFkPrdNummer").value=l_json_values.FkPrdNummer;
+						document.getElementById("InputFkPrdAaaNaam").value=l_json_values.FkPrdAaaNaam;
 						document.getElementById("InputFkPr2Code").value=l_json_values.FkPr2Code;
 						document.getElementById("InputFkPr2Naam").value=l_json_values.FkPr2Naam;
 						break;
@@ -136,6 +144,8 @@ function InitBody() {
 		} );
 		document.getElementById("InputFkPrdCode").readOnly=true;
 		document.getElementById("InputFkPrdNaam").readOnly=true;
+		document.getElementById("InputFkPrdNummer").readOnly=true;
+		document.getElementById("InputFkPrdAaaNaam").readOnly=true;
 		document.getElementById("InputFkPr2Code").readOnly=true;
 		document.getElementById("InputFkPr2Naam").readOnly=true;
 		document.getElementById("InputFkPa2Code").readOnly=true;
@@ -157,6 +167,8 @@ function InitBody() {
 		} );
 		document.getElementById("InputFkPrdCode").readOnly=true;
 		document.getElementById("InputFkPrdNaam").readOnly=true;
+		document.getElementById("InputFkPrdNummer").readOnly=true;
+		document.getElementById("InputFkPrdAaaNaam").readOnly=true;
 		document.getElementById("InputFkPr2Code").readOnly=true;
 		document.getElementById("InputFkPr2Naam").readOnly=true;
 		document.getElementById("InputFkPa2Code").readOnly=true;
@@ -176,6 +188,8 @@ function InitBody() {
 		} );
 		document.getElementById("InputFkPrdCode").readOnly=true;
 		document.getElementById("InputFkPrdNaam").readOnly=true;
+		document.getElementById("InputFkPrdNummer").readOnly=true;
+		document.getElementById("InputFkPrdAaaNaam").readOnly=true;
 		document.getElementById("InputFkPr2Code").readOnly=true;
 		document.getElementById("InputFkPr2Naam").readOnly=true;
 		document.getElementById("InputFkPa2Code").readOnly=true;
@@ -191,6 +205,8 @@ function CreatePa2() {
 	var Type = {
 		FkPrdCode: document.getElementById("InputFkPrdCode").value,
 		FkPrdNaam: document.getElementById("InputFkPrdNaam").value,
+		FkPrdNummer: document.getElementById("InputFkPrdNummer").value,
+		FkPrdAaaNaam: document.getElementById("InputFkPrdAaaNaam").value,
 		FkPr2Code: document.getElementById("InputFkPr2Code").value,
 		FkPr2Naam: document.getElementById("InputFkPr2Naam").value,
 		FkPa2Code: document.getElementById("InputFkPa2Code").value,
@@ -213,6 +229,8 @@ function UpdatePa2() {
 	var Type = {
 		FkPrdCode: document.getElementById("InputFkPrdCode").value,
 		FkPrdNaam: document.getElementById("InputFkPrdNaam").value,
+		FkPrdNummer: document.getElementById("InputFkPrdNummer").value,
+		FkPrdAaaNaam: document.getElementById("InputFkPrdAaaNaam").value,
 		FkPr2Code: document.getElementById("InputFkPr2Code").value,
 		FkPr2Naam: document.getElementById("InputFkPr2Naam").value,
 		FkPa2Code: document.getElementById("InputFkPa2Code").value,
@@ -351,7 +369,9 @@ function StartSelect001(p_event) {
 		},
 		Ref: {
 			FkPrdCode:document.getElementById("InputFkPrdCode").value,
-			FkPrdNaam:document.getElementById("InputFkPrdNaam").value
+			FkPrdNaam:document.getElementById("InputFkPrdNaam").value,
+			FkPrdNummer:document.getElementById("InputFkPrdNummer").value,
+			FkPrdAaaNaam:document.getElementById("InputFkPrdAaaNaam").value
 		}
 	};
 	performTrans( {
@@ -410,6 +430,10 @@ function drop(p_event) {
 <input id="InputFkPrdCode" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
 <tr><td>Prod.Naam</td><td><div style="max-width:40em;">
 <input id="InputFkPrdNaam" type="text" maxlength="40" style="width:100%;"></input></div></td></tr>
+<tr><td>Prod.Nummer</td><td><div style="max-width:9em;">
+<input id="InputFkPrdNummer" type="text" maxlength="9" style="width:100%;"></input></div></td></tr>
+<tr><td>Prod.Naam</td><td><div style="max-width:40em;">
+<input id="InputFkPrdAaaNaam" type="text" maxlength="40" style="width:100%;"></input></div></td></tr>
 <tr><td>Prod2.Code</td><td><div style="max-width:8em;">
 <input id="InputFkPr2Code" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
 <tr><td>Prod2.Naam</td><td><div style="max-width:40em;">

@@ -11,10 +11,11 @@ set sysroot=%wwwroot%\%sysname%
 
 echo Start > %logfile%
 ::goto Models
+goto Database
 ::goto ModelImport
 ::goto ModelExport
 ::goto Packages
-goto Application 
+::goto Application 
 echo Extract Cube Model
 sqlplus.exe cuberoot/composys@composys @Systems\CubeRoot\ModelExport.sql %sysdir%\CubeModel.cgm %sysname% REPLACE >> %logfile% 2>&1
 ::goto End

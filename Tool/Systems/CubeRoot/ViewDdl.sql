@@ -1,5 +1,23 @@
 -- DB VIEW DDL
 --
+BEGIN
+	FOR r_v IN (
+		SELECT view_name 
+		FROM user_views
+		WHERE NVL(SUBSTR(view_name,1,INSTR(view_name,'_',3)),' ') NOT IN ('V_CUBE_'))
+	LOOP
+		EXECUTE IMMEDIATE 'DROP VIEW '||r_v.view_name;
+	END LOOP;
+	
+	FOR r_p IN (
+		SELECT object_name
+		FROM user_procedures
+		WHERE procedure_name = 'CUBE_TRG_CUBEROOT' )
+	LOOP
+		EXECUTE IMMEDIATE 'DROP PACKAGE '||r_p.object_name;
+	END LOOP;
+END;
+/
 CREATE OR REPLACE VIEW v_information_type AS 
 	SELECT
 		cube_id,
@@ -33,6 +51,7 @@ CREATE OR REPLACE VIEW v_permitted_value AS
 /
 
 CREATE OR REPLACE PACKAGE pkg_itp_trg IS
+	FUNCTION cube_trg_cuberoot RETURN VARCHAR2;
 	PROCEDURE insert_itp (p_itp IN OUT NOCOPY v_information_type%ROWTYPE);
 	PROCEDURE update_itp (p_cube_rowid IN UROWID, p_itp_old IN OUT NOCOPY v_information_type%ROWTYPE, p_itp_new IN OUT NOCOPY v_information_type%ROWTYPE);
 	PROCEDURE delete_itp (p_cube_rowid IN UROWID, p_itp IN OUT NOCOPY v_information_type%ROWTYPE);
@@ -48,9 +67,14 @@ SHOW ERRORS;
 
 CREATE OR REPLACE PACKAGE BODY pkg_itp_trg IS
 
+	FUNCTION cube_trg_cuberoot RETURN VARCHAR2 IS
+	BEGIN
+		RETURN 'cube_trg_cuberoot';
+	END;
+
 	PROCEDURE insert_itp (p_itp IN OUT NOCOPY v_information_type%ROWTYPE) IS
 	BEGIN
-		p_itp.cube_id := 'CUBE-ITP-' || TO_CHAR(itp_seq.NEXTVAL,'FM0000000');
+		p_itp.cube_id := 'CUBE-ITP-' || TO_CHAR(sq_itp.NEXTVAL,'FM0000000');
 		INSERT INTO t_information_type (
 			cube_id,
 			name)
@@ -72,7 +96,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_itp_trg IS
 
 	PROCEDURE insert_ite (p_ite IN OUT NOCOPY v_information_type_element%ROWTYPE) IS
 	BEGIN
-		p_ite.cube_id := 'CUBE-ITE-' || TO_CHAR(ite_seq.NEXTVAL,'FM0000000');
+		p_ite.cube_id := 'CUBE-ITE-' || TO_CHAR(sq_ite.NEXTVAL,'FM0000000');
 		INSERT INTO t_information_type_element (
 			cube_id,
 			fk_itp_name,
@@ -121,7 +145,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_itp_trg IS
 
 	PROCEDURE insert_val (p_val IN OUT NOCOPY v_permitted_value%ROWTYPE) IS
 	BEGIN
-		p_val.cube_id := 'CUBE-VAL-' || TO_CHAR(val_seq.NEXTVAL,'FM0000000');
+		p_val.cube_id := 'CUBE-VAL-' || TO_CHAR(sq_val.NEXTVAL,'FM0000000');
 		INSERT INTO t_permitted_value (
 			cube_id,
 			cube_sequence,
@@ -520,6 +544,7 @@ CREATE OR REPLACE VIEW v_description_type AS
 /
 
 CREATE OR REPLACE PACKAGE pkg_bot_trg IS
+	FUNCTION cube_trg_cuberoot RETURN VARCHAR2;
 	PROCEDURE insert_bot (p_bot IN OUT NOCOPY v_business_object_type%ROWTYPE);
 	PROCEDURE update_bot (p_cube_rowid IN UROWID, p_bot_old IN OUT NOCOPY v_business_object_type%ROWTYPE, p_bot_new IN OUT NOCOPY v_business_object_type%ROWTYPE);
 	PROCEDURE delete_bot (p_cube_rowid IN UROWID, p_bot IN OUT NOCOPY v_business_object_type%ROWTYPE);
@@ -583,9 +608,14 @@ SHOW ERRORS;
 
 CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 
+	FUNCTION cube_trg_cuberoot RETURN VARCHAR2 IS
+	BEGIN
+		RETURN 'cube_trg_cuberoot';
+	END;
+
 	PROCEDURE insert_bot (p_bot IN OUT NOCOPY v_business_object_type%ROWTYPE) IS
 	BEGIN
-		p_bot.cube_id := 'CUBE-BOT-' || TO_CHAR(bot_seq.NEXTVAL,'FM0000000');
+		p_bot.cube_id := 'CUBE-BOT-' || TO_CHAR(sq_bot.NEXTVAL,'FM0000000');
 		INSERT INTO t_business_object_type (
 			cube_id,
 			cube_sequence,
@@ -619,7 +649,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 
 	PROCEDURE insert_typ (p_typ IN OUT NOCOPY v_type%ROWTYPE) IS
 	BEGIN
-		p_typ.cube_id := 'CUBE-TYP-' || TO_CHAR(typ_seq.NEXTVAL,'FM0000000');
+		p_typ.cube_id := 'CUBE-TYP-' || TO_CHAR(sq_typ.NEXTVAL,'FM0000000');
 		IF p_typ.fk_typ_name IS NOT NULL  THEN
 			-- Recursive
 			SELECT fk_bot_name
@@ -749,7 +779,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 
 	PROCEDURE insert_atb (p_atb IN OUT NOCOPY v_attribute%ROWTYPE) IS
 	BEGIN
-		p_atb.cube_id := 'CUBE-ATB-' || TO_CHAR(atb_seq.NEXTVAL,'FM0000000');
+		p_atb.cube_id := 'CUBE-ATB-' || TO_CHAR(sq_atb.NEXTVAL,'FM0000000');
 		SELECT fk_bot_name
 		  INTO p_atb.fk_bot_name
 		FROM t_type
@@ -804,7 +834,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 
 	PROCEDURE insert_der (p_der IN OUT NOCOPY v_derivation%ROWTYPE) IS
 	BEGIN
-		p_der.cube_id := 'CUBE-DER-' || TO_CHAR(der_seq.NEXTVAL,'FM0000000');
+		p_der.cube_id := 'CUBE-DER-' || TO_CHAR(sq_der.NEXTVAL,'FM0000000');
 		SELECT fk_bot_name
 		  INTO p_der.fk_bot_name
 		FROM t_attribute
@@ -847,7 +877,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 
 	PROCEDURE insert_dca (p_dca IN OUT NOCOPY v_description_attribute%ROWTYPE) IS
 	BEGIN
-		p_dca.cube_id := 'CUBE-DCA-' || TO_CHAR(dca_seq.NEXTVAL,'FM0000000');
+		p_dca.cube_id := 'CUBE-DCA-' || TO_CHAR(sq_dca.NEXTVAL,'FM0000000');
 		SELECT fk_bot_name
 		  INTO p_dca.fk_bot_name
 		FROM t_attribute
@@ -882,7 +912,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 
 	PROCEDURE insert_rta (p_rta IN OUT NOCOPY v_restriction_type_spec_atb%ROWTYPE) IS
 	BEGIN
-		p_rta.cube_id := 'CUBE-RTA-' || TO_CHAR(rta_seq.NEXTVAL,'FM0000000');
+		p_rta.cube_id := 'CUBE-RTA-' || TO_CHAR(sq_rta.NEXTVAL,'FM0000000');
 		SELECT fk_bot_name
 		  INTO p_rta.fk_bot_name
 		FROM t_attribute
@@ -923,7 +953,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 
 	PROCEDURE insert_ref (p_ref IN OUT NOCOPY v_reference%ROWTYPE) IS
 	BEGIN
-		p_ref.cube_id := 'CUBE-REF-' || TO_CHAR(ref_seq.NEXTVAL,'FM0000000');
+		p_ref.cube_id := 'CUBE-REF-' || TO_CHAR(sq_ref.NEXTVAL,'FM0000000');
 		SELECT fk_bot_name
 		  INTO p_ref.fk_bot_name
 		FROM t_type
@@ -980,7 +1010,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 
 	PROCEDURE insert_dcr (p_dcr IN OUT NOCOPY v_description_reference%ROWTYPE) IS
 	BEGIN
-		p_dcr.cube_id := 'CUBE-DCR-' || TO_CHAR(dcr_seq.NEXTVAL,'FM0000000');
+		p_dcr.cube_id := 'CUBE-DCR-' || TO_CHAR(sq_dcr.NEXTVAL,'FM0000000');
 		SELECT fk_bot_name
 		  INTO p_dcr.fk_bot_name
 		FROM t_reference
@@ -1018,7 +1048,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 
 	PROCEDURE insert_rtr (p_rtr IN OUT NOCOPY v_restriction_type_spec_ref%ROWTYPE) IS
 	BEGIN
-		p_rtr.cube_id := 'CUBE-RTR-' || TO_CHAR(rtr_seq.NEXTVAL,'FM0000000');
+		p_rtr.cube_id := 'CUBE-RTR-' || TO_CHAR(sq_rtr.NEXTVAL,'FM0000000');
 		SELECT fk_bot_name
 		  INTO p_rtr.fk_bot_name
 		FROM t_reference
@@ -1062,7 +1092,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 
 	PROCEDURE insert_rtt (p_rtt IN OUT NOCOPY v_restriction_type_spec_typ%ROWTYPE) IS
 	BEGIN
-		p_rtt.cube_id := 'CUBE-RTT-' || TO_CHAR(rtt_seq.NEXTVAL,'FM0000000');
+		p_rtt.cube_id := 'CUBE-RTT-' || TO_CHAR(sq_rtt.NEXTVAL,'FM0000000');
 		SELECT fk_bot_name
 		  INTO p_rtt.fk_bot_name
 		FROM t_type
@@ -1100,7 +1130,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 
 	PROCEDURE insert_jsn (p_jsn IN OUT NOCOPY v_json_path%ROWTYPE) IS
 	BEGIN
-		p_jsn.cube_id := 'CUBE-JSN-' || TO_CHAR(jsn_seq.NEXTVAL,'FM0000000');
+		p_jsn.cube_id := 'CUBE-JSN-' || TO_CHAR(sq_jsn.NEXTVAL,'FM0000000');
 		IF p_jsn.fk_jsn_name IS NOT NULL OR p_jsn.fk_jsn_location IS NOT NULL OR p_jsn.fk_jsn_atb_typ_name IS NOT NULL OR p_jsn.fk_jsn_atb_name IS NOT NULL OR p_jsn.fk_jsn_typ_name IS NOT NULL  THEN
 			-- Recursive
 			SELECT fk_bot_name
@@ -1260,7 +1290,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 
 	PROCEDURE insert_tyr (p_tyr IN OUT NOCOPY v_type_reuse%ROWTYPE) IS
 	BEGIN
-		p_tyr.cube_id := 'CUBE-TYR-' || TO_CHAR(tyr_seq.NEXTVAL,'FM0000000');
+		p_tyr.cube_id := 'CUBE-TYR-' || TO_CHAR(sq_tyr.NEXTVAL,'FM0000000');
 		SELECT fk_bot_name
 		  INTO p_tyr.fk_bot_name
 		FROM t_type
@@ -1294,7 +1324,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 
 	PROCEDURE insert_par (p_par IN OUT NOCOPY v_partition%ROWTYPE) IS
 	BEGIN
-		p_par.cube_id := 'CUBE-PAR-' || TO_CHAR(par_seq.NEXTVAL,'FM0000000');
+		p_par.cube_id := 'CUBE-PAR-' || TO_CHAR(sq_par.NEXTVAL,'FM0000000');
 		SELECT fk_bot_name
 		  INTO p_par.fk_bot_name
 		FROM t_type
@@ -1324,7 +1354,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 
 	PROCEDURE insert_stp (p_stp IN OUT NOCOPY v_subtype%ROWTYPE) IS
 	BEGIN
-		p_stp.cube_id := 'CUBE-STP-' || TO_CHAR(stp_seq.NEXTVAL,'FM0000000');
+		p_stp.cube_id := 'CUBE-STP-' || TO_CHAR(sq_stp.NEXTVAL,'FM0000000');
 		SELECT fk_bot_name
 		  INTO p_stp.fk_bot_name
 		FROM t_partition
@@ -1361,7 +1391,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 
 	PROCEDURE insert_tsg (p_tsg IN OUT NOCOPY v_type_specialisation_group%ROWTYPE) IS
 	BEGIN
-		p_tsg.cube_id := 'CUBE-TSG-' || TO_CHAR(tsg_seq.NEXTVAL,'FM0000000');
+		p_tsg.cube_id := 'CUBE-TSG-' || TO_CHAR(sq_tsg.NEXTVAL,'FM0000000');
 		IF p_tsg.fk_tsg_code IS NOT NULL  THEN
 			-- Recursive
 			SELECT fk_bot_name
@@ -1487,7 +1517,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 
 	PROCEDURE insert_tsp (p_tsp IN OUT NOCOPY v_type_specialisation%ROWTYPE) IS
 	BEGIN
-		p_tsp.cube_id := 'CUBE-TSP-' || TO_CHAR(tsp_seq.NEXTVAL,'FM0000000');
+		p_tsp.cube_id := 'CUBE-TSP-' || TO_CHAR(sq_tsp.NEXTVAL,'FM0000000');
 		SELECT fk_bot_name
 		  INTO p_tsp.fk_bot_name
 		FROM t_type_specialisation_group
@@ -1536,7 +1566,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 
 	PROCEDURE insert_dct (p_dct IN OUT NOCOPY v_description_type%ROWTYPE) IS
 	BEGIN
-		p_dct.cube_id := 'CUBE-DCT-' || TO_CHAR(dct_seq.NEXTVAL,'FM0000000');
+		p_dct.cube_id := 'CUBE-DCT-' || TO_CHAR(sq_dct.NEXTVAL,'FM0000000');
 		SELECT fk_bot_name
 		  INTO p_dct.fk_bot_name
 		FROM t_type
@@ -2715,6 +2745,7 @@ CREATE OR REPLACE VIEW v_system_bo_type AS
 /
 
 CREATE OR REPLACE PACKAGE pkg_sys_trg IS
+	FUNCTION cube_trg_cuberoot RETURN VARCHAR2;
 	PROCEDURE insert_sys (p_sys IN OUT NOCOPY v_system%ROWTYPE);
 	PROCEDURE update_sys (p_cube_rowid IN UROWID, p_sys_old IN OUT NOCOPY v_system%ROWTYPE, p_sys_new IN OUT NOCOPY v_system%ROWTYPE);
 	PROCEDURE delete_sys (p_cube_rowid IN UROWID, p_sys IN OUT NOCOPY v_system%ROWTYPE);
@@ -2727,9 +2758,14 @@ SHOW ERRORS;
 
 CREATE OR REPLACE PACKAGE BODY pkg_sys_trg IS
 
+	FUNCTION cube_trg_cuberoot RETURN VARCHAR2 IS
+	BEGIN
+		RETURN 'cube_trg_cuberoot';
+	END;
+
 	PROCEDURE insert_sys (p_sys IN OUT NOCOPY v_system%ROWTYPE) IS
 	BEGIN
-		p_sys.cube_id := 'CUBE-SYS-' || TO_CHAR(sys_seq.NEXTVAL,'FM0000000');
+		p_sys.cube_id := 'CUBE-SYS-' || TO_CHAR(sq_sys.NEXTVAL,'FM0000000');
 		INSERT INTO t_system (
 			cube_id,
 			name,
@@ -2766,7 +2802,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_sys_trg IS
 
 	PROCEDURE insert_sbt (p_sbt IN OUT NOCOPY v_system_bo_type%ROWTYPE) IS
 	BEGIN
-		p_sbt.cube_id := 'CUBE-SBT-' || TO_CHAR(sbt_seq.NEXTVAL,'FM0000000');
+		p_sbt.cube_id := 'CUBE-SBT-' || TO_CHAR(sq_sbt.NEXTVAL,'FM0000000');
 		INSERT INTO t_system_bo_type (
 			cube_id,
 			cube_sequence,

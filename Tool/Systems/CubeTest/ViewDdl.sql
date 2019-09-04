@@ -1,5 +1,22 @@
 -- DB VIEW DDL
 --
+BEGIN
+	FOR r_v IN (
+		SELECT view_name 
+		FROM user_views)
+	LOOP
+		EXECUTE IMMEDIATE 'DROP VIEW '||r_v.view_name;
+	END LOOP;
+	
+	FOR r_p IN (
+		SELECT object_name
+		FROM user_procedures
+		WHERE procedure_name = 'CUBE_TRG_CUBETEST' )
+	LOOP
+		EXECUTE IMMEDIATE 'DROP PACKAGE '||r_p.object_name;
+	END LOOP;
+END;
+/
 CREATE OR REPLACE VIEW v_aaa AS 
 	SELECT
 		cube_id,
@@ -21,6 +38,7 @@ CREATE OR REPLACE VIEW v_aaa_deel AS
 /
 
 CREATE OR REPLACE PACKAGE pkg_aaa_trg IS
+	FUNCTION cube_trg_cubetest RETURN VARCHAR2;
 	PROCEDURE insert_aaa (p_aaa IN OUT NOCOPY v_aaa%ROWTYPE);
 	PROCEDURE update_aaa (p_cube_rowid IN UROWID, p_aaa_old IN OUT NOCOPY v_aaa%ROWTYPE, p_aaa_new IN OUT NOCOPY v_aaa%ROWTYPE);
 	PROCEDURE delete_aaa (p_cube_rowid IN UROWID, p_aaa IN OUT NOCOPY v_aaa%ROWTYPE);
@@ -35,9 +53,14 @@ SHOW ERRORS;
 
 CREATE OR REPLACE PACKAGE BODY pkg_aaa_trg IS
 
+	FUNCTION cube_trg_cubetest RETURN VARCHAR2 IS
+	BEGIN
+		RETURN 'cube_trg_cubetest';
+	END;
+
 	PROCEDURE insert_aaa (p_aaa IN OUT NOCOPY v_aaa%ROWTYPE) IS
 	BEGIN
-		p_aaa.cube_id := 'AAA-' || TO_CHAR(aaa_seq.NEXTVAL,'FM000000000000');
+		p_aaa.cube_id := 'AAA-' || TO_CHAR(sq_aaa.NEXTVAL,'FM000000000000');
 		get_denorm_aaa_aaa (p_aaa);
 		INSERT INTO t_aaa (
 			cube_id,
@@ -127,7 +150,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_aaa_trg IS
 
 	PROCEDURE insert_aad (p_aad IN OUT NOCOPY v_aaa_deel%ROWTYPE) IS
 	BEGIN
-		p_aad.cube_id := 'AAD-' || TO_CHAR(aad_seq.NEXTVAL,'FM000000000000');
+		p_aad.cube_id := 'AAD-' || TO_CHAR(sq_aad.NEXTVAL,'FM000000000000');
 		INSERT INTO t_aaa_deel (
 			cube_id,
 			cube_sequence,
@@ -246,6 +269,7 @@ CREATE OR REPLACE VIEW v_bbb AS
 /
 
 CREATE OR REPLACE PACKAGE pkg_bbb_trg IS
+	FUNCTION cube_trg_cubetest RETURN VARCHAR2;
 	PROCEDURE insert_bbb (p_bbb IN OUT NOCOPY v_bbb%ROWTYPE);
 	PROCEDURE update_bbb (p_cube_rowid IN UROWID, p_bbb_old IN OUT NOCOPY v_bbb%ROWTYPE, p_bbb_new IN OUT NOCOPY v_bbb%ROWTYPE);
 	PROCEDURE delete_bbb (p_cube_rowid IN UROWID, p_bbb IN OUT NOCOPY v_bbb%ROWTYPE);
@@ -255,9 +279,14 @@ SHOW ERRORS;
 
 CREATE OR REPLACE PACKAGE BODY pkg_bbb_trg IS
 
+	FUNCTION cube_trg_cubetest RETURN VARCHAR2 IS
+	BEGIN
+		RETURN 'cube_trg_cubetest';
+	END;
+
 	PROCEDURE insert_bbb (p_bbb IN OUT NOCOPY v_bbb%ROWTYPE) IS
 	BEGIN
-		p_bbb.cube_id := 'BBB-' || TO_CHAR(bbb_seq.NEXTVAL,'FM000000000000');
+		p_bbb.cube_id := 'BBB-' || TO_CHAR(sq_bbb.NEXTVAL,'FM000000000000');
 		INSERT INTO t_bbb (
 			cube_id,
 			naam,
@@ -343,6 +372,7 @@ CREATE OR REPLACE VIEW v_ccc AS
 /
 
 CREATE OR REPLACE PACKAGE pkg_ccc_trg IS
+	FUNCTION cube_trg_cubetest RETURN VARCHAR2;
 	PROCEDURE insert_ccc (p_ccc IN OUT NOCOPY v_ccc%ROWTYPE);
 	PROCEDURE update_ccc (p_cube_rowid IN UROWID, p_ccc_old IN OUT NOCOPY v_ccc%ROWTYPE, p_ccc_new IN OUT NOCOPY v_ccc%ROWTYPE);
 	PROCEDURE delete_ccc (p_cube_rowid IN UROWID, p_ccc IN OUT NOCOPY v_ccc%ROWTYPE);
@@ -354,9 +384,14 @@ SHOW ERRORS;
 
 CREATE OR REPLACE PACKAGE BODY pkg_ccc_trg IS
 
+	FUNCTION cube_trg_cubetest RETURN VARCHAR2 IS
+	BEGIN
+		RETURN 'cube_trg_cubetest';
+	END;
+
 	PROCEDURE insert_ccc (p_ccc IN OUT NOCOPY v_ccc%ROWTYPE) IS
 	BEGIN
-		p_ccc.cube_id := 'CCC-' || TO_CHAR(ccc_seq.NEXTVAL,'FM000000000000');
+		p_ccc.cube_id := 'CCC-' || TO_CHAR(sq_ccc.NEXTVAL,'FM000000000000');
 		get_denorm_ccc_ccc (p_ccc);
 		INSERT INTO t_ccc (
 			cube_id,
@@ -476,12 +511,24 @@ DECLARE
 BEGIN
 	IF INSERTING OR UPDATING THEN
 		r_ccc_new.cube_sequence := :NEW.cube_sequence;
-		r_ccc_new.fk_ccc_code := REPLACE(:NEW.fk_ccc_code,' ','_');
+		IF :NEW.fk_ccc_code = ' ' THEN
+			r_ccc_new.fk_ccc_code := ' ';
+		ELSE
+			r_ccc_new.fk_ccc_code := REPLACE(:NEW.fk_ccc_code,' ','_');
+		END IF;
 		r_ccc_new.fk_ccc_naam := :NEW.fk_ccc_naam;
-		r_ccc_new.code := REPLACE(:NEW.code,' ','_');
+		IF :NEW.code = ' ' THEN
+			r_ccc_new.code := ' ';
+		ELSE
+			r_ccc_new.code := REPLACE(:NEW.code,' ','_');
+		END IF;
 		r_ccc_new.naam := :NEW.naam;
 		r_ccc_new.omschrjving := :NEW.omschrjving;
-		r_ccc_new.xk_ccc_code := REPLACE(:NEW.xk_ccc_code,' ','_');
+		IF :NEW.xk_ccc_code = ' ' THEN
+			r_ccc_new.xk_ccc_code := ' ';
+		ELSE
+			r_ccc_new.xk_ccc_code := REPLACE(:NEW.xk_ccc_code,' ','_');
+		END IF;
 		r_ccc_new.xk_ccc_naam := :NEW.xk_ccc_naam;
 	END IF;
 	IF UPDATING THEN
@@ -520,6 +567,7 @@ CREATE OR REPLACE VIEW v_prod AS
 		cube_tsg_yyy,
 		code,
 		naam,
+		nummer,
 		datum,
 		omschrijving,
 		xk_aaa_naam
@@ -530,6 +578,8 @@ CREATE OR REPLACE VIEW v_prod2 AS
 		cube_id,
 		fk_prd_code,
 		fk_prd_naam,
+		fk_prd_nummer,
+		fk_prd_aaa_naam,
 		code,
 		naam,
 		omschrijving
@@ -541,6 +591,8 @@ CREATE OR REPLACE VIEW v_part2 AS
 		cube_level,
 		fk_prd_code,
 		fk_prd_naam,
+		fk_prd_nummer,
+		fk_prd_aaa_naam,
 		fk_pr2_code,
 		fk_pr2_naam,
 		fk_pa2_code,
@@ -558,6 +610,8 @@ CREATE OR REPLACE VIEW v_part AS
 		cube_level,
 		fk_prd_code,
 		fk_prd_naam,
+		fk_prd_nummer,
+		fk_prd_aaa_naam,
 		fk_prt_code,
 		fk_prt_naam,
 		code,
@@ -569,6 +623,7 @@ CREATE OR REPLACE VIEW v_part AS
 /
 
 CREATE OR REPLACE PACKAGE pkg_prd_trg IS
+	FUNCTION cube_trg_cubetest RETURN VARCHAR2;
 	PROCEDURE insert_prd (p_prd IN OUT NOCOPY v_prod%ROWTYPE);
 	PROCEDURE update_prd (p_cube_rowid IN UROWID, p_prd_old IN OUT NOCOPY v_prod%ROWTYPE, p_prd_new IN OUT NOCOPY v_prod%ROWTYPE);
 	PROCEDURE delete_prd (p_cube_rowid IN UROWID, p_prd IN OUT NOCOPY v_prod%ROWTYPE);
@@ -591,15 +646,21 @@ SHOW ERRORS;
 
 CREATE OR REPLACE PACKAGE BODY pkg_prd_trg IS
 
+	FUNCTION cube_trg_cubetest RETURN VARCHAR2 IS
+	BEGIN
+		RETURN 'cube_trg_cubetest';
+	END;
+
 	PROCEDURE insert_prd (p_prd IN OUT NOCOPY v_prod%ROWTYPE) IS
 	BEGIN
-		p_prd.cube_id := 'PRD-' || TO_CHAR(prd_seq.NEXTVAL,'FM000000000000');
+		p_prd.cube_id := 'PRD-' || TO_CHAR(sq_prd.NEXTVAL,'FM000000000000');
 		INSERT INTO t_prod (
 			cube_id,
 			cube_tsg_zzz,
 			cube_tsg_yyy,
 			code,
 			naam,
+			nummer,
 			datum,
 			omschrijving,
 			xk_aaa_naam)
@@ -608,18 +669,18 @@ CREATE OR REPLACE PACKAGE BODY pkg_prd_trg IS
 			p_prd.cube_tsg_zzz,
 			p_prd.cube_tsg_yyy,
 			p_prd.code,
-			p_prd.naam,
+			NVL(p_prd.naam,' '),
+			NVL(p_prd.nummer,0),
 			p_prd.datum,
 			p_prd.omschrijving,
-			p_prd.xk_aaa_naam);
+			NVL(p_prd.xk_aaa_naam,' '));
 	END;
 
 	PROCEDURE update_prd (p_cube_rowid UROWID, p_prd_old IN OUT NOCOPY v_prod%ROWTYPE, p_prd_new IN OUT NOCOPY v_prod%ROWTYPE) IS
 	BEGIN
 		UPDATE t_prod SET 
 			datum = p_prd_new.datum,
-			omschrijving = p_prd_new.omschrijving,
-			xk_aaa_naam = p_prd_new.xk_aaa_naam
+			omschrijving = p_prd_new.omschrijving
 		WHERE rowid = p_cube_rowid;
 	END;
 
@@ -631,11 +692,13 @@ CREATE OR REPLACE PACKAGE BODY pkg_prd_trg IS
 
 	PROCEDURE insert_pr2 (p_pr2 IN OUT NOCOPY v_prod2%ROWTYPE) IS
 	BEGIN
-		p_pr2.cube_id := 'PR2-' || TO_CHAR(pr2_seq.NEXTVAL,'FM000000000000');
+		p_pr2.cube_id := 'PR2-' || TO_CHAR(sq_pr2.NEXTVAL,'FM000000000000');
 		INSERT INTO t_prod2 (
 			cube_id,
 			fk_prd_code,
 			fk_prd_naam,
+			fk_prd_nummer,
+			fk_prd_aaa_naam,
 			code,
 			naam,
 			omschrijving)
@@ -643,6 +706,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_prd_trg IS
 			p_pr2.cube_id,
 			p_pr2.fk_prd_code,
 			p_pr2.fk_prd_naam,
+			p_pr2.fk_prd_nummer,
+			p_pr2.fk_prd_aaa_naam,
 			p_pr2.code,
 			p_pr2.naam,
 			p_pr2.omschrijving);
@@ -663,20 +728,20 @@ CREATE OR REPLACE PACKAGE BODY pkg_prd_trg IS
 
 	PROCEDURE insert_pa2 (p_pa2 IN OUT NOCOPY v_part2%ROWTYPE) IS
 	BEGIN
-		p_pa2.cube_id := 'PA2-' || TO_CHAR(pa2_seq.NEXTVAL,'FM000000000000');
+		p_pa2.cube_id := 'PA2-' || TO_CHAR(sq_pa2.NEXTVAL,'FM000000000000');
 		IF p_pa2.fk_pa2_code IS NOT NULL OR p_pa2.fk_pa2_naam IS NOT NULL  THEN
 			-- Recursive
-			SELECT fk_prd_code, fk_prd_naam, fk_pr2_code, fk_pr2_naam
-			  INTO p_pa2.fk_prd_code, p_pa2.fk_prd_naam, p_pa2.fk_pr2_code, p_pa2.fk_pr2_naam
+			SELECT fk_prd_code, fk_prd_naam, fk_prd_nummer, fk_prd_aaa_naam, fk_pr2_code, fk_pr2_naam
+			  INTO p_pa2.fk_prd_code, p_pa2.fk_prd_naam, p_pa2.fk_prd_nummer, p_pa2.fk_prd_aaa_naam, p_pa2.fk_pr2_code, p_pa2.fk_pr2_naam
 			FROM t_part2
 			WHERE fk_pr2_code = p_pa2.fk_pr2_code
 			  AND fk_pr2_naam = p_pa2.fk_pr2_naam
 			  AND code = p_pa2.fk_pa2_code
 			  AND naam = p_pa2.fk_pa2_naam;
-			ELSE
-				-- Parent
-			SELECT fk_prd_code, fk_prd_naam
-			  INTO p_pa2.fk_prd_code, p_pa2.fk_prd_naam
+		ELSE
+			-- Parent
+			SELECT fk_prd_code, fk_prd_naam, fk_prd_nummer, fk_prd_aaa_naam
+			  INTO p_pa2.fk_prd_code, p_pa2.fk_prd_naam, p_pa2.fk_prd_nummer, p_pa2.fk_prd_aaa_naam
 			FROM t_prod2
 			WHERE code = p_pa2.fk_pr2_code
 			  AND naam = p_pa2.fk_pr2_naam;
@@ -688,6 +753,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_prd_trg IS
 			cube_level,
 			fk_prd_code,
 			fk_prd_naam,
+			fk_prd_nummer,
+			fk_prd_aaa_naam,
 			fk_pr2_code,
 			fk_pr2_naam,
 			fk_pa2_code,
@@ -702,6 +769,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_prd_trg IS
 			p_pa2.cube_level,
 			p_pa2.fk_prd_code,
 			p_pa2.fk_prd_naam,
+			p_pa2.fk_prd_nummer,
+			p_pa2.fk_prd_aaa_naam,
 			p_pa2.fk_pr2_code,
 			p_pa2.fk_pr2_naam,
 			p_pa2.fk_pa2_code,
@@ -743,6 +812,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_prd_trg IS
 					r_pa2_old.cube_level,
 					r_pa2_old.fk_prd_code,
 					r_pa2_old.fk_prd_naam,
+					r_pa2_old.fk_prd_nummer,
+					r_pa2_old.fk_prd_aaa_naam,
 					r_pa2_old.fk_pr2_code,
 					r_pa2_old.fk_pr2_naam,
 					r_pa2_old.fk_pa2_code,
@@ -796,14 +867,16 @@ CREATE OR REPLACE PACKAGE BODY pkg_prd_trg IS
 
 	PROCEDURE insert_prt (p_prt IN OUT NOCOPY v_part%ROWTYPE) IS
 	BEGIN
-		p_prt.cube_id := 'PRT-' || TO_CHAR(prt_seq.NEXTVAL,'FM000000000000');
+		p_prt.cube_id := 'PRT-' || TO_CHAR(sq_prt.NEXTVAL,'FM000000000000');
 		IF p_prt.fk_prt_code IS NOT NULL OR p_prt.fk_prt_naam IS NOT NULL  THEN
 			-- Recursive
-			SELECT fk_prd_code, fk_prd_naam
-			  INTO p_prt.fk_prd_code, p_prt.fk_prd_naam
+			SELECT fk_prd_code, fk_prd_naam, fk_prd_nummer, fk_prd_aaa_naam
+			  INTO p_prt.fk_prd_code, p_prt.fk_prd_naam, p_prt.fk_prd_nummer, p_prt.fk_prd_aaa_naam
 			FROM t_part
 			WHERE fk_prd_code = p_prt.fk_prd_code
 			  AND fk_prd_naam = p_prt.fk_prd_naam
+			  AND fk_prd_nummer = p_prt.fk_prd_nummer
+			  AND fk_prd_aaa_naam = p_prt.fk_prd_aaa_naam
 			  AND code = p_prt.fk_prt_code
 			  AND naam = p_prt.fk_prt_naam;
 		END IF;
@@ -813,6 +886,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_prd_trg IS
 			cube_level,
 			fk_prd_code,
 			fk_prd_naam,
+			fk_prd_nummer,
+			fk_prd_aaa_naam,
 			fk_prt_code,
 			fk_prt_naam,
 			code,
@@ -825,6 +900,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_prd_trg IS
 			p_prt.cube_level,
 			p_prt.fk_prd_code,
 			p_prt.fk_prd_naam,
+			p_prt.fk_prd_nummer,
+			p_prt.fk_prd_aaa_naam,
 			p_prt.fk_prt_code,
 			p_prt.fk_prt_naam,
 			p_prt.code,
@@ -864,6 +941,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_prd_trg IS
 					r_prt_old.cube_level,
 					r_prt_old.fk_prd_code,
 					r_prt_old.fk_prd_naam,
+					r_prt_old.fk_prd_nummer,
+					r_prt_old.fk_prd_aaa_naam,
 					r_prt_old.fk_prt_code,
 					r_prt_old.fk_prt_naam,
 					r_prt_old.code,
@@ -927,8 +1006,13 @@ BEGIN
 	IF INSERTING OR UPDATING THEN
 		r_prd_new.cube_tsg_zzz := :NEW.cube_tsg_zzz;
 		r_prd_new.cube_tsg_yyy := :NEW.cube_tsg_yyy;
-		r_prd_new.code := REPLACE(:NEW.code,' ','_');
+		IF :NEW.code = ' ' THEN
+			r_prd_new.code := ' ';
+		ELSE
+			r_prd_new.code := REPLACE(:NEW.code,' ','_');
+		END IF;
 		r_prd_new.naam := :NEW.naam;
+		r_prd_new.nummer := :NEW.nummer;
 		r_prd_new.datum := :NEW.datum;
 		r_prd_new.omschrijving := :NEW.omschrijving;
 		r_prd_new.xk_aaa_naam := :NEW.xk_aaa_naam;
@@ -939,11 +1023,14 @@ BEGIN
 	IF UPDATING OR DELETING THEN
 		SELECT rowid INTO l_cube_rowid FROM t_prod
 		WHERE code = :OLD.code
-		  AND naam = :OLD.naam;
+		  AND naam = :OLD.naam
+		  AND nummer = :OLD.nummer
+		  AND xk_aaa_naam = :OLD.xk_aaa_naam;
 		r_prd_old.cube_tsg_zzz := :OLD.cube_tsg_zzz;
 		r_prd_old.cube_tsg_yyy := :OLD.cube_tsg_yyy;
 		r_prd_old.code := :OLD.code;
 		r_prd_old.naam := :OLD.naam;
+		r_prd_old.nummer := :OLD.nummer;
 		r_prd_old.datum := :OLD.datum;
 		r_prd_old.omschrijving := :OLD.omschrijving;
 		r_prd_old.xk_aaa_naam := :OLD.xk_aaa_naam;
@@ -969,9 +1056,19 @@ DECLARE
 	r_pr2_old v_prod2%ROWTYPE;
 BEGIN
 	IF INSERTING OR UPDATING THEN
-		r_pr2_new.fk_prd_code := REPLACE(:NEW.fk_prd_code,' ','_');
+		IF :NEW.fk_prd_code = ' ' THEN
+			r_pr2_new.fk_prd_code := ' ';
+		ELSE
+			r_pr2_new.fk_prd_code := REPLACE(:NEW.fk_prd_code,' ','_');
+		END IF;
 		r_pr2_new.fk_prd_naam := :NEW.fk_prd_naam;
-		r_pr2_new.code := REPLACE(:NEW.code,' ','_');
+		r_pr2_new.fk_prd_nummer := :NEW.fk_prd_nummer;
+		r_pr2_new.fk_prd_aaa_naam := :NEW.fk_prd_aaa_naam;
+		IF :NEW.code = ' ' THEN
+			r_pr2_new.code := ' ';
+		ELSE
+			r_pr2_new.code := REPLACE(:NEW.code,' ','_');
+		END IF;
 		r_pr2_new.naam := :NEW.naam;
 		r_pr2_new.omschrijving := :NEW.omschrijving;
 	END IF;
@@ -984,6 +1081,8 @@ BEGIN
 		  AND naam = :OLD.naam;
 		r_pr2_old.fk_prd_code := :OLD.fk_prd_code;
 		r_pr2_old.fk_prd_naam := :OLD.fk_prd_naam;
+		r_pr2_old.fk_prd_nummer := :OLD.fk_prd_nummer;
+		r_pr2_old.fk_prd_aaa_naam := :OLD.fk_prd_aaa_naam;
 		r_pr2_old.code := :OLD.code;
 		r_pr2_old.naam := :OLD.naam;
 		r_pr2_old.omschrijving := :OLD.omschrijving;
@@ -1009,16 +1108,38 @@ DECLARE
 	r_pa2_old v_part2%ROWTYPE;
 BEGIN
 	IF INSERTING OR UPDATING THEN
-		r_pa2_new.fk_prd_code := REPLACE(:NEW.fk_prd_code,' ','_');
+		IF :NEW.fk_prd_code = ' ' THEN
+			r_pa2_new.fk_prd_code := ' ';
+		ELSE
+			r_pa2_new.fk_prd_code := REPLACE(:NEW.fk_prd_code,' ','_');
+		END IF;
 		r_pa2_new.fk_prd_naam := :NEW.fk_prd_naam;
-		r_pa2_new.fk_pr2_code := REPLACE(:NEW.fk_pr2_code,' ','_');
+		r_pa2_new.fk_prd_nummer := :NEW.fk_prd_nummer;
+		r_pa2_new.fk_prd_aaa_naam := :NEW.fk_prd_aaa_naam;
+		IF :NEW.fk_pr2_code = ' ' THEN
+			r_pa2_new.fk_pr2_code := ' ';
+		ELSE
+			r_pa2_new.fk_pr2_code := REPLACE(:NEW.fk_pr2_code,' ','_');
+		END IF;
 		r_pa2_new.fk_pr2_naam := :NEW.fk_pr2_naam;
-		r_pa2_new.fk_pa2_code := REPLACE(:NEW.fk_pa2_code,' ','_');
+		IF :NEW.fk_pa2_code = ' ' THEN
+			r_pa2_new.fk_pa2_code := ' ';
+		ELSE
+			r_pa2_new.fk_pa2_code := REPLACE(:NEW.fk_pa2_code,' ','_');
+		END IF;
 		r_pa2_new.fk_pa2_naam := :NEW.fk_pa2_naam;
-		r_pa2_new.code := REPLACE(:NEW.code,' ','_');
+		IF :NEW.code = ' ' THEN
+			r_pa2_new.code := ' ';
+		ELSE
+			r_pa2_new.code := REPLACE(:NEW.code,' ','_');
+		END IF;
 		r_pa2_new.naam := :NEW.naam;
 		r_pa2_new.omschrijving := :NEW.omschrijving;
-		r_pa2_new.xk_pa2_code := REPLACE(:NEW.xk_pa2_code,' ','_');
+		IF :NEW.xk_pa2_code = ' ' THEN
+			r_pa2_new.xk_pa2_code := ' ';
+		ELSE
+			r_pa2_new.xk_pa2_code := REPLACE(:NEW.xk_pa2_code,' ','_');
+		END IF;
 		r_pa2_new.xk_pa2_naam := :NEW.xk_pa2_naam;
 	END IF;
 	IF UPDATING THEN
@@ -1031,6 +1152,8 @@ BEGIN
 		  AND naam = :OLD.naam;
 		r_pa2_old.fk_prd_code := :OLD.fk_prd_code;
 		r_pa2_old.fk_prd_naam := :OLD.fk_prd_naam;
+		r_pa2_old.fk_prd_nummer := :OLD.fk_prd_nummer;
+		r_pa2_old.fk_prd_aaa_naam := :OLD.fk_prd_aaa_naam;
 		r_pa2_old.fk_pr2_code := :OLD.fk_pr2_code;
 		r_pa2_old.fk_pr2_naam := :OLD.fk_pr2_naam;
 		r_pa2_old.fk_pa2_code := :OLD.fk_pa2_code;
@@ -1062,14 +1185,32 @@ DECLARE
 	r_prt_old v_part%ROWTYPE;
 BEGIN
 	IF INSERTING OR UPDATING THEN
-		r_prt_new.fk_prd_code := REPLACE(:NEW.fk_prd_code,' ','_');
+		IF :NEW.fk_prd_code = ' ' THEN
+			r_prt_new.fk_prd_code := ' ';
+		ELSE
+			r_prt_new.fk_prd_code := REPLACE(:NEW.fk_prd_code,' ','_');
+		END IF;
 		r_prt_new.fk_prd_naam := :NEW.fk_prd_naam;
-		r_prt_new.fk_prt_code := REPLACE(:NEW.fk_prt_code,' ','_');
+		r_prt_new.fk_prd_nummer := :NEW.fk_prd_nummer;
+		r_prt_new.fk_prd_aaa_naam := :NEW.fk_prd_aaa_naam;
+		IF :NEW.fk_prt_code = ' ' THEN
+			r_prt_new.fk_prt_code := ' ';
+		ELSE
+			r_prt_new.fk_prt_code := REPLACE(:NEW.fk_prt_code,' ','_');
+		END IF;
 		r_prt_new.fk_prt_naam := :NEW.fk_prt_naam;
-		r_prt_new.code := REPLACE(:NEW.code,' ','_');
+		IF :NEW.code = ' ' THEN
+			r_prt_new.code := ' ';
+		ELSE
+			r_prt_new.code := REPLACE(:NEW.code,' ','_');
+		END IF;
 		r_prt_new.naam := :NEW.naam;
 		r_prt_new.omschrijving := :NEW.omschrijving;
-		r_prt_new.xk_prt_code := REPLACE(:NEW.xk_prt_code,' ','_');
+		IF :NEW.xk_prt_code = ' ' THEN
+			r_prt_new.xk_prt_code := ' ';
+		ELSE
+			r_prt_new.xk_prt_code := REPLACE(:NEW.xk_prt_code,' ','_');
+		END IF;
 		r_prt_new.xk_prt_naam := :NEW.xk_prt_naam;
 	END IF;
 	IF UPDATING THEN
@@ -1082,6 +1223,8 @@ BEGIN
 		  AND naam = :OLD.naam;
 		r_prt_old.fk_prd_code := :OLD.fk_prd_code;
 		r_prt_old.fk_prd_naam := :OLD.fk_prd_naam;
+		r_prt_old.fk_prd_nummer := :OLD.fk_prd_nummer;
+		r_prt_old.fk_prd_aaa_naam := :OLD.fk_prd_aaa_naam;
 		r_prt_old.fk_prt_code := :OLD.fk_prt_code;
 		r_prt_old.fk_prt_naam := :OLD.fk_prt_naam;
 		r_prt_old.code := :OLD.code;

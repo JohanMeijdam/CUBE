@@ -4,12 +4,12 @@ SET SERVEROUTPUT ON;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
-	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = '' AND sequence_name = 'CUBE_DSC_SEQ';
+	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = '' AND sequence_name = 'SQ_CUBE_DSC';
 	IF l_count = 0 THEN
 
 		EXECUTE IMMEDIATE 
-		'CREATE SEQUENCE cube_dsc_seq START WITH 100000';
-		DBMS_OUTPUT.PUT_LINE('Sequence CUBE_DSC_SEQ created');
+		'CREATE SEQUENCE sq_cube_dsc START WITH 100000';
+		DBMS_OUTPUT.PUT_LINE('Sequence SQ_CUBE_DSC created');
 
 	END IF;
 END;

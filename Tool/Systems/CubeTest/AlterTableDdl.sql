@@ -4,12 +4,12 @@ SET SERVEROUTPUT ON;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
-	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBETEST' AND sequence_name = 'AAA_SEQ';
+	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBETEST' AND sequence_name = 'SQ_AAA';
 	IF l_count = 0 THEN
 
 		EXECUTE IMMEDIATE 
-		'CREATE SEQUENCE aaa_seq START WITH 100000';
-		DBMS_OUTPUT.PUT_LINE('Sequence AAA_SEQ created');
+		'CREATE SEQUENCE sq_aaa START WITH 100000';
+		DBMS_OUTPUT.PUT_LINE('Sequence SQ_AAA created');
 
 	END IF;
 END;
@@ -17,12 +17,12 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
-	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBETEST' AND sequence_name = 'AAD_SEQ';
+	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBETEST' AND sequence_name = 'SQ_AAD';
 	IF l_count = 0 THEN
 
 		EXECUTE IMMEDIATE 
-		'CREATE SEQUENCE aad_seq START WITH 100000';
-		DBMS_OUTPUT.PUT_LINE('Sequence AAD_SEQ created');
+		'CREATE SEQUENCE sq_aad START WITH 100000';
+		DBMS_OUTPUT.PUT_LINE('Sequence SQ_AAD created');
 
 	END IF;
 END;
@@ -30,12 +30,12 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
-	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBETEST' AND sequence_name = 'BBB_SEQ';
+	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBETEST' AND sequence_name = 'SQ_BBB';
 	IF l_count = 0 THEN
 
 		EXECUTE IMMEDIATE 
-		'CREATE SEQUENCE bbb_seq START WITH 100000';
-		DBMS_OUTPUT.PUT_LINE('Sequence BBB_SEQ created');
+		'CREATE SEQUENCE sq_bbb START WITH 100000';
+		DBMS_OUTPUT.PUT_LINE('Sequence SQ_BBB created');
 
 	END IF;
 END;
@@ -43,12 +43,12 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
-	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBETEST' AND sequence_name = 'CCC_SEQ';
+	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBETEST' AND sequence_name = 'SQ_CCC';
 	IF l_count = 0 THEN
 
 		EXECUTE IMMEDIATE 
-		'CREATE SEQUENCE ccc_seq START WITH 100000';
-		DBMS_OUTPUT.PUT_LINE('Sequence CCC_SEQ created');
+		'CREATE SEQUENCE sq_ccc START WITH 100000';
+		DBMS_OUTPUT.PUT_LINE('Sequence SQ_CCC created');
 
 	END IF;
 END;
@@ -56,12 +56,12 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
-	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBETEST' AND sequence_name = 'PRD_SEQ';
+	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBETEST' AND sequence_name = 'SQ_PRD';
 	IF l_count = 0 THEN
 
 		EXECUTE IMMEDIATE 
-		'CREATE SEQUENCE prd_seq START WITH 100000';
-		DBMS_OUTPUT.PUT_LINE('Sequence PRD_SEQ created');
+		'CREATE SEQUENCE sq_prd START WITH 100000';
+		DBMS_OUTPUT.PUT_LINE('Sequence SQ_PRD created');
 
 	END IF;
 END;
@@ -69,12 +69,12 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
-	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBETEST' AND sequence_name = 'PR2_SEQ';
+	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBETEST' AND sequence_name = 'SQ_PR2';
 	IF l_count = 0 THEN
 
 		EXECUTE IMMEDIATE 
-		'CREATE SEQUENCE pr2_seq START WITH 100000';
-		DBMS_OUTPUT.PUT_LINE('Sequence PR2_SEQ created');
+		'CREATE SEQUENCE sq_pr2 START WITH 100000';
+		DBMS_OUTPUT.PUT_LINE('Sequence SQ_PR2 created');
 
 	END IF;
 END;
@@ -82,12 +82,12 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
-	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBETEST' AND sequence_name = 'PA2_SEQ';
+	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBETEST' AND sequence_name = 'SQ_PA2';
 	IF l_count = 0 THEN
 
 		EXECUTE IMMEDIATE 
-		'CREATE SEQUENCE pa2_seq START WITH 100000';
-		DBMS_OUTPUT.PUT_LINE('Sequence PA2_SEQ created');
+		'CREATE SEQUENCE sq_pa2 START WITH 100000';
+		DBMS_OUTPUT.PUT_LINE('Sequence SQ_PA2 created');
 
 	END IF;
 END;
@@ -95,12 +95,12 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
-	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBETEST' AND sequence_name = 'PRT_SEQ';
+	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBETEST' AND sequence_name = 'SQ_PRT';
 	IF l_count = 0 THEN
 
 		EXECUTE IMMEDIATE 
-		'CREATE SEQUENCE prt_seq START WITH 100000';
-		DBMS_OUTPUT.PUT_LINE('Sequence PRT_SEQ created');
+		'CREATE SEQUENCE sq_prt START WITH 100000';
+		DBMS_OUTPUT.PUT_LINE('Sequence SQ_PRT created');
 
 	END IF;
 END;
@@ -434,6 +434,7 @@ BEGIN
 			cube_tsg_yyy VARCHAR2(8) DEFAULT ''RRR'',
 			code VARCHAR2(8),
 			naam VARCHAR2(40),
+			nummer NUMBER(8) DEFAULT ''0'',
 			datum DATE,
 			omschrijving VARCHAR2(120),
 			xk_aaa_naam VARCHAR2(40))';
@@ -473,6 +474,13 @@ BEGIN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_prod ADD naam VARCHAR2(40)';
 			DBMS_OUTPUT.PUT_LINE('Column T_PROD.NAAM created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_PROD' AND column_name = 'NUMMER';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_prod ADD nummer NUMBER(8) DEFAULT ''0''';
+			DBMS_OUTPUT.PUT_LINE('Column T_PROD.NUMMER created');
 		END IF;
 
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_PROD' AND column_name = 'DATUM';
@@ -523,6 +531,8 @@ BEGIN
 			cube_id VARCHAR2(16),
 			fk_prd_code VARCHAR2(8),
 			fk_prd_naam VARCHAR2(40),
+			fk_prd_nummer NUMBER(8) DEFAULT ''0'',
+			fk_prd_aaa_naam VARCHAR2(40),
 			code VARCHAR2(8),
 			naam VARCHAR2(40),
 			omschrijving VARCHAR2(120))';
@@ -548,6 +558,20 @@ BEGIN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_prod2 ADD fk_prd_naam VARCHAR2(40)';
 			DBMS_OUTPUT.PUT_LINE('Column T_PROD2.FK_PRD_NAAM created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_PROD2' AND column_name = 'FK_PRD_NUMMER';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_prod2 ADD fk_prd_nummer NUMBER(8) DEFAULT ''0''';
+			DBMS_OUTPUT.PUT_LINE('Column T_PROD2.FK_PRD_NUMMER created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_PROD2' AND column_name = 'FK_PRD_AAA_NAAM';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_prod2 ADD fk_prd_aaa_naam VARCHAR2(40)';
+			DBMS_OUTPUT.PUT_LINE('Column T_PROD2.FK_PRD_AAA_NAAM created');
 		END IF;
 
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_PROD2' AND column_name = 'CODE';
@@ -599,6 +623,8 @@ BEGIN
 			cube_level NUMBER(8) DEFAULT ''1'',
 			fk_prd_code VARCHAR2(8),
 			fk_prd_naam VARCHAR2(40),
+			fk_prd_nummer NUMBER(8) DEFAULT ''0'',
+			fk_prd_aaa_naam VARCHAR2(40),
 			fk_pr2_code VARCHAR2(8),
 			fk_pr2_naam VARCHAR2(40),
 			fk_pa2_code VARCHAR2(8),
@@ -637,6 +663,20 @@ BEGIN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_part2 ADD fk_prd_naam VARCHAR2(40)';
 			DBMS_OUTPUT.PUT_LINE('Column T_PART2.FK_PRD_NAAM created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_PART2' AND column_name = 'FK_PRD_NUMMER';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_part2 ADD fk_prd_nummer NUMBER(8) DEFAULT ''0''';
+			DBMS_OUTPUT.PUT_LINE('Column T_PART2.FK_PRD_NUMMER created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_PART2' AND column_name = 'FK_PRD_AAA_NAAM';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_part2 ADD fk_prd_aaa_naam VARCHAR2(40)';
+			DBMS_OUTPUT.PUT_LINE('Column T_PART2.FK_PRD_AAA_NAAM created');
 		END IF;
 
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_PART2' AND column_name = 'FK_PR2_CODE';
@@ -730,6 +770,8 @@ BEGIN
 			cube_level NUMBER(8) DEFAULT ''1'',
 			fk_prd_code VARCHAR2(8),
 			fk_prd_naam VARCHAR2(40),
+			fk_prd_nummer NUMBER(8) DEFAULT ''0'',
+			fk_prd_aaa_naam VARCHAR2(40),
 			fk_prt_code VARCHAR2(8),
 			fk_prt_naam VARCHAR2(40),
 			code VARCHAR2(8),
@@ -766,6 +808,20 @@ BEGIN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_part ADD fk_prd_naam VARCHAR2(40)';
 			DBMS_OUTPUT.PUT_LINE('Column T_PART.FK_PRD_NAAM created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_PART' AND column_name = 'FK_PRD_NUMMER';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_part ADD fk_prd_nummer NUMBER(8) DEFAULT ''0''';
+			DBMS_OUTPUT.PUT_LINE('Column T_PART.FK_PRD_NUMMER created');
+		END IF;
+
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_PART' AND column_name = 'FK_PRD_AAA_NAAM';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_part ADD fk_prd_aaa_naam VARCHAR2(40)';
+			DBMS_OUTPUT.PUT_LINE('Column T_PART.FK_PRD_AAA_NAAM created');
 		END IF;
 
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_PART' AND column_name = 'FK_PRT_CODE';
@@ -1136,6 +1192,7 @@ BEGIN
 			'CUBE_TSG_YYY','VARCHAR2(8)',
 			'CODE','VARCHAR2(8)',
 			'NAAM','VARCHAR2(40)',
+			'NUMMER','NUMBER(8)',
 			'DATUM','DATE',
 			'OMSCHRIJVING','VARCHAR2(120)',
 			'XK_AAA_NAAM','VARCHAR2(40)',NULL) new_domain,
@@ -1145,6 +1202,7 @@ BEGIN
 			'CUBE_TSG_YYY','''RRR''',
 			'CODE',NULL,
 			'NAAM',NULL,
+			'NUMMER','''0''',
 			'DATUM',NULL,
 			'OMSCHRIJVING',NULL,
 			'XK_AAA_NAAM',NULL,NULL) new_default_value
@@ -1176,7 +1234,9 @@ BEGIN
 	'ALTER TABLE t_prod ADD CONSTRAINT prd_pk
 		PRIMARY KEY (
 			code,
-			naam )';
+			naam,
+			nummer,
+			xk_aaa_naam )';
 	DBMS_OUTPUT.PUT_LINE('Primary Key T_PROD.PRD_PK created');
 	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_PROD' AND column_name NOT IN (
 							'CUBE_ID',
@@ -1184,6 +1244,7 @@ BEGIN
 							'CUBE_TSG_YYY',
 							'CODE',
 							'NAAM',
+							'NUMMER',
 							'DATUM',
 							'OMSCHRIJVING',
 							'XK_AAA_NAAM'))
@@ -1203,6 +1264,8 @@ BEGIN
 			'CUBE_ID','VARCHAR2(16)',
 			'FK_PRD_CODE','VARCHAR2(8)',
 			'FK_PRD_NAAM','VARCHAR2(40)',
+			'FK_PRD_NUMMER','NUMBER(8)',
+			'FK_PRD_AAA_NAAM','VARCHAR2(40)',
 			'CODE','VARCHAR2(8)',
 			'NAAM','VARCHAR2(40)',
 			'OMSCHRIJVING','VARCHAR2(120)',NULL) new_domain,
@@ -1210,6 +1273,8 @@ BEGIN
 			'CUBE_ID',NULL,
 			'FK_PRD_CODE',NULL,
 			'FK_PRD_NAAM',NULL,
+			'FK_PRD_NUMMER','''0''',
+			'FK_PRD_AAA_NAAM',NULL,
 			'CODE',NULL,
 			'NAAM',NULL,
 			'OMSCHRIJVING',NULL,NULL) new_default_value
@@ -1245,13 +1310,15 @@ BEGIN
 	DBMS_OUTPUT.PUT_LINE('Primary Key T_PROD2.PR2_PK created');
 	EXECUTE IMMEDIATE
 	'ALTER TABLE t_prod2 ADD CONSTRAINT pr2_prd_fk
-		FOREIGN KEY (fk_prd_code, fk_prd_naam)
-		REFERENCES t_prod (code, naam)
+		FOREIGN KEY (fk_prd_code, fk_prd_naam, fk_prd_nummer, fk_prd_aaa_naam)
+		REFERENCES t_prod (code, naam, nummer, xk_aaa_naam)
 		ON DELETE CASCADE';
 	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_PROD2' AND column_name NOT IN (
 							'CUBE_ID',
 							'FK_PRD_CODE',
 							'FK_PRD_NAAM',
+							'FK_PRD_NUMMER',
+							'FK_PRD_AAA_NAAM',
 							'CODE',
 							'NAAM',
 							'OMSCHRIJVING'))
@@ -1272,6 +1339,8 @@ BEGIN
 			'CUBE_LEVEL','NUMBER(8)',
 			'FK_PRD_CODE','VARCHAR2(8)',
 			'FK_PRD_NAAM','VARCHAR2(40)',
+			'FK_PRD_NUMMER','NUMBER(8)',
+			'FK_PRD_AAA_NAAM','VARCHAR2(40)',
 			'FK_PR2_CODE','VARCHAR2(8)',
 			'FK_PR2_NAAM','VARCHAR2(40)',
 			'FK_PA2_CODE','VARCHAR2(8)',
@@ -1286,6 +1355,8 @@ BEGIN
 			'CUBE_LEVEL','''1''',
 			'FK_PRD_CODE',NULL,
 			'FK_PRD_NAAM',NULL,
+			'FK_PRD_NUMMER','''0''',
+			'FK_PRD_AAA_NAAM',NULL,
 			'FK_PR2_CODE',NULL,
 			'FK_PR2_NAAM',NULL,
 			'FK_PA2_CODE',NULL,
@@ -1340,6 +1411,8 @@ BEGIN
 							'CUBE_LEVEL',
 							'FK_PRD_CODE',
 							'FK_PRD_NAAM',
+							'FK_PRD_NUMMER',
+							'FK_PRD_AAA_NAAM',
 							'FK_PR2_CODE',
 							'FK_PR2_NAAM',
 							'FK_PA2_CODE',
@@ -1366,6 +1439,8 @@ BEGIN
 			'CUBE_LEVEL','NUMBER(8)',
 			'FK_PRD_CODE','VARCHAR2(8)',
 			'FK_PRD_NAAM','VARCHAR2(40)',
+			'FK_PRD_NUMMER','NUMBER(8)',
+			'FK_PRD_AAA_NAAM','VARCHAR2(40)',
 			'FK_PRT_CODE','VARCHAR2(8)',
 			'FK_PRT_NAAM','VARCHAR2(40)',
 			'CODE','VARCHAR2(8)',
@@ -1378,6 +1453,8 @@ BEGIN
 			'CUBE_LEVEL','''1''',
 			'FK_PRD_CODE',NULL,
 			'FK_PRD_NAAM',NULL,
+			'FK_PRD_NUMMER','''0''',
+			'FK_PRD_AAA_NAAM',NULL,
 			'FK_PRT_CODE',NULL,
 			'FK_PRT_NAAM',NULL,
 			'CODE',NULL,
@@ -1417,8 +1494,8 @@ BEGIN
 	DBMS_OUTPUT.PUT_LINE('Primary Key T_PART.PRT_PK created');
 	EXECUTE IMMEDIATE
 	'ALTER TABLE t_part ADD CONSTRAINT prt_prd_fk
-		FOREIGN KEY (fk_prd_code, fk_prd_naam)
-		REFERENCES t_prod (code, naam)
+		FOREIGN KEY (fk_prd_code, fk_prd_naam, fk_prd_nummer, fk_prd_aaa_naam)
+		REFERENCES t_prod (code, naam, nummer, xk_aaa_naam)
 		ON DELETE CASCADE';
 	EXECUTE IMMEDIATE
 	'ALTER TABLE t_part ADD CONSTRAINT prt_prt_fk
@@ -1430,6 +1507,8 @@ BEGIN
 							'CUBE_LEVEL',
 							'FK_PRD_CODE',
 							'FK_PRD_NAAM',
+							'FK_PRD_NUMMER',
+							'FK_PRD_AAA_NAAM',
 							'FK_PRT_CODE',
 							'FK_PRT_NAAM',
 							'CODE',

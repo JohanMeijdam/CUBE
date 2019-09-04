@@ -1,27 +1,26 @@
 -- CUBETOOL Packages
 --
 BEGIN
-	FOR r_pck IN (
+	FOR r_p IN (
 		SELECT object_name
-		FROM all_procedures p
-		WHERE p.owner = 'CUBETOOL'
-		  AND p.procedure_name = 'CUBE_PACKAGE' )
+		FROM all_procedures
+		WHERE procedure_name = 'CUBE_PKG_CUBETOOL' )
 	LOOP
-		EXECUTE IMMEDIATE 'DROP PACKAGE CUBETOOL.'||r_pck.object_name;
+		EXECUTE IMMEDIATE 'DROP PACKAGE '||r_p.object_name;
 	END LOOP;
 END;
 /
 CREATE OR REPLACE PACKAGE pkg_cube IS
-	FUNCTION cube_package RETURN VARCHAR2;
+	FUNCTION cube_pkg_cubetool RETURN VARCHAR2;
 	FUNCTION years(p_date DATE) RETURN NUMBER;
 	FUNCTION multiply(p_num_1 NUMBER, p_num_2 NUMBER) RETURN NUMBER;
 	FUNCTION add(p_num_1 NUMBER, p_num_2 NUMBER) RETURN NUMBER;
 END;
 /
 CREATE OR REPLACE PACKAGE BODY pkg_cube IS
-	FUNCTION cube_package RETURN VARCHAR2 IS
+	FUNCTION cube_pkg_cubetool RETURN VARCHAR2 IS
 	BEGIN
-		RETURN 'cube_package';
+		RETURN 'cube_pkg_cubetool';
 	END;
 	FUNCTION years(p_date DATE) RETURN NUMBER IS
 	BEGIN
@@ -40,7 +39,7 @@ END;
 CREATE OR REPLACE PACKAGE pkg_itp IS
 
 	TYPE c_cube_row IS REF CURSOR;
-	FUNCTION cube_package RETURN VARCHAR2;
+	FUNCTION cube_pkg_cubetool RETURN VARCHAR2;
 	PROCEDURE get_itp_root_items (
 			p_cube_row IN OUT c_cube_row);
 	PROCEDURE get_itp_list (
@@ -123,9 +122,9 @@ END;
 SHOW ERRORS;
 
 CREATE OR REPLACE PACKAGE BODY pkg_itp IS
-	FUNCTION cube_package RETURN VARCHAR2 IS
+	FUNCTION cube_pkg_cubetool RETURN VARCHAR2 IS
 	BEGIN
-		RETURN 'cube_package';
+		RETURN 'cube_pkg_cubetool';
 	END;
 
 	PROCEDURE get_itp_root_items (
@@ -500,7 +499,7 @@ SHOW ERRORS;
 CREATE OR REPLACE PACKAGE pkg_bot IS
 
 	TYPE c_cube_row IS REF CURSOR;
-	FUNCTION cube_package RETURN VARCHAR2;
+	FUNCTION cube_pkg_cubetool RETURN VARCHAR2;
 	PROCEDURE get_bot_root_items (
 			p_cube_row IN OUT c_cube_row);
 	PROCEDURE get_bot_list (
@@ -1161,9 +1160,9 @@ END;
 SHOW ERRORS;
 
 CREATE OR REPLACE PACKAGE BODY pkg_bot IS
-	FUNCTION cube_package RETURN VARCHAR2 IS
+	FUNCTION cube_pkg_cubetool RETURN VARCHAR2 IS
 	BEGIN
-		RETURN 'cube_package';
+		RETURN 'cube_pkg_cubetool';
 	END;
 
 	PROCEDURE get_bot_root_items (
@@ -4337,7 +4336,7 @@ SHOW ERRORS;
 CREATE OR REPLACE PACKAGE pkg_sys IS
 
 	TYPE c_cube_row IS REF CURSOR;
-	FUNCTION cube_package RETURN VARCHAR2;
+	FUNCTION cube_pkg_cubetool RETURN VARCHAR2;
 	PROCEDURE get_sys_root_items (
 			p_cube_row IN OUT c_cube_row);
 	PROCEDURE get_sys (
@@ -4348,15 +4347,19 @@ CREATE OR REPLACE PACKAGE pkg_sys IS
 			p_name IN VARCHAR2);
 	PROCEDURE insert_sys (
 			p_name IN VARCHAR2,
+			p_cube_tsg_type IN VARCHAR2,
 			p_database IN VARCHAR2,
 			p_schema IN VARCHAR2,
 			p_password IN VARCHAR2,
+			p_table_prefix IN VARCHAR2,
 			p_cube_row IN OUT c_cube_row);
 	PROCEDURE update_sys (
 			p_name IN VARCHAR2,
+			p_cube_tsg_type IN VARCHAR2,
 			p_database IN VARCHAR2,
 			p_schema IN VARCHAR2,
-			p_password IN VARCHAR2);
+			p_password IN VARCHAR2,
+			p_table_prefix IN VARCHAR2);
 	PROCEDURE delete_sys (
 			p_name IN VARCHAR2);
 	PROCEDURE move_sbt (
@@ -4379,9 +4382,9 @@ END;
 SHOW ERRORS;
 
 CREATE OR REPLACE PACKAGE BODY pkg_sys IS
-	FUNCTION cube_package RETURN VARCHAR2 IS
+	FUNCTION cube_pkg_cubetool RETURN VARCHAR2 IS
 	BEGIN
-		RETURN 'cube_package';
+		RETURN 'cube_pkg_cubetool';
 	END;
 
 	PROCEDURE get_sys_root_items (
@@ -4389,9 +4392,10 @@ CREATE OR REPLACE PACKAGE BODY pkg_sys IS
 	BEGIN
 		OPEN p_cube_row FOR
 			SELECT
-			  name
+			  name,
+			  cube_tsg_type
 			FROM v_system
-			ORDER BY name;
+			ORDER BY name, cube_tsg_type;
 	END;
 
 	PROCEDURE get_sys (
@@ -4400,9 +4404,11 @@ CREATE OR REPLACE PACKAGE BODY pkg_sys IS
 	BEGIN
 		OPEN p_cube_row FOR
 			SELECT
+			  cube_tsg_type,
 			  database,
 			  schema,
-			  password
+			  password,
+			  table_prefix
 			FROM v_system
 			WHERE name = p_name;
 	END;
@@ -4435,23 +4441,29 @@ CREATE OR REPLACE PACKAGE BODY pkg_sys IS
 
 	PROCEDURE insert_sys (
 			p_name IN VARCHAR2,
+			p_cube_tsg_type IN VARCHAR2,
 			p_database IN VARCHAR2,
 			p_schema IN VARCHAR2,
 			p_password IN VARCHAR2,
+			p_table_prefix IN VARCHAR2,
 			p_cube_row IN OUT c_cube_row) IS
 	BEGIN
 		INSERT INTO v_system (
 			cube_id,
 			name,
+			cube_tsg_type,
 			database,
 			schema,
-			password)
+			password,
+			table_prefix)
 		VALUES (
 			NULL,
 			p_name,
+			p_cube_tsg_type,
 			p_database,
 			p_schema,
-			p_password);
+			p_password,
+			p_table_prefix);
 
 		get_next_sys (p_cube_row, p_name);
 	EXCEPTION
@@ -4461,14 +4473,18 @@ CREATE OR REPLACE PACKAGE BODY pkg_sys IS
 
 	PROCEDURE update_sys (
 			p_name IN VARCHAR2,
+			p_cube_tsg_type IN VARCHAR2,
 			p_database IN VARCHAR2,
 			p_schema IN VARCHAR2,
-			p_password IN VARCHAR2) IS
+			p_password IN VARCHAR2,
+			p_table_prefix IN VARCHAR2) IS
 	BEGIN
 		UPDATE v_system SET
+			cube_tsg_type = p_cube_tsg_type,
 			database = p_database,
 			schema = p_schema,
-			password = p_password
+			password = p_password,
+			table_prefix = p_table_prefix
 		WHERE name = p_name;
 	END;
 
@@ -4604,7 +4620,7 @@ SHOW ERRORS;
 CREATE OR REPLACE PACKAGE pkg_fun IS
 
 	TYPE c_cube_row IS REF CURSOR;
-	FUNCTION cube_package RETURN VARCHAR2;
+	FUNCTION cube_pkg_cubetool RETURN VARCHAR2;
 	PROCEDURE get_fun_root_items (
 			p_cube_row IN OUT c_cube_row);
 	PROCEDURE count_fun (
@@ -4636,9 +4652,9 @@ END;
 SHOW ERRORS;
 
 CREATE OR REPLACE PACKAGE BODY pkg_fun IS
-	FUNCTION cube_package RETURN VARCHAR2 IS
+	FUNCTION cube_pkg_cubetool RETURN VARCHAR2 IS
 	BEGIN
-		RETURN 'cube_package';
+		RETURN 'cube_pkg_cubetool';
 	END;
 
 	PROCEDURE get_fun_root_items (

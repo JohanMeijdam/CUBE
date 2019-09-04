@@ -1,194 +1,79 @@
+
 -- TABLE DDL
 --
-DROP SEQUENCE itp_seq
+BEGIN
+	FOR r_s IN (
+		SELECT sequence_name FROM user_sequences)
+	LOOP
+		EXECUTE IMMEDIATE 'DROP SEQUENCE '||r_s.sequence_name;
+	END LOOP;
+
+	FOR r_c IN (
+		SELECT table_name, constraint_name
+		FROM user_constraints
+		WHERE constraint_type = 'R'
+		  AND TABLE_NAME IN (
+			SELECT table_name 
+			FROM user_tables))
+	LOOP
+		EXECUTE IMMEDIATE 'ALTER TABLE '||r_c.table_name||' DROP CONSTRAINT '||r_c.constraint_name;
+	END LOOP;
+	
+	FOR r_t IN (
+			SELECT table_name 
+			FROM user_tables)
+	LOOP
+		EXECUTE IMMEDIATE 'DROP TABLE '||r_t.table_name;
+	END LOOP;
+END;
 /
-CREATE SEQUENCE itp_seq START WITH 100000
+CREATE SEQUENCE sq_itp START WITH 100000
 /
-DROP SEQUENCE ite_seq
+CREATE SEQUENCE sq_ite START WITH 100000
 /
-CREATE SEQUENCE ite_seq START WITH 100000
+CREATE SEQUENCE sq_val START WITH 100000
 /
-DROP SEQUENCE val_seq
+CREATE SEQUENCE sq_bot START WITH 100000
 /
-CREATE SEQUENCE val_seq START WITH 100000
+CREATE SEQUENCE sq_typ START WITH 100000
 /
-DROP SEQUENCE bot_seq
+CREATE SEQUENCE sq_atb START WITH 100000
 /
-CREATE SEQUENCE bot_seq START WITH 100000
+CREATE SEQUENCE sq_der START WITH 100000
 /
-DROP SEQUENCE typ_seq
+CREATE SEQUENCE sq_dca START WITH 100000
 /
-CREATE SEQUENCE typ_seq START WITH 100000
+CREATE SEQUENCE sq_rta START WITH 100000
 /
-DROP SEQUENCE atb_seq
+CREATE SEQUENCE sq_ref START WITH 100000
 /
-CREATE SEQUENCE atb_seq START WITH 100000
+CREATE SEQUENCE sq_dcr START WITH 100000
 /
-DROP SEQUENCE der_seq
+CREATE SEQUENCE sq_rtr START WITH 100000
 /
-CREATE SEQUENCE der_seq START WITH 100000
+CREATE SEQUENCE sq_rtt START WITH 100000
 /
-DROP SEQUENCE dca_seq
+CREATE SEQUENCE sq_jsn START WITH 100000
 /
-CREATE SEQUENCE dca_seq START WITH 100000
+CREATE SEQUENCE sq_tyr START WITH 100000
 /
-DROP SEQUENCE rta_seq
+CREATE SEQUENCE sq_par START WITH 100000
 /
-CREATE SEQUENCE rta_seq START WITH 100000
+CREATE SEQUENCE sq_stp START WITH 100000
 /
-DROP SEQUENCE ref_seq
+CREATE SEQUENCE sq_tsg START WITH 100000
 /
-CREATE SEQUENCE ref_seq START WITH 100000
+CREATE SEQUENCE sq_tsp START WITH 100000
 /
-DROP SEQUENCE dcr_seq
+CREATE SEQUENCE sq_dct START WITH 100000
 /
-CREATE SEQUENCE dcr_seq START WITH 100000
+CREATE SEQUENCE sq_sys START WITH 100000
 /
-DROP SEQUENCE rtr_seq
+CREATE SEQUENCE sq_sbt START WITH 100000
 /
-CREATE SEQUENCE rtr_seq START WITH 100000
+CREATE SEQUENCE sq_fun START WITH 100000
 /
-DROP SEQUENCE rtt_seq
-/
-CREATE SEQUENCE rtt_seq START WITH 100000
-/
-DROP SEQUENCE jsn_seq
-/
-CREATE SEQUENCE jsn_seq START WITH 100000
-/
-DROP SEQUENCE tyr_seq
-/
-CREATE SEQUENCE tyr_seq START WITH 100000
-/
-DROP SEQUENCE par_seq
-/
-CREATE SEQUENCE par_seq START WITH 100000
-/
-DROP SEQUENCE stp_seq
-/
-CREATE SEQUENCE stp_seq START WITH 100000
-/
-DROP SEQUENCE tsg_seq
-/
-CREATE SEQUENCE tsg_seq START WITH 100000
-/
-DROP SEQUENCE tsp_seq
-/
-CREATE SEQUENCE tsp_seq START WITH 100000
-/
-DROP SEQUENCE dct_seq
-/
-CREATE SEQUENCE dct_seq START WITH 100000
-/
-DROP SEQUENCE sys_seq
-/
-CREATE SEQUENCE sys_seq START WITH 100000
-/
-DROP SEQUENCE sbt_seq
-/
-CREATE SEQUENCE sbt_seq START WITH 100000
-/
-DROP SEQUENCE fun_seq
-/
-CREATE SEQUENCE fun_seq START WITH 100000
-/
-DROP SEQUENCE arg_seq
-/
-CREATE SEQUENCE arg_seq START WITH 100000
-/
-ALTER TABLE t_information_type_element DROP CONSTRAINT ite_itp_fk
-/
-ALTER TABLE t_permitted_value DROP CONSTRAINT val_ite_fk
-/
-ALTER TABLE t_type DROP CONSTRAINT typ_bot_fk
-/
-ALTER TABLE t_type DROP CONSTRAINT typ_typ_fk
-/
-ALTER TABLE t_attribute DROP CONSTRAINT atb_typ_fk
-/
-ALTER TABLE t_derivation DROP CONSTRAINT der_atb_fk
-/
-ALTER TABLE t_description_attribute DROP CONSTRAINT dca_atb_fk
-/
-ALTER TABLE t_restriction_type_spec_atb DROP CONSTRAINT rta_atb_fk
-/
-ALTER TABLE t_reference DROP CONSTRAINT ref_typ_fk
-/
-ALTER TABLE t_description_reference DROP CONSTRAINT dcr_ref_fk
-/
-ALTER TABLE t_restriction_type_spec_ref DROP CONSTRAINT rtr_ref_fk
-/
-ALTER TABLE t_restriction_type_spec_typ DROP CONSTRAINT rtt_typ_fk
-/
-ALTER TABLE t_json_path DROP CONSTRAINT jsn_typ_fk
-/
-ALTER TABLE t_json_path DROP CONSTRAINT jsn_jsn_fk
-/
-ALTER TABLE t_type_reuse DROP CONSTRAINT tyr_typ_fk
-/
-ALTER TABLE t_partition DROP CONSTRAINT par_typ_fk
-/
-ALTER TABLE t_subtype DROP CONSTRAINT stp_par_fk
-/
-ALTER TABLE t_type_specialisation_group DROP CONSTRAINT tsg_typ_fk
-/
-ALTER TABLE t_type_specialisation_group DROP CONSTRAINT tsg_tsg_fk
-/
-ALTER TABLE t_type_specialisation DROP CONSTRAINT tsp_tsg_fk
-/
-ALTER TABLE t_description_type DROP CONSTRAINT dct_typ_fk
-/
-ALTER TABLE t_system_bo_type DROP CONSTRAINT sbt_sys_fk
-/
-ALTER TABLE t_argument DROP CONSTRAINT arg_fun_fk
-/
-DROP TABLE t_information_type
-/
-DROP TABLE t_information_type_element
-/
-DROP TABLE t_permitted_value
-/
-DROP TABLE t_business_object_type
-/
-DROP TABLE t_type
-/
-DROP TABLE t_attribute
-/
-DROP TABLE t_derivation
-/
-DROP TABLE t_description_attribute
-/
-DROP TABLE t_restriction_type_spec_atb
-/
-DROP TABLE t_reference
-/
-DROP TABLE t_description_reference
-/
-DROP TABLE t_restriction_type_spec_ref
-/
-DROP TABLE t_restriction_type_spec_typ
-/
-DROP TABLE t_json_path
-/
-DROP TABLE t_type_reuse
-/
-DROP TABLE t_partition
-/
-DROP TABLE t_subtype
-/
-DROP TABLE t_type_specialisation_group
-/
-DROP TABLE t_type_specialisation
-/
-DROP TABLE t_description_type
-/
-DROP TABLE t_system
-/
-DROP TABLE t_system_bo_type
-/
-DROP TABLE t_function
-/
-DROP TABLE t_argument
+CREATE SEQUENCE sq_arg START WITH 100000
 /
 CREATE TABLE t_information_type (
 	cube_id VARCHAR2(16),
@@ -521,9 +406,11 @@ CREATE TABLE t_description_type (
 CREATE TABLE t_system (
 	cube_id VARCHAR2(16),
 	name VARCHAR2(30),
+	cube_tsg_type VARCHAR2(8) DEFAULT 'PRIMARY',
 	database VARCHAR2(30),
 	schema VARCHAR2(30),
 	password VARCHAR2(20),
+	table_prefix VARCHAR2(4),
 	CONSTRAINT sys_pk
 		PRIMARY KEY (name) )
 /

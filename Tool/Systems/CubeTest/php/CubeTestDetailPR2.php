@@ -28,11 +28,15 @@ g_xmlhttp.onreadystatechange = function() {
 						var l_json_values = l_json_array[i].Rows[0].Data;
 						document.getElementById("InputFkPrdCode").value=l_json_values.FkPrdCode;
 						document.getElementById("InputFkPrdNaam").value=l_json_values.FkPrdNaam;
+						document.getElementById("InputFkPrdNummer").value=l_json_values.FkPrdNummer;
+						document.getElementById("InputFkPrdAaaNaam").value=l_json_values.FkPrdAaaNaam;
 						document.getElementById("InputOmschrijving").value=l_json_values.Omschrijving;
 						break;
 					case "CREATE_PR2":
 						document.getElementById("InputFkPrdCode").readOnly=true;
 						document.getElementById("InputFkPrdNaam").readOnly=true;
+						document.getElementById("InputFkPrdNummer").readOnly=true;
+						document.getElementById("InputFkPrdAaaNaam").readOnly=true;
 						document.getElementById("InputCode").readOnly=true;
 						document.getElementById("InputNaam").readOnly=true;
 						document.getElementById("ButtonCreate").disabled=true;
@@ -111,6 +115,8 @@ function InitBody() {
 		} );
 		document.getElementById("InputFkPrdCode").readOnly=true;
 		document.getElementById("InputFkPrdNaam").readOnly=true;
+		document.getElementById("InputFkPrdNummer").readOnly=true;
+		document.getElementById("InputFkPrdAaaNaam").readOnly=true;
 		document.getElementById("InputCode").readOnly=true;
 		document.getElementById("InputNaam").readOnly=true;
 		break;
@@ -118,10 +124,14 @@ function InitBody() {
 		g_parent_node_id = JSON.stringify(l_json_argument.objectId);
 		document.getElementById("InputFkPrdCode").value=l_json_objectKey.TYP_PRD.Code;
 		document.getElementById("InputFkPrdNaam").value=l_json_objectKey.TYP_PRD.Naam;
+		document.getElementById("InputFkPrdNummer").value=l_json_objectKey.TYP_PRD.Nummer;
+		document.getElementById("InputFkPrdAaaNaam").value=l_json_objectKey.TYP_PRD.XkAaaNaam;
 		document.getElementById("ButtonUpdate").disabled=true;
 		document.getElementById("ButtonDelete").disabled=true;
 		document.getElementById("InputFkPrdCode").readOnly=true;
 		document.getElementById("InputFkPrdNaam").readOnly=true;
+		document.getElementById("InputFkPrdNummer").readOnly=true;
+		document.getElementById("InputFkPrdAaaNaam").readOnly=true;
 		break;
 	default:
 		alert ('Error InitBody: '+l_argument[1]);
@@ -132,6 +142,8 @@ function CreatePr2() {
 	var Type = {
 		FkPrdCode: document.getElementById("InputFkPrdCode").value,
 		FkPrdNaam: document.getElementById("InputFkPrdNaam").value,
+		FkPrdNummer: document.getElementById("InputFkPrdNummer").value,
+		FkPrdAaaNaam: document.getElementById("InputFkPrdAaaNaam").value,
 		Code: document.getElementById("InputCode").value,
 		Naam: document.getElementById("InputNaam").value,
 		Omschrijving: document.getElementById("InputOmschrijving").value
@@ -148,6 +160,8 @@ function UpdatePr2() {
 	var Type = {
 		FkPrdCode: document.getElementById("InputFkPrdCode").value,
 		FkPrdNaam: document.getElementById("InputFkPrdNaam").value,
+		FkPrdNummer: document.getElementById("InputFkPrdNummer").value,
+		FkPrdAaaNaam: document.getElementById("InputFkPrdAaaNaam").value,
 		Code: document.getElementById("InputCode").value,
 		Naam: document.getElementById("InputNaam").value,
 		Omschrijving: document.getElementById("InputOmschrijving").value
@@ -223,6 +237,10 @@ function drop(p_event) {
 <input id="InputFkPrdCode" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
 <tr><td>Prod.Naam</td><td><div style="max-width:40em;">
 <input id="InputFkPrdNaam" type="text" maxlength="40" style="width:100%;"></input></div></td></tr>
+<tr><td>Prod.Nummer</td><td><div style="max-width:9em;">
+<input id="InputFkPrdNummer" type="text" maxlength="9" style="width:100%;"></input></div></td></tr>
+<tr><td>Prod.Naam</td><td><div style="max-width:40em;">
+<input id="InputFkPrdAaaNaam" type="text" maxlength="40" style="width:100%;"></input></div></td></tr>
 <tr><td><u>Code</u></td><td><div style="max-width:8em;">
 <input id="InputCode" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
 <tr><td><u>Naam</u></td><td><div style="max-width:40em;">
