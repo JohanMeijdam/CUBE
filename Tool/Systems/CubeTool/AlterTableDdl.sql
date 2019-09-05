@@ -6,11 +6,9 @@ DECLARE
 BEGIN
 	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBETOOL' AND sequence_name = 'SQ_ITP';
 	IF l_count = 0 THEN
-
 		EXECUTE IMMEDIATE 
 		'CREATE SEQUENCE sq_itp START WITH 100000';
 		DBMS_OUTPUT.PUT_LINE('Sequence SQ_ITP created');
-
 	END IF;
 END;
 /
@@ -19,11 +17,9 @@ DECLARE
 BEGIN
 	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBETOOL' AND sequence_name = 'SQ_ITE';
 	IF l_count = 0 THEN
-
 		EXECUTE IMMEDIATE 
 		'CREATE SEQUENCE sq_ite START WITH 100000';
 		DBMS_OUTPUT.PUT_LINE('Sequence SQ_ITE created');
-
 	END IF;
 END;
 /
@@ -32,11 +28,9 @@ DECLARE
 BEGIN
 	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBETOOL' AND sequence_name = 'SQ_VAL';
 	IF l_count = 0 THEN
-
 		EXECUTE IMMEDIATE 
 		'CREATE SEQUENCE sq_val START WITH 100000';
 		DBMS_OUTPUT.PUT_LINE('Sequence SQ_VAL created');
-
 	END IF;
 END;
 /
@@ -45,11 +39,9 @@ DECLARE
 BEGIN
 	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBETOOL' AND sequence_name = 'SQ_BOT';
 	IF l_count = 0 THEN
-
 		EXECUTE IMMEDIATE 
 		'CREATE SEQUENCE sq_bot START WITH 100000';
 		DBMS_OUTPUT.PUT_LINE('Sequence SQ_BOT created');
-
 	END IF;
 END;
 /
@@ -58,11 +50,9 @@ DECLARE
 BEGIN
 	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBETOOL' AND sequence_name = 'SQ_TYP';
 	IF l_count = 0 THEN
-
 		EXECUTE IMMEDIATE 
 		'CREATE SEQUENCE sq_typ START WITH 100000';
 		DBMS_OUTPUT.PUT_LINE('Sequence SQ_TYP created');
-
 	END IF;
 END;
 /
@@ -71,11 +61,9 @@ DECLARE
 BEGIN
 	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBETOOL' AND sequence_name = 'SQ_ATB';
 	IF l_count = 0 THEN
-
 		EXECUTE IMMEDIATE 
 		'CREATE SEQUENCE sq_atb START WITH 100000';
 		DBMS_OUTPUT.PUT_LINE('Sequence SQ_ATB created');
-
 	END IF;
 END;
 /
@@ -84,11 +72,9 @@ DECLARE
 BEGIN
 	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBETOOL' AND sequence_name = 'SQ_DER';
 	IF l_count = 0 THEN
-
 		EXECUTE IMMEDIATE 
 		'CREATE SEQUENCE sq_der START WITH 100000';
 		DBMS_OUTPUT.PUT_LINE('Sequence SQ_DER created');
-
 	END IF;
 END;
 /
@@ -97,11 +83,9 @@ DECLARE
 BEGIN
 	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBETOOL' AND sequence_name = 'SQ_DCA';
 	IF l_count = 0 THEN
-
 		EXECUTE IMMEDIATE 
 		'CREATE SEQUENCE sq_dca START WITH 100000';
 		DBMS_OUTPUT.PUT_LINE('Sequence SQ_DCA created');
-
 	END IF;
 END;
 /
@@ -110,11 +94,9 @@ DECLARE
 BEGIN
 	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBETOOL' AND sequence_name = 'SQ_RTA';
 	IF l_count = 0 THEN
-
 		EXECUTE IMMEDIATE 
 		'CREATE SEQUENCE sq_rta START WITH 100000';
 		DBMS_OUTPUT.PUT_LINE('Sequence SQ_RTA created');
-
 	END IF;
 END;
 /
@@ -123,11 +105,9 @@ DECLARE
 BEGIN
 	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBETOOL' AND sequence_name = 'SQ_REF';
 	IF l_count = 0 THEN
-
 		EXECUTE IMMEDIATE 
 		'CREATE SEQUENCE sq_ref START WITH 100000';
 		DBMS_OUTPUT.PUT_LINE('Sequence SQ_REF created');
-
 	END IF;
 END;
 /
@@ -136,11 +116,9 @@ DECLARE
 BEGIN
 	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBETOOL' AND sequence_name = 'SQ_DCR';
 	IF l_count = 0 THEN
-
 		EXECUTE IMMEDIATE 
 		'CREATE SEQUENCE sq_dcr START WITH 100000';
 		DBMS_OUTPUT.PUT_LINE('Sequence SQ_DCR created');
-
 	END IF;
 END;
 /
@@ -149,11 +127,9 @@ DECLARE
 BEGIN
 	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBETOOL' AND sequence_name = 'SQ_RTR';
 	IF l_count = 0 THEN
-
 		EXECUTE IMMEDIATE 
 		'CREATE SEQUENCE sq_rtr START WITH 100000';
 		DBMS_OUTPUT.PUT_LINE('Sequence SQ_RTR created');
-
 	END IF;
 END;
 /
@@ -162,11 +138,9 @@ DECLARE
 BEGIN
 	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBETOOL' AND sequence_name = 'SQ_RTT';
 	IF l_count = 0 THEN
-
 		EXECUTE IMMEDIATE 
 		'CREATE SEQUENCE sq_rtt START WITH 100000';
 		DBMS_OUTPUT.PUT_LINE('Sequence SQ_RTT created');
-
 	END IF;
 END;
 /
@@ -175,50 +149,9 @@ DECLARE
 BEGIN
 	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBETOOL' AND sequence_name = 'SQ_JSN';
 	IF l_count = 0 THEN
-
 		EXECUTE IMMEDIATE 
 		'CREATE SEQUENCE sq_jsn START WITH 100000';
 		DBMS_OUTPUT.PUT_LINE('Sequence SQ_JSN created');
-
-	END IF;
-END;
-/
-DECLARE
-	l_count NUMBER(4);
-BEGIN
-	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBETOOL' AND sequence_name = 'SQ_TYR';
-	IF l_count = 0 THEN
-
-		EXECUTE IMMEDIATE 
-		'CREATE SEQUENCE sq_tyr START WITH 100000';
-		DBMS_OUTPUT.PUT_LINE('Sequence SQ_TYR created');
-
-	END IF;
-END;
-/
-DECLARE
-	l_count NUMBER(4);
-BEGIN
-	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBETOOL' AND sequence_name = 'SQ_PAR';
-	IF l_count = 0 THEN
-
-		EXECUTE IMMEDIATE 
-		'CREATE SEQUENCE sq_par START WITH 100000';
-		DBMS_OUTPUT.PUT_LINE('Sequence SQ_PAR created');
-
-	END IF;
-END;
-/
-DECLARE
-	l_count NUMBER(4);
-BEGIN
-	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBETOOL' AND sequence_name = 'SQ_STP';
-	IF l_count = 0 THEN
-
-		EXECUTE IMMEDIATE 
-		'CREATE SEQUENCE sq_stp START WITH 100000';
-		DBMS_OUTPUT.PUT_LINE('Sequence SQ_STP created');
-
 	END IF;
 END;
 /
@@ -227,11 +160,9 @@ DECLARE
 BEGIN
 	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBETOOL' AND sequence_name = 'SQ_TSG';
 	IF l_count = 0 THEN
-
 		EXECUTE IMMEDIATE 
 		'CREATE SEQUENCE sq_tsg START WITH 100000';
 		DBMS_OUTPUT.PUT_LINE('Sequence SQ_TSG created');
-
 	END IF;
 END;
 /
@@ -240,11 +171,9 @@ DECLARE
 BEGIN
 	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBETOOL' AND sequence_name = 'SQ_TSP';
 	IF l_count = 0 THEN
-
 		EXECUTE IMMEDIATE 
 		'CREATE SEQUENCE sq_tsp START WITH 100000';
 		DBMS_OUTPUT.PUT_LINE('Sequence SQ_TSP created');
-
 	END IF;
 END;
 /
@@ -253,11 +182,9 @@ DECLARE
 BEGIN
 	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBETOOL' AND sequence_name = 'SQ_DCT';
 	IF l_count = 0 THEN
-
 		EXECUTE IMMEDIATE 
 		'CREATE SEQUENCE sq_dct START WITH 100000';
 		DBMS_OUTPUT.PUT_LINE('Sequence SQ_DCT created');
-
 	END IF;
 END;
 /
@@ -266,11 +193,9 @@ DECLARE
 BEGIN
 	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBETOOL' AND sequence_name = 'SQ_SYS';
 	IF l_count = 0 THEN
-
 		EXECUTE IMMEDIATE 
 		'CREATE SEQUENCE sq_sys START WITH 100000';
 		DBMS_OUTPUT.PUT_LINE('Sequence SQ_SYS created');
-
 	END IF;
 END;
 /
@@ -279,11 +204,9 @@ DECLARE
 BEGIN
 	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBETOOL' AND sequence_name = 'SQ_SBT';
 	IF l_count = 0 THEN
-
 		EXECUTE IMMEDIATE 
 		'CREATE SEQUENCE sq_sbt START WITH 100000';
 		DBMS_OUTPUT.PUT_LINE('Sequence SQ_SBT created');
-
 	END IF;
 END;
 /
@@ -292,11 +215,9 @@ DECLARE
 BEGIN
 	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBETOOL' AND sequence_name = 'SQ_FUN';
 	IF l_count = 0 THEN
-
 		EXECUTE IMMEDIATE 
 		'CREATE SEQUENCE sq_fun START WITH 100000';
 		DBMS_OUTPUT.PUT_LINE('Sequence SQ_FUN created');
-
 	END IF;
 END;
 /
@@ -305,11 +226,9 @@ DECLARE
 BEGIN
 	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBETOOL' AND sequence_name = 'SQ_ARG';
 	IF l_count = 0 THEN
-
 		EXECUTE IMMEDIATE 
 		'CREATE SEQUENCE sq_arg START WITH 100000';
 		DBMS_OUTPUT.PUT_LINE('Sequence SQ_ARG created');
-
 	END IF;
 END;
 /
@@ -325,28 +244,24 @@ BEGIN
 			name VARCHAR2(30))';
 		DBMS_OUTPUT.PUT_LINE('Table T_INFORMATION_TYPE created');
 	ELSE
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_INFORMATION_TYPE' AND column_name = 'CUBE_ID';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_information_type ADD cube_id VARCHAR2(16)';
 			DBMS_OUTPUT.PUT_LINE('Column T_INFORMATION_TYPE.CUBE_ID created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_INFORMATION_TYPE' AND column_name = 'NAME';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_information_type ADD name VARCHAR2(30)';
 			DBMS_OUTPUT.PUT_LINE('Column T_INFORMATION_TYPE.NAME created');
 		END IF;
-
 		FOR r_key IN (SELECT constraint_name FROM all_constraints WHERE owner = 'CUBETOOL' AND table_name = 'T_INFORMATION_TYPE' AND constraint_type IN ('P','U','R') ORDER BY constraint_type DESC)
 		LOOP
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_information_type DROP CONSTRAINT ' || r_key.constraint_name || ' CASCADE';
 			DBMS_OUTPUT.PUT_LINE('Primary Key T_INFORMATION_TYPE.' || UPPER(r_key.constraint_name) || ' dropped');
 		END LOOP;
-
 		FOR r_index IN (SELECT index_name FROM all_indexes WHERE owner = 'CUBETOOL' AND table_name = 'T_INFORMATION_TYPE')
 		LOOP
 			EXECUTE IMMEDIATE
@@ -377,91 +292,78 @@ BEGIN
 			presentation VARCHAR2(3) DEFAULT ''LIN'')';
 		DBMS_OUTPUT.PUT_LINE('Table T_INFORMATION_TYPE_ELEMENT created');
 	ELSE
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_INFORMATION_TYPE_ELEMENT' AND column_name = 'CUBE_ID';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_information_type_element ADD cube_id VARCHAR2(16)';
 			DBMS_OUTPUT.PUT_LINE('Column T_INFORMATION_TYPE_ELEMENT.CUBE_ID created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_INFORMATION_TYPE_ELEMENT' AND column_name = 'FK_ITP_NAME';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_information_type_element ADD fk_itp_name VARCHAR2(30)';
 			DBMS_OUTPUT.PUT_LINE('Column T_INFORMATION_TYPE_ELEMENT.FK_ITP_NAME created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_INFORMATION_TYPE_ELEMENT' AND column_name = 'SEQUENCE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_information_type_element ADD sequence NUMBER(8) DEFAULT ''0''';
 			DBMS_OUTPUT.PUT_LINE('Column T_INFORMATION_TYPE_ELEMENT.SEQUENCE created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_INFORMATION_TYPE_ELEMENT' AND column_name = 'SUFFIX';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_information_type_element ADD suffix VARCHAR2(12)';
 			DBMS_OUTPUT.PUT_LINE('Column T_INFORMATION_TYPE_ELEMENT.SUFFIX created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_INFORMATION_TYPE_ELEMENT' AND column_name = 'DOMAIN';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_information_type_element ADD domain VARCHAR2(16) DEFAULT ''TEXT''';
 			DBMS_OUTPUT.PUT_LINE('Column T_INFORMATION_TYPE_ELEMENT.DOMAIN created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_INFORMATION_TYPE_ELEMENT' AND column_name = 'LENGTH';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_information_type_element ADD length NUMBER(8) DEFAULT ''0''';
 			DBMS_OUTPUT.PUT_LINE('Column T_INFORMATION_TYPE_ELEMENT.LENGTH created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_INFORMATION_TYPE_ELEMENT' AND column_name = 'DECIMALS';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_information_type_element ADD decimals NUMBER(8) DEFAULT ''0''';
 			DBMS_OUTPUT.PUT_LINE('Column T_INFORMATION_TYPE_ELEMENT.DECIMALS created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_INFORMATION_TYPE_ELEMENT' AND column_name = 'CASE_SENSITIVE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_information_type_element ADD case_sensitive CHAR(1) DEFAULT ''N''';
 			DBMS_OUTPUT.PUT_LINE('Column T_INFORMATION_TYPE_ELEMENT.CASE_SENSITIVE created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_INFORMATION_TYPE_ELEMENT' AND column_name = 'DEFAULT_VALUE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_information_type_element ADD default_value VARCHAR2(32)';
 			DBMS_OUTPUT.PUT_LINE('Column T_INFORMATION_TYPE_ELEMENT.DEFAULT_VALUE created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_INFORMATION_TYPE_ELEMENT' AND column_name = 'SPACES_ALLOWED';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_information_type_element ADD spaces_allowed CHAR(1) DEFAULT ''N''';
 			DBMS_OUTPUT.PUT_LINE('Column T_INFORMATION_TYPE_ELEMENT.SPACES_ALLOWED created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_INFORMATION_TYPE_ELEMENT' AND column_name = 'PRESENTATION';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_information_type_element ADD presentation VARCHAR2(3) DEFAULT ''LIN''';
 			DBMS_OUTPUT.PUT_LINE('Column T_INFORMATION_TYPE_ELEMENT.PRESENTATION created');
 		END IF;
-
 		FOR r_key IN (SELECT constraint_name FROM all_constraints WHERE owner = 'CUBETOOL' AND table_name = 'T_INFORMATION_TYPE_ELEMENT' AND constraint_type IN ('P','U','R') ORDER BY constraint_type DESC)
 		LOOP
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_information_type_element DROP CONSTRAINT ' || r_key.constraint_name || ' CASCADE';
 			DBMS_OUTPUT.PUT_LINE('Primary Key T_INFORMATION_TYPE_ELEMENT.' || UPPER(r_key.constraint_name) || ' dropped');
 		END LOOP;
-
 		FOR r_index IN (SELECT index_name FROM all_indexes WHERE owner = 'CUBETOOL' AND table_name = 'T_INFORMATION_TYPE_ELEMENT')
 		LOOP
 			EXECUTE IMMEDIATE
@@ -487,56 +389,48 @@ BEGIN
 			prompt VARCHAR2(32))';
 		DBMS_OUTPUT.PUT_LINE('Table T_PERMITTED_VALUE created');
 	ELSE
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_PERMITTED_VALUE' AND column_name = 'CUBE_ID';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_permitted_value ADD cube_id VARCHAR2(16)';
 			DBMS_OUTPUT.PUT_LINE('Column T_PERMITTED_VALUE.CUBE_ID created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_PERMITTED_VALUE' AND column_name = 'CUBE_SEQUENCE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_permitted_value ADD cube_sequence NUMBER(8)';
 			DBMS_OUTPUT.PUT_LINE('Column T_PERMITTED_VALUE.CUBE_SEQUENCE created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_PERMITTED_VALUE' AND column_name = 'FK_ITP_NAME';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_permitted_value ADD fk_itp_name VARCHAR2(30)';
 			DBMS_OUTPUT.PUT_LINE('Column T_PERMITTED_VALUE.FK_ITP_NAME created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_PERMITTED_VALUE' AND column_name = 'FK_ITE_SEQUENCE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_permitted_value ADD fk_ite_sequence NUMBER(8) DEFAULT ''0''';
 			DBMS_OUTPUT.PUT_LINE('Column T_PERMITTED_VALUE.FK_ITE_SEQUENCE created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_PERMITTED_VALUE' AND column_name = 'CODE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_permitted_value ADD code VARCHAR2(16)';
 			DBMS_OUTPUT.PUT_LINE('Column T_PERMITTED_VALUE.CODE created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_PERMITTED_VALUE' AND column_name = 'PROMPT';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_permitted_value ADD prompt VARCHAR2(32)';
 			DBMS_OUTPUT.PUT_LINE('Column T_PERMITTED_VALUE.PROMPT created');
 		END IF;
-
 		FOR r_key IN (SELECT constraint_name FROM all_constraints WHERE owner = 'CUBETOOL' AND table_name = 'T_PERMITTED_VALUE' AND constraint_type IN ('P','U','R') ORDER BY constraint_type DESC)
 		LOOP
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_permitted_value DROP CONSTRAINT ' || r_key.constraint_name || ' CASCADE';
 			DBMS_OUTPUT.PUT_LINE('Primary Key T_PERMITTED_VALUE.' || UPPER(r_key.constraint_name) || ' dropped');
 		END LOOP;
-
 		FOR r_index IN (SELECT index_name FROM all_indexes WHERE owner = 'CUBETOOL' AND table_name = 'T_PERMITTED_VALUE')
 		LOOP
 			EXECUTE IMMEDIATE
@@ -562,56 +456,48 @@ BEGIN
 			api_url VARCHAR2(300))';
 		DBMS_OUTPUT.PUT_LINE('Table T_BUSINESS_OBJECT_TYPE created');
 	ELSE
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_BUSINESS_OBJECT_TYPE' AND column_name = 'CUBE_ID';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_business_object_type ADD cube_id VARCHAR2(16)';
 			DBMS_OUTPUT.PUT_LINE('Column T_BUSINESS_OBJECT_TYPE.CUBE_ID created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_BUSINESS_OBJECT_TYPE' AND column_name = 'CUBE_SEQUENCE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_business_object_type ADD cube_sequence NUMBER(8)';
 			DBMS_OUTPUT.PUT_LINE('Column T_BUSINESS_OBJECT_TYPE.CUBE_SEQUENCE created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_BUSINESS_OBJECT_TYPE' AND column_name = 'NAME';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_business_object_type ADD name VARCHAR2(30)';
 			DBMS_OUTPUT.PUT_LINE('Column T_BUSINESS_OBJECT_TYPE.NAME created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_BUSINESS_OBJECT_TYPE' AND column_name = 'CUBE_TSG_TYPE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_business_object_type ADD cube_tsg_type VARCHAR2(8) DEFAULT ''INT''';
 			DBMS_OUTPUT.PUT_LINE('Column T_BUSINESS_OBJECT_TYPE.CUBE_TSG_TYPE created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_BUSINESS_OBJECT_TYPE' AND column_name = 'DIRECTORY';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_business_object_type ADD directory VARCHAR2(80)';
 			DBMS_OUTPUT.PUT_LINE('Column T_BUSINESS_OBJECT_TYPE.DIRECTORY created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_BUSINESS_OBJECT_TYPE' AND column_name = 'API_URL';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_business_object_type ADD api_url VARCHAR2(300)';
 			DBMS_OUTPUT.PUT_LINE('Column T_BUSINESS_OBJECT_TYPE.API_URL created');
 		END IF;
-
 		FOR r_key IN (SELECT constraint_name FROM all_constraints WHERE owner = 'CUBETOOL' AND table_name = 'T_BUSINESS_OBJECT_TYPE' AND constraint_type IN ('P','U','R') ORDER BY constraint_type DESC)
 		LOOP
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_business_object_type DROP CONSTRAINT ' || r_key.constraint_name || ' CASCADE';
 			DBMS_OUTPUT.PUT_LINE('Primary Key T_BUSINESS_OBJECT_TYPE.' || UPPER(r_key.constraint_name) || ' dropped');
 		END LOOP;
-
 		FOR r_index IN (SELECT index_name FROM all_indexes WHERE owner = 'CUBETOOL' AND table_name = 'T_BUSINESS_OBJECT_TYPE')
 		LOOP
 			EXECUTE IMMEDIATE
@@ -645,112 +531,96 @@ BEGIN
 			transferable CHAR(1) DEFAULT ''Y'')';
 		DBMS_OUTPUT.PUT_LINE('Table T_TYPE created');
 	ELSE
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_TYPE' AND column_name = 'CUBE_ID';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_type ADD cube_id VARCHAR2(16)';
 			DBMS_OUTPUT.PUT_LINE('Column T_TYPE.CUBE_ID created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_TYPE' AND column_name = 'CUBE_SEQUENCE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_type ADD cube_sequence NUMBER(8)';
 			DBMS_OUTPUT.PUT_LINE('Column T_TYPE.CUBE_SEQUENCE created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_TYPE' AND column_name = 'CUBE_LEVEL';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_type ADD cube_level NUMBER(8) DEFAULT ''1''';
 			DBMS_OUTPUT.PUT_LINE('Column T_TYPE.CUBE_LEVEL created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_TYPE' AND column_name = 'FK_BOT_NAME';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_type ADD fk_bot_name VARCHAR2(30)';
 			DBMS_OUTPUT.PUT_LINE('Column T_TYPE.FK_BOT_NAME created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_TYPE' AND column_name = 'FK_TYP_NAME';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_type ADD fk_typ_name VARCHAR2(30)';
 			DBMS_OUTPUT.PUT_LINE('Column T_TYPE.FK_TYP_NAME created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_TYPE' AND column_name = 'NAME';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_type ADD name VARCHAR2(30)';
 			DBMS_OUTPUT.PUT_LINE('Column T_TYPE.NAME created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_TYPE' AND column_name = 'CODE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_type ADD code VARCHAR2(3)';
 			DBMS_OUTPUT.PUT_LINE('Column T_TYPE.CODE created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_TYPE' AND column_name = 'FLAG_PARTIAL_KEY';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_type ADD flag_partial_key CHAR(1) DEFAULT ''Y''';
 			DBMS_OUTPUT.PUT_LINE('Column T_TYPE.FLAG_PARTIAL_KEY created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_TYPE' AND column_name = 'FLAG_RECURSIVE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_type ADD flag_recursive CHAR(1) DEFAULT ''N''';
 			DBMS_OUTPUT.PUT_LINE('Column T_TYPE.FLAG_RECURSIVE created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_TYPE' AND column_name = 'RECURSIVE_CARDINALITY';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_type ADD recursive_cardinality CHAR(1) DEFAULT ''N''';
 			DBMS_OUTPUT.PUT_LINE('Column T_TYPE.RECURSIVE_CARDINALITY created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_TYPE' AND column_name = 'CARDINALITY';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_type ADD cardinality CHAR(1) DEFAULT ''N''';
 			DBMS_OUTPUT.PUT_LINE('Column T_TYPE.CARDINALITY created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_TYPE' AND column_name = 'SORT_ORDER';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_type ADD sort_order CHAR(1) DEFAULT ''N''';
 			DBMS_OUTPUT.PUT_LINE('Column T_TYPE.SORT_ORDER created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_TYPE' AND column_name = 'ICON';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_type ADD icon VARCHAR2(8)';
 			DBMS_OUTPUT.PUT_LINE('Column T_TYPE.ICON created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_TYPE' AND column_name = 'TRANSFERABLE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_type ADD transferable CHAR(1) DEFAULT ''Y''';
 			DBMS_OUTPUT.PUT_LINE('Column T_TYPE.TRANSFERABLE created');
 		END IF;
-
 		FOR r_key IN (SELECT constraint_name FROM all_constraints WHERE owner = 'CUBETOOL' AND table_name = 'T_TYPE' AND constraint_type IN ('P','U','R') ORDER BY constraint_type DESC)
 		LOOP
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_type DROP CONSTRAINT ' || r_key.constraint_name || ' CASCADE';
 			DBMS_OUTPUT.PUT_LINE('Primary Key T_TYPE.' || UPPER(r_key.constraint_name) || ' dropped');
 		END LOOP;
-
 		FOR r_index IN (SELECT index_name FROM all_indexes WHERE owner = 'CUBETOOL' AND table_name = 'T_TYPE')
 		LOOP
 			EXECUTE IMMEDIATE
@@ -782,98 +652,84 @@ BEGIN
 			xk_itp_name VARCHAR2(30))';
 		DBMS_OUTPUT.PUT_LINE('Table T_ATTRIBUTE created');
 	ELSE
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_ATTRIBUTE' AND column_name = 'CUBE_ID';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_attribute ADD cube_id VARCHAR2(16)';
 			DBMS_OUTPUT.PUT_LINE('Column T_ATTRIBUTE.CUBE_ID created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_ATTRIBUTE' AND column_name = 'CUBE_SEQUENCE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_attribute ADD cube_sequence NUMBER(8)';
 			DBMS_OUTPUT.PUT_LINE('Column T_ATTRIBUTE.CUBE_SEQUENCE created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_ATTRIBUTE' AND column_name = 'FK_BOT_NAME';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_attribute ADD fk_bot_name VARCHAR2(30)';
 			DBMS_OUTPUT.PUT_LINE('Column T_ATTRIBUTE.FK_BOT_NAME created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_ATTRIBUTE' AND column_name = 'FK_TYP_NAME';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_attribute ADD fk_typ_name VARCHAR2(30)';
 			DBMS_OUTPUT.PUT_LINE('Column T_ATTRIBUTE.FK_TYP_NAME created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_ATTRIBUTE' AND column_name = 'NAME';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_attribute ADD name VARCHAR2(30)';
 			DBMS_OUTPUT.PUT_LINE('Column T_ATTRIBUTE.NAME created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_ATTRIBUTE' AND column_name = 'PRIMARY_KEY';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_attribute ADD primary_key CHAR(1) DEFAULT ''N''';
 			DBMS_OUTPUT.PUT_LINE('Column T_ATTRIBUTE.PRIMARY_KEY created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_ATTRIBUTE' AND column_name = 'CODE_DISPLAY_KEY';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_attribute ADD code_display_key CHAR(1) DEFAULT ''N''';
 			DBMS_OUTPUT.PUT_LINE('Column T_ATTRIBUTE.CODE_DISPLAY_KEY created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_ATTRIBUTE' AND column_name = 'CODE_FOREIGN_KEY';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_attribute ADD code_foreign_key CHAR(1) DEFAULT ''N''';
 			DBMS_OUTPUT.PUT_LINE('Column T_ATTRIBUTE.CODE_FOREIGN_KEY created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_ATTRIBUTE' AND column_name = 'FLAG_HIDDEN';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_attribute ADD flag_hidden CHAR(1) DEFAULT ''N''';
 			DBMS_OUTPUT.PUT_LINE('Column T_ATTRIBUTE.FLAG_HIDDEN created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_ATTRIBUTE' AND column_name = 'DEFAULT_VALUE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_attribute ADD default_value VARCHAR2(40)';
 			DBMS_OUTPUT.PUT_LINE('Column T_ATTRIBUTE.DEFAULT_VALUE created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_ATTRIBUTE' AND column_name = 'UNCHANGEABLE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_attribute ADD unchangeable CHAR(1) DEFAULT ''N''';
 			DBMS_OUTPUT.PUT_LINE('Column T_ATTRIBUTE.UNCHANGEABLE created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_ATTRIBUTE' AND column_name = 'XK_ITP_NAME';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_attribute ADD xk_itp_name VARCHAR2(30)';
 			DBMS_OUTPUT.PUT_LINE('Column T_ATTRIBUTE.XK_ITP_NAME created');
 		END IF;
-
 		FOR r_key IN (SELECT constraint_name FROM all_constraints WHERE owner = 'CUBETOOL' AND table_name = 'T_ATTRIBUTE' AND constraint_type IN ('P','U','R') ORDER BY constraint_type DESC)
 		LOOP
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_attribute DROP CONSTRAINT ' || r_key.constraint_name || ' CASCADE';
 			DBMS_OUTPUT.PUT_LINE('Primary Key T_ATTRIBUTE.' || UPPER(r_key.constraint_name) || ' dropped');
 		END LOOP;
-
 		FOR r_index IN (SELECT index_name FROM all_indexes WHERE owner = 'CUBETOOL' AND table_name = 'T_ATTRIBUTE')
 		LOOP
 			EXECUTE IMMEDIATE
@@ -901,70 +757,60 @@ BEGIN
 			xk_typ_name_1 VARCHAR2(30))';
 		DBMS_OUTPUT.PUT_LINE('Table T_DERIVATION created');
 	ELSE
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_DERIVATION' AND column_name = 'CUBE_ID';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_derivation ADD cube_id VARCHAR2(16)';
 			DBMS_OUTPUT.PUT_LINE('Column T_DERIVATION.CUBE_ID created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_DERIVATION' AND column_name = 'FK_BOT_NAME';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_derivation ADD fk_bot_name VARCHAR2(30)';
 			DBMS_OUTPUT.PUT_LINE('Column T_DERIVATION.FK_BOT_NAME created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_DERIVATION' AND column_name = 'FK_TYP_NAME';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_derivation ADD fk_typ_name VARCHAR2(30)';
 			DBMS_OUTPUT.PUT_LINE('Column T_DERIVATION.FK_TYP_NAME created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_DERIVATION' AND column_name = 'FK_ATB_NAME';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_derivation ADD fk_atb_name VARCHAR2(30)';
 			DBMS_OUTPUT.PUT_LINE('Column T_DERIVATION.FK_ATB_NAME created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_DERIVATION' AND column_name = 'CUBE_TSG_TYPE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_derivation ADD cube_tsg_type VARCHAR2(8) DEFAULT ''DN''';
 			DBMS_OUTPUT.PUT_LINE('Column T_DERIVATION.CUBE_TSG_TYPE created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_DERIVATION' AND column_name = 'AGGREGATE_FUNCTION';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_derivation ADD aggregate_function VARCHAR2(3) DEFAULT ''SUM''';
 			DBMS_OUTPUT.PUT_LINE('Column T_DERIVATION.AGGREGATE_FUNCTION created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_DERIVATION' AND column_name = 'XK_TYP_NAME';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_derivation ADD xk_typ_name VARCHAR2(30)';
 			DBMS_OUTPUT.PUT_LINE('Column T_DERIVATION.XK_TYP_NAME created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_DERIVATION' AND column_name = 'XK_TYP_NAME_1';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_derivation ADD xk_typ_name_1 VARCHAR2(30)';
 			DBMS_OUTPUT.PUT_LINE('Column T_DERIVATION.XK_TYP_NAME_1 created');
 		END IF;
-
 		FOR r_key IN (SELECT constraint_name FROM all_constraints WHERE owner = 'CUBETOOL' AND table_name = 'T_DERIVATION' AND constraint_type IN ('P','U','R') ORDER BY constraint_type DESC)
 		LOOP
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_derivation DROP CONSTRAINT ' || r_key.constraint_name || ' CASCADE';
 			DBMS_OUTPUT.PUT_LINE('Primary Key T_DERIVATION.' || UPPER(r_key.constraint_name) || ' dropped');
 		END LOOP;
-
 		FOR r_index IN (SELECT index_name FROM all_indexes WHERE owner = 'CUBETOOL' AND table_name = 'T_DERIVATION')
 		LOOP
 			EXECUTE IMMEDIATE
@@ -989,49 +835,42 @@ BEGIN
 			text VARCHAR2(3999))';
 		DBMS_OUTPUT.PUT_LINE('Table T_DESCRIPTION_ATTRIBUTE created');
 	ELSE
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_DESCRIPTION_ATTRIBUTE' AND column_name = 'CUBE_ID';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_description_attribute ADD cube_id VARCHAR2(16)';
 			DBMS_OUTPUT.PUT_LINE('Column T_DESCRIPTION_ATTRIBUTE.CUBE_ID created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_DESCRIPTION_ATTRIBUTE' AND column_name = 'FK_BOT_NAME';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_description_attribute ADD fk_bot_name VARCHAR2(30)';
 			DBMS_OUTPUT.PUT_LINE('Column T_DESCRIPTION_ATTRIBUTE.FK_BOT_NAME created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_DESCRIPTION_ATTRIBUTE' AND column_name = 'FK_TYP_NAME';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_description_attribute ADD fk_typ_name VARCHAR2(30)';
 			DBMS_OUTPUT.PUT_LINE('Column T_DESCRIPTION_ATTRIBUTE.FK_TYP_NAME created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_DESCRIPTION_ATTRIBUTE' AND column_name = 'FK_ATB_NAME';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_description_attribute ADD fk_atb_name VARCHAR2(30)';
 			DBMS_OUTPUT.PUT_LINE('Column T_DESCRIPTION_ATTRIBUTE.FK_ATB_NAME created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_DESCRIPTION_ATTRIBUTE' AND column_name = 'TEXT';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_description_attribute ADD text VARCHAR2(3999)';
 			DBMS_OUTPUT.PUT_LINE('Column T_DESCRIPTION_ATTRIBUTE.TEXT created');
 		END IF;
-
 		FOR r_key IN (SELECT constraint_name FROM all_constraints WHERE owner = 'CUBETOOL' AND table_name = 'T_DESCRIPTION_ATTRIBUTE' AND constraint_type IN ('P','U','R') ORDER BY constraint_type DESC)
 		LOOP
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_description_attribute DROP CONSTRAINT ' || r_key.constraint_name || ' CASCADE';
 			DBMS_OUTPUT.PUT_LINE('Primary Key T_DESCRIPTION_ATTRIBUTE.' || UPPER(r_key.constraint_name) || ' dropped');
 		END LOOP;
-
 		FOR r_index IN (SELECT index_name FROM all_indexes WHERE owner = 'CUBETOOL' AND table_name = 'T_DESCRIPTION_ATTRIBUTE')
 		LOOP
 			EXECUTE IMMEDIATE
@@ -1059,70 +898,60 @@ BEGIN
 			xk_tsp_code VARCHAR2(16))';
 		DBMS_OUTPUT.PUT_LINE('Table T_RESTRICTION_TYPE_SPEC_ATB created');
 	ELSE
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_RESTRICTION_TYPE_SPEC_ATB' AND column_name = 'CUBE_ID';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_restriction_type_spec_atb ADD cube_id VARCHAR2(16)';
 			DBMS_OUTPUT.PUT_LINE('Column T_RESTRICTION_TYPE_SPEC_ATB.CUBE_ID created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_RESTRICTION_TYPE_SPEC_ATB' AND column_name = 'FK_BOT_NAME';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_restriction_type_spec_atb ADD fk_bot_name VARCHAR2(30)';
 			DBMS_OUTPUT.PUT_LINE('Column T_RESTRICTION_TYPE_SPEC_ATB.FK_BOT_NAME created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_RESTRICTION_TYPE_SPEC_ATB' AND column_name = 'FK_TYP_NAME';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_restriction_type_spec_atb ADD fk_typ_name VARCHAR2(30)';
 			DBMS_OUTPUT.PUT_LINE('Column T_RESTRICTION_TYPE_SPEC_ATB.FK_TYP_NAME created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_RESTRICTION_TYPE_SPEC_ATB' AND column_name = 'FK_ATB_NAME';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_restriction_type_spec_atb ADD fk_atb_name VARCHAR2(30)';
 			DBMS_OUTPUT.PUT_LINE('Column T_RESTRICTION_TYPE_SPEC_ATB.FK_ATB_NAME created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_RESTRICTION_TYPE_SPEC_ATB' AND column_name = 'INCLUDE_OR_EXCLUDE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_restriction_type_spec_atb ADD include_or_exclude CHAR(2) DEFAULT ''IN''';
 			DBMS_OUTPUT.PUT_LINE('Column T_RESTRICTION_TYPE_SPEC_ATB.INCLUDE_OR_EXCLUDE created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_RESTRICTION_TYPE_SPEC_ATB' AND column_name = 'XF_TSP_TYP_NAME';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_restriction_type_spec_atb ADD xf_tsp_typ_name VARCHAR2(30)';
 			DBMS_OUTPUT.PUT_LINE('Column T_RESTRICTION_TYPE_SPEC_ATB.XF_TSP_TYP_NAME created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_RESTRICTION_TYPE_SPEC_ATB' AND column_name = 'XF_TSP_TSG_CODE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_restriction_type_spec_atb ADD xf_tsp_tsg_code VARCHAR2(16)';
 			DBMS_OUTPUT.PUT_LINE('Column T_RESTRICTION_TYPE_SPEC_ATB.XF_TSP_TSG_CODE created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_RESTRICTION_TYPE_SPEC_ATB' AND column_name = 'XK_TSP_CODE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_restriction_type_spec_atb ADD xk_tsp_code VARCHAR2(16)';
 			DBMS_OUTPUT.PUT_LINE('Column T_RESTRICTION_TYPE_SPEC_ATB.XK_TSP_CODE created');
 		END IF;
-
 		FOR r_key IN (SELECT constraint_name FROM all_constraints WHERE owner = 'CUBETOOL' AND table_name = 'T_RESTRICTION_TYPE_SPEC_ATB' AND constraint_type IN ('P','U','R') ORDER BY constraint_type DESC)
 		LOOP
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_restriction_type_spec_atb DROP CONSTRAINT ' || r_key.constraint_name || ' CASCADE';
 			DBMS_OUTPUT.PUT_LINE('Primary Key T_RESTRICTION_TYPE_SPEC_ATB.' || UPPER(r_key.constraint_name) || ' dropped');
 		END LOOP;
-
 		FOR r_index IN (SELECT index_name FROM all_indexes WHERE owner = 'CUBETOOL' AND table_name = 'T_RESTRICTION_TYPE_SPEC_ATB')
 		LOOP
 			EXECUTE IMMEDIATE
@@ -1155,105 +984,90 @@ BEGIN
 			xk_typ_name_1 VARCHAR2(30))';
 		DBMS_OUTPUT.PUT_LINE('Table T_REFERENCE created');
 	ELSE
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_REFERENCE' AND column_name = 'CUBE_ID';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_reference ADD cube_id VARCHAR2(16)';
 			DBMS_OUTPUT.PUT_LINE('Column T_REFERENCE.CUBE_ID created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_REFERENCE' AND column_name = 'CUBE_SEQUENCE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_reference ADD cube_sequence NUMBER(8)';
 			DBMS_OUTPUT.PUT_LINE('Column T_REFERENCE.CUBE_SEQUENCE created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_REFERENCE' AND column_name = 'FK_BOT_NAME';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_reference ADD fk_bot_name VARCHAR2(30)';
 			DBMS_OUTPUT.PUT_LINE('Column T_REFERENCE.FK_BOT_NAME created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_REFERENCE' AND column_name = 'FK_TYP_NAME';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_reference ADD fk_typ_name VARCHAR2(30)';
 			DBMS_OUTPUT.PUT_LINE('Column T_REFERENCE.FK_TYP_NAME created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_REFERENCE' AND column_name = 'NAME';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_reference ADD name VARCHAR2(30)';
 			DBMS_OUTPUT.PUT_LINE('Column T_REFERENCE.NAME created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_REFERENCE' AND column_name = 'PRIMARY_KEY';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_reference ADD primary_key CHAR(1) DEFAULT ''N''';
 			DBMS_OUTPUT.PUT_LINE('Column T_REFERENCE.PRIMARY_KEY created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_REFERENCE' AND column_name = 'CODE_DISPLAY_KEY';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_reference ADD code_display_key CHAR(1) DEFAULT ''N''';
 			DBMS_OUTPUT.PUT_LINE('Column T_REFERENCE.CODE_DISPLAY_KEY created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_REFERENCE' AND column_name = 'SEQUENCE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_reference ADD sequence NUMBER(1) DEFAULT ''0''';
 			DBMS_OUTPUT.PUT_LINE('Column T_REFERENCE.SEQUENCE created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_REFERENCE' AND column_name = 'SCOPE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_reference ADD scope VARCHAR2(3) DEFAULT ''ALL''';
 			DBMS_OUTPUT.PUT_LINE('Column T_REFERENCE.SCOPE created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_REFERENCE' AND column_name = 'UNCHANGEABLE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_reference ADD unchangeable CHAR(1) DEFAULT ''N''';
 			DBMS_OUTPUT.PUT_LINE('Column T_REFERENCE.UNCHANGEABLE created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_REFERENCE' AND column_name = 'WITHIN_SCOPE_LEVEL';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_reference ADD within_scope_level NUMBER(1) DEFAULT ''0''';
 			DBMS_OUTPUT.PUT_LINE('Column T_REFERENCE.WITHIN_SCOPE_LEVEL created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_REFERENCE' AND column_name = 'XK_TYP_NAME';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_reference ADD xk_typ_name VARCHAR2(30)';
 			DBMS_OUTPUT.PUT_LINE('Column T_REFERENCE.XK_TYP_NAME created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_REFERENCE' AND column_name = 'XK_TYP_NAME_1';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_reference ADD xk_typ_name_1 VARCHAR2(30)';
 			DBMS_OUTPUT.PUT_LINE('Column T_REFERENCE.XK_TYP_NAME_1 created');
 		END IF;
-
 		FOR r_key IN (SELECT constraint_name FROM all_constraints WHERE owner = 'CUBETOOL' AND table_name = 'T_REFERENCE' AND constraint_type IN ('P','U','R') ORDER BY constraint_type DESC)
 		LOOP
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_reference DROP CONSTRAINT ' || r_key.constraint_name || ' CASCADE';
 			DBMS_OUTPUT.PUT_LINE('Primary Key T_REFERENCE.' || UPPER(r_key.constraint_name) || ' dropped');
 		END LOOP;
-
 		FOR r_index IN (SELECT index_name FROM all_indexes WHERE owner = 'CUBETOOL' AND table_name = 'T_REFERENCE')
 		LOOP
 			EXECUTE IMMEDIATE
@@ -1279,56 +1093,48 @@ BEGIN
 			text VARCHAR2(3999))';
 		DBMS_OUTPUT.PUT_LINE('Table T_DESCRIPTION_REFERENCE created');
 	ELSE
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_DESCRIPTION_REFERENCE' AND column_name = 'CUBE_ID';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_description_reference ADD cube_id VARCHAR2(16)';
 			DBMS_OUTPUT.PUT_LINE('Column T_DESCRIPTION_REFERENCE.CUBE_ID created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_DESCRIPTION_REFERENCE' AND column_name = 'FK_BOT_NAME';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_description_reference ADD fk_bot_name VARCHAR2(30)';
 			DBMS_OUTPUT.PUT_LINE('Column T_DESCRIPTION_REFERENCE.FK_BOT_NAME created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_DESCRIPTION_REFERENCE' AND column_name = 'FK_TYP_NAME';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_description_reference ADD fk_typ_name VARCHAR2(30)';
 			DBMS_OUTPUT.PUT_LINE('Column T_DESCRIPTION_REFERENCE.FK_TYP_NAME created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_DESCRIPTION_REFERENCE' AND column_name = 'FK_REF_SEQUENCE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_description_reference ADD fk_ref_sequence NUMBER(1) DEFAULT ''0''';
 			DBMS_OUTPUT.PUT_LINE('Column T_DESCRIPTION_REFERENCE.FK_REF_SEQUENCE created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_DESCRIPTION_REFERENCE' AND column_name = 'FK_REF_TYP_NAME';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_description_reference ADD fk_ref_typ_name VARCHAR2(30)';
 			DBMS_OUTPUT.PUT_LINE('Column T_DESCRIPTION_REFERENCE.FK_REF_TYP_NAME created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_DESCRIPTION_REFERENCE' AND column_name = 'TEXT';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_description_reference ADD text VARCHAR2(3999)';
 			DBMS_OUTPUT.PUT_LINE('Column T_DESCRIPTION_REFERENCE.TEXT created');
 		END IF;
-
 		FOR r_key IN (SELECT constraint_name FROM all_constraints WHERE owner = 'CUBETOOL' AND table_name = 'T_DESCRIPTION_REFERENCE' AND constraint_type IN ('P','U','R') ORDER BY constraint_type DESC)
 		LOOP
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_description_reference DROP CONSTRAINT ' || r_key.constraint_name || ' CASCADE';
 			DBMS_OUTPUT.PUT_LINE('Primary Key T_DESCRIPTION_REFERENCE.' || UPPER(r_key.constraint_name) || ' dropped');
 		END LOOP;
-
 		FOR r_index IN (SELECT index_name FROM all_indexes WHERE owner = 'CUBETOOL' AND table_name = 'T_DESCRIPTION_REFERENCE')
 		LOOP
 			EXECUTE IMMEDIATE
@@ -1357,77 +1163,66 @@ BEGIN
 			xk_tsp_code VARCHAR2(16))';
 		DBMS_OUTPUT.PUT_LINE('Table T_RESTRICTION_TYPE_SPEC_REF created');
 	ELSE
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_RESTRICTION_TYPE_SPEC_REF' AND column_name = 'CUBE_ID';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_restriction_type_spec_ref ADD cube_id VARCHAR2(16)';
 			DBMS_OUTPUT.PUT_LINE('Column T_RESTRICTION_TYPE_SPEC_REF.CUBE_ID created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_RESTRICTION_TYPE_SPEC_REF' AND column_name = 'FK_BOT_NAME';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_restriction_type_spec_ref ADD fk_bot_name VARCHAR2(30)';
 			DBMS_OUTPUT.PUT_LINE('Column T_RESTRICTION_TYPE_SPEC_REF.FK_BOT_NAME created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_RESTRICTION_TYPE_SPEC_REF' AND column_name = 'FK_TYP_NAME';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_restriction_type_spec_ref ADD fk_typ_name VARCHAR2(30)';
 			DBMS_OUTPUT.PUT_LINE('Column T_RESTRICTION_TYPE_SPEC_REF.FK_TYP_NAME created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_RESTRICTION_TYPE_SPEC_REF' AND column_name = 'FK_REF_SEQUENCE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_restriction_type_spec_ref ADD fk_ref_sequence NUMBER(1) DEFAULT ''0''';
 			DBMS_OUTPUT.PUT_LINE('Column T_RESTRICTION_TYPE_SPEC_REF.FK_REF_SEQUENCE created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_RESTRICTION_TYPE_SPEC_REF' AND column_name = 'FK_REF_TYP_NAME';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_restriction_type_spec_ref ADD fk_ref_typ_name VARCHAR2(30)';
 			DBMS_OUTPUT.PUT_LINE('Column T_RESTRICTION_TYPE_SPEC_REF.FK_REF_TYP_NAME created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_RESTRICTION_TYPE_SPEC_REF' AND column_name = 'INCLUDE_OR_EXCLUDE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_restriction_type_spec_ref ADD include_or_exclude CHAR(2) DEFAULT ''IN''';
 			DBMS_OUTPUT.PUT_LINE('Column T_RESTRICTION_TYPE_SPEC_REF.INCLUDE_OR_EXCLUDE created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_RESTRICTION_TYPE_SPEC_REF' AND column_name = 'XF_TSP_TYP_NAME';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_restriction_type_spec_ref ADD xf_tsp_typ_name VARCHAR2(30)';
 			DBMS_OUTPUT.PUT_LINE('Column T_RESTRICTION_TYPE_SPEC_REF.XF_TSP_TYP_NAME created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_RESTRICTION_TYPE_SPEC_REF' AND column_name = 'XF_TSP_TSG_CODE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_restriction_type_spec_ref ADD xf_tsp_tsg_code VARCHAR2(16)';
 			DBMS_OUTPUT.PUT_LINE('Column T_RESTRICTION_TYPE_SPEC_REF.XF_TSP_TSG_CODE created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_RESTRICTION_TYPE_SPEC_REF' AND column_name = 'XK_TSP_CODE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_restriction_type_spec_ref ADD xk_tsp_code VARCHAR2(16)';
 			DBMS_OUTPUT.PUT_LINE('Column T_RESTRICTION_TYPE_SPEC_REF.XK_TSP_CODE created');
 		END IF;
-
 		FOR r_key IN (SELECT constraint_name FROM all_constraints WHERE owner = 'CUBETOOL' AND table_name = 'T_RESTRICTION_TYPE_SPEC_REF' AND constraint_type IN ('P','U','R') ORDER BY constraint_type DESC)
 		LOOP
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_restriction_type_spec_ref DROP CONSTRAINT ' || r_key.constraint_name || ' CASCADE';
 			DBMS_OUTPUT.PUT_LINE('Primary Key T_RESTRICTION_TYPE_SPEC_REF.' || UPPER(r_key.constraint_name) || ' dropped');
 		END LOOP;
-
 		FOR r_index IN (SELECT index_name FROM all_indexes WHERE owner = 'CUBETOOL' AND table_name = 'T_RESTRICTION_TYPE_SPEC_REF')
 		LOOP
 			EXECUTE IMMEDIATE
@@ -1454,63 +1249,54 @@ BEGIN
 			xk_tsp_code VARCHAR2(16))';
 		DBMS_OUTPUT.PUT_LINE('Table T_RESTRICTION_TYPE_SPEC_TYP created');
 	ELSE
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_RESTRICTION_TYPE_SPEC_TYP' AND column_name = 'CUBE_ID';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_restriction_type_spec_typ ADD cube_id VARCHAR2(16)';
 			DBMS_OUTPUT.PUT_LINE('Column T_RESTRICTION_TYPE_SPEC_TYP.CUBE_ID created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_RESTRICTION_TYPE_SPEC_TYP' AND column_name = 'FK_BOT_NAME';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_restriction_type_spec_typ ADD fk_bot_name VARCHAR2(30)';
 			DBMS_OUTPUT.PUT_LINE('Column T_RESTRICTION_TYPE_SPEC_TYP.FK_BOT_NAME created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_RESTRICTION_TYPE_SPEC_TYP' AND column_name = 'FK_TYP_NAME';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_restriction_type_spec_typ ADD fk_typ_name VARCHAR2(30)';
 			DBMS_OUTPUT.PUT_LINE('Column T_RESTRICTION_TYPE_SPEC_TYP.FK_TYP_NAME created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_RESTRICTION_TYPE_SPEC_TYP' AND column_name = 'INCLUDE_OR_EXCLUDE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_restriction_type_spec_typ ADD include_or_exclude CHAR(2) DEFAULT ''IN''';
 			DBMS_OUTPUT.PUT_LINE('Column T_RESTRICTION_TYPE_SPEC_TYP.INCLUDE_OR_EXCLUDE created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_RESTRICTION_TYPE_SPEC_TYP' AND column_name = 'XF_TSP_TYP_NAME';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_restriction_type_spec_typ ADD xf_tsp_typ_name VARCHAR2(30)';
 			DBMS_OUTPUT.PUT_LINE('Column T_RESTRICTION_TYPE_SPEC_TYP.XF_TSP_TYP_NAME created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_RESTRICTION_TYPE_SPEC_TYP' AND column_name = 'XF_TSP_TSG_CODE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_restriction_type_spec_typ ADD xf_tsp_tsg_code VARCHAR2(16)';
 			DBMS_OUTPUT.PUT_LINE('Column T_RESTRICTION_TYPE_SPEC_TYP.XF_TSP_TSG_CODE created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_RESTRICTION_TYPE_SPEC_TYP' AND column_name = 'XK_TSP_CODE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_restriction_type_spec_typ ADD xk_tsp_code VARCHAR2(16)';
 			DBMS_OUTPUT.PUT_LINE('Column T_RESTRICTION_TYPE_SPEC_TYP.XK_TSP_CODE created');
 		END IF;
-
 		FOR r_key IN (SELECT constraint_name FROM all_constraints WHERE owner = 'CUBETOOL' AND table_name = 'T_RESTRICTION_TYPE_SPEC_TYP' AND constraint_type IN ('P','U','R') ORDER BY constraint_type DESC)
 		LOOP
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_restriction_type_spec_typ DROP CONSTRAINT ' || r_key.constraint_name || ' CASCADE';
 			DBMS_OUTPUT.PUT_LINE('Primary Key T_RESTRICTION_TYPE_SPEC_TYP.' || UPPER(r_key.constraint_name) || ' dropped');
 		END LOOP;
-
 		FOR r_index IN (SELECT index_name FROM all_indexes WHERE owner = 'CUBETOOL' AND table_name = 'T_RESTRICTION_TYPE_SPEC_TYP')
 		LOOP
 			EXECUTE IMMEDIATE
@@ -1547,339 +1333,119 @@ BEGIN
 			xk_typ_name VARCHAR2(30))';
 		DBMS_OUTPUT.PUT_LINE('Table T_JSON_PATH created');
 	ELSE
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_JSON_PATH' AND column_name = 'CUBE_ID';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_json_path ADD cube_id VARCHAR2(16)';
 			DBMS_OUTPUT.PUT_LINE('Column T_JSON_PATH.CUBE_ID created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_JSON_PATH' AND column_name = 'CUBE_SEQUENCE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_json_path ADD cube_sequence NUMBER(8)';
 			DBMS_OUTPUT.PUT_LINE('Column T_JSON_PATH.CUBE_SEQUENCE created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_JSON_PATH' AND column_name = 'CUBE_LEVEL';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_json_path ADD cube_level NUMBER(8) DEFAULT ''1''';
 			DBMS_OUTPUT.PUT_LINE('Column T_JSON_PATH.CUBE_LEVEL created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_JSON_PATH' AND column_name = 'FK_BOT_NAME';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_json_path ADD fk_bot_name VARCHAR2(30)';
 			DBMS_OUTPUT.PUT_LINE('Column T_JSON_PATH.FK_BOT_NAME created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_JSON_PATH' AND column_name = 'FK_TYP_NAME';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_json_path ADD fk_typ_name VARCHAR2(30)';
 			DBMS_OUTPUT.PUT_LINE('Column T_JSON_PATH.FK_TYP_NAME created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_JSON_PATH' AND column_name = 'FK_JSN_NAME';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_json_path ADD fk_jsn_name VARCHAR2(32)';
 			DBMS_OUTPUT.PUT_LINE('Column T_JSON_PATH.FK_JSN_NAME created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_JSON_PATH' AND column_name = 'FK_JSN_LOCATION';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_json_path ADD fk_jsn_location NUMBER(8) DEFAULT ''0''';
 			DBMS_OUTPUT.PUT_LINE('Column T_JSON_PATH.FK_JSN_LOCATION created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_JSON_PATH' AND column_name = 'FK_JSN_ATB_TYP_NAME';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_json_path ADD fk_jsn_atb_typ_name VARCHAR2(30)';
 			DBMS_OUTPUT.PUT_LINE('Column T_JSON_PATH.FK_JSN_ATB_TYP_NAME created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_JSON_PATH' AND column_name = 'FK_JSN_ATB_NAME';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_json_path ADD fk_jsn_atb_name VARCHAR2(30)';
 			DBMS_OUTPUT.PUT_LINE('Column T_JSON_PATH.FK_JSN_ATB_NAME created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_JSON_PATH' AND column_name = 'FK_JSN_TYP_NAME';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_json_path ADD fk_jsn_typ_name VARCHAR2(30)';
 			DBMS_OUTPUT.PUT_LINE('Column T_JSON_PATH.FK_JSN_TYP_NAME created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_JSON_PATH' AND column_name = 'CUBE_TSG_OBJ_ARR';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_json_path ADD cube_tsg_obj_arr VARCHAR2(8) DEFAULT ''OBJ''';
 			DBMS_OUTPUT.PUT_LINE('Column T_JSON_PATH.CUBE_TSG_OBJ_ARR created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_JSON_PATH' AND column_name = 'CUBE_TSG_TYPE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_json_path ADD cube_tsg_type VARCHAR2(8) DEFAULT ''GRP''';
 			DBMS_OUTPUT.PUT_LINE('Column T_JSON_PATH.CUBE_TSG_TYPE created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_JSON_PATH' AND column_name = 'NAME';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_json_path ADD name VARCHAR2(32)';
 			DBMS_OUTPUT.PUT_LINE('Column T_JSON_PATH.NAME created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_JSON_PATH' AND column_name = 'LOCATION';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_json_path ADD location NUMBER(8) DEFAULT ''0''';
 			DBMS_OUTPUT.PUT_LINE('Column T_JSON_PATH.LOCATION created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_JSON_PATH' AND column_name = 'XF_ATB_TYP_NAME';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_json_path ADD xf_atb_typ_name VARCHAR2(30)';
 			DBMS_OUTPUT.PUT_LINE('Column T_JSON_PATH.XF_ATB_TYP_NAME created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_JSON_PATH' AND column_name = 'XK_ATB_NAME';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_json_path ADD xk_atb_name VARCHAR2(30)';
 			DBMS_OUTPUT.PUT_LINE('Column T_JSON_PATH.XK_ATB_NAME created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_JSON_PATH' AND column_name = 'XK_TYP_NAME';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_json_path ADD xk_typ_name VARCHAR2(30)';
 			DBMS_OUTPUT.PUT_LINE('Column T_JSON_PATH.XK_TYP_NAME created');
 		END IF;
-
 		FOR r_key IN (SELECT constraint_name FROM all_constraints WHERE owner = 'CUBETOOL' AND table_name = 'T_JSON_PATH' AND constraint_type IN ('P','U','R') ORDER BY constraint_type DESC)
 		LOOP
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_json_path DROP CONSTRAINT ' || r_key.constraint_name || ' CASCADE';
 			DBMS_OUTPUT.PUT_LINE('Primary Key T_JSON_PATH.' || UPPER(r_key.constraint_name) || ' dropped');
 		END LOOP;
-
 		FOR r_index IN (SELECT index_name FROM all_indexes WHERE owner = 'CUBETOOL' AND table_name = 'T_JSON_PATH')
 		LOOP
 			EXECUTE IMMEDIATE
 			'DROP INDEX ' || r_index.index_name;
 			DBMS_OUTPUT.PUT_LINE('Index T_JSON_PATH.' || UPPER(r_index.index_name) || ' dropped');
-		END LOOP;
-	END IF;
-END;
-/
-DECLARE
-	l_count NUMBER(4);
-BEGIN
-	DBMS_OUTPUT.PUT_LINE('Prepare table T_TYPE_REUSE');
-	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = 'CUBETOOL' AND table_name = 'T_TYPE_REUSE';
-	IF l_count = 0 THEN
-		EXECUTE IMMEDIATE
-		'CREATE TABLE t_type_reuse (
-			cube_id VARCHAR2(16),
-			fk_bot_name VARCHAR2(30),
-			fk_typ_name VARCHAR2(30),
-			cardinality CHAR(1) DEFAULT ''N'',
-			xk_typ_name VARCHAR2(30))';
-		DBMS_OUTPUT.PUT_LINE('Table T_TYPE_REUSE created');
-	ELSE
-
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_TYPE_REUSE' AND column_name = 'CUBE_ID';
-		IF l_count = 0 THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_type_reuse ADD cube_id VARCHAR2(16)';
-			DBMS_OUTPUT.PUT_LINE('Column T_TYPE_REUSE.CUBE_ID created');
-		END IF;
-
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_TYPE_REUSE' AND column_name = 'FK_BOT_NAME';
-		IF l_count = 0 THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_type_reuse ADD fk_bot_name VARCHAR2(30)';
-			DBMS_OUTPUT.PUT_LINE('Column T_TYPE_REUSE.FK_BOT_NAME created');
-		END IF;
-
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_TYPE_REUSE' AND column_name = 'FK_TYP_NAME';
-		IF l_count = 0 THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_type_reuse ADD fk_typ_name VARCHAR2(30)';
-			DBMS_OUTPUT.PUT_LINE('Column T_TYPE_REUSE.FK_TYP_NAME created');
-		END IF;
-
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_TYPE_REUSE' AND column_name = 'CARDINALITY';
-		IF l_count = 0 THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_type_reuse ADD cardinality CHAR(1) DEFAULT ''N''';
-			DBMS_OUTPUT.PUT_LINE('Column T_TYPE_REUSE.CARDINALITY created');
-		END IF;
-
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_TYPE_REUSE' AND column_name = 'XK_TYP_NAME';
-		IF l_count = 0 THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_type_reuse ADD xk_typ_name VARCHAR2(30)';
-			DBMS_OUTPUT.PUT_LINE('Column T_TYPE_REUSE.XK_TYP_NAME created');
-		END IF;
-
-		FOR r_key IN (SELECT constraint_name FROM all_constraints WHERE owner = 'CUBETOOL' AND table_name = 'T_TYPE_REUSE' AND constraint_type IN ('P','U','R') ORDER BY constraint_type DESC)
-		LOOP
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_type_reuse DROP CONSTRAINT ' || r_key.constraint_name || ' CASCADE';
-			DBMS_OUTPUT.PUT_LINE('Primary Key T_TYPE_REUSE.' || UPPER(r_key.constraint_name) || ' dropped');
-		END LOOP;
-
-		FOR r_index IN (SELECT index_name FROM all_indexes WHERE owner = 'CUBETOOL' AND table_name = 'T_TYPE_REUSE')
-		LOOP
-			EXECUTE IMMEDIATE
-			'DROP INDEX ' || r_index.index_name;
-			DBMS_OUTPUT.PUT_LINE('Index T_TYPE_REUSE.' || UPPER(r_index.index_name) || ' dropped');
-		END LOOP;
-	END IF;
-END;
-/
-DECLARE
-	l_count NUMBER(4);
-BEGIN
-	DBMS_OUTPUT.PUT_LINE('Prepare table T_PARTITION');
-	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = 'CUBETOOL' AND table_name = 'T_PARTITION';
-	IF l_count = 0 THEN
-		EXECUTE IMMEDIATE
-		'CREATE TABLE t_partition (
-			cube_id VARCHAR2(16),
-			fk_bot_name VARCHAR2(30),
-			fk_typ_name VARCHAR2(30),
-			name VARCHAR2(30))';
-		DBMS_OUTPUT.PUT_LINE('Table T_PARTITION created');
-	ELSE
-
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_PARTITION' AND column_name = 'CUBE_ID';
-		IF l_count = 0 THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_partition ADD cube_id VARCHAR2(16)';
-			DBMS_OUTPUT.PUT_LINE('Column T_PARTITION.CUBE_ID created');
-		END IF;
-
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_PARTITION' AND column_name = 'FK_BOT_NAME';
-		IF l_count = 0 THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_partition ADD fk_bot_name VARCHAR2(30)';
-			DBMS_OUTPUT.PUT_LINE('Column T_PARTITION.FK_BOT_NAME created');
-		END IF;
-
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_PARTITION' AND column_name = 'FK_TYP_NAME';
-		IF l_count = 0 THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_partition ADD fk_typ_name VARCHAR2(30)';
-			DBMS_OUTPUT.PUT_LINE('Column T_PARTITION.FK_TYP_NAME created');
-		END IF;
-
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_PARTITION' AND column_name = 'NAME';
-		IF l_count = 0 THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_partition ADD name VARCHAR2(30)';
-			DBMS_OUTPUT.PUT_LINE('Column T_PARTITION.NAME created');
-		END IF;
-
-		FOR r_key IN (SELECT constraint_name FROM all_constraints WHERE owner = 'CUBETOOL' AND table_name = 'T_PARTITION' AND constraint_type IN ('P','U','R') ORDER BY constraint_type DESC)
-		LOOP
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_partition DROP CONSTRAINT ' || r_key.constraint_name || ' CASCADE';
-			DBMS_OUTPUT.PUT_LINE('Primary Key T_PARTITION.' || UPPER(r_key.constraint_name) || ' dropped');
-		END LOOP;
-
-		FOR r_index IN (SELECT index_name FROM all_indexes WHERE owner = 'CUBETOOL' AND table_name = 'T_PARTITION')
-		LOOP
-			EXECUTE IMMEDIATE
-			'DROP INDEX ' || r_index.index_name;
-			DBMS_OUTPUT.PUT_LINE('Index T_PARTITION.' || UPPER(r_index.index_name) || ' dropped');
-		END LOOP;
-	END IF;
-END;
-/
-DECLARE
-	l_count NUMBER(4);
-BEGIN
-	DBMS_OUTPUT.PUT_LINE('Prepare table T_SUBTYPE');
-	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = 'CUBETOOL' AND table_name = 'T_SUBTYPE';
-	IF l_count = 0 THEN
-		EXECUTE IMMEDIATE
-		'CREATE TABLE t_subtype (
-			cube_id VARCHAR2(16),
-			cube_sequence NUMBER(8),
-			fk_bot_name VARCHAR2(30),
-			fk_typ_name VARCHAR2(30),
-			fk_par_name VARCHAR2(30),
-			name VARCHAR2(30))';
-		DBMS_OUTPUT.PUT_LINE('Table T_SUBTYPE created');
-	ELSE
-
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_SUBTYPE' AND column_name = 'CUBE_ID';
-		IF l_count = 0 THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_subtype ADD cube_id VARCHAR2(16)';
-			DBMS_OUTPUT.PUT_LINE('Column T_SUBTYPE.CUBE_ID created');
-		END IF;
-
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_SUBTYPE' AND column_name = 'CUBE_SEQUENCE';
-		IF l_count = 0 THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_subtype ADD cube_sequence NUMBER(8)';
-			DBMS_OUTPUT.PUT_LINE('Column T_SUBTYPE.CUBE_SEQUENCE created');
-		END IF;
-
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_SUBTYPE' AND column_name = 'FK_BOT_NAME';
-		IF l_count = 0 THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_subtype ADD fk_bot_name VARCHAR2(30)';
-			DBMS_OUTPUT.PUT_LINE('Column T_SUBTYPE.FK_BOT_NAME created');
-		END IF;
-
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_SUBTYPE' AND column_name = 'FK_TYP_NAME';
-		IF l_count = 0 THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_subtype ADD fk_typ_name VARCHAR2(30)';
-			DBMS_OUTPUT.PUT_LINE('Column T_SUBTYPE.FK_TYP_NAME created');
-		END IF;
-
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_SUBTYPE' AND column_name = 'FK_PAR_NAME';
-		IF l_count = 0 THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_subtype ADD fk_par_name VARCHAR2(30)';
-			DBMS_OUTPUT.PUT_LINE('Column T_SUBTYPE.FK_PAR_NAME created');
-		END IF;
-
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_SUBTYPE' AND column_name = 'NAME';
-		IF l_count = 0 THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_subtype ADD name VARCHAR2(30)';
-			DBMS_OUTPUT.PUT_LINE('Column T_SUBTYPE.NAME created');
-		END IF;
-
-		FOR r_key IN (SELECT constraint_name FROM all_constraints WHERE owner = 'CUBETOOL' AND table_name = 'T_SUBTYPE' AND constraint_type IN ('P','U','R') ORDER BY constraint_type DESC)
-		LOOP
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_subtype DROP CONSTRAINT ' || r_key.constraint_name || ' CASCADE';
-			DBMS_OUTPUT.PUT_LINE('Primary Key T_SUBTYPE.' || UPPER(r_key.constraint_name) || ' dropped');
-		END LOOP;
-
-		FOR r_index IN (SELECT index_name FROM all_indexes WHERE owner = 'CUBETOOL' AND table_name = 'T_SUBTYPE')
-		LOOP
-			EXECUTE IMMEDIATE
-			'DROP INDEX ' || r_index.index_name;
-			DBMS_OUTPUT.PUT_LINE('Index T_SUBTYPE.' || UPPER(r_index.index_name) || ' dropped');
 		END LOOP;
 	END IF;
 END;
@@ -1905,91 +1471,78 @@ BEGIN
 			xk_atb_name VARCHAR2(30))';
 		DBMS_OUTPUT.PUT_LINE('Table T_TYPE_SPECIALISATION_GROUP created');
 	ELSE
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_TYPE_SPECIALISATION_GROUP' AND column_name = 'CUBE_ID';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_type_specialisation_group ADD cube_id VARCHAR2(16)';
 			DBMS_OUTPUT.PUT_LINE('Column T_TYPE_SPECIALISATION_GROUP.CUBE_ID created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_TYPE_SPECIALISATION_GROUP' AND column_name = 'CUBE_SEQUENCE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_type_specialisation_group ADD cube_sequence NUMBER(8)';
 			DBMS_OUTPUT.PUT_LINE('Column T_TYPE_SPECIALISATION_GROUP.CUBE_SEQUENCE created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_TYPE_SPECIALISATION_GROUP' AND column_name = 'CUBE_LEVEL';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_type_specialisation_group ADD cube_level NUMBER(8) DEFAULT ''1''';
 			DBMS_OUTPUT.PUT_LINE('Column T_TYPE_SPECIALISATION_GROUP.CUBE_LEVEL created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_TYPE_SPECIALISATION_GROUP' AND column_name = 'FK_BOT_NAME';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_type_specialisation_group ADD fk_bot_name VARCHAR2(30)';
 			DBMS_OUTPUT.PUT_LINE('Column T_TYPE_SPECIALISATION_GROUP.FK_BOT_NAME created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_TYPE_SPECIALISATION_GROUP' AND column_name = 'FK_TYP_NAME';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_type_specialisation_group ADD fk_typ_name VARCHAR2(30)';
 			DBMS_OUTPUT.PUT_LINE('Column T_TYPE_SPECIALISATION_GROUP.FK_TYP_NAME created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_TYPE_SPECIALISATION_GROUP' AND column_name = 'FK_TSG_CODE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_type_specialisation_group ADD fk_tsg_code VARCHAR2(16)';
 			DBMS_OUTPUT.PUT_LINE('Column T_TYPE_SPECIALISATION_GROUP.FK_TSG_CODE created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_TYPE_SPECIALISATION_GROUP' AND column_name = 'CODE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_type_specialisation_group ADD code VARCHAR2(16)';
 			DBMS_OUTPUT.PUT_LINE('Column T_TYPE_SPECIALISATION_GROUP.CODE created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_TYPE_SPECIALISATION_GROUP' AND column_name = 'NAME';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_type_specialisation_group ADD name VARCHAR2(30)';
 			DBMS_OUTPUT.PUT_LINE('Column T_TYPE_SPECIALISATION_GROUP.NAME created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_TYPE_SPECIALISATION_GROUP' AND column_name = 'PRIMARY_KEY';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_type_specialisation_group ADD primary_key CHAR(1) DEFAULT ''N''';
 			DBMS_OUTPUT.PUT_LINE('Column T_TYPE_SPECIALISATION_GROUP.PRIMARY_KEY created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_TYPE_SPECIALISATION_GROUP' AND column_name = 'XF_ATB_TYP_NAME';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_type_specialisation_group ADD xf_atb_typ_name VARCHAR2(30)';
 			DBMS_OUTPUT.PUT_LINE('Column T_TYPE_SPECIALISATION_GROUP.XF_ATB_TYP_NAME created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_TYPE_SPECIALISATION_GROUP' AND column_name = 'XK_ATB_NAME';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_type_specialisation_group ADD xk_atb_name VARCHAR2(30)';
 			DBMS_OUTPUT.PUT_LINE('Column T_TYPE_SPECIALISATION_GROUP.XK_ATB_NAME created');
 		END IF;
-
 		FOR r_key IN (SELECT constraint_name FROM all_constraints WHERE owner = 'CUBETOOL' AND table_name = 'T_TYPE_SPECIALISATION_GROUP' AND constraint_type IN ('P','U','R') ORDER BY constraint_type DESC)
 		LOOP
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_type_specialisation_group DROP CONSTRAINT ' || r_key.constraint_name || ' CASCADE';
 			DBMS_OUTPUT.PUT_LINE('Primary Key T_TYPE_SPECIALISATION_GROUP.' || UPPER(r_key.constraint_name) || ' dropped');
 		END LOOP;
-
 		FOR r_index IN (SELECT index_name FROM all_indexes WHERE owner = 'CUBETOOL' AND table_name = 'T_TYPE_SPECIALISATION_GROUP')
 		LOOP
 			EXECUTE IMMEDIATE
@@ -2019,84 +1572,72 @@ BEGIN
 			xk_tsp_code VARCHAR2(16))';
 		DBMS_OUTPUT.PUT_LINE('Table T_TYPE_SPECIALISATION created');
 	ELSE
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_TYPE_SPECIALISATION' AND column_name = 'CUBE_ID';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_type_specialisation ADD cube_id VARCHAR2(16)';
 			DBMS_OUTPUT.PUT_LINE('Column T_TYPE_SPECIALISATION.CUBE_ID created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_TYPE_SPECIALISATION' AND column_name = 'CUBE_SEQUENCE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_type_specialisation ADD cube_sequence NUMBER(8)';
 			DBMS_OUTPUT.PUT_LINE('Column T_TYPE_SPECIALISATION.CUBE_SEQUENCE created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_TYPE_SPECIALISATION' AND column_name = 'FK_BOT_NAME';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_type_specialisation ADD fk_bot_name VARCHAR2(30)';
 			DBMS_OUTPUT.PUT_LINE('Column T_TYPE_SPECIALISATION.FK_BOT_NAME created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_TYPE_SPECIALISATION' AND column_name = 'FK_TYP_NAME';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_type_specialisation ADD fk_typ_name VARCHAR2(30)';
 			DBMS_OUTPUT.PUT_LINE('Column T_TYPE_SPECIALISATION.FK_TYP_NAME created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_TYPE_SPECIALISATION' AND column_name = 'FK_TSG_CODE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_type_specialisation ADD fk_tsg_code VARCHAR2(16)';
 			DBMS_OUTPUT.PUT_LINE('Column T_TYPE_SPECIALISATION.FK_TSG_CODE created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_TYPE_SPECIALISATION' AND column_name = 'CODE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_type_specialisation ADD code VARCHAR2(16)';
 			DBMS_OUTPUT.PUT_LINE('Column T_TYPE_SPECIALISATION.CODE created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_TYPE_SPECIALISATION' AND column_name = 'NAME';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_type_specialisation ADD name VARCHAR2(30)';
 			DBMS_OUTPUT.PUT_LINE('Column T_TYPE_SPECIALISATION.NAME created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_TYPE_SPECIALISATION' AND column_name = 'XF_TSP_TYP_NAME';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_type_specialisation ADD xf_tsp_typ_name VARCHAR2(30)';
 			DBMS_OUTPUT.PUT_LINE('Column T_TYPE_SPECIALISATION.XF_TSP_TYP_NAME created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_TYPE_SPECIALISATION' AND column_name = 'XF_TSP_TSG_CODE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_type_specialisation ADD xf_tsp_tsg_code VARCHAR2(16)';
 			DBMS_OUTPUT.PUT_LINE('Column T_TYPE_SPECIALISATION.XF_TSP_TSG_CODE created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_TYPE_SPECIALISATION' AND column_name = 'XK_TSP_CODE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_type_specialisation ADD xk_tsp_code VARCHAR2(16)';
 			DBMS_OUTPUT.PUT_LINE('Column T_TYPE_SPECIALISATION.XK_TSP_CODE created');
 		END IF;
-
 		FOR r_key IN (SELECT constraint_name FROM all_constraints WHERE owner = 'CUBETOOL' AND table_name = 'T_TYPE_SPECIALISATION' AND constraint_type IN ('P','U','R') ORDER BY constraint_type DESC)
 		LOOP
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_type_specialisation DROP CONSTRAINT ' || r_key.constraint_name || ' CASCADE';
 			DBMS_OUTPUT.PUT_LINE('Primary Key T_TYPE_SPECIALISATION.' || UPPER(r_key.constraint_name) || ' dropped');
 		END LOOP;
-
 		FOR r_index IN (SELECT index_name FROM all_indexes WHERE owner = 'CUBETOOL' AND table_name = 'T_TYPE_SPECIALISATION')
 		LOOP
 			EXECUTE IMMEDIATE
@@ -2120,42 +1661,36 @@ BEGIN
 			text VARCHAR2(3999))';
 		DBMS_OUTPUT.PUT_LINE('Table T_DESCRIPTION_TYPE created');
 	ELSE
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_DESCRIPTION_TYPE' AND column_name = 'CUBE_ID';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_description_type ADD cube_id VARCHAR2(16)';
 			DBMS_OUTPUT.PUT_LINE('Column T_DESCRIPTION_TYPE.CUBE_ID created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_DESCRIPTION_TYPE' AND column_name = 'FK_BOT_NAME';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_description_type ADD fk_bot_name VARCHAR2(30)';
 			DBMS_OUTPUT.PUT_LINE('Column T_DESCRIPTION_TYPE.FK_BOT_NAME created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_DESCRIPTION_TYPE' AND column_name = 'FK_TYP_NAME';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_description_type ADD fk_typ_name VARCHAR2(30)';
 			DBMS_OUTPUT.PUT_LINE('Column T_DESCRIPTION_TYPE.FK_TYP_NAME created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_DESCRIPTION_TYPE' AND column_name = 'TEXT';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_description_type ADD text VARCHAR2(3999)';
 			DBMS_OUTPUT.PUT_LINE('Column T_DESCRIPTION_TYPE.TEXT created');
 		END IF;
-
 		FOR r_key IN (SELECT constraint_name FROM all_constraints WHERE owner = 'CUBETOOL' AND table_name = 'T_DESCRIPTION_TYPE' AND constraint_type IN ('P','U','R') ORDER BY constraint_type DESC)
 		LOOP
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_description_type DROP CONSTRAINT ' || r_key.constraint_name || ' CASCADE';
 			DBMS_OUTPUT.PUT_LINE('Primary Key T_DESCRIPTION_TYPE.' || UPPER(r_key.constraint_name) || ' dropped');
 		END LOOP;
-
 		FOR r_index IN (SELECT index_name FROM all_indexes WHERE owner = 'CUBETOOL' AND table_name = 'T_DESCRIPTION_TYPE')
 		LOOP
 			EXECUTE IMMEDIATE
@@ -2182,63 +1717,54 @@ BEGIN
 			table_prefix VARCHAR2(4))';
 		DBMS_OUTPUT.PUT_LINE('Table T_SYSTEM created');
 	ELSE
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_SYSTEM' AND column_name = 'CUBE_ID';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_system ADD cube_id VARCHAR2(16)';
 			DBMS_OUTPUT.PUT_LINE('Column T_SYSTEM.CUBE_ID created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_SYSTEM' AND column_name = 'NAME';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_system ADD name VARCHAR2(30)';
 			DBMS_OUTPUT.PUT_LINE('Column T_SYSTEM.NAME created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_SYSTEM' AND column_name = 'CUBE_TSG_TYPE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_system ADD cube_tsg_type VARCHAR2(8) DEFAULT ''PRIMARY''';
 			DBMS_OUTPUT.PUT_LINE('Column T_SYSTEM.CUBE_TSG_TYPE created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_SYSTEM' AND column_name = 'DATABASE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_system ADD database VARCHAR2(30)';
 			DBMS_OUTPUT.PUT_LINE('Column T_SYSTEM.DATABASE created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_SYSTEM' AND column_name = 'SCHEMA';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_system ADD schema VARCHAR2(30)';
 			DBMS_OUTPUT.PUT_LINE('Column T_SYSTEM.SCHEMA created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_SYSTEM' AND column_name = 'PASSWORD';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_system ADD password VARCHAR2(20)';
 			DBMS_OUTPUT.PUT_LINE('Column T_SYSTEM.PASSWORD created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_SYSTEM' AND column_name = 'TABLE_PREFIX';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_system ADD table_prefix VARCHAR2(4)';
 			DBMS_OUTPUT.PUT_LINE('Column T_SYSTEM.TABLE_PREFIX created');
 		END IF;
-
 		FOR r_key IN (SELECT constraint_name FROM all_constraints WHERE owner = 'CUBETOOL' AND table_name = 'T_SYSTEM' AND constraint_type IN ('P','U','R') ORDER BY constraint_type DESC)
 		LOOP
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_system DROP CONSTRAINT ' || r_key.constraint_name || ' CASCADE';
 			DBMS_OUTPUT.PUT_LINE('Primary Key T_SYSTEM.' || UPPER(r_key.constraint_name) || ' dropped');
 		END LOOP;
-
 		FOR r_index IN (SELECT index_name FROM all_indexes WHERE owner = 'CUBETOOL' AND table_name = 'T_SYSTEM')
 		LOOP
 			EXECUTE IMMEDIATE
@@ -2262,42 +1788,36 @@ BEGIN
 			xk_bot_name VARCHAR2(30))';
 		DBMS_OUTPUT.PUT_LINE('Table T_SYSTEM_BO_TYPE created');
 	ELSE
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_SYSTEM_BO_TYPE' AND column_name = 'CUBE_ID';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_system_bo_type ADD cube_id VARCHAR2(16)';
 			DBMS_OUTPUT.PUT_LINE('Column T_SYSTEM_BO_TYPE.CUBE_ID created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_SYSTEM_BO_TYPE' AND column_name = 'CUBE_SEQUENCE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_system_bo_type ADD cube_sequence NUMBER(8)';
 			DBMS_OUTPUT.PUT_LINE('Column T_SYSTEM_BO_TYPE.CUBE_SEQUENCE created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_SYSTEM_BO_TYPE' AND column_name = 'FK_SYS_NAME';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_system_bo_type ADD fk_sys_name VARCHAR2(30)';
 			DBMS_OUTPUT.PUT_LINE('Column T_SYSTEM_BO_TYPE.FK_SYS_NAME created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_SYSTEM_BO_TYPE' AND column_name = 'XK_BOT_NAME';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_system_bo_type ADD xk_bot_name VARCHAR2(30)';
 			DBMS_OUTPUT.PUT_LINE('Column T_SYSTEM_BO_TYPE.XK_BOT_NAME created');
 		END IF;
-
 		FOR r_key IN (SELECT constraint_name FROM all_constraints WHERE owner = 'CUBETOOL' AND table_name = 'T_SYSTEM_BO_TYPE' AND constraint_type IN ('P','U','R') ORDER BY constraint_type DESC)
 		LOOP
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_system_bo_type DROP CONSTRAINT ' || r_key.constraint_name || ' CASCADE';
 			DBMS_OUTPUT.PUT_LINE('Primary Key T_SYSTEM_BO_TYPE.' || UPPER(r_key.constraint_name) || ' dropped');
 		END LOOP;
-
 		FOR r_index IN (SELECT index_name FROM all_indexes WHERE owner = 'CUBETOOL' AND table_name = 'T_SYSTEM_BO_TYPE')
 		LOOP
 			EXECUTE IMMEDIATE
@@ -2319,28 +1839,24 @@ BEGIN
 			name VARCHAR2(30))';
 		DBMS_OUTPUT.PUT_LINE('Table T_FUNCTION created');
 	ELSE
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_FUNCTION' AND column_name = 'CUBE_ID';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_function ADD cube_id VARCHAR2(16)';
 			DBMS_OUTPUT.PUT_LINE('Column T_FUNCTION.CUBE_ID created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_FUNCTION' AND column_name = 'NAME';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_function ADD name VARCHAR2(30)';
 			DBMS_OUTPUT.PUT_LINE('Column T_FUNCTION.NAME created');
 		END IF;
-
 		FOR r_key IN (SELECT constraint_name FROM all_constraints WHERE owner = 'CUBETOOL' AND table_name = 'T_FUNCTION' AND constraint_type IN ('P','U','R') ORDER BY constraint_type DESC)
 		LOOP
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_function DROP CONSTRAINT ' || r_key.constraint_name || ' CASCADE';
 			DBMS_OUTPUT.PUT_LINE('Primary Key T_FUNCTION.' || UPPER(r_key.constraint_name) || ' dropped');
 		END LOOP;
-
 		FOR r_index IN (SELECT index_name FROM all_indexes WHERE owner = 'CUBETOOL' AND table_name = 'T_FUNCTION')
 		LOOP
 			EXECUTE IMMEDIATE
@@ -2364,42 +1880,36 @@ BEGIN
 			name VARCHAR2(30))';
 		DBMS_OUTPUT.PUT_LINE('Table T_ARGUMENT created');
 	ELSE
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_ARGUMENT' AND column_name = 'CUBE_ID';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_argument ADD cube_id VARCHAR2(16)';
 			DBMS_OUTPUT.PUT_LINE('Column T_ARGUMENT.CUBE_ID created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_ARGUMENT' AND column_name = 'CUBE_SEQUENCE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_argument ADD cube_sequence NUMBER(8)';
 			DBMS_OUTPUT.PUT_LINE('Column T_ARGUMENT.CUBE_SEQUENCE created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_ARGUMENT' AND column_name = 'FK_FUN_NAME';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_argument ADD fk_fun_name VARCHAR2(30)';
 			DBMS_OUTPUT.PUT_LINE('Column T_ARGUMENT.FK_FUN_NAME created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_ARGUMENT' AND column_name = 'NAME';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_argument ADD name VARCHAR2(30)';
 			DBMS_OUTPUT.PUT_LINE('Column T_ARGUMENT.NAME created');
 		END IF;
-
 		FOR r_key IN (SELECT constraint_name FROM all_constraints WHERE owner = 'CUBETOOL' AND table_name = 'T_ARGUMENT' AND constraint_type IN ('P','U','R') ORDER BY constraint_type DESC)
 		LOOP
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_argument DROP CONSTRAINT ' || r_key.constraint_name || ' CASCADE';
 			DBMS_OUTPUT.PUT_LINE('Primary Key T_ARGUMENT.' || UPPER(r_key.constraint_name) || ' dropped');
 		END LOOP;
-
 		FOR r_index IN (SELECT index_name FROM all_indexes WHERE owner = 'CUBETOOL' AND table_name = 'T_ARGUMENT')
 		LOOP
 			EXECUTE IMMEDIATE
@@ -2407,43 +1917,6 @@ BEGIN
 			DBMS_OUTPUT.PUT_LINE('Index T_ARGUMENT.' || UPPER(r_index.index_name) || ' dropped');
 		END LOOP;
 	END IF;
-END;
-/
-BEGIN
-	FOR r_table IN (SELECT t.table_name FROM all_tables t, all_tab_comments c
-				WHERE t.table_name = c.table_name
-				  AND t.owner = 'CUBETOOL'
-				  AND t.table_name NOT IN (
-							'T_INFORMATION_TYPE',
-							'T_INFORMATION_TYPE_ELEMENT',
-							'T_PERMITTED_VALUE',
-							'T_BUSINESS_OBJECT_TYPE',
-							'T_TYPE',
-							'T_ATTRIBUTE',
-							'T_DERIVATION',
-							'T_DESCRIPTION_ATTRIBUTE',
-							'T_RESTRICTION_TYPE_SPEC_ATB',
-							'T_REFERENCE',
-							'T_DESCRIPTION_REFERENCE',
-							'T_RESTRICTION_TYPE_SPEC_REF',
-							'T_RESTRICTION_TYPE_SPEC_TYP',
-							'T_JSON_PATH',
-							'T_TYPE_REUSE',
-							'T_PARTITION',
-							'T_SUBTYPE',
-							'T_TYPE_SPECIALISATION_GROUP',
-							'T_TYPE_SPECIALISATION',
-							'T_DESCRIPTION_TYPE',
-							'T_SYSTEM',
-							'T_SYSTEM_BO_TYPE',
-							'T_FUNCTION',
-							'T_ARGUMENT')
-				  AND SUBSTR(t.table_name,1,7) <> 'T_CUBE_')
-	LOOP
-		EXECUTE IMMEDIATE
-		'DROP TABLE ' || r_table.table_name || ' CASCADE CONSTRAINTS';
-		DBMS_OUTPUT.PUT_LINE('Table ' || UPPER(r_table.table_name) || ' dropped');
-	END LOOP;
 END;
 /
 BEGIN
@@ -3528,202 +3001,6 @@ BEGIN
 		EXECUTE IMMEDIATE
 		'ALTER TABLE t_json_path DROP COLUMN ' || r_field.column_name;
 		DBMS_OUTPUT.PUT_LINE('Field T_JSON_PATH.' || UPPER(r_field.column_name) || ' dropped');
-	END LOOP;
-END;
-/
-BEGIN
-	DBMS_OUTPUT.PUT_LINE('Maintain table T_TYPE_REUSE');
-	FOR r_field IN (SELECT column_name,
-		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
-		data_default old_default_value,
-  		DECODE(column_name,
-			'CUBE_ID','VARCHAR2(16)',
-			'FK_BOT_NAME','VARCHAR2(30)',
-			'FK_TYP_NAME','VARCHAR2(30)',
-			'CARDINALITY','CHAR(1)',
-			'XK_TYP_NAME','VARCHAR2(30)',NULL) new_domain,
-		DECODE(column_name,
-			'CUBE_ID',NULL,
-			'FK_BOT_NAME',NULL,
-			'FK_TYP_NAME',NULL,
-			'CARDINALITY','''N''',
-			'XK_TYP_NAME',NULL,NULL) new_default_value
-  		FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_TYPE_REUSE')
-	LOOP
-		IF r_field.old_domain <> r_field.new_domain THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_type_reuse RENAME COLUMN ' || r_field.column_name || ' TO old#domain#field';
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_type_reuse ADD ' || r_field.column_name || ' ' || r_field.new_domain;
- 			IF r_field.new_domain = 'VARCHAR2' THEN  
-				EXECUTE IMMEDIATE
-				'UPDATE t_type_reuse SET ' || r_field.column_name || '= TRIM(old#domain#field)';
-			ELSE
-				EXECUTE IMMEDIATE
-				'UPDATE t_type_reuse SET ' || r_field.column_name || '= old#domain#field';
-			END IF;
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_type_reuse DROP COLUMN old#domain#field';
-			DBMS_OUTPUT.PUT_LINE('Field T_TYPE_REUSE.' || UPPER(r_field.column_name) || ' converted from ' || r_field.old_domain || ' to ' || r_field.new_domain);
-		END IF;
-		IF NOT((r_field.old_default_value IS NULL AND r_field.new_default_value IS NULL) OR r_field.old_default_value = r_field.new_default_value) THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_type_reuse MODIFY (' || r_field.column_name || ' DEFAULT ' || NVL(r_field.new_default_value,'NULL') || ')';
-			DBMS_OUTPUT.PUT_LINE('Field T_TYPE_REUSE.' || UPPER(r_field.column_name) || ' default value set to ' || NVL(r_field.new_default_value,'NULL'));
-		END IF;
-	END LOOP;
-	EXECUTE IMMEDIATE
-	'ALTER TABLE t_type_reuse ADD CONSTRAINT tyr_pk
-		PRIMARY KEY (
-			fk_typ_name,
-			xk_typ_name )';
-	DBMS_OUTPUT.PUT_LINE('Primary Key T_TYPE_REUSE.TYR_PK created');
-	EXECUTE IMMEDIATE
-	'ALTER TABLE t_type_reuse ADD CONSTRAINT tyr_typ_fk
-		FOREIGN KEY (fk_typ_name)
-		REFERENCES t_type (name)
-		ON DELETE CASCADE';
-	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_TYPE_REUSE' AND column_name NOT IN (
-							'CUBE_ID',
-							'FK_BOT_NAME',
-							'FK_TYP_NAME',
-							'CARDINALITY',
-							'XK_TYP_NAME'))
-	LOOP
-		EXECUTE IMMEDIATE
-		'ALTER TABLE t_type_reuse DROP COLUMN ' || r_field.column_name;
-		DBMS_OUTPUT.PUT_LINE('Field T_TYPE_REUSE.' || UPPER(r_field.column_name) || ' dropped');
-	END LOOP;
-END;
-/
-BEGIN
-	DBMS_OUTPUT.PUT_LINE('Maintain table T_PARTITION');
-	FOR r_field IN (SELECT column_name,
-		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
-		data_default old_default_value,
-  		DECODE(column_name,
-			'CUBE_ID','VARCHAR2(16)',
-			'FK_BOT_NAME','VARCHAR2(30)',
-			'FK_TYP_NAME','VARCHAR2(30)',
-			'NAME','VARCHAR2(30)',NULL) new_domain,
-		DECODE(column_name,
-			'CUBE_ID',NULL,
-			'FK_BOT_NAME',NULL,
-			'FK_TYP_NAME',NULL,
-			'NAME',NULL,NULL) new_default_value
-  		FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_PARTITION')
-	LOOP
-		IF r_field.old_domain <> r_field.new_domain THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_partition RENAME COLUMN ' || r_field.column_name || ' TO old#domain#field';
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_partition ADD ' || r_field.column_name || ' ' || r_field.new_domain;
- 			IF r_field.new_domain = 'VARCHAR2' THEN  
-				EXECUTE IMMEDIATE
-				'UPDATE t_partition SET ' || r_field.column_name || '= TRIM(old#domain#field)';
-			ELSE
-				EXECUTE IMMEDIATE
-				'UPDATE t_partition SET ' || r_field.column_name || '= old#domain#field';
-			END IF;
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_partition DROP COLUMN old#domain#field';
-			DBMS_OUTPUT.PUT_LINE('Field T_PARTITION.' || UPPER(r_field.column_name) || ' converted from ' || r_field.old_domain || ' to ' || r_field.new_domain);
-		END IF;
-		IF NOT((r_field.old_default_value IS NULL AND r_field.new_default_value IS NULL) OR r_field.old_default_value = r_field.new_default_value) THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_partition MODIFY (' || r_field.column_name || ' DEFAULT ' || NVL(r_field.new_default_value,'NULL') || ')';
-			DBMS_OUTPUT.PUT_LINE('Field T_PARTITION.' || UPPER(r_field.column_name) || ' default value set to ' || NVL(r_field.new_default_value,'NULL'));
-		END IF;
-	END LOOP;
-	EXECUTE IMMEDIATE
-	'ALTER TABLE t_partition ADD CONSTRAINT par_pk
-		PRIMARY KEY (
-			fk_typ_name,
-			name )';
-	DBMS_OUTPUT.PUT_LINE('Primary Key T_PARTITION.PAR_PK created');
-	EXECUTE IMMEDIATE
-	'ALTER TABLE t_partition ADD CONSTRAINT par_typ_fk
-		FOREIGN KEY (fk_typ_name)
-		REFERENCES t_type (name)
-		ON DELETE CASCADE';
-	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_PARTITION' AND column_name NOT IN (
-							'CUBE_ID',
-							'FK_BOT_NAME',
-							'FK_TYP_NAME',
-							'NAME'))
-	LOOP
-		EXECUTE IMMEDIATE
-		'ALTER TABLE t_partition DROP COLUMN ' || r_field.column_name;
-		DBMS_OUTPUT.PUT_LINE('Field T_PARTITION.' || UPPER(r_field.column_name) || ' dropped');
-	END LOOP;
-END;
-/
-BEGIN
-	DBMS_OUTPUT.PUT_LINE('Maintain table T_SUBTYPE');
-	FOR r_field IN (SELECT column_name,
-		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
-		data_default old_default_value,
-  		DECODE(column_name,
-			'CUBE_ID','VARCHAR2(16)',
-			'CUBE_SEQUENCE','NUMBER(8)',
-			'FK_BOT_NAME','VARCHAR2(30)',
-			'FK_TYP_NAME','VARCHAR2(30)',
-			'FK_PAR_NAME','VARCHAR2(30)',
-			'NAME','VARCHAR2(30)',NULL) new_domain,
-		DECODE(column_name,
-			'CUBE_ID',NULL,
-			'CUBE_SEQUENCE',NULL,
-			'FK_BOT_NAME',NULL,
-			'FK_TYP_NAME',NULL,
-			'FK_PAR_NAME',NULL,
-			'NAME',NULL,NULL) new_default_value
-  		FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_SUBTYPE')
-	LOOP
-		IF r_field.old_domain <> r_field.new_domain THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_subtype RENAME COLUMN ' || r_field.column_name || ' TO old#domain#field';
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_subtype ADD ' || r_field.column_name || ' ' || r_field.new_domain;
- 			IF r_field.new_domain = 'VARCHAR2' THEN  
-				EXECUTE IMMEDIATE
-				'UPDATE t_subtype SET ' || r_field.column_name || '= TRIM(old#domain#field)';
-			ELSE
-				EXECUTE IMMEDIATE
-				'UPDATE t_subtype SET ' || r_field.column_name || '= old#domain#field';
-			END IF;
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_subtype DROP COLUMN old#domain#field';
-			DBMS_OUTPUT.PUT_LINE('Field T_SUBTYPE.' || UPPER(r_field.column_name) || ' converted from ' || r_field.old_domain || ' to ' || r_field.new_domain);
-		END IF;
-		IF NOT((r_field.old_default_value IS NULL AND r_field.new_default_value IS NULL) OR r_field.old_default_value = r_field.new_default_value) THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_subtype MODIFY (' || r_field.column_name || ' DEFAULT ' || NVL(r_field.new_default_value,'NULL') || ')';
-			DBMS_OUTPUT.PUT_LINE('Field T_SUBTYPE.' || UPPER(r_field.column_name) || ' default value set to ' || NVL(r_field.new_default_value,'NULL'));
-		END IF;
-	END LOOP;
-	EXECUTE IMMEDIATE
-	'ALTER TABLE t_subtype ADD CONSTRAINT stp_pk
-		PRIMARY KEY (
-			fk_typ_name,
-			fk_par_name,
-			name )';
-	DBMS_OUTPUT.PUT_LINE('Primary Key T_SUBTYPE.STP_PK created');
-	EXECUTE IMMEDIATE
-	'ALTER TABLE t_subtype ADD CONSTRAINT stp_par_fk
-		FOREIGN KEY (fk_typ_name, fk_par_name)
-		REFERENCES t_partition (fk_typ_name, name)
-		ON DELETE CASCADE';
-	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_SUBTYPE' AND column_name NOT IN (
-							'CUBE_ID',
-							'CUBE_SEQUENCE',
-							'FK_BOT_NAME',
-							'FK_TYP_NAME',
-							'FK_PAR_NAME',
-							'NAME'))
-	LOOP
-		EXECUTE IMMEDIATE
-		'ALTER TABLE t_subtype DROP COLUMN ' || r_field.column_name;
-		DBMS_OUTPUT.PUT_LINE('Field T_SUBTYPE.' || UPPER(r_field.column_name) || ' dropped');
 	END LOOP;
 END;
 /

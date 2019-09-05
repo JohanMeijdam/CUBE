@@ -334,7 +334,6 @@ $FKeyTyp[0] = '';
 $ITyp = 0;
 $FKeyAtb = '';
 $FKeyRef = '';
-$FKeyPar = '';
 $FKeyTsg[0] = '';
 $ITsg = 0;
 $FKeySys = '';
@@ -364,9 +363,6 @@ print IMPORT "DELETE v_description_reference;\n";
 print IMPORT "DELETE v_restriction_type_spec_ref;\n";
 print IMPORT "DELETE v_restriction_type_spec_typ;\n";
 print IMPORT "DELETE v_json_path;\n";
-print IMPORT "DELETE v_type_reuse;\n";
-print IMPORT "DELETE v_partition;\n";
-print IMPORT "DELETE v_subtype;\n";
 print IMPORT "DELETE v_type_specialisation_group;\n";
 print IMPORT "DELETE v_type_specialisation;\n";
 print IMPORT "DELETE v_description_type;\n";
@@ -607,49 +603,6 @@ my (@FkeyValues);
 						}
 						print IMPORT "INSERT INTO v_json_path (CUBE_SEQUENCE, FK_BOT_NAME, FK_TYP_NAME, FK_JSN_NAME, FK_JSN_LOCATION, FK_JSN_ATB_TYP_NAME, FK_JSN_ATB_NAME, FK_JSN_TYP_NAME, CUBE_TSG_OBJ_ARR, CUBE_TSG_TYPE, NAME, LOCATION, XF_ATB_TYP_NAME, XK_ATB_NAME, XK_TYP_NAME)\n"; 
 						print IMPORT "	VALUES ($Sequence, '$_[1]', '$_[2]', '".SwitchFlag($FKeyFlag,$_[3])."', ".SwitchFlag($FKeyFlag,$_[4]).", '".SwitchFlag($FKeyFlag,$_[5])."', '".SwitchFlag($FKeyFlag,$_[6])."', '".SwitchFlag($FKeyFlag,$_[7])."', '".ReplX($NodeString[$j])."', '".ReplX($NodeValue[$NodeValuePntr[$j]])."', '".ReplX($NodeValue[$NodeValuePntr[$j]+1])."', ".ReplX($NodeValue[$NodeValuePntr[$j]+2]).", '".ReplX(GetXkey($j,'ATTRIBUTE','TYPE',001))."', '".ReplX(GetXkey($j,'ATTRIBUTE','ATTRIBUTE',001))."', '".ReplX(GetXkey($j,'JSON_PATH_TYPE','TYPE',001))."');\n";
-						print IMPORT "\n";
-						$j = $NodeNext[$j];
-					}
-				}
-				case "TYPE_REUSE" {
-					$j = $NodeFirst[$_[0]];
-					while (1) {
-						if ($j == -1) {
-							last;
-						}
-						print IMPORT "INSERT INTO v_type_reuse (FK_BOT_NAME, FK_TYP_NAME, CARDINALITY, XK_TYP_NAME)\n"; 
-						print IMPORT "	VALUES ('$_[1]', '$_[2]', '".ReplX($NodeString[$j])."', '".ReplX(GetXkey($j,'TYPE_REUSE_TYPE','TYPE',001))."');\n";
-						print IMPORT "\n";
-						$j = $NodeNext[$j];
-					}
-				}
-				case "PARTITION" {
-					$j = $NodeFirst[$_[0]];
-					while (1) {
-						if ($j == -1) {
-							last;
-						}
-						print IMPORT "INSERT INTO v_partition (FK_BOT_NAME, FK_TYP_NAME, NAME)\n"; 
-						print IMPORT "	VALUES ('$_[1]', '$_[2]', '".ReplX($NodeString[$j])."');\n";
-						print IMPORT "\n";
-						$FkeyValues[0] = $_[1];
-						$FkeyValues[1] = $_[2];
-						$FkeyValues[2] = ReplX($NodeString[$j]);
-						$i = $NodeFirst[$j];
-						CreateInsertStmnts($i,@FkeyValues);
-						$j = $NodeNext[$j];
-					}
-				}
-				case "SUBTYPE" {
-					$j = $NodeFirst[$_[0]];
-					$Sequence = 0;
-					while (1) {
-						if ($j == -1) {
-							last;
-						}
-						$Sequence++;
-						print IMPORT "INSERT INTO v_subtype (CUBE_SEQUENCE, FK_BOT_NAME, FK_TYP_NAME, FK_PAR_NAME, NAME)\n"; 
-						print IMPORT "	VALUES ($Sequence, '$_[1]', '$_[2]', '$_[3]', '".ReplX($NodeString[$j])."');\n";
 						print IMPORT "\n";
 						$j = $NodeNext[$j];
 					}

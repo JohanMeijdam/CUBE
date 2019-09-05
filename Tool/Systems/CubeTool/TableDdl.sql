@@ -55,12 +55,6 @@ CREATE SEQUENCE sq_rtt START WITH 100000
 /
 CREATE SEQUENCE sq_jsn START WITH 100000
 /
-CREATE SEQUENCE sq_tyr START WITH 100000
-/
-CREATE SEQUENCE sq_par START WITH 100000
-/
-CREATE SEQUENCE sq_stp START WITH 100000
-/
 CREATE SEQUENCE sq_tsg START WITH 100000
 /
 CREATE SEQUENCE sq_tsp START WITH 100000
@@ -309,45 +303,6 @@ CREATE TABLE t_json_path (
 	CONSTRAINT jsn_jsn_fk
 		FOREIGN KEY (fk_typ_name, fk_jsn_name, fk_jsn_location, fk_jsn_atb_typ_name, fk_jsn_atb_name, fk_jsn_typ_name)
 		REFERENCES t_json_path (fk_typ_name, name, location, xf_atb_typ_name, xk_atb_name, xk_typ_name)
-		ON DELETE CASCADE )
-/
-CREATE TABLE t_type_reuse (
-	cube_id VARCHAR2(16),
-	fk_bot_name VARCHAR2(30),
-	fk_typ_name VARCHAR2(30),
-	cardinality CHAR(1) DEFAULT 'N',
-	xk_typ_name VARCHAR2(30),
-	CONSTRAINT tyr_pk
-		PRIMARY KEY (fk_typ_name, xk_typ_name),
-	CONSTRAINT tyr_typ_fk
-		FOREIGN KEY (fk_typ_name)
-		REFERENCES t_type (name)
-		ON DELETE CASCADE )
-/
-CREATE TABLE t_partition (
-	cube_id VARCHAR2(16),
-	fk_bot_name VARCHAR2(30),
-	fk_typ_name VARCHAR2(30),
-	name VARCHAR2(30),
-	CONSTRAINT par_pk
-		PRIMARY KEY (fk_typ_name, name),
-	CONSTRAINT par_typ_fk
-		FOREIGN KEY (fk_typ_name)
-		REFERENCES t_type (name)
-		ON DELETE CASCADE )
-/
-CREATE TABLE t_subtype (
-	cube_id VARCHAR2(16),
-	cube_sequence NUMBER(8),
-	fk_bot_name VARCHAR2(30),
-	fk_typ_name VARCHAR2(30),
-	fk_par_name VARCHAR2(30),
-	name VARCHAR2(30),
-	CONSTRAINT stp_pk
-		PRIMARY KEY (fk_typ_name, fk_par_name, name),
-	CONSTRAINT stp_par_fk
-		FOREIGN KEY (fk_typ_name, fk_par_name)
-		REFERENCES t_partition (fk_typ_name, name)
 		ON DELETE CASCADE )
 /
 CREATE TABLE t_type_specialisation_group (

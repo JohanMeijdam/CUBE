@@ -8,11 +8,9 @@ DECLARE
 BEGIN
 	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = '<<DATABASE1:U>>' AND sequence_name = '<<SEQUENCE:U>>';
 	IF l_count = 0 THEN
-
 		EXECUTE IMMEDIATE 
 		'CREATE SEQUENCE <<SEQUENCE:L>> START WITH <<SEQUENCE1>>';
 		DBMS_OUTPUT.PUT_LINE('Sequence <<SEQUENCE:U>> created');
-
 	END IF;
 END;
 /[[ENDLOOP,SEQUENCE]][[LOOP,TABLE]]
@@ -27,21 +25,18 @@ BEGIN
 			<<FIELD:L>> <<FIELD2:U>>[[IF:!3=]] DEFAULT ''<<FIELD3>>''[[ENDIF]][[IF:!LAST]],[[ENDIF]][[ENDLOOP,FIELD]])';
 		DBMS_OUTPUT.PUT_LINE('Table <<TABLE:U>> created');
 	ELSE[[LOOP,FIELD]]
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = '<<DATABASE1:U>>' AND table_name = '<<TABLE:U>>' AND column_name = '<<FIELD:U>>';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE <<TABLE:L>> ADD <<FIELD:L>> <<FIELD2:U>>[[IF:!3=]] DEFAULT ''<<FIELD3>>''[[ENDIF]]';
 			DBMS_OUTPUT.PUT_LINE('Column <<TABLE:U>>.<<FIELD:U>> created');
 		END IF;[[ENDLOOP,FIELD]]
-
 		FOR r_key IN (SELECT constraint_name FROM all_constraints WHERE owner = '<<DATABASE1:U>>' AND table_name = '<<TABLE:U>>' AND constraint_type IN ('P','U','R') ORDER BY constraint_type DESC)
 		LOOP
 			EXECUTE IMMEDIATE
 			'ALTER TABLE <<TABLE:L>> DROP CONSTRAINT ' || r_key.constraint_name || ' CASCADE';
 			DBMS_OUTPUT.PUT_LINE('Primary Key <<TABLE:U>>.' || UPPER(r_key.constraint_name) || ' dropped');
 		END LOOP;
-
 		FOR r_index IN (SELECT index_name FROM all_indexes WHERE owner = '<<DATABASE1:U>>' AND table_name = '<<TABLE:U>>')
 		LOOP
 			EXECUTE IMMEDIATE
@@ -50,7 +45,7 @@ BEGIN
 		END LOOP;
 	END IF;
 END;
-/[[ENDLOOP,TABLE]]
+/[[ENDLOOP,TABLE]][[******** DROP TABLE MANUAL
 BEGIN
 	FOR r_table IN (SELECT t.table_name FROM all_tables t, all_tab_comments c
 				WHERE t.table_name = c.table_name
@@ -64,7 +59,7 @@ BEGIN
 		DBMS_OUTPUT.PUT_LINE('Table ' || UPPER(r_table.table_name) || ' dropped');
 	END LOOP;
 END;
-/[[LOOP,TABLE]]
+/******]][[LOOP,TABLE]]
 BEGIN
 	DBMS_OUTPUT.PUT_LINE('Maintain table <<TABLE:U>>');
 	FOR r_field IN (SELECT column_name,

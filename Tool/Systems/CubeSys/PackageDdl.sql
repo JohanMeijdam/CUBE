@@ -3,7 +3,7 @@
 BEGIN
 	FOR r_p IN (
 		SELECT object_name
-		FROM all_procedures
+		FROM user_procedures
 		WHERE procedure_name = 'CUBE_PKG_CUBESYS' )
 	LOOP
 		EXECUTE IMMEDIATE 'DROP PACKAGE '||r_p.object_name;

@@ -6,11 +6,9 @@ DECLARE
 BEGIN
 	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = '' AND sequence_name = 'SQ_CUBE_DSC';
 	IF l_count = 0 THEN
-
 		EXECUTE IMMEDIATE 
 		'CREATE SEQUENCE sq_cube_dsc START WITH 100000';
 		DBMS_OUTPUT.PUT_LINE('Sequence SQ_CUBE_DSC created');
-
 	END IF;
 END;
 /
@@ -29,49 +27,42 @@ BEGIN
 			value VARCHAR2(3999))';
 		DBMS_OUTPUT.PUT_LINE('Table T_CUBE_DESCRIPTION created');
 	ELSE
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = '' AND table_name = 'T_CUBE_DESCRIPTION' AND column_name = 'CUBE_ID';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_cube_description ADD cube_id VARCHAR2(16)';
 			DBMS_OUTPUT.PUT_LINE('Column T_CUBE_DESCRIPTION.CUBE_ID created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = '' AND table_name = 'T_CUBE_DESCRIPTION' AND column_name = 'TYPE_NAME';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_cube_description ADD type_name VARCHAR2(30)';
 			DBMS_OUTPUT.PUT_LINE('Column T_CUBE_DESCRIPTION.TYPE_NAME created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = '' AND table_name = 'T_CUBE_DESCRIPTION' AND column_name = 'ATTRIBUTE_TYPE_NAME';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_cube_description ADD attribute_type_name VARCHAR2(30) DEFAULT ''_''';
 			DBMS_OUTPUT.PUT_LINE('Column T_CUBE_DESCRIPTION.ATTRIBUTE_TYPE_NAME created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = '' AND table_name = 'T_CUBE_DESCRIPTION' AND column_name = 'SEQUENCE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_cube_description ADD sequence NUMBER(1) DEFAULT ''-1''';
 			DBMS_OUTPUT.PUT_LINE('Column T_CUBE_DESCRIPTION.SEQUENCE created');
 		END IF;
-
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = '' AND table_name = 'T_CUBE_DESCRIPTION' AND column_name = 'VALUE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_cube_description ADD value VARCHAR2(3999)';
 			DBMS_OUTPUT.PUT_LINE('Column T_CUBE_DESCRIPTION.VALUE created');
 		END IF;
-
 		FOR r_key IN (SELECT constraint_name FROM all_constraints WHERE owner = '' AND table_name = 'T_CUBE_DESCRIPTION' AND constraint_type IN ('P','U','R') ORDER BY constraint_type DESC)
 		LOOP
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_cube_description DROP CONSTRAINT ' || r_key.constraint_name || ' CASCADE';
 			DBMS_OUTPUT.PUT_LINE('Primary Key T_CUBE_DESCRIPTION.' || UPPER(r_key.constraint_name) || ' dropped');
 		END LOOP;
-
 		FOR r_index IN (SELECT index_name FROM all_indexes WHERE owner = '' AND table_name = 'T_CUBE_DESCRIPTION')
 		LOOP
 			EXECUTE IMMEDIATE
@@ -79,20 +70,6 @@ BEGIN
 			DBMS_OUTPUT.PUT_LINE('Index T_CUBE_DESCRIPTION.' || UPPER(r_index.index_name) || ' dropped');
 		END LOOP;
 	END IF;
-END;
-/
-BEGIN
-	FOR r_table IN (SELECT t.table_name FROM all_tables t, all_tab_comments c
-				WHERE t.table_name = c.table_name
-				  AND t.owner = ''
-				  AND t.table_name NOT IN (
-							'T_CUBE_DESCRIPTION')
-				  AND SUBSTR(t.table_name,1,7) <> 'T_CUBE_')
-	LOOP
-		EXECUTE IMMEDIATE
-		'DROP TABLE ' || r_table.table_name || ' CASCADE CONSTRAINTS';
-		DBMS_OUTPUT.PUT_LINE('Table ' || UPPER(r_table.table_name) || ' dropped');
-	END LOOP;
 END;
 /
 BEGIN

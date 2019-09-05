@@ -387,67 +387,6 @@ DECLARE
 	END;
 
 
-	PROCEDURE report_tyr (p_typ IN t_type%ROWTYPE) IS
-	BEGIN
-		FOR r_tyr IN (
-			SELECT *				
-			FROM t_type_reuse
-			WHERE fk_bot_name = p_typ.fk_bot_name
-			  AND fk_typ_name = p_typ.name
-			ORDER BY fk_typ_name, xk_typ_name )
-		LOOP
-			DBMS_OUTPUT.PUT_LINE (ftabs || '+TYPE_REUSE[' || r_tyr.cube_id || ']:' || fenperc(r_tyr.cardinality) || ';');
-				l_level := l_level + 1;
-				BEGIN
-					SELECT cube_id INTO l_cube_id FROM t_type
-					WHERE name = r_tyr.xk_typ_name;
-
-					DBMS_OUTPUT.PUT_LINE (ftabs || '>TYPE_REUSE_TYPE:' || l_cube_id || ';');
-				EXCEPTION
-					WHEN NO_DATA_FOUND THEN
-						NULL; 
-				END;
-				l_level := l_level - 1;
-			DBMS_OUTPUT.PUT_LINE (ftabs || '-TYPE_REUSE:' || r_tyr.cardinality || ';');
-		END LOOP;
-	END;
-
-
-	PROCEDURE report_stp (p_par IN t_partition%ROWTYPE) IS
-	BEGIN
-		FOR r_stp IN (
-			SELECT *				
-			FROM t_subtype
-			WHERE fk_bot_name = p_par.fk_bot_name
-			  AND fk_typ_name = p_par.fk_typ_name
-			  AND fk_par_name = p_par.name
-			ORDER BY cube_sequence )
-		LOOP
-			DBMS_OUTPUT.PUT_LINE (ftabs || '=SUBTYPE[' || r_stp.cube_id || ']:' || fenperc(r_stp.name) || ';');
-				l_level := l_level + 1;
-				l_level := l_level - 1;
-		END LOOP;
-	END;
-
-
-	PROCEDURE report_par (p_typ IN t_type%ROWTYPE) IS
-	BEGIN
-		FOR r_par IN (
-			SELECT *				
-			FROM t_partition
-			WHERE fk_bot_name = p_typ.fk_bot_name
-			  AND fk_typ_name = p_typ.name
-			ORDER BY cube_id )
-		LOOP
-			DBMS_OUTPUT.PUT_LINE (ftabs || '+PARTITION[' || r_par.cube_id || ']:' || fenperc(r_par.name) || ';');
-				l_level := l_level + 1;
-				report_stp (r_par);
-				l_level := l_level - 1;
-			DBMS_OUTPUT.PUT_LINE (ftabs || '-PARTITION:' || r_par.name || ';');
-		END LOOP;
-	END;
-
-
 	PROCEDURE report_tsp (p_tsg IN t_type_specialisation_group%ROWTYPE) IS
 	BEGIN
 		FOR r_tsp IN (
@@ -568,8 +507,6 @@ DECLARE
 				report_ref (r_typ);
 				report_rtt (r_typ);
 				report_jsn (r_typ);
-				report_tyr (r_typ);
-				report_par (r_typ);
 				report_tsg (r_typ);
 				report_dct (r_typ);
 				report_typ_recursive (r_typ);
@@ -594,8 +531,6 @@ DECLARE
 				report_ref (r_typ);
 				report_rtt (r_typ);
 				report_jsn (r_typ);
-				report_tyr (r_typ);
-				report_par (r_typ);
 				report_tsg (r_typ);
 				report_dct (r_typ);
 				report_typ_recursive (r_typ);
@@ -752,16 +687,6 @@ BEGIN
 	DBMS_OUTPUT.PUT_LINE ('				=ASSOCIATION:ATTRIBUTE|Concerns|ATTRIBUTE|;');
 	DBMS_OUTPUT.PUT_LINE ('				=ASSOCIATION:JSON_PATH_TYPE|Concerns|TYPE|;');
 	DBMS_OUTPUT.PUT_LINE ('			-META_TYPE:JSON_PATH;');
-	DBMS_OUTPUT.PUT_LINE ('			+META_TYPE:TYPE_REUSE|;');
-	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:0|Cardinality| Values: 1(1), 2(2), 3(3), 4(4), 5(5), N(Many);');
-	DBMS_OUTPUT.PUT_LINE ('				=ASSOCIATION:TYPE_REUSE_TYPE|Refer|TYPE|;');
-	DBMS_OUTPUT.PUT_LINE ('			-META_TYPE:TYPE_REUSE;');
-	DBMS_OUTPUT.PUT_LINE ('			+META_TYPE:PARTITION|;');
-	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:0|Name|;');
-	DBMS_OUTPUT.PUT_LINE ('				+META_TYPE:SUBTYPE|;');
-	DBMS_OUTPUT.PUT_LINE ('					=PROPERTY:0|Name|;');
-	DBMS_OUTPUT.PUT_LINE ('				-META_TYPE:SUBTYPE;');
-	DBMS_OUTPUT.PUT_LINE ('			-META_TYPE:PARTITION;');
 	DBMS_OUTPUT.PUT_LINE ('			+META_TYPE:TYPE_SPECIALISATION_GROUP|'||REPLACE('A%20group%20of%20classifications%20of%20the%20type.','%20',' ')||';');
 	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:0|Code|;');
 	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:1|Name|;');
