@@ -15,9 +15,22 @@
 -	Reserved names in Oracle e.d. 	
 -	Refential integrity, Kan niet varanderen als er een verwijziging naar is (inclusief rekening houden met scoping)
 
--	Parent level for recursive type (default is the first level parent)			
+-	Parent level for recursive type (default is the first level parent)	
+			Klopt dit wel??? in model niet direct zichtbaar, dus toch iets van een relationship waarmee recursief wordt gemodelleerd. Koppeling in dat geval met technisch ID.
 
--	Database scripts verbeteren mbt schoning.
+-	OK Database scripts verbeteren mbt schoning.
 
 -	BUG: Restriction JSON attribute LOCATION wordt niet meteen zichtbaar in treeview!!
--
+
+-	BO als generiek onderdeel dat onder ieder type kan worden gehangen. met technisch ID (description).
+
+-	Herbruikbare struktuur op hetzelfde level (spec type restriction) 
+		type - atb - restriction'.
+		moet op hetzelfde level. wordt :
+		
+		type - herbruikbare struct - restriction.
+		type - atb - verwijzing naar hetbruikbare structuur.
+		
+		
+	
+		

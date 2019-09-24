@@ -136,6 +136,17 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
+	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBETOOL' AND sequence_name = 'SQ_RTS';
+	IF l_count = 0 THEN
+		EXECUTE IMMEDIATE 
+		'CREATE SEQUENCE sq_rts START WITH 100000';
+		DBMS_OUTPUT.PUT_LINE('Sequence SQ_RTS created');
+	END IF;
+END;
+/
+DECLARE
+	l_count NUMBER(4);
+BEGIN
 	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBETOOL' AND sequence_name = 'SQ_RTT';
 	IF l_count = 0 THEN
 		EXECUTE IMMEDIATE 
@@ -980,6 +991,7 @@ BEGIN
 			scope VARCHAR2(3) DEFAULT ''ALL'',
 			unchangeable CHAR(1) DEFAULT ''N'',
 			within_scope_level NUMBER(1) DEFAULT ''0'',
+			within_scope_source_or_target VARCHAR2(3),
 			xk_typ_name VARCHAR2(30),
 			xk_typ_name_1 VARCHAR2(30))';
 		DBMS_OUTPUT.PUT_LINE('Table T_REFERENCE created');
@@ -1049,6 +1061,12 @@ BEGIN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_reference ADD within_scope_level NUMBER(1) DEFAULT ''0''';
 			DBMS_OUTPUT.PUT_LINE('Column T_REFERENCE.WITHIN_SCOPE_LEVEL created');
+		END IF;
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_REFERENCE' AND column_name = 'WITHIN_SCOPE_SOURCE_OR_TARGET';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_reference ADD within_scope_source_or_target VARCHAR2(3)';
+			DBMS_OUTPUT.PUT_LINE('Column T_REFERENCE.WITHIN_SCOPE_SOURCE_OR_TARGET created');
 		END IF;
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_REFERENCE' AND column_name = 'XK_TYP_NAME';
 		IF l_count = 0 THEN
@@ -1228,6 +1246,87 @@ BEGIN
 			EXECUTE IMMEDIATE
 			'DROP INDEX ' || r_index.index_name;
 			DBMS_OUTPUT.PUT_LINE('Index T_RESTRICTION_TYPE_SPEC_REF.' || UPPER(r_index.index_name) || ' dropped');
+		END LOOP;
+	END IF;
+END;
+/
+DECLARE
+	l_count NUMBER(4);
+BEGIN
+	DBMS_OUTPUT.PUT_LINE('Prepare table T_RESTRICTION_TARGET_TYPE_SPEC');
+	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = 'CUBETOOL' AND table_name = 'T_RESTRICTION_TARGET_TYPE_SPEC';
+	IF l_count = 0 THEN
+		EXECUTE IMMEDIATE
+		'CREATE TABLE t_restriction_target_type_spec (
+			cube_id VARCHAR2(16),
+			fk_bot_name VARCHAR2(30),
+			fk_typ_name VARCHAR2(30),
+			fk_ref_sequence NUMBER(1) DEFAULT ''0'',
+			fk_ref_typ_name VARCHAR2(30),
+			xf_tsp_typ_name VARCHAR2(30),
+			xf_tsp_tsg_code VARCHAR2(16),
+			xk_tsp_code VARCHAR2(16))';
+		DBMS_OUTPUT.PUT_LINE('Table T_RESTRICTION_TARGET_TYPE_SPEC created');
+	ELSE
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_RESTRICTION_TARGET_TYPE_SPEC' AND column_name = 'CUBE_ID';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_restriction_target_type_spec ADD cube_id VARCHAR2(16)';
+			DBMS_OUTPUT.PUT_LINE('Column T_RESTRICTION_TARGET_TYPE_SPEC.CUBE_ID created');
+		END IF;
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_RESTRICTION_TARGET_TYPE_SPEC' AND column_name = 'FK_BOT_NAME';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_restriction_target_type_spec ADD fk_bot_name VARCHAR2(30)';
+			DBMS_OUTPUT.PUT_LINE('Column T_RESTRICTION_TARGET_TYPE_SPEC.FK_BOT_NAME created');
+		END IF;
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_RESTRICTION_TARGET_TYPE_SPEC' AND column_name = 'FK_TYP_NAME';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_restriction_target_type_spec ADD fk_typ_name VARCHAR2(30)';
+			DBMS_OUTPUT.PUT_LINE('Column T_RESTRICTION_TARGET_TYPE_SPEC.FK_TYP_NAME created');
+		END IF;
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_RESTRICTION_TARGET_TYPE_SPEC' AND column_name = 'FK_REF_SEQUENCE';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_restriction_target_type_spec ADD fk_ref_sequence NUMBER(1) DEFAULT ''0''';
+			DBMS_OUTPUT.PUT_LINE('Column T_RESTRICTION_TARGET_TYPE_SPEC.FK_REF_SEQUENCE created');
+		END IF;
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_RESTRICTION_TARGET_TYPE_SPEC' AND column_name = 'FK_REF_TYP_NAME';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_restriction_target_type_spec ADD fk_ref_typ_name VARCHAR2(30)';
+			DBMS_OUTPUT.PUT_LINE('Column T_RESTRICTION_TARGET_TYPE_SPEC.FK_REF_TYP_NAME created');
+		END IF;
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_RESTRICTION_TARGET_TYPE_SPEC' AND column_name = 'XF_TSP_TYP_NAME';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_restriction_target_type_spec ADD xf_tsp_typ_name VARCHAR2(30)';
+			DBMS_OUTPUT.PUT_LINE('Column T_RESTRICTION_TARGET_TYPE_SPEC.XF_TSP_TYP_NAME created');
+		END IF;
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_RESTRICTION_TARGET_TYPE_SPEC' AND column_name = 'XF_TSP_TSG_CODE';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_restriction_target_type_spec ADD xf_tsp_tsg_code VARCHAR2(16)';
+			DBMS_OUTPUT.PUT_LINE('Column T_RESTRICTION_TARGET_TYPE_SPEC.XF_TSP_TSG_CODE created');
+		END IF;
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_RESTRICTION_TARGET_TYPE_SPEC' AND column_name = 'XK_TSP_CODE';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_restriction_target_type_spec ADD xk_tsp_code VARCHAR2(16)';
+			DBMS_OUTPUT.PUT_LINE('Column T_RESTRICTION_TARGET_TYPE_SPEC.XK_TSP_CODE created');
+		END IF;
+		FOR r_key IN (SELECT constraint_name FROM all_constraints WHERE owner = 'CUBETOOL' AND table_name = 'T_RESTRICTION_TARGET_TYPE_SPEC' AND constraint_type IN ('P','U','R') ORDER BY constraint_type DESC)
+		LOOP
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_restriction_target_type_spec DROP CONSTRAINT ' || r_key.constraint_name || ' CASCADE';
+			DBMS_OUTPUT.PUT_LINE('Primary Key T_RESTRICTION_TARGET_TYPE_SPEC.' || UPPER(r_key.constraint_name) || ' dropped');
+		END LOOP;
+		FOR r_index IN (SELECT index_name FROM all_indexes WHERE owner = 'CUBETOOL' AND table_name = 'T_RESTRICTION_TARGET_TYPE_SPEC')
+		LOOP
+			EXECUTE IMMEDIATE
+			'DROP INDEX ' || r_index.index_name;
+			DBMS_OUTPUT.PUT_LINE('Index T_RESTRICTION_TARGET_TYPE_SPEC.' || UPPER(r_index.index_name) || ' dropped');
 		END LOOP;
 	END IF;
 END;
@@ -2598,6 +2697,7 @@ BEGIN
 			'SCOPE','VARCHAR2(3)',
 			'UNCHANGEABLE','CHAR(1)',
 			'WITHIN_SCOPE_LEVEL','NUMBER(1)',
+			'WITHIN_SCOPE_SOURCE_OR_TARGET','VARCHAR2(3)',
 			'XK_TYP_NAME','VARCHAR2(30)',
 			'XK_TYP_NAME_1','VARCHAR2(30)',NULL) new_domain,
 		DECODE(column_name,
@@ -2612,6 +2712,7 @@ BEGIN
 			'SCOPE','''ALL''',
 			'UNCHANGEABLE','''N''',
 			'WITHIN_SCOPE_LEVEL','''0''',
+			'WITHIN_SCOPE_SOURCE_OR_TARGET',NULL,
 			'XK_TYP_NAME',NULL,
 			'XK_TYP_NAME_1',NULL,NULL) new_default_value
   		FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_REFERENCE')
@@ -2662,6 +2763,7 @@ BEGIN
 							'SCOPE',
 							'UNCHANGEABLE',
 							'WITHIN_SCOPE_LEVEL',
+							'WITHIN_SCOPE_SOURCE_OR_TARGET',
 							'XK_TYP_NAME',
 							'XK_TYP_NAME_1'))
 	LOOP
@@ -2818,6 +2920,81 @@ BEGIN
 		EXECUTE IMMEDIATE
 		'ALTER TABLE t_restriction_type_spec_ref DROP COLUMN ' || r_field.column_name;
 		DBMS_OUTPUT.PUT_LINE('Field T_RESTRICTION_TYPE_SPEC_REF.' || UPPER(r_field.column_name) || ' dropped');
+	END LOOP;
+END;
+/
+BEGIN
+	DBMS_OUTPUT.PUT_LINE('Maintain table T_RESTRICTION_TARGET_TYPE_SPEC');
+	FOR r_field IN (SELECT column_name,
+		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
+		data_default old_default_value,
+  		DECODE(column_name,
+			'CUBE_ID','VARCHAR2(16)',
+			'FK_BOT_NAME','VARCHAR2(30)',
+			'FK_TYP_NAME','VARCHAR2(30)',
+			'FK_REF_SEQUENCE','NUMBER(1)',
+			'FK_REF_TYP_NAME','VARCHAR2(30)',
+			'XF_TSP_TYP_NAME','VARCHAR2(30)',
+			'XF_TSP_TSG_CODE','VARCHAR2(16)',
+			'XK_TSP_CODE','VARCHAR2(16)',NULL) new_domain,
+		DECODE(column_name,
+			'CUBE_ID',NULL,
+			'FK_BOT_NAME',NULL,
+			'FK_TYP_NAME',NULL,
+			'FK_REF_SEQUENCE','''0''',
+			'FK_REF_TYP_NAME',NULL,
+			'XF_TSP_TYP_NAME',NULL,
+			'XF_TSP_TSG_CODE',NULL,
+			'XK_TSP_CODE',NULL,NULL) new_default_value
+  		FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_RESTRICTION_TARGET_TYPE_SPEC')
+	LOOP
+		IF r_field.old_domain <> r_field.new_domain THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_restriction_target_type_spec RENAME COLUMN ' || r_field.column_name || ' TO old#domain#field';
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_restriction_target_type_spec ADD ' || r_field.column_name || ' ' || r_field.new_domain;
+ 			IF r_field.new_domain = 'VARCHAR2' THEN  
+				EXECUTE IMMEDIATE
+				'UPDATE t_restriction_target_type_spec SET ' || r_field.column_name || '= TRIM(old#domain#field)';
+			ELSE
+				EXECUTE IMMEDIATE
+				'UPDATE t_restriction_target_type_spec SET ' || r_field.column_name || '= old#domain#field';
+			END IF;
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_restriction_target_type_spec DROP COLUMN old#domain#field';
+			DBMS_OUTPUT.PUT_LINE('Field T_RESTRICTION_TARGET_TYPE_SPEC.' || UPPER(r_field.column_name) || ' converted from ' || r_field.old_domain || ' to ' || r_field.new_domain);
+		END IF;
+		IF NOT((r_field.old_default_value IS NULL AND r_field.new_default_value IS NULL) OR r_field.old_default_value = r_field.new_default_value) THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_restriction_target_type_spec MODIFY (' || r_field.column_name || ' DEFAULT ' || NVL(r_field.new_default_value,'NULL') || ')';
+			DBMS_OUTPUT.PUT_LINE('Field T_RESTRICTION_TARGET_TYPE_SPEC.' || UPPER(r_field.column_name) || ' default value set to ' || NVL(r_field.new_default_value,'NULL'));
+		END IF;
+	END LOOP;
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_restriction_target_type_spec ADD CONSTRAINT rts_pk
+		PRIMARY KEY (
+			fk_typ_name,
+			fk_ref_sequence,
+			fk_ref_typ_name )';
+	DBMS_OUTPUT.PUT_LINE('Primary Key T_RESTRICTION_TARGET_TYPE_SPEC.RTS_PK created');
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_restriction_target_type_spec ADD CONSTRAINT rts_ref_fk
+		FOREIGN KEY (fk_typ_name, fk_ref_sequence, fk_ref_typ_name)
+		REFERENCES t_reference (fk_typ_name, sequence, xk_typ_name)
+		ON DELETE CASCADE';
+	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_RESTRICTION_TARGET_TYPE_SPEC' AND column_name NOT IN (
+							'CUBE_ID',
+							'FK_BOT_NAME',
+							'FK_TYP_NAME',
+							'FK_REF_SEQUENCE',
+							'FK_REF_TYP_NAME',
+							'XF_TSP_TYP_NAME',
+							'XF_TSP_TSG_CODE',
+							'XK_TSP_CODE'))
+	LOOP
+		EXECUTE IMMEDIATE
+		'ALTER TABLE t_restriction_target_type_spec DROP COLUMN ' || r_field.column_name;
+		DBMS_OUTPUT.PUT_LINE('Field T_RESTRICTION_TARGET_TYPE_SPEC.' || UPPER(r_field.column_name) || ' dropped');
 	END LOOP;
 END;
 /

@@ -2043,6 +2043,7 @@ case 'GetRef':
 		$RowObj->Data->Scope = $row["SCOPE"];
 		$RowObj->Data->Unchangeable = $row["UNCHANGEABLE"];
 		$RowObj->Data->WithinScopeLevel = $row["WITHIN_SCOPE_LEVEL"];
+		$RowObj->Data->WithinScopeSourceOrTarget = $row["WITHIN_SCOPE_SOURCE_OR_TARGET"];
 		$RowObj->Data->XkTypName1 = $row["XK_TYP_NAME_1"];
 		$ResponseObj->Rows[] = $RowObj;
 	}
@@ -2151,6 +2152,37 @@ case 'GetRefItems':
 	}
 	$ResponseText = json_encode($ResponseObj);
 	echo $ResponseText;
+	echo ',';
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.get_ref_rts_items (
+		:p_cube_row,
+		:p_fk_typ_name,
+		:p_sequence,
+		:p_xk_typ_name);
+	END;");
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_sequence",$RequestObj->Parameters->Type->Sequence);
+	oci_bind_by_name($stid,":p_xk_typ_name",$RequestObj->Parameters->Type->XkTypName);
+
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'LIST_RTS';
+	$r = perform_db_request();
+	if (!$r) { 
+		echo ']';
+		return;
+	}
+	$ResponseObj->Rows = array();
+	while ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Key = new \stdClass();
+		$RowObj->Key->FkTypName = $row["FK_TYP_NAME"];
+		$RowObj->Key->FkRefSequence = $row["FK_REF_SEQUENCE"];
+		$RowObj->Key->FkRefTypName = $row["FK_REF_TYP_NAME"];
+		$RowObj->Display = ' ';
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
 	echo ']';
 
 	break;
@@ -2236,6 +2268,7 @@ case 'CreateRef':
 		:p_scope,
 		:p_unchangeable,
 		:p_within_scope_level,
+		:p_within_scope_source_or_target,
 		:p_xk_typ_name,
 		:p_xk_typ_name_1,
 		:x_fk_typ_name,
@@ -2252,6 +2285,7 @@ case 'CreateRef':
 	oci_bind_by_name($stid,":p_scope",$RequestObj->Parameters->Type->Scope);
 	oci_bind_by_name($stid,":p_unchangeable",$RequestObj->Parameters->Type->Unchangeable);
 	oci_bind_by_name($stid,":p_within_scope_level",$RequestObj->Parameters->Type->WithinScopeLevel);
+	oci_bind_by_name($stid,":p_within_scope_source_or_target",$RequestObj->Parameters->Type->WithinScopeSourceOrTarget);
 	oci_bind_by_name($stid,":p_xk_typ_name",$RequestObj->Parameters->Type->XkTypName);
 	oci_bind_by_name($stid,":p_xk_typ_name_1",$RequestObj->Parameters->Type->XkTypName1);
 	oci_bind_by_name($stid,":x_fk_typ_name",$RequestObj->Parameters->Ref->FkTypName);
@@ -2285,6 +2319,7 @@ case 'UpdateRef':
 		:p_scope,
 		:p_unchangeable,
 		:p_within_scope_level,
+		:p_within_scope_source_or_target,
 		:p_xk_typ_name,
 		:p_xk_typ_name_1);
 	END;");
@@ -2297,6 +2332,7 @@ case 'UpdateRef':
 	oci_bind_by_name($stid,":p_scope",$RequestObj->Parameters->Type->Scope);
 	oci_bind_by_name($stid,":p_unchangeable",$RequestObj->Parameters->Type->Unchangeable);
 	oci_bind_by_name($stid,":p_within_scope_level",$RequestObj->Parameters->Type->WithinScopeLevel);
+	oci_bind_by_name($stid,":p_within_scope_source_or_target",$RequestObj->Parameters->Type->WithinScopeSourceOrTarget);
 	oci_bind_by_name($stid,":p_xk_typ_name",$RequestObj->Parameters->Type->XkTypName);
 	oci_bind_by_name($stid,":p_xk_typ_name_1",$RequestObj->Parameters->Type->XkTypName1);
 
@@ -2604,6 +2640,145 @@ case 'DeleteRtr':
 
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'DELETE_RTR';
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		echo ']';
+		return;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
+	break;
+
+case 'GetRts':
+	echo '[';
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.get_rts (
+		:p_cube_row,
+		:p_fk_typ_name,
+		:p_fk_ref_sequence,
+		:p_fk_ref_typ_name);
+	END;");
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_fk_ref_sequence",$RequestObj->Parameters->Type->FkRefSequence);
+	oci_bind_by_name($stid,":p_fk_ref_typ_name",$RequestObj->Parameters->Type->FkRefTypName);
+
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'SELECT_RTS';
+	$r = perform_db_request();
+	if (!$r) { 
+		echo ']';
+		return;
+	}
+	$ResponseObj->Rows = array();
+	if ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Data = new \stdClass();
+		$RowObj->Data->FkBotName = $row["FK_BOT_NAME"];
+		$RowObj->Data->XfTspTypName = $row["XF_TSP_TYP_NAME"];
+		$RowObj->Data->XfTspTsgCode = $row["XF_TSP_TSG_CODE"];
+		$RowObj->Data->XkTspCode = $row["XK_TSP_CODE"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
+	break;
+
+case 'CreateRts':
+	echo '[';
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.insert_rts (
+		:p_fk_bot_name,
+		:p_fk_typ_name,
+		:p_fk_ref_sequence,
+		:p_fk_ref_typ_name,
+		:p_xf_tsp_typ_name,
+		:p_xf_tsp_tsg_code,
+		:p_xk_tsp_code,
+		:p_cube_row);
+	END;");
+	oci_bind_by_name($stid,":p_fk_bot_name",$RequestObj->Parameters->Type->FkBotName);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_fk_ref_sequence",$RequestObj->Parameters->Type->FkRefSequence);
+	oci_bind_by_name($stid,":p_fk_ref_typ_name",$RequestObj->Parameters->Type->FkRefTypName);
+	oci_bind_by_name($stid,":p_xf_tsp_typ_name",$RequestObj->Parameters->Type->XfTspTypName);
+	oci_bind_by_name($stid,":p_xf_tsp_tsg_code",$RequestObj->Parameters->Type->XfTspTsgCode);
+	oci_bind_by_name($stid,":p_xk_tsp_code",$RequestObj->Parameters->Type->XkTspCode);
+
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'CREATE_RTS';
+	$r = perform_db_request();
+	if (!$r) { 
+		echo ']';
+		return;
+	}
+	$ResponseObj->Rows = array();
+	if ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Key = new \stdClass();
+		$RowObj->Key->FkTypName = $row["FK_TYP_NAME"];
+		$RowObj->Key->FkRefSequence = $row["FK_REF_SEQUENCE"];
+		$RowObj->Key->FkRefTypName = $row["FK_REF_TYP_NAME"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
+	break;
+
+case 'UpdateRts':
+	echo '[';
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.update_rts (
+		:p_fk_bot_name,
+		:p_fk_typ_name,
+		:p_fk_ref_sequence,
+		:p_fk_ref_typ_name,
+		:p_xf_tsp_typ_name,
+		:p_xf_tsp_tsg_code,
+		:p_xk_tsp_code);
+	END;");
+	oci_bind_by_name($stid,":p_fk_bot_name",$RequestObj->Parameters->Type->FkBotName);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_fk_ref_sequence",$RequestObj->Parameters->Type->FkRefSequence);
+	oci_bind_by_name($stid,":p_fk_ref_typ_name",$RequestObj->Parameters->Type->FkRefTypName);
+	oci_bind_by_name($stid,":p_xf_tsp_typ_name",$RequestObj->Parameters->Type->XfTspTypName);
+	oci_bind_by_name($stid,":p_xf_tsp_tsg_code",$RequestObj->Parameters->Type->XfTspTsgCode);
+	oci_bind_by_name($stid,":p_xk_tsp_code",$RequestObj->Parameters->Type->XkTspCode);
+
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'UPDATE_RTS';
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		echo ']';
+		return;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
+	break;
+
+case 'DeleteRts':
+	echo '[';
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.delete_rts (
+		:p_fk_typ_name,
+		:p_fk_ref_sequence,
+		:p_fk_ref_typ_name);
+	END;");
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_fk_ref_sequence",$RequestObj->Parameters->Type->FkRefSequence);
+	oci_bind_by_name($stid,":p_fk_ref_typ_name",$RequestObj->Parameters->Type->FkRefTypName);
+
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'DELETE_RTS';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);

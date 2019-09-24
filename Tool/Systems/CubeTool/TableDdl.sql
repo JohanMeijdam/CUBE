@@ -51,6 +51,8 @@ CREATE SEQUENCE sq_dcr START WITH 100000
 /
 CREATE SEQUENCE sq_rtr START WITH 100000
 /
+CREATE SEQUENCE sq_rts START WITH 100000
+/
 CREATE SEQUENCE sq_rtt START WITH 100000
 /
 CREATE SEQUENCE sq_jsn START WITH 100000
@@ -221,6 +223,7 @@ CREATE TABLE t_reference (
 	scope VARCHAR2(3) DEFAULT 'ALL',
 	unchangeable CHAR(1) DEFAULT 'N',
 	within_scope_level NUMBER(1) DEFAULT '0',
+	within_scope_source_or_target VARCHAR2(3),
 	xk_typ_name VARCHAR2(30),
 	xk_typ_name_1 VARCHAR2(30),
 	CONSTRAINT ref_pk
@@ -257,6 +260,22 @@ CREATE TABLE t_restriction_type_spec_ref (
 	CONSTRAINT rtr_pk
 		PRIMARY KEY (fk_typ_name, fk_ref_sequence, fk_ref_typ_name, xf_tsp_typ_name, xf_tsp_tsg_code, xk_tsp_code),
 	CONSTRAINT rtr_ref_fk
+		FOREIGN KEY (fk_typ_name, fk_ref_sequence, fk_ref_typ_name)
+		REFERENCES t_reference (fk_typ_name, sequence, xk_typ_name)
+		ON DELETE CASCADE )
+/
+CREATE TABLE t_restriction_target_type_spec (
+	cube_id VARCHAR2(16),
+	fk_bot_name VARCHAR2(30),
+	fk_typ_name VARCHAR2(30),
+	fk_ref_sequence NUMBER(1) DEFAULT '0',
+	fk_ref_typ_name VARCHAR2(30),
+	xf_tsp_typ_name VARCHAR2(30),
+	xf_tsp_tsg_code VARCHAR2(16),
+	xk_tsp_code VARCHAR2(16),
+	CONSTRAINT rts_pk
+		PRIMARY KEY (fk_typ_name, fk_ref_sequence, fk_ref_typ_name),
+	CONSTRAINT rts_ref_fk
 		FOREIGN KEY (fk_typ_name, fk_ref_sequence, fk_ref_typ_name)
 		REFERENCES t_reference (fk_typ_name, sequence, xk_typ_name)
 		ON DELETE CASCADE )
