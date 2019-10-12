@@ -1343,7 +1343,7 @@
 				+ATTRIBUTE[CUBE-ATB-0100100001]:WITHIN_SCOPE_SOURCE_OR_TARGET|N|N|N|N||N;
 					+ATTRIBUTE_NUMBER:008;
 					-ATTRIBUTE_NUMBER:;
-					+DESCRIPTION_ATTRIBUTE[CUBE-DCA-0100040]:In case of a %22within scope of%22 type the indiction that it concerns the source type or the target type of the reference;
+					+DESCRIPTION_ATTRIBUTE[CUBE-DCA-0100040]:In case of a %22within scope of%22 type the indiction that it concerns the source type or the target type (when they are the same) of the reference;
 					-DESCRIPTION_ATTRIBUTE:;
 					>ATTRIBUTE_ROOT_TYPE:CUBE-TYP-0100009;
 					>ATTRIBUTE_ROOT:CUBE-ATB-0100100001;

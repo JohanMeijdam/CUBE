@@ -540,8 +540,8 @@ my (@FkeyValues);
 							last;
 						}
 						$Sequence++;
-						print IMPORT "INSERT INTO v_reference (CUBE_SEQUENCE, FK_BOT_NAME, FK_TYP_NAME, NAME, PRIMARY_KEY, CODE_DISPLAY_KEY, SEQUENCE, SCOPE, UNCHANGEABLE, WITHIN_SCOPE_LEVEL, XK_TYP_NAME, XK_TYP_NAME_1)\n"; 
-						print IMPORT "	VALUES ($Sequence, '$_[1]', '$_[2]', '".ReplX($NodeString[$j])."', '".ReplX($NodeValue[$NodeValuePntr[$j]])."', '".ReplX($NodeValue[$NodeValuePntr[$j]+1])."', ".ReplX($NodeValue[$NodeValuePntr[$j]+2]).", '".ReplX($NodeValue[$NodeValuePntr[$j]+3])."', '".ReplX($NodeValue[$NodeValuePntr[$j]+4])."', ".ReplX($NodeValue[$NodeValuePntr[$j]+5]).", '".ReplX(GetXkey($j,'REFERENCE_TYPE','TYPE',001))."', '".ReplX(GetXkey($j,'REFERENCE_TYPE_WITHIN_SCOPE_OF','TYPE',001))."');\n";
+						print IMPORT "INSERT INTO v_reference (CUBE_SEQUENCE, FK_BOT_NAME, FK_TYP_NAME, NAME, PRIMARY_KEY, CODE_DISPLAY_KEY, SEQUENCE, SCOPE, UNCHANGEABLE, WITHIN_SCOPE_LEVEL, WITHIN_SCOPE_SOURCE_OR_TARGET, XK_TYP_NAME, XK_TYP_NAME_1)\n"; 
+						print IMPORT "	VALUES ($Sequence, '$_[1]', '$_[2]', '".ReplX($NodeString[$j])."', '".ReplX($NodeValue[$NodeValuePntr[$j]])."', '".ReplX($NodeValue[$NodeValuePntr[$j]+1])."', ".ReplX($NodeValue[$NodeValuePntr[$j]+2]).", '".ReplX($NodeValue[$NodeValuePntr[$j]+3])."', '".ReplX($NodeValue[$NodeValuePntr[$j]+4])."', ".ReplX($NodeValue[$NodeValuePntr[$j]+5]).", '".ReplX($NodeValue[$NodeValuePntr[$j]+6])."', '".ReplX(GetXkey($j,'REFERENCE_TYPE','TYPE',001))."', '".ReplX(GetXkey($j,'REFERENCE_TYPE_WITHIN_SCOPE_OF','TYPE',001))."');\n";
 						print IMPORT "\n";
 						$FkeyValues[0] = $_[1];
 						$FkeyValues[1] = $_[2];

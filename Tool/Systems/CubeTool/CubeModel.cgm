@@ -471,7 +471,7 @@
 					>INFORMATION_TYPE:CUBE-ITP-0100023;
 				-ATTRIBUTE:WITHIN_SCOPE_LEVEL;
 				+ATTRIBUTE[CUBE-ATB-0100100]:WITHIN_SCOPE_SOURCE_OR_TARGET|N|N|N|N||N;
-					=DESCRIPTION_ATTRIBUTE[CUBE-DCA-0100040]:In case of a %22within scope of%22 type the indiction that it concerns the source type or the target type of the reference;
+					=DESCRIPTION_ATTRIBUTE[CUBE-DCA-0100040]:In case of a %22within scope of%22 type the indiction that it concerns the source type or the target type (when they are the same) of the reference;
 					>INFORMATION_TYPE:CUBE-ITP-0100040;
 				-ATTRIBUTE:WITHIN_SCOPE_SOURCE_OR_TARGET;
 				+REFERENCE[CUBE-REF-0100004]:REFER|Y|Y|0|ENC|N|0;

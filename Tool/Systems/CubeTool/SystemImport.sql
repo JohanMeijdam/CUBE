@@ -36,7 +36,7 @@ INSERT INTO v_cube_description (CUBE_ID, TYPE_NAME, ATTRIBUTE_TYPE_NAME, SEQUENC
 INSERT INTO v_cube_description (CUBE_ID, TYPE_NAME, ATTRIBUTE_TYPE_NAME, SEQUENCE, VALUE)
 	VALUES ( 'CUBE-DCA-0100011','REFERENCE','WITHIN_SCOPE_LEVEL',-1,UTL_URL.UNESCAPE('In%20case%20of%20a%20recursive%20%22within%20scope%20of%22%20type%20the%20relative%20level%20in%20the%20hierarchy%2C%20Positive%20numbers%20are%20the%20parent%20levels%2C%20Negative%20numbers%20are%20the%20child%20levels.'));
 INSERT INTO v_cube_description (CUBE_ID, TYPE_NAME, ATTRIBUTE_TYPE_NAME, SEQUENCE, VALUE)
-	VALUES ( 'CUBE-DCA-0100040','REFERENCE','WITHIN_SCOPE_SOURCE_OR_TARGET',-1,UTL_URL.UNESCAPE('In%20case%20of%20a%20%22within%20scope%20of%22%20type%20the%20indiction%20that%20it%20concerns%20the%20source%20type%20or%20the%20target%20type%20of%20the%20reference'));
+	VALUES ( 'CUBE-DCA-0100040','REFERENCE','WITHIN_SCOPE_SOURCE_OR_TARGET',-1,UTL_URL.UNESCAPE('In%20case%20of%20a%20%22within%20scope%20of%22%20type%20the%20indiction%20that%20it%20concerns%20the%20source%20type%20or%20the%20target%20type%20(when%20they%20are%20the%20same)%20of%20the%20reference'));
 INSERT INTO v_cube_description (CUBE_ID, TYPE_NAME, ATTRIBUTE_TYPE_NAME, SEQUENCE, VALUE)
 	VALUES ( 'CUBE-DCR-0100000','REFERENCE','TYPE',0,UTL_URL.UNESCAPE('The%20target%20entity%20type%20of%20the%20reference.'));
 INSERT INTO v_cube_description (CUBE_ID, TYPE_NAME, ATTRIBUTE_TYPE_NAME, SEQUENCE, VALUE)

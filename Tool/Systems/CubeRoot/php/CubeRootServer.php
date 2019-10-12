@@ -2043,6 +2043,7 @@ case 'GetRef':
 		$RowObj->Data->Scope = $row["SCOPE"];
 		$RowObj->Data->Unchangeable = $row["UNCHANGEABLE"];
 		$RowObj->Data->WithinScopeLevel = $row["WITHIN_SCOPE_LEVEL"];
+		$RowObj->Data->WithinScopeSourceOrTarget = $row["WITHIN_SCOPE_SOURCE_OR_TARGET"];
 		$RowObj->Data->XkTypName1 = $row["XK_TYP_NAME_1"];
 		$ResponseObj->Rows[] = $RowObj;
 	}
@@ -2236,6 +2237,7 @@ case 'CreateRef':
 		:p_scope,
 		:p_unchangeable,
 		:p_within_scope_level,
+		:p_within_scope_source_or_target,
 		:p_xk_typ_name,
 		:p_xk_typ_name_1,
 		:x_fk_typ_name,
@@ -2252,6 +2254,7 @@ case 'CreateRef':
 	oci_bind_by_name($stid,":p_scope",$RequestObj->Parameters->Type->Scope);
 	oci_bind_by_name($stid,":p_unchangeable",$RequestObj->Parameters->Type->Unchangeable);
 	oci_bind_by_name($stid,":p_within_scope_level",$RequestObj->Parameters->Type->WithinScopeLevel);
+	oci_bind_by_name($stid,":p_within_scope_source_or_target",$RequestObj->Parameters->Type->WithinScopeSourceOrTarget);
 	oci_bind_by_name($stid,":p_xk_typ_name",$RequestObj->Parameters->Type->XkTypName);
 	oci_bind_by_name($stid,":p_xk_typ_name_1",$RequestObj->Parameters->Type->XkTypName1);
 	oci_bind_by_name($stid,":x_fk_typ_name",$RequestObj->Parameters->Ref->FkTypName);
@@ -2285,6 +2288,7 @@ case 'UpdateRef':
 		:p_scope,
 		:p_unchangeable,
 		:p_within_scope_level,
+		:p_within_scope_source_or_target,
 		:p_xk_typ_name,
 		:p_xk_typ_name_1);
 	END;");
@@ -2297,6 +2301,7 @@ case 'UpdateRef':
 	oci_bind_by_name($stid,":p_scope",$RequestObj->Parameters->Type->Scope);
 	oci_bind_by_name($stid,":p_unchangeable",$RequestObj->Parameters->Type->Unchangeable);
 	oci_bind_by_name($stid,":p_within_scope_level",$RequestObj->Parameters->Type->WithinScopeLevel);
+	oci_bind_by_name($stid,":p_within_scope_source_or_target",$RequestObj->Parameters->Type->WithinScopeSourceOrTarget);
 	oci_bind_by_name($stid,":p_xk_typ_name",$RequestObj->Parameters->Type->XkTypName);
 	oci_bind_by_name($stid,":p_xk_typ_name_1",$RequestObj->Parameters->Type->XkTypName1);
 

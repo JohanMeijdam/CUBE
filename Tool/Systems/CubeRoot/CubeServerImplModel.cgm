@@ -3777,6 +3777,9 @@
 				=EXPRESSION:REF_NAME|within_scope_level;
 			-GET:;
 			+GET:;
+				=EXPRESSION:REF_NAME|within_scope_source_or_target;
+			-GET:;
+			+GET:;
 				=EXPRESSION:REF_NAME|xk_typ_name_1;
 			-GET:;
 			+SELECTION:;
@@ -4253,6 +4256,7 @@
 		=ARGUMENT:p_scope|IN|VARCHAR2;
 		=ARGUMENT:p_unchangeable|IN|CHAR;
 		=ARGUMENT:p_within_scope_level|IN|NUMBER;
+		=ARGUMENT:p_within_scope_source_or_target|IN|VARCHAR2;
 		=ARGUMENT:p_xk_typ_name|IN|VARCHAR2;
 		=ARGUMENT:p_xk_typ_name_1|IN|VARCHAR2;
 		=ARGUMENT:x_fk_typ_name|IN|VARCHAR2;
@@ -4329,6 +4333,9 @@
 			+SET:within_scope_level;
 				=EXPRESSION:REF_NAME|p_within_scope_level;
 			-SET:;
+			+SET:within_scope_source_or_target;
+				=EXPRESSION:REF_NAME|p_within_scope_source_or_target;
+			-SET:;
 			+SET:xk_typ_name;
 				=EXPRESSION:REF_NAME|p_xk_typ_name;
 			-SET:;
@@ -4355,6 +4362,7 @@
 		=ARGUMENT:p_scope|IN|VARCHAR2;
 		=ARGUMENT:p_unchangeable|IN|CHAR;
 		=ARGUMENT:p_within_scope_level|IN|NUMBER;
+		=ARGUMENT:p_within_scope_source_or_target|IN|VARCHAR2;
 		=ARGUMENT:p_xk_typ_name|IN|VARCHAR2;
 		=ARGUMENT:p_xk_typ_name_1|IN|VARCHAR2;
 		+STATEMENT:UPDATE|v_reference;
@@ -4378,6 +4386,9 @@
 			-SET:;
 			+SET:within_scope_level;
 				=EXPRESSION:REF_NAME|p_within_scope_level;
+			-SET:;
+			+SET:within_scope_source_or_target;
+				=EXPRESSION:REF_NAME|p_within_scope_source_or_target;
 			-SET:;
 			+SET:xk_typ_name_1;
 				=EXPRESSION:REF_NAME|p_xk_typ_name_1;

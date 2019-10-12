@@ -13,7 +13,7 @@ echo Start > %logfile%
 ::goto models
 ::goto database
 ::goto ModelImport
-::goto Packages
+goto Packages
 ::goto Application
 ::goto ModelExport
 ::goto System
@@ -40,11 +40,11 @@ sqlplus.exe %db_schema%/%db_password%@%db_name% @%sysdir%\ViewDdl.sql >> %logfil
 ::goto :end
 :ModelImport
 echo Import Model.
-:: First, the CubeModel has te be changed according the new structure.
+:: Modelimport wiil work on the new model structure.
 CubeGen.exe %sysdir%\CubeBoModel.cgm Templates\ModelImport.cgt %sysdir%\ModelImport.pl %sysname% >> %logfile% 2>&1
-perl %sysdir%\ModelImport.pl %sysdir%\CubeModel.cgm %sysdir%\ModelImport.sql >> %logfile% 2>&1
-sqlplus.exe %db_schema%/%db_password%@%db_name% @%sysdir%\ModelImport.sql >> %logfile% 2>&1
-goto :end
+::perl %sysdir%\ModelImport.pl %sysdir%\CubeToolModel.cgm %sysdir%\ModelImport.sql >> %logfile% 2>&1
+::sqlplus.exe %db_schema%/%db_password%@%db_name% @%sysdir%\ModelImport.sql >> %logfile% 2>&1
+::goto :end
 :Packages
 echo Generate Packages.
 CubeGen.exe %sysdir%\CubeServerImplModel.cgm Templates\Package.cgt %sysdir%\PackageDdl.sql %sysname% >> %logfile% 2>&1

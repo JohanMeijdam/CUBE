@@ -419,6 +419,7 @@ CREATE OR REPLACE VIEW v_reference AS
 		scope,
 		unchangeable,
 		within_scope_level,
+		within_scope_source_or_target,
 		xk_typ_name,
 		xk_typ_name_1
 	FROM t_reference
@@ -934,6 +935,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			scope,
 			unchangeable,
 			within_scope_level,
+			within_scope_source_or_target,
 			xk_typ_name,
 			xk_typ_name_1)
 		VALUES (
@@ -948,6 +950,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			p_ref.scope,
 			p_ref.unchangeable,
 			p_ref.within_scope_level,
+			p_ref.within_scope_source_or_target,
 			p_ref.xk_typ_name,
 			p_ref.xk_typ_name_1);
 	END;
@@ -962,6 +965,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			scope = p_ref_new.scope,
 			unchangeable = p_ref_new.unchangeable,
 			within_scope_level = p_ref_new.within_scope_level,
+			within_scope_source_or_target = p_ref_new.within_scope_source_or_target,
 			xk_typ_name_1 = p_ref_new.xk_typ_name_1
 		WHERE rowid = p_cube_rowid;
 	END;
@@ -1891,6 +1895,11 @@ BEGIN
 		END IF;
 		r_ref_new.unchangeable := :NEW.unchangeable;
 		r_ref_new.within_scope_level := :NEW.within_scope_level;
+		IF :NEW.within_scope_source_or_target = ' ' THEN
+			r_ref_new.within_scope_source_or_target := ' ';
+		ELSE
+			r_ref_new.within_scope_source_or_target := REPLACE(:NEW.within_scope_source_or_target,' ','_');
+		END IF;
 		IF :NEW.xk_typ_name = ' ' THEN
 			r_ref_new.xk_typ_name := ' ';
 		ELSE
@@ -1920,6 +1929,7 @@ BEGIN
 		r_ref_old.scope := :OLD.scope;
 		r_ref_old.unchangeable := :OLD.unchangeable;
 		r_ref_old.within_scope_level := :OLD.within_scope_level;
+		r_ref_old.within_scope_source_or_target := :OLD.within_scope_source_or_target;
 		r_ref_old.xk_typ_name := :OLD.xk_typ_name;
 		r_ref_old.xk_typ_name_1 := :OLD.xk_typ_name_1;
 	END IF;

@@ -782,6 +782,7 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_scope IN VARCHAR2,
 			p_unchangeable IN CHAR,
 			p_within_scope_level IN NUMBER,
+			p_within_scope_source_or_target IN VARCHAR2,
 			p_xk_typ_name IN VARCHAR2,
 			p_xk_typ_name_1 IN VARCHAR2,
 			x_fk_typ_name IN VARCHAR2,
@@ -797,6 +798,7 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_scope IN VARCHAR2,
 			p_unchangeable IN CHAR,
 			p_within_scope_level IN NUMBER,
+			p_within_scope_source_or_target IN VARCHAR2,
 			p_xk_typ_name IN VARCHAR2,
 			p_xk_typ_name_1 IN VARCHAR2);
 	PROCEDURE delete_ref (
@@ -2306,6 +2308,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			  scope,
 			  unchangeable,
 			  within_scope_level,
+			  within_scope_source_or_target,
 			  xk_typ_name_1
 			FROM v_reference
 			WHERE fk_typ_name = p_fk_typ_name
@@ -2480,6 +2483,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_scope IN VARCHAR2,
 			p_unchangeable IN CHAR,
 			p_within_scope_level IN NUMBER,
+			p_within_scope_source_or_target IN VARCHAR2,
 			p_xk_typ_name IN VARCHAR2,
 			p_xk_typ_name_1 IN VARCHAR2,
 			x_fk_typ_name IN VARCHAR2,
@@ -2504,6 +2508,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			scope,
 			unchangeable,
 			within_scope_level,
+			within_scope_source_or_target,
 			xk_typ_name,
 			xk_typ_name_1)
 		VALUES (
@@ -2518,6 +2523,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_scope,
 			p_unchangeable,
 			p_within_scope_level,
+			p_within_scope_source_or_target,
 			p_xk_typ_name,
 			p_xk_typ_name_1);
 	EXCEPTION
@@ -2535,6 +2541,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_scope IN VARCHAR2,
 			p_unchangeable IN CHAR,
 			p_within_scope_level IN NUMBER,
+			p_within_scope_source_or_target IN VARCHAR2,
 			p_xk_typ_name IN VARCHAR2,
 			p_xk_typ_name_1 IN VARCHAR2) IS
 	BEGIN
@@ -2546,6 +2553,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			scope = p_scope,
 			unchangeable = p_unchangeable,
 			within_scope_level = p_within_scope_level,
+			within_scope_source_or_target = p_within_scope_source_or_target,
 			xk_typ_name_1 = p_xk_typ_name_1
 		WHERE fk_typ_name = p_fk_typ_name
 		  AND sequence = p_sequence
