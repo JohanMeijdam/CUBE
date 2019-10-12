@@ -160,6 +160,7 @@ function InitBody() {
 	document.getElementById("InputScope").value='ALL';
 	document.getElementById("InputUnchangeable").value='N';
 	document.getElementById("InputWithinScopeLevel").value='0';
+	document.getElementById("InputWithinScopeSourceOrTarget").value='SRC';
 }
 
 function CreateRef() {
@@ -440,7 +441,7 @@ function drop(p_event) {
 </select></div></td></tr>
 <tr><td style="cursor:help;" oncontextmenu="parent.OpenDescBox('REF','Reference.WithinScopeLevel','REFERENCE','WITHIN_SCOPE_LEVEL',-1)">WithinScopeLevel</td><td><div style="max-width:2em;">
 <input id="InputWithinScopeLevel" type="text" maxlength="2" style="width:100%;" onchange="ToUpperCase(this);"></input></div></td></tr>
-<tr><td style="cursor:help;" oncontextmenu="parent.OpenDescBox('REF','Reference.WithinScopeSourceOrTarget','REFERENCE','WITHIN_SCOPE_SOURCE_OR_TARGET',-1)">WithinScopeSourceOrTarget</td><td><div>
+<tr><td>WithinScopeSourceOrTarget</td><td><div>
 <select id="InputWithinScopeSourceOrTarget" type="text">
 	<option value=" " selected> </option>
 	<option value="SRC">Source</option>

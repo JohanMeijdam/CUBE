@@ -223,7 +223,7 @@ CREATE TABLE t_reference (
 	scope VARCHAR2(3) DEFAULT 'ALL',
 	unchangeable CHAR(1) DEFAULT 'N',
 	within_scope_level NUMBER(1) DEFAULT '0',
-	within_scope_source_or_target VARCHAR2(3),
+	within_scope_source_or_target VARCHAR2(3) DEFAULT 'SRC',
 	xk_typ_name VARCHAR2(30),
 	xk_typ_name_1 VARCHAR2(30),
 	CONSTRAINT ref_pk

@@ -991,7 +991,7 @@ BEGIN
 			scope VARCHAR2(3) DEFAULT ''ALL'',
 			unchangeable CHAR(1) DEFAULT ''N'',
 			within_scope_level NUMBER(1) DEFAULT ''0'',
-			within_scope_source_or_target VARCHAR2(3),
+			within_scope_source_or_target VARCHAR2(3) DEFAULT ''SRC'',
 			xk_typ_name VARCHAR2(30),
 			xk_typ_name_1 VARCHAR2(30))';
 		DBMS_OUTPUT.PUT_LINE('Table T_REFERENCE created');
@@ -1065,7 +1065,7 @@ BEGIN
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_REFERENCE' AND column_name = 'WITHIN_SCOPE_SOURCE_OR_TARGET';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
-			'ALTER TABLE t_reference ADD within_scope_source_or_target VARCHAR2(3)';
+			'ALTER TABLE t_reference ADD within_scope_source_or_target VARCHAR2(3) DEFAULT ''SRC''';
 			DBMS_OUTPUT.PUT_LINE('Column T_REFERENCE.WITHIN_SCOPE_SOURCE_OR_TARGET created');
 		END IF;
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_REFERENCE' AND column_name = 'XK_TYP_NAME';
@@ -2712,7 +2712,7 @@ BEGIN
 			'SCOPE','''ALL''',
 			'UNCHANGEABLE','''N''',
 			'WITHIN_SCOPE_LEVEL','''0''',
-			'WITHIN_SCOPE_SOURCE_OR_TARGET',NULL,
+			'WITHIN_SCOPE_SOURCE_OR_TARGET','''SRC''',
 			'XK_TYP_NAME',NULL,
 			'XK_TYP_NAME_1',NULL,NULL) new_default_value
   		FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_REFERENCE')

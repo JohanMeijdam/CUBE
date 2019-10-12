@@ -44,19 +44,14 @@ g_xmlhttp.onreadystatechange = function() {
 						g_node_id = '{"TYP_RTS":'+JSON.stringify(l_json_node_id)+'}';
 						if (l_objNode != null) {
 							if (l_objNode.firstChild._state == 'O') {
-								if (l_json_array[i].Rows.length == 0) {
-									var l_position = 'L';
-									l_objNodePos = null;
-								} else {
-									var l_position = 'B';
-									var l_objNodePos = parent.document.getElementById('{"TYP_RTS":'+JSON.stringify(l_json_array[i].Rows[0].Key)+'}');
-								}
+								var l_position = 'L';
+								l_objNodePos = null;
 								parent.AddTreeviewNode(
 									l_objNode,
 									'TYP_RTS',
 									l_json_node_id,
-									'icons/restrict.bmp', 
-									' ',
+									'icons/restrtgt.bmp', 
+									document.getElementById("InputXfTspTypName").value.toLowerCase()+' '+document.getElementById("InputXfTspTsgCode").value.toLowerCase()+' '+document.getElementById("InputXkTspCode").value.toLowerCase(),
 									'N',
 									l_position,
 									l_objNodePos);
@@ -64,6 +59,10 @@ g_xmlhttp.onreadystatechange = function() {
 						}
 						break;
 					case "UPDATE_RTS":
+						var l_objNode = parent.document.getElementById(g_node_id);
+						if (l_objNode != null) {
+							l_objNode.children[1].lastChild.nodeValue = ' '+document.getElementById("InputXfTspTypName").value.toLowerCase()+' '+document.getElementById("InputXfTspTsgCode").value.toLowerCase()+' '+document.getElementById("InputXkTspCode").value.toLowerCase();
+					}
 						break;
 					case "DELETE_RTS":
 						document.getElementById("ButtonCreate").disabled=false;
@@ -364,7 +363,7 @@ function drop(p_event) {
 -->
 </script>
 </head><body oncontextmenu="return false;" onload="InitBody()" ondrop="drop(event)" ondragover="allowDrop(event)">
-<div><img src="icons/restrict_large.bmp" /><span> RESTRICTION_TARGET_TYPE_SPEC</span></div>
+<div><img src="icons/restrtgt_large.bmp" /><span> RESTRICTION_TARGET_TYPE_SPEC</span></div>
 <hr/>
 <table>
 <tr><td>BusinessObjectType.Name</td><td><div style="max-width:30em;">
@@ -375,7 +374,7 @@ function drop(p_event) {
 <input id="InputFkRefSequence" type="text" maxlength="2" style="width:100%;"></input></div></td></tr>
 <tr><td><u>Reference.Name</u></td><td><div style="max-width:30em;">
 <input id="InputFkRefTypName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td height=6></td></tr><tr><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/typespec.bmp"/> TypeSpecialisation (IsValidFor)</legend>
+<tr><td height=6></td></tr><tr><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/typespec.bmp"/> TypeSpecialisation (IsVaildFor)</legend>
 <table style="width:100%;">
 <tr><td>Type.Name</td><td style="width:100%;"><div style="max-width:30em;">
 <input id="InputXfTspTypName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" readonly></input></div></td>

@@ -247,7 +247,7 @@ DECLARE
 			  AND fk_typ_name = p_ref.fk_typ_name
 			  AND fk_ref_sequence = p_ref.sequence
 			  AND fk_ref_typ_name = p_ref.xk_typ_name
-			ORDER BY fk_typ_name, fk_ref_sequence, fk_ref_typ_name )
+			ORDER BY cube_id )
 		LOOP
 			DBMS_OUTPUT.PUT_LINE (ftabs || '+RESTRICTION_TARGET_TYPE_SPEC[' || r_rts.cube_id || ']:' || ';');
 				l_level := l_level + 1;
@@ -726,10 +726,10 @@ BEGIN
 	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:3|Sequence|;');
 	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:4|Scope|'||REPLACE('In%20case%20of%20a%20recursive%20target%2C%20the%20definition%20of%20the%20collection%20of%20the%20types%20to%20select.','%20',' ')||' Values: ALL(All), ENC(Encapsulated), PRA(Parents all), PR1(Parents first level), CHA(Children all), CH1(Children first level);');
 	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:5|Unchangeable|'||REPLACE('Indication%20that%20after%20the%20creation%20of%20the%20type%20the%20reference%20can%20not%20be%20changed.%20So%20in%20case%20of%20a%20recursive%20reference%20the%20indication%20too%20that%20the%20relation%20is%20used%20to%20select%20the%20parents%20or%20children%20in%20the%20hierarchy.','%20',' ')||' Values: Y(Yes), N(No);');
-	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:6|WithinScopeLevel|'||REPLACE('In%20case%20of%20a%20recursive%20%22within%20scope%20of%22%20type%20the%20relative%20level%20in%20the%20hierarchy%2C%20Positive%20numbers%20are%20the%20parent%20levels%2C%20Negative%20numbers%20are%20the%20child%20levels.','%20',' ')||';');
-	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:7|WithinScopeSourceOrTarget|'||REPLACE('In%20case%20of%20a%20%22within%20scope%20of%22%20type%20the%20indiction%20that%20it%20concerns%20the%20source%20type%20or%20the%20target%20type%20(when%20they%20are%20the%20same)%20of%20the%20reference','%20',' ')||' Values: SRC(Source), TGT(Target);');
+	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:6|WithinScopeLevel|'||REPLACE('In%20case%20of%20recursive%20%22within%20scope%20of%22%20type%20the%20relative%20level%20in%20the%20hierarchy%2C%20Positive%20numbers%20are%20the%20parent%20levels%2C%20Negative%20numbers%20are%20the%20child%20levels.','%20',' ')||';');
+	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:7|WithinScopeSourceOrTarget| Values: SRC(Source), TGT(Target);');
 	DBMS_OUTPUT.PUT_LINE ('				=ASSOCIATION:REFERENCE_TYPE|Refer|TYPE|'||REPLACE('The%20target%20entity%20type%20of%20the%20reference.','%20',' ')||';');
-	DBMS_OUTPUT.PUT_LINE ('				=ASSOCIATION:REFERENCE_TYPE_WITHIN_SCOPE_OF|WithinScopeOf|TYPE|'||REPLACE('In%20case%20of%20a%20non%20recursive%20target%20or%20a%20scope%20all%20recursive%20target%20the%20common%20type%20for%20the%20selection.','%20',' ')||';');
+	DBMS_OUTPUT.PUT_LINE ('				=ASSOCIATION:REFERENCE_TYPE_WITHIN_SCOPE_OF|WithinScopeOf|TYPE|'||REPLACE('In%20case%20of%20non%20recursive%20target%20or%20a%20scope%20all%20recursive%20target%20the%20common%20type%20for%20the%20selection.','%20',' ')||';');
 	DBMS_OUTPUT.PUT_LINE ('				+META_TYPE:DESCRIPTION_REFERENCE|;');
 	DBMS_OUTPUT.PUT_LINE ('					=PROPERTY:0|Text|;');
 	DBMS_OUTPUT.PUT_LINE ('				-META_TYPE:DESCRIPTION_REFERENCE;');
@@ -738,7 +738,7 @@ BEGIN
 	DBMS_OUTPUT.PUT_LINE ('					=ASSOCIATION:TYPE_SPECIALISATION|IsValidFor|TYPE_SPECIALISATION|;');
 	DBMS_OUTPUT.PUT_LINE ('				-META_TYPE:RESTRICTION_TYPE_SPEC_REF;');
 	DBMS_OUTPUT.PUT_LINE ('				+META_TYPE:RESTRICTION_TARGET_TYPE_SPEC|;');
-	DBMS_OUTPUT.PUT_LINE ('					=ASSOCIATION:TYPE_SPECIALISATION|IsValidFor|TYPE_SPECIALISATION|;');
+	DBMS_OUTPUT.PUT_LINE ('					=ASSOCIATION:TYPE_SPECIALISATION|IsVaildFor|TYPE_SPECIALISATION|;');
 	DBMS_OUTPUT.PUT_LINE ('				-META_TYPE:RESTRICTION_TARGET_TYPE_SPEC;');
 	DBMS_OUTPUT.PUT_LINE ('			-META_TYPE:REFERENCE;');
 	DBMS_OUTPUT.PUT_LINE ('			+META_TYPE:RESTRICTION_TYPE_SPEC_TYP|;');

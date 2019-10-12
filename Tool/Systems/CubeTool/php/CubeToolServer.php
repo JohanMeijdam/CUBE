@@ -2178,7 +2178,7 @@ case 'GetRefItems':
 		$RowObj->Key->FkTypName = $row["FK_TYP_NAME"];
 		$RowObj->Key->FkRefSequence = $row["FK_REF_SEQUENCE"];
 		$RowObj->Key->FkRefTypName = $row["FK_REF_TYP_NAME"];
-		$RowObj->Display = ' ';
+		$RowObj->Display = $row["XF_TSP_TYP_NAME"].' '.$row["XF_TSP_TSG_CODE"].' '.$row["XK_TSP_CODE"];
 		$ResponseObj->Rows[] = $RowObj;
 	}
 	$ResponseText = json_encode($ResponseObj);
@@ -2202,6 +2202,34 @@ case 'CountRefRestrictedItems':
 
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'COUNT_DCR';
+	$r = perform_db_request();
+	if (!$r) { 
+		echo ']';
+		return;
+	}
+	$ResponseObj->Rows = array();
+	if ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Data = new \stdClass();
+		$RowObj->Data->TypeCount = $row["TYPE_COUNT"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ',';
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.count_ref_rts (
+		:p_cube_row,
+		:p_fk_typ_name,
+		:p_sequence,
+		:p_xk_typ_name);
+	END;");
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_sequence",$RequestObj->Parameters->Type->Sequence);
+	oci_bind_by_name($stid,":p_xk_typ_name",$RequestObj->Parameters->Type->XkTypName);
+
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'COUNT_RTS';
 	$r = perform_db_request();
 	if (!$r) { 
 		echo ']';
@@ -2698,8 +2726,7 @@ case 'CreateRts':
 		:p_fk_ref_typ_name,
 		:p_xf_tsp_typ_name,
 		:p_xf_tsp_tsg_code,
-		:p_xk_tsp_code,
-		:p_cube_row);
+		:p_xk_tsp_code);
 	END;");
 	oci_bind_by_name($stid,":p_fk_bot_name",$RequestObj->Parameters->Type->FkBotName);
 	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
@@ -2711,19 +2738,11 @@ case 'CreateRts':
 
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'CREATE_RTS';
-	$r = perform_db_request();
-	if (!$r) { 
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
 		echo ']';
 		return;
-	}
-	$ResponseObj->Rows = array();
-	if ($row = oci_fetch_assoc($curs)) {
-		$RowObj = new \stdClass();
-		$RowObj->Key = new \stdClass();
-		$RowObj->Key->FkTypName = $row["FK_TYP_NAME"];
-		$RowObj->Key->FkRefSequence = $row["FK_REF_SEQUENCE"];
-		$RowObj->Key->FkRefTypName = $row["FK_REF_TYP_NAME"];
-		$ResponseObj->Rows[] = $RowObj;
 	}
 	$ResponseText = json_encode($ResponseObj);
 	echo $ResponseText;
