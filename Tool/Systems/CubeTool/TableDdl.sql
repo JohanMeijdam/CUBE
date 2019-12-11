@@ -270,11 +270,12 @@ CREATE TABLE t_restriction_target_type_spec (
 	fk_typ_name VARCHAR2(30),
 	fk_ref_sequence NUMBER(1) DEFAULT '0',
 	fk_ref_typ_name VARCHAR2(30),
+	include_or_exclude CHAR(2) DEFAULT 'IN',
 	xf_tsp_typ_name VARCHAR2(30),
 	xf_tsp_tsg_code VARCHAR2(16),
 	xk_tsp_code VARCHAR2(16),
 	CONSTRAINT rts_pk
-		PRIMARY KEY (fk_typ_name, fk_ref_sequence, fk_ref_typ_name),
+		PRIMARY KEY (fk_typ_name, fk_ref_sequence, fk_ref_typ_name, xf_tsp_typ_name, xf_tsp_tsg_code, xk_tsp_code),
 	CONSTRAINT rts_ref_fk
 		FOREIGN KEY (fk_typ_name, fk_ref_sequence, fk_ref_typ_name)
 		REFERENCES t_reference (fk_typ_name, sequence, xk_typ_name)

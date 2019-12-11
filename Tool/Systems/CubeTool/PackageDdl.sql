@@ -874,12 +874,16 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_cube_row IN OUT c_cube_row,
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_ref_sequence IN NUMBER,
-			p_fk_ref_typ_name IN VARCHAR2);
+			p_fk_ref_typ_name IN VARCHAR2,
+			p_xf_tsp_typ_name IN VARCHAR2,
+			p_xf_tsp_tsg_code IN VARCHAR2,
+			p_xk_tsp_code IN VARCHAR2);
 	PROCEDURE insert_rts (
 			p_fk_bot_name IN VARCHAR2,
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_ref_sequence IN NUMBER,
 			p_fk_ref_typ_name IN VARCHAR2,
+			p_include_or_exclude IN CHAR,
 			p_xf_tsp_typ_name IN VARCHAR2,
 			p_xf_tsp_tsg_code IN VARCHAR2,
 			p_xk_tsp_code IN VARCHAR2);
@@ -888,13 +892,17 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_ref_sequence IN NUMBER,
 			p_fk_ref_typ_name IN VARCHAR2,
+			p_include_or_exclude IN CHAR,
 			p_xf_tsp_typ_name IN VARCHAR2,
 			p_xf_tsp_tsg_code IN VARCHAR2,
 			p_xk_tsp_code IN VARCHAR2);
 	PROCEDURE delete_rts (
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_ref_sequence IN NUMBER,
-			p_fk_ref_typ_name IN VARCHAR2);
+			p_fk_ref_typ_name IN VARCHAR2,
+			p_xf_tsp_typ_name IN VARCHAR2,
+			p_xf_tsp_tsg_code IN VARCHAR2,
+			p_xk_tsp_code IN VARCHAR2);
 	PROCEDURE get_rtt (
 			p_cube_row IN OUT c_cube_row,
 			p_fk_typ_name IN VARCHAR2,
@@ -2416,6 +2424,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			  fk_typ_name,
 			  fk_ref_sequence,
 			  fk_ref_typ_name,
+			  include_or_exclude,
 			  xf_tsp_typ_name,
 			  xf_tsp_tsg_code,
 			  xk_tsp_code
@@ -2423,7 +2432,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			WHERE fk_typ_name = p_fk_typ_name
 			  AND fk_ref_sequence = p_sequence
 			  AND fk_ref_typ_name = p_xk_typ_name
-			ORDER BY fk_typ_name, fk_ref_sequence, fk_ref_typ_name, xf_tsp_typ_name, xf_tsp_tsg_code, xk_tsp_code;
+			ORDER BY fk_typ_name, fk_ref_sequence, fk_ref_typ_name, include_or_exclude, xf_tsp_typ_name, xf_tsp_tsg_code, xk_tsp_code;
 	END;
 
 	PROCEDURE count_ref_dcr (
@@ -2854,18 +2863,22 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_cube_row IN OUT c_cube_row,
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_ref_sequence IN NUMBER,
-			p_fk_ref_typ_name IN VARCHAR2) IS
+			p_fk_ref_typ_name IN VARCHAR2,
+			p_xf_tsp_typ_name IN VARCHAR2,
+			p_xf_tsp_tsg_code IN VARCHAR2,
+			p_xk_tsp_code IN VARCHAR2) IS
 	BEGIN
 		OPEN p_cube_row FOR
 			SELECT
 			  fk_bot_name,
-			  xf_tsp_typ_name,
-			  xf_tsp_tsg_code,
-			  xk_tsp_code
+			  include_or_exclude
 			FROM v_restriction_target_type_spec
 			WHERE fk_typ_name = p_fk_typ_name
 			  AND fk_ref_sequence = p_fk_ref_sequence
-			  AND fk_ref_typ_name = p_fk_ref_typ_name;
+			  AND fk_ref_typ_name = p_fk_ref_typ_name
+			  AND xf_tsp_typ_name = p_xf_tsp_typ_name
+			  AND xf_tsp_tsg_code = p_xf_tsp_tsg_code
+			  AND xk_tsp_code = p_xk_tsp_code;
 	END;
 
 	PROCEDURE insert_rts (
@@ -2873,6 +2886,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_ref_sequence IN NUMBER,
 			p_fk_ref_typ_name IN VARCHAR2,
+			p_include_or_exclude IN CHAR,
 			p_xf_tsp_typ_name IN VARCHAR2,
 			p_xf_tsp_tsg_code IN VARCHAR2,
 			p_xk_tsp_code IN VARCHAR2) IS
@@ -2883,6 +2897,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			fk_typ_name,
 			fk_ref_sequence,
 			fk_ref_typ_name,
+			include_or_exclude,
 			xf_tsp_typ_name,
 			xf_tsp_tsg_code,
 			xk_tsp_code)
@@ -2892,6 +2907,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_fk_typ_name,
 			p_fk_ref_sequence,
 			p_fk_ref_typ_name,
+			p_include_or_exclude,
 			p_xf_tsp_typ_name,
 			p_xf_tsp_tsg_code,
 			p_xk_tsp_code);
@@ -2905,29 +2921,37 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_ref_sequence IN NUMBER,
 			p_fk_ref_typ_name IN VARCHAR2,
+			p_include_or_exclude IN CHAR,
 			p_xf_tsp_typ_name IN VARCHAR2,
 			p_xf_tsp_tsg_code IN VARCHAR2,
 			p_xk_tsp_code IN VARCHAR2) IS
 	BEGIN
 		UPDATE v_restriction_target_type_spec SET
 			fk_bot_name = p_fk_bot_name,
-			xf_tsp_typ_name = p_xf_tsp_typ_name,
-			xf_tsp_tsg_code = p_xf_tsp_tsg_code,
-			xk_tsp_code = p_xk_tsp_code
+			include_or_exclude = p_include_or_exclude
 		WHERE fk_typ_name = p_fk_typ_name
 		  AND fk_ref_sequence = p_fk_ref_sequence
-		  AND fk_ref_typ_name = p_fk_ref_typ_name;
+		  AND fk_ref_typ_name = p_fk_ref_typ_name
+		  AND xf_tsp_typ_name = p_xf_tsp_typ_name
+		  AND xf_tsp_tsg_code = p_xf_tsp_tsg_code
+		  AND xk_tsp_code = p_xk_tsp_code;
 	END;
 
 	PROCEDURE delete_rts (
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_ref_sequence IN NUMBER,
-			p_fk_ref_typ_name IN VARCHAR2) IS
+			p_fk_ref_typ_name IN VARCHAR2,
+			p_xf_tsp_typ_name IN VARCHAR2,
+			p_xf_tsp_tsg_code IN VARCHAR2,
+			p_xk_tsp_code IN VARCHAR2) IS
 	BEGIN
 		DELETE v_restriction_target_type_spec
 		WHERE fk_typ_name = p_fk_typ_name
 		  AND fk_ref_sequence = p_fk_ref_sequence
-		  AND fk_ref_typ_name = p_fk_ref_typ_name;
+		  AND fk_ref_typ_name = p_fk_ref_typ_name
+		  AND xf_tsp_typ_name = p_xf_tsp_typ_name
+		  AND xf_tsp_tsg_code = p_xf_tsp_tsg_code
+		  AND xk_tsp_code = p_xk_tsp_code;
 	END;
 
 	PROCEDURE get_rtt (

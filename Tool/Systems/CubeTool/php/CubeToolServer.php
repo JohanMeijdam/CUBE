@@ -2178,7 +2178,10 @@ case 'GetRefItems':
 		$RowObj->Key->FkTypName = $row["FK_TYP_NAME"];
 		$RowObj->Key->FkRefSequence = $row["FK_REF_SEQUENCE"];
 		$RowObj->Key->FkRefTypName = $row["FK_REF_TYP_NAME"];
-		$RowObj->Display = $row["XF_TSP_TYP_NAME"].' '.$row["XF_TSP_TSG_CODE"].' '.$row["XK_TSP_CODE"];
+		$RowObj->Key->XfTspTypName = $row["XF_TSP_TYP_NAME"];
+		$RowObj->Key->XfTspTsgCode = $row["XF_TSP_TSG_CODE"];
+		$RowObj->Key->XkTspCode = $row["XK_TSP_CODE"];
+		$RowObj->Display = $row["INCLUDE_OR_EXCLUDE"].' '.$row["XF_TSP_TYP_NAME"].' '.$row["XF_TSP_TSG_CODE"].' '.$row["XK_TSP_CODE"];
 		$ResponseObj->Rows[] = $RowObj;
 	}
 	$ResponseText = json_encode($ResponseObj);
@@ -2687,11 +2690,17 @@ case 'GetRts':
 		:p_cube_row,
 		:p_fk_typ_name,
 		:p_fk_ref_sequence,
-		:p_fk_ref_typ_name);
+		:p_fk_ref_typ_name,
+		:p_xf_tsp_typ_name,
+		:p_xf_tsp_tsg_code,
+		:p_xk_tsp_code);
 	END;");
 	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
 	oci_bind_by_name($stid,":p_fk_ref_sequence",$RequestObj->Parameters->Type->FkRefSequence);
 	oci_bind_by_name($stid,":p_fk_ref_typ_name",$RequestObj->Parameters->Type->FkRefTypName);
+	oci_bind_by_name($stid,":p_xf_tsp_typ_name",$RequestObj->Parameters->Type->XfTspTypName);
+	oci_bind_by_name($stid,":p_xf_tsp_tsg_code",$RequestObj->Parameters->Type->XfTspTsgCode);
+	oci_bind_by_name($stid,":p_xk_tsp_code",$RequestObj->Parameters->Type->XkTspCode);
 
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'SELECT_RTS';
@@ -2705,9 +2714,7 @@ case 'GetRts':
 		$RowObj = new \stdClass();
 		$RowObj->Data = new \stdClass();
 		$RowObj->Data->FkBotName = $row["FK_BOT_NAME"];
-		$RowObj->Data->XfTspTypName = $row["XF_TSP_TYP_NAME"];
-		$RowObj->Data->XfTspTsgCode = $row["XF_TSP_TSG_CODE"];
-		$RowObj->Data->XkTspCode = $row["XK_TSP_CODE"];
+		$RowObj->Data->IncludeOrExclude = $row["INCLUDE_OR_EXCLUDE"];
 		$ResponseObj->Rows[] = $RowObj;
 	}
 	$ResponseText = json_encode($ResponseObj);
@@ -2724,6 +2731,7 @@ case 'CreateRts':
 		:p_fk_typ_name,
 		:p_fk_ref_sequence,
 		:p_fk_ref_typ_name,
+		:p_include_or_exclude,
 		:p_xf_tsp_typ_name,
 		:p_xf_tsp_tsg_code,
 		:p_xk_tsp_code);
@@ -2732,6 +2740,7 @@ case 'CreateRts':
 	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
 	oci_bind_by_name($stid,":p_fk_ref_sequence",$RequestObj->Parameters->Type->FkRefSequence);
 	oci_bind_by_name($stid,":p_fk_ref_typ_name",$RequestObj->Parameters->Type->FkRefTypName);
+	oci_bind_by_name($stid,":p_include_or_exclude",$RequestObj->Parameters->Type->IncludeOrExclude);
 	oci_bind_by_name($stid,":p_xf_tsp_typ_name",$RequestObj->Parameters->Type->XfTspTypName);
 	oci_bind_by_name($stid,":p_xf_tsp_tsg_code",$RequestObj->Parameters->Type->XfTspTsgCode);
 	oci_bind_by_name($stid,":p_xk_tsp_code",$RequestObj->Parameters->Type->XkTspCode);
@@ -2758,6 +2767,7 @@ case 'UpdateRts':
 		:p_fk_typ_name,
 		:p_fk_ref_sequence,
 		:p_fk_ref_typ_name,
+		:p_include_or_exclude,
 		:p_xf_tsp_typ_name,
 		:p_xf_tsp_tsg_code,
 		:p_xk_tsp_code);
@@ -2766,6 +2776,7 @@ case 'UpdateRts':
 	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
 	oci_bind_by_name($stid,":p_fk_ref_sequence",$RequestObj->Parameters->Type->FkRefSequence);
 	oci_bind_by_name($stid,":p_fk_ref_typ_name",$RequestObj->Parameters->Type->FkRefTypName);
+	oci_bind_by_name($stid,":p_include_or_exclude",$RequestObj->Parameters->Type->IncludeOrExclude);
 	oci_bind_by_name($stid,":p_xf_tsp_typ_name",$RequestObj->Parameters->Type->XfTspTypName);
 	oci_bind_by_name($stid,":p_xf_tsp_tsg_code",$RequestObj->Parameters->Type->XfTspTsgCode);
 	oci_bind_by_name($stid,":p_xk_tsp_code",$RequestObj->Parameters->Type->XkTspCode);
@@ -2790,11 +2801,17 @@ case 'DeleteRts':
 	$stid = oci_parse($conn, "BEGIN pkg_bot.delete_rts (
 		:p_fk_typ_name,
 		:p_fk_ref_sequence,
-		:p_fk_ref_typ_name);
+		:p_fk_ref_typ_name,
+		:p_xf_tsp_typ_name,
+		:p_xf_tsp_tsg_code,
+		:p_xk_tsp_code);
 	END;");
 	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
 	oci_bind_by_name($stid,":p_fk_ref_sequence",$RequestObj->Parameters->Type->FkRefSequence);
 	oci_bind_by_name($stid,":p_fk_ref_typ_name",$RequestObj->Parameters->Type->FkRefTypName);
+	oci_bind_by_name($stid,":p_xf_tsp_typ_name",$RequestObj->Parameters->Type->XfTspTypName);
+	oci_bind_by_name($stid,":p_xf_tsp_tsg_code",$RequestObj->Parameters->Type->XfTspTsgCode);
+	oci_bind_by_name($stid,":p_xk_tsp_code",$RequestObj->Parameters->Type->XkTspCode);
 
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'DELETE_RTS';

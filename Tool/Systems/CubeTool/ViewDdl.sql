@@ -453,6 +453,7 @@ CREATE OR REPLACE VIEW v_restriction_target_type_spec AS
 		fk_typ_name,
 		fk_ref_sequence,
 		fk_ref_typ_name,
+		include_or_exclude,
 		xf_tsp_typ_name,
 		xf_tsp_tsg_code,
 		xk_tsp_code
@@ -1087,6 +1088,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			fk_typ_name,
 			fk_ref_sequence,
 			fk_ref_typ_name,
+			include_or_exclude,
 			xf_tsp_typ_name,
 			xf_tsp_tsg_code,
 			xk_tsp_code)
@@ -1096,6 +1098,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			p_rts.fk_typ_name,
 			p_rts.fk_ref_sequence,
 			p_rts.fk_ref_typ_name,
+			p_rts.include_or_exclude,
 			p_rts.xf_tsp_typ_name,
 			p_rts.xf_tsp_tsg_code,
 			p_rts.xk_tsp_code);
@@ -1104,9 +1107,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 	PROCEDURE update_rts (p_cube_rowid UROWID, p_rts_old IN OUT NOCOPY v_restriction_target_type_spec%ROWTYPE, p_rts_new IN OUT NOCOPY v_restriction_target_type_spec%ROWTYPE) IS
 	BEGIN
 		UPDATE t_restriction_target_type_spec SET 
-			xf_tsp_typ_name = p_rts_new.xf_tsp_typ_name,
-			xf_tsp_tsg_code = p_rts_new.xf_tsp_tsg_code,
-			xk_tsp_code = p_rts_new.xk_tsp_code
+			include_or_exclude = p_rts_new.include_or_exclude
 		WHERE rowid = p_cube_rowid;
 	END;
 
@@ -2159,6 +2160,11 @@ BEGIN
 		ELSE
 			r_rts_new.fk_ref_typ_name := REPLACE(:NEW.fk_ref_typ_name,' ','_');
 		END IF;
+		IF :NEW.include_or_exclude = ' ' THEN
+			r_rts_new.include_or_exclude := ' ';
+		ELSE
+			r_rts_new.include_or_exclude := REPLACE(:NEW.include_or_exclude,' ','_');
+		END IF;
 		IF :NEW.xf_tsp_typ_name = ' ' THEN
 			r_rts_new.xf_tsp_typ_name := ' ';
 		ELSE
@@ -2182,11 +2188,15 @@ BEGIN
 		SELECT rowid INTO l_cube_rowid FROM t_restriction_target_type_spec
 		WHERE fk_typ_name = :OLD.fk_typ_name
 		  AND fk_ref_sequence = :OLD.fk_ref_sequence
-		  AND fk_ref_typ_name = :OLD.fk_ref_typ_name;
+		  AND fk_ref_typ_name = :OLD.fk_ref_typ_name
+		  AND xf_tsp_typ_name = :OLD.xf_tsp_typ_name
+		  AND xf_tsp_tsg_code = :OLD.xf_tsp_tsg_code
+		  AND xk_tsp_code = :OLD.xk_tsp_code;
 		r_rts_old.fk_bot_name := :OLD.fk_bot_name;
 		r_rts_old.fk_typ_name := :OLD.fk_typ_name;
 		r_rts_old.fk_ref_sequence := :OLD.fk_ref_sequence;
 		r_rts_old.fk_ref_typ_name := :OLD.fk_ref_typ_name;
+		r_rts_old.include_or_exclude := :OLD.include_or_exclude;
 		r_rts_old.xf_tsp_typ_name := :OLD.xf_tsp_typ_name;
 		r_rts_old.xf_tsp_tsg_code := :OLD.xf_tsp_tsg_code;
 		r_rts_old.xk_tsp_code := :OLD.xk_tsp_code;

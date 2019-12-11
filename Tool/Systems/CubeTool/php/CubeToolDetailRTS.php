@@ -27,20 +27,22 @@ g_xmlhttp.onreadystatechange = function() {
 					case "SELECT_RTS":
 						var l_json_values = l_json_array[i].Rows[0].Data;
 						document.getElementById("InputFkBotName").value=l_json_values.FkBotName;
-						document.getElementById("InputXfTspTypName").value=l_json_values.XfTspTypName;
-						document.getElementById("InputXfTspTsgCode").value=l_json_values.XfTspTsgCode;
-						document.getElementById("InputXkTspCode").value=l_json_values.XkTspCode;
+						document.getElementById("InputIncludeOrExclude").value=l_json_values.IncludeOrExclude;
 						break;
 					case "CREATE_RTS":
 						document.getElementById("InputFkBotName").readOnly=true;
 						document.getElementById("InputFkTypName").readOnly=true;
 						document.getElementById("InputFkRefSequence").readOnly=true;
 						document.getElementById("InputFkRefTypName").readOnly=true;
+						document.getElementById("InputXfTspTypName").readOnly=true;
+						document.getElementById("InputXfTspTsgCode").readOnly=true;
+						document.getElementById("InputXkTspCode").readOnly=true;
+						document.getElementById("RefSelect001").disabled=true;
 						document.getElementById("ButtonCreate").disabled=true;
 						document.getElementById("ButtonUpdate").disabled=false;
 						document.getElementById("ButtonDelete").disabled=false;
 						var l_objNode = parent.document.getElementById(g_parent_node_id);
-						var l_json_node_id = {FkTypName:document.getElementById("InputFkTypName").value,FkRefSequence:document.getElementById("InputFkRefSequence").value,FkRefTypName:document.getElementById("InputFkRefTypName").value};
+						var l_json_node_id = {FkTypName:document.getElementById("InputFkTypName").value,FkRefSequence:document.getElementById("InputFkRefSequence").value,FkRefTypName:document.getElementById("InputFkRefTypName").value,XfTspTypName:document.getElementById("InputXfTspTypName").value,XfTspTsgCode:document.getElementById("InputXfTspTsgCode").value,XkTspCode:document.getElementById("InputXkTspCode").value};
 						g_node_id = '{"TYP_RTS":'+JSON.stringify(l_json_node_id)+'}';
 						if (l_objNode != null) {
 							if (l_objNode.firstChild._state == 'O') {
@@ -51,7 +53,7 @@ g_xmlhttp.onreadystatechange = function() {
 									'TYP_RTS',
 									l_json_node_id,
 									'icons/restrtgt.bmp', 
-									document.getElementById("InputXfTspTypName").value.toLowerCase()+' '+document.getElementById("InputXfTspTsgCode").value.toLowerCase()+' '+document.getElementById("InputXkTspCode").value.toLowerCase(),
+									document.getElementById("InputIncludeOrExclude").value.toLowerCase()+' '+document.getElementById("InputXfTspTypName").value.toLowerCase()+' '+document.getElementById("InputXfTspTsgCode").value.toLowerCase()+' '+document.getElementById("InputXkTspCode").value.toLowerCase(),
 									'N',
 									l_position,
 									l_objNodePos);
@@ -61,7 +63,7 @@ g_xmlhttp.onreadystatechange = function() {
 					case "UPDATE_RTS":
 						var l_objNode = parent.document.getElementById(g_node_id);
 						if (l_objNode != null) {
-							l_objNode.children[1].lastChild.nodeValue = ' '+document.getElementById("InputXfTspTypName").value.toLowerCase()+' '+document.getElementById("InputXfTspTsgCode").value.toLowerCase()+' '+document.getElementById("InputXkTspCode").value.toLowerCase();
+							l_objNode.children[1].lastChild.nodeValue = ' '+document.getElementById("InputIncludeOrExclude").value.toLowerCase()+' '+document.getElementById("InputXfTspTypName").value.toLowerCase()+' '+document.getElementById("InputXfTspTsgCode").value.toLowerCase()+' '+document.getElementById("InputXkTspCode").value.toLowerCase();
 					}
 						break;
 					case "DELETE_RTS":
@@ -77,7 +79,7 @@ g_xmlhttp.onreadystatechange = function() {
 						}
 						break;
 					case "LIST_TSP":
-						OpenListBox(l_json_array[i].Rows,'typespec','TypeSpecialisation','Y');
+						OpenListBox(l_json_array[i].Rows,'typespec','TypeSpecialisation','N');
 						break;
 					case "SELECT_FKEY_REF":
 						var l_json_values = l_json_array[i].Rows[0].Data;
@@ -115,6 +117,9 @@ function InitBody() {
 		document.getElementById("InputFkTypName").value=l_json_objectKey.TYP_RTS.FkTypName;
 		document.getElementById("InputFkRefSequence").value=l_json_objectKey.TYP_RTS.FkRefSequence;
 		document.getElementById("InputFkRefTypName").value=l_json_objectKey.TYP_RTS.FkRefTypName;
+		document.getElementById("InputXfTspTypName").value=l_json_objectKey.TYP_RTS.XfTspTypName;
+		document.getElementById("InputXfTspTsgCode").value=l_json_objectKey.TYP_RTS.XfTspTsgCode;
+		document.getElementById("InputXkTspCode").value=l_json_objectKey.TYP_RTS.XkTspCode;
 		document.getElementById("ButtonCreate").disabled=true;
 		performTrans( {
 			Service: "GetRts",
@@ -126,6 +131,10 @@ function InitBody() {
 		document.getElementById("InputFkTypName").readOnly=true;
 		document.getElementById("InputFkRefSequence").readOnly=true;
 		document.getElementById("InputFkRefTypName").readOnly=true;
+		document.getElementById("InputXfTspTypName").readOnly=true;
+		document.getElementById("InputXfTspTsgCode").readOnly=true;
+		document.getElementById("InputXkTspCode").readOnly=true;
+		document.getElementById("RefSelect001").disabled=true;
 		break;
 	case "N":
 		g_parent_node_id = JSON.stringify(l_json_argument.objectId);
@@ -148,6 +157,7 @@ function InitBody() {
 	default:
 		alert ('Error InitBody: '+l_argument[1]);
 	}
+	document.getElementById("InputIncludeOrExclude").value='IN';
 }
 
 function CreateRts() {
@@ -156,6 +166,7 @@ function CreateRts() {
 		FkTypName: document.getElementById("InputFkTypName").value,
 		FkRefSequence: document.getElementById("InputFkRefSequence").value,
 		FkRefTypName: document.getElementById("InputFkRefTypName").value,
+		IncludeOrExclude: document.getElementById("InputIncludeOrExclude").value,
 		XfTspTypName: document.getElementById("InputXfTspTypName").value,
 		XfTspTsgCode: document.getElementById("InputXfTspTsgCode").value,
 		XkTspCode: document.getElementById("InputXkTspCode").value
@@ -174,6 +185,7 @@ function UpdateRts() {
 		FkTypName: document.getElementById("InputFkTypName").value,
 		FkRefSequence: document.getElementById("InputFkRefSequence").value,
 		FkRefTypName: document.getElementById("InputFkRefTypName").value,
+		IncludeOrExclude: document.getElementById("InputIncludeOrExclude").value,
 		XfTspTypName: document.getElementById("InputXfTspTypName").value,
 		XfTspTsgCode: document.getElementById("InputXfTspTsgCode").value,
 		XkTspCode: document.getElementById("InputXkTspCode").value
@@ -190,7 +202,10 @@ function DeleteRts() {
 	var Type = {
 		FkTypName: document.getElementById("InputFkTypName").value,
 		FkRefSequence: document.getElementById("InputFkRefSequence").value,
-		FkRefTypName: document.getElementById("InputFkRefTypName").value
+		FkRefTypName: document.getElementById("InputFkRefTypName").value,
+		XfTspTypName: document.getElementById("InputXfTspTypName").value,
+		XfTspTsgCode: document.getElementById("InputXfTspTsgCode").value,
+		XkTspCode: document.getElementById("InputXkTspCode").value
 	};
 	performTrans( {
 		Service: "DeleteRts",
@@ -374,14 +389,20 @@ function drop(p_event) {
 <input id="InputFkRefSequence" type="text" maxlength="2" style="width:100%;"></input></div></td></tr>
 <tr><td><u>Reference.Name</u></td><td><div style="max-width:30em;">
 <input id="InputFkRefTypName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td height=6></td></tr><tr><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/typespec.bmp"/> TypeSpecialisation (IsVaildFor)</legend>
+<tr><td>IncludeOrExclude</td><td><div>
+<select id="InputIncludeOrExclude" type="text">
+	<option value=" " selected> </option>
+	<option value="IN">Include</option>
+	<option value="EX">Exclude</option>
+</select></div></td></tr>
+<tr><td height=6></td></tr><tr><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/typespec.bmp"/> TypeSpecialisation (IsValidFor)</legend>
 <table style="width:100%;">
-<tr><td>Type.Name</td><td style="width:100%;"><div style="max-width:30em;">
+<tr><td><u>Type.Name</u></td><td style="width:100%;"><div style="max-width:30em;">
 <input id="InputXfTspTypName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" readonly></input></div></td>
 <td><button id="RefSelect001" type="button" onclick="StartSelect001(event)">Select</button></td></tr>
-<tr><td>TypeSpecialisationGroup.Code</td><td style="width:100%;"><div style="max-width:16em;">
+<tr><td><u>TypeSpecialisationGroup.Code</u></td><td style="width:100%;"><div style="max-width:16em;">
 <input id="InputXfTspTsgCode" type="text" maxlength="16" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" readonly></input></div></td></tr>
-<tr><td>TypeSpecialisation.Code</td><td style="width:100%;"><div style="max-width:16em;">
+<tr><td><u>TypeSpecialisation.Code</u></td><td style="width:100%;"><div style="max-width:16em;">
 <input id="InputXkTspCode" type="text" maxlength="16" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" readonly></input></div></td></tr>
 </table></fieldset></td></tr>
 <tr><td><br></td><td style="width:100%;"></td></tr>

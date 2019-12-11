@@ -249,7 +249,7 @@ DECLARE
 			  AND fk_ref_typ_name = p_ref.xk_typ_name
 			ORDER BY cube_id )
 		LOOP
-			DBMS_OUTPUT.PUT_LINE (ftabs || '+RESTRICTION_TARGET_TYPE_SPEC[' || r_rts.cube_id || ']:' || ';');
+			DBMS_OUTPUT.PUT_LINE (ftabs || '+RESTRICTION_TARGET_TYPE_SPEC[' || r_rts.cube_id || ']:' || fenperc(r_rts.include_or_exclude) || ';');
 				l_level := l_level + 1;
 				BEGIN
 					SELECT cube_id INTO l_cube_id FROM t_type_specialisation
@@ -263,7 +263,7 @@ DECLARE
 						NULL; 
 				END;
 				l_level := l_level - 1;
-			DBMS_OUTPUT.PUT_LINE (ftabs || '-RESTRICTION_TARGET_TYPE_SPEC:' || ';');
+			DBMS_OUTPUT.PUT_LINE (ftabs || '-RESTRICTION_TARGET_TYPE_SPEC:' || r_rts.include_or_exclude || ';');
 		END LOOP;
 	END;
 
@@ -738,7 +738,8 @@ BEGIN
 	DBMS_OUTPUT.PUT_LINE ('					=ASSOCIATION:TYPE_SPECIALISATION|IsValidFor|TYPE_SPECIALISATION|;');
 	DBMS_OUTPUT.PUT_LINE ('				-META_TYPE:RESTRICTION_TYPE_SPEC_REF;');
 	DBMS_OUTPUT.PUT_LINE ('				+META_TYPE:RESTRICTION_TARGET_TYPE_SPEC|;');
-	DBMS_OUTPUT.PUT_LINE ('					=ASSOCIATION:TYPE_SPECIALISATION|IsVaildFor|TYPE_SPECIALISATION|;');
+	DBMS_OUTPUT.PUT_LINE ('					=PROPERTY:0|IncludeOrExclude| Values: IN(Include), EX(Exclude);');
+	DBMS_OUTPUT.PUT_LINE ('					=ASSOCIATION:TYPE_SPECIALISATION|IsValidFor|TYPE_SPECIALISATION|;');
 	DBMS_OUTPUT.PUT_LINE ('				-META_TYPE:RESTRICTION_TARGET_TYPE_SPEC;');
 	DBMS_OUTPUT.PUT_LINE ('			-META_TYPE:REFERENCE;');
 	DBMS_OUTPUT.PUT_LINE ('			+META_TYPE:RESTRICTION_TYPE_SPEC_TYP|;');

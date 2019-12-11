@@ -23,6 +23,11 @@
 -	BUG: Restriction JSON attribute LOCATION wordt niet meteen zichtbaar in treeview!!
 
 -	BO als generiek onderdeel dat onder ieder type kan worden gehangen. met technisch ID (description).
+		relationship heeft ook restriction bij de target. 
+			reference naar een type of een type specialisatie.
+				Iets van verwijzing met doorverwijzing. bijvoorbeeld: 
+					Van een geselecteerd product alleen de onderdelen te selecteren.
+					Van een geselecteerd type alleen de betreffende type_specialisaties selecteren.													
 
 -	Herbruikbare struktuur op hetzelfde level (spec type restriction) 
 		type - atb - restriction'.
@@ -31,6 +36,14 @@
 		type - herbruikbare struct - restriction.
 		type - atb - verwijzing naar hetbruikbare structuur.
 		
+-	Description 
+		bestaat al voor system
+		herbruikbaar object met kardinaliteit 1 en een text veld, verder niets nodig.
+		Implementatie: descriptions uit model laden in sytem description tabel 
+		Bij vraagteken description ophalen met een ID ipv de namen.
 		
-	
+-	RESTRICTION_SPEC_TYPE_TARGET implementatie  (ORDER is beteld door KLANT alleen voor externe klant).
+	-	Van de bijbehorende REFERENCE van de target de SPECIALISATION_TYPEs kunnen selecteren.
+		-	Bij een REFERENCE WithinScopeSourceOrTarget impelementeren. 
+			In case of "within scope of" type that it concerns the source or the target of the reference. 
 		

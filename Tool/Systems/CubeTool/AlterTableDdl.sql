@@ -1263,6 +1263,7 @@ BEGIN
 			fk_typ_name VARCHAR2(30),
 			fk_ref_sequence NUMBER(1) DEFAULT ''0'',
 			fk_ref_typ_name VARCHAR2(30),
+			include_or_exclude CHAR(2) DEFAULT ''IN'',
 			xf_tsp_typ_name VARCHAR2(30),
 			xf_tsp_tsg_code VARCHAR2(16),
 			xk_tsp_code VARCHAR2(16))';
@@ -1297,6 +1298,12 @@ BEGIN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_restriction_target_type_spec ADD fk_ref_typ_name VARCHAR2(30)';
 			DBMS_OUTPUT.PUT_LINE('Column T_RESTRICTION_TARGET_TYPE_SPEC.FK_REF_TYP_NAME created');
+		END IF;
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_RESTRICTION_TARGET_TYPE_SPEC' AND column_name = 'INCLUDE_OR_EXCLUDE';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_restriction_target_type_spec ADD include_or_exclude CHAR(2) DEFAULT ''IN''';
+			DBMS_OUTPUT.PUT_LINE('Column T_RESTRICTION_TARGET_TYPE_SPEC.INCLUDE_OR_EXCLUDE created');
 		END IF;
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_RESTRICTION_TARGET_TYPE_SPEC' AND column_name = 'XF_TSP_TYP_NAME';
 		IF l_count = 0 THEN
@@ -2934,6 +2941,7 @@ BEGIN
 			'FK_TYP_NAME','VARCHAR2(30)',
 			'FK_REF_SEQUENCE','NUMBER(1)',
 			'FK_REF_TYP_NAME','VARCHAR2(30)',
+			'INCLUDE_OR_EXCLUDE','CHAR(2)',
 			'XF_TSP_TYP_NAME','VARCHAR2(30)',
 			'XF_TSP_TSG_CODE','VARCHAR2(16)',
 			'XK_TSP_CODE','VARCHAR2(16)',NULL) new_domain,
@@ -2943,6 +2951,7 @@ BEGIN
 			'FK_TYP_NAME',NULL,
 			'FK_REF_SEQUENCE','''0''',
 			'FK_REF_TYP_NAME',NULL,
+			'INCLUDE_OR_EXCLUDE','''IN''',
 			'XF_TSP_TYP_NAME',NULL,
 			'XF_TSP_TSG_CODE',NULL,
 			'XK_TSP_CODE',NULL,NULL) new_default_value
@@ -2975,7 +2984,10 @@ BEGIN
 		PRIMARY KEY (
 			fk_typ_name,
 			fk_ref_sequence,
-			fk_ref_typ_name )';
+			fk_ref_typ_name,
+			xf_tsp_typ_name,
+			xf_tsp_tsg_code,
+			xk_tsp_code )';
 	DBMS_OUTPUT.PUT_LINE('Primary Key T_RESTRICTION_TARGET_TYPE_SPEC.RTS_PK created');
 	EXECUTE IMMEDIATE
 	'ALTER TABLE t_restriction_target_type_spec ADD CONSTRAINT rts_ref_fk
@@ -2988,6 +3000,7 @@ BEGIN
 							'FK_TYP_NAME',
 							'FK_REF_SEQUENCE',
 							'FK_REF_TYP_NAME',
+							'INCLUDE_OR_EXCLUDE',
 							'XF_TSP_TYP_NAME',
 							'XF_TSP_TSG_CODE',
 							'XK_TSP_CODE'))
