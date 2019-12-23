@@ -1,11 +1,5 @@
 
 <!--
-function performTrans(p_json_parm) {
-	var l_requestText = JSON.stringify(p_json_parm);
-	g_xmlhttp.open('POST','CubeTestServer.php',true);
-	g_xmlhttp.send(l_requestText);
-}
-
 function OpenListBox(p_json_rows,p_icon,p_header,p_optional) {
 	CloseListBox();
 	if (p_json_rows.length > 1) {
@@ -118,4 +112,5 @@ function drop(p_event) {
 		l_obj.style.top = l_y + 'px';
 	}
 }
+
 -->

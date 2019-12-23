@@ -5,6 +5,7 @@ $_SESSION['views']=0;
 <head>
 <link rel="stylesheet" href="base_css.php" />
 <script language="javascript" type="text/javascript" src="..\CubeGeneral\CubeInclude.js"></script>
+<script language="javascript" type="text/javascript" src="..\CubeGeneral\CubeDetailInclude.js"></script>
 <script language="javascript" type="text/javascript" src="CubeTestInclude.js"></script>
 <script language="javascript" type="text/javascript" src="CubeTestDetailInclude.js"></script>
 <script language="javascript" type="text/javascript">
