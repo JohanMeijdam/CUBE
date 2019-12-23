@@ -712,11 +712,6 @@ function OpenMenu(p_obj) {
 		if (l_childCount > 1) {
 			AddMenuItem(g_objMenuList, 'move', 'icons/cube_move.bmp','CubeMove','','CUBE_M_TYP',0,'N',0);
 		}
-		var l_json_parent_node_id = JSON.parse(p_obj.parentNode.parentNode.parentNode.id);
-		var l_parent_type_id = Object.keys(l_json_parent_node_id)[0];
-		if (l_childCount > 1 || l_type_id == l_parent_type_id) {
-			AddMenuItem(g_objMenuList, 'change parent', 'icons/cube_change_par.bmp','CubeChangePar','','CUBE_P_TYP',0,'Y',0);
-		}
 		AddMenuItem(g_objMenuList, 'add attribute', 'icons/attrib.bmp','CubeAdd','N','TYP_ATB',0,'N',2);
 		AddMenuItem(g_objMenuList, 'add reference', 'icons/ref.bmp','CubeAdd','N','TYP_REF',0,'N',3);
 		AddMenuItem(g_objMenuList, 'add restriction_type_spec_typ', 'icons/restrict.bmp','DetailRTT','N','TYP_RTT',0,'N',4);

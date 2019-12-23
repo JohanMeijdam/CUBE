@@ -238,6 +238,36 @@ DECLARE
 	END;
 
 
+	PROCEDURE report_rts (p_ref IN t_reference%ROWTYPE) IS
+	BEGIN
+		FOR r_rts IN (
+			SELECT *				
+			FROM t_restriction_target_type_spec
+			WHERE fk_bot_name = p_ref.fk_bot_name
+			  AND fk_typ_name = p_ref.fk_typ_name
+			  AND fk_ref_sequence = p_ref.sequence
+			  AND fk_ref_typ_name = p_ref.xk_typ_name
+			ORDER BY cube_id )
+		LOOP
+			DBMS_OUTPUT.PUT_LINE (ftabs || '+RESTRICTION_TARGET_TYPE_SPEC[' || r_rts.cube_id || ']:' || fenperc(r_rts.include_or_exclude) || ';');
+				l_level := l_level + 1;
+				BEGIN
+					SELECT cube_id INTO l_cube_id FROM t_type_specialisation
+					WHERE fk_typ_name = r_rts.xf_tsp_typ_name
+					  AND fk_tsg_code = r_rts.xf_tsp_tsg_code
+					  AND code = r_rts.xk_tsp_code;
+
+					DBMS_OUTPUT.PUT_LINE (ftabs || '>TYPE_SPECIALISATION:' || l_cube_id || ';');
+				EXCEPTION
+					WHEN NO_DATA_FOUND THEN
+						NULL; 
+				END;
+				l_level := l_level - 1;
+			DBMS_OUTPUT.PUT_LINE (ftabs || '-RESTRICTION_TARGET_TYPE_SPEC:' || r_rts.include_or_exclude || ';');
+		END LOOP;
+	END;
+
+
 	PROCEDURE report_ref (p_typ IN t_type%ROWTYPE) IS
 	BEGIN
 		FOR r_ref IN (
@@ -247,10 +277,11 @@ DECLARE
 			  AND fk_typ_name = p_typ.name
 			ORDER BY cube_sequence )
 		LOOP
-			DBMS_OUTPUT.PUT_LINE (ftabs || '+REFERENCE[' || r_ref.cube_id || ']:' || fenperc(r_ref.name) || '|' || fenperc(r_ref.primary_key) || '|' || fenperc(r_ref.code_display_key) || '|' || fenperc(r_ref.sequence) || '|' || fenperc(r_ref.scope) || '|' || fenperc(r_ref.unchangeable) || '|' || fenperc(r_ref.within_scope_level) || '|' || fenperc(r_ref.within_scope_source_or_target) || ';');
+			DBMS_OUTPUT.PUT_LINE (ftabs || '+REFERENCE[' || r_ref.cube_id || ']:' || fenperc(r_ref.name) || '|' || fenperc(r_ref.primary_key) || '|' || fenperc(r_ref.code_display_key) || '|' || fenperc(r_ref.sequence) || '|' || fenperc(r_ref.scope) || '|' || fenperc(r_ref.unchangeable) || '|' || fenperc(r_ref.within_scope_extension) || ';');
 				l_level := l_level + 1;
 				report_dcr (r_ref);
 				report_rtr (r_ref);
+				report_rts (r_ref);
 				BEGIN
 					SELECT cube_id INTO l_cube_id FROM t_type
 					WHERE name = r_ref.xk_typ_name;
@@ -664,8 +695,7 @@ BEGIN
 	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:3|Sequence|;');
 	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:4|Scope|'||REPLACE('In%20case%20of%20a%20recursive%20target%2C%20the%20definition%20of%20the%20collection%20of%20the%20types%20to%20select.','%20',' ')||' Values: ALL(All), ENC(Encapsulated), PRA(Parents all), PR1(Parents first level), CHA(Children all), CH1(Children first level);');
 	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:5|Unchangeable|'||REPLACE('Indication%20that%20after%20the%20creation%20of%20the%20type%20the%20reference%20can%20not%20be%20changed.%20So%20in%20case%20of%20a%20recursive%20reference%20the%20indication%20too%20that%20the%20relation%20is%20used%20to%20select%20the%20parents%20or%20children%20in%20the%20hierarchy.','%20',' ')||' Values: Y(Yes), N(No);');
-	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:6|WithinScopeLevel|'||REPLACE('In%20case%20of%20recursive%20%22within%20scope%20of%22%20type%20the%20relative%20level%20in%20the%20hierarchy%2C%20Positive%20numbers%20are%20the%20parent%20levels%2C%20Negative%20numbers%20are%20the%20child%20levels.','%20',' ')||';');
-	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:7|WithinScopeSourceOrTarget| Values: SRC(Source), TGT(Target);');
+	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:6|WithinScopeExtension| Values: PAR(Recursive parent), REF(Referenced type);');
 	DBMS_OUTPUT.PUT_LINE ('				=ASSOCIATION:REFERENCE_TYPE|Refer|TYPE|'||REPLACE('The%20target%20entity%20type%20of%20the%20reference.','%20',' ')||';');
 	DBMS_OUTPUT.PUT_LINE ('				=ASSOCIATION:REFERENCE_TYPE_WITHIN_SCOPE_OF|WithinScopeOf|TYPE|'||REPLACE('In%20case%20of%20non%20recursive%20target%20or%20a%20scope%20all%20recursive%20target%20the%20common%20type%20for%20the%20selection.','%20',' ')||';');
 	DBMS_OUTPUT.PUT_LINE ('				+META_TYPE:DESCRIPTION_REFERENCE|;');
@@ -675,6 +705,10 @@ BEGIN
 	DBMS_OUTPUT.PUT_LINE ('					=PROPERTY:0|IncludeOrExclude|'||REPLACE('Indication%20that%20the%20reference%20is%20valid%20(included)%20or%20invalid%20(excluded)%20for%20the%20concerning%20type%20specialisation.','%20',' ')||' Values: IN(Include), EX(Exclude);');
 	DBMS_OUTPUT.PUT_LINE ('					=ASSOCIATION:TYPE_SPECIALISATION|IsValidFor|TYPE_SPECIALISATION|;');
 	DBMS_OUTPUT.PUT_LINE ('				-META_TYPE:RESTRICTION_TYPE_SPEC_REF;');
+	DBMS_OUTPUT.PUT_LINE ('				+META_TYPE:RESTRICTION_TARGET_TYPE_SPEC|;');
+	DBMS_OUTPUT.PUT_LINE ('					=PROPERTY:0|IncludeOrExclude| Values: IN(Include), EX(Exclude);');
+	DBMS_OUTPUT.PUT_LINE ('					=ASSOCIATION:TYPE_SPECIALISATION|IsValidFor|TYPE_SPECIALISATION|;');
+	DBMS_OUTPUT.PUT_LINE ('				-META_TYPE:RESTRICTION_TARGET_TYPE_SPEC;');
 	DBMS_OUTPUT.PUT_LINE ('			-META_TYPE:REFERENCE;');
 	DBMS_OUTPUT.PUT_LINE ('			+META_TYPE:RESTRICTION_TYPE_SPEC_TYP|;');
 	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:0|IncludeOrExclude|'||REPLACE('Indication%20that%20the%20child%20type%20is%20valid%20(included)%20or%20invalid%20(excluded)%20for%20the%20concerning%20type%20specialisation.','%20',' ')||' Values: IN(Include), EX(Exclude);');

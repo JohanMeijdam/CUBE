@@ -730,10 +730,17 @@ case 'DeleteBot':
 
 	break;
 
-case 'GetTypListAll':
+case 'GetTypForTypListAll':
 	echo '[';
 
-	$stid = oci_parse($conn, "BEGIN pkg_bot.get_typ_list_all (:p_cube_row); END;");
+	$stid = oci_parse($conn, "BEGIN pkg_bot.get_typ_for_typ_list_all (
+		:p_cube_row,
+		:p_cube_scope_level,
+		:x_fk_typ_name);
+	END;");
+	oci_bind_by_name($stid,":p_cube_scope_level",$RequestObj->Parameters->Option->CubeScopeLevel);
+	oci_bind_by_name($stid,":x_fk_typ_name",$RequestObj->Parameters->Ref->FkTypName);
+
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'LIST_TYP';
 	$r = perform_db_request();
@@ -755,16 +762,48 @@ case 'GetTypListAll':
 
 	break;
 
-case 'GetTypForTypListAll':
+case 'GetTypListEncapsulated':
 	echo '[';
 
-	$stid = oci_parse($conn, "BEGIN pkg_bot.get_typ_for_typ_list_all (
+	$stid = oci_parse($conn, "BEGIN pkg_bot.get_typ_list_encapsulated (
 		:p_cube_row,
-		:p_cube_scope_level,
-		:x_fk_typ_name);
+		:p_fk_bot_name);
 	END;");
-	oci_bind_by_name($stid,":p_cube_scope_level",$RequestObj->Parameters->Option->CubeScopeLevel);
-	oci_bind_by_name($stid,":x_fk_typ_name",$RequestObj->Parameters->Ref->FkTypName);
+	oci_bind_by_name($stid,":p_fk_bot_name",$RequestObj->Parameters->Type->FkBotName);
+
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'LIST_TYP';
+	$r = perform_db_request();
+	if (!$r) { 
+		echo ']';
+		return;
+	}
+	$ResponseObj->Rows = array();
+	while ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Key = new \stdClass();
+		$RowObj->Key->Name = $row["NAME"];
+		$RowObj->Display = $row["NAME"].' ('.$row["CODE"].')';
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
+	break;
+
+case 'GetTypListRecursive':
+	echo '[';
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.get_typ_list_recursive (
+		:p_cube_row,
+		:p_cube_up_or_down,
+		:p_cube_x_level,
+		:p_name);
+	END;");
+	oci_bind_by_name($stid,":p_cube_up_or_down",$RequestObj->Parameters->Option->CubeUpOrDown);
+	oci_bind_by_name($stid,":p_cube_x_level",$RequestObj->Parameters->Option->CubeXLevel);
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'LIST_TYP';
@@ -2042,8 +2081,7 @@ case 'GetRef':
 		$RowObj->Data->CodeDisplayKey = $row["CODE_DISPLAY_KEY"];
 		$RowObj->Data->Scope = $row["SCOPE"];
 		$RowObj->Data->Unchangeable = $row["UNCHANGEABLE"];
-		$RowObj->Data->WithinScopeLevel = $row["WITHIN_SCOPE_LEVEL"];
-		$RowObj->Data->WithinScopeSourceOrTarget = $row["WITHIN_SCOPE_SOURCE_OR_TARGET"];
+		$RowObj->Data->WithinScopeExtension = $row["WITHIN_SCOPE_EXTENSION"];
 		$RowObj->Data->XkTypName1 = $row["XK_TYP_NAME_1"];
 		$ResponseObj->Rows[] = $RowObj;
 	}
@@ -2298,8 +2336,7 @@ case 'CreateRef':
 		:p_sequence,
 		:p_scope,
 		:p_unchangeable,
-		:p_within_scope_level,
-		:p_within_scope_source_or_target,
+		:p_within_scope_extension,
 		:p_xk_typ_name,
 		:p_xk_typ_name_1,
 		:x_fk_typ_name,
@@ -2315,8 +2352,7 @@ case 'CreateRef':
 	oci_bind_by_name($stid,":p_sequence",$RequestObj->Parameters->Type->Sequence);
 	oci_bind_by_name($stid,":p_scope",$RequestObj->Parameters->Type->Scope);
 	oci_bind_by_name($stid,":p_unchangeable",$RequestObj->Parameters->Type->Unchangeable);
-	oci_bind_by_name($stid,":p_within_scope_level",$RequestObj->Parameters->Type->WithinScopeLevel);
-	oci_bind_by_name($stid,":p_within_scope_source_or_target",$RequestObj->Parameters->Type->WithinScopeSourceOrTarget);
+	oci_bind_by_name($stid,":p_within_scope_extension",$RequestObj->Parameters->Type->WithinScopeExtension);
 	oci_bind_by_name($stid,":p_xk_typ_name",$RequestObj->Parameters->Type->XkTypName);
 	oci_bind_by_name($stid,":p_xk_typ_name_1",$RequestObj->Parameters->Type->XkTypName1);
 	oci_bind_by_name($stid,":x_fk_typ_name",$RequestObj->Parameters->Ref->FkTypName);
@@ -2349,8 +2385,7 @@ case 'UpdateRef':
 		:p_sequence,
 		:p_scope,
 		:p_unchangeable,
-		:p_within_scope_level,
-		:p_within_scope_source_or_target,
+		:p_within_scope_extension,
 		:p_xk_typ_name,
 		:p_xk_typ_name_1);
 	END;");
@@ -2362,8 +2397,7 @@ case 'UpdateRef':
 	oci_bind_by_name($stid,":p_sequence",$RequestObj->Parameters->Type->Sequence);
 	oci_bind_by_name($stid,":p_scope",$RequestObj->Parameters->Type->Scope);
 	oci_bind_by_name($stid,":p_unchangeable",$RequestObj->Parameters->Type->Unchangeable);
-	oci_bind_by_name($stid,":p_within_scope_level",$RequestObj->Parameters->Type->WithinScopeLevel);
-	oci_bind_by_name($stid,":p_within_scope_source_or_target",$RequestObj->Parameters->Type->WithinScopeSourceOrTarget);
+	oci_bind_by_name($stid,":p_within_scope_extension",$RequestObj->Parameters->Type->WithinScopeExtension);
 	oci_bind_by_name($stid,":p_xk_typ_name",$RequestObj->Parameters->Type->XkTypName);
 	oci_bind_by_name($stid,":p_xk_typ_name_1",$RequestObj->Parameters->Type->XkTypName1);
 

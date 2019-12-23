@@ -321,16 +321,16 @@ function StartSelect001(p_event) {
 	document.body._SelectTop = p_event.clientY;
 	document.body._ListBoxCode = 'Ref001';
 	var Parameters = {
-		Option: {
-			CubeScopeLevel:0
-		},
 		Ref: {
+			FkTypName:document.getElementById("InputFkTypName").value,
+			FkRefTypName:document.getElementById("InputFkRefTypName").value,
+			FkRefSequence:document.getElementById("InputFkRefSequence").value,
 			FkTypName:document.getElementById("InputFkTypName").value,
 			FkRefTypName:document.getElementById("InputFkRefTypName").value
 		}
 	};
 	performTrans( {
-		Service: "GetTspForTypList",
+		Service: "GetTspForRefList",
 		Parameters
 	} );
 }

@@ -417,8 +417,7 @@ CREATE OR REPLACE VIEW v_reference AS
 		sequence,
 		scope,
 		unchangeable,
-		within_scope_level,
-		within_scope_source_or_target,
+		within_scope_extension,
 		xk_typ_name,
 		xk_typ_name_1
 	FROM t_reference
@@ -687,7 +686,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 		UPDATE t_type SET 
 			cube_sequence = p_typ_new.cube_sequence,
 			cube_level = p_typ_new.cube_level,
-			fk_typ_name = p_typ_new.fk_typ_name,
 			code = p_typ_new.code,
 			flag_partial_key = p_typ_new.flag_partial_key,
 			flag_recursive = p_typ_new.flag_recursive,
@@ -949,8 +947,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			sequence,
 			scope,
 			unchangeable,
-			within_scope_level,
-			within_scope_source_or_target,
+			within_scope_extension,
 			xk_typ_name,
 			xk_typ_name_1)
 		VALUES (
@@ -964,8 +961,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			p_ref.sequence,
 			p_ref.scope,
 			p_ref.unchangeable,
-			p_ref.within_scope_level,
-			p_ref.within_scope_source_or_target,
+			p_ref.within_scope_extension,
 			p_ref.xk_typ_name,
 			p_ref.xk_typ_name_1);
 	END;
@@ -979,8 +975,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			code_display_key = p_ref_new.code_display_key,
 			scope = p_ref_new.scope,
 			unchangeable = p_ref_new.unchangeable,
-			within_scope_level = p_ref_new.within_scope_level,
-			within_scope_source_or_target = p_ref_new.within_scope_source_or_target,
+			within_scope_extension = p_ref_new.within_scope_extension,
 			xk_typ_name_1 = p_ref_new.xk_typ_name_1
 		WHERE rowid = p_cube_rowid;
 	END;
@@ -1953,11 +1948,10 @@ BEGIN
 			r_ref_new.scope := REPLACE(:NEW.scope,' ','_');
 		END IF;
 		r_ref_new.unchangeable := :NEW.unchangeable;
-		r_ref_new.within_scope_level := :NEW.within_scope_level;
-		IF :NEW.within_scope_source_or_target = ' ' THEN
-			r_ref_new.within_scope_source_or_target := ' ';
+		IF :NEW.within_scope_extension = ' ' THEN
+			r_ref_new.within_scope_extension := ' ';
 		ELSE
-			r_ref_new.within_scope_source_or_target := REPLACE(:NEW.within_scope_source_or_target,' ','_');
+			r_ref_new.within_scope_extension := REPLACE(:NEW.within_scope_extension,' ','_');
 		END IF;
 		IF :NEW.xk_typ_name = ' ' THEN
 			r_ref_new.xk_typ_name := ' ';
@@ -1987,8 +1981,7 @@ BEGIN
 		r_ref_old.sequence := :OLD.sequence;
 		r_ref_old.scope := :OLD.scope;
 		r_ref_old.unchangeable := :OLD.unchangeable;
-		r_ref_old.within_scope_level := :OLD.within_scope_level;
-		r_ref_old.within_scope_source_or_target := :OLD.within_scope_source_or_target;
+		r_ref_old.within_scope_extension := :OLD.within_scope_extension;
 		r_ref_old.xk_typ_name := :OLD.xk_typ_name;
 		r_ref_old.xk_typ_name_1 := :OLD.xk_typ_name_1;
 	END IF;

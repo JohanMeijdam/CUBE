@@ -32,8 +32,7 @@ g_xmlhttp.onreadystatechange = function() {
 						document.getElementById("InputCodeDisplayKey").value=l_json_values.CodeDisplayKey;
 						document.getElementById("InputScope").value=l_json_values.Scope;
 						document.getElementById("InputUnchangeable").value=l_json_values.Unchangeable;
-						document.getElementById("InputWithinScopeLevel").value=l_json_values.WithinScopeLevel;
-						document.getElementById("InputWithinScopeSourceOrTarget").value=l_json_values.WithinScopeSourceOrTarget;
+						document.getElementById("InputWithinScopeExtension").value=l_json_values.WithinScopeExtension;
 						document.getElementById("InputXkTypName1").value=l_json_values.XkTypName1;
 						break;
 					case "CREATE_REF":
@@ -159,8 +158,6 @@ function InitBody() {
 	document.getElementById("InputCodeDisplayKey").value='N';
 	document.getElementById("InputScope").value='ALL';
 	document.getElementById("InputUnchangeable").value='N';
-	document.getElementById("InputWithinScopeLevel").value='0';
-	document.getElementById("InputWithinScopeSourceOrTarget").value='SRC';
 }
 
 function CreateRef() {
@@ -173,8 +170,7 @@ function CreateRef() {
 		Sequence: document.getElementById("InputSequence").value,
 		Scope: document.getElementById("InputScope").value,
 		Unchangeable: document.getElementById("InputUnchangeable").value,
-		WithinScopeLevel: document.getElementById("InputWithinScopeLevel").value,
-		WithinScopeSourceOrTarget: document.getElementById("InputWithinScopeSourceOrTarget").value,
+		WithinScopeExtension: document.getElementById("InputWithinScopeExtension").value,
 		XkTypName: document.getElementById("InputXkTypName").value,
 		XkTypName1: document.getElementById("InputXkTypName1").value
 	};
@@ -213,8 +209,7 @@ function UpdateRef() {
 		Sequence: document.getElementById("InputSequence").value,
 		Scope: document.getElementById("InputScope").value,
 		Unchangeable: document.getElementById("InputUnchangeable").value,
-		WithinScopeLevel: document.getElementById("InputWithinScopeLevel").value,
-		WithinScopeSourceOrTarget: document.getElementById("InputWithinScopeSourceOrTarget").value,
+		WithinScopeExtension: document.getElementById("InputWithinScopeExtension").value,
 		XkTypName: document.getElementById("InputXkTypName").value,
 		XkTypName1: document.getElementById("InputXkTypName1").value
 	};
@@ -342,8 +337,14 @@ function StartSelect001(p_event) {
 	document.body._SelectLeft = p_event.clientX;
 	document.body._SelectTop = p_event.clientY;
 	document.body._ListBoxCode = 'Ref001';
+	var Parameters = {
+		Type: {
+			FkBotName:document.getElementById("InputFkBotName").value
+		}
+	};
 	performTrans( {
-		Service: "GetTypListAll"
+		Service: "GetTypListEncapsulated",
+		Parameters
 	} );
 }
 
@@ -351,8 +352,18 @@ function StartSelect002(p_event) {
 	document.body._SelectLeft = p_event.clientX;
 	document.body._SelectTop = p_event.clientY;
 	document.body._ListBoxCode = 'Ref002';
+	var Parameters = {
+		Option: {
+			CubeUpOrDown:"U",
+			CubeScopeLevel:9999
+		},
+		Type: {
+			FkTypName:document.getElementById("InputFkTypName").value
+		}
+	};
 	performTrans( {
-		Service: "GetTypListAll"
+		Service: "GetTypListRecursive",
+		Parameters
 	} );
 }
 
@@ -439,13 +450,11 @@ function drop(p_event) {
 	<option value="Y">Yes</option>
 	<option value="N">No</option>
 </select></div></td></tr>
-<tr><td style="cursor:help;" oncontextmenu="parent.OpenDescBox('REF','Reference.WithinScopeLevel','REFERENCE','WITHIN_SCOPE_LEVEL',-1)">WithinScopeLevel</td><td><div style="max-width:2em;">
-<input id="InputWithinScopeLevel" type="text" maxlength="2" style="width:100%;" onchange="ToUpperCase(this);"></input></div></td></tr>
-<tr><td>WithinScopeSourceOrTarget</td><td><div>
-<select id="InputWithinScopeSourceOrTarget" type="text">
+<tr><td>WithinScopeExtension</td><td><div>
+<select id="InputWithinScopeExtension" type="text">
 	<option value=" " selected> </option>
-	<option value="SRC">Source</option>
-	<option value="TGT">Target</option>
+	<option value="PAR">Recursive parent</option>
+	<option value="REF">Referenced type</option>
 </select></div></td></tr>
 <tr><td height=6></td></tr><tr><td colspan=2><fieldset><legend style="cursor:help" oncontextmenu="parent.OpenDescBox('REF','Reference.Type (Refer)','REFERENCE','TYPE',0)"><img style="border:1 solid transparent;" src="icons/type.bmp"/> Type (Refer)</legend>
 <table style="width:100%;">

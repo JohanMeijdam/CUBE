@@ -27,155 +27,158 @@ BEGIN
 	END LOOP;
 END;
 /
-CREATE SEQUENCE sq_aaa START WITH 100000
+CREATE SEQUENCE sq_kln START WITH 100000
 /
-CREATE SEQUENCE sq_aad START WITH 100000
-/
-CREATE SEQUENCE sq_bbb START WITH 100000
-/
-CREATE SEQUENCE sq_ccc START WITH 100000
+CREATE SEQUENCE sq_adr START WITH 100000
 /
 CREATE SEQUENCE sq_prd START WITH 100000
 /
-CREATE SEQUENCE sq_pr2 START WITH 100000
+CREATE SEQUENCE sq_ond START WITH 100000
 /
-CREATE SEQUENCE sq_pa2 START WITH 100000
+CREATE SEQUENCE sq_odd START WITH 100000
 /
-CREATE SEQUENCE sq_prt START WITH 100000
+CREATE SEQUENCE sq_ddd START WITH 100000
 /
-CREATE TABLE t_aaa (
+CREATE SEQUENCE sq_ord START WITH 100000
+/
+CREATE SEQUENCE sq_orr START WITH 100000
+/
+CREATE TABLE t_klant (
 	cube_id VARCHAR2(16),
-	cube_level NUMBER(8) DEFAULT '1',
-	fk_aaa_naam VARCHAR2(40),
-	naam VARCHAR2(40),
-	omschrijving VARCHAR2(120),
-	xk_aaa_naam VARCHAR2(40),
-	CONSTRAINT aaa_pk
-		PRIMARY KEY (naam),
-	CONSTRAINT aaa_aaa_fk
-		FOREIGN KEY (fk_aaa_naam)
-		REFERENCES t_aaa (naam)
+	cube_tsg_intext VARCHAR2(8) DEFAULT 'INT',
+	cube_tsg_vip VARCHAR2(8) DEFAULT 'VIP',
+	cube_tsg_test VARCHAR2(8),
+	nummer VARCHAR2(8),
+	achternaam VARCHAR2(40),
+	geboorte_datum DATE,
+	leeftijd NUMBER(8),
+	voornaam VARCHAR2(40),
+	tussenvoegsel VARCHAR2(40),
+	CONSTRAINT kln_pk
+		PRIMARY KEY (nummer) )
+/
+CREATE TABLE t_adres (
+	cube_id VARCHAR2(16),
+	fk_kln_nummer VARCHAR2(8),
+	postcode_cijfers NUMBER(4),
+	postcode_letters CHAR(2),
+	cube_tsg_test VARCHAR2(8),
+	huisnummer NUMBER(8),
+	CONSTRAINT adr_pk
+		PRIMARY KEY (fk_kln_nummer, postcode_cijfers, postcode_letters, cube_tsg_test, huisnummer),
+	CONSTRAINT adr_kln_fk
+		FOREIGN KEY (fk_kln_nummer)
+		REFERENCES t_klant (nummer)
 		ON DELETE CASCADE )
 /
-CREATE TABLE t_aaa_deel (
+CREATE TABLE t_produkt (
 	cube_id VARCHAR2(16),
-	cube_sequence NUMBER(8),
-	fk_aaa_naam VARCHAR2(40),
-	naam VARCHAR2(40),
-	xk_aaa_naam VARCHAR2(40),
-	CONSTRAINT aad_pk
-		PRIMARY KEY (fk_aaa_naam, naam),
-	CONSTRAINT aad_aaa_fk
-		FOREIGN KEY (fk_aaa_naam)
-		REFERENCES t_aaa (naam)
-		ON DELETE CASCADE )
-/
-CREATE TABLE t_bbb (
-	cube_id VARCHAR2(16),
-	naam VARCHAR2(40),
-	omschrijving VARCHAR2(120),
-	xk_aaa_naam VARCHAR2(40),
-	xk_bbb_naam_1 VARCHAR2(40),
-	CONSTRAINT bbb_pk
-		PRIMARY KEY (naam) )
-/
-CREATE TABLE t_ccc (
-	cube_id VARCHAR2(16),
-	cube_sequence NUMBER(8),
-	cube_level NUMBER(8) DEFAULT '1',
-	fk_ccc_code VARCHAR2(8),
-	fk_ccc_naam VARCHAR2(40),
+	cube_tsg_type VARCHAR2(8) DEFAULT 'P',
+	cube_tsg_soort VARCHAR2(8) DEFAULT 'R',
+	cube_tsg_soort1 VARCHAR2(8) DEFAULT 'GARAGE',
 	code VARCHAR2(8),
-	naam VARCHAR2(40),
-	omschrjving VARCHAR2(120),
-	xk_ccc_code VARCHAR2(8),
-	xk_ccc_naam VARCHAR2(40),
-	CONSTRAINT ccc_pk
-		PRIMARY KEY (code, naam),
-	CONSTRAINT ccc_ccc_fk
-		FOREIGN KEY (fk_ccc_code, fk_ccc_naam)
-		REFERENCES t_ccc (code, naam)
-		ON DELETE CASCADE )
-/
-CREATE TABLE t_prod (
-	cube_id VARCHAR2(16),
-	cube_tsg_zzz VARCHAR2(8) DEFAULT 'QQQ',
-	cube_tsg_yyy VARCHAR2(8) DEFAULT 'RRR',
-	code VARCHAR2(8),
-	naam VARCHAR2(40),
-	nummer NUMBER(8) DEFAULT '0',
-	datum DATE,
-	omschrijving VARCHAR2(120),
-	xk_aaa_naam VARCHAR2(40),
+	prijs NUMBER(8,2),
+	makelaar_naam VARCHAR2(40),
+	bedrag_btw NUMBER(8,2),
+	xk_kln_nummer VARCHAR2(8),
 	CONSTRAINT prd_pk
-		PRIMARY KEY (code, naam, nummer, xk_aaa_naam) )
+		PRIMARY KEY (cube_tsg_type, code) )
 /
-CREATE TABLE t_prod2 (
+CREATE TABLE t_onderdeel (
 	cube_id VARCHAR2(16),
+	cube_sequence NUMBER(8),
+	cube_level NUMBER(8) DEFAULT '1',
+	fk_prd_cube_tsg_type VARCHAR2(8),
 	fk_prd_code VARCHAR2(8),
-	fk_prd_naam VARCHAR2(40),
-	fk_prd_nummer NUMBER(8) DEFAULT '0',
-	fk_prd_aaa_naam VARCHAR2(40),
+	fk_ond_code VARCHAR2(8),
 	code VARCHAR2(8),
-	naam VARCHAR2(40),
+	prijs NUMBER(8,2),
 	omschrijving VARCHAR2(120),
-	CONSTRAINT pr2_pk
-		PRIMARY KEY (code, naam),
-	CONSTRAINT pr2_prd_fk
-		FOREIGN KEY (fk_prd_code, fk_prd_naam, fk_prd_nummer, fk_prd_aaa_naam)
-		REFERENCES t_prod (code, naam, nummer, xk_aaa_naam)
+	xf_ond_prd_cube_tsg_type VARCHAR2(8),
+	xf_ond_prd_code VARCHAR2(8),
+	xk_ond_code VARCHAR2(8),
+	CONSTRAINT ond_pk
+		PRIMARY KEY (fk_prd_cube_tsg_type, fk_prd_code, code),
+	CONSTRAINT ond_prd_fk
+		FOREIGN KEY (fk_prd_cube_tsg_type, fk_prd_code)
+		REFERENCES t_produkt (cube_tsg_type, code)
+		ON DELETE CASCADE,
+	CONSTRAINT ond_ond_fk
+		FOREIGN KEY (fk_prd_cube_tsg_type, fk_prd_code, fk_ond_code)
+		REFERENCES t_onderdeel (fk_prd_cube_tsg_type, fk_prd_code, code)
 		ON DELETE CASCADE )
 /
-CREATE TABLE t_part2 (
+CREATE TABLE t_onderdeel_deel (
 	cube_id VARCHAR2(16),
-	cube_level NUMBER(8) DEFAULT '1',
+	cube_sequence NUMBER(8),
+	fk_prd_cube_tsg_type VARCHAR2(8),
 	fk_prd_code VARCHAR2(8),
-	fk_prd_naam VARCHAR2(40),
-	fk_prd_nummer NUMBER(8) DEFAULT '0',
-	fk_prd_aaa_naam VARCHAR2(40),
-	fk_pr2_code VARCHAR2(8),
-	fk_pr2_naam VARCHAR2(40),
-	fk_pa2_code VARCHAR2(8),
-	fk_pa2_naam VARCHAR2(40),
+	fk_ond_code VARCHAR2(8),
 	code VARCHAR2(8),
 	naam VARCHAR2(40),
-	omschrijving VARCHAR2(120),
-	xk_pa2_code VARCHAR2(8),
-	xk_pa2_naam VARCHAR2(40),
-	CONSTRAINT pa2_pk
-		PRIMARY KEY (code, naam),
-	CONSTRAINT pa2_pr2_fk
-		FOREIGN KEY (fk_pr2_code, fk_pr2_naam)
-		REFERENCES t_prod2 (code, naam)
-		ON DELETE CASCADE,
-	CONSTRAINT pa2_pa2_fk
-		FOREIGN KEY (fk_pa2_code, fk_pa2_naam)
-		REFERENCES t_part2 (code, naam)
+	xf_ond_prd_cube_tsg_type VARCHAR2(8),
+	xf_ond_prd_code VARCHAR2(8),
+	xk_ond_code VARCHAR2(8),
+	CONSTRAINT odd_pk
+		PRIMARY KEY (code),
+	CONSTRAINT odd_ond_fk
+		FOREIGN KEY (fk_prd_cube_tsg_type, fk_prd_code, fk_ond_code)
+		REFERENCES t_onderdeel (fk_prd_cube_tsg_type, fk_prd_code, code)
 		ON DELETE CASCADE )
 /
-CREATE TABLE t_part (
+CREATE TABLE t_onderdeel_deel_deel (
 	cube_id VARCHAR2(16),
-	cube_level NUMBER(8) DEFAULT '1',
+	cube_sequence NUMBER(8),
+	fk_prd_cube_tsg_type VARCHAR2(8),
 	fk_prd_code VARCHAR2(8),
-	fk_prd_naam VARCHAR2(40),
-	fk_prd_nummer NUMBER(8) DEFAULT '0',
-	fk_prd_aaa_naam VARCHAR2(40),
-	fk_prt_code VARCHAR2(8),
-	fk_prt_naam VARCHAR2(40),
+	fk_ond_code VARCHAR2(8),
+	fk_odd_code VARCHAR2(8),
 	code VARCHAR2(8),
 	naam VARCHAR2(40),
-	omschrijving VARCHAR2(120),
-	xk_prt_code VARCHAR2(8),
-	xk_prt_naam VARCHAR2(40),
-	CONSTRAINT prt_pk
-		PRIMARY KEY (code, naam),
-	CONSTRAINT prt_prd_fk
-		FOREIGN KEY (fk_prd_code, fk_prd_naam, fk_prd_nummer, fk_prd_aaa_naam)
-		REFERENCES t_prod (code, naam, nummer, xk_aaa_naam)
-		ON DELETE CASCADE,
-	CONSTRAINT prt_prt_fk
-		FOREIGN KEY (fk_prt_code, fk_prt_naam)
-		REFERENCES t_part (code, naam)
+	xf_ond_prd_cube_tsg_type VARCHAR2(8),
+	xf_ond_prd_code VARCHAR2(8),
+	xk_ond_code VARCHAR2(8),
+	xf_ond_prd_cube_tsg_type_3 VARCHAR2(8),
+	xf_ond_prd_code_3 VARCHAR2(8),
+	xk_ond_code_3 VARCHAR2(8),
+	xf_ond_prd_cube_tsg_type_1 VARCHAR2(8),
+	xf_ond_prd_code_1 VARCHAR2(8),
+	xk_ond_code_1 VARCHAR2(8),
+	xf_ond_prd_cube_tsg_type_2 VARCHAR2(8),
+	xf_ond_prd_code_2 VARCHAR2(8),
+	xk_ond_code_2 VARCHAR2(8),
+	CONSTRAINT ddd_pk
+		PRIMARY KEY (code),
+	CONSTRAINT ddd_odd_fk
+		FOREIGN KEY (fk_odd_code)
+		REFERENCES t_onderdeel_deel (code)
+		ON DELETE CASCADE )
+/
+CREATE TABLE t_order (
+	cube_id VARCHAR2(16),
+	cube_sequence NUMBER(8),
+	cube_tsg_int_ext VARCHAR2(8) DEFAULT 'INT',
+	code VARCHAR2(8),
+	xk_kln_nummer VARCHAR2(8),
+	CONSTRAINT ord_pk
+		PRIMARY KEY (code) )
+/
+CREATE TABLE t_order_regel (
+	cube_id VARCHAR2(16),
+	fk_ord_code VARCHAR2(8),
+	produkt_prijs NUMBER(8,2),
+	aantal NUMBER(8,2),
+	totaal_prijs NUMBER(8,2),
+	xk_prd_cube_tsg_type VARCHAR2(8),
+	xk_prd_code VARCHAR2(8),
+	xk_prd_cube_tsg_type_1 VARCHAR2(8),
+	xk_prd_code_1 VARCHAR2(8),
+	xk_kln_nummer VARCHAR2(8),
+	CONSTRAINT orr_pk
+		PRIMARY KEY (fk_ord_code),
+	CONSTRAINT orr_ord_fk
+		FOREIGN KEY (fk_ord_code)
+		REFERENCES t_order (code)
 		ON DELETE CASCADE )
 /
 EXIT;

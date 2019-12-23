@@ -531,12 +531,18 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_api_url IN VARCHAR2);
 	PROCEDURE delete_bot (
 			p_name IN VARCHAR2);
-	PROCEDURE get_typ_list_all (
-			p_cube_row IN OUT c_cube_row);
 	PROCEDURE get_typ_for_typ_list_all (
 			p_cube_row IN OUT c_cube_row,
 			p_cube_scope_level IN NUMBER,
 			x_fk_typ_name IN VARCHAR2);
+	PROCEDURE get_typ_list_encapsulated (
+			p_cube_row IN OUT c_cube_row,
+			p_fk_bot_name IN VARCHAR2);
+	PROCEDURE get_typ_list_recursive (
+			p_cube_row IN OUT c_cube_row,
+			p_cube_up_or_down IN VARCHAR2,
+			p_cube_x_level IN NUMBER,
+			p_name IN VARCHAR2);
 	PROCEDURE get_typ (
 			p_cube_row IN OUT c_cube_row,
 			p_name IN VARCHAR2);
@@ -791,8 +797,7 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_sequence IN NUMBER,
 			p_scope IN VARCHAR2,
 			p_unchangeable IN CHAR,
-			p_within_scope_level IN NUMBER,
-			p_within_scope_source_or_target IN VARCHAR2,
+			p_within_scope_extension IN VARCHAR2,
 			p_xk_typ_name IN VARCHAR2,
 			p_xk_typ_name_1 IN VARCHAR2,
 			x_fk_typ_name IN VARCHAR2,
@@ -807,8 +812,7 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_sequence IN NUMBER,
 			p_scope IN VARCHAR2,
 			p_unchangeable IN CHAR,
-			p_within_scope_level IN NUMBER,
-			p_within_scope_source_or_target IN VARCHAR2,
+			p_within_scope_extension IN VARCHAR2,
 			p_xk_typ_name IN VARCHAR2,
 			p_xk_typ_name_1 IN VARCHAR2);
 	PROCEDURE delete_ref (
@@ -1324,18 +1328,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 		WHERE name = p_name;
 	END;
 
-	PROCEDURE get_typ_list_all (
-			p_cube_row IN OUT c_cube_row) IS
-	BEGIN
-		OPEN p_cube_row FOR
-			SELECT
-			  cube_sequence,
-			  name,
-			  code
-			FROM v_type
-			ORDER BY cube_sequence;
-	END;
-
 	PROCEDURE get_typ_for_typ_list_all (
 			p_cube_row IN OUT c_cube_row,
 			p_cube_scope_level IN NUMBER,
@@ -1374,6 +1366,64 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			  code
 			FROM v_type
 			WHERE fk_typ_name = l_name
+			ORDER BY cube_sequence;
+	END;
+
+	PROCEDURE get_typ_list_encapsulated (
+			p_cube_row IN OUT c_cube_row,
+			p_fk_bot_name IN VARCHAR2) IS
+	BEGIN
+		OPEN p_cube_row FOR
+			SELECT
+			  cube_sequence,
+			  name,
+			  code
+			FROM v_type
+			WHERE fk_bot_name = p_fk_bot_name
+			   OR 	    ( 	NOT ( fk_bot_name = p_fk_bot_name
+					  AND p_fk_bot_name IS NOT NULL )
+				  AND fk_typ_name IS NULL )
+			ORDER BY cube_sequence;
+	END;
+
+	PROCEDURE get_typ_list_recursive (
+			p_cube_row IN OUT c_cube_row,
+			p_cube_up_or_down IN VARCHAR2,
+			p_cube_x_level IN NUMBER,
+			p_name IN VARCHAR2) IS
+	BEGIN
+		OPEN p_cube_row FOR
+			WITH anchor (
+				cube_sequence,
+				name,
+				code,
+				fk_typ_name,
+				cube_x_level) AS (
+				SELECT
+					cube_sequence,
+					name,
+					code,
+					fk_typ_name,
+					0 
+				FROM v_type
+				WHERE name = p_name
+				UNION ALL
+				SELECT
+					recursive.cube_sequence,
+					recursive.name,
+					recursive.code,
+					recursive.fk_typ_name,
+					anchor.cube_x_level+1
+				FROM v_type recursive, anchor
+				WHERE 	    ( 	    ( p_cube_up_or_down = 'D'
+						  AND anchor.name = recursive.fk_typ_name )
+					   OR 	    ( p_cube_up_or_down = 'U'
+						  AND anchor.fk_typ_name = recursive.name ) )
+				  AND anchor.cube_x_level < p_cube_x_level
+				)
+			SELECT DISTINCT cube_sequence, name, code
+			FROM anchor
+			WHERE cube_x_level > 0
 			ORDER BY cube_sequence;
 	END;
 
@@ -2350,8 +2400,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			  code_display_key,
 			  scope,
 			  unchangeable,
-			  within_scope_level,
-			  within_scope_source_or_target,
+			  within_scope_extension,
 			  xk_typ_name_1
 			FROM v_reference
 			WHERE fk_typ_name = p_fk_typ_name
@@ -2562,8 +2611,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_sequence IN NUMBER,
 			p_scope IN VARCHAR2,
 			p_unchangeable IN CHAR,
-			p_within_scope_level IN NUMBER,
-			p_within_scope_source_or_target IN VARCHAR2,
+			p_within_scope_extension IN VARCHAR2,
 			p_xk_typ_name IN VARCHAR2,
 			p_xk_typ_name_1 IN VARCHAR2,
 			x_fk_typ_name IN VARCHAR2,
@@ -2587,8 +2635,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			sequence,
 			scope,
 			unchangeable,
-			within_scope_level,
-			within_scope_source_or_target,
+			within_scope_extension,
 			xk_typ_name,
 			xk_typ_name_1)
 		VALUES (
@@ -2602,8 +2649,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_sequence,
 			p_scope,
 			p_unchangeable,
-			p_within_scope_level,
-			p_within_scope_source_or_target,
+			p_within_scope_extension,
 			p_xk_typ_name,
 			p_xk_typ_name_1);
 	EXCEPTION
@@ -2620,8 +2666,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_sequence IN NUMBER,
 			p_scope IN VARCHAR2,
 			p_unchangeable IN CHAR,
-			p_within_scope_level IN NUMBER,
-			p_within_scope_source_or_target IN VARCHAR2,
+			p_within_scope_extension IN VARCHAR2,
 			p_xk_typ_name IN VARCHAR2,
 			p_xk_typ_name_1 IN VARCHAR2) IS
 	BEGIN
@@ -2632,8 +2677,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			code_display_key = p_code_display_key,
 			scope = p_scope,
 			unchangeable = p_unchangeable,
-			within_scope_level = p_within_scope_level,
-			within_scope_source_or_target = p_within_scope_source_or_target,
+			within_scope_extension = p_within_scope_extension,
 			xk_typ_name_1 = p_xk_typ_name_1
 		WHERE fk_typ_name = p_fk_typ_name
 		  AND sequence = p_sequence

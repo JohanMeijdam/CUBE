@@ -363,6 +363,7 @@ print IMPORT "DELETE v_restriction_type_spec_atb;\n";
 print IMPORT "DELETE v_reference;\n";
 print IMPORT "DELETE v_description_reference;\n";
 print IMPORT "DELETE v_restriction_type_spec_ref;\n";
+print IMPORT "DELETE v_restriction_target_type_spec;\n";
 print IMPORT "DELETE v_restriction_type_spec_typ;\n";
 print IMPORT "DELETE v_json_path;\n";
 print IMPORT "DELETE v_type_specialisation_group;\n";
@@ -540,8 +541,8 @@ my (@FkeyValues);
 							last;
 						}
 						$Sequence++;
-						print IMPORT "INSERT INTO v_reference (CUBE_SEQUENCE, FK_BOT_NAME, FK_TYP_NAME, NAME, PRIMARY_KEY, CODE_DISPLAY_KEY, SEQUENCE, SCOPE, UNCHANGEABLE, WITHIN_SCOPE_LEVEL, WITHIN_SCOPE_SOURCE_OR_TARGET, XK_TYP_NAME, XK_TYP_NAME_1)\n"; 
-						print IMPORT "	VALUES ($Sequence, '$_[1]', '$_[2]', '".ReplX($NodeString[$j])."', '".ReplX($NodeValue[$NodeValuePntr[$j]])."', '".ReplX($NodeValue[$NodeValuePntr[$j]+1])."', ".ReplX($NodeValue[$NodeValuePntr[$j]+2]).", '".ReplX($NodeValue[$NodeValuePntr[$j]+3])."', '".ReplX($NodeValue[$NodeValuePntr[$j]+4])."', ".ReplX($NodeValue[$NodeValuePntr[$j]+5]).", '".ReplX($NodeValue[$NodeValuePntr[$j]+6])."', '".ReplX(GetXkey($j,'REFERENCE_TYPE','TYPE',001))."', '".ReplX(GetXkey($j,'REFERENCE_TYPE_WITHIN_SCOPE_OF','TYPE',001))."');\n";
+						print IMPORT "INSERT INTO v_reference (CUBE_SEQUENCE, FK_BOT_NAME, FK_TYP_NAME, NAME, PRIMARY_KEY, CODE_DISPLAY_KEY, SEQUENCE, SCOPE, UNCHANGEABLE, WITHIN_SCOPE_EXTENSION, XK_TYP_NAME, XK_TYP_NAME_1)\n"; 
+						print IMPORT "	VALUES ($Sequence, '$_[1]', '$_[2]', '".ReplX($NodeString[$j])."', '".ReplX($NodeValue[$NodeValuePntr[$j]])."', '".ReplX($NodeValue[$NodeValuePntr[$j]+1])."', ".ReplX($NodeValue[$NodeValuePntr[$j]+2]).", '".ReplX($NodeValue[$NodeValuePntr[$j]+3])."', '".ReplX($NodeValue[$NodeValuePntr[$j]+4])."', '".ReplX($NodeValue[$NodeValuePntr[$j]+5])."', '".ReplX(GetXkey($j,'REFERENCE_TYPE','TYPE',001))."', '".ReplX(GetXkey($j,'REFERENCE_TYPE_WITHIN_SCOPE_OF','TYPE',001))."');\n";
 						print IMPORT "\n";
 						$FkeyValues[0] = $_[1];
 						$FkeyValues[1] = $_[2];
@@ -571,6 +572,18 @@ my (@FkeyValues);
 							last;
 						}
 						print IMPORT "INSERT INTO v_restriction_type_spec_ref (FK_BOT_NAME, FK_TYP_NAME, FK_REF_SEQUENCE, FK_REF_TYP_NAME, INCLUDE_OR_EXCLUDE, XF_TSP_TYP_NAME, XF_TSP_TSG_CODE, XK_TSP_CODE)\n"; 
+						print IMPORT "	VALUES ('$_[1]', '$_[2]', $_[3], '$_[4]', '".ReplX($NodeString[$j])."', '".ReplX(GetXkey($j,'TYPE_SPECIALISATION','TYPE',001))."', '".ReplX(GetXkey($j,'TYPE_SPECIALISATION','TYPE_SPECIALISATION_GROUP',001))."', '".ReplX(GetXkey($j,'TYPE_SPECIALISATION','TYPE_SPECIALISATION',001))."');\n";
+						print IMPORT "\n";
+						$j = $NodeNext[$j];
+					}
+				}
+				case "RESTRICTION_TARGET_TYPE_SPEC" {
+					$j = $NodeFirst[$_[0]];
+					while (1) {
+						if ($j == -1) {
+							last;
+						}
+						print IMPORT "INSERT INTO v_restriction_target_type_spec (FK_BOT_NAME, FK_TYP_NAME, FK_REF_SEQUENCE, FK_REF_TYP_NAME, INCLUDE_OR_EXCLUDE, XF_TSP_TYP_NAME, XF_TSP_TSG_CODE, XK_TSP_CODE)\n"; 
 						print IMPORT "	VALUES ('$_[1]', '$_[2]', $_[3], '$_[4]', '".ReplX($NodeString[$j])."', '".ReplX(GetXkey($j,'TYPE_SPECIALISATION','TYPE',001))."', '".ReplX(GetXkey($j,'TYPE_SPECIALISATION','TYPE_SPECIALISATION_GROUP',001))."', '".ReplX(GetXkey($j,'TYPE_SPECIALISATION','TYPE_SPECIALISATION',001))."');\n";
 						print IMPORT "\n";
 						$j = $NodeNext[$j];

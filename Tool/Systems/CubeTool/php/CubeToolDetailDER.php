@@ -303,8 +303,18 @@ function StartSelect001(p_event) {
 	document.body._SelectLeft = p_event.clientX;
 	document.body._SelectTop = p_event.clientY;
 	document.body._ListBoxCode = 'Ref001';
+	var Parameters = {
+		Option: {
+			CubeUpOrDown:"U",
+			CubeScopeLevel:1
+		},
+		Type: {
+			FkTypName:document.getElementById("InputFkTypName").value
+		}
+	};
 	performTrans( {
-		Service: "GetTypListAll"
+		Service: "GetTypListRecursive",
+		Parameters
 	} );
 }
 
@@ -312,8 +322,20 @@ function StartSelect002(p_event) {
 	document.body._SelectLeft = p_event.clientX;
 	document.body._SelectTop = p_event.clientY;
 	document.body._ListBoxCode = 'Ref002';
+	var Parameters = {
+		Option: {
+			CubeUpOrDown:"D",
+			CubeScopeLevel:1[ELSE]]
+			CubeUpOrDown:"X",
+			CubeScopeLevel:0
+		},
+		Type: {
+			FkTypName:document.getElementById("InputFkTypName").value
+		}
+	};
 	performTrans( {
-		Service: "GetTypListAll"
+		Service: "GetTypListRecursive",
+		Parameters
 	} );
 }
 

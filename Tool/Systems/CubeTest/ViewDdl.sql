@@ -17,629 +17,329 @@ BEGIN
 	END LOOP;
 END;
 /
-CREATE OR REPLACE VIEW v_aaa AS 
+CREATE OR REPLACE VIEW v_klant AS 
 	SELECT
 		cube_id,
-		cube_level,
-		fk_aaa_naam,
-		naam,
-		omschrijving,
-		xk_aaa_naam
-	FROM t_aaa
-/
-CREATE OR REPLACE VIEW v_aaa_deel AS 
-	SELECT
-		cube_id,
-		cube_sequence,
-		fk_aaa_naam,
-		naam,
-		xk_aaa_naam
-	FROM t_aaa_deel
-/
-
-CREATE OR REPLACE PACKAGE pkg_aaa_trg IS
-	FUNCTION cube_trg_cubetest RETURN VARCHAR2;
-	PROCEDURE insert_aaa (p_aaa IN OUT NOCOPY v_aaa%ROWTYPE);
-	PROCEDURE update_aaa (p_cube_rowid IN UROWID, p_aaa_old IN OUT NOCOPY v_aaa%ROWTYPE, p_aaa_new IN OUT NOCOPY v_aaa%ROWTYPE);
-	PROCEDURE delete_aaa (p_cube_rowid IN UROWID, p_aaa IN OUT NOCOPY v_aaa%ROWTYPE);
-	PROCEDURE denorm_aaa_aaa (p_aaa IN OUT NOCOPY v_aaa%ROWTYPE, p_aaa_in IN v_aaa%ROWTYPE);
-	PROCEDURE get_denorm_aaa_aaa (p_aaa IN OUT NOCOPY v_aaa%ROWTYPE);
-	PROCEDURE insert_aad (p_aad IN OUT NOCOPY v_aaa_deel%ROWTYPE);
-	PROCEDURE update_aad (p_cube_rowid IN UROWID, p_aad_old IN OUT NOCOPY v_aaa_deel%ROWTYPE, p_aad_new IN OUT NOCOPY v_aaa_deel%ROWTYPE);
-	PROCEDURE delete_aad (p_cube_rowid IN UROWID, p_aad IN OUT NOCOPY v_aaa_deel%ROWTYPE);
-END;
-/
-SHOW ERRORS;
-
-CREATE OR REPLACE PACKAGE BODY pkg_aaa_trg IS
-
-	FUNCTION cube_trg_cubetest RETURN VARCHAR2 IS
-	BEGIN
-		RETURN 'cube_trg_cubetest';
-	END;
-
-	PROCEDURE insert_aaa (p_aaa IN OUT NOCOPY v_aaa%ROWTYPE) IS
-	BEGIN
-		p_aaa.cube_id := 'AAA-' || TO_CHAR(sq_aaa.NEXTVAL,'FM000000000000');
-		get_denorm_aaa_aaa (p_aaa);
-		INSERT INTO t_aaa (
-			cube_id,
-			cube_level,
-			fk_aaa_naam,
-			naam,
-			omschrijving,
-			xk_aaa_naam)
-		VALUES (
-			p_aaa.cube_id,
-			p_aaa.cube_level,
-			p_aaa.fk_aaa_naam,
-			p_aaa.naam,
-			p_aaa.omschrijving,
-			p_aaa.xk_aaa_naam);
-	END;
-
-	PROCEDURE update_aaa (p_cube_rowid UROWID, p_aaa_old IN OUT NOCOPY v_aaa%ROWTYPE, p_aaa_new IN OUT NOCOPY v_aaa%ROWTYPE) IS
-
-		CURSOR c_aaa IS
-			SELECT ROWID cube_row_id, aaa.* FROM v_aaa aaa
-			WHERE fk_aaa_naam = p_aaa_old.naam;
-		
-		l_aaa_rowid UROWID;
-		r_aaa_old v_aaa%ROWTYPE;
-		r_aaa_new v_aaa%ROWTYPE;
-	BEGIN
-		IF NVL(p_aaa_old.fk_aaa_naam,' ') <> NVL(p_aaa_new.fk_aaa_naam,' ')  THEN
-			get_denorm_aaa_aaa (p_aaa_new);
-		END IF;
-		UPDATE t_aaa SET 
-			cube_level = p_aaa_new.cube_level,
-			fk_aaa_naam = p_aaa_new.fk_aaa_naam,
-			omschrijving = p_aaa_new.omschrijving
-		WHERE rowid = p_cube_rowid;
-		IF NVL(p_aaa_old.cube_level,0) <> NVL(p_aaa_new.cube_level,0) THEN
-			OPEN c_aaa;
-			LOOP
-				FETCH c_aaa INTO
-					l_aaa_rowid,
-					r_aaa_old.cube_id,
-					r_aaa_old.cube_level,
-					r_aaa_old.fk_aaa_naam,
-					r_aaa_old.naam,
-					r_aaa_old.omschrijving,
-					r_aaa_old.xk_aaa_naam;
-				EXIT WHEN c_aaa%NOTFOUND;
-				r_aaa_new := r_aaa_old;
-				denorm_aaa_aaa (r_aaa_new, p_aaa_new);
-				update_aaa (l_aaa_rowid, r_aaa_old, r_aaa_new);
-			END LOOP;
-			CLOSE c_aaa;
-		END IF;
-	END;
-
-	PROCEDURE delete_aaa (p_cube_rowid UROWID, p_aaa IN OUT NOCOPY v_aaa%ROWTYPE) IS
-	BEGIN
-		DELETE t_aaa 
-		WHERE rowid = p_cube_rowid;
-	END;
-
-	PROCEDURE denorm_aaa_aaa (p_aaa IN OUT NOCOPY v_aaa%ROWTYPE, p_aaa_in IN v_aaa%ROWTYPE) IS
-	BEGIN
-		p_aaa.cube_level := NVL (p_aaa_in.cube_level, 0) + 1;
-	END;
-
-	PROCEDURE get_denorm_aaa_aaa (p_aaa IN OUT NOCOPY v_aaa%ROWTYPE) IS
-
-		CURSOR c_aaa IS 
-			SELECT * FROM v_aaa
-			WHERE naam = p_aaa.fk_aaa_naam;
-		
-		r_aaa v_aaa%ROWTYPE;
-	BEGIN
-		IF p_aaa.fk_aaa_naam IS NOT NULL THEN
-			OPEN c_aaa;
-			FETCH c_aaa INTO r_aaa;
-			IF c_aaa%NOTFOUND THEN
-				r_aaa := NULL;
-			END IF;
-			CLOSE c_aaa;
-		ELSE
-			r_aaa := NULL;
-		END IF;
-		denorm_aaa_aaa (p_aaa, r_aaa);
-	END;
-
-	PROCEDURE insert_aad (p_aad IN OUT NOCOPY v_aaa_deel%ROWTYPE) IS
-	BEGIN
-		p_aad.cube_id := 'AAD-' || TO_CHAR(sq_aad.NEXTVAL,'FM000000000000');
-		INSERT INTO t_aaa_deel (
-			cube_id,
-			cube_sequence,
-			fk_aaa_naam,
-			naam,
-			xk_aaa_naam)
-		VALUES (
-			p_aad.cube_id,
-			p_aad.cube_sequence,
-			p_aad.fk_aaa_naam,
-			p_aad.naam,
-			p_aad.xk_aaa_naam);
-	END;
-
-	PROCEDURE update_aad (p_cube_rowid UROWID, p_aad_old IN OUT NOCOPY v_aaa_deel%ROWTYPE, p_aad_new IN OUT NOCOPY v_aaa_deel%ROWTYPE) IS
-	BEGIN
-		UPDATE t_aaa_deel SET 
-			cube_sequence = p_aad_new.cube_sequence,
-			xk_aaa_naam = p_aad_new.xk_aaa_naam
-		WHERE rowid = p_cube_rowid;
-	END;
-
-	PROCEDURE delete_aad (p_cube_rowid UROWID, p_aad IN OUT NOCOPY v_aaa_deel%ROWTYPE) IS
-	BEGIN
-		DELETE t_aaa_deel 
-		WHERE rowid = p_cube_rowid;
-	END;
-END;
-/
-SHOW ERRORS;
-
-CREATE OR REPLACE TRIGGER trg_aaa
-INSTEAD OF INSERT OR DELETE OR UPDATE ON v_aaa
-FOR EACH ROW
-DECLARE
-	l_cube_rowid UROWID;
-	r_aaa_new v_aaa%ROWTYPE;
-	r_aaa_old v_aaa%ROWTYPE;
-BEGIN
-	IF INSERTING OR UPDATING THEN
-		r_aaa_new.fk_aaa_naam := :NEW.fk_aaa_naam;
-		r_aaa_new.naam := :NEW.naam;
-		r_aaa_new.omschrijving := :NEW.omschrijving;
-		r_aaa_new.xk_aaa_naam := :NEW.xk_aaa_naam;
-	END IF;
-	IF UPDATING THEN
-		r_aaa_new.cube_id := :OLD.cube_id;
-		r_aaa_new.cube_level := :OLD.cube_level;
-	END IF;
-	IF UPDATING OR DELETING THEN
-		SELECT rowid INTO l_cube_rowid FROM t_aaa
-		WHERE naam = :OLD.naam;
-		r_aaa_old.fk_aaa_naam := :OLD.fk_aaa_naam;
-		r_aaa_old.naam := :OLD.naam;
-		r_aaa_old.omschrijving := :OLD.omschrijving;
-		r_aaa_old.xk_aaa_naam := :OLD.xk_aaa_naam;
-	END IF;
-
-	IF INSERTING THEN 
-		pkg_aaa_trg.insert_aaa (r_aaa_new);
-	ELSIF UPDATING THEN
-		pkg_aaa_trg.update_aaa (l_cube_rowid, r_aaa_old, r_aaa_new);
-	ELSIF DELETING THEN
-		pkg_aaa_trg.delete_aaa (l_cube_rowid, r_aaa_old);
-	END IF;
-END;
-/
-SHOW ERRORS
-
-CREATE OR REPLACE TRIGGER trg_aad
-INSTEAD OF INSERT OR DELETE OR UPDATE ON v_aaa_deel
-FOR EACH ROW
-DECLARE
-	l_cube_rowid UROWID;
-	r_aad_new v_aaa_deel%ROWTYPE;
-	r_aad_old v_aaa_deel%ROWTYPE;
-BEGIN
-	IF INSERTING OR UPDATING THEN
-		r_aad_new.cube_sequence := :NEW.cube_sequence;
-		r_aad_new.fk_aaa_naam := :NEW.fk_aaa_naam;
-		r_aad_new.naam := :NEW.naam;
-		r_aad_new.xk_aaa_naam := :NEW.xk_aaa_naam;
-	END IF;
-	IF UPDATING THEN
-		r_aad_new.cube_id := :OLD.cube_id;
-	END IF;
-	IF UPDATING OR DELETING THEN
-		SELECT rowid INTO l_cube_rowid FROM t_aaa_deel
-		WHERE fk_aaa_naam = :OLD.fk_aaa_naam
-		  AND naam = :OLD.naam;
-		r_aad_old.cube_sequence := :OLD.cube_sequence;
-		r_aad_old.fk_aaa_naam := :OLD.fk_aaa_naam;
-		r_aad_old.naam := :OLD.naam;
-		r_aad_old.xk_aaa_naam := :OLD.xk_aaa_naam;
-	END IF;
-
-	IF INSERTING THEN 
-		pkg_aaa_trg.insert_aad (r_aad_new);
-	ELSIF UPDATING THEN
-		pkg_aaa_trg.update_aad (l_cube_rowid, r_aad_old, r_aad_new);
-	ELSIF DELETING THEN
-		pkg_aaa_trg.delete_aad (l_cube_rowid, r_aad_old);
-	END IF;
-END;
-/
-SHOW ERRORS
-
-CREATE OR REPLACE VIEW v_bbb AS 
-	SELECT
-		cube_id,
-		naam,
-		omschrijving,
-		xk_aaa_naam,
-		xk_bbb_naam_1
-	FROM t_bbb
-/
-
-CREATE OR REPLACE PACKAGE pkg_bbb_trg IS
-	FUNCTION cube_trg_cubetest RETURN VARCHAR2;
-	PROCEDURE insert_bbb (p_bbb IN OUT NOCOPY v_bbb%ROWTYPE);
-	PROCEDURE update_bbb (p_cube_rowid IN UROWID, p_bbb_old IN OUT NOCOPY v_bbb%ROWTYPE, p_bbb_new IN OUT NOCOPY v_bbb%ROWTYPE);
-	PROCEDURE delete_bbb (p_cube_rowid IN UROWID, p_bbb IN OUT NOCOPY v_bbb%ROWTYPE);
-END;
-/
-SHOW ERRORS;
-
-CREATE OR REPLACE PACKAGE BODY pkg_bbb_trg IS
-
-	FUNCTION cube_trg_cubetest RETURN VARCHAR2 IS
-	BEGIN
-		RETURN 'cube_trg_cubetest';
-	END;
-
-	PROCEDURE insert_bbb (p_bbb IN OUT NOCOPY v_bbb%ROWTYPE) IS
-	BEGIN
-		p_bbb.cube_id := 'BBB-' || TO_CHAR(sq_bbb.NEXTVAL,'FM000000000000');
-		INSERT INTO t_bbb (
-			cube_id,
-			naam,
-			omschrijving,
-			xk_aaa_naam,
-			xk_bbb_naam_1)
-		VALUES (
-			p_bbb.cube_id,
-			p_bbb.naam,
-			p_bbb.omschrijving,
-			p_bbb.xk_aaa_naam,
-			p_bbb.xk_bbb_naam_1);
-	END;
-
-	PROCEDURE update_bbb (p_cube_rowid UROWID, p_bbb_old IN OUT NOCOPY v_bbb%ROWTYPE, p_bbb_new IN OUT NOCOPY v_bbb%ROWTYPE) IS
-	BEGIN
-		UPDATE t_bbb SET 
-			omschrijving = p_bbb_new.omschrijving,
-			xk_aaa_naam = p_bbb_new.xk_aaa_naam,
-			xk_bbb_naam_1 = p_bbb_new.xk_bbb_naam_1
-		WHERE rowid = p_cube_rowid;
-	END;
-
-	PROCEDURE delete_bbb (p_cube_rowid UROWID, p_bbb IN OUT NOCOPY v_bbb%ROWTYPE) IS
-	BEGIN
-		DELETE t_bbb 
-		WHERE rowid = p_cube_rowid;
-	END;
-END;
-/
-SHOW ERRORS;
-
-CREATE OR REPLACE TRIGGER trg_bbb
-INSTEAD OF INSERT OR DELETE OR UPDATE ON v_bbb
-FOR EACH ROW
-DECLARE
-	l_cube_rowid UROWID;
-	r_bbb_new v_bbb%ROWTYPE;
-	r_bbb_old v_bbb%ROWTYPE;
-BEGIN
-	IF INSERTING OR UPDATING THEN
-		r_bbb_new.naam := :NEW.naam;
-		r_bbb_new.omschrijving := :NEW.omschrijving;
-		r_bbb_new.xk_aaa_naam := :NEW.xk_aaa_naam;
-		r_bbb_new.xk_bbb_naam_1 := :NEW.xk_bbb_naam_1;
-	END IF;
-	IF UPDATING THEN
-		r_bbb_new.cube_id := :OLD.cube_id;
-	END IF;
-	IF UPDATING OR DELETING THEN
-		SELECT rowid INTO l_cube_rowid FROM t_bbb
-		WHERE naam = :OLD.naam;
-		r_bbb_old.naam := :OLD.naam;
-		r_bbb_old.omschrijving := :OLD.omschrijving;
-		r_bbb_old.xk_aaa_naam := :OLD.xk_aaa_naam;
-		r_bbb_old.xk_bbb_naam_1 := :OLD.xk_bbb_naam_1;
-	END IF;
-
-	IF INSERTING THEN 
-		pkg_bbb_trg.insert_bbb (r_bbb_new);
-	ELSIF UPDATING THEN
-		pkg_bbb_trg.update_bbb (l_cube_rowid, r_bbb_old, r_bbb_new);
-	ELSIF DELETING THEN
-		pkg_bbb_trg.delete_bbb (l_cube_rowid, r_bbb_old);
-	END IF;
-END;
-/
-SHOW ERRORS
-
-CREATE OR REPLACE VIEW v_ccc AS 
-	SELECT
-		cube_id,
-		cube_sequence,
-		cube_level,
-		fk_ccc_code,
-		fk_ccc_naam,
-		code,
-		naam,
-		omschrjving,
-		xk_ccc_code,
-		xk_ccc_naam
-	FROM t_ccc
-/
-
-CREATE OR REPLACE PACKAGE pkg_ccc_trg IS
-	FUNCTION cube_trg_cubetest RETURN VARCHAR2;
-	PROCEDURE insert_ccc (p_ccc IN OUT NOCOPY v_ccc%ROWTYPE);
-	PROCEDURE update_ccc (p_cube_rowid IN UROWID, p_ccc_old IN OUT NOCOPY v_ccc%ROWTYPE, p_ccc_new IN OUT NOCOPY v_ccc%ROWTYPE);
-	PROCEDURE delete_ccc (p_cube_rowid IN UROWID, p_ccc IN OUT NOCOPY v_ccc%ROWTYPE);
-	PROCEDURE denorm_ccc_ccc (p_ccc IN OUT NOCOPY v_ccc%ROWTYPE, p_ccc_in IN v_ccc%ROWTYPE);
-	PROCEDURE get_denorm_ccc_ccc (p_ccc IN OUT NOCOPY v_ccc%ROWTYPE);
-END;
-/
-SHOW ERRORS;
-
-CREATE OR REPLACE PACKAGE BODY pkg_ccc_trg IS
-
-	FUNCTION cube_trg_cubetest RETURN VARCHAR2 IS
-	BEGIN
-		RETURN 'cube_trg_cubetest';
-	END;
-
-	PROCEDURE insert_ccc (p_ccc IN OUT NOCOPY v_ccc%ROWTYPE) IS
-	BEGIN
-		p_ccc.cube_id := 'CCC-' || TO_CHAR(sq_ccc.NEXTVAL,'FM000000000000');
-		get_denorm_ccc_ccc (p_ccc);
-		INSERT INTO t_ccc (
-			cube_id,
-			cube_sequence,
-			cube_level,
-			fk_ccc_code,
-			fk_ccc_naam,
-			code,
-			naam,
-			omschrjving,
-			xk_ccc_code,
-			xk_ccc_naam)
-		VALUES (
-			p_ccc.cube_id,
-			p_ccc.cube_sequence,
-			p_ccc.cube_level,
-			p_ccc.fk_ccc_code,
-			p_ccc.fk_ccc_naam,
-			p_ccc.code,
-			p_ccc.naam,
-			p_ccc.omschrjving,
-			p_ccc.xk_ccc_code,
-			p_ccc.xk_ccc_naam);
-	END;
-
-	PROCEDURE update_ccc (p_cube_rowid UROWID, p_ccc_old IN OUT NOCOPY v_ccc%ROWTYPE, p_ccc_new IN OUT NOCOPY v_ccc%ROWTYPE) IS
-
-		CURSOR c_ccc IS
-			SELECT ROWID cube_row_id, ccc.* FROM v_ccc ccc
-			WHERE fk_ccc_code = p_ccc_old.code
-			  AND fk_ccc_naam = p_ccc_old.naam;
-		
-		l_ccc_rowid UROWID;
-		r_ccc_old v_ccc%ROWTYPE;
-		r_ccc_new v_ccc%ROWTYPE;
-	BEGIN
-		IF NVL(p_ccc_old.fk_ccc_code,' ') <> NVL(p_ccc_new.fk_ccc_code,' ') 
-		OR NVL(p_ccc_old.fk_ccc_naam,' ') <> NVL(p_ccc_new.fk_ccc_naam,' ')  THEN
-			get_denorm_ccc_ccc (p_ccc_new);
-		END IF;
-		UPDATE t_ccc SET 
-			cube_sequence = p_ccc_new.cube_sequence,
-			cube_level = p_ccc_new.cube_level,
-			fk_ccc_code = p_ccc_new.fk_ccc_code,
-			fk_ccc_naam = p_ccc_new.fk_ccc_naam,
-			omschrjving = p_ccc_new.omschrjving,
-			xk_ccc_code = p_ccc_new.xk_ccc_code,
-			xk_ccc_naam = p_ccc_new.xk_ccc_naam
-		WHERE rowid = p_cube_rowid;
-		IF NVL(p_ccc_old.cube_level,0) <> NVL(p_ccc_new.cube_level,0) THEN
-			OPEN c_ccc;
-			LOOP
-				FETCH c_ccc INTO
-					l_ccc_rowid,
-					r_ccc_old.cube_id,
-					r_ccc_old.cube_sequence,
-					r_ccc_old.cube_level,
-					r_ccc_old.fk_ccc_code,
-					r_ccc_old.fk_ccc_naam,
-					r_ccc_old.code,
-					r_ccc_old.naam,
-					r_ccc_old.omschrjving,
-					r_ccc_old.xk_ccc_code,
-					r_ccc_old.xk_ccc_naam;
-				EXIT WHEN c_ccc%NOTFOUND;
-				r_ccc_new := r_ccc_old;
-				denorm_ccc_ccc (r_ccc_new, p_ccc_new);
-				update_ccc (l_ccc_rowid, r_ccc_old, r_ccc_new);
-			END LOOP;
-			CLOSE c_ccc;
-		END IF;
-	END;
-
-	PROCEDURE delete_ccc (p_cube_rowid UROWID, p_ccc IN OUT NOCOPY v_ccc%ROWTYPE) IS
-	BEGIN
-		DELETE t_ccc 
-		WHERE rowid = p_cube_rowid;
-	END;
-
-	PROCEDURE denorm_ccc_ccc (p_ccc IN OUT NOCOPY v_ccc%ROWTYPE, p_ccc_in IN v_ccc%ROWTYPE) IS
-	BEGIN
-		p_ccc.cube_level := NVL (p_ccc_in.cube_level, 0) + 1;
-	END;
-
-	PROCEDURE get_denorm_ccc_ccc (p_ccc IN OUT NOCOPY v_ccc%ROWTYPE) IS
-
-		CURSOR c_ccc IS 
-			SELECT * FROM v_ccc
-			WHERE code = p_ccc.fk_ccc_code
-			  AND naam = p_ccc.fk_ccc_naam;
-		
-		r_ccc v_ccc%ROWTYPE;
-	BEGIN
-		IF p_ccc.fk_ccc_code IS NOT NULL AND p_ccc.fk_ccc_naam IS NOT NULL THEN
-			OPEN c_ccc;
-			FETCH c_ccc INTO r_ccc;
-			IF c_ccc%NOTFOUND THEN
-				r_ccc := NULL;
-			END IF;
-			CLOSE c_ccc;
-		ELSE
-			r_ccc := NULL;
-		END IF;
-		denorm_ccc_ccc (p_ccc, r_ccc);
-	END;
-END;
-/
-SHOW ERRORS;
-
-CREATE OR REPLACE TRIGGER trg_ccc
-INSTEAD OF INSERT OR DELETE OR UPDATE ON v_ccc
-FOR EACH ROW
-DECLARE
-	l_cube_rowid UROWID;
-	r_ccc_new v_ccc%ROWTYPE;
-	r_ccc_old v_ccc%ROWTYPE;
-BEGIN
-	IF INSERTING OR UPDATING THEN
-		r_ccc_new.cube_sequence := :NEW.cube_sequence;
-		IF :NEW.fk_ccc_code = ' ' THEN
-			r_ccc_new.fk_ccc_code := ' ';
-		ELSE
-			r_ccc_new.fk_ccc_code := REPLACE(:NEW.fk_ccc_code,' ','_');
-		END IF;
-		r_ccc_new.fk_ccc_naam := :NEW.fk_ccc_naam;
-		IF :NEW.code = ' ' THEN
-			r_ccc_new.code := ' ';
-		ELSE
-			r_ccc_new.code := REPLACE(:NEW.code,' ','_');
-		END IF;
-		r_ccc_new.naam := :NEW.naam;
-		r_ccc_new.omschrjving := :NEW.omschrjving;
-		IF :NEW.xk_ccc_code = ' ' THEN
-			r_ccc_new.xk_ccc_code := ' ';
-		ELSE
-			r_ccc_new.xk_ccc_code := REPLACE(:NEW.xk_ccc_code,' ','_');
-		END IF;
-		r_ccc_new.xk_ccc_naam := :NEW.xk_ccc_naam;
-	END IF;
-	IF UPDATING THEN
-		r_ccc_new.cube_id := :OLD.cube_id;
-		r_ccc_new.cube_level := :OLD.cube_level;
-	END IF;
-	IF UPDATING OR DELETING THEN
-		SELECT rowid INTO l_cube_rowid FROM t_ccc
-		WHERE code = :OLD.code
-		  AND naam = :OLD.naam;
-		r_ccc_old.cube_sequence := :OLD.cube_sequence;
-		r_ccc_old.fk_ccc_code := :OLD.fk_ccc_code;
-		r_ccc_old.fk_ccc_naam := :OLD.fk_ccc_naam;
-		r_ccc_old.code := :OLD.code;
-		r_ccc_old.naam := :OLD.naam;
-		r_ccc_old.omschrjving := :OLD.omschrjving;
-		r_ccc_old.xk_ccc_code := :OLD.xk_ccc_code;
-		r_ccc_old.xk_ccc_naam := :OLD.xk_ccc_naam;
-	END IF;
-
-	IF INSERTING THEN 
-		pkg_ccc_trg.insert_ccc (r_ccc_new);
-	ELSIF UPDATING THEN
-		pkg_ccc_trg.update_ccc (l_cube_rowid, r_ccc_old, r_ccc_new);
-	ELSIF DELETING THEN
-		pkg_ccc_trg.delete_ccc (l_cube_rowid, r_ccc_old);
-	END IF;
-END;
-/
-SHOW ERRORS
-
-CREATE OR REPLACE VIEW v_prod AS 
-	SELECT
-		cube_id,
-		cube_tsg_zzz,
-		cube_tsg_yyy,
-		code,
-		naam,
+		cube_tsg_intext,
+		cube_tsg_vip,
+		cube_tsg_test,
 		nummer,
-		datum,
-		omschrijving,
-		xk_aaa_naam
-	FROM t_prod
+		achternaam,
+		geboorte_datum,
+		leeftijd,
+		voornaam,
+		tussenvoegsel
+	FROM t_klant
 /
-CREATE OR REPLACE VIEW v_prod2 AS 
+CREATE OR REPLACE VIEW v_adres AS 
 	SELECT
 		cube_id,
-		fk_prd_code,
-		fk_prd_naam,
-		fk_prd_nummer,
-		fk_prd_aaa_naam,
+		fk_kln_nummer,
+		postcode_cijfers,
+		postcode_letters,
+		cube_tsg_test,
+		huisnummer
+	FROM t_adres
+/
+
+CREATE OR REPLACE PACKAGE pkg_kln_trg IS
+	FUNCTION cube_trg_cubetest RETURN VARCHAR2;
+	PROCEDURE insert_kln (p_kln IN OUT NOCOPY v_klant%ROWTYPE);
+	PROCEDURE update_kln (p_cube_rowid IN UROWID, p_kln_old IN OUT NOCOPY v_klant%ROWTYPE, p_kln_new IN OUT NOCOPY v_klant%ROWTYPE);
+	PROCEDURE delete_kln (p_cube_rowid IN UROWID, p_kln IN OUT NOCOPY v_klant%ROWTYPE);
+	PROCEDURE insert_adr (p_adr IN OUT NOCOPY v_adres%ROWTYPE);
+	PROCEDURE update_adr (p_cube_rowid IN UROWID, p_adr_old IN OUT NOCOPY v_adres%ROWTYPE, p_adr_new IN OUT NOCOPY v_adres%ROWTYPE);
+	PROCEDURE delete_adr (p_cube_rowid IN UROWID, p_adr IN OUT NOCOPY v_adres%ROWTYPE);
+END;
+/
+SHOW ERRORS;
+
+CREATE OR REPLACE PACKAGE BODY pkg_kln_trg IS
+
+	FUNCTION cube_trg_cubetest RETURN VARCHAR2 IS
+	BEGIN
+		RETURN 'cube_trg_cubetest';
+	END;
+
+	PROCEDURE insert_kln (p_kln IN OUT NOCOPY v_klant%ROWTYPE) IS
+	BEGIN
+		p_kln.cube_id := 'KLN-' || TO_CHAR(sq_kln.NEXTVAL,'FM000000000000');
+		INSERT INTO t_klant (
+			cube_id,
+			cube_tsg_intext,
+			cube_tsg_vip,
+			cube_tsg_test,
+			nummer,
+			achternaam,
+			geboorte_datum,
+			leeftijd,
+			voornaam,
+			tussenvoegsel)
+		VALUES (
+			p_kln.cube_id,
+			p_kln.cube_tsg_intext,
+			p_kln.cube_tsg_vip,
+			p_kln.cube_tsg_test,
+			p_kln.nummer,
+			p_kln.achternaam,
+			p_kln.geboorte_datum,
+			p_kln.leeftijd,
+			p_kln.voornaam,
+			p_kln.tussenvoegsel);
+	END;
+
+	PROCEDURE update_kln (p_cube_rowid UROWID, p_kln_old IN OUT NOCOPY v_klant%ROWTYPE, p_kln_new IN OUT NOCOPY v_klant%ROWTYPE) IS
+	BEGIN
+		UPDATE t_klant SET 
+			achternaam = p_kln_new.achternaam,
+			geboorte_datum = p_kln_new.geboorte_datum,
+			leeftijd = p_kln_new.leeftijd,
+			voornaam = p_kln_new.voornaam,
+			tussenvoegsel = p_kln_new.tussenvoegsel
+		WHERE rowid = p_cube_rowid;
+	END;
+
+	PROCEDURE delete_kln (p_cube_rowid UROWID, p_kln IN OUT NOCOPY v_klant%ROWTYPE) IS
+	BEGIN
+		DELETE t_klant 
+		WHERE rowid = p_cube_rowid;
+	END;
+
+	PROCEDURE insert_adr (p_adr IN OUT NOCOPY v_adres%ROWTYPE) IS
+	BEGIN
+		p_adr.cube_id := 'ADR-' || TO_CHAR(sq_adr.NEXTVAL,'FM000000000000');
+		INSERT INTO t_adres (
+			cube_id,
+			fk_kln_nummer,
+			postcode_cijfers,
+			postcode_letters,
+			cube_tsg_test,
+			huisnummer)
+		VALUES (
+			p_adr.cube_id,
+			p_adr.fk_kln_nummer,
+			p_adr.postcode_cijfers,
+			p_adr.postcode_letters,
+			p_adr.cube_tsg_test,
+			p_adr.huisnummer);
+	END;
+
+	PROCEDURE update_adr (p_cube_rowid UROWID, p_adr_old IN OUT NOCOPY v_adres%ROWTYPE, p_adr_new IN OUT NOCOPY v_adres%ROWTYPE) IS
+	BEGIN
+		NULL;
+	END;
+
+	PROCEDURE delete_adr (p_cube_rowid UROWID, p_adr IN OUT NOCOPY v_adres%ROWTYPE) IS
+	BEGIN
+		DELETE t_adres 
+		WHERE rowid = p_cube_rowid;
+	END;
+END;
+/
+SHOW ERRORS;
+
+CREATE OR REPLACE TRIGGER trg_kln
+INSTEAD OF INSERT OR DELETE OR UPDATE ON v_klant
+FOR EACH ROW
+DECLARE
+	l_cube_rowid UROWID;
+	r_kln_new v_klant%ROWTYPE;
+	r_kln_old v_klant%ROWTYPE;
+BEGIN
+	IF INSERTING OR UPDATING THEN
+		IF :NEW.cube_tsg_intext = ' ' THEN
+			r_kln_new.cube_tsg_intext := ' ';
+		ELSE
+			r_kln_new.cube_tsg_intext := REPLACE(:NEW.cube_tsg_intext,' ','_');
+		END IF;
+		IF :NEW.cube_tsg_vip = ' ' THEN
+			r_kln_new.cube_tsg_vip := ' ';
+		ELSE
+			r_kln_new.cube_tsg_vip := REPLACE(:NEW.cube_tsg_vip,' ','_');
+		END IF;
+		IF :NEW.cube_tsg_test = ' ' THEN
+			r_kln_new.cube_tsg_test := ' ';
+		ELSE
+			r_kln_new.cube_tsg_test := REPLACE(:NEW.cube_tsg_test,' ','_');
+		END IF;
+		IF :NEW.nummer = ' ' THEN
+			r_kln_new.nummer := ' ';
+		ELSE
+			r_kln_new.nummer := REPLACE(:NEW.nummer,' ','_');
+		END IF;
+		r_kln_new.achternaam := :NEW.achternaam;
+		r_kln_new.geboorte_datum := :NEW.geboorte_datum;
+		r_kln_new.leeftijd := :NEW.leeftijd;
+		r_kln_new.voornaam := :NEW.voornaam;
+		r_kln_new.tussenvoegsel := :NEW.tussenvoegsel;
+	END IF;
+	IF UPDATING THEN
+		r_kln_new.cube_id := :OLD.cube_id;
+	END IF;
+	IF UPDATING OR DELETING THEN
+		SELECT rowid INTO l_cube_rowid FROM t_klant
+		WHERE nummer = :OLD.nummer;
+		r_kln_old.cube_tsg_intext := :OLD.cube_tsg_intext;
+		r_kln_old.cube_tsg_vip := :OLD.cube_tsg_vip;
+		r_kln_old.cube_tsg_test := :OLD.cube_tsg_test;
+		r_kln_old.nummer := :OLD.nummer;
+		r_kln_old.achternaam := :OLD.achternaam;
+		r_kln_old.geboorte_datum := :OLD.geboorte_datum;
+		r_kln_old.leeftijd := :OLD.leeftijd;
+		r_kln_old.voornaam := :OLD.voornaam;
+		r_kln_old.tussenvoegsel := :OLD.tussenvoegsel;
+	END IF;
+
+	IF INSERTING THEN 
+		pkg_kln_trg.insert_kln (r_kln_new);
+	ELSIF UPDATING THEN
+		pkg_kln_trg.update_kln (l_cube_rowid, r_kln_old, r_kln_new);
+	ELSIF DELETING THEN
+		pkg_kln_trg.delete_kln (l_cube_rowid, r_kln_old);
+	END IF;
+END;
+/
+SHOW ERRORS
+
+CREATE OR REPLACE TRIGGER trg_adr
+INSTEAD OF INSERT OR DELETE OR UPDATE ON v_adres
+FOR EACH ROW
+DECLARE
+	l_cube_rowid UROWID;
+	r_adr_new v_adres%ROWTYPE;
+	r_adr_old v_adres%ROWTYPE;
+BEGIN
+	IF INSERTING OR UPDATING THEN
+		IF :NEW.fk_kln_nummer = ' ' THEN
+			r_adr_new.fk_kln_nummer := ' ';
+		ELSE
+			r_adr_new.fk_kln_nummer := REPLACE(:NEW.fk_kln_nummer,' ','_');
+		END IF;
+		r_adr_new.postcode_cijfers := :NEW.postcode_cijfers;
+		IF :NEW.postcode_letters = ' ' THEN
+			r_adr_new.postcode_letters := ' ';
+		ELSE
+			r_adr_new.postcode_letters := REPLACE(:NEW.postcode_letters,' ','_');
+		END IF;
+		IF :NEW.cube_tsg_test = ' ' THEN
+			r_adr_new.cube_tsg_test := ' ';
+		ELSE
+			r_adr_new.cube_tsg_test := REPLACE(:NEW.cube_tsg_test,' ','_');
+		END IF;
+		r_adr_new.huisnummer := :NEW.huisnummer;
+	END IF;
+	IF UPDATING THEN
+		r_adr_new.cube_id := :OLD.cube_id;
+	END IF;
+	IF UPDATING OR DELETING THEN
+		SELECT rowid INTO l_cube_rowid FROM t_adres
+		WHERE fk_kln_nummer = :OLD.fk_kln_nummer
+		  AND postcode_cijfers = :OLD.postcode_cijfers
+		  AND postcode_letters = :OLD.postcode_letters
+		  AND cube_tsg_test = :OLD.cube_tsg_test
+		  AND huisnummer = :OLD.huisnummer;
+		r_adr_old.fk_kln_nummer := :OLD.fk_kln_nummer;
+		r_adr_old.postcode_cijfers := :OLD.postcode_cijfers;
+		r_adr_old.postcode_letters := :OLD.postcode_letters;
+		r_adr_old.cube_tsg_test := :OLD.cube_tsg_test;
+		r_adr_old.huisnummer := :OLD.huisnummer;
+	END IF;
+
+	IF INSERTING THEN 
+		pkg_kln_trg.insert_adr (r_adr_new);
+	ELSIF UPDATING THEN
+		pkg_kln_trg.update_adr (l_cube_rowid, r_adr_old, r_adr_new);
+	ELSIF DELETING THEN
+		pkg_kln_trg.delete_adr (l_cube_rowid, r_adr_old);
+	END IF;
+END;
+/
+SHOW ERRORS
+
+CREATE OR REPLACE VIEW v_produkt AS 
+	SELECT
+		cube_id,
+		cube_tsg_type,
+		cube_tsg_soort,
+		cube_tsg_soort1,
 		code,
-		naam,
-		omschrijving
-	FROM t_prod2
+		prijs,
+		makelaar_naam,
+		bedrag_btw,
+		xk_kln_nummer
+	FROM t_produkt
 /
-CREATE OR REPLACE VIEW v_part2 AS 
+CREATE OR REPLACE VIEW v_onderdeel AS 
 	SELECT
 		cube_id,
+		cube_sequence,
 		cube_level,
+		fk_prd_cube_tsg_type,
 		fk_prd_code,
-		fk_prd_naam,
-		fk_prd_nummer,
-		fk_prd_aaa_naam,
-		fk_pr2_code,
-		fk_pr2_naam,
-		fk_pa2_code,
-		fk_pa2_naam,
+		fk_ond_code,
 		code,
-		naam,
+		prijs,
 		omschrijving,
-		xk_pa2_code,
-		xk_pa2_naam
-	FROM t_part2
+		xf_ond_prd_cube_tsg_type,
+		xf_ond_prd_code,
+		xk_ond_code
+	FROM t_onderdeel
 /
-CREATE OR REPLACE VIEW v_part AS 
+CREATE OR REPLACE VIEW v_onderdeel_deel AS 
 	SELECT
 		cube_id,
-		cube_level,
+		cube_sequence,
+		fk_prd_cube_tsg_type,
 		fk_prd_code,
-		fk_prd_naam,
-		fk_prd_nummer,
-		fk_prd_aaa_naam,
-		fk_prt_code,
-		fk_prt_naam,
+		fk_ond_code,
 		code,
 		naam,
-		omschrijving,
-		xk_prt_code,
-		xk_prt_naam
-	FROM t_part
+		xf_ond_prd_cube_tsg_type,
+		xf_ond_prd_code,
+		xk_ond_code
+	FROM t_onderdeel_deel
+/
+CREATE OR REPLACE VIEW v_onderdeel_deel_deel AS 
+	SELECT
+		cube_id,
+		cube_sequence,
+		fk_prd_cube_tsg_type,
+		fk_prd_code,
+		fk_ond_code,
+		fk_odd_code,
+		code,
+		naam,
+		xf_ond_prd_cube_tsg_type,
+		xf_ond_prd_code,
+		xk_ond_code,
+		xf_ond_prd_cube_tsg_type_3,
+		xf_ond_prd_code_3,
+		xk_ond_code_3,
+		xf_ond_prd_cube_tsg_type_1,
+		xf_ond_prd_code_1,
+		xk_ond_code_1,
+		xf_ond_prd_cube_tsg_type_2,
+		xf_ond_prd_code_2,
+		xk_ond_code_2
+	FROM t_onderdeel_deel_deel
 /
 
 CREATE OR REPLACE PACKAGE pkg_prd_trg IS
 	FUNCTION cube_trg_cubetest RETURN VARCHAR2;
-	PROCEDURE insert_prd (p_prd IN OUT NOCOPY v_prod%ROWTYPE);
-	PROCEDURE update_prd (p_cube_rowid IN UROWID, p_prd_old IN OUT NOCOPY v_prod%ROWTYPE, p_prd_new IN OUT NOCOPY v_prod%ROWTYPE);
-	PROCEDURE delete_prd (p_cube_rowid IN UROWID, p_prd IN OUT NOCOPY v_prod%ROWTYPE);
-	PROCEDURE insert_pr2 (p_pr2 IN OUT NOCOPY v_prod2%ROWTYPE);
-	PROCEDURE update_pr2 (p_cube_rowid IN UROWID, p_pr2_old IN OUT NOCOPY v_prod2%ROWTYPE, p_pr2_new IN OUT NOCOPY v_prod2%ROWTYPE);
-	PROCEDURE delete_pr2 (p_cube_rowid IN UROWID, p_pr2 IN OUT NOCOPY v_prod2%ROWTYPE);
-	PROCEDURE insert_pa2 (p_pa2 IN OUT NOCOPY v_part2%ROWTYPE);
-	PROCEDURE update_pa2 (p_cube_rowid IN UROWID, p_pa2_old IN OUT NOCOPY v_part2%ROWTYPE, p_pa2_new IN OUT NOCOPY v_part2%ROWTYPE);
-	PROCEDURE delete_pa2 (p_cube_rowid IN UROWID, p_pa2 IN OUT NOCOPY v_part2%ROWTYPE);
-	PROCEDURE denorm_pa2_pa2 (p_pa2 IN OUT NOCOPY v_part2%ROWTYPE, p_pa2_in IN v_part2%ROWTYPE);
-	PROCEDURE get_denorm_pa2_pa2 (p_pa2 IN OUT NOCOPY v_part2%ROWTYPE);
-	PROCEDURE insert_prt (p_prt IN OUT NOCOPY v_part%ROWTYPE);
-	PROCEDURE update_prt (p_cube_rowid IN UROWID, p_prt_old IN OUT NOCOPY v_part%ROWTYPE, p_prt_new IN OUT NOCOPY v_part%ROWTYPE);
-	PROCEDURE delete_prt (p_cube_rowid IN UROWID, p_prt IN OUT NOCOPY v_part%ROWTYPE);
-	PROCEDURE denorm_prt_prt (p_prt IN OUT NOCOPY v_part%ROWTYPE, p_prt_in IN v_part%ROWTYPE);
-	PROCEDURE get_denorm_prt_prt (p_prt IN OUT NOCOPY v_part%ROWTYPE);
+	PROCEDURE insert_prd (p_prd IN OUT NOCOPY v_produkt%ROWTYPE);
+	PROCEDURE update_prd (p_cube_rowid IN UROWID, p_prd_old IN OUT NOCOPY v_produkt%ROWTYPE, p_prd_new IN OUT NOCOPY v_produkt%ROWTYPE);
+	PROCEDURE delete_prd (p_cube_rowid IN UROWID, p_prd IN OUT NOCOPY v_produkt%ROWTYPE);
+	PROCEDURE insert_ond (p_ond IN OUT NOCOPY v_onderdeel%ROWTYPE);
+	PROCEDURE update_ond (p_cube_rowid IN UROWID, p_ond_old IN OUT NOCOPY v_onderdeel%ROWTYPE, p_ond_new IN OUT NOCOPY v_onderdeel%ROWTYPE);
+	PROCEDURE delete_ond (p_cube_rowid IN UROWID, p_ond IN OUT NOCOPY v_onderdeel%ROWTYPE);
+	PROCEDURE denorm_ond_ond (p_ond IN OUT NOCOPY v_onderdeel%ROWTYPE, p_ond_in IN v_onderdeel%ROWTYPE);
+	PROCEDURE get_denorm_ond_ond (p_ond IN OUT NOCOPY v_onderdeel%ROWTYPE);
+	PROCEDURE insert_odd (p_odd IN OUT NOCOPY v_onderdeel_deel%ROWTYPE);
+	PROCEDURE update_odd (p_cube_rowid IN UROWID, p_odd_old IN OUT NOCOPY v_onderdeel_deel%ROWTYPE, p_odd_new IN OUT NOCOPY v_onderdeel_deel%ROWTYPE);
+	PROCEDURE delete_odd (p_cube_rowid IN UROWID, p_odd IN OUT NOCOPY v_onderdeel_deel%ROWTYPE);
+	PROCEDURE insert_ddd (p_ddd IN OUT NOCOPY v_onderdeel_deel_deel%ROWTYPE);
+	PROCEDURE update_ddd (p_cube_rowid IN UROWID, p_ddd_old IN OUT NOCOPY v_onderdeel_deel_deel%ROWTYPE, p_ddd_new IN OUT NOCOPY v_onderdeel_deel_deel%ROWTYPE);
+	PROCEDURE delete_ddd (p_cube_rowid IN UROWID, p_ddd IN OUT NOCOPY v_onderdeel_deel_deel%ROWTYPE);
 END;
 /
 SHOW ERRORS;
@@ -651,389 +351,340 @@ CREATE OR REPLACE PACKAGE BODY pkg_prd_trg IS
 		RETURN 'cube_trg_cubetest';
 	END;
 
-	PROCEDURE insert_prd (p_prd IN OUT NOCOPY v_prod%ROWTYPE) IS
+	PROCEDURE insert_prd (p_prd IN OUT NOCOPY v_produkt%ROWTYPE) IS
 	BEGIN
 		p_prd.cube_id := 'PRD-' || TO_CHAR(sq_prd.NEXTVAL,'FM000000000000');
-		INSERT INTO t_prod (
+		INSERT INTO t_produkt (
 			cube_id,
-			cube_tsg_zzz,
-			cube_tsg_yyy,
+			cube_tsg_type,
+			cube_tsg_soort,
+			cube_tsg_soort1,
 			code,
-			naam,
-			nummer,
-			datum,
-			omschrijving,
-			xk_aaa_naam)
+			prijs,
+			makelaar_naam,
+			bedrag_btw,
+			xk_kln_nummer)
 		VALUES (
 			p_prd.cube_id,
-			p_prd.cube_tsg_zzz,
-			p_prd.cube_tsg_yyy,
+			p_prd.cube_tsg_type,
+			p_prd.cube_tsg_soort,
+			p_prd.cube_tsg_soort1,
 			p_prd.code,
-			NVL(p_prd.naam,' '),
-			NVL(p_prd.nummer,0),
-			p_prd.datum,
-			p_prd.omschrijving,
-			NVL(p_prd.xk_aaa_naam,' '));
+			p_prd.prijs,
+			p_prd.makelaar_naam,
+			p_prd.bedrag_btw,
+			p_prd.xk_kln_nummer);
 	END;
 
-	PROCEDURE update_prd (p_cube_rowid UROWID, p_prd_old IN OUT NOCOPY v_prod%ROWTYPE, p_prd_new IN OUT NOCOPY v_prod%ROWTYPE) IS
+	PROCEDURE update_prd (p_cube_rowid UROWID, p_prd_old IN OUT NOCOPY v_produkt%ROWTYPE, p_prd_new IN OUT NOCOPY v_produkt%ROWTYPE) IS
 	BEGIN
-		UPDATE t_prod SET 
-			datum = p_prd_new.datum,
-			omschrijving = p_prd_new.omschrijving
+		UPDATE t_produkt SET 
+			prijs = p_prd_new.prijs,
+			makelaar_naam = p_prd_new.makelaar_naam,
+			bedrag_btw = p_prd_new.bedrag_btw,
+			xk_kln_nummer = p_prd_new.xk_kln_nummer
 		WHERE rowid = p_cube_rowid;
 	END;
 
-	PROCEDURE delete_prd (p_cube_rowid UROWID, p_prd IN OUT NOCOPY v_prod%ROWTYPE) IS
+	PROCEDURE delete_prd (p_cube_rowid UROWID, p_prd IN OUT NOCOPY v_produkt%ROWTYPE) IS
 	BEGIN
-		DELETE t_prod 
+		DELETE t_produkt 
 		WHERE rowid = p_cube_rowid;
 	END;
 
-	PROCEDURE insert_pr2 (p_pr2 IN OUT NOCOPY v_prod2%ROWTYPE) IS
+	PROCEDURE insert_ond (p_ond IN OUT NOCOPY v_onderdeel%ROWTYPE) IS
 	BEGIN
-		p_pr2.cube_id := 'PR2-' || TO_CHAR(sq_pr2.NEXTVAL,'FM000000000000');
-		INSERT INTO t_prod2 (
+		p_ond.cube_id := 'OND-' || TO_CHAR(sq_ond.NEXTVAL,'FM000000000000');
+		get_denorm_ond_ond (p_ond);
+		INSERT INTO t_onderdeel (
 			cube_id,
-			fk_prd_code,
-			fk_prd_naam,
-			fk_prd_nummer,
-			fk_prd_aaa_naam,
-			code,
-			naam,
-			omschrijving)
-		VALUES (
-			p_pr2.cube_id,
-			p_pr2.fk_prd_code,
-			p_pr2.fk_prd_naam,
-			p_pr2.fk_prd_nummer,
-			p_pr2.fk_prd_aaa_naam,
-			p_pr2.code,
-			p_pr2.naam,
-			p_pr2.omschrijving);
-	END;
-
-	PROCEDURE update_pr2 (p_cube_rowid UROWID, p_pr2_old IN OUT NOCOPY v_prod2%ROWTYPE, p_pr2_new IN OUT NOCOPY v_prod2%ROWTYPE) IS
-	BEGIN
-		UPDATE t_prod2 SET 
-			omschrijving = p_pr2_new.omschrijving
-		WHERE rowid = p_cube_rowid;
-	END;
-
-	PROCEDURE delete_pr2 (p_cube_rowid UROWID, p_pr2 IN OUT NOCOPY v_prod2%ROWTYPE) IS
-	BEGIN
-		DELETE t_prod2 
-		WHERE rowid = p_cube_rowid;
-	END;
-
-	PROCEDURE insert_pa2 (p_pa2 IN OUT NOCOPY v_part2%ROWTYPE) IS
-	BEGIN
-		p_pa2.cube_id := 'PA2-' || TO_CHAR(sq_pa2.NEXTVAL,'FM000000000000');
-		IF p_pa2.fk_pa2_code IS NOT NULL OR p_pa2.fk_pa2_naam IS NOT NULL  THEN
-			-- Recursive
-			SELECT fk_prd_code, fk_prd_naam, fk_prd_nummer, fk_prd_aaa_naam, fk_pr2_code, fk_pr2_naam
-			  INTO p_pa2.fk_prd_code, p_pa2.fk_prd_naam, p_pa2.fk_prd_nummer, p_pa2.fk_prd_aaa_naam, p_pa2.fk_pr2_code, p_pa2.fk_pr2_naam
-			FROM t_part2
-			WHERE fk_pr2_code = p_pa2.fk_pr2_code
-			  AND fk_pr2_naam = p_pa2.fk_pr2_naam
-			  AND code = p_pa2.fk_pa2_code
-			  AND naam = p_pa2.fk_pa2_naam;
-		ELSE
-			-- Parent
-			SELECT fk_prd_code, fk_prd_naam, fk_prd_nummer, fk_prd_aaa_naam
-			  INTO p_pa2.fk_prd_code, p_pa2.fk_prd_naam, p_pa2.fk_prd_nummer, p_pa2.fk_prd_aaa_naam
-			FROM t_prod2
-			WHERE code = p_pa2.fk_pr2_code
-			  AND naam = p_pa2.fk_pr2_naam;
-			
-		END IF;
-		get_denorm_pa2_pa2 (p_pa2);
-		INSERT INTO t_part2 (
-			cube_id,
+			cube_sequence,
 			cube_level,
+			fk_prd_cube_tsg_type,
 			fk_prd_code,
-			fk_prd_naam,
-			fk_prd_nummer,
-			fk_prd_aaa_naam,
-			fk_pr2_code,
-			fk_pr2_naam,
-			fk_pa2_code,
-			fk_pa2_naam,
+			fk_ond_code,
 			code,
-			naam,
+			prijs,
 			omschrijving,
-			xk_pa2_code,
-			xk_pa2_naam)
+			xf_ond_prd_cube_tsg_type,
+			xf_ond_prd_code,
+			xk_ond_code)
 		VALUES (
-			p_pa2.cube_id,
-			p_pa2.cube_level,
-			p_pa2.fk_prd_code,
-			p_pa2.fk_prd_naam,
-			p_pa2.fk_prd_nummer,
-			p_pa2.fk_prd_aaa_naam,
-			p_pa2.fk_pr2_code,
-			p_pa2.fk_pr2_naam,
-			p_pa2.fk_pa2_code,
-			p_pa2.fk_pa2_naam,
-			p_pa2.code,
-			p_pa2.naam,
-			p_pa2.omschrijving,
-			p_pa2.xk_pa2_code,
-			p_pa2.xk_pa2_naam);
+			p_ond.cube_id,
+			p_ond.cube_sequence,
+			p_ond.cube_level,
+			p_ond.fk_prd_cube_tsg_type,
+			p_ond.fk_prd_code,
+			p_ond.fk_ond_code,
+			p_ond.code,
+			p_ond.prijs,
+			p_ond.omschrijving,
+			p_ond.xf_ond_prd_cube_tsg_type,
+			p_ond.xf_ond_prd_code,
+			p_ond.xk_ond_code);
 	END;
 
-	PROCEDURE update_pa2 (p_cube_rowid UROWID, p_pa2_old IN OUT NOCOPY v_part2%ROWTYPE, p_pa2_new IN OUT NOCOPY v_part2%ROWTYPE) IS
+	PROCEDURE update_ond (p_cube_rowid UROWID, p_ond_old IN OUT NOCOPY v_onderdeel%ROWTYPE, p_ond_new IN OUT NOCOPY v_onderdeel%ROWTYPE) IS
 
-		CURSOR c_pa2 IS
-			SELECT ROWID cube_row_id, pa2.* FROM v_part2 pa2
-			WHERE fk_pa2_code = p_pa2_old.code
-			  AND fk_pa2_naam = p_pa2_old.naam;
+		CURSOR c_ond IS
+			SELECT ROWID cube_row_id, ond.* FROM v_onderdeel ond
+			WHERE fk_prd_cube_tsg_type = p_ond_old.fk_prd_cube_tsg_type
+			  AND fk_prd_code = p_ond_old.fk_prd_code
+			  AND fk_ond_code = p_ond_old.code;
 		
-		l_pa2_rowid UROWID;
-		r_pa2_old v_part2%ROWTYPE;
-		r_pa2_new v_part2%ROWTYPE;
+		l_ond_rowid UROWID;
+		r_ond_old v_onderdeel%ROWTYPE;
+		r_ond_new v_onderdeel%ROWTYPE;
 	BEGIN
-		IF NVL(p_pa2_old.fk_pa2_code,' ') <> NVL(p_pa2_new.fk_pa2_code,' ') 
-		OR NVL(p_pa2_old.fk_pa2_naam,' ') <> NVL(p_pa2_new.fk_pa2_naam,' ')  THEN
-			get_denorm_pa2_pa2 (p_pa2_new);
+		IF NVL(p_ond_old.fk_ond_code,' ') <> NVL(p_ond_new.fk_ond_code,' ')  THEN
+			get_denorm_ond_ond (p_ond_new);
 		END IF;
-		UPDATE t_part2 SET 
-			cube_level = p_pa2_new.cube_level,
-			omschrijving = p_pa2_new.omschrijving,
-			xk_pa2_code = p_pa2_new.xk_pa2_code,
-			xk_pa2_naam = p_pa2_new.xk_pa2_naam
+		UPDATE t_onderdeel SET 
+			cube_sequence = p_ond_new.cube_sequence,
+			cube_level = p_ond_new.cube_level,
+			prijs = p_ond_new.prijs,
+			omschrijving = p_ond_new.omschrijving,
+			xf_ond_prd_cube_tsg_type = p_ond_new.xf_ond_prd_cube_tsg_type,
+			xf_ond_prd_code = p_ond_new.xf_ond_prd_code,
+			xk_ond_code = p_ond_new.xk_ond_code
 		WHERE rowid = p_cube_rowid;
-		IF NVL(p_pa2_old.cube_level,0) <> NVL(p_pa2_new.cube_level,0) THEN
-			OPEN c_pa2;
+		IF NVL(p_ond_old.cube_level,0) <> NVL(p_ond_new.cube_level,0) THEN
+			OPEN c_ond;
 			LOOP
-				FETCH c_pa2 INTO
-					l_pa2_rowid,
-					r_pa2_old.cube_id,
-					r_pa2_old.cube_level,
-					r_pa2_old.fk_prd_code,
-					r_pa2_old.fk_prd_naam,
-					r_pa2_old.fk_prd_nummer,
-					r_pa2_old.fk_prd_aaa_naam,
-					r_pa2_old.fk_pr2_code,
-					r_pa2_old.fk_pr2_naam,
-					r_pa2_old.fk_pa2_code,
-					r_pa2_old.fk_pa2_naam,
-					r_pa2_old.code,
-					r_pa2_old.naam,
-					r_pa2_old.omschrijving,
-					r_pa2_old.xk_pa2_code,
-					r_pa2_old.xk_pa2_naam;
-				EXIT WHEN c_pa2%NOTFOUND;
-				r_pa2_new := r_pa2_old;
-				denorm_pa2_pa2 (r_pa2_new, p_pa2_new);
-				update_pa2 (l_pa2_rowid, r_pa2_old, r_pa2_new);
+				FETCH c_ond INTO
+					l_ond_rowid,
+					r_ond_old.cube_id,
+					r_ond_old.cube_sequence,
+					r_ond_old.cube_level,
+					r_ond_old.fk_prd_cube_tsg_type,
+					r_ond_old.fk_prd_code,
+					r_ond_old.fk_ond_code,
+					r_ond_old.code,
+					r_ond_old.prijs,
+					r_ond_old.omschrijving,
+					r_ond_old.xf_ond_prd_cube_tsg_type,
+					r_ond_old.xf_ond_prd_code,
+					r_ond_old.xk_ond_code;
+				EXIT WHEN c_ond%NOTFOUND;
+				r_ond_new := r_ond_old;
+				denorm_ond_ond (r_ond_new, p_ond_new);
+				update_ond (l_ond_rowid, r_ond_old, r_ond_new);
 			END LOOP;
-			CLOSE c_pa2;
+			CLOSE c_ond;
 		END IF;
 	END;
 
-	PROCEDURE delete_pa2 (p_cube_rowid UROWID, p_pa2 IN OUT NOCOPY v_part2%ROWTYPE) IS
+	PROCEDURE delete_ond (p_cube_rowid UROWID, p_ond IN OUT NOCOPY v_onderdeel%ROWTYPE) IS
 	BEGIN
-		DELETE t_part2 
+		DELETE t_onderdeel 
 		WHERE rowid = p_cube_rowid;
 	END;
 
-	PROCEDURE denorm_pa2_pa2 (p_pa2 IN OUT NOCOPY v_part2%ROWTYPE, p_pa2_in IN v_part2%ROWTYPE) IS
+	PROCEDURE denorm_ond_ond (p_ond IN OUT NOCOPY v_onderdeel%ROWTYPE, p_ond_in IN v_onderdeel%ROWTYPE) IS
 	BEGIN
-		p_pa2.cube_level := NVL (p_pa2_in.cube_level, 0) + 1;
+		p_ond.cube_level := NVL (p_ond_in.cube_level, 0) + 1;
 	END;
 
-	PROCEDURE get_denorm_pa2_pa2 (p_pa2 IN OUT NOCOPY v_part2%ROWTYPE) IS
+	PROCEDURE get_denorm_ond_ond (p_ond IN OUT NOCOPY v_onderdeel%ROWTYPE) IS
 
-		CURSOR c_pa2 IS 
-			SELECT * FROM v_part2
-			WHERE code = p_pa2.fk_pa2_code
-			  AND naam = p_pa2.fk_pa2_naam;
+		CURSOR c_ond IS 
+			SELECT * FROM v_onderdeel
+			WHERE fk_prd_cube_tsg_type = p_ond.fk_prd_cube_tsg_type
+			  AND fk_prd_code = p_ond.fk_prd_code
+			  AND code = p_ond.fk_ond_code;
 		
-		r_pa2 v_part2%ROWTYPE;
+		r_ond v_onderdeel%ROWTYPE;
 	BEGIN
-		IF p_pa2.fk_pa2_code IS NOT NULL AND p_pa2.fk_pa2_naam IS NOT NULL THEN
-			OPEN c_pa2;
-			FETCH c_pa2 INTO r_pa2;
-			IF c_pa2%NOTFOUND THEN
-				r_pa2 := NULL;
+		IF p_ond.fk_ond_code IS NOT NULL THEN
+			OPEN c_ond;
+			FETCH c_ond INTO r_ond;
+			IF c_ond%NOTFOUND THEN
+				r_ond := NULL;
 			END IF;
-			CLOSE c_pa2;
+			CLOSE c_ond;
 		ELSE
-			r_pa2 := NULL;
+			r_ond := NULL;
 		END IF;
-		denorm_pa2_pa2 (p_pa2, r_pa2);
+		denorm_ond_ond (p_ond, r_ond);
 	END;
 
-	PROCEDURE insert_prt (p_prt IN OUT NOCOPY v_part%ROWTYPE) IS
+	PROCEDURE insert_odd (p_odd IN OUT NOCOPY v_onderdeel_deel%ROWTYPE) IS
 	BEGIN
-		p_prt.cube_id := 'PRT-' || TO_CHAR(sq_prt.NEXTVAL,'FM000000000000');
-		IF p_prt.fk_prt_code IS NOT NULL OR p_prt.fk_prt_naam IS NOT NULL  THEN
-			-- Recursive
-			SELECT fk_prd_code, fk_prd_naam, fk_prd_nummer, fk_prd_aaa_naam
-			  INTO p_prt.fk_prd_code, p_prt.fk_prd_naam, p_prt.fk_prd_nummer, p_prt.fk_prd_aaa_naam
-			FROM t_part
-			WHERE fk_prd_code = p_prt.fk_prd_code
-			  AND fk_prd_naam = p_prt.fk_prd_naam
-			  AND fk_prd_nummer = p_prt.fk_prd_nummer
-			  AND fk_prd_aaa_naam = p_prt.fk_prd_aaa_naam
-			  AND code = p_prt.fk_prt_code
-			  AND naam = p_prt.fk_prt_naam;
-		END IF;
-		get_denorm_prt_prt (p_prt);
-		INSERT INTO t_part (
+		p_odd.cube_id := 'ODD-' || TO_CHAR(sq_odd.NEXTVAL,'FM000000000000');
+		INSERT INTO t_onderdeel_deel (
 			cube_id,
-			cube_level,
+			cube_sequence,
+			fk_prd_cube_tsg_type,
 			fk_prd_code,
-			fk_prd_naam,
-			fk_prd_nummer,
-			fk_prd_aaa_naam,
-			fk_prt_code,
-			fk_prt_naam,
+			fk_ond_code,
 			code,
 			naam,
-			omschrijving,
-			xk_prt_code,
-			xk_prt_naam)
+			xf_ond_prd_cube_tsg_type,
+			xf_ond_prd_code,
+			xk_ond_code)
 		VALUES (
-			p_prt.cube_id,
-			p_prt.cube_level,
-			p_prt.fk_prd_code,
-			p_prt.fk_prd_naam,
-			p_prt.fk_prd_nummer,
-			p_prt.fk_prd_aaa_naam,
-			p_prt.fk_prt_code,
-			p_prt.fk_prt_naam,
-			p_prt.code,
-			p_prt.naam,
-			p_prt.omschrijving,
-			p_prt.xk_prt_code,
-			p_prt.xk_prt_naam);
+			p_odd.cube_id,
+			p_odd.cube_sequence,
+			p_odd.fk_prd_cube_tsg_type,
+			p_odd.fk_prd_code,
+			p_odd.fk_ond_code,
+			p_odd.code,
+			p_odd.naam,
+			p_odd.xf_ond_prd_cube_tsg_type,
+			p_odd.xf_ond_prd_code,
+			p_odd.xk_ond_code);
 	END;
 
-	PROCEDURE update_prt (p_cube_rowid UROWID, p_prt_old IN OUT NOCOPY v_part%ROWTYPE, p_prt_new IN OUT NOCOPY v_part%ROWTYPE) IS
-
-		CURSOR c_prt IS
-			SELECT ROWID cube_row_id, prt.* FROM v_part prt
-			WHERE fk_prt_code = p_prt_old.code
-			  AND fk_prt_naam = p_prt_old.naam;
-		
-		l_prt_rowid UROWID;
-		r_prt_old v_part%ROWTYPE;
-		r_prt_new v_part%ROWTYPE;
+	PROCEDURE update_odd (p_cube_rowid UROWID, p_odd_old IN OUT NOCOPY v_onderdeel_deel%ROWTYPE, p_odd_new IN OUT NOCOPY v_onderdeel_deel%ROWTYPE) IS
 	BEGIN
-		IF NVL(p_prt_old.fk_prt_code,' ') <> NVL(p_prt_new.fk_prt_code,' ') 
-		OR NVL(p_prt_old.fk_prt_naam,' ') <> NVL(p_prt_new.fk_prt_naam,' ')  THEN
-			get_denorm_prt_prt (p_prt_new);
-		END IF;
-		UPDATE t_part SET 
-			cube_level = p_prt_new.cube_level,
-			omschrijving = p_prt_new.omschrijving,
-			xk_prt_code = p_prt_new.xk_prt_code,
-			xk_prt_naam = p_prt_new.xk_prt_naam
-		WHERE rowid = p_cube_rowid;
-		IF NVL(p_prt_old.cube_level,0) <> NVL(p_prt_new.cube_level,0) THEN
-			OPEN c_prt;
-			LOOP
-				FETCH c_prt INTO
-					l_prt_rowid,
-					r_prt_old.cube_id,
-					r_prt_old.cube_level,
-					r_prt_old.fk_prd_code,
-					r_prt_old.fk_prd_naam,
-					r_prt_old.fk_prd_nummer,
-					r_prt_old.fk_prd_aaa_naam,
-					r_prt_old.fk_prt_code,
-					r_prt_old.fk_prt_naam,
-					r_prt_old.code,
-					r_prt_old.naam,
-					r_prt_old.omschrijving,
-					r_prt_old.xk_prt_code,
-					r_prt_old.xk_prt_naam;
-				EXIT WHEN c_prt%NOTFOUND;
-				r_prt_new := r_prt_old;
-				denorm_prt_prt (r_prt_new, p_prt_new);
-				update_prt (l_prt_rowid, r_prt_old, r_prt_new);
-			END LOOP;
-			CLOSE c_prt;
-		END IF;
-	END;
-
-	PROCEDURE delete_prt (p_cube_rowid UROWID, p_prt IN OUT NOCOPY v_part%ROWTYPE) IS
-	BEGIN
-		DELETE t_part 
+		UPDATE t_onderdeel_deel SET 
+			cube_sequence = p_odd_new.cube_sequence,
+			naam = p_odd_new.naam,
+			xf_ond_prd_cube_tsg_type = p_odd_new.xf_ond_prd_cube_tsg_type,
+			xf_ond_prd_code = p_odd_new.xf_ond_prd_code,
+			xk_ond_code = p_odd_new.xk_ond_code
 		WHERE rowid = p_cube_rowid;
 	END;
 
-	PROCEDURE denorm_prt_prt (p_prt IN OUT NOCOPY v_part%ROWTYPE, p_prt_in IN v_part%ROWTYPE) IS
+	PROCEDURE delete_odd (p_cube_rowid UROWID, p_odd IN OUT NOCOPY v_onderdeel_deel%ROWTYPE) IS
 	BEGIN
-		p_prt.cube_level := NVL (p_prt_in.cube_level, 0) + 1;
+		DELETE t_onderdeel_deel 
+		WHERE rowid = p_cube_rowid;
 	END;
 
-	PROCEDURE get_denorm_prt_prt (p_prt IN OUT NOCOPY v_part%ROWTYPE) IS
-
-		CURSOR c_prt IS 
-			SELECT * FROM v_part
-			WHERE code = p_prt.fk_prt_code
-			  AND naam = p_prt.fk_prt_naam;
-		
-		r_prt v_part%ROWTYPE;
+	PROCEDURE insert_ddd (p_ddd IN OUT NOCOPY v_onderdeel_deel_deel%ROWTYPE) IS
 	BEGIN
-		IF p_prt.fk_prt_code IS NOT NULL AND p_prt.fk_prt_naam IS NOT NULL THEN
-			OPEN c_prt;
-			FETCH c_prt INTO r_prt;
-			IF c_prt%NOTFOUND THEN
-				r_prt := NULL;
-			END IF;
-			CLOSE c_prt;
-		ELSE
-			r_prt := NULL;
-		END IF;
-		denorm_prt_prt (p_prt, r_prt);
+		p_ddd.cube_id := 'DDD-' || TO_CHAR(sq_ddd.NEXTVAL,'FM000000000000');
+		SELECT fk_prd_cube_tsg_type, fk_prd_code, fk_ond_code
+		  INTO p_ddd.fk_prd_cube_tsg_type, p_ddd.fk_prd_code, p_ddd.fk_ond_code
+		FROM t_onderdeel_deel
+		WHERE code = p_ddd.fk_odd_code;
+		INSERT INTO t_onderdeel_deel_deel (
+			cube_id,
+			cube_sequence,
+			fk_prd_cube_tsg_type,
+			fk_prd_code,
+			fk_ond_code,
+			fk_odd_code,
+			code,
+			naam,
+			xf_ond_prd_cube_tsg_type,
+			xf_ond_prd_code,
+			xk_ond_code,
+			xf_ond_prd_cube_tsg_type_3,
+			xf_ond_prd_code_3,
+			xk_ond_code_3,
+			xf_ond_prd_cube_tsg_type_1,
+			xf_ond_prd_code_1,
+			xk_ond_code_1,
+			xf_ond_prd_cube_tsg_type_2,
+			xf_ond_prd_code_2,
+			xk_ond_code_2)
+		VALUES (
+			p_ddd.cube_id,
+			p_ddd.cube_sequence,
+			p_ddd.fk_prd_cube_tsg_type,
+			p_ddd.fk_prd_code,
+			p_ddd.fk_ond_code,
+			p_ddd.fk_odd_code,
+			p_ddd.code,
+			p_ddd.naam,
+			p_ddd.xf_ond_prd_cube_tsg_type,
+			p_ddd.xf_ond_prd_code,
+			p_ddd.xk_ond_code,
+			p_ddd.xf_ond_prd_cube_tsg_type_3,
+			p_ddd.xf_ond_prd_code_3,
+			p_ddd.xk_ond_code_3,
+			p_ddd.xf_ond_prd_cube_tsg_type_1,
+			p_ddd.xf_ond_prd_code_1,
+			p_ddd.xk_ond_code_1,
+			p_ddd.xf_ond_prd_cube_tsg_type_2,
+			p_ddd.xf_ond_prd_code_2,
+			p_ddd.xk_ond_code_2);
+	END;
+
+	PROCEDURE update_ddd (p_cube_rowid UROWID, p_ddd_old IN OUT NOCOPY v_onderdeel_deel_deel%ROWTYPE, p_ddd_new IN OUT NOCOPY v_onderdeel_deel_deel%ROWTYPE) IS
+	BEGIN
+		UPDATE t_onderdeel_deel_deel SET 
+			cube_sequence = p_ddd_new.cube_sequence,
+			naam = p_ddd_new.naam,
+			xf_ond_prd_cube_tsg_type = p_ddd_new.xf_ond_prd_cube_tsg_type,
+			xf_ond_prd_code = p_ddd_new.xf_ond_prd_code,
+			xk_ond_code = p_ddd_new.xk_ond_code,
+			xf_ond_prd_cube_tsg_type_3 = p_ddd_new.xf_ond_prd_cube_tsg_type_3,
+			xf_ond_prd_code_3 = p_ddd_new.xf_ond_prd_code_3,
+			xk_ond_code_3 = p_ddd_new.xk_ond_code_3,
+			xf_ond_prd_cube_tsg_type_1 = p_ddd_new.xf_ond_prd_cube_tsg_type_1,
+			xf_ond_prd_code_1 = p_ddd_new.xf_ond_prd_code_1,
+			xk_ond_code_1 = p_ddd_new.xk_ond_code_1,
+			xf_ond_prd_cube_tsg_type_2 = p_ddd_new.xf_ond_prd_cube_tsg_type_2,
+			xf_ond_prd_code_2 = p_ddd_new.xf_ond_prd_code_2,
+			xk_ond_code_2 = p_ddd_new.xk_ond_code_2
+		WHERE rowid = p_cube_rowid;
+	END;
+
+	PROCEDURE delete_ddd (p_cube_rowid UROWID, p_ddd IN OUT NOCOPY v_onderdeel_deel_deel%ROWTYPE) IS
+	BEGIN
+		DELETE t_onderdeel_deel_deel 
+		WHERE rowid = p_cube_rowid;
 	END;
 END;
 /
 SHOW ERRORS;
 
 CREATE OR REPLACE TRIGGER trg_prd
-INSTEAD OF INSERT OR DELETE OR UPDATE ON v_prod
+INSTEAD OF INSERT OR DELETE OR UPDATE ON v_produkt
 FOR EACH ROW
 DECLARE
 	l_cube_rowid UROWID;
-	r_prd_new v_prod%ROWTYPE;
-	r_prd_old v_prod%ROWTYPE;
+	r_prd_new v_produkt%ROWTYPE;
+	r_prd_old v_produkt%ROWTYPE;
 BEGIN
 	IF INSERTING OR UPDATING THEN
-		r_prd_new.cube_tsg_zzz := :NEW.cube_tsg_zzz;
-		r_prd_new.cube_tsg_yyy := :NEW.cube_tsg_yyy;
+		IF :NEW.cube_tsg_type = ' ' THEN
+			r_prd_new.cube_tsg_type := ' ';
+		ELSE
+			r_prd_new.cube_tsg_type := REPLACE(:NEW.cube_tsg_type,' ','_');
+		END IF;
+		IF :NEW.cube_tsg_soort = ' ' THEN
+			r_prd_new.cube_tsg_soort := ' ';
+		ELSE
+			r_prd_new.cube_tsg_soort := REPLACE(:NEW.cube_tsg_soort,' ','_');
+		END IF;
+		IF :NEW.cube_tsg_soort1 = ' ' THEN
+			r_prd_new.cube_tsg_soort1 := ' ';
+		ELSE
+			r_prd_new.cube_tsg_soort1 := REPLACE(:NEW.cube_tsg_soort1,' ','_');
+		END IF;
 		IF :NEW.code = ' ' THEN
 			r_prd_new.code := ' ';
 		ELSE
 			r_prd_new.code := REPLACE(:NEW.code,' ','_');
 		END IF;
-		r_prd_new.naam := :NEW.naam;
-		r_prd_new.nummer := :NEW.nummer;
-		r_prd_new.datum := :NEW.datum;
-		r_prd_new.omschrijving := :NEW.omschrijving;
-		r_prd_new.xk_aaa_naam := :NEW.xk_aaa_naam;
+		r_prd_new.prijs := :NEW.prijs;
+		r_prd_new.makelaar_naam := :NEW.makelaar_naam;
+		r_prd_new.bedrag_btw := :NEW.bedrag_btw;
+		IF :NEW.xk_kln_nummer = ' ' THEN
+			r_prd_new.xk_kln_nummer := ' ';
+		ELSE
+			r_prd_new.xk_kln_nummer := REPLACE(:NEW.xk_kln_nummer,' ','_');
+		END IF;
 	END IF;
 	IF UPDATING THEN
 		r_prd_new.cube_id := :OLD.cube_id;
 	END IF;
 	IF UPDATING OR DELETING THEN
-		SELECT rowid INTO l_cube_rowid FROM t_prod
-		WHERE code = :OLD.code
-		  AND naam = :OLD.naam
-		  AND nummer = :OLD.nummer
-		  AND xk_aaa_naam = :OLD.xk_aaa_naam;
-		r_prd_old.cube_tsg_zzz := :OLD.cube_tsg_zzz;
-		r_prd_old.cube_tsg_yyy := :OLD.cube_tsg_yyy;
+		SELECT rowid INTO l_cube_rowid FROM t_produkt
+		WHERE cube_tsg_type = :OLD.cube_tsg_type
+		  AND code = :OLD.code;
+		r_prd_old.cube_tsg_type := :OLD.cube_tsg_type;
+		r_prd_old.cube_tsg_soort := :OLD.cube_tsg_soort;
+		r_prd_old.cube_tsg_soort1 := :OLD.cube_tsg_soort1;
 		r_prd_old.code := :OLD.code;
-		r_prd_old.naam := :OLD.naam;
-		r_prd_old.nummer := :OLD.nummer;
-		r_prd_old.datum := :OLD.datum;
-		r_prd_old.omschrijving := :OLD.omschrijving;
-		r_prd_old.xk_aaa_naam := :OLD.xk_aaa_naam;
+		r_prd_old.prijs := :OLD.prijs;
+		r_prd_old.makelaar_naam := :OLD.makelaar_naam;
+		r_prd_old.bedrag_btw := :OLD.bedrag_btw;
+		r_prd_old.xk_kln_nummer := :OLD.xk_kln_nummer;
 	END IF;
 
 	IF INSERTING THEN 
@@ -1047,199 +698,533 @@ END;
 /
 SHOW ERRORS
 
-CREATE OR REPLACE TRIGGER trg_pr2
-INSTEAD OF INSERT OR DELETE OR UPDATE ON v_prod2
+CREATE OR REPLACE TRIGGER trg_ond
+INSTEAD OF INSERT OR DELETE OR UPDATE ON v_onderdeel
 FOR EACH ROW
 DECLARE
 	l_cube_rowid UROWID;
-	r_pr2_new v_prod2%ROWTYPE;
-	r_pr2_old v_prod2%ROWTYPE;
+	r_ond_new v_onderdeel%ROWTYPE;
+	r_ond_old v_onderdeel%ROWTYPE;
 BEGIN
 	IF INSERTING OR UPDATING THEN
+		r_ond_new.cube_sequence := :NEW.cube_sequence;
+		IF :NEW.fk_prd_cube_tsg_type = ' ' THEN
+			r_ond_new.fk_prd_cube_tsg_type := ' ';
+		ELSE
+			r_ond_new.fk_prd_cube_tsg_type := REPLACE(:NEW.fk_prd_cube_tsg_type,' ','_');
+		END IF;
 		IF :NEW.fk_prd_code = ' ' THEN
-			r_pr2_new.fk_prd_code := ' ';
+			r_ond_new.fk_prd_code := ' ';
 		ELSE
-			r_pr2_new.fk_prd_code := REPLACE(:NEW.fk_prd_code,' ','_');
+			r_ond_new.fk_prd_code := REPLACE(:NEW.fk_prd_code,' ','_');
 		END IF;
-		r_pr2_new.fk_prd_naam := :NEW.fk_prd_naam;
-		r_pr2_new.fk_prd_nummer := :NEW.fk_prd_nummer;
-		r_pr2_new.fk_prd_aaa_naam := :NEW.fk_prd_aaa_naam;
+		IF :NEW.fk_ond_code = ' ' THEN
+			r_ond_new.fk_ond_code := ' ';
+		ELSE
+			r_ond_new.fk_ond_code := REPLACE(:NEW.fk_ond_code,' ','_');
+		END IF;
 		IF :NEW.code = ' ' THEN
-			r_pr2_new.code := ' ';
+			r_ond_new.code := ' ';
 		ELSE
-			r_pr2_new.code := REPLACE(:NEW.code,' ','_');
+			r_ond_new.code := REPLACE(:NEW.code,' ','_');
 		END IF;
-		r_pr2_new.naam := :NEW.naam;
-		r_pr2_new.omschrijving := :NEW.omschrijving;
+		r_ond_new.prijs := :NEW.prijs;
+		r_ond_new.omschrijving := :NEW.omschrijving;
+		IF :NEW.xf_ond_prd_cube_tsg_type = ' ' THEN
+			r_ond_new.xf_ond_prd_cube_tsg_type := ' ';
+		ELSE
+			r_ond_new.xf_ond_prd_cube_tsg_type := REPLACE(:NEW.xf_ond_prd_cube_tsg_type,' ','_');
+		END IF;
+		IF :NEW.xf_ond_prd_code = ' ' THEN
+			r_ond_new.xf_ond_prd_code := ' ';
+		ELSE
+			r_ond_new.xf_ond_prd_code := REPLACE(:NEW.xf_ond_prd_code,' ','_');
+		END IF;
+		IF :NEW.xk_ond_code = ' ' THEN
+			r_ond_new.xk_ond_code := ' ';
+		ELSE
+			r_ond_new.xk_ond_code := REPLACE(:NEW.xk_ond_code,' ','_');
+		END IF;
 	END IF;
 	IF UPDATING THEN
-		r_pr2_new.cube_id := :OLD.cube_id;
+		r_ond_new.cube_id := :OLD.cube_id;
+		r_ond_new.cube_level := :OLD.cube_level;
 	END IF;
 	IF UPDATING OR DELETING THEN
-		SELECT rowid INTO l_cube_rowid FROM t_prod2
-		WHERE code = :OLD.code
-		  AND naam = :OLD.naam;
-		r_pr2_old.fk_prd_code := :OLD.fk_prd_code;
-		r_pr2_old.fk_prd_naam := :OLD.fk_prd_naam;
-		r_pr2_old.fk_prd_nummer := :OLD.fk_prd_nummer;
-		r_pr2_old.fk_prd_aaa_naam := :OLD.fk_prd_aaa_naam;
-		r_pr2_old.code := :OLD.code;
-		r_pr2_old.naam := :OLD.naam;
-		r_pr2_old.omschrijving := :OLD.omschrijving;
+		SELECT rowid INTO l_cube_rowid FROM t_onderdeel
+		WHERE fk_prd_cube_tsg_type = :OLD.fk_prd_cube_tsg_type
+		  AND fk_prd_code = :OLD.fk_prd_code
+		  AND code = :OLD.code;
+		r_ond_old.cube_sequence := :OLD.cube_sequence;
+		r_ond_old.fk_prd_cube_tsg_type := :OLD.fk_prd_cube_tsg_type;
+		r_ond_old.fk_prd_code := :OLD.fk_prd_code;
+		r_ond_old.fk_ond_code := :OLD.fk_ond_code;
+		r_ond_old.code := :OLD.code;
+		r_ond_old.prijs := :OLD.prijs;
+		r_ond_old.omschrijving := :OLD.omschrijving;
+		r_ond_old.xf_ond_prd_cube_tsg_type := :OLD.xf_ond_prd_cube_tsg_type;
+		r_ond_old.xf_ond_prd_code := :OLD.xf_ond_prd_code;
+		r_ond_old.xk_ond_code := :OLD.xk_ond_code;
 	END IF;
 
 	IF INSERTING THEN 
-		pkg_prd_trg.insert_pr2 (r_pr2_new);
+		pkg_prd_trg.insert_ond (r_ond_new);
 	ELSIF UPDATING THEN
-		pkg_prd_trg.update_pr2 (l_cube_rowid, r_pr2_old, r_pr2_new);
+		pkg_prd_trg.update_ond (l_cube_rowid, r_ond_old, r_ond_new);
 	ELSIF DELETING THEN
-		pkg_prd_trg.delete_pr2 (l_cube_rowid, r_pr2_old);
+		pkg_prd_trg.delete_ond (l_cube_rowid, r_ond_old);
 	END IF;
 END;
 /
 SHOW ERRORS
 
-CREATE OR REPLACE TRIGGER trg_pa2
-INSTEAD OF INSERT OR DELETE OR UPDATE ON v_part2
+CREATE OR REPLACE TRIGGER trg_odd
+INSTEAD OF INSERT OR DELETE OR UPDATE ON v_onderdeel_deel
 FOR EACH ROW
 DECLARE
 	l_cube_rowid UROWID;
-	r_pa2_new v_part2%ROWTYPE;
-	r_pa2_old v_part2%ROWTYPE;
+	r_odd_new v_onderdeel_deel%ROWTYPE;
+	r_odd_old v_onderdeel_deel%ROWTYPE;
 BEGIN
 	IF INSERTING OR UPDATING THEN
+		r_odd_new.cube_sequence := :NEW.cube_sequence;
+		IF :NEW.fk_prd_cube_tsg_type = ' ' THEN
+			r_odd_new.fk_prd_cube_tsg_type := ' ';
+		ELSE
+			r_odd_new.fk_prd_cube_tsg_type := REPLACE(:NEW.fk_prd_cube_tsg_type,' ','_');
+		END IF;
 		IF :NEW.fk_prd_code = ' ' THEN
-			r_pa2_new.fk_prd_code := ' ';
+			r_odd_new.fk_prd_code := ' ';
 		ELSE
-			r_pa2_new.fk_prd_code := REPLACE(:NEW.fk_prd_code,' ','_');
+			r_odd_new.fk_prd_code := REPLACE(:NEW.fk_prd_code,' ','_');
 		END IF;
-		r_pa2_new.fk_prd_naam := :NEW.fk_prd_naam;
-		r_pa2_new.fk_prd_nummer := :NEW.fk_prd_nummer;
-		r_pa2_new.fk_prd_aaa_naam := :NEW.fk_prd_aaa_naam;
-		IF :NEW.fk_pr2_code = ' ' THEN
-			r_pa2_new.fk_pr2_code := ' ';
+		IF :NEW.fk_ond_code = ' ' THEN
+			r_odd_new.fk_ond_code := ' ';
 		ELSE
-			r_pa2_new.fk_pr2_code := REPLACE(:NEW.fk_pr2_code,' ','_');
+			r_odd_new.fk_ond_code := REPLACE(:NEW.fk_ond_code,' ','_');
 		END IF;
-		r_pa2_new.fk_pr2_naam := :NEW.fk_pr2_naam;
-		IF :NEW.fk_pa2_code = ' ' THEN
-			r_pa2_new.fk_pa2_code := ' ';
-		ELSE
-			r_pa2_new.fk_pa2_code := REPLACE(:NEW.fk_pa2_code,' ','_');
-		END IF;
-		r_pa2_new.fk_pa2_naam := :NEW.fk_pa2_naam;
 		IF :NEW.code = ' ' THEN
-			r_pa2_new.code := ' ';
+			r_odd_new.code := ' ';
 		ELSE
-			r_pa2_new.code := REPLACE(:NEW.code,' ','_');
+			r_odd_new.code := REPLACE(:NEW.code,' ','_');
 		END IF;
-		r_pa2_new.naam := :NEW.naam;
-		r_pa2_new.omschrijving := :NEW.omschrijving;
-		IF :NEW.xk_pa2_code = ' ' THEN
-			r_pa2_new.xk_pa2_code := ' ';
+		r_odd_new.naam := :NEW.naam;
+		IF :NEW.xf_ond_prd_cube_tsg_type = ' ' THEN
+			r_odd_new.xf_ond_prd_cube_tsg_type := ' ';
 		ELSE
-			r_pa2_new.xk_pa2_code := REPLACE(:NEW.xk_pa2_code,' ','_');
+			r_odd_new.xf_ond_prd_cube_tsg_type := REPLACE(:NEW.xf_ond_prd_cube_tsg_type,' ','_');
 		END IF;
-		r_pa2_new.xk_pa2_naam := :NEW.xk_pa2_naam;
+		IF :NEW.xf_ond_prd_code = ' ' THEN
+			r_odd_new.xf_ond_prd_code := ' ';
+		ELSE
+			r_odd_new.xf_ond_prd_code := REPLACE(:NEW.xf_ond_prd_code,' ','_');
+		END IF;
+		IF :NEW.xk_ond_code = ' ' THEN
+			r_odd_new.xk_ond_code := ' ';
+		ELSE
+			r_odd_new.xk_ond_code := REPLACE(:NEW.xk_ond_code,' ','_');
+		END IF;
 	END IF;
 	IF UPDATING THEN
-		r_pa2_new.cube_id := :OLD.cube_id;
-		r_pa2_new.cube_level := :OLD.cube_level;
+		r_odd_new.cube_id := :OLD.cube_id;
 	END IF;
 	IF UPDATING OR DELETING THEN
-		SELECT rowid INTO l_cube_rowid FROM t_part2
-		WHERE code = :OLD.code
-		  AND naam = :OLD.naam;
-		r_pa2_old.fk_prd_code := :OLD.fk_prd_code;
-		r_pa2_old.fk_prd_naam := :OLD.fk_prd_naam;
-		r_pa2_old.fk_prd_nummer := :OLD.fk_prd_nummer;
-		r_pa2_old.fk_prd_aaa_naam := :OLD.fk_prd_aaa_naam;
-		r_pa2_old.fk_pr2_code := :OLD.fk_pr2_code;
-		r_pa2_old.fk_pr2_naam := :OLD.fk_pr2_naam;
-		r_pa2_old.fk_pa2_code := :OLD.fk_pa2_code;
-		r_pa2_old.fk_pa2_naam := :OLD.fk_pa2_naam;
-		r_pa2_old.code := :OLD.code;
-		r_pa2_old.naam := :OLD.naam;
-		r_pa2_old.omschrijving := :OLD.omschrijving;
-		r_pa2_old.xk_pa2_code := :OLD.xk_pa2_code;
-		r_pa2_old.xk_pa2_naam := :OLD.xk_pa2_naam;
+		SELECT rowid INTO l_cube_rowid FROM t_onderdeel_deel
+		WHERE code = :OLD.code;
+		r_odd_old.cube_sequence := :OLD.cube_sequence;
+		r_odd_old.fk_prd_cube_tsg_type := :OLD.fk_prd_cube_tsg_type;
+		r_odd_old.fk_prd_code := :OLD.fk_prd_code;
+		r_odd_old.fk_ond_code := :OLD.fk_ond_code;
+		r_odd_old.code := :OLD.code;
+		r_odd_old.naam := :OLD.naam;
+		r_odd_old.xf_ond_prd_cube_tsg_type := :OLD.xf_ond_prd_cube_tsg_type;
+		r_odd_old.xf_ond_prd_code := :OLD.xf_ond_prd_code;
+		r_odd_old.xk_ond_code := :OLD.xk_ond_code;
 	END IF;
 
 	IF INSERTING THEN 
-		pkg_prd_trg.insert_pa2 (r_pa2_new);
+		pkg_prd_trg.insert_odd (r_odd_new);
 	ELSIF UPDATING THEN
-		pkg_prd_trg.update_pa2 (l_cube_rowid, r_pa2_old, r_pa2_new);
+		pkg_prd_trg.update_odd (l_cube_rowid, r_odd_old, r_odd_new);
 	ELSIF DELETING THEN
-		pkg_prd_trg.delete_pa2 (l_cube_rowid, r_pa2_old);
+		pkg_prd_trg.delete_odd (l_cube_rowid, r_odd_old);
 	END IF;
 END;
 /
 SHOW ERRORS
 
-CREATE OR REPLACE TRIGGER trg_prt
-INSTEAD OF INSERT OR DELETE OR UPDATE ON v_part
+CREATE OR REPLACE TRIGGER trg_ddd
+INSTEAD OF INSERT OR DELETE OR UPDATE ON v_onderdeel_deel_deel
 FOR EACH ROW
 DECLARE
 	l_cube_rowid UROWID;
-	r_prt_new v_part%ROWTYPE;
-	r_prt_old v_part%ROWTYPE;
+	r_ddd_new v_onderdeel_deel_deel%ROWTYPE;
+	r_ddd_old v_onderdeel_deel_deel%ROWTYPE;
 BEGIN
 	IF INSERTING OR UPDATING THEN
+		r_ddd_new.cube_sequence := :NEW.cube_sequence;
+		IF :NEW.fk_prd_cube_tsg_type = ' ' THEN
+			r_ddd_new.fk_prd_cube_tsg_type := ' ';
+		ELSE
+			r_ddd_new.fk_prd_cube_tsg_type := REPLACE(:NEW.fk_prd_cube_tsg_type,' ','_');
+		END IF;
 		IF :NEW.fk_prd_code = ' ' THEN
-			r_prt_new.fk_prd_code := ' ';
+			r_ddd_new.fk_prd_code := ' ';
 		ELSE
-			r_prt_new.fk_prd_code := REPLACE(:NEW.fk_prd_code,' ','_');
+			r_ddd_new.fk_prd_code := REPLACE(:NEW.fk_prd_code,' ','_');
 		END IF;
-		r_prt_new.fk_prd_naam := :NEW.fk_prd_naam;
-		r_prt_new.fk_prd_nummer := :NEW.fk_prd_nummer;
-		r_prt_new.fk_prd_aaa_naam := :NEW.fk_prd_aaa_naam;
-		IF :NEW.fk_prt_code = ' ' THEN
-			r_prt_new.fk_prt_code := ' ';
+		IF :NEW.fk_ond_code = ' ' THEN
+			r_ddd_new.fk_ond_code := ' ';
 		ELSE
-			r_prt_new.fk_prt_code := REPLACE(:NEW.fk_prt_code,' ','_');
+			r_ddd_new.fk_ond_code := REPLACE(:NEW.fk_ond_code,' ','_');
 		END IF;
-		r_prt_new.fk_prt_naam := :NEW.fk_prt_naam;
+		IF :NEW.fk_odd_code = ' ' THEN
+			r_ddd_new.fk_odd_code := ' ';
+		ELSE
+			r_ddd_new.fk_odd_code := REPLACE(:NEW.fk_odd_code,' ','_');
+		END IF;
 		IF :NEW.code = ' ' THEN
-			r_prt_new.code := ' ';
+			r_ddd_new.code := ' ';
 		ELSE
-			r_prt_new.code := REPLACE(:NEW.code,' ','_');
+			r_ddd_new.code := REPLACE(:NEW.code,' ','_');
 		END IF;
-		r_prt_new.naam := :NEW.naam;
-		r_prt_new.omschrijving := :NEW.omschrijving;
-		IF :NEW.xk_prt_code = ' ' THEN
-			r_prt_new.xk_prt_code := ' ';
+		r_ddd_new.naam := :NEW.naam;
+		IF :NEW.xf_ond_prd_cube_tsg_type = ' ' THEN
+			r_ddd_new.xf_ond_prd_cube_tsg_type := ' ';
 		ELSE
-			r_prt_new.xk_prt_code := REPLACE(:NEW.xk_prt_code,' ','_');
+			r_ddd_new.xf_ond_prd_cube_tsg_type := REPLACE(:NEW.xf_ond_prd_cube_tsg_type,' ','_');
 		END IF;
-		r_prt_new.xk_prt_naam := :NEW.xk_prt_naam;
+		IF :NEW.xf_ond_prd_code = ' ' THEN
+			r_ddd_new.xf_ond_prd_code := ' ';
+		ELSE
+			r_ddd_new.xf_ond_prd_code := REPLACE(:NEW.xf_ond_prd_code,' ','_');
+		END IF;
+		IF :NEW.xk_ond_code = ' ' THEN
+			r_ddd_new.xk_ond_code := ' ';
+		ELSE
+			r_ddd_new.xk_ond_code := REPLACE(:NEW.xk_ond_code,' ','_');
+		END IF;
+		IF :NEW.xf_ond_prd_cube_tsg_type_3 = ' ' THEN
+			r_ddd_new.xf_ond_prd_cube_tsg_type_3 := ' ';
+		ELSE
+			r_ddd_new.xf_ond_prd_cube_tsg_type_3 := REPLACE(:NEW.xf_ond_prd_cube_tsg_type_3,' ','_');
+		END IF;
+		IF :NEW.xf_ond_prd_code_3 = ' ' THEN
+			r_ddd_new.xf_ond_prd_code_3 := ' ';
+		ELSE
+			r_ddd_new.xf_ond_prd_code_3 := REPLACE(:NEW.xf_ond_prd_code_3,' ','_');
+		END IF;
+		IF :NEW.xk_ond_code_3 = ' ' THEN
+			r_ddd_new.xk_ond_code_3 := ' ';
+		ELSE
+			r_ddd_new.xk_ond_code_3 := REPLACE(:NEW.xk_ond_code_3,' ','_');
+		END IF;
+		IF :NEW.xf_ond_prd_cube_tsg_type_1 = ' ' THEN
+			r_ddd_new.xf_ond_prd_cube_tsg_type_1 := ' ';
+		ELSE
+			r_ddd_new.xf_ond_prd_cube_tsg_type_1 := REPLACE(:NEW.xf_ond_prd_cube_tsg_type_1,' ','_');
+		END IF;
+		IF :NEW.xf_ond_prd_code_1 = ' ' THEN
+			r_ddd_new.xf_ond_prd_code_1 := ' ';
+		ELSE
+			r_ddd_new.xf_ond_prd_code_1 := REPLACE(:NEW.xf_ond_prd_code_1,' ','_');
+		END IF;
+		IF :NEW.xk_ond_code_1 = ' ' THEN
+			r_ddd_new.xk_ond_code_1 := ' ';
+		ELSE
+			r_ddd_new.xk_ond_code_1 := REPLACE(:NEW.xk_ond_code_1,' ','_');
+		END IF;
+		IF :NEW.xf_ond_prd_cube_tsg_type_2 = ' ' THEN
+			r_ddd_new.xf_ond_prd_cube_tsg_type_2 := ' ';
+		ELSE
+			r_ddd_new.xf_ond_prd_cube_tsg_type_2 := REPLACE(:NEW.xf_ond_prd_cube_tsg_type_2,' ','_');
+		END IF;
+		IF :NEW.xf_ond_prd_code_2 = ' ' THEN
+			r_ddd_new.xf_ond_prd_code_2 := ' ';
+		ELSE
+			r_ddd_new.xf_ond_prd_code_2 := REPLACE(:NEW.xf_ond_prd_code_2,' ','_');
+		END IF;
+		IF :NEW.xk_ond_code_2 = ' ' THEN
+			r_ddd_new.xk_ond_code_2 := ' ';
+		ELSE
+			r_ddd_new.xk_ond_code_2 := REPLACE(:NEW.xk_ond_code_2,' ','_');
+		END IF;
 	END IF;
 	IF UPDATING THEN
-		r_prt_new.cube_id := :OLD.cube_id;
-		r_prt_new.cube_level := :OLD.cube_level;
+		r_ddd_new.cube_id := :OLD.cube_id;
 	END IF;
 	IF UPDATING OR DELETING THEN
-		SELECT rowid INTO l_cube_rowid FROM t_part
-		WHERE code = :OLD.code
-		  AND naam = :OLD.naam;
-		r_prt_old.fk_prd_code := :OLD.fk_prd_code;
-		r_prt_old.fk_prd_naam := :OLD.fk_prd_naam;
-		r_prt_old.fk_prd_nummer := :OLD.fk_prd_nummer;
-		r_prt_old.fk_prd_aaa_naam := :OLD.fk_prd_aaa_naam;
-		r_prt_old.fk_prt_code := :OLD.fk_prt_code;
-		r_prt_old.fk_prt_naam := :OLD.fk_prt_naam;
-		r_prt_old.code := :OLD.code;
-		r_prt_old.naam := :OLD.naam;
-		r_prt_old.omschrijving := :OLD.omschrijving;
-		r_prt_old.xk_prt_code := :OLD.xk_prt_code;
-		r_prt_old.xk_prt_naam := :OLD.xk_prt_naam;
+		SELECT rowid INTO l_cube_rowid FROM t_onderdeel_deel_deel
+		WHERE code = :OLD.code;
+		r_ddd_old.cube_sequence := :OLD.cube_sequence;
+		r_ddd_old.fk_prd_cube_tsg_type := :OLD.fk_prd_cube_tsg_type;
+		r_ddd_old.fk_prd_code := :OLD.fk_prd_code;
+		r_ddd_old.fk_ond_code := :OLD.fk_ond_code;
+		r_ddd_old.fk_odd_code := :OLD.fk_odd_code;
+		r_ddd_old.code := :OLD.code;
+		r_ddd_old.naam := :OLD.naam;
+		r_ddd_old.xf_ond_prd_cube_tsg_type := :OLD.xf_ond_prd_cube_tsg_type;
+		r_ddd_old.xf_ond_prd_code := :OLD.xf_ond_prd_code;
+		r_ddd_old.xk_ond_code := :OLD.xk_ond_code;
+		r_ddd_old.xf_ond_prd_cube_tsg_type_3 := :OLD.xf_ond_prd_cube_tsg_type_3;
+		r_ddd_old.xf_ond_prd_code_3 := :OLD.xf_ond_prd_code_3;
+		r_ddd_old.xk_ond_code_3 := :OLD.xk_ond_code_3;
+		r_ddd_old.xf_ond_prd_cube_tsg_type_1 := :OLD.xf_ond_prd_cube_tsg_type_1;
+		r_ddd_old.xf_ond_prd_code_1 := :OLD.xf_ond_prd_code_1;
+		r_ddd_old.xk_ond_code_1 := :OLD.xk_ond_code_1;
+		r_ddd_old.xf_ond_prd_cube_tsg_type_2 := :OLD.xf_ond_prd_cube_tsg_type_2;
+		r_ddd_old.xf_ond_prd_code_2 := :OLD.xf_ond_prd_code_2;
+		r_ddd_old.xk_ond_code_2 := :OLD.xk_ond_code_2;
 	END IF;
 
 	IF INSERTING THEN 
-		pkg_prd_trg.insert_prt (r_prt_new);
+		pkg_prd_trg.insert_ddd (r_ddd_new);
 	ELSIF UPDATING THEN
-		pkg_prd_trg.update_prt (l_cube_rowid, r_prt_old, r_prt_new);
+		pkg_prd_trg.update_ddd (l_cube_rowid, r_ddd_old, r_ddd_new);
 	ELSIF DELETING THEN
-		pkg_prd_trg.delete_prt (l_cube_rowid, r_prt_old);
+		pkg_prd_trg.delete_ddd (l_cube_rowid, r_ddd_old);
+	END IF;
+END;
+/
+SHOW ERRORS
+
+CREATE OR REPLACE VIEW v_order AS 
+	SELECT
+		cube_id,
+		cube_sequence,
+		cube_tsg_int_ext,
+		code,
+		xk_kln_nummer
+	FROM t_order
+/
+CREATE OR REPLACE VIEW v_order_regel AS 
+	SELECT
+		cube_id,
+		fk_ord_code,
+		produkt_prijs,
+		aantal,
+		totaal_prijs,
+		xk_prd_cube_tsg_type,
+		xk_prd_code,
+		xk_prd_cube_tsg_type_1,
+		xk_prd_code_1,
+		xk_kln_nummer
+	FROM t_order_regel
+/
+
+CREATE OR REPLACE PACKAGE pkg_ord_trg IS
+	FUNCTION cube_trg_cubetest RETURN VARCHAR2;
+	PROCEDURE insert_ord (p_ord IN OUT NOCOPY v_order%ROWTYPE);
+	PROCEDURE update_ord (p_cube_rowid IN UROWID, p_ord_old IN OUT NOCOPY v_order%ROWTYPE, p_ord_new IN OUT NOCOPY v_order%ROWTYPE);
+	PROCEDURE delete_ord (p_cube_rowid IN UROWID, p_ord IN OUT NOCOPY v_order%ROWTYPE);
+	PROCEDURE insert_orr (p_orr IN OUT NOCOPY v_order_regel%ROWTYPE);
+	PROCEDURE update_orr (p_cube_rowid IN UROWID, p_orr_old IN OUT NOCOPY v_order_regel%ROWTYPE, p_orr_new IN OUT NOCOPY v_order_regel%ROWTYPE);
+	PROCEDURE delete_orr (p_cube_rowid IN UROWID, p_orr IN OUT NOCOPY v_order_regel%ROWTYPE);
+END;
+/
+SHOW ERRORS;
+
+CREATE OR REPLACE PACKAGE BODY pkg_ord_trg IS
+
+	FUNCTION cube_trg_cubetest RETURN VARCHAR2 IS
+	BEGIN
+		RETURN 'cube_trg_cubetest';
+	END;
+
+	PROCEDURE insert_ord (p_ord IN OUT NOCOPY v_order%ROWTYPE) IS
+	BEGIN
+		p_ord.cube_id := 'ORD-' || TO_CHAR(sq_ord.NEXTVAL,'FM000000000000');
+		INSERT INTO t_order (
+			cube_id,
+			cube_sequence,
+			cube_tsg_int_ext,
+			code,
+			xk_kln_nummer)
+		VALUES (
+			p_ord.cube_id,
+			p_ord.cube_sequence,
+			p_ord.cube_tsg_int_ext,
+			p_ord.code,
+			p_ord.xk_kln_nummer);
+	END;
+
+	PROCEDURE update_ord (p_cube_rowid UROWID, p_ord_old IN OUT NOCOPY v_order%ROWTYPE, p_ord_new IN OUT NOCOPY v_order%ROWTYPE) IS
+	BEGIN
+		UPDATE t_order SET 
+			cube_sequence = p_ord_new.cube_sequence,
+			xk_kln_nummer = p_ord_new.xk_kln_nummer
+		WHERE rowid = p_cube_rowid;
+	END;
+
+	PROCEDURE delete_ord (p_cube_rowid UROWID, p_ord IN OUT NOCOPY v_order%ROWTYPE) IS
+	BEGIN
+		DELETE t_order 
+		WHERE rowid = p_cube_rowid;
+	END;
+
+	PROCEDURE insert_orr (p_orr IN OUT NOCOPY v_order_regel%ROWTYPE) IS
+	BEGIN
+		p_orr.cube_id := 'ORR-' || TO_CHAR(sq_orr.NEXTVAL,'FM000000000000');
+		INSERT INTO t_order_regel (
+			cube_id,
+			fk_ord_code,
+			produkt_prijs,
+			aantal,
+			totaal_prijs,
+			xk_prd_cube_tsg_type,
+			xk_prd_code,
+			xk_prd_cube_tsg_type_1,
+			xk_prd_code_1,
+			xk_kln_nummer)
+		VALUES (
+			p_orr.cube_id,
+			p_orr.fk_ord_code,
+			p_orr.produkt_prijs,
+			p_orr.aantal,
+			p_orr.totaal_prijs,
+			p_orr.xk_prd_cube_tsg_type,
+			p_orr.xk_prd_code,
+			p_orr.xk_prd_cube_tsg_type_1,
+			p_orr.xk_prd_code_1,
+			p_orr.xk_kln_nummer);
+	END;
+
+	PROCEDURE update_orr (p_cube_rowid UROWID, p_orr_old IN OUT NOCOPY v_order_regel%ROWTYPE, p_orr_new IN OUT NOCOPY v_order_regel%ROWTYPE) IS
+	BEGIN
+		UPDATE t_order_regel SET 
+			produkt_prijs = p_orr_new.produkt_prijs,
+			aantal = p_orr_new.aantal,
+			totaal_prijs = p_orr_new.totaal_prijs,
+			xk_prd_cube_tsg_type_1 = p_orr_new.xk_prd_cube_tsg_type_1,
+			xk_prd_code_1 = p_orr_new.xk_prd_code_1,
+			xk_kln_nummer = p_orr_new.xk_kln_nummer
+		WHERE rowid = p_cube_rowid;
+	END;
+
+	PROCEDURE delete_orr (p_cube_rowid UROWID, p_orr IN OUT NOCOPY v_order_regel%ROWTYPE) IS
+	BEGIN
+		DELETE t_order_regel 
+		WHERE rowid = p_cube_rowid;
+	END;
+END;
+/
+SHOW ERRORS;
+
+CREATE OR REPLACE TRIGGER trg_ord
+INSTEAD OF INSERT OR DELETE OR UPDATE ON v_order
+FOR EACH ROW
+DECLARE
+	l_cube_rowid UROWID;
+	r_ord_new v_order%ROWTYPE;
+	r_ord_old v_order%ROWTYPE;
+BEGIN
+	IF INSERTING OR UPDATING THEN
+		r_ord_new.cube_sequence := :NEW.cube_sequence;
+		IF :NEW.cube_tsg_int_ext = ' ' THEN
+			r_ord_new.cube_tsg_int_ext := ' ';
+		ELSE
+			r_ord_new.cube_tsg_int_ext := REPLACE(:NEW.cube_tsg_int_ext,' ','_');
+		END IF;
+		IF :NEW.code = ' ' THEN
+			r_ord_new.code := ' ';
+		ELSE
+			r_ord_new.code := REPLACE(:NEW.code,' ','_');
+		END IF;
+		IF :NEW.xk_kln_nummer = ' ' THEN
+			r_ord_new.xk_kln_nummer := ' ';
+		ELSE
+			r_ord_new.xk_kln_nummer := REPLACE(:NEW.xk_kln_nummer,' ','_');
+		END IF;
+	END IF;
+	IF UPDATING THEN
+		r_ord_new.cube_id := :OLD.cube_id;
+	END IF;
+	IF UPDATING OR DELETING THEN
+		SELECT rowid INTO l_cube_rowid FROM t_order
+		WHERE code = :OLD.code;
+		r_ord_old.cube_sequence := :OLD.cube_sequence;
+		r_ord_old.cube_tsg_int_ext := :OLD.cube_tsg_int_ext;
+		r_ord_old.code := :OLD.code;
+		r_ord_old.xk_kln_nummer := :OLD.xk_kln_nummer;
+	END IF;
+
+	IF INSERTING THEN 
+		pkg_ord_trg.insert_ord (r_ord_new);
+	ELSIF UPDATING THEN
+		pkg_ord_trg.update_ord (l_cube_rowid, r_ord_old, r_ord_new);
+	ELSIF DELETING THEN
+		pkg_ord_trg.delete_ord (l_cube_rowid, r_ord_old);
+	END IF;
+END;
+/
+SHOW ERRORS
+
+CREATE OR REPLACE TRIGGER trg_orr
+INSTEAD OF INSERT OR DELETE OR UPDATE ON v_order_regel
+FOR EACH ROW
+DECLARE
+	l_cube_rowid UROWID;
+	r_orr_new v_order_regel%ROWTYPE;
+	r_orr_old v_order_regel%ROWTYPE;
+BEGIN
+	IF INSERTING OR UPDATING THEN
+		IF :NEW.fk_ord_code = ' ' THEN
+			r_orr_new.fk_ord_code := ' ';
+		ELSE
+			r_orr_new.fk_ord_code := REPLACE(:NEW.fk_ord_code,' ','_');
+		END IF;
+		r_orr_new.produkt_prijs := :NEW.produkt_prijs;
+		r_orr_new.aantal := :NEW.aantal;
+		r_orr_new.totaal_prijs := :NEW.totaal_prijs;
+		IF :NEW.xk_prd_cube_tsg_type = ' ' THEN
+			r_orr_new.xk_prd_cube_tsg_type := ' ';
+		ELSE
+			r_orr_new.xk_prd_cube_tsg_type := REPLACE(:NEW.xk_prd_cube_tsg_type,' ','_');
+		END IF;
+		IF :NEW.xk_prd_code = ' ' THEN
+			r_orr_new.xk_prd_code := ' ';
+		ELSE
+			r_orr_new.xk_prd_code := REPLACE(:NEW.xk_prd_code,' ','_');
+		END IF;
+		IF :NEW.xk_prd_cube_tsg_type_1 = ' ' THEN
+			r_orr_new.xk_prd_cube_tsg_type_1 := ' ';
+		ELSE
+			r_orr_new.xk_prd_cube_tsg_type_1 := REPLACE(:NEW.xk_prd_cube_tsg_type_1,' ','_');
+		END IF;
+		IF :NEW.xk_prd_code_1 = ' ' THEN
+			r_orr_new.xk_prd_code_1 := ' ';
+		ELSE
+			r_orr_new.xk_prd_code_1 := REPLACE(:NEW.xk_prd_code_1,' ','_');
+		END IF;
+		IF :NEW.xk_kln_nummer = ' ' THEN
+			r_orr_new.xk_kln_nummer := ' ';
+		ELSE
+			r_orr_new.xk_kln_nummer := REPLACE(:NEW.xk_kln_nummer,' ','_');
+		END IF;
+	END IF;
+	IF UPDATING THEN
+		r_orr_new.cube_id := :OLD.cube_id;
+	END IF;
+	IF UPDATING OR DELETING THEN
+		SELECT rowid INTO l_cube_rowid FROM t_order_regel
+		WHERE fk_ord_code = :OLD.fk_ord_code;
+		r_orr_old.fk_ord_code := :OLD.fk_ord_code;
+		r_orr_old.produkt_prijs := :OLD.produkt_prijs;
+		r_orr_old.aantal := :OLD.aantal;
+		r_orr_old.totaal_prijs := :OLD.totaal_prijs;
+		r_orr_old.xk_prd_cube_tsg_type := :OLD.xk_prd_cube_tsg_type;
+		r_orr_old.xk_prd_code := :OLD.xk_prd_code;
+		r_orr_old.xk_prd_cube_tsg_type_1 := :OLD.xk_prd_cube_tsg_type_1;
+		r_orr_old.xk_prd_code_1 := :OLD.xk_prd_code_1;
+		r_orr_old.xk_kln_nummer := :OLD.xk_kln_nummer;
+	END IF;
+
+	IF INSERTING THEN 
+		pkg_ord_trg.insert_orr (r_orr_new);
+	ELSIF UPDATING THEN
+		pkg_ord_trg.update_orr (l_cube_rowid, r_orr_old, r_orr_new);
+	ELSIF DELETING THEN
+		pkg_ord_trg.delete_orr (l_cube_rowid, r_orr_old);
 	END IF;
 END;
 /

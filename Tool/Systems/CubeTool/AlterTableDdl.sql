@@ -990,8 +990,7 @@ BEGIN
 			sequence NUMBER(1) DEFAULT ''0'',
 			scope VARCHAR2(3) DEFAULT ''ALL'',
 			unchangeable CHAR(1) DEFAULT ''N'',
-			within_scope_level NUMBER(1) DEFAULT ''0'',
-			within_scope_source_or_target VARCHAR2(3) DEFAULT ''SRC'',
+			within_scope_extension VARCHAR2(3),
 			xk_typ_name VARCHAR2(30),
 			xk_typ_name_1 VARCHAR2(30))';
 		DBMS_OUTPUT.PUT_LINE('Table T_REFERENCE created');
@@ -1056,17 +1055,11 @@ BEGIN
 			'ALTER TABLE t_reference ADD unchangeable CHAR(1) DEFAULT ''N''';
 			DBMS_OUTPUT.PUT_LINE('Column T_REFERENCE.UNCHANGEABLE created');
 		END IF;
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_REFERENCE' AND column_name = 'WITHIN_SCOPE_LEVEL';
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_REFERENCE' AND column_name = 'WITHIN_SCOPE_EXTENSION';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
-			'ALTER TABLE t_reference ADD within_scope_level NUMBER(1) DEFAULT ''0''';
-			DBMS_OUTPUT.PUT_LINE('Column T_REFERENCE.WITHIN_SCOPE_LEVEL created');
-		END IF;
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_REFERENCE' AND column_name = 'WITHIN_SCOPE_SOURCE_OR_TARGET';
-		IF l_count = 0 THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_reference ADD within_scope_source_or_target VARCHAR2(3) DEFAULT ''SRC''';
-			DBMS_OUTPUT.PUT_LINE('Column T_REFERENCE.WITHIN_SCOPE_SOURCE_OR_TARGET created');
+			'ALTER TABLE t_reference ADD within_scope_extension VARCHAR2(3)';
+			DBMS_OUTPUT.PUT_LINE('Column T_REFERENCE.WITHIN_SCOPE_EXTENSION created');
 		END IF;
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_REFERENCE' AND column_name = 'XK_TYP_NAME';
 		IF l_count = 0 THEN
@@ -2703,8 +2696,7 @@ BEGIN
 			'SEQUENCE','NUMBER(1)',
 			'SCOPE','VARCHAR2(3)',
 			'UNCHANGEABLE','CHAR(1)',
-			'WITHIN_SCOPE_LEVEL','NUMBER(1)',
-			'WITHIN_SCOPE_SOURCE_OR_TARGET','VARCHAR2(3)',
+			'WITHIN_SCOPE_EXTENSION','VARCHAR2(3)',
 			'XK_TYP_NAME','VARCHAR2(30)',
 			'XK_TYP_NAME_1','VARCHAR2(30)',NULL) new_domain,
 		DECODE(column_name,
@@ -2718,8 +2710,7 @@ BEGIN
 			'SEQUENCE','''0''',
 			'SCOPE','''ALL''',
 			'UNCHANGEABLE','''N''',
-			'WITHIN_SCOPE_LEVEL','''0''',
-			'WITHIN_SCOPE_SOURCE_OR_TARGET','''SRC''',
+			'WITHIN_SCOPE_EXTENSION',NULL,
 			'XK_TYP_NAME',NULL,
 			'XK_TYP_NAME_1',NULL,NULL) new_default_value
   		FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_REFERENCE')
@@ -2769,8 +2760,7 @@ BEGIN
 							'SEQUENCE',
 							'SCOPE',
 							'UNCHANGEABLE',
-							'WITHIN_SCOPE_LEVEL',
-							'WITHIN_SCOPE_SOURCE_OR_TARGET',
+							'WITHIN_SCOPE_EXTENSION',
 							'XK_TYP_NAME',
 							'XK_TYP_NAME_1'))
 	LOOP

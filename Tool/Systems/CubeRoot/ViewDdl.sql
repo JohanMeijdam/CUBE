@@ -418,8 +418,7 @@ CREATE OR REPLACE VIEW v_reference AS
 		sequence,
 		scope,
 		unchangeable,
-		within_scope_level,
-		within_scope_source_or_target,
+		within_scope_extension,
 		xk_typ_name,
 		xk_typ_name_1
 	FROM t_reference
@@ -446,6 +445,19 @@ CREATE OR REPLACE VIEW v_restriction_type_spec_ref AS
 		xf_tsp_tsg_code,
 		xk_tsp_code
 	FROM t_restriction_type_spec_ref
+/
+CREATE OR REPLACE VIEW v_restriction_target_type_spec AS 
+	SELECT
+		cube_id,
+		fk_bot_name,
+		fk_typ_name,
+		fk_ref_sequence,
+		fk_ref_typ_name,
+		include_or_exclude,
+		xf_tsp_typ_name,
+		xf_tsp_tsg_code,
+		xk_tsp_code
+	FROM t_restriction_target_type_spec
 /
 CREATE OR REPLACE VIEW v_restriction_type_spec_typ AS 
 	SELECT
@@ -548,6 +560,9 @@ CREATE OR REPLACE PACKAGE pkg_bot_trg IS
 	PROCEDURE insert_rtr (p_rtr IN OUT NOCOPY v_restriction_type_spec_ref%ROWTYPE);
 	PROCEDURE update_rtr (p_cube_rowid IN UROWID, p_rtr_old IN OUT NOCOPY v_restriction_type_spec_ref%ROWTYPE, p_rtr_new IN OUT NOCOPY v_restriction_type_spec_ref%ROWTYPE);
 	PROCEDURE delete_rtr (p_cube_rowid IN UROWID, p_rtr IN OUT NOCOPY v_restriction_type_spec_ref%ROWTYPE);
+	PROCEDURE insert_rts (p_rts IN OUT NOCOPY v_restriction_target_type_spec%ROWTYPE);
+	PROCEDURE update_rts (p_cube_rowid IN UROWID, p_rts_old IN OUT NOCOPY v_restriction_target_type_spec%ROWTYPE, p_rts_new IN OUT NOCOPY v_restriction_target_type_spec%ROWTYPE);
+	PROCEDURE delete_rts (p_cube_rowid IN UROWID, p_rts IN OUT NOCOPY v_restriction_target_type_spec%ROWTYPE);
 	PROCEDURE insert_rtt (p_rtt IN OUT NOCOPY v_restriction_type_spec_typ%ROWTYPE);
 	PROCEDURE update_rtt (p_cube_rowid IN UROWID, p_rtt_old IN OUT NOCOPY v_restriction_type_spec_typ%ROWTYPE, p_rtt_new IN OUT NOCOPY v_restriction_type_spec_typ%ROWTYPE);
 	PROCEDURE delete_rtt (p_cube_rowid IN UROWID, p_rtt IN OUT NOCOPY v_restriction_type_spec_typ%ROWTYPE);
@@ -934,8 +949,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			sequence,
 			scope,
 			unchangeable,
-			within_scope_level,
-			within_scope_source_or_target,
+			within_scope_extension,
 			xk_typ_name,
 			xk_typ_name_1)
 		VALUES (
@@ -949,8 +963,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			p_ref.sequence,
 			p_ref.scope,
 			p_ref.unchangeable,
-			p_ref.within_scope_level,
-			p_ref.within_scope_source_or_target,
+			p_ref.within_scope_extension,
 			p_ref.xk_typ_name,
 			p_ref.xk_typ_name_1);
 	END;
@@ -964,8 +977,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			code_display_key = p_ref_new.code_display_key,
 			scope = p_ref_new.scope,
 			unchangeable = p_ref_new.unchangeable,
-			within_scope_level = p_ref_new.within_scope_level,
-			within_scope_source_or_target = p_ref_new.within_scope_source_or_target,
+			within_scope_extension = p_ref_new.within_scope_extension,
 			xk_typ_name_1 = p_ref_new.xk_typ_name_1
 		WHERE rowid = p_cube_rowid;
 	END;
@@ -1055,6 +1067,50 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 	PROCEDURE delete_rtr (p_cube_rowid UROWID, p_rtr IN OUT NOCOPY v_restriction_type_spec_ref%ROWTYPE) IS
 	BEGIN
 		DELETE t_restriction_type_spec_ref 
+		WHERE rowid = p_cube_rowid;
+	END;
+
+	PROCEDURE insert_rts (p_rts IN OUT NOCOPY v_restriction_target_type_spec%ROWTYPE) IS
+	BEGIN
+		p_rts.cube_id := 'CUBE-RTS-' || TO_CHAR(sq_rts.NEXTVAL,'FM0000000');
+		SELECT fk_bot_name
+		  INTO p_rts.fk_bot_name
+		FROM t_reference
+		WHERE fk_typ_name = p_rts.fk_typ_name
+		  AND sequence = p_rts.fk_ref_sequence
+		  AND xk_typ_name = p_rts.fk_ref_typ_name;
+		INSERT INTO t_restriction_target_type_spec (
+			cube_id,
+			fk_bot_name,
+			fk_typ_name,
+			fk_ref_sequence,
+			fk_ref_typ_name,
+			include_or_exclude,
+			xf_tsp_typ_name,
+			xf_tsp_tsg_code,
+			xk_tsp_code)
+		VALUES (
+			p_rts.cube_id,
+			p_rts.fk_bot_name,
+			p_rts.fk_typ_name,
+			p_rts.fk_ref_sequence,
+			p_rts.fk_ref_typ_name,
+			p_rts.include_or_exclude,
+			p_rts.xf_tsp_typ_name,
+			p_rts.xf_tsp_tsg_code,
+			p_rts.xk_tsp_code);
+	END;
+
+	PROCEDURE update_rts (p_cube_rowid UROWID, p_rts_old IN OUT NOCOPY v_restriction_target_type_spec%ROWTYPE, p_rts_new IN OUT NOCOPY v_restriction_target_type_spec%ROWTYPE) IS
+	BEGIN
+		UPDATE t_restriction_target_type_spec SET 
+			include_or_exclude = p_rts_new.include_or_exclude
+		WHERE rowid = p_cube_rowid;
+	END;
+
+	PROCEDURE delete_rts (p_cube_rowid UROWID, p_rts IN OUT NOCOPY v_restriction_target_type_spec%ROWTYPE) IS
+	BEGIN
+		DELETE t_restriction_target_type_spec 
 		WHERE rowid = p_cube_rowid;
 	END;
 
@@ -1894,11 +1950,10 @@ BEGIN
 			r_ref_new.scope := REPLACE(:NEW.scope,' ','_');
 		END IF;
 		r_ref_new.unchangeable := :NEW.unchangeable;
-		r_ref_new.within_scope_level := :NEW.within_scope_level;
-		IF :NEW.within_scope_source_or_target = ' ' THEN
-			r_ref_new.within_scope_source_or_target := ' ';
+		IF :NEW.within_scope_extension = ' ' THEN
+			r_ref_new.within_scope_extension := ' ';
 		ELSE
-			r_ref_new.within_scope_source_or_target := REPLACE(:NEW.within_scope_source_or_target,' ','_');
+			r_ref_new.within_scope_extension := REPLACE(:NEW.within_scope_extension,' ','_');
 		END IF;
 		IF :NEW.xk_typ_name = ' ' THEN
 			r_ref_new.xk_typ_name := ' ';
@@ -1928,8 +1983,7 @@ BEGIN
 		r_ref_old.sequence := :OLD.sequence;
 		r_ref_old.scope := :OLD.scope;
 		r_ref_old.unchangeable := :OLD.unchangeable;
-		r_ref_old.within_scope_level := :OLD.within_scope_level;
-		r_ref_old.within_scope_source_or_target := :OLD.within_scope_source_or_target;
+		r_ref_old.within_scope_extension := :OLD.within_scope_extension;
 		r_ref_old.xk_typ_name := :OLD.xk_typ_name;
 		r_ref_old.xk_typ_name_1 := :OLD.xk_typ_name_1;
 	END IF;
@@ -2071,6 +2125,84 @@ BEGIN
 		pkg_bot_trg.update_rtr (l_cube_rowid, r_rtr_old, r_rtr_new);
 	ELSIF DELETING THEN
 		pkg_bot_trg.delete_rtr (l_cube_rowid, r_rtr_old);
+	END IF;
+END;
+/
+SHOW ERRORS
+
+CREATE OR REPLACE TRIGGER trg_rts
+INSTEAD OF INSERT OR DELETE OR UPDATE ON v_restriction_target_type_spec
+FOR EACH ROW
+DECLARE
+	l_cube_rowid UROWID;
+	r_rts_new v_restriction_target_type_spec%ROWTYPE;
+	r_rts_old v_restriction_target_type_spec%ROWTYPE;
+BEGIN
+	IF INSERTING OR UPDATING THEN
+		IF :NEW.fk_bot_name = ' ' THEN
+			r_rts_new.fk_bot_name := ' ';
+		ELSE
+			r_rts_new.fk_bot_name := REPLACE(:NEW.fk_bot_name,' ','_');
+		END IF;
+		IF :NEW.fk_typ_name = ' ' THEN
+			r_rts_new.fk_typ_name := ' ';
+		ELSE
+			r_rts_new.fk_typ_name := REPLACE(:NEW.fk_typ_name,' ','_');
+		END IF;
+		r_rts_new.fk_ref_sequence := :NEW.fk_ref_sequence;
+		IF :NEW.fk_ref_typ_name = ' ' THEN
+			r_rts_new.fk_ref_typ_name := ' ';
+		ELSE
+			r_rts_new.fk_ref_typ_name := REPLACE(:NEW.fk_ref_typ_name,' ','_');
+		END IF;
+		IF :NEW.include_or_exclude = ' ' THEN
+			r_rts_new.include_or_exclude := ' ';
+		ELSE
+			r_rts_new.include_or_exclude := REPLACE(:NEW.include_or_exclude,' ','_');
+		END IF;
+		IF :NEW.xf_tsp_typ_name = ' ' THEN
+			r_rts_new.xf_tsp_typ_name := ' ';
+		ELSE
+			r_rts_new.xf_tsp_typ_name := REPLACE(:NEW.xf_tsp_typ_name,' ','_');
+		END IF;
+		IF :NEW.xf_tsp_tsg_code = ' ' THEN
+			r_rts_new.xf_tsp_tsg_code := ' ';
+		ELSE
+			r_rts_new.xf_tsp_tsg_code := REPLACE(:NEW.xf_tsp_tsg_code,' ','_');
+		END IF;
+		IF :NEW.xk_tsp_code = ' ' THEN
+			r_rts_new.xk_tsp_code := ' ';
+		ELSE
+			r_rts_new.xk_tsp_code := REPLACE(:NEW.xk_tsp_code,' ','_');
+		END IF;
+	END IF;
+	IF UPDATING THEN
+		r_rts_new.cube_id := :OLD.cube_id;
+	END IF;
+	IF UPDATING OR DELETING THEN
+		SELECT rowid INTO l_cube_rowid FROM t_restriction_target_type_spec
+		WHERE fk_typ_name = :OLD.fk_typ_name
+		  AND fk_ref_sequence = :OLD.fk_ref_sequence
+		  AND fk_ref_typ_name = :OLD.fk_ref_typ_name
+		  AND xf_tsp_typ_name = :OLD.xf_tsp_typ_name
+		  AND xf_tsp_tsg_code = :OLD.xf_tsp_tsg_code
+		  AND xk_tsp_code = :OLD.xk_tsp_code;
+		r_rts_old.fk_bot_name := :OLD.fk_bot_name;
+		r_rts_old.fk_typ_name := :OLD.fk_typ_name;
+		r_rts_old.fk_ref_sequence := :OLD.fk_ref_sequence;
+		r_rts_old.fk_ref_typ_name := :OLD.fk_ref_typ_name;
+		r_rts_old.include_or_exclude := :OLD.include_or_exclude;
+		r_rts_old.xf_tsp_typ_name := :OLD.xf_tsp_typ_name;
+		r_rts_old.xf_tsp_tsg_code := :OLD.xf_tsp_tsg_code;
+		r_rts_old.xk_tsp_code := :OLD.xk_tsp_code;
+	END IF;
+
+	IF INSERTING THEN 
+		pkg_bot_trg.insert_rts (r_rts_new);
+	ELSIF UPDATING THEN
+		pkg_bot_trg.update_rts (l_cube_rowid, r_rts_old, r_rts_new);
+	ELSIF DELETING THEN
+		pkg_bot_trg.delete_rts (l_cube_rowid, r_rts_old);
 	END IF;
 END;
 /

@@ -58,6 +58,8 @@ g_xmlhttp.onreadystatechange = function() {
 					case 'LIST_DCR': AddTreeviewChildren(l_json_array[i].Rows,'TYP_DCR','icons/desc.bmp'); break;
 					case 'COUNT_DCR': CheckMenuItem('TYP_DCR',l_json_array[i].Rows[0].Data.TypeCount); break;
 					case 'LIST_RTR': AddTreeviewChildren(l_json_array[i].Rows,'TYP_RTR','icons/restrict.bmp'); break;
+					case 'LIST_RTS': AddTreeviewChildren(l_json_array[i].Rows,'TYP_RTS','icons/restrtgt.bmp'); break;
+					case 'COUNT_RTS': CheckMenuItem('TYP_RTS',l_json_array[i].Rows[0].Data.TypeCount); break;
 					case 'LIST_RTT': AddTreeviewChildren(l_json_array[i].Rows,'TYP_RTT','icons/restrict.bmp'); break;
 					case 'LIST_JSN': AddTreeviewChildren(l_json_array[i].Rows,'TYP_JSN','icons/braces.bmp'); break;
 					case 'COUNT_JSN': CheckMenuItem('TYP_JSN',l_json_array[i].Rows[0].Data.TypeCount); break;
@@ -138,8 +140,8 @@ function DefineTypePosition (p_parentType, p_type, p_switch) {
 		switch (p_type) { case 'TYP_DER': l_index = 2; break; case 'TYP_DCA': l_index = 3; break; case 'TYP_RTA': l_index = 4; break;}
 		var l_count = 3; break;
 	case 'TYP_REF':
-		switch (p_type) { case 'TYP_DCR': l_index = 2; break; case 'TYP_RTR': l_index = 3; break;}
-		var l_count = 2; break;
+		switch (p_type) { case 'TYP_DCR': l_index = 2; break; case 'TYP_RTR': l_index = 3; break; case 'TYP_RTS': l_index = 4; break;}
+		var l_count = 3; break;
 	case 'TYP_JSN':
 		switch (p_type) {case 'TYP_JSN': l_index = 2; break;}
 		var l_count = 1; break;
@@ -723,6 +725,7 @@ function OpenMenu(p_obj) {
 		}
 		AddMenuItem(g_objMenuList, 'add description_reference', 'icons/desc.bmp','DetailDCR','N','TYP_DCR',1,'N',2);
 		AddMenuItem(g_objMenuList, 'add restriction_type_spec_ref', 'icons/restrict.bmp','DetailRTR','N','TYP_RTR',0,'N',3);
+		AddMenuItem(g_objMenuList, 'add restriction_target_type_spec', 'icons/restrtgt.bmp','DetailRTS','N','TYP_RTS',1,'N',4);
 		var l_json_id = l_json_node_id[l_type_id];
 		PerformTrans( {Service:"CountRefRestrictedItems",Parameters:{Type:l_json_id}} );
 		break;

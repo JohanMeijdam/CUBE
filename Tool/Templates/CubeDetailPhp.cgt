@@ -29,6 +29,8 @@ Change log:
 19-05-2019 - name recursive foreign key fix
 03-08-2019 - RESTRICTION_TYPE_SPEC_ATB for references fixed
 07-08-2019 - Default value for RESTRICTION_TYPE_SPEC_ATB key attributes.
+15-12-2019 - iplementation of WITHIN_SCOPE_EXPANSION
+23-12-2019 - Javascript include files 
 [[INCLUDE,templates\includes\general.cgt]]
 [[TEXT,DETAIL_RECURSIVE_PARMS]]
 		Option: {[[IF,REFERENCE:4=PRA]]
@@ -54,14 +56,16 @@ $_SESSION['views']=0;
 ?><html>
 <head>
 <link rel="stylesheet" href="base_css.php" />
-<script language='javascript' type='text/javascript'>
+<script language="javascript" type="text/javascript" src="..\CubeGeneral\CubeInclude.js"></script>
+<script language="javascript" type="text/javascript" src="<<1>>Include.js"></script>
+<script language="javascript" type="text/javascript" src="<<1>>DetailInclude.js"></script>
+<script language="javascript" type="text/javascript">
 <!--
 var g_option = null;
 var g_json_option = null;
 var g_parent_node_id = null;
 var g_node_id = null;
 
-var g_xmlhttp = new XMLHttpRequest();
 g_xmlhttp.onreadystatechange = function() {
 	if(g_xmlhttp.readyState == 4) {
 		if(g_xmlhttp.status == 200) {
@@ -156,12 +160,6 @@ g_xmlhttp.onreadystatechange = function() {
 	}
 }
 
-function performTrans(p_json_parm) {
-	var l_requestText = JSON.stringify(p_json_parm);
-	g_xmlhttp.open('POST','<<1>>Server.php',true);
-	g_xmlhttp.send(l_requestText);
-}
-
 function InitBody() {
 	var l_json_argument = JSON.parse(decodeURIComponent(location.href.split("?")[1]));
 	document.body._FlagDragging = 0;
@@ -174,7 +172,7 @@ function InitBody() {
 		g_node_id = JSON.stringify(l_json_argument.objectId);[[LOOP,ATTRIBUTE:1=Y]]
 		document.getElementById("Input<<ATTRIBUTE:C>>").value=l_json_objectKey.TYP_<<TYPE1>>.<<ATTRIBUTE:C>>;[[ENDLOOP,ATTRIBUTE]]
 		document.getElementById("ButtonCreate").disabled=true;[[IF:CHILD(ATTRIBUTE:1=N[AND]4=N)]]
-		performTrans( {
+		PerformTrans( {
 			Service: "Get<<TYPE1:C>>",
 			Parameters: {
 				Type: l_json_objectKey.TYP_<<TYPE1>>
@@ -189,7 +187,7 @@ function InitBody() {
 		document.getElementById("Input<<ATTRIBUTE:C>>").value=l_json_objectKey.TYP_<<TYPE(N-1)1>>.[[LOOP,ATTRIBUTE_SOURCE]]<<ATTRIBUTE_SOURCE:C>>[[ENDLOOP,ATTRIBUTE_SOURCE]];[[ENDLOOP,ATTRIBUTE]]
 		document.getElementById("ButtonUpdate").disabled=true;
 		document.getElementById("ButtonDelete").disabled=true;[[IF:CHILD(ATTRIBUTE:3=F[AND]CHILD(ATTRIBUTE_SOURCE:1=N))]]
-		performTrans( {
+		PerformTrans( {
 			Service: "Get<<TYPE(N-1)1:C>>Fkey",
 			Parameters: {
 				Type: l_json_objectKey.TYP_<<TYPE(N-1)1>>
@@ -203,7 +201,7 @@ function InitBody() {
 		document.getElementById("Input<<ATTRIBUTE:C>>").value=l_json_objectKey.TYP_<<TYPE1>>.[[LOOP,ATTRIBUTE_SOURCE]]<<ATTRIBUTE_SOURCE:C>>[[ENDLOOP,ATTRIBUTE_SOURCE]];[[ENDLOOP,ATTRIBUTE]][[ENDIF]]
 		document.getElementById("ButtonUpdate").disabled=true;
 		document.getElementById("ButtonDelete").disabled=true;[[IF:CHILD(ATTRIBUTE:1=N[AND]3=F)]]
-		performTrans( {
+		PerformTrans( {
 			Service: "Get<<TYPE1:C>>Fkey",
 			Parameters: {
 				Type: l_json_objectKey.TYP_<<TYPE1>>
@@ -226,7 +224,7 @@ function Create<<TYPE1:C>>() {
 		CubePosAction: l_pos_action
 	};
 	if (l_pos_action == 'F' || l_pos_action == 'L') {
-		performTrans( {
+		PerformTrans( {
 			Service: "Create<<TYPE1:C>>",
 			Parameters: {
 				Option,
@@ -235,7 +233,7 @@ function Create<<TYPE1:C>>() {
 		} );
 	} else {
 		var Ref = g_json_option.Type.TYP_<<TYPE1>>;
-		performTrans( {
+		PerformTrans( {
 			Service: "Create<<TYPE1:C>>",
 				Parameters: {
 					Option,
@@ -244,7 +242,7 @@ function Create<<TYPE1:C>>() {
 				}
 			} );
 	}[[ELSE]]
-	performTrans( {
+	PerformTrans( {
 		Service: "Create<<TYPE1:C>>",
 		Parameters: {
 			Type
@@ -256,7 +254,7 @@ function Update<<TYPE1:C>>() {
 	var Type = {[[LOOP,ATTRIBUTE:1=Y[OR]!CHILD(DERIVATION)]]
 		<<ATTRIBUTE:C>>: document.getElementById("Input<<ATTRIBUTE:C>>").value[[IF:!LAST]],[[ENDIF]][[ENDLOOP,ATTRIBUTE]]
 	};
-	performTrans( {
+	PerformTrans( {
 		Service: "Update<<TYPE1:C>>",
 		Parameters: {
 			Type
@@ -268,85 +266,13 @@ function Delete<<TYPE1:C>>() {
 	var Type = {[[LOOP,ATTRIBUTE:1=Y]]
 		<<ATTRIBUTE:C>>: document.getElementById("Input<<ATTRIBUTE:C>>").value[[IF:!LAST]],[[ENDIF]][[ENDLOOP,ATTRIBUTE]]
 	};
-	performTrans( {
+	PerformTrans( {
 		Service: "Delete<<TYPE1:C>>",
 		Parameters: {
 			Type
 		}
 	} );
 }[[IF:CHILD(REFERENCE)]]
-
-function OpenListBox(p_json_rows,p_icon,p_header,p_optional) {
-	CloseListBox();
-	if (p_json_rows.length > 1) {
-
-		var l_objDiv = document.createElement('DIV');
-		var l_objTable = document.createElement('TABLE');
-		var l_objImg = document.createElement('IMG');
-		var l_objSpan = document.createElement('SPAN');
-		var l_objImgExit = document.createElement('IMG');
-		var l_objSelect = document.createElement('SELECT');
-
-		document.body.appendChild(l_objDiv);
-
-		l_objDiv.appendChild(l_objTable);
-		l_objRow_0 = l_objTable.insertRow();
-		l_objCell_0_0 = l_objRow_0.insertCell();
-		l_objCell_0_1 = l_objRow_0.insertCell();
-		l_objRow_1 = l_objTable.insertRow();
-		l_objCell_1_0 = l_objRow_1.insertCell();
-		l_objCell_0_0.appendChild(l_objImg);
-		l_objCell_0_0.appendChild(l_objSpan);
-		l_objCell_0_1.appendChild(l_objImgExit);
-		l_objCell_1_0.appendChild(l_objSelect);
-
-		l_objDiv.id = 'ListBox';
-		l_objDiv.style.position = 'absolute';
-		l_objDiv.style.left = document.body._SelectLeft-260;
-		l_objDiv.style.top = document.body._SelectTop-80;
-		l_objDiv.style.border = 'thin solid #7F7F7F';
-		l_objDiv.style.boxShadow = '10px 10px 5px #888888';
-		l_objDiv.draggable = 'true';
-		l_objDiv.ondragstart = function(){StartMove(event)};
-		l_objDiv.ondragend = function(){EndMove(event)};
-
-		l_objImg.src = 'icons/'+p_icon+'.bmp';
-		l_objImg.style.border = '2 solid transparent';
-		l_objSpan.innerHTML = '&nbsp;&nbsp;'+p_header+'&nbsp;&nbsp;';
-		l_objCell_0_1.style.textAlign = 'right';
-		l_objImgExit.style.cursor = 'pointer';
-		l_objImgExit.src = 'icons/exit.bmp';
-		l_objImgExit.style.border = '1 solid transparent';
-		l_objImgExit.onclick = function(){CloseListBox()};
-		l_objCell_1_0.colSpan = '2';
-
-
-		l_objSelect.size = Math.min(p_json_rows.length,16)
-		l_objSelect.onclick = function(){UpdateForeignKey(this)};
-
-		if (p_optional == 'Y') {
-			l_objSelect.size = l_objSelect.size + 1;
-			var l_objOption = document.createElement('OPTION');
-			l_objSelect.appendChild(l_objOption);
-			l_objOption.value = '';
-			l_objOption.innerHTML = '';
-		}
-
-		for (ir in p_json_rows) {
-			var l_objOption = document.createElement('OPTION');
-			l_objSelect.appendChild(l_objOption);
-			l_objOption.value = JSON.stringify(p_json_rows[ir].Key); 
-			l_objOption.innerHTML = p_json_rows[ir].Display.toLowerCase();
-		}
-	} else {
-		alert ("No Items Found");
-	}
-}
-
-function CloseListBox() {
-	var l_obj = document.getElementById("ListBox");
-	if (l_obj) {l_obj.parentNode.removeChild(l_obj);}
-}
 
 function UpdateForeignKey(p_obj) {
 	var l_values = p_obj.options[p_obj.selectedIndex].value;
@@ -389,64 +315,23 @@ function StartSelect<<REFERENCE:S>>(p_event) {
 			<<ATTRIBUTE:C>>:document.getElementById("Input<<ATTRIBUTE:C>>").value[[IF:!LAST]],[[ENDIF]][[ENDLOOP,ATTRIBUTE]][[ENDFOR]]
 		}
 	};[[ENDIF]]
-	performTrans( {
+	PerformTrans( {
 		Service: "<<TEXT,DETAIL_GET_LIST_NAME>>[[IF,REFERENCE:4=ENC]]Encapsulated[[ELSE]]Recursive[[ENDIF]]"[[IF:EVAL:$myFlag]],
 		Parameters[[ENDIF]]
 	} );[[ELSE]][[IF,REFERENCE:4=ALL[AND]CHILD(REFERENCE_SCOPE_ATTRIBUTE)]]
 	var Parameters = {[[IF,REFERENCE:CHILD(REFERENCE_TYPE_WITHIN_SCOPE_OF:3=Y)]]
 		Option: {
-			CubeScopeLevel:<<REFERENCE6>>
+			CubeScopeLevel:[[IF,REFERENCE:6=PAR]]1[[ELSE]]0[[ENDIF]]
 		},[[ENDIF]]
 		Ref: {[[FOR,REFERENCE:N>N]][[LOOP,REFERENCE_SCOPE_ATTRIBUTE]]
 			<<REFERENCE_SCOPE_ATTRIBUTE:C>>:document.getElementById("Input<<REFERENCE_SCOPE_ATTRIBUTE:C>>").value[[IF:!LAST]],[[ENDIF]][[ENDLOOP,REFERENCE_SCOPE_ATTRIBUTE]][[ENDFOR]]
 		}
 	};[[ENDIF]]
-	performTrans( {
+	PerformTrans( {
 		Service: "<<TEXT,DETAIL_GET_LIST_NAME>>[[IF:3=Y]]All[[ENDIF]]"[[IF,REFERENCE:4=ALL[AND]CHILD(REFERENCE_SCOPE_ATTRIBUTE)]],
 		Parameters[[ENDIF]]
 	} );[[ENDIF]][[ENDLOOP,REFERENCE_TYPE]]
-}[[ENDLOOP,REFERENCE]]
-
-
-function ToUpperCase(p_obj) 
-{
-	p_obj.value = p_obj.value.toUpperCase();
-
-}
-
-function ReplaceSpaces(p_obj) 
-{
-	p_obj.value = p_obj.value.replace(/^\s+|\s+$/g, "").replace(/ /g ,"_");
-}
-
-function StartMove(p_event) {
-	var l_obj = p_event.target;
-	l_obj._x = p_event.screenX - parseInt(l_obj.style.left);
-	l_obj._y = p_event.screenY - parseInt(l_obj.style.top);
-	document.body._FlagDragging = 1;
-	document.body._DraggingId = l_obj.id;
-}
-
-function EndMove(p_event) {
- 	document.body._FlagDragging = 0;
-	document.body._DraggingId = ' ';
-}
-
-function allowDrop(p_event) {
-	if (document.body._FlagDragging) {
-		p_event.preventDefault();
-	}
-}
-
-function drop(p_event) {
-	if (document.body._FlagDragging) {
-		var l_obj = document.getElementById(document.body._DraggingId);
-		var l_x = p_event.screenX - l_obj._x;
-		var l_y = p_event.screenY - l_obj._y;	
-		l_obj.style.left = l_x + 'px';
-		l_obj.style.top = l_y + 'px';
-	}
-}[[IF:CHILD(TYPE_SPECIALISATION_GROUP)]]
+}[[ENDLOOP,REFERENCE]][[IF:CHILD(TYPE_SPECIALISATION_GROUP)]]
 
 function ProcessTypeSpecialisation() {
 	if ([[LOOP,ATTRIBUTE:CHILD(ATTRIBUTE_TYPE_SPECIALISATION_GROUP)]]document.getElementById("Input<<ATTRIBUTE:C>>").value != ' '[[IF:!LAST]] && [[ENDIF]][[ENDLOOP,ATTRIBUTE]]) {[[LOOP,ATTRIBUTE:CHILD(ATTRIBUTE_TYPE_SPECIALISATION_GROUP)]]
@@ -501,4 +386,6 @@ function ResetField<<ATTRIBUTE:C>>(p_field_id) {
 <input id="Input<<ATTRIBUTE:C>>" type="hidden"></input>[[ENDLOOP,ATTRIBUTE]]
 </body>
 </html>
-[[REPEAT]][[ENDLOOP,TYPE]][[ENDLOOP,BUSINESS_OBJECT_TYPE]][[ENDLOOP,SYSTEM_BO_TYPE]][[ENDLOOP,SYSTEM]][[ENDBODY]]
+[[REPEAT]][[ENDLOOP,TYPE]][[ENDLOOP,BUSINESS_OBJECT_TYPE]][[ENDLOOP,SYSTEM_BO_TYPE]][[ENDLOOP,SYSTEM]][[FILE,<<2>>\<<1>>DetailInclude.js]]<!--
+-->
+[[ENDBODY]]

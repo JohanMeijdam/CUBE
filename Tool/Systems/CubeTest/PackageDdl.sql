@@ -3,7 +3,7 @@
 BEGIN
 	FOR r_p IN (
 		SELECT object_name
-		FROM all_procedures
+		FROM user_procedures
 		WHERE procedure_name = 'CUBE_PKG_CUBETEST' )
 	LOOP
 		EXECUTE IMMEDIATE 'DROP PACKAGE '||r_p.object_name;
@@ -36,859 +36,235 @@ CREATE OR REPLACE PACKAGE BODY pkg_cube IS
 	END;
 END;
 /
-CREATE OR REPLACE PACKAGE pkg_aaa IS
+CREATE OR REPLACE PACKAGE pkg_kln IS
 
 	TYPE c_cube_row IS REF CURSOR;
 	FUNCTION cube_pkg_cubetest RETURN VARCHAR2;
-	PROCEDURE get_aaa_root_items (
+	PROCEDURE get_kln_root_items (
 			p_cube_row IN OUT c_cube_row);
-	PROCEDURE get_aaa_list_all (
+	PROCEDURE get_kln_list (
 			p_cube_row IN OUT c_cube_row);
-	PROCEDURE get_aaa (
+	PROCEDURE get_kln (
 			p_cube_row IN OUT c_cube_row,
-			p_naam IN VARCHAR2);
-	PROCEDURE get_aaa_aad_items (
+			p_nummer IN VARCHAR2);
+	PROCEDURE get_kln_adr_items (
 			p_cube_row IN OUT c_cube_row,
-			p_naam IN VARCHAR2);
-	PROCEDURE get_aaa_aaa_items (
-			p_cube_row IN OUT c_cube_row,
-			p_naam IN VARCHAR2);
-	PROCEDURE change_parent_aaa (
-			p_cube_flag_root IN VARCHAR2,
-			p_naam IN VARCHAR2,
-			x_naam IN VARCHAR2,
-			p_cube_row IN OUT c_cube_row);
-	PROCEDURE insert_aaa (
-			p_fk_aaa_naam IN VARCHAR2,
-			p_naam IN VARCHAR2,
-			p_omschrijving IN VARCHAR2,
-			p_xk_aaa_naam IN VARCHAR2,
-			p_cube_row IN OUT c_cube_row);
-	PROCEDURE update_aaa (
-			p_fk_aaa_naam IN VARCHAR2,
-			p_naam IN VARCHAR2,
-			p_omschrijving IN VARCHAR2,
-			p_xk_aaa_naam IN VARCHAR2);
-	PROCEDURE delete_aaa (
-			p_naam IN VARCHAR2);
-	PROCEDURE get_aad (
-			p_cube_row IN OUT c_cube_row,
-			p_fk_aaa_naam IN VARCHAR2,
-			p_naam IN VARCHAR2);
-	PROCEDURE move_aad (
-			p_cube_pos_action IN VARCHAR2,
-			p_fk_aaa_naam IN VARCHAR2,
-			p_naam IN VARCHAR2,
-			x_fk_aaa_naam IN VARCHAR2,
-			x_naam IN VARCHAR2);
-	PROCEDURE insert_aad (
-			p_cube_pos_action IN VARCHAR2,
-			p_fk_aaa_naam IN VARCHAR2,
-			p_naam IN VARCHAR2,
-			p_xk_aaa_naam IN VARCHAR2,
-			x_fk_aaa_naam IN VARCHAR2,
-			x_naam IN VARCHAR2);
-	PROCEDURE update_aad (
-			p_fk_aaa_naam IN VARCHAR2,
-			p_naam IN VARCHAR2,
-			p_xk_aaa_naam IN VARCHAR2);
-	PROCEDURE delete_aad (
-			p_fk_aaa_naam IN VARCHAR2,
-			p_naam IN VARCHAR2);
+			p_nummer IN VARCHAR2);
+	PROCEDURE insert_kln (
+			p_cube_tsg_intext IN VARCHAR2,
+			p_cube_tsg_vip IN VARCHAR2,
+			p_cube_tsg_test IN VARCHAR2,
+			p_nummer IN VARCHAR2,
+			p_achternaam IN VARCHAR2,
+			p_geboorte_datum IN DATE,
+			p_leeftijd IN NUMBER,
+			p_voornaam IN VARCHAR2,
+			p_tussenvoegsel IN VARCHAR2);
+	PROCEDURE update_kln (
+			p_cube_tsg_intext IN VARCHAR2,
+			p_cube_tsg_vip IN VARCHAR2,
+			p_cube_tsg_test IN VARCHAR2,
+			p_nummer IN VARCHAR2,
+			p_achternaam IN VARCHAR2,
+			p_geboorte_datum IN DATE,
+			p_leeftijd IN NUMBER,
+			p_voornaam IN VARCHAR2,
+			p_tussenvoegsel IN VARCHAR2);
+	PROCEDURE delete_kln (
+			p_nummer IN VARCHAR2);
+	PROCEDURE insert_adr (
+			p_fk_kln_nummer IN VARCHAR2,
+			p_postcode_cijfers IN NUMBER,
+			p_postcode_letters IN CHAR,
+			p_cube_tsg_test IN VARCHAR2,
+			p_huisnummer IN NUMBER);
+	PROCEDURE delete_adr (
+			p_fk_kln_nummer IN VARCHAR2,
+			p_postcode_cijfers IN NUMBER,
+			p_postcode_letters IN CHAR,
+			p_cube_tsg_test IN VARCHAR2,
+			p_huisnummer IN NUMBER);
 END;
 /
 SHOW ERRORS;
 
-CREATE OR REPLACE PACKAGE BODY pkg_aaa IS
+CREATE OR REPLACE PACKAGE BODY pkg_kln IS
 	FUNCTION cube_pkg_cubetest RETURN VARCHAR2 IS
 	BEGIN
 		RETURN 'cube_pkg_cubetest';
 	END;
 
-	PROCEDURE get_aaa_root_items (
+	PROCEDURE get_kln_root_items (
 			p_cube_row IN OUT c_cube_row) IS
 	BEGIN
 		OPEN p_cube_row FOR
 			SELECT
-			  naam
-			FROM v_aaa
-			WHERE fk_aaa_naam IS NULL
-			ORDER BY naam;
+			  cube_tsg_intext,
+			  cube_tsg_vip,
+			  cube_tsg_test,
+			  nummer,
+			  achternaam,
+			  voornaam
+			FROM v_klant
+			ORDER BY cube_tsg_intext, cube_tsg_vip, cube_tsg_test, nummer, achternaam, voornaam;
 	END;
 
-	PROCEDURE get_aaa_list_all (
+	PROCEDURE get_kln_list (
 			p_cube_row IN OUT c_cube_row) IS
 	BEGIN
 		OPEN p_cube_row FOR
 			SELECT
-			  naam
-			FROM v_aaa
-			ORDER BY naam;
+			  cube_tsg_intext,
+			  cube_tsg_vip,
+			  cube_tsg_test,
+			  nummer,
+			  achternaam,
+			  voornaam
+			FROM v_klant
+			ORDER BY cube_tsg_intext, cube_tsg_vip, cube_tsg_test, nummer, achternaam, voornaam;
 	END;
 
-	PROCEDURE get_aaa (
+	PROCEDURE get_kln (
 			p_cube_row IN OUT c_cube_row,
-			p_naam IN VARCHAR2) IS
+			p_nummer IN VARCHAR2) IS
 	BEGIN
 		OPEN p_cube_row FOR
 			SELECT
-			  fk_aaa_naam,
-			  omschrijving,
-			  xk_aaa_naam
-			FROM v_aaa
-			WHERE naam = p_naam;
+			  cube_tsg_intext,
+			  cube_tsg_vip,
+			  cube_tsg_test,
+			  achternaam,
+			  geboorte_datum,
+			  leeftijd,
+			  voornaam,
+			  tussenvoegsel
+			FROM v_klant
+			WHERE nummer = p_nummer;
 	END;
 
-	PROCEDURE get_aaa_aad_items (
+	PROCEDURE get_kln_adr_items (
 			p_cube_row IN OUT c_cube_row,
-			p_naam IN VARCHAR2) IS
+			p_nummer IN VARCHAR2) IS
 	BEGIN
 		OPEN p_cube_row FOR
 			SELECT
-			  cube_sequence,
-			  fk_aaa_naam,
-			  naam
-			FROM v_aaa_deel
-			WHERE fk_aaa_naam = p_naam
-			ORDER BY fk_aaa_naam, cube_sequence;
+			  fk_kln_nummer,
+			  postcode_cijfers,
+			  postcode_letters,
+			  cube_tsg_test,
+			  huisnummer
+			FROM v_adres
+			WHERE fk_kln_nummer = p_nummer
+			ORDER BY fk_kln_nummer, postcode_cijfers, postcode_letters, cube_tsg_test, huisnummer;
 	END;
 
-	PROCEDURE get_aaa_aaa_items (
-			p_cube_row IN OUT c_cube_row,
-			p_naam IN VARCHAR2) IS
+	PROCEDURE insert_kln (
+			p_cube_tsg_intext IN VARCHAR2,
+			p_cube_tsg_vip IN VARCHAR2,
+			p_cube_tsg_test IN VARCHAR2,
+			p_nummer IN VARCHAR2,
+			p_achternaam IN VARCHAR2,
+			p_geboorte_datum IN DATE,
+			p_leeftijd IN NUMBER,
+			p_voornaam IN VARCHAR2,
+			p_tussenvoegsel IN VARCHAR2) IS
 	BEGIN
-		OPEN p_cube_row FOR
-			SELECT
-			  naam
-			FROM v_aaa
-			WHERE fk_aaa_naam = p_naam
-			ORDER BY naam;
-	END;
-
-	PROCEDURE check_no_part_aaa (
-			p_naam IN VARCHAR2,
-			x_naam IN VARCHAR2) IS
-		l_naam v_aaa.naam%TYPE;
-	BEGIN
-		l_naam := x_naam;
-		LOOP
-			IF l_naam IS NULL THEN
-				EXIT; -- OK
-			END IF;
-			IF l_naam = p_naam THEN
-				RAISE_APPLICATION_ERROR (-20003, 'Target Type aaa in hierarchy of moving object');
-			END IF;
-			SELECT fk_aaa_naam
-			INTO l_naam
-			FROM v_aaa
-			WHERE naam = l_naam;
-		END LOOP;
-	END;
-
-	PROCEDURE get_next_aaa (
-			p_cube_row IN OUT c_cube_row,
-			p_fk_aaa_naam IN VARCHAR2,
-			p_naam IN VARCHAR2) IS
-	BEGIN
-		OPEN p_cube_row FOR
-			SELECT
-			  naam
-			FROM v_aaa
-			WHERE naam > p_naam
-			  AND 	    ( 	    ( fk_aaa_naam IS NULL
-					  AND p_fk_aaa_naam IS NULL )
-				   OR fk_aaa_naam = p_fk_aaa_naam )
-			ORDER BY naam;
-	END;
-
-	PROCEDURE change_parent_aaa (
-			p_cube_flag_root IN VARCHAR2,
-			p_naam IN VARCHAR2,
-			x_naam IN VARCHAR2,
-			p_cube_row IN OUT c_cube_row) IS
-	BEGIN
-		IF p_cube_flag_root = 'Y' THEN
-			UPDATE v_aaa SET
-				fk_aaa_naam = NULL
-			WHERE naam = p_naam;
-			IF SQL%NOTFOUND THEN
-				RAISE_APPLICATION_ERROR (-20002, 'Type aaa not found');
-			END IF;
-			get_next_aaa (p_cube_row, NULL, p_naam);
-		ELSE
-			check_no_part_aaa (p_naam, x_naam);
-			UPDATE v_aaa SET
-				fk_aaa_naam = x_naam
-			WHERE naam = p_naam;
-			IF SQL%NOTFOUND THEN
-				RAISE_APPLICATION_ERROR (-20002, 'Type aaa not found');
-			END IF;
-			get_next_aaa (p_cube_row, x_naam, p_naam);
-		END IF;
-	END;
-
-	PROCEDURE insert_aaa (
-			p_fk_aaa_naam IN VARCHAR2,
-			p_naam IN VARCHAR2,
-			p_omschrijving IN VARCHAR2,
-			p_xk_aaa_naam IN VARCHAR2,
-			p_cube_row IN OUT c_cube_row) IS
-	BEGIN
-		INSERT INTO v_aaa (
+		INSERT INTO v_klant (
 			cube_id,
-			cube_level,
-			fk_aaa_naam,
-			naam,
-			omschrijving,
-			xk_aaa_naam)
+			cube_tsg_intext,
+			cube_tsg_vip,
+			cube_tsg_test,
+			nummer,
+			achternaam,
+			geboorte_datum,
+			leeftijd,
+			voornaam,
+			tussenvoegsel)
 		VALUES (
 			NULL,
-			NULL,
-			p_fk_aaa_naam,
-			p_naam,
-			p_omschrijving,
-			p_xk_aaa_naam);
-
-		get_next_aaa (p_cube_row, p_fk_aaa_naam, p_naam);
+			p_cube_tsg_intext,
+			p_cube_tsg_vip,
+			p_cube_tsg_test,
+			p_nummer,
+			p_achternaam,
+			p_geboorte_datum,
+			p_leeftijd,
+			p_voornaam,
+			p_tussenvoegsel);
 	EXCEPTION
 		WHEN DUP_VAL_ON_INDEX THEN
-			RAISE_APPLICATION_ERROR (-20001, 'Type aaa already exists');
+			RAISE_APPLICATION_ERROR (-20001, 'Type klant already exists');
 	END;
 
-	PROCEDURE update_aaa (
-			p_fk_aaa_naam IN VARCHAR2,
-			p_naam IN VARCHAR2,
-			p_omschrijving IN VARCHAR2,
-			p_xk_aaa_naam IN VARCHAR2) IS
+	PROCEDURE update_kln (
+			p_cube_tsg_intext IN VARCHAR2,
+			p_cube_tsg_vip IN VARCHAR2,
+			p_cube_tsg_test IN VARCHAR2,
+			p_nummer IN VARCHAR2,
+			p_achternaam IN VARCHAR2,
+			p_geboorte_datum IN DATE,
+			p_leeftijd IN NUMBER,
+			p_voornaam IN VARCHAR2,
+			p_tussenvoegsel IN VARCHAR2) IS
 	BEGIN
-		UPDATE v_aaa SET
-			fk_aaa_naam = p_fk_aaa_naam,
-			omschrijving = p_omschrijving,
-			xk_aaa_naam = p_xk_aaa_naam
-		WHERE naam = p_naam;
+		UPDATE v_klant SET
+			cube_tsg_intext = p_cube_tsg_intext,
+			cube_tsg_vip = p_cube_tsg_vip,
+			cube_tsg_test = p_cube_tsg_test,
+			achternaam = p_achternaam,
+			geboorte_datum = p_geboorte_datum,
+			leeftijd = p_leeftijd,
+			voornaam = p_voornaam,
+			tussenvoegsel = p_tussenvoegsel
+		WHERE nummer = p_nummer;
 	END;
 
-	PROCEDURE delete_aaa (
-			p_naam IN VARCHAR2) IS
+	PROCEDURE delete_kln (
+			p_nummer IN VARCHAR2) IS
 	BEGIN
-		DELETE v_aaa
-		WHERE naam = p_naam;
+		DELETE v_klant
+		WHERE nummer = p_nummer;
 	END;
 
-	PROCEDURE get_aad (
-			p_cube_row IN OUT c_cube_row,
-			p_fk_aaa_naam IN VARCHAR2,
-			p_naam IN VARCHAR2) IS
+	PROCEDURE insert_adr (
+			p_fk_kln_nummer IN VARCHAR2,
+			p_postcode_cijfers IN NUMBER,
+			p_postcode_letters IN CHAR,
+			p_cube_tsg_test IN VARCHAR2,
+			p_huisnummer IN NUMBER) IS
 	BEGIN
-		OPEN p_cube_row FOR
-			SELECT
-			  xk_aaa_naam
-			FROM v_aaa_deel
-			WHERE fk_aaa_naam = p_fk_aaa_naam
-			  AND naam = p_naam;
-	END;
-
-	PROCEDURE determine_position_aad (
-			p_cube_sequence OUT NUMBER,
-			p_cube_pos_action IN VARCHAR2,
-			p_fk_aaa_naam IN VARCHAR2,
-			p_naam IN VARCHAR2) IS
-		l_cube_pos_action VARCHAR2(1);
-		l_cube_position_sequ NUMBER(8);
-		l_cube_near_sequ NUMBER(8);
-		l_cube_count NUMBER(8) := 1024;
-	BEGIN
-		-- A=After B=Before F=First L=Last
-		CASE p_cube_pos_action
-		WHEN 'F' THEN
-			l_cube_position_sequ := 0;
-			l_cube_pos_action := 'A';
-		WHEN 'L' THEN
-			l_cube_position_sequ := 99999999;
-			l_cube_pos_action := 'B';
-		ELSE
-			l_cube_pos_action := p_cube_pos_action;
-		END CASE;
-		LOOP
-			IF p_cube_pos_action IN ('B', 'A') THEN
-				-- Read sequence number of the target.
-				SELECT NVL (MAX (cube_sequence), DECODE (p_cube_pos_action, 'B', 99999999, 0))
-				INTO l_cube_position_sequ
-				FROM v_aaa_deel
-				WHERE fk_aaa_naam = p_fk_aaa_naam
-				  AND naam = p_naam;
-			END IF;
-			-- read sequence number near the target.
-			SELECT DECODE (l_cube_pos_action, 'B', NVL (MAX (cube_sequence), 0), NVL (MIN (cube_sequence), 99999999))
-			INTO l_cube_near_sequ
-			FROM v_aaa_deel
-			WHERE fk_aaa_naam = p_fk_aaa_naam
-			  AND 	    ( 	    ( l_cube_pos_action = 'B'
-					  AND cube_sequence < l_cube_position_sequ )
-				   OR 	    ( l_cube_pos_action = 'A'
-					  AND cube_sequence > l_cube_position_sequ ) );
-			IF ABS (l_cube_position_sequ - l_cube_near_sequ) > 1 THEN
-				p_cube_sequence := l_cube_position_sequ - (l_cube_position_sequ - l_cube_near_sequ) / 2; -- Formula both directions OK.
-				EXIT;
-			ELSE
-				-- renumber.
-				FOR r_aad IN (
-					SELECT
-					  rowid row_id
-					FROM v_aaa_deel
-					WHERE fk_aaa_naam = p_fk_aaa_naam
-					ORDER BY cube_sequence)
-				LOOP
-					UPDATE v_aaa_deel SET
-						cube_sequence = l_cube_count
-					WHERE rowid = r_aad.row_id;
-					l_cube_count := l_cube_count + 1024;
-				END LOOP;
-			END IF;
-		END LOOP;
-	END;
-
-	PROCEDURE move_aad (
-			p_cube_pos_action IN VARCHAR2,
-			p_fk_aaa_naam IN VARCHAR2,
-			p_naam IN VARCHAR2,
-			x_fk_aaa_naam IN VARCHAR2,
-			x_naam IN VARCHAR2) IS
-		l_cube_sequence NUMBER(8);
-	BEGIN
-		-- A=After B=Before F=First L=Last
-		IF NVL (p_cube_pos_action, ' ') NOT IN ('A', 'B', 'F', 'L') THEN
-			RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
-		END IF;
-		determine_position_aad (l_cube_sequence, p_cube_pos_action, x_fk_aaa_naam, x_naam);
-		UPDATE v_aaa_deel SET
-			cube_sequence = l_cube_sequence
-		WHERE fk_aaa_naam = p_fk_aaa_naam
-		  AND naam = p_naam;
-		IF SQL%NOTFOUND THEN
-			RAISE_APPLICATION_ERROR (-20002, 'Type aaa_deel not found');
-		END IF;
-	END;
-
-	PROCEDURE insert_aad (
-			p_cube_pos_action IN VARCHAR2,
-			p_fk_aaa_naam IN VARCHAR2,
-			p_naam IN VARCHAR2,
-			p_xk_aaa_naam IN VARCHAR2,
-			x_fk_aaa_naam IN VARCHAR2,
-			x_naam IN VARCHAR2) IS
-		l_cube_sequence NUMBER(8);
-	BEGIN
-		-- A=After B=Before F=First L=Last
-		IF NVL (p_cube_pos_action, ' ') NOT IN ('A', 'B', 'F', 'L') THEN
-			RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
-		END IF;
-		determine_position_aad (l_cube_sequence, p_cube_pos_action, x_fk_aaa_naam, x_naam);
-		INSERT INTO v_aaa_deel (
+		INSERT INTO v_adres (
 			cube_id,
-			cube_sequence,
-			fk_aaa_naam,
-			naam,
-			xk_aaa_naam)
+			fk_kln_nummer,
+			postcode_cijfers,
+			postcode_letters,
+			cube_tsg_test,
+			huisnummer)
 		VALUES (
 			NULL,
-			l_cube_sequence,
-			p_fk_aaa_naam,
-			p_naam,
-			p_xk_aaa_naam);
+			p_fk_kln_nummer,
+			p_postcode_cijfers,
+			p_postcode_letters,
+			p_cube_tsg_test,
+			p_huisnummer);
 	EXCEPTION
 		WHEN DUP_VAL_ON_INDEX THEN
-			RAISE_APPLICATION_ERROR (-20001, 'Type aaa_deel already exists');
+			RAISE_APPLICATION_ERROR (-20001, 'Type adres already exists');
 	END;
 
-	PROCEDURE update_aad (
-			p_fk_aaa_naam IN VARCHAR2,
-			p_naam IN VARCHAR2,
-			p_xk_aaa_naam IN VARCHAR2) IS
+	PROCEDURE delete_adr (
+			p_fk_kln_nummer IN VARCHAR2,
+			p_postcode_cijfers IN NUMBER,
+			p_postcode_letters IN CHAR,
+			p_cube_tsg_test IN VARCHAR2,
+			p_huisnummer IN NUMBER) IS
 	BEGIN
-		UPDATE v_aaa_deel SET
-			xk_aaa_naam = p_xk_aaa_naam
-		WHERE fk_aaa_naam = p_fk_aaa_naam
-		  AND naam = p_naam;
-	END;
-
-	PROCEDURE delete_aad (
-			p_fk_aaa_naam IN VARCHAR2,
-			p_naam IN VARCHAR2) IS
-	BEGIN
-		DELETE v_aaa_deel
-		WHERE fk_aaa_naam = p_fk_aaa_naam
-		  AND naam = p_naam;
-	END;
-END;
-/
-SHOW ERRORS;
-
-CREATE OR REPLACE PACKAGE pkg_bbb IS
-
-	TYPE c_cube_row IS REF CURSOR;
-	FUNCTION cube_pkg_cubetest RETURN VARCHAR2;
-	PROCEDURE get_bbb_root_items (
-			p_cube_row IN OUT c_cube_row);
-	PROCEDURE get_bbb_list (
-			p_cube_row IN OUT c_cube_row);
-	PROCEDURE get_bbb (
-			p_cube_row IN OUT c_cube_row,
-			p_naam IN VARCHAR2);
-	PROCEDURE insert_bbb (
-			p_naam IN VARCHAR2,
-			p_omschrijving IN VARCHAR2,
-			p_xk_aaa_naam IN VARCHAR2,
-			p_xk_bbb_naam_1 IN VARCHAR2);
-	PROCEDURE update_bbb (
-			p_naam IN VARCHAR2,
-			p_omschrijving IN VARCHAR2,
-			p_xk_aaa_naam IN VARCHAR2,
-			p_xk_bbb_naam_1 IN VARCHAR2);
-	PROCEDURE delete_bbb (
-			p_naam IN VARCHAR2);
-END;
-/
-SHOW ERRORS;
-
-CREATE OR REPLACE PACKAGE BODY pkg_bbb IS
-	FUNCTION cube_pkg_cubetest RETURN VARCHAR2 IS
-	BEGIN
-		RETURN 'cube_pkg_cubetest';
-	END;
-
-	PROCEDURE get_bbb_root_items (
-			p_cube_row IN OUT c_cube_row) IS
-	BEGIN
-		OPEN p_cube_row FOR
-			SELECT
-			  naam
-			FROM v_bbb
-			ORDER BY naam;
-	END;
-
-	PROCEDURE get_bbb_list (
-			p_cube_row IN OUT c_cube_row) IS
-	BEGIN
-		OPEN p_cube_row FOR
-			SELECT
-			  naam
-			FROM v_bbb
-			ORDER BY naam;
-	END;
-
-	PROCEDURE get_bbb (
-			p_cube_row IN OUT c_cube_row,
-			p_naam IN VARCHAR2) IS
-	BEGIN
-		OPEN p_cube_row FOR
-			SELECT
-			  omschrijving,
-			  xk_aaa_naam,
-			  xk_bbb_naam_1
-			FROM v_bbb
-			WHERE naam = p_naam;
-	END;
-
-	PROCEDURE insert_bbb (
-			p_naam IN VARCHAR2,
-			p_omschrijving IN VARCHAR2,
-			p_xk_aaa_naam IN VARCHAR2,
-			p_xk_bbb_naam_1 IN VARCHAR2) IS
-	BEGIN
-		INSERT INTO v_bbb (
-			cube_id,
-			naam,
-			omschrijving,
-			xk_aaa_naam,
-			xk_bbb_naam_1)
-		VALUES (
-			NULL,
-			p_naam,
-			p_omschrijving,
-			p_xk_aaa_naam,
-			p_xk_bbb_naam_1);
-	EXCEPTION
-		WHEN DUP_VAL_ON_INDEX THEN
-			RAISE_APPLICATION_ERROR (-20001, 'Type bbb already exists');
-	END;
-
-	PROCEDURE update_bbb (
-			p_naam IN VARCHAR2,
-			p_omschrijving IN VARCHAR2,
-			p_xk_aaa_naam IN VARCHAR2,
-			p_xk_bbb_naam_1 IN VARCHAR2) IS
-	BEGIN
-		UPDATE v_bbb SET
-			omschrijving = p_omschrijving,
-			xk_aaa_naam = p_xk_aaa_naam,
-			xk_bbb_naam_1 = p_xk_bbb_naam_1
-		WHERE naam = p_naam;
-	END;
-
-	PROCEDURE delete_bbb (
-			p_naam IN VARCHAR2) IS
-	BEGIN
-		DELETE v_bbb
-		WHERE naam = p_naam;
-	END;
-END;
-/
-SHOW ERRORS;
-
-CREATE OR REPLACE PACKAGE pkg_ccc IS
-
-	TYPE c_cube_row IS REF CURSOR;
-	FUNCTION cube_pkg_cubetest RETURN VARCHAR2;
-	PROCEDURE get_ccc_root_items (
-			p_cube_row IN OUT c_cube_row);
-	PROCEDURE get_ccc_list_all (
-			p_cube_row IN OUT c_cube_row);
-	PROCEDURE count_ccc (
-			p_cube_row IN OUT c_cube_row);
-	PROCEDURE get_ccc (
-			p_cube_row IN OUT c_cube_row,
-			p_code IN VARCHAR2,
-			p_naam IN VARCHAR2);
-	PROCEDURE get_ccc_ccc_items (
-			p_cube_row IN OUT c_cube_row,
-			p_code IN VARCHAR2,
-			p_naam IN VARCHAR2);
-	PROCEDURE count_ccc_ccc (
-			p_cube_row IN OUT c_cube_row,
-			p_code IN VARCHAR2,
-			p_naam IN VARCHAR2);
-	PROCEDURE move_ccc (
-			p_cube_pos_action IN VARCHAR2,
-			p_code IN VARCHAR2,
-			p_naam IN VARCHAR2,
-			x_code IN VARCHAR2,
-			x_naam IN VARCHAR2);
-	PROCEDURE insert_ccc (
-			p_cube_pos_action IN VARCHAR2,
-			p_fk_ccc_code IN VARCHAR2,
-			p_fk_ccc_naam IN VARCHAR2,
-			p_code IN VARCHAR2,
-			p_naam IN VARCHAR2,
-			p_omschrjving IN VARCHAR2,
-			p_xk_ccc_code IN VARCHAR2,
-			p_xk_ccc_naam IN VARCHAR2,
-			x_code IN VARCHAR2,
-			x_naam IN VARCHAR2);
-	PROCEDURE update_ccc (
-			p_fk_ccc_code IN VARCHAR2,
-			p_fk_ccc_naam IN VARCHAR2,
-			p_code IN VARCHAR2,
-			p_naam IN VARCHAR2,
-			p_omschrjving IN VARCHAR2,
-			p_xk_ccc_code IN VARCHAR2,
-			p_xk_ccc_naam IN VARCHAR2);
-	PROCEDURE delete_ccc (
-			p_code IN VARCHAR2,
-			p_naam IN VARCHAR2);
-END;
-/
-SHOW ERRORS;
-
-CREATE OR REPLACE PACKAGE BODY pkg_ccc IS
-	FUNCTION cube_pkg_cubetest RETURN VARCHAR2 IS
-	BEGIN
-		RETURN 'cube_pkg_cubetest';
-	END;
-
-	PROCEDURE get_ccc_root_items (
-			p_cube_row IN OUT c_cube_row) IS
-	BEGIN
-		OPEN p_cube_row FOR
-			SELECT
-			  cube_sequence,
-			  code,
-			  naam
-			FROM v_ccc
-			WHERE fk_ccc_code IS NULL
-			  AND fk_ccc_naam IS NULL
-			ORDER BY cube_sequence;
-	END;
-
-	PROCEDURE get_ccc_list_all (
-			p_cube_row IN OUT c_cube_row) IS
-	BEGIN
-		OPEN p_cube_row FOR
-			SELECT
-			  cube_sequence,
-			  code,
-			  naam
-			FROM v_ccc
-			ORDER BY cube_sequence;
-	END;
-
-	PROCEDURE count_ccc (
-			p_cube_row IN OUT c_cube_row) IS
-	BEGIN
-		OPEN p_cube_row FOR
-			SELECT
-			  COUNT(1) type_count
-			FROM v_ccc
-			WHERE fk_ccc_code IS NULL
-			  AND fk_ccc_naam IS NULL;
-	END;
-
-	PROCEDURE get_ccc (
-			p_cube_row IN OUT c_cube_row,
-			p_code IN VARCHAR2,
-			p_naam IN VARCHAR2) IS
-	BEGIN
-		OPEN p_cube_row FOR
-			SELECT
-			  fk_ccc_code,
-			  fk_ccc_naam,
-			  omschrjving,
-			  xk_ccc_code,
-			  xk_ccc_naam
-			FROM v_ccc
-			WHERE code = p_code
-			  AND naam = p_naam;
-	END;
-
-	PROCEDURE get_ccc_ccc_items (
-			p_cube_row IN OUT c_cube_row,
-			p_code IN VARCHAR2,
-			p_naam IN VARCHAR2) IS
-	BEGIN
-		OPEN p_cube_row FOR
-			SELECT
-			  cube_sequence,
-			  code,
-			  naam
-			FROM v_ccc
-			WHERE fk_ccc_code = p_code
-			  AND fk_ccc_naam = p_naam
-			ORDER BY cube_sequence;
-	END;
-
-	PROCEDURE count_ccc_ccc (
-			p_cube_row IN OUT c_cube_row,
-			p_code IN VARCHAR2,
-			p_naam IN VARCHAR2) IS
-	BEGIN
-		OPEN p_cube_row FOR
-			SELECT
-			  COUNT(1) type_count
-			FROM v_ccc
-			WHERE fk_ccc_code = p_code
-			  AND fk_ccc_code IS NOT NULL
-			  AND fk_ccc_naam = p_naam
-			  AND fk_ccc_naam IS NOT NULL;
-	END;
-
-	PROCEDURE check_no_part_ccc (
-			p_code IN VARCHAR2,
-			p_naam IN VARCHAR2,
-			x_code IN VARCHAR2,
-			x_naam IN VARCHAR2) IS
-		l_code v_ccc.code%TYPE;
-		l_naam v_ccc.naam%TYPE;
-	BEGIN
-		l_code := x_code;
-		l_naam := x_naam;
-		LOOP
-			IF l_code IS NULL
-			  AND l_naam IS NULL THEN
-				EXIT; -- OK
-			END IF;
-			IF l_code = p_code
-			  AND l_naam = p_naam THEN
-				RAISE_APPLICATION_ERROR (-20003, 'Target Type ccc in hierarchy of moving object');
-			END IF;
-			SELECT fk_ccc_code, fk_ccc_naam
-			INTO l_code, l_naam
-			FROM v_ccc
-			WHERE code = l_code
-			  AND naam = l_naam;
-		END LOOP;
-	END;
-
-	PROCEDURE determine_position_ccc (
-			p_cube_sequence OUT NUMBER,
-			p_cube_pos_action IN VARCHAR2,
-			p_fk_ccc_code IN VARCHAR2,
-			p_fk_ccc_naam IN VARCHAR2,
-			p_code IN VARCHAR2,
-			p_naam IN VARCHAR2) IS
-		l_cube_pos_action VARCHAR2(1);
-		l_cube_position_sequ NUMBER(8);
-		l_cube_near_sequ NUMBER(8);
-		l_cube_count NUMBER(8) := 1024;
-	BEGIN
-		-- A=After B=Before F=First L=Last
-		CASE p_cube_pos_action
-		WHEN 'F' THEN
-			l_cube_position_sequ := 0;
-			l_cube_pos_action := 'A';
-		WHEN 'L' THEN
-			l_cube_position_sequ := 99999999;
-			l_cube_pos_action := 'B';
-		ELSE
-			l_cube_pos_action := p_cube_pos_action;
-		END CASE;
-		LOOP
-			IF p_cube_pos_action IN ('B', 'A') THEN
-				-- Read sequence number of the target.
-				SELECT NVL (MAX (cube_sequence), DECODE (p_cube_pos_action, 'B', 99999999, 0))
-				INTO l_cube_position_sequ
-				FROM v_ccc
-				WHERE code = p_code
-				  AND naam = p_naam;
-			END IF;
-			-- read sequence number near the target.
-			SELECT DECODE (l_cube_pos_action, 'B', NVL (MAX (cube_sequence), 0), NVL (MIN (cube_sequence), 99999999))
-			INTO l_cube_near_sequ
-			FROM v_ccc
-			WHERE 	    ( 	    ( fk_ccc_code IS NULL
-					  AND p_fk_ccc_code IS NULL )
-				   OR 	    ( fk_ccc_naam IS NULL
-					  AND p_fk_ccc_naam IS NULL )
-				   OR fk_ccc_code = p_fk_ccc_code
-				   OR fk_ccc_naam = p_fk_ccc_naam )
-			  AND 	    ( 	    ( l_cube_pos_action = 'B'
-					  AND cube_sequence < l_cube_position_sequ )
-				   OR 	    ( l_cube_pos_action = 'A'
-					  AND cube_sequence > l_cube_position_sequ ) );
-			IF ABS (l_cube_position_sequ - l_cube_near_sequ) > 1 THEN
-				p_cube_sequence := l_cube_position_sequ - (l_cube_position_sequ - l_cube_near_sequ) / 2; -- Formula both directions OK.
-				EXIT;
-			ELSE
-				-- renumber.
-				FOR r_ccc IN (
-					SELECT
-					  rowid row_id
-					FROM v_ccc
-					WHERE 	    ( fk_ccc_code IS NULL
-						  AND p_fk_ccc_code IS NULL )
-					   OR 	    ( fk_ccc_naam IS NULL
-						  AND p_fk_ccc_naam IS NULL )
-					   OR fk_ccc_code = p_fk_ccc_code
-					   OR fk_ccc_naam = p_fk_ccc_naam
-					ORDER BY cube_sequence)
-				LOOP
-					UPDATE v_ccc SET
-						cube_sequence = l_cube_count
-					WHERE rowid = r_ccc.row_id;
-					l_cube_count := l_cube_count + 1024;
-				END LOOP;
-			END IF;
-		END LOOP;
-	END;
-
-	PROCEDURE move_ccc (
-			p_cube_pos_action IN VARCHAR2,
-			p_code IN VARCHAR2,
-			p_naam IN VARCHAR2,
-			x_code IN VARCHAR2,
-			x_naam IN VARCHAR2) IS
-		l_cube_sequence NUMBER(8);
-		l_fk_ccc_code v_ccc.fk_ccc_code%TYPE;
-		l_fk_ccc_naam v_ccc.fk_ccc_naam%TYPE;
-	BEGIN
-		-- A=After B=Before F=First L=Last
-		IF NVL (p_cube_pos_action, ' ') NOT IN ('A', 'B', 'F', 'L') THEN
-			RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
-		END IF;
-		-- Get parent id of the target.
-		IF p_cube_pos_action IN ('B', 'A') THEN
-			SELECT fk_ccc_code, fk_ccc_naam
-			INTO l_fk_ccc_code, l_fk_ccc_naam
-			FROM v_ccc
-			WHERE code = x_code
-			  AND naam = x_naam;
-		ELSE
-			l_fk_ccc_code := x_code;
-			l_fk_ccc_naam := x_naam;
-		END IF;
-		check_no_part_ccc (p_code, p_naam, l_fk_ccc_code, l_fk_ccc_naam);
-		determine_position_ccc (l_cube_sequence, p_cube_pos_action, l_fk_ccc_code, l_fk_ccc_naam, x_code, x_naam);
-		UPDATE v_ccc SET
-			fk_ccc_code = l_fk_ccc_code,
-			fk_ccc_naam = l_fk_ccc_naam,
-			cube_sequence = l_cube_sequence
-		WHERE code = p_code
-		  AND naam = p_naam;
-		IF SQL%NOTFOUND THEN
-			RAISE_APPLICATION_ERROR (-20002, 'Type ccc not found');
-		END IF;
-	END;
-
-	PROCEDURE insert_ccc (
-			p_cube_pos_action IN VARCHAR2,
-			p_fk_ccc_code IN VARCHAR2,
-			p_fk_ccc_naam IN VARCHAR2,
-			p_code IN VARCHAR2,
-			p_naam IN VARCHAR2,
-			p_omschrjving IN VARCHAR2,
-			p_xk_ccc_code IN VARCHAR2,
-			p_xk_ccc_naam IN VARCHAR2,
-			x_code IN VARCHAR2,
-			x_naam IN VARCHAR2) IS
-		l_cube_sequence NUMBER(8);
-	BEGIN
-		-- A=After B=Before F=First L=Last
-		IF NVL (p_cube_pos_action, ' ') NOT IN ('A', 'B', 'F', 'L') THEN
-			RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
-		END IF;
-		determine_position_ccc (l_cube_sequence, p_cube_pos_action, p_fk_ccc_code, p_fk_ccc_naam, x_code, x_naam);
-		INSERT INTO v_ccc (
-			cube_id,
-			cube_sequence,
-			cube_level,
-			fk_ccc_code,
-			fk_ccc_naam,
-			code,
-			naam,
-			omschrjving,
-			xk_ccc_code,
-			xk_ccc_naam)
-		VALUES (
-			NULL,
-			l_cube_sequence,
-			NULL,
-			p_fk_ccc_code,
-			p_fk_ccc_naam,
-			p_code,
-			p_naam,
-			p_omschrjving,
-			p_xk_ccc_code,
-			p_xk_ccc_naam);
-	EXCEPTION
-		WHEN DUP_VAL_ON_INDEX THEN
-			RAISE_APPLICATION_ERROR (-20001, 'Type ccc already exists');
-	END;
-
-	PROCEDURE update_ccc (
-			p_fk_ccc_code IN VARCHAR2,
-			p_fk_ccc_naam IN VARCHAR2,
-			p_code IN VARCHAR2,
-			p_naam IN VARCHAR2,
-			p_omschrjving IN VARCHAR2,
-			p_xk_ccc_code IN VARCHAR2,
-			p_xk_ccc_naam IN VARCHAR2) IS
-	BEGIN
-		UPDATE v_ccc SET
-			fk_ccc_code = p_fk_ccc_code,
-			fk_ccc_naam = p_fk_ccc_naam,
-			omschrjving = p_omschrjving,
-			xk_ccc_code = p_xk_ccc_code,
-			xk_ccc_naam = p_xk_ccc_naam
-		WHERE code = p_code
-		  AND naam = p_naam;
-	END;
-
-	PROCEDURE delete_ccc (
-			p_code IN VARCHAR2,
-			p_naam IN VARCHAR2) IS
-	BEGIN
-		DELETE v_ccc
-		WHERE code = p_code
-		  AND naam = p_naam;
+		DELETE v_adres
+		WHERE fk_kln_nummer = p_fk_kln_nummer
+		  AND postcode_cijfers = p_postcode_cijfers
+		  AND postcode_letters = p_postcode_letters
+		  AND cube_tsg_test = p_cube_tsg_test
+		  AND huisnummer = p_huisnummer;
 	END;
 END;
 /
@@ -900,190 +276,198 @@ CREATE OR REPLACE PACKAGE pkg_prd IS
 	FUNCTION cube_pkg_cubetest RETURN VARCHAR2;
 	PROCEDURE get_prd_root_items (
 			p_cube_row IN OUT c_cube_row);
+	PROCEDURE get_prd_list (
+			p_cube_row IN OUT c_cube_row);
+	PROCEDURE count_prd (
+			p_cube_row IN OUT c_cube_row);
 	PROCEDURE get_prd (
 			p_cube_row IN OUT c_cube_row,
-			p_code IN VARCHAR2,
-			p_naam IN VARCHAR2,
-			p_nummer IN NUMBER,
-			p_xk_aaa_naam IN VARCHAR2);
-	PROCEDURE get_prd_pr2_items (
+			p_cube_tsg_type IN VARCHAR2,
+			p_code IN VARCHAR2);
+	PROCEDURE get_prd_ond_items (
 			p_cube_row IN OUT c_cube_row,
-			p_code IN VARCHAR2,
-			p_naam IN VARCHAR2,
-			p_nummer IN NUMBER,
-			p_xk_aaa_naam IN VARCHAR2);
-	PROCEDURE get_prd_prt_items (
+			p_cube_tsg_type IN VARCHAR2,
+			p_code IN VARCHAR2);
+	PROCEDURE count_prd_ond (
 			p_cube_row IN OUT c_cube_row,
-			p_code IN VARCHAR2,
-			p_naam IN VARCHAR2,
-			p_nummer IN NUMBER,
-			p_xk_aaa_naam IN VARCHAR2);
+			p_cube_tsg_type IN VARCHAR2,
+			p_code IN VARCHAR2);
 	PROCEDURE insert_prd (
-			p_cube_tsg_zzz IN VARCHAR2,
-			p_cube_tsg_yyy IN VARCHAR2,
+			p_cube_tsg_type IN VARCHAR2,
+			p_cube_tsg_soort IN VARCHAR2,
+			p_cube_tsg_soort1 IN VARCHAR2,
 			p_code IN VARCHAR2,
-			p_naam IN VARCHAR2,
-			p_nummer IN NUMBER,
-			p_datum IN DATE,
-			p_omschrijving IN VARCHAR2,
-			p_xk_aaa_naam IN VARCHAR2);
+			p_prijs IN NUMBER,
+			p_makelaar_naam IN VARCHAR2,
+			p_bedrag_btw IN NUMBER,
+			p_xk_kln_nummer IN VARCHAR2,
+			p_cube_row IN OUT c_cube_row);
 	PROCEDURE update_prd (
-			p_cube_tsg_zzz IN VARCHAR2,
-			p_cube_tsg_yyy IN VARCHAR2,
+			p_cube_tsg_type IN VARCHAR2,
+			p_cube_tsg_soort IN VARCHAR2,
+			p_cube_tsg_soort1 IN VARCHAR2,
 			p_code IN VARCHAR2,
-			p_naam IN VARCHAR2,
-			p_nummer IN NUMBER,
-			p_datum IN DATE,
-			p_omschrijving IN VARCHAR2,
-			p_xk_aaa_naam IN VARCHAR2);
+			p_prijs IN NUMBER,
+			p_makelaar_naam IN VARCHAR2,
+			p_bedrag_btw IN NUMBER,
+			p_xk_kln_nummer IN VARCHAR2);
 	PROCEDURE delete_prd (
-			p_code IN VARCHAR2,
-			p_naam IN VARCHAR2,
-			p_nummer IN NUMBER,
-			p_xk_aaa_naam IN VARCHAR2);
-	PROCEDURE get_pr2 (
+			p_cube_tsg_type IN VARCHAR2,
+			p_code IN VARCHAR2);
+	PROCEDURE get_ond_list_all (
+			p_cube_row IN OUT c_cube_row);
+	PROCEDURE get_ond_list_recursive (
 			p_cube_row IN OUT c_cube_row,
-			p_code IN VARCHAR2,
-			p_naam IN VARCHAR2);
-	PROCEDURE get_pr2_fkey (
-			p_cube_row IN OUT c_cube_row,
-			p_code IN VARCHAR2,
-			p_naam IN VARCHAR2);
-	PROCEDURE get_pr2_pa2_items (
-			p_cube_row IN OUT c_cube_row,
-			p_code IN VARCHAR2,
-			p_naam IN VARCHAR2);
-	PROCEDURE insert_pr2 (
+			p_cube_up_or_down IN VARCHAR2,
+			p_cube_x_level IN NUMBER,
+			p_fk_prd_cube_tsg_type IN VARCHAR2,
 			p_fk_prd_code IN VARCHAR2,
-			p_fk_prd_naam IN VARCHAR2,
-			p_fk_prd_nummer IN NUMBER,
-			p_fk_prd_aaa_naam IN VARCHAR2,
-			p_code IN VARCHAR2,
-			p_naam IN VARCHAR2,
-			p_omschrijving IN VARCHAR2);
-	PROCEDURE update_pr2 (
-			p_fk_prd_code IN VARCHAR2,
-			p_fk_prd_naam IN VARCHAR2,
-			p_fk_prd_nummer IN NUMBER,
-			p_fk_prd_aaa_naam IN VARCHAR2,
-			p_code IN VARCHAR2,
-			p_naam IN VARCHAR2,
-			p_omschrijving IN VARCHAR2);
-	PROCEDURE delete_pr2 (
-			p_code IN VARCHAR2,
-			p_naam IN VARCHAR2);
-	PROCEDURE get_pa2_for_prd_list_encapsulated (
+			p_code IN VARCHAR2);
+	PROCEDURE get_ond (
 			p_cube_row IN OUT c_cube_row,
+			p_fk_prd_cube_tsg_type IN VARCHAR2,
+			p_fk_prd_code IN VARCHAR2,
+			p_code IN VARCHAR2);
+	PROCEDURE get_ond_odd_items (
+			p_cube_row IN OUT c_cube_row,
+			p_fk_prd_cube_tsg_type IN VARCHAR2,
+			p_fk_prd_code IN VARCHAR2,
+			p_code IN VARCHAR2);
+	PROCEDURE get_ond_ond_items (
+			p_cube_row IN OUT c_cube_row,
+			p_fk_prd_cube_tsg_type IN VARCHAR2,
+			p_fk_prd_code IN VARCHAR2,
+			p_code IN VARCHAR2);
+	PROCEDURE count_ond_ond (
+			p_cube_row IN OUT c_cube_row,
+			p_fk_prd_cube_tsg_type IN VARCHAR2,
+			p_fk_prd_code IN VARCHAR2,
+			p_code IN VARCHAR2);
+	PROCEDURE count_ond_odd (
+			p_cube_row IN OUT c_cube_row,
+			p_fk_prd_cube_tsg_type IN VARCHAR2,
+			p_fk_prd_code IN VARCHAR2,
+			p_code IN VARCHAR2);
+	PROCEDURE move_ond (
+			p_cube_pos_action IN VARCHAR2,
+			p_fk_prd_cube_tsg_type IN VARCHAR2,
+			p_fk_prd_code IN VARCHAR2,
 			p_code IN VARCHAR2,
-			p_naam IN VARCHAR2,
+			x_fk_prd_cube_tsg_type IN VARCHAR2,
 			x_fk_prd_code IN VARCHAR2,
-			x_fk_prd_naam IN VARCHAR2,
-			x_fk_prd_nummer IN NUMBER,
-			x_fk_prd_aaa_naam IN VARCHAR2);
-	PROCEDURE get_pa2 (
-			p_cube_row IN OUT c_cube_row,
-			p_code IN VARCHAR2,
-			p_naam IN VARCHAR2);
-	PROCEDURE get_pa2_fkey (
-			p_cube_row IN OUT c_cube_row,
-			p_code IN VARCHAR2,
-			p_naam IN VARCHAR2);
-	PROCEDURE get_pa2_pa2_items (
-			p_cube_row IN OUT c_cube_row,
-			p_code IN VARCHAR2,
-			p_naam IN VARCHAR2);
-	PROCEDURE change_parent_pa2 (
-			p_cube_flag_root IN VARCHAR2,
-			p_code IN VARCHAR2,
-			p_naam IN VARCHAR2,
-			x_code IN VARCHAR2,
-			x_naam IN VARCHAR2);
-	PROCEDURE insert_pa2 (
+			x_code IN VARCHAR2);
+	PROCEDURE insert_ond (
+			p_cube_pos_action IN VARCHAR2,
+			p_fk_prd_cube_tsg_type IN VARCHAR2,
 			p_fk_prd_code IN VARCHAR2,
-			p_fk_prd_naam IN VARCHAR2,
-			p_fk_prd_nummer IN NUMBER,
-			p_fk_prd_aaa_naam IN VARCHAR2,
-			p_fk_pr2_code IN VARCHAR2,
-			p_fk_pr2_naam IN VARCHAR2,
-			p_fk_pa2_code IN VARCHAR2,
-			p_fk_pa2_naam IN VARCHAR2,
+			p_fk_ond_code IN VARCHAR2,
 			p_code IN VARCHAR2,
-			p_naam IN VARCHAR2,
+			p_prijs IN NUMBER,
 			p_omschrijving IN VARCHAR2,
-			p_xk_pa2_code IN VARCHAR2,
-			p_xk_pa2_naam IN VARCHAR2);
-	PROCEDURE update_pa2 (
-			p_fk_prd_code IN VARCHAR2,
-			p_fk_prd_naam IN VARCHAR2,
-			p_fk_prd_nummer IN NUMBER,
-			p_fk_prd_aaa_naam IN VARCHAR2,
-			p_fk_pr2_code IN VARCHAR2,
-			p_fk_pr2_naam IN VARCHAR2,
-			p_fk_pa2_code IN VARCHAR2,
-			p_fk_pa2_naam IN VARCHAR2,
-			p_code IN VARCHAR2,
-			p_naam IN VARCHAR2,
-			p_omschrijving IN VARCHAR2,
-			p_xk_pa2_code IN VARCHAR2,
-			p_xk_pa2_naam IN VARCHAR2);
-	PROCEDURE delete_pa2 (
-			p_code IN VARCHAR2,
-			p_naam IN VARCHAR2);
-	PROCEDURE get_prt_for_prd_list_encapsulated (
-			p_cube_row IN OUT c_cube_row,
-			p_code IN VARCHAR2,
-			p_naam IN VARCHAR2,
-			p_nummer IN NUMBER,
-			p_xk_aaa_naam IN VARCHAR2,
+			p_xf_ond_prd_cube_tsg_type IN VARCHAR2,
+			p_xf_ond_prd_code IN VARCHAR2,
+			p_xk_ond_code IN VARCHAR2,
+			x_fk_prd_cube_tsg_type IN VARCHAR2,
 			x_fk_prd_code IN VARCHAR2,
-			x_fk_prd_naam IN VARCHAR2,
-			x_fk_prd_nummer IN NUMBER,
-			x_fk_prd_aaa_naam IN VARCHAR2);
-	PROCEDURE get_prt (
-			p_cube_row IN OUT c_cube_row,
-			p_code IN VARCHAR2,
-			p_naam IN VARCHAR2);
-	PROCEDURE get_prt_fkey (
-			p_cube_row IN OUT c_cube_row,
-			p_code IN VARCHAR2,
-			p_naam IN VARCHAR2);
-	PROCEDURE get_prt_prt_items (
-			p_cube_row IN OUT c_cube_row,
-			p_code IN VARCHAR2,
-			p_naam IN VARCHAR2);
-	PROCEDURE change_parent_prt (
-			p_cube_flag_root IN VARCHAR2,
-			p_code IN VARCHAR2,
-			p_naam IN VARCHAR2,
-			x_code IN VARCHAR2,
-			x_naam IN VARCHAR2);
-	PROCEDURE insert_prt (
+			x_code IN VARCHAR2);
+	PROCEDURE update_ond (
+			p_fk_prd_cube_tsg_type IN VARCHAR2,
 			p_fk_prd_code IN VARCHAR2,
-			p_fk_prd_naam IN VARCHAR2,
-			p_fk_prd_nummer IN NUMBER,
-			p_fk_prd_aaa_naam IN VARCHAR2,
-			p_fk_prt_code IN VARCHAR2,
-			p_fk_prt_naam IN VARCHAR2,
+			p_fk_ond_code IN VARCHAR2,
 			p_code IN VARCHAR2,
-			p_naam IN VARCHAR2,
+			p_prijs IN NUMBER,
 			p_omschrijving IN VARCHAR2,
-			p_xk_prt_code IN VARCHAR2,
-			p_xk_prt_naam IN VARCHAR2);
-	PROCEDURE update_prt (
+			p_xf_ond_prd_cube_tsg_type IN VARCHAR2,
+			p_xf_ond_prd_code IN VARCHAR2,
+			p_xk_ond_code IN VARCHAR2);
+	PROCEDURE delete_ond (
+			p_fk_prd_cube_tsg_type IN VARCHAR2,
 			p_fk_prd_code IN VARCHAR2,
-			p_fk_prd_naam IN VARCHAR2,
-			p_fk_prd_nummer IN NUMBER,
-			p_fk_prd_aaa_naam IN VARCHAR2,
-			p_fk_prt_code IN VARCHAR2,
-			p_fk_prt_naam IN VARCHAR2,
+			p_code IN VARCHAR2);
+	PROCEDURE get_odd (
+			p_cube_row IN OUT c_cube_row,
+			p_code IN VARCHAR2);
+	PROCEDURE get_odd_fkey (
+			p_cube_row IN OUT c_cube_row,
+			p_code IN VARCHAR2);
+	PROCEDURE get_odd_ddd_items (
+			p_cube_row IN OUT c_cube_row,
+			p_code IN VARCHAR2);
+	PROCEDURE move_odd (
+			p_cube_pos_action IN VARCHAR2,
+			p_code IN VARCHAR2,
+			x_code IN VARCHAR2);
+	PROCEDURE insert_odd (
+			p_cube_pos_action IN VARCHAR2,
+			p_fk_prd_cube_tsg_type IN VARCHAR2,
+			p_fk_prd_code IN VARCHAR2,
+			p_fk_ond_code IN VARCHAR2,
 			p_code IN VARCHAR2,
 			p_naam IN VARCHAR2,
-			p_omschrijving IN VARCHAR2,
-			p_xk_prt_code IN VARCHAR2,
-			p_xk_prt_naam IN VARCHAR2);
-	PROCEDURE delete_prt (
+			p_xf_ond_prd_cube_tsg_type IN VARCHAR2,
+			p_xf_ond_prd_code IN VARCHAR2,
+			p_xk_ond_code IN VARCHAR2,
+			x_code IN VARCHAR2);
+	PROCEDURE update_odd (
+			p_fk_prd_cube_tsg_type IN VARCHAR2,
+			p_fk_prd_code IN VARCHAR2,
+			p_fk_ond_code IN VARCHAR2,
 			p_code IN VARCHAR2,
-			p_naam IN VARCHAR2);
+			p_naam IN VARCHAR2,
+			p_xf_ond_prd_cube_tsg_type IN VARCHAR2,
+			p_xf_ond_prd_code IN VARCHAR2,
+			p_xk_ond_code IN VARCHAR2);
+	PROCEDURE delete_odd (
+			p_code IN VARCHAR2);
+	PROCEDURE get_ddd (
+			p_cube_row IN OUT c_cube_row,
+			p_code IN VARCHAR2);
+	PROCEDURE move_ddd (
+			p_cube_pos_action IN VARCHAR2,
+			p_code IN VARCHAR2,
+			x_code IN VARCHAR2);
+	PROCEDURE insert_ddd (
+			p_cube_pos_action IN VARCHAR2,
+			p_fk_prd_cube_tsg_type IN VARCHAR2,
+			p_fk_prd_code IN VARCHAR2,
+			p_fk_ond_code IN VARCHAR2,
+			p_fk_odd_code IN VARCHAR2,
+			p_code IN VARCHAR2,
+			p_naam IN VARCHAR2,
+			p_xf_ond_prd_cube_tsg_type IN VARCHAR2,
+			p_xf_ond_prd_code IN VARCHAR2,
+			p_xk_ond_code IN VARCHAR2,
+			p_xf_ond_prd_cube_tsg_type_3 IN VARCHAR2,
+			p_xf_ond_prd_code_3 IN VARCHAR2,
+			p_xk_ond_code_3 IN VARCHAR2,
+			p_xf_ond_prd_cube_tsg_type_1 IN VARCHAR2,
+			p_xf_ond_prd_code_1 IN VARCHAR2,
+			p_xk_ond_code_1 IN VARCHAR2,
+			p_xf_ond_prd_cube_tsg_type_2 IN VARCHAR2,
+			p_xf_ond_prd_code_2 IN VARCHAR2,
+			p_xk_ond_code_2 IN VARCHAR2,
+			x_code IN VARCHAR2);
+	PROCEDURE update_ddd (
+			p_fk_prd_cube_tsg_type IN VARCHAR2,
+			p_fk_prd_code IN VARCHAR2,
+			p_fk_ond_code IN VARCHAR2,
+			p_fk_odd_code IN VARCHAR2,
+			p_code IN VARCHAR2,
+			p_naam IN VARCHAR2,
+			p_xf_ond_prd_cube_tsg_type IN VARCHAR2,
+			p_xf_ond_prd_code IN VARCHAR2,
+			p_xk_ond_code IN VARCHAR2,
+			p_xf_ond_prd_cube_tsg_type_3 IN VARCHAR2,
+			p_xf_ond_prd_code_3 IN VARCHAR2,
+			p_xk_ond_code_3 IN VARCHAR2,
+			p_xf_ond_prd_cube_tsg_type_1 IN VARCHAR2,
+			p_xf_ond_prd_code_1 IN VARCHAR2,
+			p_xk_ond_code_1 IN VARCHAR2,
+			p_xf_ond_prd_cube_tsg_type_2 IN VARCHAR2,
+			p_xf_ond_prd_code_2 IN VARCHAR2,
+			p_xk_ond_code_2 IN VARCHAR2);
+	PROCEDURE delete_ddd (
+			p_code IN VARCHAR2);
 END;
 /
 SHOW ERRORS;
@@ -1099,714 +483,1328 @@ CREATE OR REPLACE PACKAGE BODY pkg_prd IS
 	BEGIN
 		OPEN p_cube_row FOR
 			SELECT
-			  cube_tsg_zzz,
-			  cube_tsg_yyy,
-			  code,
-			  naam,
-			  nummer,
-			  omschrijving,
-			  xk_aaa_naam
-			FROM v_prod
-			ORDER BY cube_tsg_zzz, cube_tsg_yyy, code, naam, nummer, omschrijving, xk_aaa_naam;
+			  cube_tsg_type,
+			  cube_tsg_soort,
+			  cube_tsg_soort1,
+			  code
+			FROM v_produkt
+			ORDER BY cube_tsg_type, cube_tsg_soort, cube_tsg_soort1, code;
+	END;
+
+	PROCEDURE get_prd_list (
+			p_cube_row IN OUT c_cube_row) IS
+	BEGIN
+		OPEN p_cube_row FOR
+			SELECT
+			  cube_tsg_type,
+			  cube_tsg_soort,
+			  cube_tsg_soort1,
+			  code
+			FROM v_produkt
+			ORDER BY cube_tsg_type, cube_tsg_soort, cube_tsg_soort1, code;
+	END;
+
+	PROCEDURE count_prd (
+			p_cube_row IN OUT c_cube_row) IS
+	BEGIN
+		OPEN p_cube_row FOR
+			SELECT
+			  COUNT(1) type_count
+			FROM v_produkt;
 	END;
 
 	PROCEDURE get_prd (
 			p_cube_row IN OUT c_cube_row,
-			p_code IN VARCHAR2,
-			p_naam IN VARCHAR2,
-			p_nummer IN NUMBER,
-			p_xk_aaa_naam IN VARCHAR2) IS
+			p_cube_tsg_type IN VARCHAR2,
+			p_code IN VARCHAR2) IS
 	BEGIN
 		OPEN p_cube_row FOR
 			SELECT
-			  cube_tsg_zzz,
-			  cube_tsg_yyy,
-			  datum,
-			  omschrijving
-			FROM v_prod
-			WHERE code = p_code
-			  AND naam = p_naam
-			  AND nummer = p_nummer
-			  AND xk_aaa_naam = p_xk_aaa_naam;
+			  cube_tsg_soort,
+			  cube_tsg_soort1,
+			  prijs,
+			  makelaar_naam,
+			  bedrag_btw,
+			  xk_kln_nummer
+			FROM v_produkt
+			WHERE cube_tsg_type = p_cube_tsg_type
+			  AND code = p_code;
 	END;
 
-	PROCEDURE get_prd_pr2_items (
+	PROCEDURE get_prd_ond_items (
 			p_cube_row IN OUT c_cube_row,
-			p_code IN VARCHAR2,
-			p_naam IN VARCHAR2,
-			p_nummer IN NUMBER,
-			p_xk_aaa_naam IN VARCHAR2) IS
+			p_cube_tsg_type IN VARCHAR2,
+			p_code IN VARCHAR2) IS
 	BEGIN
 		OPEN p_cube_row FOR
 			SELECT
-			  code,
-			  naam
-			FROM v_prod2
-			WHERE fk_prd_code = p_code
-			  AND fk_prd_naam = p_naam
-			  AND fk_prd_nummer = p_nummer
-			  AND fk_prd_aaa_naam = p_xk_aaa_naam
-			ORDER BY code, naam;
+			  cube_sequence,
+			  fk_prd_cube_tsg_type,
+			  fk_prd_code,
+			  code
+			FROM v_onderdeel
+			WHERE fk_prd_cube_tsg_type = p_cube_tsg_type
+			  AND fk_prd_code = p_code
+			  AND fk_ond_code IS NULL
+			ORDER BY fk_prd_cube_tsg_type, fk_prd_code, cube_sequence;
 	END;
 
-	PROCEDURE get_prd_prt_items (
+	PROCEDURE count_prd_ond (
 			p_cube_row IN OUT c_cube_row,
-			p_code IN VARCHAR2,
-			p_naam IN VARCHAR2,
-			p_nummer IN NUMBER,
-			p_xk_aaa_naam IN VARCHAR2) IS
+			p_cube_tsg_type IN VARCHAR2,
+			p_code IN VARCHAR2) IS
 	BEGIN
 		OPEN p_cube_row FOR
 			SELECT
-			  code,
-			  naam
-			FROM v_part
-			WHERE fk_prd_code = p_code
-			  AND fk_prd_naam = p_naam
-			  AND fk_prd_nummer = p_nummer
-			  AND fk_prd_aaa_naam = p_xk_aaa_naam
-			  AND fk_prt_code IS NULL
-			  AND fk_prt_naam IS NULL
-			ORDER BY code, naam;
+			  COUNT(1) type_count
+			FROM v_onderdeel
+			WHERE fk_prd_cube_tsg_type = p_cube_tsg_type
+			  AND fk_prd_code = p_code
+			  AND fk_ond_code IS NULL;
+	END;
+
+	PROCEDURE get_next_prd (
+			p_cube_row IN OUT c_cube_row,
+			p_cube_tsg_type IN VARCHAR2,
+			p_code IN VARCHAR2) IS
+	BEGIN
+		OPEN p_cube_row FOR
+			SELECT
+			  cube_tsg_type,
+			  code
+			FROM v_produkt
+			WHERE cube_tsg_type > p_cube_tsg_type
+			   OR 	    ( cube_tsg_type = p_cube_tsg_type
+				  AND code > p_code )
+			ORDER BY cube_tsg_type, code;
 	END;
 
 	PROCEDURE insert_prd (
-			p_cube_tsg_zzz IN VARCHAR2,
-			p_cube_tsg_yyy IN VARCHAR2,
+			p_cube_tsg_type IN VARCHAR2,
+			p_cube_tsg_soort IN VARCHAR2,
+			p_cube_tsg_soort1 IN VARCHAR2,
 			p_code IN VARCHAR2,
-			p_naam IN VARCHAR2,
-			p_nummer IN NUMBER,
-			p_datum IN DATE,
-			p_omschrijving IN VARCHAR2,
-			p_xk_aaa_naam IN VARCHAR2) IS
+			p_prijs IN NUMBER,
+			p_makelaar_naam IN VARCHAR2,
+			p_bedrag_btw IN NUMBER,
+			p_xk_kln_nummer IN VARCHAR2,
+			p_cube_row IN OUT c_cube_row) IS
 	BEGIN
-		INSERT INTO v_prod (
+		INSERT INTO v_produkt (
 			cube_id,
-			cube_tsg_zzz,
-			cube_tsg_yyy,
+			cube_tsg_type,
+			cube_tsg_soort,
+			cube_tsg_soort1,
 			code,
-			naam,
-			nummer,
-			datum,
-			omschrijving,
-			xk_aaa_naam)
+			prijs,
+			makelaar_naam,
+			bedrag_btw,
+			xk_kln_nummer)
 		VALUES (
 			NULL,
-			p_cube_tsg_zzz,
-			p_cube_tsg_yyy,
+			p_cube_tsg_type,
+			p_cube_tsg_soort,
+			p_cube_tsg_soort1,
 			p_code,
-			p_naam,
-			p_nummer,
-			p_datum,
-			p_omschrijving,
-			p_xk_aaa_naam);
+			p_prijs,
+			p_makelaar_naam,
+			p_bedrag_btw,
+			p_xk_kln_nummer);
+
+		get_next_prd (p_cube_row, p_cube_tsg_type, p_code);
 	EXCEPTION
 		WHEN DUP_VAL_ON_INDEX THEN
-			RAISE_APPLICATION_ERROR (-20001, 'Type prod already exists');
+			RAISE_APPLICATION_ERROR (-20001, 'Type produkt already exists');
 	END;
 
 	PROCEDURE update_prd (
-			p_cube_tsg_zzz IN VARCHAR2,
-			p_cube_tsg_yyy IN VARCHAR2,
+			p_cube_tsg_type IN VARCHAR2,
+			p_cube_tsg_soort IN VARCHAR2,
+			p_cube_tsg_soort1 IN VARCHAR2,
 			p_code IN VARCHAR2,
-			p_naam IN VARCHAR2,
-			p_nummer IN NUMBER,
-			p_datum IN DATE,
-			p_omschrijving IN VARCHAR2,
-			p_xk_aaa_naam IN VARCHAR2) IS
+			p_prijs IN NUMBER,
+			p_makelaar_naam IN VARCHAR2,
+			p_bedrag_btw IN NUMBER,
+			p_xk_kln_nummer IN VARCHAR2) IS
 	BEGIN
-		UPDATE v_prod SET
-			cube_tsg_zzz = p_cube_tsg_zzz,
-			cube_tsg_yyy = p_cube_tsg_yyy,
-			datum = p_datum,
-			omschrijving = p_omschrijving
-		WHERE code = p_code
-		  AND naam = p_naam
-		  AND nummer = p_nummer
-		  AND xk_aaa_naam = p_xk_aaa_naam;
+		UPDATE v_produkt SET
+			cube_tsg_soort = p_cube_tsg_soort,
+			cube_tsg_soort1 = p_cube_tsg_soort1,
+			prijs = p_prijs,
+			makelaar_naam = p_makelaar_naam,
+			bedrag_btw = p_bedrag_btw,
+			xk_kln_nummer = p_xk_kln_nummer
+		WHERE cube_tsg_type = p_cube_tsg_type
+		  AND code = p_code;
 	END;
 
 	PROCEDURE delete_prd (
-			p_code IN VARCHAR2,
-			p_naam IN VARCHAR2,
-			p_nummer IN NUMBER,
-			p_xk_aaa_naam IN VARCHAR2) IS
+			p_cube_tsg_type IN VARCHAR2,
+			p_code IN VARCHAR2) IS
 	BEGIN
-		DELETE v_prod
-		WHERE code = p_code
-		  AND naam = p_naam
-		  AND nummer = p_nummer
-		  AND xk_aaa_naam = p_xk_aaa_naam;
+		DELETE v_produkt
+		WHERE cube_tsg_type = p_cube_tsg_type
+		  AND code = p_code;
 	END;
 
-	PROCEDURE get_pr2 (
-			p_cube_row IN OUT c_cube_row,
-			p_code IN VARCHAR2,
-			p_naam IN VARCHAR2) IS
+	PROCEDURE get_ond_list_all (
+			p_cube_row IN OUT c_cube_row) IS
 	BEGIN
 		OPEN p_cube_row FOR
 			SELECT
+			  cube_sequence,
+			  fk_prd_cube_tsg_type,
 			  fk_prd_code,
-			  fk_prd_naam,
-			  fk_prd_nummer,
-			  fk_prd_aaa_naam,
-			  omschrijving
-			FROM v_prod2
-			WHERE code = p_code
-			  AND naam = p_naam;
+			  code
+			FROM v_onderdeel
+			ORDER BY fk_prd_cube_tsg_type, fk_prd_code, cube_sequence;
 	END;
 
-	PROCEDURE get_pr2_fkey (
+	PROCEDURE get_ond_list_recursive (
 			p_cube_row IN OUT c_cube_row,
-			p_code IN VARCHAR2,
-			p_naam IN VARCHAR2) IS
-	BEGIN
-		OPEN p_cube_row FOR
-			SELECT
-			  fk_prd_code,
-			  fk_prd_naam,
-			  fk_prd_nummer,
-			  fk_prd_aaa_naam
-			FROM v_prod2
-			WHERE code = p_code
-			  AND naam = p_naam;
-	END;
-
-	PROCEDURE get_pr2_pa2_items (
-			p_cube_row IN OUT c_cube_row,
-			p_code IN VARCHAR2,
-			p_naam IN VARCHAR2) IS
-	BEGIN
-		OPEN p_cube_row FOR
-			SELECT
-			  code,
-			  naam
-			FROM v_part2
-			WHERE fk_pr2_code = p_code
-			  AND fk_pr2_naam = p_naam
-			  AND fk_pa2_code IS NULL
-			  AND fk_pa2_naam IS NULL
-			ORDER BY code, naam;
-	END;
-
-	PROCEDURE insert_pr2 (
+			p_cube_up_or_down IN VARCHAR2,
+			p_cube_x_level IN NUMBER,
+			p_fk_prd_cube_tsg_type IN VARCHAR2,
 			p_fk_prd_code IN VARCHAR2,
-			p_fk_prd_naam IN VARCHAR2,
-			p_fk_prd_nummer IN NUMBER,
-			p_fk_prd_aaa_naam IN VARCHAR2,
-			p_code IN VARCHAR2,
-			p_naam IN VARCHAR2,
-			p_omschrijving IN VARCHAR2) IS
+			p_code IN VARCHAR2) IS
 	BEGIN
-		INSERT INTO v_prod2 (
-			cube_id,
-			fk_prd_code,
-			fk_prd_naam,
-			fk_prd_nummer,
-			fk_prd_aaa_naam,
-			code,
-			naam,
-			omschrijving)
-		VALUES (
-			NULL,
-			p_fk_prd_code,
-			p_fk_prd_naam,
-			p_fk_prd_nummer,
-			p_fk_prd_aaa_naam,
-			p_code,
-			p_naam,
-			p_omschrijving);
-	EXCEPTION
-		WHEN DUP_VAL_ON_INDEX THEN
-			RAISE_APPLICATION_ERROR (-20001, 'Type prod2 already exists');
+		OPEN p_cube_row FOR
+			WITH anchor (
+				cube_sequence,
+				fk_prd_cube_tsg_type,
+				fk_prd_code,
+				code,
+				fk_ond_code,
+				cube_x_level) AS (
+				SELECT
+					cube_sequence,
+					fk_prd_cube_tsg_type,
+					fk_prd_code,
+					code,
+					fk_ond_code,
+					0 
+				FROM v_onderdeel
+				WHERE fk_prd_cube_tsg_type = p_fk_prd_cube_tsg_type
+				  AND fk_prd_code = p_fk_prd_code
+				  AND code = p_code
+				UNION ALL
+				SELECT
+					recursive.cube_sequence,
+					recursive.fk_prd_cube_tsg_type,
+					recursive.fk_prd_code,
+					recursive.code,
+					recursive.fk_ond_code,
+					anchor.cube_x_level+1
+				FROM v_onderdeel recursive, anchor
+				WHERE 	    ( 	    ( p_cube_up_or_down = 'D'
+						  AND 	    ( anchor.fk_prd_cube_tsg_type = recursive.fk_prd_cube_tsg_type
+							  AND anchor.fk_prd_code = recursive.fk_prd_code
+							  AND anchor.code = recursive.fk_ond_code ) )
+					   OR 	    ( p_cube_up_or_down = 'U'
+						  AND 	    ( anchor.fk_prd_cube_tsg_type = recursive.fk_prd_cube_tsg_type
+							  AND anchor.fk_prd_code = recursive.fk_prd_code
+							  AND anchor.fk_ond_code = recursive.code ) ) )
+				  AND anchor.cube_x_level < p_cube_x_level
+				)
+			SELECT DISTINCT cube_sequence, fk_prd_cube_tsg_type, fk_prd_code, code
+			FROM anchor
+			WHERE cube_x_level > 0
+			ORDER BY fk_prd_cube_tsg_type, fk_prd_code, cube_sequence;
 	END;
 
-	PROCEDURE update_pr2 (
+	PROCEDURE get_ond (
+			p_cube_row IN OUT c_cube_row,
+			p_fk_prd_cube_tsg_type IN VARCHAR2,
 			p_fk_prd_code IN VARCHAR2,
-			p_fk_prd_naam IN VARCHAR2,
-			p_fk_prd_nummer IN NUMBER,
-			p_fk_prd_aaa_naam IN VARCHAR2,
-			p_code IN VARCHAR2,
-			p_naam IN VARCHAR2,
-			p_omschrijving IN VARCHAR2) IS
-	BEGIN
-		UPDATE v_prod2 SET
-			fk_prd_code = p_fk_prd_code,
-			fk_prd_naam = p_fk_prd_naam,
-			fk_prd_nummer = p_fk_prd_nummer,
-			fk_prd_aaa_naam = p_fk_prd_aaa_naam,
-			omschrijving = p_omschrijving
-		WHERE code = p_code
-		  AND naam = p_naam;
-	END;
-
-	PROCEDURE delete_pr2 (
-			p_code IN VARCHAR2,
-			p_naam IN VARCHAR2) IS
-	BEGIN
-		DELETE v_prod2
-		WHERE code = p_code
-		  AND naam = p_naam;
-	END;
-
-	PROCEDURE get_pa2_for_prd_list_encapsulated (
-			p_cube_row IN OUT c_cube_row,
-			p_code IN VARCHAR2,
-			p_naam IN VARCHAR2,
-			x_fk_prd_code IN VARCHAR2,
-			x_fk_prd_naam IN VARCHAR2,
-			x_fk_prd_nummer IN NUMBER,
-			x_fk_prd_aaa_naam IN VARCHAR2) IS
+			p_code IN VARCHAR2) IS
 	BEGIN
 		OPEN p_cube_row FOR
 			SELECT
-			  code,
-			  naam
-			FROM v_part2
-			WHERE 	    ( fk_pr2_code = p_code
-				  AND fk_pr2_naam = p_naam )
-			   OR 	    ( 	NOT ( fk_pr2_code = p_code
-					  AND p_code IS NOT NULL
-					  AND fk_pr2_naam = p_naam
-					  AND p_naam IS NOT NULL )
-				  AND fk_pa2_code IS NULL
-				  AND fk_pa2_naam IS NULL
-				  AND fk_prd_code = x_fk_prd_code
-				  AND fk_prd_naam = x_fk_prd_naam
-				  AND fk_prd_nummer = x_fk_prd_nummer
-				  AND fk_prd_aaa_naam = x_fk_prd_aaa_naam )
-			ORDER BY code, naam;
-	END;
-
-	PROCEDURE get_pa2 (
-			p_cube_row IN OUT c_cube_row,
-			p_code IN VARCHAR2,
-			p_naam IN VARCHAR2) IS
-	BEGIN
-		OPEN p_cube_row FOR
-			SELECT
-			  fk_prd_code,
-			  fk_prd_naam,
-			  fk_prd_nummer,
-			  fk_prd_aaa_naam,
-			  fk_pr2_code,
-			  fk_pr2_naam,
-			  fk_pa2_code,
-			  fk_pa2_naam,
+			  fk_ond_code,
+			  prijs,
 			  omschrijving,
-			  xk_pa2_code,
-			  xk_pa2_naam
-			FROM v_part2
-			WHERE code = p_code
-			  AND naam = p_naam;
+			  xf_ond_prd_cube_tsg_type,
+			  xf_ond_prd_code,
+			  xk_ond_code
+			FROM v_onderdeel
+			WHERE fk_prd_cube_tsg_type = p_fk_prd_cube_tsg_type
+			  AND fk_prd_code = p_fk_prd_code
+			  AND code = p_code;
 	END;
 
-	PROCEDURE get_pa2_fkey (
+	PROCEDURE get_ond_odd_items (
 			p_cube_row IN OUT c_cube_row,
-			p_code IN VARCHAR2,
-			p_naam IN VARCHAR2) IS
+			p_fk_prd_cube_tsg_type IN VARCHAR2,
+			p_fk_prd_code IN VARCHAR2,
+			p_code IN VARCHAR2) IS
 	BEGIN
 		OPEN p_cube_row FOR
 			SELECT
+			  cube_sequence,
+			  code
+			FROM v_onderdeel_deel
+			WHERE fk_prd_cube_tsg_type = p_fk_prd_cube_tsg_type
+			  AND fk_prd_code = p_fk_prd_code
+			  AND fk_ond_code = p_code
+			ORDER BY cube_sequence;
+	END;
+
+	PROCEDURE get_ond_ond_items (
+			p_cube_row IN OUT c_cube_row,
+			p_fk_prd_cube_tsg_type IN VARCHAR2,
+			p_fk_prd_code IN VARCHAR2,
+			p_code IN VARCHAR2) IS
+	BEGIN
+		OPEN p_cube_row FOR
+			SELECT
+			  cube_sequence,
+			  fk_prd_cube_tsg_type,
 			  fk_prd_code,
-			  fk_prd_naam,
-			  fk_prd_nummer,
-			  fk_prd_aaa_naam,
-			  fk_pr2_code,
-			  fk_pr2_naam
-			FROM v_part2
-			WHERE code = p_code
-			  AND naam = p_naam;
+			  code
+			FROM v_onderdeel
+			WHERE fk_prd_cube_tsg_type = p_fk_prd_cube_tsg_type
+			  AND fk_prd_code = p_fk_prd_code
+			  AND fk_ond_code = p_code
+			ORDER BY fk_prd_cube_tsg_type, fk_prd_code, cube_sequence;
 	END;
 
-	PROCEDURE get_pa2_pa2_items (
+	PROCEDURE count_ond_ond (
 			p_cube_row IN OUT c_cube_row,
-			p_code IN VARCHAR2,
-			p_naam IN VARCHAR2) IS
+			p_fk_prd_cube_tsg_type IN VARCHAR2,
+			p_fk_prd_code IN VARCHAR2,
+			p_code IN VARCHAR2) IS
 	BEGIN
 		OPEN p_cube_row FOR
 			SELECT
-			  code,
-			  naam
-			FROM v_part2
-			WHERE fk_pa2_code = p_code
-			  AND fk_pa2_naam = p_naam
-			ORDER BY code, naam;
+			  COUNT(1) type_count
+			FROM v_onderdeel
+			WHERE fk_prd_cube_tsg_type = p_fk_prd_cube_tsg_type
+			  AND fk_prd_code = p_fk_prd_code
+			  AND fk_ond_code = p_code
+			  AND fk_ond_code IS NOT NULL;
 	END;
 
-	PROCEDURE check_no_part_pa2 (
+	PROCEDURE count_ond_odd (
+			p_cube_row IN OUT c_cube_row,
+			p_fk_prd_cube_tsg_type IN VARCHAR2,
+			p_fk_prd_code IN VARCHAR2,
+			p_code IN VARCHAR2) IS
+	BEGIN
+		OPEN p_cube_row FOR
+			SELECT
+			  COUNT(1) type_count
+			FROM v_onderdeel_deel
+			WHERE fk_prd_cube_tsg_type = p_fk_prd_cube_tsg_type
+			  AND fk_prd_code = p_fk_prd_code
+			  AND fk_ond_code = p_code;
+	END;
+
+	PROCEDURE check_no_part_ond (
+			p_fk_prd_cube_tsg_type IN VARCHAR2,
+			p_fk_prd_code IN VARCHAR2,
 			p_code IN VARCHAR2,
-			p_naam IN VARCHAR2,
-			x_code IN VARCHAR2,
-			x_naam IN VARCHAR2) IS
-		l_code v_part2.code%TYPE;
-		l_naam v_part2.naam%TYPE;
+			x_code IN VARCHAR2) IS
+		l_code v_onderdeel.code%TYPE;
 	BEGIN
 		l_code := x_code;
-		l_naam := x_naam;
 		LOOP
-			IF l_code IS NULL
-			  AND l_naam IS NULL THEN
+			IF l_code IS NULL THEN
 				EXIT; -- OK
 			END IF;
-			IF l_code = p_code
-			  AND l_naam = p_naam THEN
-				RAISE_APPLICATION_ERROR (-20003, 'Target Type part2 in hierarchy of moving object');
+			IF l_code = p_code THEN
+				RAISE_APPLICATION_ERROR (-20003, 'Target Type onderdeel in hierarchy of moving object');
 			END IF;
-			SELECT fk_pa2_code, fk_pa2_naam
-			INTO l_code, l_naam
-			FROM v_part2
-			WHERE code = l_code
-			  AND naam = l_naam;
+			SELECT fk_ond_code
+			INTO l_code
+			FROM v_onderdeel
+			WHERE fk_prd_cube_tsg_type = p_fk_prd_cube_tsg_type
+			  AND fk_prd_code = p_fk_prd_code
+			  AND code = l_code;
 		END LOOP;
 	END;
 
-	PROCEDURE change_parent_pa2 (
-			p_cube_flag_root IN VARCHAR2,
-			p_code IN VARCHAR2,
-			p_naam IN VARCHAR2,
-			x_code IN VARCHAR2,
-			x_naam IN VARCHAR2) IS
+	PROCEDURE determine_position_ond (
+			p_cube_sequence OUT NUMBER,
+			p_cube_pos_action IN VARCHAR2,
+			p_fk_prd_cube_tsg_type IN VARCHAR2,
+			p_fk_prd_code IN VARCHAR2,
+			p_fk_ond_code IN VARCHAR2,
+			p_code IN VARCHAR2) IS
+		l_cube_pos_action VARCHAR2(1);
+		l_cube_position_sequ NUMBER(8);
+		l_cube_near_sequ NUMBER(8);
+		l_cube_count NUMBER(8) := 1024;
 	BEGIN
-		IF p_cube_flag_root = 'Y' THEN
-			UPDATE v_part2 SET
-				fk_pa2_code = NULL,
-				fk_pa2_naam = NULL
-			WHERE code = p_code
-			  AND naam = p_naam;
-			IF SQL%NOTFOUND THEN
-				RAISE_APPLICATION_ERROR (-20002, 'Type part2 not found');
-			END IF;
+		-- A=After B=Before F=First L=Last
+		CASE p_cube_pos_action
+		WHEN 'F' THEN
+			l_cube_position_sequ := 0;
+			l_cube_pos_action := 'A';
+		WHEN 'L' THEN
+			l_cube_position_sequ := 99999999;
+			l_cube_pos_action := 'B';
 		ELSE
-			check_no_part_pa2 (p_code, p_naam, x_code, x_naam);
-			UPDATE v_part2 SET
-				fk_pa2_code = x_code,
-				fk_pa2_naam = x_naam
-			WHERE code = p_code
-			  AND naam = p_naam;
-			IF SQL%NOTFOUND THEN
-				RAISE_APPLICATION_ERROR (-20002, 'Type part2 not found');
-			END IF;
-		END IF;
-	END;
-
-	PROCEDURE insert_pa2 (
-			p_fk_prd_code IN VARCHAR2,
-			p_fk_prd_naam IN VARCHAR2,
-			p_fk_prd_nummer IN NUMBER,
-			p_fk_prd_aaa_naam IN VARCHAR2,
-			p_fk_pr2_code IN VARCHAR2,
-			p_fk_pr2_naam IN VARCHAR2,
-			p_fk_pa2_code IN VARCHAR2,
-			p_fk_pa2_naam IN VARCHAR2,
-			p_code IN VARCHAR2,
-			p_naam IN VARCHAR2,
-			p_omschrijving IN VARCHAR2,
-			p_xk_pa2_code IN VARCHAR2,
-			p_xk_pa2_naam IN VARCHAR2) IS
-	BEGIN
-		INSERT INTO v_part2 (
-			cube_id,
-			cube_level,
-			fk_prd_code,
-			fk_prd_naam,
-			fk_prd_nummer,
-			fk_prd_aaa_naam,
-			fk_pr2_code,
-			fk_pr2_naam,
-			fk_pa2_code,
-			fk_pa2_naam,
-			code,
-			naam,
-			omschrijving,
-			xk_pa2_code,
-			xk_pa2_naam)
-		VALUES (
-			NULL,
-			NULL,
-			p_fk_prd_code,
-			p_fk_prd_naam,
-			p_fk_prd_nummer,
-			p_fk_prd_aaa_naam,
-			p_fk_pr2_code,
-			p_fk_pr2_naam,
-			p_fk_pa2_code,
-			p_fk_pa2_naam,
-			p_code,
-			p_naam,
-			p_omschrijving,
-			p_xk_pa2_code,
-			p_xk_pa2_naam);
-	EXCEPTION
-		WHEN DUP_VAL_ON_INDEX THEN
-			RAISE_APPLICATION_ERROR (-20001, 'Type part2 already exists');
-	END;
-
-	PROCEDURE update_pa2 (
-			p_fk_prd_code IN VARCHAR2,
-			p_fk_prd_naam IN VARCHAR2,
-			p_fk_prd_nummer IN NUMBER,
-			p_fk_prd_aaa_naam IN VARCHAR2,
-			p_fk_pr2_code IN VARCHAR2,
-			p_fk_pr2_naam IN VARCHAR2,
-			p_fk_pa2_code IN VARCHAR2,
-			p_fk_pa2_naam IN VARCHAR2,
-			p_code IN VARCHAR2,
-			p_naam IN VARCHAR2,
-			p_omschrijving IN VARCHAR2,
-			p_xk_pa2_code IN VARCHAR2,
-			p_xk_pa2_naam IN VARCHAR2) IS
-	BEGIN
-		UPDATE v_part2 SET
-			fk_prd_code = p_fk_prd_code,
-			fk_prd_naam = p_fk_prd_naam,
-			fk_prd_nummer = p_fk_prd_nummer,
-			fk_prd_aaa_naam = p_fk_prd_aaa_naam,
-			fk_pr2_code = p_fk_pr2_code,
-			fk_pr2_naam = p_fk_pr2_naam,
-			fk_pa2_code = p_fk_pa2_code,
-			fk_pa2_naam = p_fk_pa2_naam,
-			omschrijving = p_omschrijving,
-			xk_pa2_code = p_xk_pa2_code,
-			xk_pa2_naam = p_xk_pa2_naam
-		WHERE code = p_code
-		  AND naam = p_naam;
-	END;
-
-	PROCEDURE delete_pa2 (
-			p_code IN VARCHAR2,
-			p_naam IN VARCHAR2) IS
-	BEGIN
-		DELETE v_part2
-		WHERE code = p_code
-		  AND naam = p_naam;
-	END;
-
-	PROCEDURE get_prt_for_prd_list_encapsulated (
-			p_cube_row IN OUT c_cube_row,
-			p_code IN VARCHAR2,
-			p_naam IN VARCHAR2,
-			p_nummer IN NUMBER,
-			p_xk_aaa_naam IN VARCHAR2,
-			x_fk_prd_code IN VARCHAR2,
-			x_fk_prd_naam IN VARCHAR2,
-			x_fk_prd_nummer IN NUMBER,
-			x_fk_prd_aaa_naam IN VARCHAR2) IS
-	BEGIN
-		OPEN p_cube_row FOR
-			SELECT
-			  code,
-			  naam
-			FROM v_part
-			WHERE 	    ( fk_prd_code = p_code
-				  AND fk_prd_naam = p_naam
-				  AND fk_prd_nummer = p_nummer
-				  AND fk_prd_aaa_naam = p_xk_aaa_naam )
-			   OR 	    ( 	NOT ( fk_prd_code = p_code
-					  AND p_code IS NOT NULL
-					  AND fk_prd_naam = p_naam
-					  AND p_naam IS NOT NULL
-					  AND fk_prd_nummer = p_nummer
-					  AND p_nummer IS NOT NULL
-					  AND fk_prd_aaa_naam = p_xk_aaa_naam
-					  AND p_xk_aaa_naam IS NOT NULL )
-				  AND fk_prt_code IS NULL
-				  AND fk_prt_naam IS NULL
-				  AND fk_prd_code = x_fk_prd_code
-				  AND fk_prd_naam = x_fk_prd_naam
-				  AND fk_prd_nummer = x_fk_prd_nummer
-				  AND fk_prd_aaa_naam = x_fk_prd_aaa_naam )
-			ORDER BY code, naam;
-	END;
-
-	PROCEDURE get_prt (
-			p_cube_row IN OUT c_cube_row,
-			p_code IN VARCHAR2,
-			p_naam IN VARCHAR2) IS
-	BEGIN
-		OPEN p_cube_row FOR
-			SELECT
-			  fk_prd_code,
-			  fk_prd_naam,
-			  fk_prd_nummer,
-			  fk_prd_aaa_naam,
-			  fk_prt_code,
-			  fk_prt_naam,
-			  omschrijving,
-			  xk_prt_code,
-			  xk_prt_naam
-			FROM v_part
-			WHERE code = p_code
-			  AND naam = p_naam;
-	END;
-
-	PROCEDURE get_prt_fkey (
-			p_cube_row IN OUT c_cube_row,
-			p_code IN VARCHAR2,
-			p_naam IN VARCHAR2) IS
-	BEGIN
-		OPEN p_cube_row FOR
-			SELECT
-			  fk_prd_code,
-			  fk_prd_naam,
-			  fk_prd_nummer,
-			  fk_prd_aaa_naam
-			FROM v_part
-			WHERE code = p_code
-			  AND naam = p_naam;
-	END;
-
-	PROCEDURE get_prt_prt_items (
-			p_cube_row IN OUT c_cube_row,
-			p_code IN VARCHAR2,
-			p_naam IN VARCHAR2) IS
-	BEGIN
-		OPEN p_cube_row FOR
-			SELECT
-			  code,
-			  naam
-			FROM v_part
-			WHERE fk_prt_code = p_code
-			  AND fk_prt_naam = p_naam
-			ORDER BY code, naam;
-	END;
-
-	PROCEDURE check_no_part_prt (
-			p_code IN VARCHAR2,
-			p_naam IN VARCHAR2,
-			x_code IN VARCHAR2,
-			x_naam IN VARCHAR2) IS
-		l_code v_part.code%TYPE;
-		l_naam v_part.naam%TYPE;
-	BEGIN
-		l_code := x_code;
-		l_naam := x_naam;
+			l_cube_pos_action := p_cube_pos_action;
+		END CASE;
 		LOOP
-			IF l_code IS NULL
-			  AND l_naam IS NULL THEN
-				EXIT; -- OK
+			IF p_cube_pos_action IN ('B', 'A') THEN
+				-- Read sequence number of the target.
+				SELECT NVL (MAX (cube_sequence), DECODE (p_cube_pos_action, 'B', 99999999, 0))
+				INTO l_cube_position_sequ
+				FROM v_onderdeel
+				WHERE fk_prd_cube_tsg_type = p_fk_prd_cube_tsg_type
+				  AND fk_prd_code = p_fk_prd_code
+				  AND code = p_code;
 			END IF;
-			IF l_code = p_code
-			  AND l_naam = p_naam THEN
-				RAISE_APPLICATION_ERROR (-20003, 'Target Type part in hierarchy of moving object');
+			-- read sequence number near the target.
+			SELECT DECODE (l_cube_pos_action, 'B', NVL (MAX (cube_sequence), 0), NVL (MIN (cube_sequence), 99999999))
+			INTO l_cube_near_sequ
+			FROM v_onderdeel
+			WHERE fk_prd_cube_tsg_type = p_fk_prd_cube_tsg_type
+			  AND fk_prd_code = p_fk_prd_code
+			  AND 	    ( 	    ( fk_ond_code IS NULL
+					  AND p_fk_ond_code IS NULL )
+				   OR fk_ond_code = p_fk_ond_code )
+			  AND 	    ( 	    ( l_cube_pos_action = 'B'
+					  AND cube_sequence < l_cube_position_sequ )
+				   OR 	    ( l_cube_pos_action = 'A'
+					  AND cube_sequence > l_cube_position_sequ ) );
+			IF ABS (l_cube_position_sequ - l_cube_near_sequ) > 1 THEN
+				p_cube_sequence := l_cube_position_sequ - (l_cube_position_sequ - l_cube_near_sequ) / 2; -- Formula both directions OK.
+				EXIT;
+			ELSE
+				-- renumber.
+				FOR r_ond IN (
+					SELECT
+					  rowid row_id
+					FROM v_onderdeel
+					WHERE fk_prd_cube_tsg_type = p_fk_prd_cube_tsg_type
+					  AND fk_prd_code = p_fk_prd_code
+					  AND 	    ( 	    ( fk_ond_code IS NULL
+							  AND p_fk_ond_code IS NULL )
+						   OR fk_ond_code = p_fk_ond_code )
+					ORDER BY cube_sequence)
+				LOOP
+					UPDATE v_onderdeel SET
+						cube_sequence = l_cube_count
+					WHERE rowid = r_ond.row_id;
+					l_cube_count := l_cube_count + 1024;
+				END LOOP;
 			END IF;
-			SELECT fk_prt_code, fk_prt_naam
-			INTO l_code, l_naam
-			FROM v_part
-			WHERE code = l_code
-			  AND naam = l_naam;
 		END LOOP;
 	END;
 
-	PROCEDURE change_parent_prt (
-			p_cube_flag_root IN VARCHAR2,
+	PROCEDURE move_ond (
+			p_cube_pos_action IN VARCHAR2,
+			p_fk_prd_cube_tsg_type IN VARCHAR2,
+			p_fk_prd_code IN VARCHAR2,
 			p_code IN VARCHAR2,
-			p_naam IN VARCHAR2,
-			x_code IN VARCHAR2,
-			x_naam IN VARCHAR2) IS
+			x_fk_prd_cube_tsg_type IN VARCHAR2,
+			x_fk_prd_code IN VARCHAR2,
+			x_code IN VARCHAR2) IS
+		l_cube_sequence NUMBER(8);
+		l_fk_ond_code v_onderdeel.fk_ond_code%TYPE;
 	BEGIN
-		IF p_cube_flag_root = 'Y' THEN
-			UPDATE v_part SET
-				fk_prt_code = NULL,
-				fk_prt_naam = NULL
-			WHERE code = p_code
-			  AND naam = p_naam;
-			IF SQL%NOTFOUND THEN
-				RAISE_APPLICATION_ERROR (-20002, 'Type part not found');
-			END IF;
+		-- A=After B=Before F=First L=Last
+		IF NVL (p_cube_pos_action, ' ') NOT IN ('A', 'B', 'F', 'L') THEN
+			RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
+		END IF;
+		-- Get parent id of the target.
+		IF p_cube_pos_action IN ('B', 'A') THEN
+			SELECT fk_ond_code
+			INTO l_fk_ond_code
+			FROM v_onderdeel
+			WHERE fk_prd_cube_tsg_type = x_fk_prd_cube_tsg_type
+			  AND fk_prd_code = x_fk_prd_code
+			  AND code = x_code;
 		ELSE
-			check_no_part_prt (p_code, p_naam, x_code, x_naam);
-			UPDATE v_part SET
-				fk_prt_code = x_code,
-				fk_prt_naam = x_naam
-			WHERE code = p_code
-			  AND naam = p_naam;
-			IF SQL%NOTFOUND THEN
-				RAISE_APPLICATION_ERROR (-20002, 'Type part not found');
-			END IF;
+			l_fk_ond_code := x_code;
+		END IF;
+		check_no_part_ond (p_fk_prd_cube_tsg_type, p_fk_prd_code, p_code, l_fk_ond_code);
+		determine_position_ond (l_cube_sequence, p_cube_pos_action, x_fk_prd_cube_tsg_type, x_fk_prd_code, l_fk_ond_code, x_code);
+		UPDATE v_onderdeel SET
+			fk_ond_code = l_fk_ond_code,
+			cube_sequence = l_cube_sequence
+		WHERE fk_prd_cube_tsg_type = p_fk_prd_cube_tsg_type
+		  AND fk_prd_code = p_fk_prd_code
+		  AND code = p_code;
+		IF SQL%NOTFOUND THEN
+			RAISE_APPLICATION_ERROR (-20002, 'Type onderdeel not found');
 		END IF;
 	END;
 
-	PROCEDURE insert_prt (
+	PROCEDURE insert_ond (
+			p_cube_pos_action IN VARCHAR2,
+			p_fk_prd_cube_tsg_type IN VARCHAR2,
 			p_fk_prd_code IN VARCHAR2,
-			p_fk_prd_naam IN VARCHAR2,
-			p_fk_prd_nummer IN NUMBER,
-			p_fk_prd_aaa_naam IN VARCHAR2,
-			p_fk_prt_code IN VARCHAR2,
-			p_fk_prt_naam IN VARCHAR2,
+			p_fk_ond_code IN VARCHAR2,
 			p_code IN VARCHAR2,
-			p_naam IN VARCHAR2,
+			p_prijs IN NUMBER,
 			p_omschrijving IN VARCHAR2,
-			p_xk_prt_code IN VARCHAR2,
-			p_xk_prt_naam IN VARCHAR2) IS
+			p_xf_ond_prd_cube_tsg_type IN VARCHAR2,
+			p_xf_ond_prd_code IN VARCHAR2,
+			p_xk_ond_code IN VARCHAR2,
+			x_fk_prd_cube_tsg_type IN VARCHAR2,
+			x_fk_prd_code IN VARCHAR2,
+			x_code IN VARCHAR2) IS
+		l_cube_sequence NUMBER(8);
 	BEGIN
-		INSERT INTO v_part (
+		-- A=After B=Before F=First L=Last
+		IF NVL (p_cube_pos_action, ' ') NOT IN ('A', 'B', 'F', 'L') THEN
+			RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
+		END IF;
+		determine_position_ond (l_cube_sequence, p_cube_pos_action, x_fk_prd_cube_tsg_type, x_fk_prd_code, p_fk_ond_code, x_code);
+		INSERT INTO v_onderdeel (
 			cube_id,
+			cube_sequence,
 			cube_level,
+			fk_prd_cube_tsg_type,
 			fk_prd_code,
-			fk_prd_naam,
-			fk_prd_nummer,
-			fk_prd_aaa_naam,
-			fk_prt_code,
-			fk_prt_naam,
+			fk_ond_code,
 			code,
-			naam,
+			prijs,
 			omschrijving,
-			xk_prt_code,
-			xk_prt_naam)
+			xf_ond_prd_cube_tsg_type,
+			xf_ond_prd_code,
+			xk_ond_code)
 		VALUES (
 			NULL,
+			l_cube_sequence,
 			NULL,
+			p_fk_prd_cube_tsg_type,
 			p_fk_prd_code,
-			p_fk_prd_naam,
-			p_fk_prd_nummer,
-			p_fk_prd_aaa_naam,
-			p_fk_prt_code,
-			p_fk_prt_naam,
+			p_fk_ond_code,
 			p_code,
-			p_naam,
+			p_prijs,
 			p_omschrijving,
-			p_xk_prt_code,
-			p_xk_prt_naam);
+			p_xf_ond_prd_cube_tsg_type,
+			p_xf_ond_prd_code,
+			p_xk_ond_code);
 	EXCEPTION
 		WHEN DUP_VAL_ON_INDEX THEN
-			RAISE_APPLICATION_ERROR (-20001, 'Type part already exists');
+			RAISE_APPLICATION_ERROR (-20001, 'Type onderdeel already exists');
 	END;
 
-	PROCEDURE update_prt (
+	PROCEDURE update_ond (
+			p_fk_prd_cube_tsg_type IN VARCHAR2,
 			p_fk_prd_code IN VARCHAR2,
-			p_fk_prd_naam IN VARCHAR2,
-			p_fk_prd_nummer IN NUMBER,
-			p_fk_prd_aaa_naam IN VARCHAR2,
-			p_fk_prt_code IN VARCHAR2,
-			p_fk_prt_naam IN VARCHAR2,
+			p_fk_ond_code IN VARCHAR2,
+			p_code IN VARCHAR2,
+			p_prijs IN NUMBER,
+			p_omschrijving IN VARCHAR2,
+			p_xf_ond_prd_cube_tsg_type IN VARCHAR2,
+			p_xf_ond_prd_code IN VARCHAR2,
+			p_xk_ond_code IN VARCHAR2) IS
+	BEGIN
+		UPDATE v_onderdeel SET
+			fk_ond_code = p_fk_ond_code,
+			prijs = p_prijs,
+			omschrijving = p_omschrijving,
+			xf_ond_prd_cube_tsg_type = p_xf_ond_prd_cube_tsg_type,
+			xf_ond_prd_code = p_xf_ond_prd_code,
+			xk_ond_code = p_xk_ond_code
+		WHERE fk_prd_cube_tsg_type = p_fk_prd_cube_tsg_type
+		  AND fk_prd_code = p_fk_prd_code
+		  AND code = p_code;
+	END;
+
+	PROCEDURE delete_ond (
+			p_fk_prd_cube_tsg_type IN VARCHAR2,
+			p_fk_prd_code IN VARCHAR2,
+			p_code IN VARCHAR2) IS
+	BEGIN
+		DELETE v_onderdeel
+		WHERE fk_prd_cube_tsg_type = p_fk_prd_cube_tsg_type
+		  AND fk_prd_code = p_fk_prd_code
+		  AND code = p_code;
+	END;
+
+	PROCEDURE get_odd (
+			p_cube_row IN OUT c_cube_row,
+			p_code IN VARCHAR2) IS
+	BEGIN
+		OPEN p_cube_row FOR
+			SELECT
+			  fk_prd_cube_tsg_type,
+			  fk_prd_code,
+			  fk_ond_code,
+			  naam,
+			  xf_ond_prd_cube_tsg_type,
+			  xf_ond_prd_code,
+			  xk_ond_code
+			FROM v_onderdeel_deel
+			WHERE code = p_code;
+	END;
+
+	PROCEDURE get_odd_fkey (
+			p_cube_row IN OUT c_cube_row,
+			p_code IN VARCHAR2) IS
+	BEGIN
+		OPEN p_cube_row FOR
+			SELECT
+			  fk_prd_cube_tsg_type,
+			  fk_prd_code,
+			  fk_ond_code
+			FROM v_onderdeel_deel
+			WHERE code = p_code;
+	END;
+
+	PROCEDURE get_odd_ddd_items (
+			p_cube_row IN OUT c_cube_row,
+			p_code IN VARCHAR2) IS
+	BEGIN
+		OPEN p_cube_row FOR
+			SELECT
+			  cube_sequence,
+			  code
+			FROM v_onderdeel_deel_deel
+			WHERE fk_odd_code = p_code
+			ORDER BY cube_sequence;
+	END;
+
+	PROCEDURE determine_position_odd (
+			p_cube_sequence OUT NUMBER,
+			p_cube_pos_action IN VARCHAR2,
+			p_fk_prd_cube_tsg_type IN VARCHAR2,
+			p_fk_prd_code IN VARCHAR2,
+			p_fk_ond_code IN VARCHAR2,
+			p_code IN VARCHAR2) IS
+		l_cube_pos_action VARCHAR2(1);
+		l_cube_position_sequ NUMBER(8);
+		l_cube_near_sequ NUMBER(8);
+		l_cube_count NUMBER(8) := 1024;
+	BEGIN
+		-- A=After B=Before F=First L=Last
+		CASE p_cube_pos_action
+		WHEN 'F' THEN
+			l_cube_position_sequ := 0;
+			l_cube_pos_action := 'A';
+		WHEN 'L' THEN
+			l_cube_position_sequ := 99999999;
+			l_cube_pos_action := 'B';
+		ELSE
+			l_cube_pos_action := p_cube_pos_action;
+		END CASE;
+		LOOP
+			IF p_cube_pos_action IN ('B', 'A') THEN
+				-- Read sequence number of the target.
+				SELECT NVL (MAX (cube_sequence), DECODE (p_cube_pos_action, 'B', 99999999, 0))
+				INTO l_cube_position_sequ
+				FROM v_onderdeel_deel
+				WHERE code = p_code;
+			END IF;
+			-- read sequence number near the target.
+			SELECT DECODE (l_cube_pos_action, 'B', NVL (MAX (cube_sequence), 0), NVL (MIN (cube_sequence), 99999999))
+			INTO l_cube_near_sequ
+			FROM v_onderdeel_deel
+			WHERE fk_prd_cube_tsg_type = p_fk_prd_cube_tsg_type
+			  AND fk_prd_code = p_fk_prd_code
+			  AND fk_ond_code = p_fk_ond_code
+			  AND 	    ( 	    ( l_cube_pos_action = 'B'
+					  AND cube_sequence < l_cube_position_sequ )
+				   OR 	    ( l_cube_pos_action = 'A'
+					  AND cube_sequence > l_cube_position_sequ ) );
+			IF ABS (l_cube_position_sequ - l_cube_near_sequ) > 1 THEN
+				p_cube_sequence := l_cube_position_sequ - (l_cube_position_sequ - l_cube_near_sequ) / 2; -- Formula both directions OK.
+				EXIT;
+			ELSE
+				-- renumber.
+				FOR r_odd IN (
+					SELECT
+					  rowid row_id
+					FROM v_onderdeel_deel
+					WHERE fk_prd_cube_tsg_type = p_fk_prd_cube_tsg_type
+					  AND fk_prd_code = p_fk_prd_code
+					  AND fk_ond_code = p_fk_ond_code
+					ORDER BY cube_sequence)
+				LOOP
+					UPDATE v_onderdeel_deel SET
+						cube_sequence = l_cube_count
+					WHERE rowid = r_odd.row_id;
+					l_cube_count := l_cube_count + 1024;
+				END LOOP;
+			END IF;
+		END LOOP;
+	END;
+
+	PROCEDURE move_odd (
+			p_cube_pos_action IN VARCHAR2,
+			p_code IN VARCHAR2,
+			x_code IN VARCHAR2) IS
+		l_cube_sequence NUMBER(8);
+		l_fk_prd_cube_tsg_type v_onderdeel_deel.fk_prd_cube_tsg_type%TYPE;
+		l_fk_prd_code v_onderdeel_deel.fk_prd_code%TYPE;
+		l_fk_ond_code v_onderdeel_deel.fk_ond_code%TYPE;
+	BEGIN
+		-- A=After B=Before F=First L=Last
+		IF NVL (p_cube_pos_action, ' ') NOT IN ('A', 'B', 'F', 'L') THEN
+			RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
+		END IF;
+		-- Get parent id of the target.
+		IF p_cube_pos_action IN ('B', 'A') THEN
+			SELECT fk_prd_cube_tsg_type, fk_prd_code, fk_ond_code
+			INTO l_fk_prd_cube_tsg_type, l_fk_prd_code, l_fk_ond_code
+			FROM v_onderdeel_deel
+			WHERE code = x_code;
+		ELSE
+			SELECT fk_prd_cube_tsg_type, fk_prd_code, fk_ond_code
+			INTO l_fk_prd_cube_tsg_type, l_fk_prd_code, l_fk_ond_code
+			FROM v_onderdeel_deel
+			WHERE code = x_code;
+		END IF;
+		determine_position_odd (l_cube_sequence, p_cube_pos_action, l_fk_prd_cube_tsg_type, l_fk_prd_code, l_fk_ond_code, x_code);
+		UPDATE v_onderdeel_deel SET
+			fk_prd_cube_tsg_type = l_fk_prd_cube_tsg_type,
+			fk_prd_code = l_fk_prd_code,
+			fk_ond_code = l_fk_ond_code,
+			cube_sequence = l_cube_sequence
+		WHERE code = p_code;
+		IF SQL%NOTFOUND THEN
+			RAISE_APPLICATION_ERROR (-20002, 'Type onderdeel_deel not found');
+		END IF;
+	END;
+
+	PROCEDURE insert_odd (
+			p_cube_pos_action IN VARCHAR2,
+			p_fk_prd_cube_tsg_type IN VARCHAR2,
+			p_fk_prd_code IN VARCHAR2,
+			p_fk_ond_code IN VARCHAR2,
 			p_code IN VARCHAR2,
 			p_naam IN VARCHAR2,
-			p_omschrijving IN VARCHAR2,
-			p_xk_prt_code IN VARCHAR2,
-			p_xk_prt_naam IN VARCHAR2) IS
+			p_xf_ond_prd_cube_tsg_type IN VARCHAR2,
+			p_xf_ond_prd_code IN VARCHAR2,
+			p_xk_ond_code IN VARCHAR2,
+			x_code IN VARCHAR2) IS
+		l_cube_sequence NUMBER(8);
 	BEGIN
-		UPDATE v_part SET
-			fk_prd_code = p_fk_prd_code,
-			fk_prd_naam = p_fk_prd_naam,
-			fk_prd_nummer = p_fk_prd_nummer,
-			fk_prd_aaa_naam = p_fk_prd_aaa_naam,
-			fk_prt_code = p_fk_prt_code,
-			fk_prt_naam = p_fk_prt_naam,
-			omschrijving = p_omschrijving,
-			xk_prt_code = p_xk_prt_code,
-			xk_prt_naam = p_xk_prt_naam
-		WHERE code = p_code
-		  AND naam = p_naam;
+		-- A=After B=Before F=First L=Last
+		IF NVL (p_cube_pos_action, ' ') NOT IN ('A', 'B', 'F', 'L') THEN
+			RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
+		END IF;
+		determine_position_odd (l_cube_sequence, p_cube_pos_action, p_fk_prd_cube_tsg_type, p_fk_prd_code, p_fk_ond_code, x_code);
+		INSERT INTO v_onderdeel_deel (
+			cube_id,
+			cube_sequence,
+			fk_prd_cube_tsg_type,
+			fk_prd_code,
+			fk_ond_code,
+			code,
+			naam,
+			xf_ond_prd_cube_tsg_type,
+			xf_ond_prd_code,
+			xk_ond_code)
+		VALUES (
+			NULL,
+			l_cube_sequence,
+			p_fk_prd_cube_tsg_type,
+			p_fk_prd_code,
+			p_fk_ond_code,
+			p_code,
+			p_naam,
+			p_xf_ond_prd_cube_tsg_type,
+			p_xf_ond_prd_code,
+			p_xk_ond_code);
+	EXCEPTION
+		WHEN DUP_VAL_ON_INDEX THEN
+			RAISE_APPLICATION_ERROR (-20001, 'Type onderdeel_deel already exists');
 	END;
 
-	PROCEDURE delete_prt (
+	PROCEDURE update_odd (
+			p_fk_prd_cube_tsg_type IN VARCHAR2,
+			p_fk_prd_code IN VARCHAR2,
+			p_fk_ond_code IN VARCHAR2,
 			p_code IN VARCHAR2,
-			p_naam IN VARCHAR2) IS
+			p_naam IN VARCHAR2,
+			p_xf_ond_prd_cube_tsg_type IN VARCHAR2,
+			p_xf_ond_prd_code IN VARCHAR2,
+			p_xk_ond_code IN VARCHAR2) IS
 	BEGIN
-		DELETE v_part
-		WHERE code = p_code
-		  AND naam = p_naam;
+		UPDATE v_onderdeel_deel SET
+			fk_prd_cube_tsg_type = p_fk_prd_cube_tsg_type,
+			fk_prd_code = p_fk_prd_code,
+			fk_ond_code = p_fk_ond_code,
+			naam = p_naam,
+			xf_ond_prd_cube_tsg_type = p_xf_ond_prd_cube_tsg_type,
+			xf_ond_prd_code = p_xf_ond_prd_code,
+			xk_ond_code = p_xk_ond_code
+		WHERE code = p_code;
+	END;
+
+	PROCEDURE delete_odd (
+			p_code IN VARCHAR2) IS
+	BEGIN
+		DELETE v_onderdeel_deel
+		WHERE code = p_code;
+	END;
+
+	PROCEDURE get_ddd (
+			p_cube_row IN OUT c_cube_row,
+			p_code IN VARCHAR2) IS
+	BEGIN
+		OPEN p_cube_row FOR
+			SELECT
+			  fk_prd_cube_tsg_type,
+			  fk_prd_code,
+			  fk_ond_code,
+			  fk_odd_code,
+			  naam,
+			  xf_ond_prd_cube_tsg_type,
+			  xf_ond_prd_code,
+			  xk_ond_code,
+			  xf_ond_prd_cube_tsg_type_3,
+			  xf_ond_prd_code_3,
+			  xk_ond_code_3,
+			  xf_ond_prd_cube_tsg_type_1,
+			  xf_ond_prd_code_1,
+			  xk_ond_code_1,
+			  xf_ond_prd_cube_tsg_type_2,
+			  xf_ond_prd_code_2,
+			  xk_ond_code_2
+			FROM v_onderdeel_deel_deel
+			WHERE code = p_code;
+	END;
+
+	PROCEDURE determine_position_ddd (
+			p_cube_sequence OUT NUMBER,
+			p_cube_pos_action IN VARCHAR2,
+			p_fk_odd_code IN VARCHAR2,
+			p_code IN VARCHAR2) IS
+		l_cube_pos_action VARCHAR2(1);
+		l_cube_position_sequ NUMBER(8);
+		l_cube_near_sequ NUMBER(8);
+		l_cube_count NUMBER(8) := 1024;
+	BEGIN
+		-- A=After B=Before F=First L=Last
+		CASE p_cube_pos_action
+		WHEN 'F' THEN
+			l_cube_position_sequ := 0;
+			l_cube_pos_action := 'A';
+		WHEN 'L' THEN
+			l_cube_position_sequ := 99999999;
+			l_cube_pos_action := 'B';
+		ELSE
+			l_cube_pos_action := p_cube_pos_action;
+		END CASE;
+		LOOP
+			IF p_cube_pos_action IN ('B', 'A') THEN
+				-- Read sequence number of the target.
+				SELECT NVL (MAX (cube_sequence), DECODE (p_cube_pos_action, 'B', 99999999, 0))
+				INTO l_cube_position_sequ
+				FROM v_onderdeel_deel_deel
+				WHERE code = p_code;
+			END IF;
+			-- read sequence number near the target.
+			SELECT DECODE (l_cube_pos_action, 'B', NVL (MAX (cube_sequence), 0), NVL (MIN (cube_sequence), 99999999))
+			INTO l_cube_near_sequ
+			FROM v_onderdeel_deel_deel
+			WHERE fk_odd_code = p_fk_odd_code
+			  AND 	    ( 	    ( l_cube_pos_action = 'B'
+					  AND cube_sequence < l_cube_position_sequ )
+				   OR 	    ( l_cube_pos_action = 'A'
+					  AND cube_sequence > l_cube_position_sequ ) );
+			IF ABS (l_cube_position_sequ - l_cube_near_sequ) > 1 THEN
+				p_cube_sequence := l_cube_position_sequ - (l_cube_position_sequ - l_cube_near_sequ) / 2; -- Formula both directions OK.
+				EXIT;
+			ELSE
+				-- renumber.
+				FOR r_ddd IN (
+					SELECT
+					  rowid row_id
+					FROM v_onderdeel_deel_deel
+					WHERE fk_odd_code = p_fk_odd_code
+					ORDER BY cube_sequence)
+				LOOP
+					UPDATE v_onderdeel_deel_deel SET
+						cube_sequence = l_cube_count
+					WHERE rowid = r_ddd.row_id;
+					l_cube_count := l_cube_count + 1024;
+				END LOOP;
+			END IF;
+		END LOOP;
+	END;
+
+	PROCEDURE move_ddd (
+			p_cube_pos_action IN VARCHAR2,
+			p_code IN VARCHAR2,
+			x_code IN VARCHAR2) IS
+		l_cube_sequence NUMBER(8);
+		l_fk_odd_code v_onderdeel_deel_deel.fk_odd_code%TYPE;
+	BEGIN
+		-- A=After B=Before F=First L=Last
+		IF NVL (p_cube_pos_action, ' ') NOT IN ('A', 'B', 'F', 'L') THEN
+			RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
+		END IF;
+		-- Get parent id of the target.
+		IF p_cube_pos_action IN ('B', 'A') THEN
+			SELECT fk_odd_code
+			INTO l_fk_odd_code
+			FROM v_onderdeel_deel_deel
+			WHERE code = x_code;
+		ELSE
+			SELECT fk_odd_code
+			INTO l_fk_odd_code
+			FROM v_onderdeel_deel_deel
+			WHERE code = x_code;
+		END IF;
+		determine_position_ddd (l_cube_sequence, p_cube_pos_action, l_fk_odd_code, x_code);
+		UPDATE v_onderdeel_deel_deel SET
+			fk_odd_code = l_fk_odd_code,
+			cube_sequence = l_cube_sequence
+		WHERE code = p_code;
+		IF SQL%NOTFOUND THEN
+			RAISE_APPLICATION_ERROR (-20002, 'Type onderdeel_deel_deel not found');
+		END IF;
+	END;
+
+	PROCEDURE insert_ddd (
+			p_cube_pos_action IN VARCHAR2,
+			p_fk_prd_cube_tsg_type IN VARCHAR2,
+			p_fk_prd_code IN VARCHAR2,
+			p_fk_ond_code IN VARCHAR2,
+			p_fk_odd_code IN VARCHAR2,
+			p_code IN VARCHAR2,
+			p_naam IN VARCHAR2,
+			p_xf_ond_prd_cube_tsg_type IN VARCHAR2,
+			p_xf_ond_prd_code IN VARCHAR2,
+			p_xk_ond_code IN VARCHAR2,
+			p_xf_ond_prd_cube_tsg_type_3 IN VARCHAR2,
+			p_xf_ond_prd_code_3 IN VARCHAR2,
+			p_xk_ond_code_3 IN VARCHAR2,
+			p_xf_ond_prd_cube_tsg_type_1 IN VARCHAR2,
+			p_xf_ond_prd_code_1 IN VARCHAR2,
+			p_xk_ond_code_1 IN VARCHAR2,
+			p_xf_ond_prd_cube_tsg_type_2 IN VARCHAR2,
+			p_xf_ond_prd_code_2 IN VARCHAR2,
+			p_xk_ond_code_2 IN VARCHAR2,
+			x_code IN VARCHAR2) IS
+		l_cube_sequence NUMBER(8);
+	BEGIN
+		-- A=After B=Before F=First L=Last
+		IF NVL (p_cube_pos_action, ' ') NOT IN ('A', 'B', 'F', 'L') THEN
+			RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
+		END IF;
+		determine_position_ddd (l_cube_sequence, p_cube_pos_action, p_fk_odd_code, x_code);
+		INSERT INTO v_onderdeel_deel_deel (
+			cube_id,
+			cube_sequence,
+			fk_prd_cube_tsg_type,
+			fk_prd_code,
+			fk_ond_code,
+			fk_odd_code,
+			code,
+			naam,
+			xf_ond_prd_cube_tsg_type,
+			xf_ond_prd_code,
+			xk_ond_code,
+			xf_ond_prd_cube_tsg_type_3,
+			xf_ond_prd_code_3,
+			xk_ond_code_3,
+			xf_ond_prd_cube_tsg_type_1,
+			xf_ond_prd_code_1,
+			xk_ond_code_1,
+			xf_ond_prd_cube_tsg_type_2,
+			xf_ond_prd_code_2,
+			xk_ond_code_2)
+		VALUES (
+			NULL,
+			l_cube_sequence,
+			p_fk_prd_cube_tsg_type,
+			p_fk_prd_code,
+			p_fk_ond_code,
+			p_fk_odd_code,
+			p_code,
+			p_naam,
+			p_xf_ond_prd_cube_tsg_type,
+			p_xf_ond_prd_code,
+			p_xk_ond_code,
+			p_xf_ond_prd_cube_tsg_type_3,
+			p_xf_ond_prd_code_3,
+			p_xk_ond_code_3,
+			p_xf_ond_prd_cube_tsg_type_1,
+			p_xf_ond_prd_code_1,
+			p_xk_ond_code_1,
+			p_xf_ond_prd_cube_tsg_type_2,
+			p_xf_ond_prd_code_2,
+			p_xk_ond_code_2);
+	EXCEPTION
+		WHEN DUP_VAL_ON_INDEX THEN
+			RAISE_APPLICATION_ERROR (-20001, 'Type onderdeel_deel_deel already exists');
+	END;
+
+	PROCEDURE update_ddd (
+			p_fk_prd_cube_tsg_type IN VARCHAR2,
+			p_fk_prd_code IN VARCHAR2,
+			p_fk_ond_code IN VARCHAR2,
+			p_fk_odd_code IN VARCHAR2,
+			p_code IN VARCHAR2,
+			p_naam IN VARCHAR2,
+			p_xf_ond_prd_cube_tsg_type IN VARCHAR2,
+			p_xf_ond_prd_code IN VARCHAR2,
+			p_xk_ond_code IN VARCHAR2,
+			p_xf_ond_prd_cube_tsg_type_3 IN VARCHAR2,
+			p_xf_ond_prd_code_3 IN VARCHAR2,
+			p_xk_ond_code_3 IN VARCHAR2,
+			p_xf_ond_prd_cube_tsg_type_1 IN VARCHAR2,
+			p_xf_ond_prd_code_1 IN VARCHAR2,
+			p_xk_ond_code_1 IN VARCHAR2,
+			p_xf_ond_prd_cube_tsg_type_2 IN VARCHAR2,
+			p_xf_ond_prd_code_2 IN VARCHAR2,
+			p_xk_ond_code_2 IN VARCHAR2) IS
+	BEGIN
+		UPDATE v_onderdeel_deel_deel SET
+			fk_prd_cube_tsg_type = p_fk_prd_cube_tsg_type,
+			fk_prd_code = p_fk_prd_code,
+			fk_ond_code = p_fk_ond_code,
+			fk_odd_code = p_fk_odd_code,
+			naam = p_naam,
+			xf_ond_prd_cube_tsg_type = p_xf_ond_prd_cube_tsg_type,
+			xf_ond_prd_code = p_xf_ond_prd_code,
+			xk_ond_code = p_xk_ond_code,
+			xf_ond_prd_cube_tsg_type_3 = p_xf_ond_prd_cube_tsg_type_3,
+			xf_ond_prd_code_3 = p_xf_ond_prd_code_3,
+			xk_ond_code_3 = p_xk_ond_code_3,
+			xf_ond_prd_cube_tsg_type_1 = p_xf_ond_prd_cube_tsg_type_1,
+			xf_ond_prd_code_1 = p_xf_ond_prd_code_1,
+			xk_ond_code_1 = p_xk_ond_code_1,
+			xf_ond_prd_cube_tsg_type_2 = p_xf_ond_prd_cube_tsg_type_2,
+			xf_ond_prd_code_2 = p_xf_ond_prd_code_2,
+			xk_ond_code_2 = p_xk_ond_code_2
+		WHERE code = p_code;
+	END;
+
+	PROCEDURE delete_ddd (
+			p_code IN VARCHAR2) IS
+	BEGIN
+		DELETE v_onderdeel_deel_deel
+		WHERE code = p_code;
+	END;
+END;
+/
+SHOW ERRORS;
+
+CREATE OR REPLACE PACKAGE pkg_ord IS
+
+	TYPE c_cube_row IS REF CURSOR;
+	FUNCTION cube_pkg_cubetest RETURN VARCHAR2;
+	PROCEDURE get_ord_root_items (
+			p_cube_row IN OUT c_cube_row);
+	PROCEDURE get_ord (
+			p_cube_row IN OUT c_cube_row,
+			p_code IN VARCHAR2);
+	PROCEDURE get_ord_orr_items (
+			p_cube_row IN OUT c_cube_row,
+			p_code IN VARCHAR2);
+	PROCEDURE move_ord (
+			p_cube_pos_action IN VARCHAR2,
+			p_code IN VARCHAR2,
+			x_code IN VARCHAR2);
+	PROCEDURE insert_ord (
+			p_cube_pos_action IN VARCHAR2,
+			p_cube_tsg_int_ext IN VARCHAR2,
+			p_code IN VARCHAR2,
+			p_xk_kln_nummer IN VARCHAR2,
+			x_code IN VARCHAR2);
+	PROCEDURE update_ord (
+			p_cube_tsg_int_ext IN VARCHAR2,
+			p_code IN VARCHAR2,
+			p_xk_kln_nummer IN VARCHAR2);
+	PROCEDURE delete_ord (
+			p_code IN VARCHAR2);
+	PROCEDURE get_orr (
+			p_cube_row IN OUT c_cube_row,
+			p_fk_ord_code IN VARCHAR2);
+	PROCEDURE insert_orr (
+			p_fk_ord_code IN VARCHAR2,
+			p_produkt_prijs IN NUMBER,
+			p_aantal IN NUMBER,
+			p_totaal_prijs IN NUMBER,
+			p_xk_prd_cube_tsg_type IN VARCHAR2,
+			p_xk_prd_code IN VARCHAR2,
+			p_xk_prd_cube_tsg_type_1 IN VARCHAR2,
+			p_xk_prd_code_1 IN VARCHAR2,
+			p_xk_kln_nummer IN VARCHAR2,
+			p_cube_row IN OUT c_cube_row);
+	PROCEDURE update_orr (
+			p_fk_ord_code IN VARCHAR2,
+			p_produkt_prijs IN NUMBER,
+			p_aantal IN NUMBER,
+			p_totaal_prijs IN NUMBER,
+			p_xk_prd_cube_tsg_type IN VARCHAR2,
+			p_xk_prd_code IN VARCHAR2,
+			p_xk_prd_cube_tsg_type_1 IN VARCHAR2,
+			p_xk_prd_code_1 IN VARCHAR2,
+			p_xk_kln_nummer IN VARCHAR2);
+	PROCEDURE delete_orr (
+			p_fk_ord_code IN VARCHAR2);
+END;
+/
+SHOW ERRORS;
+
+CREATE OR REPLACE PACKAGE BODY pkg_ord IS
+	FUNCTION cube_pkg_cubetest RETURN VARCHAR2 IS
+	BEGIN
+		RETURN 'cube_pkg_cubetest';
+	END;
+
+	PROCEDURE get_ord_root_items (
+			p_cube_row IN OUT c_cube_row) IS
+	BEGIN
+		OPEN p_cube_row FOR
+			SELECT
+			  cube_sequence,
+			  cube_tsg_int_ext,
+			  code
+			FROM v_order
+			ORDER BY cube_sequence;
+	END;
+
+	PROCEDURE get_ord (
+			p_cube_row IN OUT c_cube_row,
+			p_code IN VARCHAR2) IS
+	BEGIN
+		OPEN p_cube_row FOR
+			SELECT
+			  cube_tsg_int_ext,
+			  xk_kln_nummer
+			FROM v_order
+			WHERE code = p_code;
+	END;
+
+	PROCEDURE get_ord_orr_items (
+			p_cube_row IN OUT c_cube_row,
+			p_code IN VARCHAR2) IS
+	BEGIN
+		OPEN p_cube_row FOR
+			SELECT
+			  fk_ord_code,
+			  totaal_prijs
+			FROM v_order_regel
+			WHERE fk_ord_code = p_code
+			ORDER BY fk_ord_code, totaal_prijs;
+	END;
+
+	PROCEDURE determine_position_ord (
+			p_cube_sequence OUT NUMBER,
+			p_cube_pos_action IN VARCHAR2,
+			p_code IN VARCHAR2) IS
+		l_cube_pos_action VARCHAR2(1);
+		l_cube_position_sequ NUMBER(8);
+		l_cube_near_sequ NUMBER(8);
+		l_cube_count NUMBER(8) := 1024;
+	BEGIN
+		-- A=After B=Before F=First L=Last
+		CASE p_cube_pos_action
+		WHEN 'F' THEN
+			l_cube_position_sequ := 0;
+			l_cube_pos_action := 'A';
+		WHEN 'L' THEN
+			l_cube_position_sequ := 99999999;
+			l_cube_pos_action := 'B';
+		ELSE
+			l_cube_pos_action := p_cube_pos_action;
+		END CASE;
+		LOOP
+			IF p_cube_pos_action IN ('B', 'A') THEN
+				-- Read sequence number of the target.
+				SELECT NVL (MAX (cube_sequence), DECODE (p_cube_pos_action, 'B', 99999999, 0))
+				INTO l_cube_position_sequ
+				FROM v_order
+				WHERE code = p_code;
+			END IF;
+			-- read sequence number near the target.
+			SELECT DECODE (l_cube_pos_action, 'B', NVL (MAX (cube_sequence), 0), NVL (MIN (cube_sequence), 99999999))
+			INTO l_cube_near_sequ
+			FROM v_order
+			WHERE 	    ( l_cube_pos_action = 'B'
+				  AND cube_sequence < l_cube_position_sequ )
+			   OR 	    ( l_cube_pos_action = 'A'
+				  AND cube_sequence > l_cube_position_sequ );
+			IF ABS (l_cube_position_sequ - l_cube_near_sequ) > 1 THEN
+				p_cube_sequence := l_cube_position_sequ - (l_cube_position_sequ - l_cube_near_sequ) / 2; -- Formula both directions OK.
+				EXIT;
+			ELSE
+				-- renumber.
+				FOR r_ord IN (
+					SELECT
+					  rowid row_id
+					FROM v_order
+					ORDER BY cube_sequence)
+				LOOP
+					UPDATE v_order SET
+						cube_sequence = l_cube_count
+					WHERE rowid = r_ord.row_id;
+					l_cube_count := l_cube_count + 1024;
+				END LOOP;
+			END IF;
+		END LOOP;
+	END;
+
+	PROCEDURE move_ord (
+			p_cube_pos_action IN VARCHAR2,
+			p_code IN VARCHAR2,
+			x_code IN VARCHAR2) IS
+		l_cube_sequence NUMBER(8);
+	BEGIN
+		-- A=After B=Before F=First L=Last
+		IF NVL (p_cube_pos_action, ' ') NOT IN ('A', 'B', 'F', 'L') THEN
+			RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
+		END IF;
+		determine_position_ord (l_cube_sequence, p_cube_pos_action, x_code);
+		UPDATE v_order SET
+			cube_sequence = l_cube_sequence
+		WHERE code = p_code;
+		IF SQL%NOTFOUND THEN
+			RAISE_APPLICATION_ERROR (-20002, 'Type order not found');
+		END IF;
+	END;
+
+	PROCEDURE insert_ord (
+			p_cube_pos_action IN VARCHAR2,
+			p_cube_tsg_int_ext IN VARCHAR2,
+			p_code IN VARCHAR2,
+			p_xk_kln_nummer IN VARCHAR2,
+			x_code IN VARCHAR2) IS
+		l_cube_sequence NUMBER(8);
+	BEGIN
+		-- A=After B=Before F=First L=Last
+		IF NVL (p_cube_pos_action, ' ') NOT IN ('A', 'B', 'F', 'L') THEN
+			RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
+		END IF;
+		determine_position_ord (l_cube_sequence, p_cube_pos_action, x_code);
+		INSERT INTO v_order (
+			cube_id,
+			cube_sequence,
+			cube_tsg_int_ext,
+			code,
+			xk_kln_nummer)
+		VALUES (
+			NULL,
+			l_cube_sequence,
+			p_cube_tsg_int_ext,
+			p_code,
+			p_xk_kln_nummer);
+	EXCEPTION
+		WHEN DUP_VAL_ON_INDEX THEN
+			RAISE_APPLICATION_ERROR (-20001, 'Type order already exists');
+	END;
+
+	PROCEDURE update_ord (
+			p_cube_tsg_int_ext IN VARCHAR2,
+			p_code IN VARCHAR2,
+			p_xk_kln_nummer IN VARCHAR2) IS
+	BEGIN
+		UPDATE v_order SET
+			cube_tsg_int_ext = p_cube_tsg_int_ext,
+			xk_kln_nummer = p_xk_kln_nummer
+		WHERE code = p_code;
+	END;
+
+	PROCEDURE delete_ord (
+			p_code IN VARCHAR2) IS
+	BEGIN
+		DELETE v_order
+		WHERE code = p_code;
+	END;
+
+	PROCEDURE get_orr (
+			p_cube_row IN OUT c_cube_row,
+			p_fk_ord_code IN VARCHAR2) IS
+	BEGIN
+		OPEN p_cube_row FOR
+			SELECT
+			  produkt_prijs,
+			  aantal,
+			  totaal_prijs,
+			  xk_prd_cube_tsg_type,
+			  xk_prd_code,
+			  xk_prd_cube_tsg_type_1,
+			  xk_prd_code_1,
+			  xk_kln_nummer
+			FROM v_order_regel
+			WHERE fk_ord_code = p_fk_ord_code;
+	END;
+
+	PROCEDURE get_next_orr (
+			p_cube_row IN OUT c_cube_row,
+			p_fk_ord_code IN VARCHAR2) IS
+	BEGIN
+		OPEN p_cube_row FOR
+			SELECT
+			  fk_ord_code
+			FROM v_order_regel
+			WHERE fk_ord_code > p_fk_ord_code
+			ORDER BY fk_ord_code;
+	END;
+
+	PROCEDURE insert_orr (
+			p_fk_ord_code IN VARCHAR2,
+			p_produkt_prijs IN NUMBER,
+			p_aantal IN NUMBER,
+			p_totaal_prijs IN NUMBER,
+			p_xk_prd_cube_tsg_type IN VARCHAR2,
+			p_xk_prd_code IN VARCHAR2,
+			p_xk_prd_cube_tsg_type_1 IN VARCHAR2,
+			p_xk_prd_code_1 IN VARCHAR2,
+			p_xk_kln_nummer IN VARCHAR2,
+			p_cube_row IN OUT c_cube_row) IS
+	BEGIN
+		INSERT INTO v_order_regel (
+			cube_id,
+			fk_ord_code,
+			produkt_prijs,
+			aantal,
+			totaal_prijs,
+			xk_prd_cube_tsg_type,
+			xk_prd_code,
+			xk_prd_cube_tsg_type_1,
+			xk_prd_code_1,
+			xk_kln_nummer)
+		VALUES (
+			NULL,
+			p_fk_ord_code,
+			p_produkt_prijs,
+			p_aantal,
+			p_totaal_prijs,
+			p_xk_prd_cube_tsg_type,
+			p_xk_prd_code,
+			p_xk_prd_cube_tsg_type_1,
+			p_xk_prd_code_1,
+			p_xk_kln_nummer);
+
+		get_next_orr (p_cube_row, p_fk_ord_code);
+	EXCEPTION
+		WHEN DUP_VAL_ON_INDEX THEN
+			RAISE_APPLICATION_ERROR (-20001, 'Type order_regel already exists');
+	END;
+
+	PROCEDURE update_orr (
+			p_fk_ord_code IN VARCHAR2,
+			p_produkt_prijs IN NUMBER,
+			p_aantal IN NUMBER,
+			p_totaal_prijs IN NUMBER,
+			p_xk_prd_cube_tsg_type IN VARCHAR2,
+			p_xk_prd_code IN VARCHAR2,
+			p_xk_prd_cube_tsg_type_1 IN VARCHAR2,
+			p_xk_prd_code_1 IN VARCHAR2,
+			p_xk_kln_nummer IN VARCHAR2) IS
+	BEGIN
+		UPDATE v_order_regel SET
+			produkt_prijs = p_produkt_prijs,
+			aantal = p_aantal,
+			totaal_prijs = p_totaal_prijs,
+			xk_prd_cube_tsg_type = p_xk_prd_cube_tsg_type,
+			xk_prd_code = p_xk_prd_code,
+			xk_prd_cube_tsg_type_1 = p_xk_prd_cube_tsg_type_1,
+			xk_prd_code_1 = p_xk_prd_code_1,
+			xk_kln_nummer = p_xk_kln_nummer
+		WHERE fk_ord_code = p_fk_ord_code;
+	END;
+
+	PROCEDURE delete_orr (
+			p_fk_ord_code IN VARCHAR2) IS
+	BEGIN
+		DELETE v_order_regel
+		WHERE fk_ord_code = p_fk_ord_code;
 	END;
 END;
 /
