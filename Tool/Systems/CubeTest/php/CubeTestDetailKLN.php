@@ -30,8 +30,6 @@ g_xmlhttp.onreadystatechange = function() {
 					case "SELECT_KLN":
 						var l_json_values = l_json_array[i].Rows[0].Data;
 						document.getElementById("InputCubeTsgIntext").value=l_json_values.CubeTsgIntext;
-						document.getElementById("InputCubeTsgVip").value=l_json_values.CubeTsgVip;
-						document.getElementById("InputCubeTsgTest").value=l_json_values.CubeTsgTest;
 						document.getElementById("InputAchternaam").value=l_json_values.Achternaam;
 						document.getElementById("InputGeboorteDatum").value=l_json_values.GeboorteDatum;
 						document.getElementById("InputLeeftijd").value=l_json_values.Leeftijd;
@@ -40,7 +38,7 @@ g_xmlhttp.onreadystatechange = function() {
 						ProcessTypeSpecialisation();
 						break;
 					case "CREATE_KLN":
-						document.getElementById("InputNummer").readOnly=true;
+						document.getElementById("InputNummer").disabled=true;
 						document.getElementById("ButtonCreate").disabled=true;
 						document.getElementById("ButtonUpdate").disabled=false;
 						document.getElementById("ButtonDelete").disabled=false;
@@ -56,7 +54,7 @@ g_xmlhttp.onreadystatechange = function() {
 									'TYP_KLN',
 									l_json_node_id,
 									'icons/klant.bmp', 
-									document.getElementById("InputCubeTsgIntext").value.toLowerCase()+' '+document.getElementById("InputCubeTsgVip").value.toLowerCase()+' '+document.getElementById("InputCubeTsgTest").value.toLowerCase()+' '+document.getElementById("InputNummer").value.toLowerCase()+' ('+document.getElementById("InputAchternaam").value.toLowerCase()+')'+' '+document.getElementById("InputVoornaam").value.toLowerCase(),
+									document.getElementById("InputCubeTsgIntext").value.toLowerCase()+' '+document.getElementById("InputNummer").value.toLowerCase()+' ('+document.getElementById("InputAchternaam").value.toLowerCase()+')'+' '+document.getElementById("InputVoornaam").value.toLowerCase(),
 									'N',
 									l_position,
 									l_objNodePos);
@@ -66,7 +64,7 @@ g_xmlhttp.onreadystatechange = function() {
 					case "UPDATE_KLN":
 						var l_objNode = parent.document.getElementById(g_node_id);
 						if (l_objNode != null) {
-							l_objNode.children[1].lastChild.nodeValue = ' '+document.getElementById("InputCubeTsgIntext").value.toLowerCase()+' '+document.getElementById("InputCubeTsgVip").value.toLowerCase()+' '+document.getElementById("InputCubeTsgTest").value.toLowerCase()+' '+document.getElementById("InputNummer").value.toLowerCase()+' ('+document.getElementById("InputAchternaam").value.toLowerCase()+')'+' '+document.getElementById("InputVoornaam").value.toLowerCase();
+							l_objNode.children[1].lastChild.nodeValue = ' '+document.getElementById("InputCubeTsgIntext").value.toLowerCase()+' '+document.getElementById("InputNummer").value.toLowerCase()+' ('+document.getElementById("InputAchternaam").value.toLowerCase()+')'+' '+document.getElementById("InputVoornaam").value.toLowerCase();
 					}
 						break;
 					case "DELETE_KLN":
@@ -112,10 +110,8 @@ function InitBody() {
 				Type: l_json_objectKey.TYP_KLN
 			}
 		} );
-		document.getElementById("InputCubeTsgIntext").readOnly=true;
-		document.getElementById("InputCubeTsgVip").readOnly=true;
-		document.getElementById("InputCubeTsgTest").readOnly=true;
-		document.getElementById("InputNummer").readOnly=true;
+		document.getElementById("InputCubeTsgIntext").disabled=true;
+		document.getElementById("InputNummer").disabled=true;
 		break;
 	case "N":
 		g_parent_node_id = JSON.stringify(l_json_argument.objectId);
@@ -130,8 +126,6 @@ function InitBody() {
 function CreateKln() {
 	var Type = {
 		CubeTsgIntext: document.getElementById("InputCubeTsgIntext").value,
-		CubeTsgVip: document.getElementById("InputCubeTsgVip").value,
-		CubeTsgTest: document.getElementById("InputCubeTsgTest").value,
 		Nummer: document.getElementById("InputNummer").value,
 		Achternaam: document.getElementById("InputAchternaam").value,
 		GeboorteDatum: document.getElementById("InputGeboorteDatum").value,
@@ -150,8 +144,6 @@ function CreateKln() {
 function UpdateKln() {
 	var Type = {
 		CubeTsgIntext: document.getElementById("InputCubeTsgIntext").value,
-		CubeTsgVip: document.getElementById("InputCubeTsgVip").value,
-		CubeTsgTest: document.getElementById("InputCubeTsgTest").value,
 		Nummer: document.getElementById("InputNummer").value,
 		Achternaam: document.getElementById("InputAchternaam").value,
 		GeboorteDatum: document.getElementById("InputGeboorteDatum").value,
@@ -180,38 +172,19 @@ function DeleteKln() {
 }
 
 function ProcessTypeSpecialisation() {
-	if (document.getElementById("InputCubeTsgIntext").value != ' ' && document.getElementById("InputCubeTsgVip").value != ' ' && document.getElementById("InputCubeTsgTest").value != ' ') {
+	if (document.getElementById("InputCubeTsgIntext").value != ' ') {
 		document.getElementById("InputCubeTsgIntext").disabled=true;
-		document.getElementById("InputCubeTsgVip").disabled=true;
-		document.getElementById("InputCubeTsgTest").disabled=true;
 		document.getElementById("TableMain").style.display="inline";
-	}
-}
-
-function ResetFieldCubeTsgVip(p_field_id) {
-	document.getElementById("InputCubeTsgVip").value=' ';
-	switch (document.getElementById(p_field_id).value){
-	case "INT":
-		break;
-	case "EXT":
-		break;
 	}
 }
 -->
 </script>
 </head><body oncontextmenu="return false;" onload="InitBody()" ondrop="drop(event)" ondragover="allowDrop(event)">
 <div><img src="icons/klant_large.bmp" /><span> KLANT /
-<select id="InputCubeTsgIntext" type="text" onchange="ResetFieldCubeTsgVip('InputCubeTsgIntext')">
+<select id="InputCubeTsgIntext" type="text" onchange="ProcessTypeSpecialisation()">
 	<option value=" " selected>&lt;intext&gt;</option>
 	<option value="INT">INTERN</option>
 	<option value="EXT">EXTERN</option>
-</select> <b>.</b>
-<select id="InputCubeTsgVip" type="text" onchange="ProcessTypeSpecialisation()">
-	<option value=" " selected>&lt;vip&gt;</option>
-	<option id="ValCubeTsgVip-VIP" style="display:none" value="VIP"></option>
-</select> /
-<select id="InputCubeTsgTest" type="text" onchange="ProcessTypeSpecialisation()">
-	<option value=" " selected>&lt;test&gt;</option>
 </select></span></div>
 <hr/>
 <table id="TableMain" style="display:none">

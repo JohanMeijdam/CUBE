@@ -21,8 +21,6 @@ CREATE OR REPLACE VIEW v_klant AS
 	SELECT
 		cube_id,
 		cube_tsg_intext,
-		cube_tsg_vip,
-		cube_tsg_test,
 		nummer,
 		achternaam,
 		geboorte_datum,
@@ -67,8 +65,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_kln_trg IS
 		INSERT INTO t_klant (
 			cube_id,
 			cube_tsg_intext,
-			cube_tsg_vip,
-			cube_tsg_test,
 			nummer,
 			achternaam,
 			geboorte_datum,
@@ -78,8 +74,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_kln_trg IS
 		VALUES (
 			p_kln.cube_id,
 			p_kln.cube_tsg_intext,
-			p_kln.cube_tsg_vip,
-			p_kln.cube_tsg_test,
 			p_kln.nummer,
 			p_kln.achternaam,
 			p_kln.geboorte_datum,
@@ -152,16 +146,6 @@ BEGIN
 		ELSE
 			r_kln_new.cube_tsg_intext := REPLACE(:NEW.cube_tsg_intext,' ','_');
 		END IF;
-		IF :NEW.cube_tsg_vip = ' ' THEN
-			r_kln_new.cube_tsg_vip := ' ';
-		ELSE
-			r_kln_new.cube_tsg_vip := REPLACE(:NEW.cube_tsg_vip,' ','_');
-		END IF;
-		IF :NEW.cube_tsg_test = ' ' THEN
-			r_kln_new.cube_tsg_test := ' ';
-		ELSE
-			r_kln_new.cube_tsg_test := REPLACE(:NEW.cube_tsg_test,' ','_');
-		END IF;
 		IF :NEW.nummer = ' ' THEN
 			r_kln_new.nummer := ' ';
 		ELSE
@@ -180,8 +164,6 @@ BEGIN
 		SELECT rowid INTO l_cube_rowid FROM t_klant
 		WHERE nummer = :OLD.nummer;
 		r_kln_old.cube_tsg_intext := :OLD.cube_tsg_intext;
-		r_kln_old.cube_tsg_vip := :OLD.cube_tsg_vip;
-		r_kln_old.cube_tsg_test := :OLD.cube_tsg_test;
 		r_kln_old.nummer := :OLD.nummer;
 		r_kln_old.achternaam := :OLD.achternaam;
 		r_kln_old.geboorte_datum := :OLD.geboorte_datum;

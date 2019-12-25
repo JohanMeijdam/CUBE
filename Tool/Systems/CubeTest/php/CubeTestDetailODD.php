@@ -38,10 +38,10 @@ g_xmlhttp.onreadystatechange = function() {
 						document.getElementById("InputXkOndCode").value=l_json_values.XkOndCode;
 						break;
 					case "CREATE_ODD":
-						document.getElementById("InputFkPrdCubeTsgType").readOnly=true;
-						document.getElementById("InputFkPrdCode").readOnly=true;
-						document.getElementById("InputFkOndCode").readOnly=true;
-						document.getElementById("InputCode").readOnly=true;
+						document.getElementById("InputFkPrdCubeTsgType").disabled=true;
+						document.getElementById("InputFkPrdCode").disabled=true;
+						document.getElementById("InputFkOndCode").disabled=true;
+						document.getElementById("InputCode").disabled=true;
 						document.getElementById("ButtonCreate").disabled=true;
 						document.getElementById("ButtonUpdate").disabled=false;
 						document.getElementById("ButtonDelete").disabled=false;
@@ -113,10 +113,10 @@ function InitBody() {
 				Type: l_json_objectKey.TYP_ODD
 			}
 		} );
-		document.getElementById("InputFkPrdCubeTsgType").readOnly=true;
-		document.getElementById("InputFkPrdCode").readOnly=true;
-		document.getElementById("InputFkOndCode").readOnly=true;
-		document.getElementById("InputCode").readOnly=true;
+		document.getElementById("InputFkPrdCubeTsgType").disabled=true;
+		document.getElementById("InputFkPrdCode").disabled=true;
+		document.getElementById("InputFkOndCode").disabled=true;
+		document.getElementById("InputCode").disabled=true;
 		break;
 	case "N":
 		g_parent_node_id = JSON.stringify(l_json_argument.objectId);
@@ -125,9 +125,9 @@ function InitBody() {
 		document.getElementById("InputFkOndCode").value=l_json_objectKey.TYP_OND.Code;
 		document.getElementById("ButtonUpdate").disabled=true;
 		document.getElementById("ButtonDelete").disabled=true;
-		document.getElementById("InputFkPrdCubeTsgType").readOnly=true;
-		document.getElementById("InputFkPrdCode").readOnly=true;
-		document.getElementById("InputFkOndCode").readOnly=true;
+		document.getElementById("InputFkPrdCubeTsgType").disabled=true;
+		document.getElementById("InputFkPrdCode").disabled=true;
+		document.getElementById("InputFkOndCode").disabled=true;
 		break;
 	default:
 		alert ('Error InitBody: '+l_argument[1]);
@@ -256,8 +256,12 @@ function StartSelect001(p_event) {
 <div><img src="icons/type_large.bmp" /><span> ONDERDEEL_DEEL</span></div>
 <hr/>
 <table>
-<tr><td>Produkt.Type</td><td><div style="max-width:8em;">
-<input id="InputFkPrdCubeTsgType" type="text" maxlength="8" style="width:100%;" onchange="ReplaceSpaces(this);"></input></div></td></tr>
+<tr><td>Produkt.Type</td><td><div>
+<select id="InputFkPrdCubeTsgType" type="text">
+	<option value=" " selected> </option>
+	<option value="P">PARTICULIER</option>
+	<option value="Z">ZAKELIJK</option>
+</select></div></td></tr>
 <tr><td>Produkt.Code</td><td><div style="max-width:8em;">
 <input id="InputFkPrdCode" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
 <tr><td>Onderdeel.Code</td><td><div style="max-width:8em;">
@@ -269,12 +273,12 @@ function StartSelect001(p_event) {
 <tr><td height=6></td></tr><tr><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/part.bmp"/> Onderdeel (IsVan)</legend>
 <table style="width:100%;">
 <tr><td>Produkt.Type</td><td style="width:100%;"><div style="max-width:8em;">
-<input id="InputXfOndPrdCubeTsgType" type="text" maxlength="8" style="width:100%;" onchange="ReplaceSpaces(this);" readonly></input></div></td>
+<input id="InputXfOndPrdCubeTsgType" type="text" maxlength="8" style="width:100%;" onchange="ReplaceSpaces(this);" disabled></input></div></td>
 <td><button id="RefSelect001" type="button" onclick="StartSelect001(event)">Select</button></td></tr>
 <tr><td>Produkt.Code</td><td style="width:100%;"><div style="max-width:8em;">
-<input id="InputXfOndPrdCode" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" readonly></input></div></td></tr>
+<input id="InputXfOndPrdCode" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td></tr>
 <tr><td>Onderdeel.Code</td><td style="width:100%;"><div style="max-width:8em;">
-<input id="InputXkOndCode" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" readonly></input></div></td></tr>
+<input id="InputXkOndCode" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td></tr>
 </table></fieldset></td></tr>
 <tr><td><br></td><td style="width:100%;"></td></tr>
 <tr><td/><td>

@@ -46,8 +46,6 @@ CREATE SEQUENCE sq_orr START WITH 100000
 CREATE TABLE t_klant (
 	cube_id VARCHAR2(16),
 	cube_tsg_intext VARCHAR2(8) DEFAULT 'INT',
-	cube_tsg_vip VARCHAR2(8) DEFAULT 'VIP',
-	cube_tsg_test VARCHAR2(8),
 	nummer VARCHAR2(8),
 	achternaam VARCHAR2(40),
 	geboorte_datum DATE,

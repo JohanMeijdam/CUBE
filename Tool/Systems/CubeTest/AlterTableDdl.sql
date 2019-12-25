@@ -99,8 +99,6 @@ BEGIN
 		'CREATE TABLE t_klant (
 			cube_id VARCHAR2(16),
 			cube_tsg_intext VARCHAR2(8) DEFAULT ''INT'',
-			cube_tsg_vip VARCHAR2(8) DEFAULT ''VIP'',
-			cube_tsg_test VARCHAR2(8),
 			nummer VARCHAR2(8),
 			achternaam VARCHAR2(40),
 			geboorte_datum DATE,
@@ -120,18 +118,6 @@ BEGIN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_klant ADD cube_tsg_intext VARCHAR2(8) DEFAULT ''INT''';
 			DBMS_OUTPUT.PUT_LINE('Column T_KLANT.CUBE_TSG_INTEXT created');
-		END IF;
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_KLANT' AND column_name = 'CUBE_TSG_VIP';
-		IF l_count = 0 THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_klant ADD cube_tsg_vip VARCHAR2(8) DEFAULT ''VIP''';
-			DBMS_OUTPUT.PUT_LINE('Column T_KLANT.CUBE_TSG_VIP created');
-		END IF;
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_KLANT' AND column_name = 'CUBE_TSG_TEST';
-		IF l_count = 0 THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_klant ADD cube_tsg_test VARCHAR2(8)';
-			DBMS_OUTPUT.PUT_LINE('Column T_KLANT.CUBE_TSG_TEST created');
 		END IF;
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_KLANT' AND column_name = 'NUMMER';
 		IF l_count = 0 THEN
@@ -871,8 +857,6 @@ BEGIN
   		DECODE(column_name,
 			'CUBE_ID','VARCHAR2(16)',
 			'CUBE_TSG_INTEXT','VARCHAR2(8)',
-			'CUBE_TSG_VIP','VARCHAR2(8)',
-			'CUBE_TSG_TEST','VARCHAR2(8)',
 			'NUMMER','VARCHAR2(8)',
 			'ACHTERNAAM','VARCHAR2(40)',
 			'GEBOORTE_DATUM','DATE',
@@ -882,8 +866,6 @@ BEGIN
 		DECODE(column_name,
 			'CUBE_ID',NULL,
 			'CUBE_TSG_INTEXT','''INT''',
-			'CUBE_TSG_VIP','''VIP''',
-			'CUBE_TSG_TEST',NULL,
 			'NUMMER',NULL,
 			'ACHTERNAAM',NULL,
 			'GEBOORTE_DATUM',NULL,
@@ -922,8 +904,6 @@ BEGIN
 	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_KLANT' AND column_name NOT IN (
 							'CUBE_ID',
 							'CUBE_TSG_INTEXT',
-							'CUBE_TSG_VIP',
-							'CUBE_TSG_TEST',
 							'NUMMER',
 							'ACHTERNAAM',
 							'GEBOORTE_DATUM',

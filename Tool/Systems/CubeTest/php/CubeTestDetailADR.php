@@ -32,11 +32,11 @@ g_xmlhttp.onreadystatechange = function() {
 						ProcessTypeSpecialisation();
 						break;
 					case "CREATE_ADR":
-						document.getElementById("InputFkKlnNummer").readOnly=true;
-						document.getElementById("InputPostcodeCijfers").readOnly=true;
-						document.getElementById("InputPostcodeLetters").readOnly=true;
-						document.getElementById("InputCubeTsgTest").readOnly=true;
-						document.getElementById("InputHuisnummer").readOnly=true;
+						document.getElementById("InputFkKlnNummer").disabled=true;
+						document.getElementById("InputPostcodeCijfers").disabled=true;
+						document.getElementById("InputPostcodeLetters").disabled=true;
+						document.getElementById("InputCubeTsgTest").disabled=true;
+						document.getElementById("InputHuisnummer").disabled=true;
 						document.getElementById("ButtonCreate").disabled=true;
 						document.getElementById("ButtonDelete").disabled=false;
 						var l_objNode = parent.document.getElementById(g_parent_node_id);
@@ -102,18 +102,18 @@ function InitBody() {
 		document.getElementById("InputHuisnummer").value=l_json_objectKey.TYP_ADR.Huisnummer;
 		document.getElementById("ButtonCreate").disabled=true;
 		document.getElementById("ButtonUpdate").disabled=true;
-		document.getElementById("InputFkKlnNummer").readOnly=true;
-		document.getElementById("InputPostcodeCijfers").readOnly=true;
-		document.getElementById("InputPostcodeLetters").readOnly=true;
-		document.getElementById("InputCubeTsgTest").readOnly=true;
-		document.getElementById("InputHuisnummer").readOnly=true;
+		document.getElementById("InputFkKlnNummer").disabled=true;
+		document.getElementById("InputPostcodeCijfers").disabled=true;
+		document.getElementById("InputPostcodeLetters").disabled=true;
+		document.getElementById("InputCubeTsgTest").disabled=true;
+		document.getElementById("InputHuisnummer").disabled=true;
 		break;
 	case "N":
 		g_parent_node_id = JSON.stringify(l_json_argument.objectId);
 		document.getElementById("InputFkKlnNummer").value=l_json_objectKey.TYP_KLN.Nummer;
 		document.getElementById("ButtonUpdate").disabled=true;
 		document.getElementById("ButtonDelete").disabled=true;
-		document.getElementById("InputFkKlnNummer").readOnly=true;
+		document.getElementById("InputFkKlnNummer").disabled=true;
 		break;
 	default:
 		alert ('Error InitBody: '+l_argument[1]);

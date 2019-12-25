@@ -37,10 +37,10 @@ g_xmlhttp.onreadystatechange = function() {
 						document.getElementById("InputXkOndCode").value=l_json_values.XkOndCode;
 						break;
 					case "CREATE_OND":
-						document.getElementById("InputFkPrdCubeTsgType").readOnly=true;
-						document.getElementById("InputFkPrdCode").readOnly=true;
-						document.getElementById("InputFkOndCode").readOnly=true;
-						document.getElementById("InputCode").readOnly=true;
+						document.getElementById("InputFkPrdCubeTsgType").disabled=true;
+						document.getElementById("InputFkPrdCode").disabled=true;
+						document.getElementById("InputFkOndCode").disabled=true;
+						document.getElementById("InputCode").disabled=true;
 						document.getElementById("ButtonCreate").disabled=true;
 						document.getElementById("ButtonUpdate").disabled=false;
 						document.getElementById("ButtonDelete").disabled=false;
@@ -114,10 +114,10 @@ function InitBody() {
 				Type: l_json_objectKey.TYP_OND
 			}
 		} );
-		document.getElementById("InputFkPrdCubeTsgType").readOnly=true;
-		document.getElementById("InputFkPrdCode").readOnly=true;
-		document.getElementById("InputFkOndCode").readOnly=true;
-		document.getElementById("InputCode").readOnly=true;
+		document.getElementById("InputFkPrdCubeTsgType").disabled=true;
+		document.getElementById("InputFkPrdCode").disabled=true;
+		document.getElementById("InputFkOndCode").disabled=true;
+		document.getElementById("InputCode").disabled=true;
 		break;
 	case "N":
 		g_parent_node_id = JSON.stringify(l_json_argument.objectId);
@@ -125,9 +125,9 @@ function InitBody() {
 		document.getElementById("InputFkPrdCode").value=l_json_objectKey.TYP_PRD.Code;
 		document.getElementById("ButtonUpdate").disabled=true;
 		document.getElementById("ButtonDelete").disabled=true;
-		document.getElementById("InputFkPrdCubeTsgType").readOnly=true;
-		document.getElementById("InputFkPrdCode").readOnly=true;
-		document.getElementById("InputFkOndCode").readOnly=true;
+		document.getElementById("InputFkPrdCubeTsgType").disabled=true;
+		document.getElementById("InputFkPrdCode").disabled=true;
+		document.getElementById("InputFkOndCode").disabled=true;
 		break;  
 	case "R":
 		g_parent_node_id = JSON.stringify(l_json_argument.objectId);
@@ -136,9 +136,9 @@ function InitBody() {
 		document.getElementById("InputFkOndCode").value=l_json_objectKey.TYP_OND.Code;
 		document.getElementById("ButtonUpdate").disabled=true;
 		document.getElementById("ButtonDelete").disabled=true;
-		document.getElementById("InputFkPrdCubeTsgType").readOnly=true;
-		document.getElementById("InputFkPrdCode").readOnly=true;
-		document.getElementById("InputFkOndCode").readOnly=true;
+		document.getElementById("InputFkPrdCubeTsgType").disabled=true;
+		document.getElementById("InputFkPrdCode").disabled=true;
+		document.getElementById("InputFkOndCode").disabled=true;
 		break;
 	default:
 		alert ('Error InitBody: '+l_argument[1]);
@@ -260,8 +260,12 @@ function StartSelect001(p_event) {
 <div><img src="icons/part_large.bmp" /><span style="cursor:help" oncontextmenu="parent.OpenDescBox('PART','Onderdeel','ONDERDEEL','_',-1)"> ONDERDEEL</span></div>
 <hr/>
 <table>
-<tr><td><u>Produkt.Type</u></td><td><div style="max-width:8em;">
-<input id="InputFkPrdCubeTsgType" type="text" maxlength="8" style="width:100%;" onchange="ReplaceSpaces(this);"></input></div></td></tr>
+<tr><td><u>Produkt.Type</u></td><td><div>
+<select id="InputFkPrdCubeTsgType" type="text">
+	<option value=" " selected> </option>
+	<option value="P">PARTICULIER</option>
+	<option value="Z">ZAKELIJK</option>
+</select></div></td></tr>
 <tr><td><u>Produkt.Code</u></td><td><div style="max-width:8em;">
 <input id="InputFkPrdCode" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
 <tr><td>Onderdeel.Code</td><td><div style="max-width:8em;">
@@ -270,17 +274,17 @@ function StartSelect001(p_event) {
 <input id="InputCode" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
 <tr><td>Prijs</td><td><div style="max-width:9em;">
 <input id="InputPrijs" type="text" maxlength="9" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td>Omschrijving</td><td><div style="max-width:120em;">
-<input id="InputOmschrijving" type="text" maxlength="120" style="width:100%;"></input></div></td></tr>
+<tr><td style="padding-top:10px;">Omschrijving</td></tr><tr><td colspan="2"><div>
+<textarea id="InputOmschrijving" type="text" maxlength="120" rows="5" style="white-space:normal;width:100%;"></textarea></div></td></tr>
 <tr><td height=6></td></tr><tr><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/part.bmp"/> Onderdeel (LijktOp)</legend>
 <table style="width:100%;">
 <tr><td>Produkt.Type</td><td style="width:100%;"><div style="max-width:8em;">
-<input id="InputXfOndPrdCubeTsgType" type="text" maxlength="8" style="width:100%;" onchange="ReplaceSpaces(this);" readonly></input></div></td>
+<input id="InputXfOndPrdCubeTsgType" type="text" maxlength="8" style="width:100%;" onchange="ReplaceSpaces(this);" disabled></input></div></td>
 <td><button id="RefSelect001" type="button" onclick="StartSelect001(event)">Select</button></td></tr>
 <tr><td>Produkt.Code</td><td style="width:100%;"><div style="max-width:8em;">
-<input id="InputXfOndPrdCode" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" readonly></input></div></td></tr>
+<input id="InputXfOndPrdCode" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td></tr>
 <tr><td>Onderdeel.Code</td><td style="width:100%;"><div style="max-width:8em;">
-<input id="InputXkOndCode" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" readonly></input></div></td></tr>
+<input id="InputXkOndCode" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td></tr>
 </table></fieldset></td></tr>
 <tr><td><br></td><td style="width:100%;"></td></tr>
 <tr><td/><td>

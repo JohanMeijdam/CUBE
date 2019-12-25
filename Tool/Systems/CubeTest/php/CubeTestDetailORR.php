@@ -39,7 +39,7 @@ g_xmlhttp.onreadystatechange = function() {
 						document.getElementById("InputXkKlnNummer").value=l_json_values.XkKlnNummer;
 						break;
 					case "CREATE_ORR":
-						document.getElementById("InputFkOrdCode").readOnly=true;
+						document.getElementById("InputFkOrdCode").disabled=true;
 						document.getElementById("ButtonCreate").disabled=true;
 						document.getElementById("ButtonUpdate").disabled=false;
 						document.getElementById("ButtonDelete").disabled=false;
@@ -125,9 +125,9 @@ function InitBody() {
 				Type: l_json_objectKey.TYP_ORR
 			}
 		} );
-		document.getElementById("InputFkOrdCode").readOnly=true;
-		document.getElementById("InputXkPrdCubeTsgType").readOnly=true;
-		document.getElementById("InputXkPrdCode").readOnly=true;
+		document.getElementById("InputFkOrdCode").disabled=true;
+		document.getElementById("InputXkPrdCubeTsgType").disabled=true;
+		document.getElementById("InputXkPrdCode").disabled=true;
 		document.getElementById("RefSelect001").disabled=true;
 		break;
 	case "N":
@@ -135,7 +135,7 @@ function InitBody() {
 		document.getElementById("InputFkOrdCode").value=l_json_objectKey.TYP_ORD.Code;
 		document.getElementById("ButtonUpdate").disabled=true;
 		document.getElementById("ButtonDelete").disabled=true;
-		document.getElementById("InputFkOrdCode").readOnly=true;
+		document.getElementById("InputFkOrdCode").disabled=true;
 		break;
 	default:
 		alert ('Error InitBody: '+l_argument[1]);
@@ -280,23 +280,23 @@ function StartSelect003(p_event) {
 <tr><td height=6></td></tr><tr><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/produkt.bmp"/> Produkt (Betreft)</legend>
 <table style="width:100%;">
 <tr><td>Produkt.Type</td><td style="width:100%;"><div style="max-width:8em;">
-<input id="InputXkPrdCubeTsgType" type="text" maxlength="8" style="width:100%;" onchange="ReplaceSpaces(this);" readonly></input></div></td>
+<input id="InputXkPrdCubeTsgType" type="text" maxlength="8" style="width:100%;" onchange="ReplaceSpaces(this);" disabled></input></div></td>
 <td><button id="RefSelect001" type="button" onclick="StartSelect001(event)">Select</button></td></tr>
 <tr><td>Produkt.Code</td><td style="width:100%;"><div style="max-width:8em;">
-<input id="InputXkPrdCode" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" readonly></input></div></td></tr>
+<input id="InputXkPrdCode" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td></tr>
 </table></fieldset></td></tr>
 <tr><td height=6></td></tr><tr><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/produkt.bmp"/> Produkt (BetreftMultiple)</legend>
 <table style="width:100%;">
 <tr><td>Produkt.Type</td><td style="width:100%;"><div style="max-width:8em;">
-<input id="InputXkPrdCubeTsgType1" type="text" maxlength="8" style="width:100%;" onchange="ReplaceSpaces(this);" readonly></input></div></td>
+<input id="InputXkPrdCubeTsgType1" type="text" maxlength="8" style="width:100%;" onchange="ReplaceSpaces(this);" disabled></input></div></td>
 <td><button id="RefSelect002" type="button" onclick="StartSelect002(event)">Select</button></td></tr>
 <tr><td>Produkt.Code</td><td style="width:100%;"><div style="max-width:8em;">
-<input id="InputXkPrdCode1" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" readonly></input></div></td></tr>
+<input id="InputXkPrdCode1" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td></tr>
 </table></fieldset></td></tr>
 <tr><td height=6></td></tr><tr><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/klant.bmp"/> Klant (Betreft)</legend>
 <table style="width:100%;">
 <tr><td>Klant.Nummer</td><td style="width:100%;"><div style="max-width:8em;">
-<input id="InputXkKlnNummer" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" readonly></input></div></td>
+<input id="InputXkKlnNummer" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td>
 <td><button id="RefSelect003" type="button" onclick="StartSelect003(event)">Select</button></td></tr>
 </table></fieldset></td></tr>
 <tr><td><br></td><td style="width:100%;"></td></tr>

@@ -52,8 +52,6 @@ CREATE OR REPLACE PACKAGE pkg_kln IS
 			p_nummer IN VARCHAR2);
 	PROCEDURE insert_kln (
 			p_cube_tsg_intext IN VARCHAR2,
-			p_cube_tsg_vip IN VARCHAR2,
-			p_cube_tsg_test IN VARCHAR2,
 			p_nummer IN VARCHAR2,
 			p_achternaam IN VARCHAR2,
 			p_geboorte_datum IN DATE,
@@ -62,8 +60,6 @@ CREATE OR REPLACE PACKAGE pkg_kln IS
 			p_tussenvoegsel IN VARCHAR2);
 	PROCEDURE update_kln (
 			p_cube_tsg_intext IN VARCHAR2,
-			p_cube_tsg_vip IN VARCHAR2,
-			p_cube_tsg_test IN VARCHAR2,
 			p_nummer IN VARCHAR2,
 			p_achternaam IN VARCHAR2,
 			p_geboorte_datum IN DATE,
@@ -100,13 +96,11 @@ CREATE OR REPLACE PACKAGE BODY pkg_kln IS
 		OPEN p_cube_row FOR
 			SELECT
 			  cube_tsg_intext,
-			  cube_tsg_vip,
-			  cube_tsg_test,
 			  nummer,
 			  achternaam,
 			  voornaam
 			FROM v_klant
-			ORDER BY cube_tsg_intext, cube_tsg_vip, cube_tsg_test, nummer, achternaam, voornaam;
+			ORDER BY cube_tsg_intext, nummer, achternaam, voornaam;
 	END;
 
 	PROCEDURE get_kln_list (
@@ -115,13 +109,11 @@ CREATE OR REPLACE PACKAGE BODY pkg_kln IS
 		OPEN p_cube_row FOR
 			SELECT
 			  cube_tsg_intext,
-			  cube_tsg_vip,
-			  cube_tsg_test,
 			  nummer,
 			  achternaam,
 			  voornaam
 			FROM v_klant
-			ORDER BY cube_tsg_intext, cube_tsg_vip, cube_tsg_test, nummer, achternaam, voornaam;
+			ORDER BY cube_tsg_intext, nummer, achternaam, voornaam;
 	END;
 
 	PROCEDURE get_kln (
@@ -131,8 +123,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_kln IS
 		OPEN p_cube_row FOR
 			SELECT
 			  cube_tsg_intext,
-			  cube_tsg_vip,
-			  cube_tsg_test,
 			  achternaam,
 			  geboorte_datum,
 			  leeftijd,
@@ -160,8 +150,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_kln IS
 
 	PROCEDURE insert_kln (
 			p_cube_tsg_intext IN VARCHAR2,
-			p_cube_tsg_vip IN VARCHAR2,
-			p_cube_tsg_test IN VARCHAR2,
 			p_nummer IN VARCHAR2,
 			p_achternaam IN VARCHAR2,
 			p_geboorte_datum IN DATE,
@@ -172,8 +160,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_kln IS
 		INSERT INTO v_klant (
 			cube_id,
 			cube_tsg_intext,
-			cube_tsg_vip,
-			cube_tsg_test,
 			nummer,
 			achternaam,
 			geboorte_datum,
@@ -183,8 +169,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_kln IS
 		VALUES (
 			NULL,
 			p_cube_tsg_intext,
-			p_cube_tsg_vip,
-			p_cube_tsg_test,
 			p_nummer,
 			p_achternaam,
 			p_geboorte_datum,
@@ -198,8 +182,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_kln IS
 
 	PROCEDURE update_kln (
 			p_cube_tsg_intext IN VARCHAR2,
-			p_cube_tsg_vip IN VARCHAR2,
-			p_cube_tsg_test IN VARCHAR2,
 			p_nummer IN VARCHAR2,
 			p_achternaam IN VARCHAR2,
 			p_geboorte_datum IN DATE,
@@ -209,8 +191,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_kln IS
 	BEGIN
 		UPDATE v_klant SET
 			cube_tsg_intext = p_cube_tsg_intext,
-			cube_tsg_vip = p_cube_tsg_vip,
-			cube_tsg_test = p_cube_tsg_test,
 			achternaam = p_achternaam,
 			geboorte_datum = p_geboorte_datum,
 			leeftijd = p_leeftijd,

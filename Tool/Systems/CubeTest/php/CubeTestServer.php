@@ -25,7 +25,7 @@ case 'GetDirKlnItems':
 		$RowObj = new \stdClass();
 		$RowObj->Key = new \stdClass();
 		$RowObj->Key->Nummer = $row["NUMMER"];
-		$RowObj->Display = $row["CUBE_TSG_INTEXT"].' '.$row["CUBE_TSG_VIP"].' '.$row["CUBE_TSG_TEST"].' '.$row["NUMMER"].' ('.$row["ACHTERNAAM"].')'.' '.$row["VOORNAAM"];
+		$RowObj->Display = $row["CUBE_TSG_INTEXT"].' '.$row["NUMMER"].' ('.$row["ACHTERNAAM"].')'.' '.$row["VOORNAAM"];
 		$ResponseObj->Rows[] = $RowObj;
 	}
 	$ResponseText = json_encode($ResponseObj);
@@ -50,7 +50,7 @@ case 'GetKlnList':
 		$RowObj = new \stdClass();
 		$RowObj->Key = new \stdClass();
 		$RowObj->Key->Nummer = $row["NUMMER"];
-		$RowObj->Display = $row["CUBE_TSG_INTEXT"].' '.$row["CUBE_TSG_VIP"].' '.$row["CUBE_TSG_TEST"].' '.$row["NUMMER"].' ('.$row["ACHTERNAAM"].')'.' '.$row["VOORNAAM"];
+		$RowObj->Display = $row["CUBE_TSG_INTEXT"].' '.$row["NUMMER"].' ('.$row["ACHTERNAAM"].')'.' '.$row["VOORNAAM"];
 		$ResponseObj->Rows[] = $RowObj;
 	}
 	$ResponseText = json_encode($ResponseObj);
@@ -80,8 +80,6 @@ case 'GetKln':
 		$RowObj = new \stdClass();
 		$RowObj->Data = new \stdClass();
 		$RowObj->Data->CubeTsgIntext = $row["CUBE_TSG_INTEXT"];
-		$RowObj->Data->CubeTsgVip = $row["CUBE_TSG_VIP"];
-		$RowObj->Data->CubeTsgTest = $row["CUBE_TSG_TEST"];
 		$RowObj->Data->Achternaam = $row["ACHTERNAAM"];
 		$RowObj->Data->GeboorteDatum = $row["GEBOORTE_DATUM"];
 		$RowObj->Data->Leeftijd = $row["LEEFTIJD"];
@@ -134,8 +132,6 @@ case 'CreateKln':
 
 	$stid = oci_parse($conn, "BEGIN pkg_kln.insert_kln (
 		:p_cube_tsg_intext,
-		:p_cube_tsg_vip,
-		:p_cube_tsg_test,
 		:p_nummer,
 		:p_achternaam,
 		:p_geboorte_datum,
@@ -144,8 +140,6 @@ case 'CreateKln':
 		:p_tussenvoegsel);
 	END;");
 	oci_bind_by_name($stid,":p_cube_tsg_intext",$RequestObj->Parameters->Type->CubeTsgIntext);
-	oci_bind_by_name($stid,":p_cube_tsg_vip",$RequestObj->Parameters->Type->CubeTsgVip);
-	oci_bind_by_name($stid,":p_cube_tsg_test",$RequestObj->Parameters->Type->CubeTsgTest);
 	oci_bind_by_name($stid,":p_nummer",$RequestObj->Parameters->Type->Nummer);
 	oci_bind_by_name($stid,":p_achternaam",$RequestObj->Parameters->Type->Achternaam);
 	oci_bind_by_name($stid,":p_geboorte_datum",$RequestObj->Parameters->Type->GeboorteDatum);
@@ -172,8 +166,6 @@ case 'UpdateKln':
 
 	$stid = oci_parse($conn, "BEGIN pkg_kln.update_kln (
 		:p_cube_tsg_intext,
-		:p_cube_tsg_vip,
-		:p_cube_tsg_test,
 		:p_nummer,
 		:p_achternaam,
 		:p_geboorte_datum,
@@ -182,8 +174,6 @@ case 'UpdateKln':
 		:p_tussenvoegsel);
 	END;");
 	oci_bind_by_name($stid,":p_cube_tsg_intext",$RequestObj->Parameters->Type->CubeTsgIntext);
-	oci_bind_by_name($stid,":p_cube_tsg_vip",$RequestObj->Parameters->Type->CubeTsgVip);
-	oci_bind_by_name($stid,":p_cube_tsg_test",$RequestObj->Parameters->Type->CubeTsgTest);
 	oci_bind_by_name($stid,":p_nummer",$RequestObj->Parameters->Type->Nummer);
 	oci_bind_by_name($stid,":p_achternaam",$RequestObj->Parameters->Type->Achternaam);
 	oci_bind_by_name($stid,":p_geboorte_datum",$RequestObj->Parameters->Type->GeboorteDatum);

@@ -38,8 +38,8 @@ g_xmlhttp.onreadystatechange = function() {
 						ProcessTypeSpecialisation();
 						break;
 					case "CREATE_PRD":
-						document.getElementById("InputCubeTsgType").readOnly=true;
-						document.getElementById("InputCode").readOnly=true;
+						document.getElementById("InputCubeTsgType").disabled=true;
+						document.getElementById("InputCode").disabled=true;
 						document.getElementById("ButtonCreate").disabled=true;
 						document.getElementById("ButtonUpdate").disabled=false;
 						document.getElementById("ButtonDelete").disabled=false;
@@ -120,10 +120,10 @@ function InitBody() {
 				Type: l_json_objectKey.TYP_PRD
 			}
 		} );
-		document.getElementById("InputCubeTsgType").readOnly=true;
-		document.getElementById("InputCubeTsgSoort").readOnly=true;
-		document.getElementById("InputCubeTsgSoort1").readOnly=true;
-		document.getElementById("InputCode").readOnly=true;
+		document.getElementById("InputCubeTsgType").disabled=true;
+		document.getElementById("InputCubeTsgSoort").disabled=true;
+		document.getElementById("InputCubeTsgSoort1").disabled=true;
+		document.getElementById("InputCode").disabled=true;
 		break;
 	case "N":
 		g_parent_node_id = JSON.stringify(l_json_argument.objectId);
@@ -284,7 +284,7 @@ function ResetFieldCubeTsgSoort1(p_field_id) {
 <tr><td height=6></td></tr><tr id="RowRefKlant0"><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/klant.bmp"/> Klant (IsVoor)</legend>
 <table style="width:100%;">
 <tr><td>Klant.Nummer</td><td style="width:100%;"><div style="max-width:8em;">
-<input id="InputXkKlnNummer" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" readonly></input></div></td>
+<input id="InputXkKlnNummer" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td>
 <td><button id="RefSelect001" type="button" onclick="StartSelect001(event)">Select</button></td></tr>
 </table></fieldset></td></tr>
 <tr><td><br></td><td style="width:100%;"></td></tr>
