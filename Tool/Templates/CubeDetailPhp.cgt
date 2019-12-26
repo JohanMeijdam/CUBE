@@ -29,8 +29,9 @@ Change log:
 19-05-2019 - name recursive foreign key fix
 03-08-2019 - RESTRICTION_TYPE_SPEC_ATB for references fixed
 07-08-2019 - Default value for RESTRICTION_TYPE_SPEC_ATB key attributes.
-15-12-2019 - iplementation of WITHIN_SCOPE_EXPANSION
-23-12-2019 - Javascript include files 
+15-12-2019 - implementation of WITHIN_SCOPE_EXPANSION
+23-12-2019 - Javascript include files
+26-12-2019 - Recursive list argument fix
 [[INCLUDE,templates\includes\general.cgt]]
 [[TEXT,DETAIL_RECURSIVE_PARMS]]
 		Option: {[[IF,REFERENCE:4=PRA]]
@@ -313,7 +314,7 @@ function StartSelect<<REFERENCE:S>>(p_event) {
 	};[[ELSE]]
 	var Parameters = {[[EVAL:($myFlag=1)]]<<TEXT,DETAIL_RECURSIVE_PARMS>>
 		Type: {[[FOR,TYPE:N>N]][[LOOP,ATTRIBUTE:3=F[AND]CHILD(ATTRIBUTE_KEY_TYPE:0=<<REFERENCE_TYPE>>)]]
-			<<ATTRIBUTE:C>>:document.getElementById("Input<<ATTRIBUTE:C>>").value[[IF:!LAST]],[[ENDIF]][[ENDLOOP,ATTRIBUTE]][[ENDFOR]]
+			[[LOOP,ATTRIBUTE_ROOT]][[FOR,REFERENCE_TYPE:N>N]][[LOOP,ATTRIBUTE:1=Y[AND]CHILD(ATTRIBUTE_ROOT:ID(<<ATTRIBUTE_ROOT:I>>))]]<<ATTRIBUTE:C>>[[ENDLOOP,ATTRIBUTE]][[ENDFOR]][[ENDLOOP,ATTRIBUTE_ROOT]]:document.getElementById("Input<<ATTRIBUTE:C>>").value[[IF:!LAST]],[[ENDIF]][[ENDLOOP,ATTRIBUTE]][[ENDFOR]]
 		}
 	};[[ENDIF]]
 	PerformTrans( {

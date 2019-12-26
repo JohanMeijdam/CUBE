@@ -250,8 +250,20 @@ function StartSelect001(p_event) {
 	document.body._SelectLeft = p_event.clientX;
 	document.body._SelectTop = p_event.clientY;
 	document.body._ListBoxCode = 'Ref001';
+	var Parameters = {
+		Option: {
+			CubeUpOrDown:"U",
+			CubeScopeLevel:9999
+		},
+		Type: {
+			FkPrdCubeTsgType:document.getElementById("InputFkPrdCubeTsgType").value,
+			FkPrdCode:document.getElementById("InputFkPrdCode").value,
+			Code:document.getElementById("InputCode").value
+		}
+	};
 	PerformTrans( {
-		Service: "GetOndListAll"
+		Service: "GetOndListRecursive",
+		Parameters
 	} );
 }
 -->

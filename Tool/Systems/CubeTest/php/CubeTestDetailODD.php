@@ -242,7 +242,7 @@ function StartSelect001(p_event) {
 		Type: {
 			FkPrdCubeTsgType:document.getElementById("InputFkPrdCubeTsgType").value,
 			FkPrdCode:document.getElementById("InputFkPrdCode").value,
-			FkOndCode:document.getElementById("InputFkOndCode").value
+			Code:document.getElementById("InputFkOndCode").value
 		}
 	};
 	PerformTrans( {

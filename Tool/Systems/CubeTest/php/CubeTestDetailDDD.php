@@ -345,7 +345,7 @@ function StartSelect001(p_event) {
 		Type: {
 			FkPrdCubeTsgType:document.getElementById("InputFkPrdCubeTsgType").value,
 			FkPrdCode:document.getElementById("InputFkPrdCode").value,
-			FkOndCode:document.getElementById("InputFkOndCode").value
+			Code:document.getElementById("InputFkOndCode").value
 		}
 	};
 	PerformTrans( {
@@ -375,7 +375,7 @@ function StartSelect003(p_event) {
 		Type: {
 			FkPrdCubeTsgType:document.getElementById("InputFkPrdCubeTsgType").value,
 			FkPrdCode:document.getElementById("InputFkPrdCode").value,
-			FkOndCode:document.getElementById("InputFkOndCode").value
+			Code:document.getElementById("InputFkOndCode").value
 		}
 	};
 	PerformTrans( {
@@ -398,7 +398,7 @@ function StartSelect004(p_event) {
 		Type: {
 			FkPrdCubeTsgType:document.getElementById("InputFkPrdCubeTsgType").value,
 			FkPrdCode:document.getElementById("InputFkPrdCode").value,
-			FkOndCode:document.getElementById("InputFkOndCode").value
+			Code:document.getElementById("InputFkOndCode").value
 		}
 	};
 	PerformTrans( {
