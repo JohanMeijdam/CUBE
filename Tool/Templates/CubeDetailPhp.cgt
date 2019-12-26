@@ -31,7 +31,7 @@ Change log:
 07-08-2019 - Default value for RESTRICTION_TYPE_SPEC_ATB key attributes.
 15-12-2019 - implementation of WITHIN_SCOPE_EXPANSION
 23-12-2019 - Javascript include files
-26-12-2019 - Recursive list argument fix
+26-12-2019 - Recursive list fk argument fix
 [[INCLUDE,templates\includes\general.cgt]]
 [[TEXT,DETAIL_RECURSIVE_PARMS]]
 		Option: {[[IF,REFERENCE:4=PRA]]
