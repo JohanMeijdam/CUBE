@@ -340,7 +340,7 @@ function StartSelect001(p_event) {
 	var Parameters = {
 		Option: {
 			CubeUpOrDown:"U",
-			CubeScopeLevel:1
+			CubeXLevel:1
 		},
 		Type: {
 			FkPrdCubeTsgType:document.getElementById("InputFkPrdCubeTsgType").value,
@@ -370,7 +370,7 @@ function StartSelect003(p_event) {
 	var Parameters = {
 		Option: {
 			CubeUpOrDown:"D",
-			CubeScopeLevel:9999
+			CubeXLevelLevel:9999
 		},
 		Type: {
 			FkPrdCubeTsgType:document.getElementById("InputFkPrdCubeTsgType").value,
@@ -391,9 +391,9 @@ function StartSelect004(p_event) {
 	var Parameters = {
 		Option: {
 			CubeUpOrDown:"D",
-			CubeScopeLevel:1[ELSE]]
+			CubeXLevelLevel:1[ELSE]]
 			CubeUpOrDown:"X",
-			CubeScopeLevel:0
+			CubeXLevelLevel:0
 		},
 		Type: {
 			FkPrdCubeTsgType:document.getElementById("InputFkPrdCubeTsgType").value,

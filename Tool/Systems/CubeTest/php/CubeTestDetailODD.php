@@ -237,7 +237,7 @@ function StartSelect001(p_event) {
 	var Parameters = {
 		Option: {
 			CubeUpOrDown:"U",
-			CubeScopeLevel:9999
+			CubeXLevel:9999
 		},
 		Type: {
 			FkPrdCubeTsgType:document.getElementById("InputFkPrdCubeTsgType").value,
