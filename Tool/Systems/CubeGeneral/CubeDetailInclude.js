@@ -2,7 +2,7 @@
 <!--
 function OpenListBox(p_json_rows,p_icon,p_header,p_optional) {
 	CloseListBox();
-	if (p_json_rows.length > 1) {
+	if (p_json_rows.length > 0) {
 
 		var l_objDiv = document.createElement('DIV');
 		var l_objTable = document.createElement('TABLE');

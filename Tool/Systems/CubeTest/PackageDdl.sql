@@ -294,8 +294,6 @@ CREATE OR REPLACE PACKAGE pkg_prd IS
 	PROCEDURE delete_prd (
 			p_cube_tsg_type IN VARCHAR2,
 			p_code IN VARCHAR2);
-	PROCEDURE get_ond_list_all (
-			p_cube_row IN OUT c_cube_row);
 	PROCEDURE get_ond_list_recursive (
 			p_cube_row IN OUT c_cube_row,
 			p_cube_up_or_down IN VARCHAR2,
@@ -309,6 +307,11 @@ CREATE OR REPLACE PACKAGE pkg_prd IS
 			p_fk_prd_code IN VARCHAR2,
 			p_code IN VARCHAR2);
 	PROCEDURE get_ond_odd_items (
+			p_cube_row IN OUT c_cube_row,
+			p_fk_prd_cube_tsg_type IN VARCHAR2,
+			p_fk_prd_code IN VARCHAR2,
+			p_code IN VARCHAR2);
+	PROCEDURE get_ond_cst_items (
 			p_cube_row IN OUT c_cube_row,
 			p_fk_prd_cube_tsg_type IN VARCHAR2,
 			p_fk_prd_code IN VARCHAR2,
@@ -364,6 +367,12 @@ CREATE OR REPLACE PACKAGE pkg_prd IS
 			p_fk_prd_cube_tsg_type IN VARCHAR2,
 			p_fk_prd_code IN VARCHAR2,
 			p_code IN VARCHAR2);
+	PROCEDURE get_odd_for_ond_list (
+			p_cube_row IN OUT c_cube_row,
+			p_cube_scope_level IN NUMBER,
+			x_fk_prd_cube_tsg_type IN VARCHAR2,
+			x_fk_prd_code IN VARCHAR2,
+			x_fk_ond_code IN VARCHAR2);
 	PROCEDURE get_odd (
 			p_cube_row IN OUT c_cube_row,
 			p_code IN VARCHAR2);
@@ -447,6 +456,31 @@ CREATE OR REPLACE PACKAGE pkg_prd IS
 			p_xf_ond_prd_code_2 IN VARCHAR2,
 			p_xk_ond_code_2 IN VARCHAR2);
 	PROCEDURE delete_ddd (
+			p_code IN VARCHAR2);
+	PROCEDURE get_cst (
+			p_cube_row IN OUT c_cube_row,
+			p_fk_prd_cube_tsg_type IN VARCHAR2,
+			p_fk_prd_code IN VARCHAR2,
+			p_fk_ond_code IN VARCHAR2,
+			p_code IN VARCHAR2);
+	PROCEDURE insert_cst (
+			p_fk_prd_cube_tsg_type IN VARCHAR2,
+			p_fk_prd_code IN VARCHAR2,
+			p_fk_ond_code IN VARCHAR2,
+			p_code IN VARCHAR2,
+			p_omschrijving IN VARCHAR2,
+			p_xk_odd_code_1 IN VARCHAR2);
+	PROCEDURE update_cst (
+			p_fk_prd_cube_tsg_type IN VARCHAR2,
+			p_fk_prd_code IN VARCHAR2,
+			p_fk_ond_code IN VARCHAR2,
+			p_code IN VARCHAR2,
+			p_omschrijving IN VARCHAR2,
+			p_xk_odd_code_1 IN VARCHAR2);
+	PROCEDURE delete_cst (
+			p_fk_prd_cube_tsg_type IN VARCHAR2,
+			p_fk_prd_code IN VARCHAR2,
+			p_fk_ond_code IN VARCHAR2,
 			p_code IN VARCHAR2);
 END;
 /
@@ -627,19 +661,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_prd IS
 		  AND code = p_code;
 	END;
 
-	PROCEDURE get_ond_list_all (
-			p_cube_row IN OUT c_cube_row) IS
-	BEGIN
-		OPEN p_cube_row FOR
-			SELECT
-			  cube_sequence,
-			  fk_prd_cube_tsg_type,
-			  fk_prd_code,
-			  code
-			FROM v_onderdeel
-			ORDER BY fk_prd_cube_tsg_type, fk_prd_code, cube_sequence;
-	END;
-
 	PROCEDURE get_ond_list_recursive (
 			p_cube_row IN OUT c_cube_row,
 			p_cube_up_or_down IN VARCHAR2,
@@ -727,6 +748,25 @@ CREATE OR REPLACE PACKAGE BODY pkg_prd IS
 			  AND fk_prd_code = p_fk_prd_code
 			  AND fk_ond_code = p_code
 			ORDER BY cube_sequence;
+	END;
+
+	PROCEDURE get_ond_cst_items (
+			p_cube_row IN OUT c_cube_row,
+			p_fk_prd_cube_tsg_type IN VARCHAR2,
+			p_fk_prd_code IN VARCHAR2,
+			p_code IN VARCHAR2) IS
+	BEGIN
+		OPEN p_cube_row FOR
+			SELECT
+			  fk_prd_cube_tsg_type,
+			  fk_prd_code,
+			  fk_ond_code,
+			  code
+			FROM v_constructie
+			WHERE fk_prd_cube_tsg_type = p_fk_prd_cube_tsg_type
+			  AND fk_prd_code = p_fk_prd_code
+			  AND fk_ond_code = p_code
+			ORDER BY fk_prd_cube_tsg_type, fk_prd_code, fk_ond_code, code;
 	END;
 
 	PROCEDURE get_ond_ond_items (
@@ -997,6 +1037,54 @@ CREATE OR REPLACE PACKAGE BODY pkg_prd IS
 		WHERE fk_prd_cube_tsg_type = p_fk_prd_cube_tsg_type
 		  AND fk_prd_code = p_fk_prd_code
 		  AND code = p_code;
+	END;
+
+	PROCEDURE get_odd_for_ond_list (
+			p_cube_row IN OUT c_cube_row,
+			p_cube_scope_level IN NUMBER,
+			x_fk_prd_cube_tsg_type IN VARCHAR2,
+			x_fk_prd_code IN VARCHAR2,
+			x_fk_ond_code IN VARCHAR2) IS
+		l_cube_scope_level NUMBER(1) := 0;
+		l_code v_onderdeel.code%TYPE;
+	BEGIN
+		l_code := x_fk_ond_code;
+		IF p_cube_scope_level > 0 THEN
+			LOOP
+				IF p_cube_scope_level = l_cube_scope_level THEN
+					EXIT;
+				END IF;
+				l_cube_scope_level := l_cube_scope_level + 1;
+				SELECT fk_ond_code
+				INTO l_code
+				FROM v_onderdeel
+				WHERE code = l_code
+				  AND fk_prd_cube_tsg_type = x_fk_prd_cube_tsg_type
+				  AND fk_prd_code = x_fk_prd_code;
+			END LOOP;
+		ELSIF p_cube_scope_level < 0 THEN
+			LOOP
+				IF p_cube_scope_level = l_cube_scope_level THEN
+					EXIT;
+				END IF;
+				l_cube_scope_level := l_cube_scope_level - 1;
+				SELECT code
+				INTO l_code
+				FROM v_onderdeel
+				WHERE fk_ond_code = l_code
+				  AND fk_prd_cube_tsg_type = x_fk_prd_cube_tsg_type
+				  AND fk_prd_code = x_fk_prd_code;
+			END LOOP;
+		END IF;
+		OPEN p_cube_row FOR
+			SELECT
+			  cube_sequence,
+			  code
+			FROM v_onderdeel_deel
+			WHERE fk_prd_cube_tsg_type = x_fk_prd_cube_tsg_type
+			  AND fk_prd_code = x_fk_prd_code
+			  AND fk_ond_code = l_code
+			ORDER BY cube_sequence;
 	END;
 
 	PROCEDURE get_odd (
@@ -1457,6 +1545,83 @@ CREATE OR REPLACE PACKAGE BODY pkg_prd IS
 	BEGIN
 		DELETE v_onderdeel_deel_deel
 		WHERE code = p_code;
+	END;
+
+	PROCEDURE get_cst (
+			p_cube_row IN OUT c_cube_row,
+			p_fk_prd_cube_tsg_type IN VARCHAR2,
+			p_fk_prd_code IN VARCHAR2,
+			p_fk_ond_code IN VARCHAR2,
+			p_code IN VARCHAR2) IS
+	BEGIN
+		OPEN p_cube_row FOR
+			SELECT
+			  omschrijving,
+			  xk_odd_code_1
+			FROM v_constructie
+			WHERE fk_prd_cube_tsg_type = p_fk_prd_cube_tsg_type
+			  AND fk_prd_code = p_fk_prd_code
+			  AND fk_ond_code = p_fk_ond_code
+			  AND code = p_code;
+	END;
+
+	PROCEDURE insert_cst (
+			p_fk_prd_cube_tsg_type IN VARCHAR2,
+			p_fk_prd_code IN VARCHAR2,
+			p_fk_ond_code IN VARCHAR2,
+			p_code IN VARCHAR2,
+			p_omschrijving IN VARCHAR2,
+			p_xk_odd_code_1 IN VARCHAR2) IS
+	BEGIN
+		INSERT INTO v_constructie (
+			cube_id,
+			fk_prd_cube_tsg_type,
+			fk_prd_code,
+			fk_ond_code,
+			code,
+			omschrijving,
+			xk_odd_code_1)
+		VALUES (
+			NULL,
+			p_fk_prd_cube_tsg_type,
+			p_fk_prd_code,
+			p_fk_ond_code,
+			p_code,
+			p_omschrijving,
+			p_xk_odd_code_1);
+	EXCEPTION
+		WHEN DUP_VAL_ON_INDEX THEN
+			RAISE_APPLICATION_ERROR (-20001, 'Type constructie already exists');
+	END;
+
+	PROCEDURE update_cst (
+			p_fk_prd_cube_tsg_type IN VARCHAR2,
+			p_fk_prd_code IN VARCHAR2,
+			p_fk_ond_code IN VARCHAR2,
+			p_code IN VARCHAR2,
+			p_omschrijving IN VARCHAR2,
+			p_xk_odd_code_1 IN VARCHAR2) IS
+	BEGIN
+		UPDATE v_constructie SET
+			omschrijving = p_omschrijving,
+			xk_odd_code_1 = p_xk_odd_code_1
+		WHERE fk_prd_cube_tsg_type = p_fk_prd_cube_tsg_type
+		  AND fk_prd_code = p_fk_prd_code
+		  AND fk_ond_code = p_fk_ond_code
+		  AND code = p_code;
+	END;
+
+	PROCEDURE delete_cst (
+			p_fk_prd_cube_tsg_type IN VARCHAR2,
+			p_fk_prd_code IN VARCHAR2,
+			p_fk_ond_code IN VARCHAR2,
+			p_code IN VARCHAR2) IS
+	BEGIN
+		DELETE v_constructie
+		WHERE fk_prd_cube_tsg_type = p_fk_prd_cube_tsg_type
+		  AND fk_prd_code = p_fk_prd_code
+		  AND fk_ond_code = p_fk_ond_code
+		  AND code = p_code;
 	END;
 END;
 /

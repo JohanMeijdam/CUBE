@@ -70,6 +70,17 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
+	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBETEST' AND sequence_name = 'SQ_CST';
+	IF l_count = 0 THEN
+		EXECUTE IMMEDIATE 
+		'CREATE SEQUENCE sq_cst START WITH 100000';
+		DBMS_OUTPUT.PUT_LINE('Sequence SQ_CST created');
+	END IF;
+END;
+/
+DECLARE
+	l_count NUMBER(4);
+BEGIN
 	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBETEST' AND sequence_name = 'SQ_ORD';
 	IF l_count = 0 THEN
 		EXECUTE IMMEDIATE 
@@ -690,6 +701,80 @@ BEGIN
 			EXECUTE IMMEDIATE
 			'DROP INDEX ' || r_index.index_name;
 			DBMS_OUTPUT.PUT_LINE('Index T_ONDERDEEL_DEEL_DEEL.' || UPPER(r_index.index_name) || ' dropped');
+		END LOOP;
+	END IF;
+END;
+/
+DECLARE
+	l_count NUMBER(4);
+BEGIN
+	DBMS_OUTPUT.PUT_LINE('Prepare table T_CONSTRUCTIE');
+	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = 'CUBETEST' AND table_name = 'T_CONSTRUCTIE';
+	IF l_count = 0 THEN
+		EXECUTE IMMEDIATE
+		'CREATE TABLE t_constructie (
+			cube_id VARCHAR2(16),
+			fk_prd_cube_tsg_type VARCHAR2(8),
+			fk_prd_code VARCHAR2(8),
+			fk_ond_code VARCHAR2(8),
+			code VARCHAR2(8),
+			omschrijving VARCHAR2(120),
+			xk_odd_code_1 VARCHAR2(8))';
+		DBMS_OUTPUT.PUT_LINE('Table T_CONSTRUCTIE created');
+	ELSE
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_CONSTRUCTIE' AND column_name = 'CUBE_ID';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_constructie ADD cube_id VARCHAR2(16)';
+			DBMS_OUTPUT.PUT_LINE('Column T_CONSTRUCTIE.CUBE_ID created');
+		END IF;
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_CONSTRUCTIE' AND column_name = 'FK_PRD_CUBE_TSG_TYPE';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_constructie ADD fk_prd_cube_tsg_type VARCHAR2(8)';
+			DBMS_OUTPUT.PUT_LINE('Column T_CONSTRUCTIE.FK_PRD_CUBE_TSG_TYPE created');
+		END IF;
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_CONSTRUCTIE' AND column_name = 'FK_PRD_CODE';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_constructie ADD fk_prd_code VARCHAR2(8)';
+			DBMS_OUTPUT.PUT_LINE('Column T_CONSTRUCTIE.FK_PRD_CODE created');
+		END IF;
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_CONSTRUCTIE' AND column_name = 'FK_OND_CODE';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_constructie ADD fk_ond_code VARCHAR2(8)';
+			DBMS_OUTPUT.PUT_LINE('Column T_CONSTRUCTIE.FK_OND_CODE created');
+		END IF;
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_CONSTRUCTIE' AND column_name = 'CODE';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_constructie ADD code VARCHAR2(8)';
+			DBMS_OUTPUT.PUT_LINE('Column T_CONSTRUCTIE.CODE created');
+		END IF;
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_CONSTRUCTIE' AND column_name = 'OMSCHRIJVING';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_constructie ADD omschrijving VARCHAR2(120)';
+			DBMS_OUTPUT.PUT_LINE('Column T_CONSTRUCTIE.OMSCHRIJVING created');
+		END IF;
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_CONSTRUCTIE' AND column_name = 'XK_ODD_CODE_1';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_constructie ADD xk_odd_code_1 VARCHAR2(8)';
+			DBMS_OUTPUT.PUT_LINE('Column T_CONSTRUCTIE.XK_ODD_CODE_1 created');
+		END IF;
+		FOR r_key IN (SELECT constraint_name FROM all_constraints WHERE owner = 'CUBETEST' AND table_name = 'T_CONSTRUCTIE' AND constraint_type IN ('P','U','R') ORDER BY constraint_type DESC)
+		LOOP
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_constructie DROP CONSTRAINT ' || r_key.constraint_name || ' CASCADE';
+			DBMS_OUTPUT.PUT_LINE('Primary Key T_CONSTRUCTIE.' || UPPER(r_key.constraint_name) || ' dropped');
+		END LOOP;
+		FOR r_index IN (SELECT index_name FROM all_indexes WHERE owner = 'CUBETEST' AND table_name = 'T_CONSTRUCTIE')
+		LOOP
+			EXECUTE IMMEDIATE
+			'DROP INDEX ' || r_index.index_name;
+			DBMS_OUTPUT.PUT_LINE('Index T_CONSTRUCTIE.' || UPPER(r_index.index_name) || ' dropped');
 		END LOOP;
 	END IF;
 END;
@@ -1337,6 +1422,79 @@ BEGIN
 		EXECUTE IMMEDIATE
 		'ALTER TABLE t_onderdeel_deel_deel DROP COLUMN ' || r_field.column_name;
 		DBMS_OUTPUT.PUT_LINE('Field T_ONDERDEEL_DEEL_DEEL.' || UPPER(r_field.column_name) || ' dropped');
+	END LOOP;
+END;
+/
+BEGIN
+	DBMS_OUTPUT.PUT_LINE('Maintain table T_CONSTRUCTIE');
+	FOR r_field IN (SELECT column_name,
+		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
+		data_default old_default_value,
+  		DECODE(column_name,
+			'CUBE_ID','VARCHAR2(16)',
+			'FK_PRD_CUBE_TSG_TYPE','VARCHAR2(8)',
+			'FK_PRD_CODE','VARCHAR2(8)',
+			'FK_OND_CODE','VARCHAR2(8)',
+			'CODE','VARCHAR2(8)',
+			'OMSCHRIJVING','VARCHAR2(120)',
+			'XK_ODD_CODE_1','VARCHAR2(8)',NULL) new_domain,
+		DECODE(column_name,
+			'CUBE_ID',NULL,
+			'FK_PRD_CUBE_TSG_TYPE',NULL,
+			'FK_PRD_CODE',NULL,
+			'FK_OND_CODE',NULL,
+			'CODE',NULL,
+			'OMSCHRIJVING',NULL,
+			'XK_ODD_CODE_1',NULL,NULL) new_default_value
+  		FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_CONSTRUCTIE')
+	LOOP
+		IF r_field.old_domain <> r_field.new_domain THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_constructie RENAME COLUMN ' || r_field.column_name || ' TO old#domain#field';
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_constructie ADD ' || r_field.column_name || ' ' || r_field.new_domain;
+ 			IF r_field.new_domain = 'VARCHAR2' THEN  
+				EXECUTE IMMEDIATE
+				'UPDATE t_constructie SET ' || r_field.column_name || '= TRIM(old#domain#field)';
+			ELSE
+				EXECUTE IMMEDIATE
+				'UPDATE t_constructie SET ' || r_field.column_name || '= old#domain#field';
+			END IF;
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_constructie DROP COLUMN old#domain#field';
+			DBMS_OUTPUT.PUT_LINE('Field T_CONSTRUCTIE.' || UPPER(r_field.column_name) || ' converted from ' || r_field.old_domain || ' to ' || r_field.new_domain);
+		END IF;
+		IF NOT((r_field.old_default_value IS NULL AND r_field.new_default_value IS NULL) OR r_field.old_default_value = r_field.new_default_value) THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_constructie MODIFY (' || r_field.column_name || ' DEFAULT ' || NVL(r_field.new_default_value,'NULL') || ')';
+			DBMS_OUTPUT.PUT_LINE('Field T_CONSTRUCTIE.' || UPPER(r_field.column_name) || ' default value set to ' || NVL(r_field.new_default_value,'NULL'));
+		END IF;
+	END LOOP;
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_constructie ADD CONSTRAINT cst_pk
+		PRIMARY KEY (
+			fk_prd_cube_tsg_type,
+			fk_prd_code,
+			fk_ond_code,
+			code )';
+	DBMS_OUTPUT.PUT_LINE('Primary Key T_CONSTRUCTIE.CST_PK created');
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_constructie ADD CONSTRAINT cst_ond_fk
+		FOREIGN KEY (fk_prd_cube_tsg_type, fk_prd_code, fk_ond_code)
+		REFERENCES t_onderdeel (fk_prd_cube_tsg_type, fk_prd_code, code)
+		ON DELETE CASCADE';
+	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_CONSTRUCTIE' AND column_name NOT IN (
+							'CUBE_ID',
+							'FK_PRD_CUBE_TSG_TYPE',
+							'FK_PRD_CODE',
+							'FK_OND_CODE',
+							'CODE',
+							'OMSCHRIJVING',
+							'XK_ODD_CODE_1'))
+	LOOP
+		EXECUTE IMMEDIATE
+		'ALTER TABLE t_constructie DROP COLUMN ' || r_field.column_name;
+		DBMS_OUTPUT.PUT_LINE('Field T_CONSTRUCTIE.' || UPPER(r_field.column_name) || ' dropped');
 	END LOOP;
 END;
 /

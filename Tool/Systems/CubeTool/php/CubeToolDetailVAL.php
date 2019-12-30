@@ -4,14 +4,17 @@ $_SESSION['views']=0;
 ?><html>
 <head>
 <link rel="stylesheet" href="base_css.php" />
-<script language='javascript' type='text/javascript'>
+<script language="javascript" type="text/javascript" src="..\CubeGeneral\CubeInclude.js"></script>
+<script language="javascript" type="text/javascript" src="..\CubeGeneral\CubeDetailInclude.js"></script>
+<script language="javascript" type="text/javascript" src="CubeToolInclude.js"></script>
+<script language="javascript" type="text/javascript" src="CubeToolDetailInclude.js"></script>
+<script language="javascript" type="text/javascript">
 <!--
 var g_option = null;
 var g_json_option = null;
 var g_parent_node_id = null;
 var g_node_id = null;
 
-var g_xmlhttp = new XMLHttpRequest();
 g_xmlhttp.onreadystatechange = function() {
 	if(g_xmlhttp.readyState == 4) {
 		if(g_xmlhttp.status == 200) {
@@ -29,9 +32,9 @@ g_xmlhttp.onreadystatechange = function() {
 						document.getElementById("InputPrompt").value=l_json_values.Prompt;
 						break;
 					case "CREATE_VAL":
-						document.getElementById("InputFkItpName").readOnly=true;
-						document.getElementById("InputFkIteSequence").readOnly=true;
-						document.getElementById("InputCode").readOnly=true;
+						document.getElementById("InputFkItpName").disabled=true;
+						document.getElementById("InputFkIteSequence").disabled=true;
+						document.getElementById("InputCode").disabled=true;
 						document.getElementById("ButtonCreate").disabled=true;
 						document.getElementById("ButtonUpdate").disabled=false;
 						document.getElementById("ButtonDelete").disabled=false;
@@ -86,12 +89,6 @@ g_xmlhttp.onreadystatechange = function() {
 	}
 }
 
-function performTrans(p_json_parm) {
-	var l_requestText = JSON.stringify(p_json_parm);
-	g_xmlhttp.open('POST','CubeToolServer.php',true);
-	g_xmlhttp.send(l_requestText);
-}
-
 function InitBody() {
 	var l_json_argument = JSON.parse(decodeURIComponent(location.href.split("?")[1]));
 	document.body._FlagDragging = 0;
@@ -106,15 +103,15 @@ function InitBody() {
 		document.getElementById("InputFkIteSequence").value=l_json_objectKey.TYP_VAL.FkIteSequence;
 		document.getElementById("InputCode").value=l_json_objectKey.TYP_VAL.Code;
 		document.getElementById("ButtonCreate").disabled=true;
-		performTrans( {
+		PerformTrans( {
 			Service: "GetVal",
 			Parameters: {
 				Type: l_json_objectKey.TYP_VAL
 			}
 		} );
-		document.getElementById("InputFkItpName").readOnly=true;
-		document.getElementById("InputFkIteSequence").readOnly=true;
-		document.getElementById("InputCode").readOnly=true;
+		document.getElementById("InputFkItpName").disabled=true;
+		document.getElementById("InputFkIteSequence").disabled=true;
+		document.getElementById("InputCode").disabled=true;
 		break;
 	case "N":
 		g_parent_node_id = JSON.stringify(l_json_argument.objectId);
@@ -122,8 +119,8 @@ function InitBody() {
 		document.getElementById("InputFkIteSequence").value=l_json_objectKey.TYP_ITE.Sequence;
 		document.getElementById("ButtonUpdate").disabled=true;
 		document.getElementById("ButtonDelete").disabled=true;
-		document.getElementById("InputFkItpName").readOnly=true;
-		document.getElementById("InputFkIteSequence").readOnly=true;
+		document.getElementById("InputFkItpName").disabled=true;
+		document.getElementById("InputFkIteSequence").disabled=true;
 		break;
 	default:
 		alert ('Error InitBody: '+l_argument[1]);
@@ -142,7 +139,7 @@ function CreateVal() {
 		CubePosAction: l_pos_action
 	};
 	if (l_pos_action == 'F' || l_pos_action == 'L') {
-		performTrans( {
+		PerformTrans( {
 			Service: "CreateVal",
 			Parameters: {
 				Option,
@@ -151,7 +148,7 @@ function CreateVal() {
 		} );
 	} else {
 		var Ref = g_json_option.Type.TYP_VAL;
-		performTrans( {
+		PerformTrans( {
 			Service: "CreateVal",
 				Parameters: {
 					Option,
@@ -169,7 +166,7 @@ function UpdateVal() {
 		Code: document.getElementById("InputCode").value,
 		Prompt: document.getElementById("InputPrompt").value
 	};
-	performTrans( {
+	PerformTrans( {
 		Service: "UpdateVal",
 		Parameters: {
 			Type
@@ -183,53 +180,12 @@ function DeleteVal() {
 		FkIteSequence: document.getElementById("InputFkIteSequence").value,
 		Code: document.getElementById("InputCode").value
 	};
-	performTrans( {
+	PerformTrans( {
 		Service: "DeleteVal",
 		Parameters: {
 			Type
 		}
 	} );
-}
-
-
-function ToUpperCase(p_obj) 
-{
-	p_obj.value = p_obj.value.toUpperCase();
-
-}
-
-function ReplaceSpaces(p_obj) 
-{
-	p_obj.value = p_obj.value.replace(/^\s+|\s+$/g, "").replace(/ /g ,"_");
-}
-
-function StartMove(p_event) {
-	var l_obj = p_event.target;
-	l_obj._x = p_event.screenX - parseInt(l_obj.style.left);
-	l_obj._y = p_event.screenY - parseInt(l_obj.style.top);
-	document.body._FlagDragging = 1;
-	document.body._DraggingId = l_obj.id;
-}
-
-function EndMove(p_event) {
- 	document.body._FlagDragging = 0;
-	document.body._DraggingId = ' ';
-}
-
-function allowDrop(p_event) {
-	if (document.body._FlagDragging) {
-		p_event.preventDefault();
-	}
-}
-
-function drop(p_event) {
-	if (document.body._FlagDragging) {
-		var l_obj = document.getElementById(document.body._DraggingId);
-		var l_x = p_event.screenX - l_obj._x;
-		var l_y = p_event.screenY - l_obj._y;	
-		l_obj.style.left = l_x + 'px';
-		l_obj.style.top = l_y + 'px';
-	}
 }
 -->
 </script>

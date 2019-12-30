@@ -39,6 +39,8 @@ CREATE SEQUENCE sq_odd START WITH 100000
 /
 CREATE SEQUENCE sq_ddd START WITH 100000
 /
+CREATE SEQUENCE sq_cst START WITH 100000
+/
 CREATE SEQUENCE sq_ord START WITH 100000
 /
 CREATE SEQUENCE sq_orr START WITH 100000
@@ -150,6 +152,21 @@ CREATE TABLE t_onderdeel_deel_deel (
 	CONSTRAINT ddd_odd_fk
 		FOREIGN KEY (fk_odd_code)
 		REFERENCES t_onderdeel_deel (code)
+		ON DELETE CASCADE )
+/
+CREATE TABLE t_constructie (
+	cube_id VARCHAR2(16),
+	fk_prd_cube_tsg_type VARCHAR2(8),
+	fk_prd_code VARCHAR2(8),
+	fk_ond_code VARCHAR2(8),
+	code VARCHAR2(8),
+	omschrijving VARCHAR2(120),
+	xk_odd_code_1 VARCHAR2(8),
+	CONSTRAINT cst_pk
+		PRIMARY KEY (fk_prd_cube_tsg_type, fk_prd_code, fk_ond_code, code),
+	CONSTRAINT cst_ond_fk
+		FOREIGN KEY (fk_prd_cube_tsg_type, fk_prd_code, fk_ond_code)
+		REFERENCES t_onderdeel (fk_prd_cube_tsg_type, fk_prd_code, code)
 		ON DELETE CASCADE )
 /
 CREATE TABLE t_order (

@@ -305,6 +305,17 @@ CREATE OR REPLACE VIEW v_onderdeel_deel_deel AS
 		xk_ond_code_2
 	FROM t_onderdeel_deel_deel
 /
+CREATE OR REPLACE VIEW v_constructie AS 
+	SELECT
+		cube_id,
+		fk_prd_cube_tsg_type,
+		fk_prd_code,
+		fk_ond_code,
+		code,
+		omschrijving,
+		xk_odd_code_1
+	FROM t_constructie
+/
 
 CREATE OR REPLACE PACKAGE pkg_prd_trg IS
 	FUNCTION cube_trg_cubetest RETURN VARCHAR2;
@@ -322,6 +333,9 @@ CREATE OR REPLACE PACKAGE pkg_prd_trg IS
 	PROCEDURE insert_ddd (p_ddd IN OUT NOCOPY v_onderdeel_deel_deel%ROWTYPE);
 	PROCEDURE update_ddd (p_cube_rowid IN UROWID, p_ddd_old IN OUT NOCOPY v_onderdeel_deel_deel%ROWTYPE, p_ddd_new IN OUT NOCOPY v_onderdeel_deel_deel%ROWTYPE);
 	PROCEDURE delete_ddd (p_cube_rowid IN UROWID, p_ddd IN OUT NOCOPY v_onderdeel_deel_deel%ROWTYPE);
+	PROCEDURE insert_cst (p_cst IN OUT NOCOPY v_constructie%ROWTYPE);
+	PROCEDURE update_cst (p_cube_rowid IN UROWID, p_cst_old IN OUT NOCOPY v_constructie%ROWTYPE, p_cst_new IN OUT NOCOPY v_constructie%ROWTYPE);
+	PROCEDURE delete_cst (p_cube_rowid IN UROWID, p_cst IN OUT NOCOPY v_constructie%ROWTYPE);
 END;
 /
 SHOW ERRORS;
@@ -608,6 +622,41 @@ CREATE OR REPLACE PACKAGE BODY pkg_prd_trg IS
 	PROCEDURE delete_ddd (p_cube_rowid UROWID, p_ddd IN OUT NOCOPY v_onderdeel_deel_deel%ROWTYPE) IS
 	BEGIN
 		DELETE t_onderdeel_deel_deel 
+		WHERE rowid = p_cube_rowid;
+	END;
+
+	PROCEDURE insert_cst (p_cst IN OUT NOCOPY v_constructie%ROWTYPE) IS
+	BEGIN
+		p_cst.cube_id := 'CST-' || TO_CHAR(sq_cst.NEXTVAL,'FM000000000000');
+		INSERT INTO t_constructie (
+			cube_id,
+			fk_prd_cube_tsg_type,
+			fk_prd_code,
+			fk_ond_code,
+			code,
+			omschrijving,
+			xk_odd_code_1)
+		VALUES (
+			p_cst.cube_id,
+			p_cst.fk_prd_cube_tsg_type,
+			p_cst.fk_prd_code,
+			p_cst.fk_ond_code,
+			p_cst.code,
+			p_cst.omschrijving,
+			p_cst.xk_odd_code_1);
+	END;
+
+	PROCEDURE update_cst (p_cube_rowid UROWID, p_cst_old IN OUT NOCOPY v_constructie%ROWTYPE, p_cst_new IN OUT NOCOPY v_constructie%ROWTYPE) IS
+	BEGIN
+		UPDATE t_constructie SET 
+			omschrijving = p_cst_new.omschrijving,
+			xk_odd_code_1 = p_cst_new.xk_odd_code_1
+		WHERE rowid = p_cube_rowid;
+	END;
+
+	PROCEDURE delete_cst (p_cube_rowid UROWID, p_cst IN OUT NOCOPY v_constructie%ROWTYPE) IS
+	BEGIN
+		DELETE t_constructie 
 		WHERE rowid = p_cube_rowid;
 	END;
 END;
@@ -965,6 +1014,70 @@ BEGIN
 		pkg_prd_trg.update_ddd (l_cube_rowid, r_ddd_old, r_ddd_new);
 	ELSIF DELETING THEN
 		pkg_prd_trg.delete_ddd (l_cube_rowid, r_ddd_old);
+	END IF;
+END;
+/
+SHOW ERRORS
+
+CREATE OR REPLACE TRIGGER trg_cst
+INSTEAD OF INSERT OR DELETE OR UPDATE ON v_constructie
+FOR EACH ROW
+DECLARE
+	l_cube_rowid UROWID;
+	r_cst_new v_constructie%ROWTYPE;
+	r_cst_old v_constructie%ROWTYPE;
+BEGIN
+	IF INSERTING OR UPDATING THEN
+		IF :NEW.fk_prd_cube_tsg_type = ' ' THEN
+			r_cst_new.fk_prd_cube_tsg_type := ' ';
+		ELSE
+			r_cst_new.fk_prd_cube_tsg_type := REPLACE(:NEW.fk_prd_cube_tsg_type,' ','_');
+		END IF;
+		IF :NEW.fk_prd_code = ' ' THEN
+			r_cst_new.fk_prd_code := ' ';
+		ELSE
+			r_cst_new.fk_prd_code := REPLACE(:NEW.fk_prd_code,' ','_');
+		END IF;
+		IF :NEW.fk_ond_code = ' ' THEN
+			r_cst_new.fk_ond_code := ' ';
+		ELSE
+			r_cst_new.fk_ond_code := REPLACE(:NEW.fk_ond_code,' ','_');
+		END IF;
+		IF :NEW.code = ' ' THEN
+			r_cst_new.code := ' ';
+		ELSE
+			r_cst_new.code := REPLACE(:NEW.code,' ','_');
+		END IF;
+		r_cst_new.omschrijving := :NEW.omschrijving;
+		IF :NEW.xk_odd_code_1 = ' ' THEN
+			r_cst_new.xk_odd_code_1 := ' ';
+		ELSE
+			r_cst_new.xk_odd_code_1 := REPLACE(:NEW.xk_odd_code_1,' ','_');
+		END IF;
+	END IF;
+	IF UPDATING THEN
+		r_cst_new.cube_id := :OLD.cube_id;
+	END IF;
+	IF UPDATING OR DELETING THEN
+		SELECT rowid INTO l_cube_rowid FROM t_constructie
+		WHERE fk_prd_cube_tsg_type = :OLD.fk_prd_cube_tsg_type
+		  AND fk_prd_code = :OLD.fk_prd_code
+		  AND fk_ond_code = :OLD.fk_ond_code
+		  AND code = :OLD.code;
+		r_cst_old.fk_prd_cube_tsg_type := :OLD.fk_prd_cube_tsg_type;
+		r_cst_old.fk_prd_code := :OLD.fk_prd_code;
+		r_cst_old.fk_ond_code := :OLD.fk_ond_code;
+		r_cst_old.code := :OLD.code;
+		r_cst_old.omschrijving := :OLD.omschrijving;
+		r_cst_old.xk_odd_code_1 := :OLD.xk_odd_code_1;
+	END IF;
+
+	IF INSERTING THEN 
+		pkg_prd_trg.insert_cst (r_cst_new);
+	ELSIF UPDATING THEN
+		pkg_prd_trg.update_cst (l_cube_rowid, r_cst_old, r_cst_new);
+	ELSIF DELETING THEN
+		pkg_prd_trg.delete_cst (l_cube_rowid, r_cst_old);
 	END IF;
 END;
 /

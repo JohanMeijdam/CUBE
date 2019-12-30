@@ -558,33 +558,6 @@ case 'DeletePrd':
 
 	break;
 
-case 'GetOndListAll':
-	echo '[';
-
-	$stid = oci_parse($conn, "BEGIN pkg_prd.get_ond_list_all (:p_cube_row); END;");
-	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'LIST_OND';
-	$r = perform_db_request();
-	if (!$r) { 
-		echo ']';
-		return;
-	}
-	$ResponseObj->Rows = array();
-	while ($row = oci_fetch_assoc($curs)) {
-		$RowObj = new \stdClass();
-		$RowObj->Key = new \stdClass();
-		$RowObj->Key->FkPrdCubeTsgType = $row["FK_PRD_CUBE_TSG_TYPE"];
-		$RowObj->Key->FkPrdCode = $row["FK_PRD_CODE"];
-		$RowObj->Key->Code = $row["CODE"];
-		$RowObj->Display = $row["FK_PRD_CUBE_TSG_TYPE"].' '.$row["FK_PRD_CODE"].' '.$row["CODE"];
-		$ResponseObj->Rows[] = $RowObj;
-	}
-	$ResponseText = json_encode($ResponseObj);
-	echo $ResponseText;
-	echo ']';
-
-	break;
-
 case 'GetOndListRecursive':
 	echo '[';
 
@@ -687,6 +660,38 @@ case 'GetOndItems':
 	while ($row = oci_fetch_assoc($curs)) {
 		$RowObj = new \stdClass();
 		$RowObj->Key = new \stdClass();
+		$RowObj->Key->Code = $row["CODE"];
+		$RowObj->Display = $row["CODE"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ',';
+
+	$stid = oci_parse($conn, "BEGIN pkg_prd.get_ond_cst_items (
+		:p_cube_row,
+		:p_fk_prd_cube_tsg_type,
+		:p_fk_prd_code,
+		:p_code);
+	END;");
+	oci_bind_by_name($stid,":p_fk_prd_cube_tsg_type",$RequestObj->Parameters->Type->FkPrdCubeTsgType);
+	oci_bind_by_name($stid,":p_fk_prd_code",$RequestObj->Parameters->Type->FkPrdCode);
+	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
+
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'LIST_CST';
+	$r = perform_db_request();
+	if (!$r) { 
+		echo ']';
+		return;
+	}
+	$ResponseObj->Rows = array();
+	while ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Key = new \stdClass();
+		$RowObj->Key->FkPrdCubeTsgType = $row["FK_PRD_CUBE_TSG_TYPE"];
+		$RowObj->Key->FkPrdCode = $row["FK_PRD_CODE"];
+		$RowObj->Key->FkOndCode = $row["FK_OND_CODE"];
 		$RowObj->Key->Code = $row["CODE"];
 		$RowObj->Display = $row["CODE"];
 		$ResponseObj->Rows[] = $RowObj;
@@ -926,6 +931,42 @@ case 'DeleteOnd':
 		ProcessDbError($stid);
 		echo ']';
 		return;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
+	break;
+
+case 'GetOddForOndList':
+	echo '[';
+
+	$stid = oci_parse($conn, "BEGIN pkg_prd.get_odd_for_ond_list (
+		:p_cube_row,
+		:p_cube_scope_level,
+		:x_fk_prd_cube_tsg_type,
+		:x_fk_prd_code,
+		:x_fk_ond_code);
+	END;");
+	oci_bind_by_name($stid,":p_cube_scope_level",$RequestObj->Parameters->Option->CubeScopeLevel);
+	oci_bind_by_name($stid,":x_fk_prd_cube_tsg_type",$RequestObj->Parameters->Ref->FkPrdCubeTsgType);
+	oci_bind_by_name($stid,":x_fk_prd_code",$RequestObj->Parameters->Ref->FkPrdCode);
+	oci_bind_by_name($stid,":x_fk_ond_code",$RequestObj->Parameters->Ref->FkOndCode);
+
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'LIST_ODD';
+	$r = perform_db_request();
+	if (!$r) { 
+		echo ']';
+		return;
+	}
+	$ResponseObj->Rows = array();
+	while ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Key = new \stdClass();
+		$RowObj->Key->Code = $row["CODE"];
+		$RowObj->Display = $row["CODE"];
+		$ResponseObj->Rows[] = $RowObj;
 	}
 	$ResponseText = json_encode($ResponseObj);
 	echo $ResponseText;
@@ -1350,6 +1391,134 @@ case 'DeleteDdd':
 
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'DELETE_DDD';
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		echo ']';
+		return;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
+	break;
+
+case 'GetCst':
+	echo '[';
+
+	$stid = oci_parse($conn, "BEGIN pkg_prd.get_cst (
+		:p_cube_row,
+		:p_fk_prd_cube_tsg_type,
+		:p_fk_prd_code,
+		:p_fk_ond_code,
+		:p_code);
+	END;");
+	oci_bind_by_name($stid,":p_fk_prd_cube_tsg_type",$RequestObj->Parameters->Type->FkPrdCubeTsgType);
+	oci_bind_by_name($stid,":p_fk_prd_code",$RequestObj->Parameters->Type->FkPrdCode);
+	oci_bind_by_name($stid,":p_fk_ond_code",$RequestObj->Parameters->Type->FkOndCode);
+	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
+
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'SELECT_CST';
+	$r = perform_db_request();
+	if (!$r) { 
+		echo ']';
+		return;
+	}
+	$ResponseObj->Rows = array();
+	if ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Data = new \stdClass();
+		$RowObj->Data->Omschrijving = $row["OMSCHRIJVING"];
+		$RowObj->Data->XkOddCode1 = $row["XK_ODD_CODE_1"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
+	break;
+
+case 'CreateCst':
+	echo '[';
+
+	$stid = oci_parse($conn, "BEGIN pkg_prd.insert_cst (
+		:p_fk_prd_cube_tsg_type,
+		:p_fk_prd_code,
+		:p_fk_ond_code,
+		:p_code,
+		:p_omschrijving,
+		:p_xk_odd_code_1);
+	END;");
+	oci_bind_by_name($stid,":p_fk_prd_cube_tsg_type",$RequestObj->Parameters->Type->FkPrdCubeTsgType);
+	oci_bind_by_name($stid,":p_fk_prd_code",$RequestObj->Parameters->Type->FkPrdCode);
+	oci_bind_by_name($stid,":p_fk_ond_code",$RequestObj->Parameters->Type->FkOndCode);
+	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
+	oci_bind_by_name($stid,":p_omschrijving",$RequestObj->Parameters->Type->Omschrijving);
+	oci_bind_by_name($stid,":p_xk_odd_code_1",$RequestObj->Parameters->Type->XkOddCode1);
+
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'CREATE_CST';
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		echo ']';
+		return;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
+	break;
+
+case 'UpdateCst':
+	echo '[';
+
+	$stid = oci_parse($conn, "BEGIN pkg_prd.update_cst (
+		:p_fk_prd_cube_tsg_type,
+		:p_fk_prd_code,
+		:p_fk_ond_code,
+		:p_code,
+		:p_omschrijving,
+		:p_xk_odd_code_1);
+	END;");
+	oci_bind_by_name($stid,":p_fk_prd_cube_tsg_type",$RequestObj->Parameters->Type->FkPrdCubeTsgType);
+	oci_bind_by_name($stid,":p_fk_prd_code",$RequestObj->Parameters->Type->FkPrdCode);
+	oci_bind_by_name($stid,":p_fk_ond_code",$RequestObj->Parameters->Type->FkOndCode);
+	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
+	oci_bind_by_name($stid,":p_omschrijving",$RequestObj->Parameters->Type->Omschrijving);
+	oci_bind_by_name($stid,":p_xk_odd_code_1",$RequestObj->Parameters->Type->XkOddCode1);
+
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'UPDATE_CST';
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		echo ']';
+		return;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
+	break;
+
+case 'DeleteCst':
+	echo '[';
+
+	$stid = oci_parse($conn, "BEGIN pkg_prd.delete_cst (
+		:p_fk_prd_cube_tsg_type,
+		:p_fk_prd_code,
+		:p_fk_ond_code,
+		:p_code);
+	END;");
+	oci_bind_by_name($stid,":p_fk_prd_cube_tsg_type",$RequestObj->Parameters->Type->FkPrdCubeTsgType);
+	oci_bind_by_name($stid,":p_fk_prd_code",$RequestObj->Parameters->Type->FkPrdCode);
+	oci_bind_by_name($stid,":p_fk_ond_code",$RequestObj->Parameters->Type->FkOndCode);
+	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
+
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'DELETE_CST';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);

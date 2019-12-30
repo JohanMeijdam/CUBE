@@ -41,6 +41,7 @@ g_xmlhttp.onreadystatechange = function() {
 					case 'MOVE_ODD': MoveNode (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.body._moveAction); break;
 					case 'LIST_DDD': AddTreeviewChildren(l_json_array[i].Rows,'TYP_DDD','icons/attrib.bmp'); break;
 					case 'MOVE_DDD': MoveNode (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.body._moveAction); break;
+					case 'LIST_CST': AddTreeviewChildren(l_json_array[i].Rows,'TYP_CST','icons/type.bmp'); break;
 					case 'LIST_ORD': AddTreeviewChildren(l_json_array[i].Rows,'TYP_ORD','icons/order.bmp'); break;
 					case 'MOVE_ORD': MoveNode (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.body._moveAction); break;
 					case 'LIST_ORR': AddTreeviewChildren(l_json_array[i].Rows,'TYP_ORR','icons/ordprod.bmp'); break;
@@ -77,8 +78,8 @@ function DefineTypePosition (p_parentType, p_type, p_switch) {
 		switch (p_type) { case 'TYP_OND': l_index = 2; break;}
 		var l_count = 1; break;
 	case 'TYP_OND':
-		switch (p_type) { case 'TYP_ODD': l_index = 2; break;case 'TYP_OND': l_index = 3; break;}
-		var l_count = 2; break;
+		switch (p_type) { case 'TYP_ODD': l_index = 2; break; case 'TYP_CST': l_index = 3; break;case 'TYP_OND': l_index = 4; break;}
+		var l_count = 3; break;
 	case 'TYP_ODD':
 		switch (p_type) { case 'TYP_DDD': l_index = 2; break;}
 		var l_count = 1; break;
@@ -320,7 +321,8 @@ function OpenMenu(p_obj) {
 			AddMenuItem(g_objMenuList, 'move', 'icons/cube_move.bmp','CubeMove','','CUBE_M_OND',0,'N',0);
 		}
 		AddMenuItem(g_objMenuList, 'add onderdeel_deel', 'icons/type.bmp','CubeAdd','N','TYP_ODD',2,'N',2);
-		AddMenuItem(g_objMenuList, 'add onderdeel', 'icons/part.bmp','CubeAdd','R','TYP_OND',2,'N',3);
+		AddMenuItem(g_objMenuList, 'add constructie', 'icons/type.bmp','DetailCST','N','TYP_CST',0,'N',3);
+		AddMenuItem(g_objMenuList, 'add onderdeel', 'icons/part.bmp','CubeAdd','R','TYP_OND',2,'N',4);
 		var l_json_id = l_json_node_id[l_type_id];
 		PerformTrans( {Service:"CountOndRestrictedItems",Parameters:{Type:l_json_id}} );
 		break;

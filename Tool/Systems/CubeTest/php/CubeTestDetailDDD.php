@@ -358,8 +358,20 @@ function StartSelect002(p_event) {
 	document.body._SelectLeft = p_event.clientX;
 	document.body._SelectTop = p_event.clientY;
 	document.body._ListBoxCode = 'Ref002';
+	var Parameters = {
+		Option: {
+			CubeUpOrDown:"U",
+			CubeXLevel:9999
+		},
+		Type: {
+			FkPrdCubeTsgType:document.getElementById("InputFkPrdCubeTsgType").value,
+			FkPrdCode:document.getElementById("InputFkPrdCode").value,
+			Code:document.getElementById("InputFkOndCode").value
+		}
+	};
 	PerformTrans( {
-		Service: "GetOndListAll"
+		Service: "GetOndListRecursive",
+		Parameters
 	} );
 }
 
@@ -370,7 +382,7 @@ function StartSelect003(p_event) {
 	var Parameters = {
 		Option: {
 			CubeUpOrDown:"D",
-			CubeXLevelLevel:9999
+			CubeXLevel:9999
 		},
 		Type: {
 			FkPrdCubeTsgType:document.getElementById("InputFkPrdCubeTsgType").value,
@@ -391,9 +403,7 @@ function StartSelect004(p_event) {
 	var Parameters = {
 		Option: {
 			CubeUpOrDown:"D",
-			CubeXLevelLevel:1[ELSE]]
-			CubeUpOrDown:"X",
-			CubeXLevelLevel:0
+			CubeXLevel:1
 		},
 		Type: {
 			FkPrdCubeTsgType:document.getElementById("InputFkPrdCubeTsgType").value,
