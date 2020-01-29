@@ -55,7 +55,7 @@ g_xmlhttp.onreadystatechange = function() {
 									'TYP_DER',
 									l_json_node_id,
 									'icons/deriv.bmp', 
-									document.getElementById("InputCubeTsgType").value.toLowerCase(),
+									'('+document.getElementById("InputCubeTsgType").value.toLowerCase()+')',
 									'N',
 									l_position,
 									l_objNodePos);
@@ -65,7 +65,7 @@ g_xmlhttp.onreadystatechange = function() {
 					case "UPDATE_DER":
 						var l_objNode = parent.document.getElementById(g_node_id);
 						if (l_objNode != null) {
-							l_objNode.children[1].lastChild.nodeValue = ' '+document.getElementById("InputCubeTsgType").value.toLowerCase();
+							l_objNode.children[1].lastChild.nodeValue = ' '+'('+document.getElementById("InputCubeTsgType").value.toLowerCase()+')';
 					}
 						break;
 					case "DELETE_DER":
@@ -100,7 +100,6 @@ g_xmlhttp.onreadystatechange = function() {
 		} else {
 			alert ('Request error:\n'+g_xmlhttp.statusText);
 		}
-		
 	}
 }
 
@@ -228,18 +227,8 @@ function StartSelect001(p_event) {
 	document.body._SelectLeft = p_event.clientX;
 	document.body._SelectTop = p_event.clientY;
 	document.body._ListBoxCode = 'Ref001';
-	var Parameters = {
-		Option: {
-			CubeUpOrDown:"U",
-			CubeXLevel:1
-		},
-		Type: {
-			Name:document.getElementById("InputFkTypName").value
-		}
-	};
 	PerformTrans( {
-		Service: "GetTypListRecursive",
-		Parameters
+		Service: "GetTypListAll"
 	} );
 }
 
@@ -247,18 +236,8 @@ function StartSelect002(p_event) {
 	document.body._SelectLeft = p_event.clientX;
 	document.body._SelectTop = p_event.clientY;
 	document.body._ListBoxCode = 'Ref002';
-	var Parameters = {
-		Option: {
-			CubeUpOrDown:"D",
-			CubeXLevel:1
-		},
-		Type: {
-			Name:document.getElementById("InputFkTypName").value
-		}
-	};
 	PerformTrans( {
-		Service: "GetTypListRecursive",
-		Parameters
+		Service: "GetTypListAll"
 	} );
 }
 

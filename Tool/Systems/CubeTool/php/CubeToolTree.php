@@ -38,6 +38,11 @@ g_xmlhttp.onreadystatechange = function() {
 					case 'LIST_TYP': AddTreeviewChildren(l_json_array[i].Rows,'TYP_TYP','icons/type.bmp'); break;
 					case 'COUNT_TYP': CheckMenuItem('TYP_TYP',l_json_array[i].Rows[0].Data.TypeCount); break;
 					case 'MOVE_TYP': MoveNode (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.body._moveAction); break;
+					case 'LIST_TSG': AddTreeviewChildren(l_json_array[i].Rows,'TYP_TSG','icons/tspgroup.bmp'); break;
+					case 'COUNT_TSG': CheckMenuItem('TYP_TSG',l_json_array[i].Rows[0].Data.TypeCount); break;
+					case 'MOVE_TSG': MoveNode (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.body._moveAction); break;
+					case 'LIST_TSP': AddTreeviewChildren(l_json_array[i].Rows,'TYP_TSP','icons/typespec.bmp'); break;
+					case 'MOVE_TSP': MoveNode (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.body._moveAction); break;
 					case 'LIST_ATB': AddTreeviewChildren(l_json_array[i].Rows,'TYP_ATB','icons/attrib.bmp'); break;
 					case 'MOVE_ATB': MoveNode (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.body._moveAction); break;
 					case 'LIST_DER': AddTreeviewChildren(l_json_array[i].Rows,'TYP_DER','icons/deriv.bmp'); break;
@@ -56,11 +61,6 @@ g_xmlhttp.onreadystatechange = function() {
 					case 'LIST_JSN': AddTreeviewChildren(l_json_array[i].Rows,'TYP_JSN','icons/braces.bmp'); break;
 					case 'COUNT_JSN': CheckMenuItem('TYP_JSN',l_json_array[i].Rows[0].Data.TypeCount); break;
 					case 'MOVE_JSN': MoveNode (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.body._moveAction); break;
-					case 'LIST_TSG': AddTreeviewChildren(l_json_array[i].Rows,'TYP_TSG','icons/tspgroup.bmp'); break;
-					case 'COUNT_TSG': CheckMenuItem('TYP_TSG',l_json_array[i].Rows[0].Data.TypeCount); break;
-					case 'MOVE_TSG': MoveNode (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.body._moveAction); break;
-					case 'LIST_TSP': AddTreeviewChildren(l_json_array[i].Rows,'TYP_TSP','icons/typespec.bmp'); break;
-					case 'MOVE_TSP': MoveNode (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.body._moveAction); break;
 					case 'LIST_DCT': AddTreeviewChildren(l_json_array[i].Rows,'TYP_DCT','icons/desc.bmp'); break;
 					case 'COUNT_DCT': CheckMenuItem('TYP_DCT',l_json_array[i].Rows[0].Data.TypeCount); break;
 					case 'LIST_SYS': AddTreeviewChildren(l_json_array[i].Rows,'TYP_SYS','icons/system.bmp'); break;
@@ -107,8 +107,11 @@ function DefineTypePosition (p_parentType, p_type, p_switch) {
 		switch (p_type) { case 'TYP_TYP': l_index = 2; break;}
 		var l_count = 1; break;
 	case 'TYP_TYP':
-		switch (p_type) { case 'TYP_ATB': l_index = 2; break; case 'TYP_REF': l_index = 3; break; case 'TYP_RTT': l_index = 4; break; case 'TYP_JSN': l_index = 5; break; case 'TYP_TSG': l_index = 6; break; case 'TYP_DCT': l_index = 7; break;case 'TYP_TYP': l_index = 8; break;}
+		switch (p_type) { case 'TYP_TSG': l_index = 2; break; case 'TYP_ATB': l_index = 3; break; case 'TYP_REF': l_index = 4; break; case 'TYP_RTT': l_index = 5; break; case 'TYP_JSN': l_index = 6; break; case 'TYP_DCT': l_index = 7; break;case 'TYP_TYP': l_index = 8; break;}
 		var l_count = 7; break;
+	case 'TYP_TSG':
+		switch (p_type) { case 'TYP_TSP': l_index = 2; break;case 'TYP_TSG': l_index = 3; break;}
+		var l_count = 2; break;
 	case 'TYP_ATB':
 		switch (p_type) { case 'TYP_DER': l_index = 2; break; case 'TYP_DCA': l_index = 3; break; case 'TYP_RTA': l_index = 4; break;}
 		var l_count = 3; break;
@@ -118,9 +121,6 @@ function DefineTypePosition (p_parentType, p_type, p_switch) {
 	case 'TYP_JSN':
 		switch (p_type) {case 'TYP_JSN': l_index = 2; break;}
 		var l_count = 1; break;
-	case 'TYP_TSG':
-		switch (p_type) { case 'TYP_TSP': l_index = 2; break;case 'TYP_TSG': l_index = 3; break;}
-		var l_count = 2; break;
 	case 'TYP_SYS':
 		switch (p_type) { case 'TYP_SBT': l_index = 2; break;}
 		var l_count = 1; break;
@@ -176,6 +176,10 @@ function OpenCloseOnClick(p_obj) {
 			var l_json_id = JSON.parse(p_obj.parentNode.id)["TYP_TYP"];
 			PerformTrans( {Service:"GetTypItems",Parameters:{Type:l_json_id}} );
 			break;
+ 		case 'TYP_TSG':
+			var l_json_id = JSON.parse(p_obj.parentNode.id)["TYP_TSG"];
+			PerformTrans( {Service:"GetTsgItems",Parameters:{Type:l_json_id}} );
+			break;
  		case 'TYP_ATB':
 			var l_json_id = JSON.parse(p_obj.parentNode.id)["TYP_ATB"];
 			PerformTrans( {Service:"GetAtbItems",Parameters:{Type:l_json_id}} );
@@ -187,10 +191,6 @@ function OpenCloseOnClick(p_obj) {
  		case 'TYP_JSN':
 			var l_json_id = JSON.parse(p_obj.parentNode.id)["TYP_JSN"];
 			PerformTrans( {Service:"GetJsnItems",Parameters:{Type:l_json_id}} );
-			break;
- 		case 'TYP_TSG':
-			var l_json_id = JSON.parse(p_obj.parentNode.id)["TYP_TSG"];
-			PerformTrans( {Service:"GetTsgItems",Parameters:{Type:l_json_id}} );
 			break;
  		case 'DIR_SYS':
 			PerformTrans( {Service:"GetDirSysItems"} );
@@ -250,6 +250,12 @@ function OpenDetail(p_obj) {
 			case 'TYP_TYP':
 				PerformTrans( {Service:"MoveTyp",Parameters:{Option:{CubePosAction:document.body._moveAction},Type:l_json_id,Ref:l_json_id_ref}} );
 				break;
+			case 'TYP_TSG':
+				PerformTrans( {Service:"MoveTsg",Parameters:{Option:{CubePosAction:document.body._moveAction},Type:l_json_id,Ref:l_json_id_ref}} );
+				break;
+			case 'TYP_TSP':
+				PerformTrans( {Service:"MoveTsp",Parameters:{Option:{CubePosAction:document.body._moveAction},Type:l_json_id,Ref:l_json_id_ref}} );
+				break;
 			case 'TYP_ATB':
 				PerformTrans( {Service:"MoveAtb",Parameters:{Option:{CubePosAction:document.body._moveAction},Type:l_json_id,Ref:l_json_id_ref}} );
 				break;
@@ -258,12 +264,6 @@ function OpenDetail(p_obj) {
 				break;
 			case 'TYP_JSN':
 				PerformTrans( {Service:"MoveJsn",Parameters:{Option:{CubePosAction:document.body._moveAction},Type:l_json_id,Ref:l_json_id_ref}} );
-				break;
-			case 'TYP_TSG':
-				PerformTrans( {Service:"MoveTsg",Parameters:{Option:{CubePosAction:document.body._moveAction},Type:l_json_id,Ref:l_json_id_ref}} );
-				break;
-			case 'TYP_TSP':
-				PerformTrans( {Service:"MoveTsp",Parameters:{Option:{CubePosAction:document.body._moveAction},Type:l_json_id,Ref:l_json_id_ref}} );
 				break;
 			case 'TYP_SBT':
 				PerformTrans( {Service:"MoveSbt",Parameters:{Option:{CubePosAction:document.body._moveAction},Type:l_json_id,Ref:l_json_id_ref}} );
@@ -416,15 +416,34 @@ function OpenMenu(p_obj) {
 		if (l_childCount > 1) {
 			AddMenuItem(g_objMenuList, 'move', 'icons/cube_move.bmp','CubeMove','','CUBE_M_TYP',0,'N',0);
 		}
-		AddMenuItem(g_objMenuList, 'add attribute', 'icons/attrib.bmp','CubeAdd','N','TYP_ATB',0,'N',2);
-		AddMenuItem(g_objMenuList, 'add reference', 'icons/ref.bmp','CubeAdd','N','TYP_REF',0,'N',3);
-		AddMenuItem(g_objMenuList, 'add restriction_type_spec_typ', 'icons/restrict.bmp','DetailRTT','N','TYP_RTT',0,'N',4);
-		AddMenuItem(g_objMenuList, 'add json_path', 'icons/braces.bmp','CubeAdd','N','TYP_JSN',1,'N',5);
-		AddMenuItem(g_objMenuList, 'add type_specialisation_group', 'icons/tspgroup.bmp','CubeAdd','N','TYP_TSG',0,'N',6);
+		var l_json_parent_node_id = JSON.parse(p_obj.parentNode.parentNode.parentNode.id);
+		var l_parent_type_id = Object.keys(l_json_parent_node_id)[0];
+		if (l_childCount > 1 || l_type_id == l_parent_type_id) {
+			AddMenuItem(g_objMenuList, 'change parent', 'icons/cube_change_par.bmp','CubeChangePar','','CUBE_P_TYP',0,'Y',0);
+		}
+		AddMenuItem(g_objMenuList, 'add type_specialisation_group', 'icons/tspgroup.bmp','CubeAdd','N','TYP_TSG',0,'N',2);
+		AddMenuItem(g_objMenuList, 'add attribute', 'icons/attrib.bmp','CubeAdd','N','TYP_ATB',0,'N',3);
+		AddMenuItem(g_objMenuList, 'add reference', 'icons/ref.bmp','CubeAdd','N','TYP_REF',0,'N',4);
+		AddMenuItem(g_objMenuList, 'add restriction_type_spec_typ', 'icons/restrict.bmp','DetailRTT','N','TYP_RTT',0,'N',5);
+		AddMenuItem(g_objMenuList, 'add json_path', 'icons/braces.bmp','CubeAdd','N','TYP_JSN',1,'N',6);
 		AddMenuItem(g_objMenuList, 'add description_type', 'icons/desc.bmp','DetailDCT','N','TYP_DCT',1,'N',7);
 		AddMenuItem(g_objMenuList, 'add type', 'icons/type.bmp','CubeAdd','R','TYP_TYP',0,'N',8);
 		var l_json_id = l_json_node_id[l_type_id];
 		PerformTrans( {Service:"CountTypRestrictedItems",Parameters:{Type:l_json_id}} );
+		break;
+ 	case 'TYP_TSG':
+		if (l_childCount > 1) {
+			AddMenuItem(g_objMenuList, 'move', 'icons/cube_move.bmp','CubeMove','','CUBE_M_TSG',0,'N',0);
+		}
+		AddMenuItem(g_objMenuList, 'add type_specialisation', 'icons/typespec.bmp','CubeAdd','N','TYP_TSP',0,'N',2);
+		AddMenuItem(g_objMenuList, 'add type_specialisation_group', 'icons/tspgroup.bmp','CubeAdd','R','TYP_TSG',1,'N',3);
+		var l_json_id = l_json_node_id[l_type_id];
+		PerformTrans( {Service:"CountTsgRestrictedItems",Parameters:{Type:l_json_id}} );
+		break;
+ 	case 'TYP_TSP':
+		if (l_childCount > 1) {
+			AddMenuItem(g_objMenuList, 'move', 'icons/cube_move.bmp','CubeMove','','CUBE_M_TSP',0,'N',0);
+		}
 		break;
  	case 'TYP_ATB':
 		if (l_childCount > 1) {
@@ -456,20 +475,6 @@ function OpenMenu(p_obj) {
 			AddMenuItem(g_objMenuList, 'change parent', 'icons/cube_change_par.bmp','CubeChangePar','','CUBE_P_JSN',0,'Y',0);
 		}
 		AddMenuItem(g_objMenuList, 'add json_path', 'icons/braces.bmp','CubeAdd','R','TYP_JSN',0,'N',2);
-		break;
- 	case 'TYP_TSG':
-		if (l_childCount > 1) {
-			AddMenuItem(g_objMenuList, 'move', 'icons/cube_move.bmp','CubeMove','','CUBE_M_TSG',0,'N',0);
-		}
-		AddMenuItem(g_objMenuList, 'add type_specialisation', 'icons/typespec.bmp','CubeAdd','N','TYP_TSP',0,'N',2);
-		AddMenuItem(g_objMenuList, 'add type_specialisation_group', 'icons/tspgroup.bmp','CubeAdd','R','TYP_TSG',1,'N',3);
-		var l_json_id = l_json_node_id[l_type_id];
-		PerformTrans( {Service:"CountTsgRestrictedItems",Parameters:{Type:l_json_id}} );
-		break;
- 	case 'TYP_TSP':
-		if (l_childCount > 1) {
-			AddMenuItem(g_objMenuList, 'move', 'icons/cube_move.bmp','CubeMove','','CUBE_M_TSP',0,'N',0);
-		}
 		break;
  	case 'DIR_SYS':
 		AddMenuItem(g_objMenuList, 'add system', 'icons/system.bmp','DetailSYS','N','TYP_SYS',0,'N',2);

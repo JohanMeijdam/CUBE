@@ -36,12 +36,14 @@ g_xmlhttp.onreadystatechange = function() {
 						document.getElementById("InputFkBotName").disabled=true;
 						document.getElementById("InputFkTypName").disabled=true;
 						document.getElementById("InputFkRefSequence").disabled=true;
+						document.getElementById("InputFkRefCubeTsgIntExt").disabled=true;
+						document.getElementById("InputFkRefBotName").disabled=true;
 						document.getElementById("InputFkRefTypName").disabled=true;
 						document.getElementById("ButtonCreate").disabled=true;
 						document.getElementById("ButtonUpdate").disabled=false;
 						document.getElementById("ButtonDelete").disabled=false;
 						var l_objNode = parent.document.getElementById(g_parent_node_id);
-						var l_json_node_id = {FkTypName:document.getElementById("InputFkTypName").value,FkRefSequence:document.getElementById("InputFkRefSequence").value,FkRefTypName:document.getElementById("InputFkRefTypName").value};
+						var l_json_node_id = {FkTypName:document.getElementById("InputFkTypName").value,FkRefSequence:document.getElementById("InputFkRefSequence").value,FkRefCubeTsgIntExt:document.getElementById("InputFkRefCubeTsgIntExt").value,FkRefBotName:document.getElementById("InputFkRefBotName").value,FkRefTypName:document.getElementById("InputFkRefTypName").value};
 						g_node_id = '{"TYP_DCR":'+JSON.stringify(l_json_node_id)+'}';
 						if (l_objNode != null) {
 							if (l_objNode.firstChild._state == 'O') {
@@ -87,7 +89,6 @@ g_xmlhttp.onreadystatechange = function() {
 		} else {
 			alert ('Request error:\n'+g_xmlhttp.statusText);
 		}
-		
 	}
 }
 
@@ -102,6 +103,8 @@ function InitBody() {
 		g_node_id = JSON.stringify(l_json_argument.objectId);
 		document.getElementById("InputFkTypName").value=l_json_objectKey.TYP_DCR.FkTypName;
 		document.getElementById("InputFkRefSequence").value=l_json_objectKey.TYP_DCR.FkRefSequence;
+		document.getElementById("InputFkRefCubeTsgIntExt").value=l_json_objectKey.TYP_DCR.FkRefCubeTsgIntExt;
+		document.getElementById("InputFkRefBotName").value=l_json_objectKey.TYP_DCR.FkRefBotName;
 		document.getElementById("InputFkRefTypName").value=l_json_objectKey.TYP_DCR.FkRefTypName;
 		document.getElementById("ButtonCreate").disabled=true;
 		PerformTrans( {
@@ -113,12 +116,16 @@ function InitBody() {
 		document.getElementById("InputFkBotName").disabled=true;
 		document.getElementById("InputFkTypName").disabled=true;
 		document.getElementById("InputFkRefSequence").disabled=true;
+		document.getElementById("InputFkRefCubeTsgIntExt").disabled=true;
+		document.getElementById("InputFkRefBotName").disabled=true;
 		document.getElementById("InputFkRefTypName").disabled=true;
 		break;
 	case "N":
 		g_parent_node_id = JSON.stringify(l_json_argument.objectId);
 		document.getElementById("InputFkTypName").value=l_json_objectKey.TYP_REF.FkTypName;
 		document.getElementById("InputFkRefSequence").value=l_json_objectKey.TYP_REF.Sequence;
+		document.getElementById("InputFkRefCubeTsgIntExt").value=l_json_objectKey.TYP_REF.CubeTsgIntExt;
+		document.getElementById("InputFkRefBotName").value=l_json_objectKey.TYP_REF.XkBotName;
 		document.getElementById("InputFkRefTypName").value=l_json_objectKey.TYP_REF.XkTypName;
 		document.getElementById("ButtonUpdate").disabled=true;
 		document.getElementById("ButtonDelete").disabled=true;
@@ -131,6 +138,8 @@ function InitBody() {
 		document.getElementById("InputFkBotName").disabled=true;
 		document.getElementById("InputFkTypName").disabled=true;
 		document.getElementById("InputFkRefSequence").disabled=true;
+		document.getElementById("InputFkRefCubeTsgIntExt").disabled=true;
+		document.getElementById("InputFkRefBotName").disabled=true;
 		document.getElementById("InputFkRefTypName").disabled=true;
 		break;
 	default:
@@ -143,6 +152,8 @@ function CreateDcr() {
 		FkBotName: document.getElementById("InputFkBotName").value,
 		FkTypName: document.getElementById("InputFkTypName").value,
 		FkRefSequence: document.getElementById("InputFkRefSequence").value,
+		FkRefCubeTsgIntExt: document.getElementById("InputFkRefCubeTsgIntExt").value,
+		FkRefBotName: document.getElementById("InputFkRefBotName").value,
 		FkRefTypName: document.getElementById("InputFkRefTypName").value,
 		Text: document.getElementById("InputText").value
 	};
@@ -159,6 +170,8 @@ function UpdateDcr() {
 		FkBotName: document.getElementById("InputFkBotName").value,
 		FkTypName: document.getElementById("InputFkTypName").value,
 		FkRefSequence: document.getElementById("InputFkRefSequence").value,
+		FkRefCubeTsgIntExt: document.getElementById("InputFkRefCubeTsgIntExt").value,
+		FkRefBotName: document.getElementById("InputFkRefBotName").value,
 		FkRefTypName: document.getElementById("InputFkRefTypName").value,
 		Text: document.getElementById("InputText").value
 	};
@@ -174,6 +187,8 @@ function DeleteDcr() {
 	var Type = {
 		FkTypName: document.getElementById("InputFkTypName").value,
 		FkRefSequence: document.getElementById("InputFkRefSequence").value,
+		FkRefCubeTsgIntExt: document.getElementById("InputFkRefCubeTsgIntExt").value,
+		FkRefBotName: document.getElementById("InputFkRefBotName").value,
 		FkRefTypName: document.getElementById("InputFkRefTypName").value
 	};
 	PerformTrans( {
@@ -195,6 +210,14 @@ function DeleteDcr() {
 <input id="InputFkTypName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
 <tr><td><u>Reference.Sequence</u></td><td><div style="max-width:2em;">
 <input id="InputFkRefSequence" type="text" maxlength="2" style="width:100%;"></input></div></td></tr>
+<tr><td><u>Reference.InternalOrExternal</u></td><td><div>
+<select id="InputFkRefCubeTsgIntExt" type="text">
+	<option value=" " selected> </option>
+	<option value="INT">INTERNAL</option>
+	<option value="EXT">EXTERNAL</option>
+</select></div></td></tr>
+<tr><td><u>Reference.Name</u></td><td><div style="max-width:30em;">
+<input id="InputFkRefBotName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
 <tr><td><u>Reference.Name</u></td><td><div style="max-width:30em;">
 <input id="InputFkRefTypName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
 <tr><td style="padding-top:10px;">Text</td></tr><tr><td colspan="2"><div>

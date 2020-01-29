@@ -58,7 +58,7 @@ g_xmlhttp.onreadystatechange = function() {
 									'TYP_SYS',
 									l_json_node_id,
 									'icons/system.bmp', 
-									document.getElementById("InputName").value.toLowerCase()+' '+document.getElementById("InputCubeTsgType").value.toLowerCase(),
+									document.getElementById("InputName").value.toLowerCase()+' ('+document.getElementById("InputCubeTsgType").value.toLowerCase()+')',
 									'N',
 									l_position,
 									l_objNodePos);
@@ -68,7 +68,7 @@ g_xmlhttp.onreadystatechange = function() {
 					case "UPDATE_SYS":
 						var l_objNode = parent.document.getElementById(g_node_id);
 						if (l_objNode != null) {
-							l_objNode.children[1].lastChild.nodeValue = ' '+document.getElementById("InputName").value.toLowerCase()+' '+document.getElementById("InputCubeTsgType").value.toLowerCase();
+							l_objNode.children[1].lastChild.nodeValue = ' '+document.getElementById("InputName").value.toLowerCase()+' ('+document.getElementById("InputCubeTsgType").value.toLowerCase()+')';
 					}
 						break;
 					case "DELETE_SYS":
@@ -93,7 +93,6 @@ g_xmlhttp.onreadystatechange = function() {
 		} else {
 			alert ('Request error:\n'+g_xmlhttp.statusText);
 		}
-		
 	}
 }
 

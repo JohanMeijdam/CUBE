@@ -498,7 +498,7 @@ case 'GetDirBotItems':
 		$RowObj = new \stdClass();
 		$RowObj->Key = new \stdClass();
 		$RowObj->Key->Name = $row["NAME"];
-		$RowObj->Display = $row["NAME"].' '.$row["CUBE_TSG_TYPE"];
+		$RowObj->Display = $row["NAME"].' ('.$row["CUBE_TSG_TYPE"].')';
 		$ResponseObj->Rows[] = $RowObj;
 	}
 	$ResponseText = json_encode($ResponseObj);
@@ -523,7 +523,7 @@ case 'GetBotList':
 		$RowObj = new \stdClass();
 		$RowObj->Key = new \stdClass();
 		$RowObj->Key->Name = $row["NAME"];
-		$RowObj->Display = $row["NAME"].' '.$row["CUBE_TSG_TYPE"];
+		$RowObj->Display = $row["NAME"].' ('.$row["CUBE_TSG_TYPE"].')';
 		$ResponseObj->Rows[] = $RowObj;
 	}
 	$ResponseText = json_encode($ResponseObj);
@@ -730,6 +730,61 @@ case 'DeleteBot':
 
 	break;
 
+case 'GetTypListAll':
+	echo '[';
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.get_typ_list_all (:p_cube_row); END;");
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'LIST_TYP';
+	$r = perform_db_request();
+	if (!$r) { 
+		echo ']';
+		return;
+	}
+	$ResponseObj->Rows = array();
+	while ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Key = new \stdClass();
+		$RowObj->Key->Name = $row["NAME"];
+		$RowObj->Display = $row["NAME"].' ('.$row["CODE"].')';
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
+	break;
+
+case 'GetTypForBotListAll':
+	echo '[';
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.get_typ_for_bot_list_all (
+		:p_cube_row,
+		:x_fk_bot_name);
+	END;");
+	oci_bind_by_name($stid,":x_fk_bot_name",$RequestObj->Parameters->Ref->FkBotName);
+
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'LIST_TYP';
+	$r = perform_db_request();
+	if (!$r) { 
+		echo ']';
+		return;
+	}
+	$ResponseObj->Rows = array();
+	while ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Key = new \stdClass();
+		$RowObj->Key->Name = $row["NAME"];
+		$RowObj->Display = $row["NAME"].' ('.$row["CODE"].')';
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
+	break;
+
 case 'GetTypForTypListAll':
 	echo '[';
 
@@ -740,70 +795,6 @@ case 'GetTypForTypListAll':
 	END;");
 	oci_bind_by_name($stid,":p_cube_scope_level",$RequestObj->Parameters->Option->CubeScopeLevel);
 	oci_bind_by_name($stid,":x_fk_typ_name",$RequestObj->Parameters->Ref->FkTypName);
-
-	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'LIST_TYP';
-	$r = perform_db_request();
-	if (!$r) { 
-		echo ']';
-		return;
-	}
-	$ResponseObj->Rows = array();
-	while ($row = oci_fetch_assoc($curs)) {
-		$RowObj = new \stdClass();
-		$RowObj->Key = new \stdClass();
-		$RowObj->Key->Name = $row["NAME"];
-		$RowObj->Display = $row["NAME"].' ('.$row["CODE"].')';
-		$ResponseObj->Rows[] = $RowObj;
-	}
-	$ResponseText = json_encode($ResponseObj);
-	echo $ResponseText;
-	echo ']';
-
-	break;
-
-case 'GetTypListEncapsulated':
-	echo '[';
-
-	$stid = oci_parse($conn, "BEGIN pkg_bot.get_typ_list_encapsulated (
-		:p_cube_row,
-		:p_fk_bot_name);
-	END;");
-	oci_bind_by_name($stid,":p_fk_bot_name",$RequestObj->Parameters->Type->FkBotName);
-
-	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'LIST_TYP';
-	$r = perform_db_request();
-	if (!$r) { 
-		echo ']';
-		return;
-	}
-	$ResponseObj->Rows = array();
-	while ($row = oci_fetch_assoc($curs)) {
-		$RowObj = new \stdClass();
-		$RowObj->Key = new \stdClass();
-		$RowObj->Key->Name = $row["NAME"];
-		$RowObj->Display = $row["NAME"].' ('.$row["CODE"].')';
-		$ResponseObj->Rows[] = $RowObj;
-	}
-	$ResponseText = json_encode($ResponseObj);
-	echo $ResponseText;
-	echo ']';
-
-	break;
-
-case 'GetTypListRecursive':
-	echo '[';
-
-	$stid = oci_parse($conn, "BEGIN pkg_bot.get_typ_list_recursive (
-		:p_cube_row,
-		:p_cube_up_or_down,
-		:p_cube_x_level,
-		:p_name);
-	END;");
-	oci_bind_by_name($stid,":p_cube_up_or_down",$RequestObj->Parameters->Option->CubeUpOrDown);
-	oci_bind_by_name($stid,":p_cube_x_level",$RequestObj->Parameters->Option->CubeXLevel);
-	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'LIST_TYP';
@@ -896,6 +887,32 @@ case 'GetTypFkey':
 case 'GetTypItems':
 	echo '[';
 
+	$stid = oci_parse($conn, "BEGIN pkg_bot.get_typ_tsg_items (
+		:p_cube_row,
+		:p_name);
+	END;");
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
+
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'LIST_TSG';
+	$r = perform_db_request();
+	if (!$r) { 
+		echo ']';
+		return;
+	}
+	$ResponseObj->Rows = array();
+	while ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Key = new \stdClass();
+		$RowObj->Key->FkTypName = $row["FK_TYP_NAME"];
+		$RowObj->Key->Code = $row["CODE"];
+		$RowObj->Display = '('.$row["CODE"].')'.' '.$row["NAME"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ',';
+
 	$stid = oci_parse($conn, "BEGIN pkg_bot.get_typ_atb_items (
 		:p_cube_row,
 		:p_name);
@@ -941,8 +958,10 @@ case 'GetTypItems':
 		$RowObj->Key = new \stdClass();
 		$RowObj->Key->FkTypName = $row["FK_TYP_NAME"];
 		$RowObj->Key->Sequence = $row["SEQUENCE"];
+		$RowObj->Key->CubeTsgIntExt = $row["CUBE_TSG_INT_EXT"];
+		$RowObj->Key->XkBotName = $row["XK_BOT_NAME"];
 		$RowObj->Key->XkTypName = $row["XK_TYP_NAME"];
-		$RowObj->Display = $row["NAME"].' '.$row["XK_TYP_NAME"];
+		$RowObj->Display = $row["NAME"].' ('.$row["CUBE_TSG_INT_EXT"].')'.' '.$row["XK_BOT_NAME"].' '.$row["XK_TYP_NAME"];
 		$ResponseObj->Rows[] = $RowObj;
 	}
 	$ResponseText = json_encode($ResponseObj);
@@ -1000,33 +1019,7 @@ case 'GetTypItems':
 		$RowObj->Key->XfAtbTypName = $row["XF_ATB_TYP_NAME"];
 		$RowObj->Key->XkAtbName = $row["XK_ATB_NAME"];
 		$RowObj->Key->XkTypName = $row["XK_TYP_NAME"];
-		$RowObj->Display = $row["CUBE_TSG_OBJ_ARR"].' '.$row["CUBE_TSG_TYPE"].' '.$row["NAME"].' '.$row["LOCATION"];
-		$ResponseObj->Rows[] = $RowObj;
-	}
-	$ResponseText = json_encode($ResponseObj);
-	echo $ResponseText;
-	echo ',';
-
-	$stid = oci_parse($conn, "BEGIN pkg_bot.get_typ_tsg_items (
-		:p_cube_row,
-		:p_name);
-	END;");
-	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
-
-	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'LIST_TSG';
-	$r = perform_db_request();
-	if (!$r) { 
-		echo ']';
-		return;
-	}
-	$ResponseObj->Rows = array();
-	while ($row = oci_fetch_assoc($curs)) {
-		$RowObj = new \stdClass();
-		$RowObj->Key = new \stdClass();
-		$RowObj->Key->FkTypName = $row["FK_TYP_NAME"];
-		$RowObj->Key->Code = $row["CODE"];
-		$RowObj->Display = '('.$row["CODE"].')'.' '.$row["NAME"];
+		$RowObj->Display = '('.$row["CUBE_TSG_OBJ_ARR"].')'.' ('.$row["CUBE_TSG_TYPE"].')'.' '.$row["NAME"].' '.$row["LOCATION"];
 		$ResponseObj->Rows[] = $RowObj;
 	}
 	$ResponseText = json_encode($ResponseObj);
@@ -1274,6 +1267,545 @@ case 'DeleteTyp':
 
 	break;
 
+case 'GetTsg':
+	echo '[';
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.get_tsg (
+		:p_cube_row,
+		:p_fk_typ_name,
+		:p_code);
+	END;");
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
+
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'SELECT_TSG';
+	$r = perform_db_request();
+	if (!$r) { 
+		echo ']';
+		return;
+	}
+	$ResponseObj->Rows = array();
+	if ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Data = new \stdClass();
+		$RowObj->Data->FkBotName = $row["FK_BOT_NAME"];
+		$RowObj->Data->FkTsgCode = $row["FK_TSG_CODE"];
+		$RowObj->Data->Name = $row["NAME"];
+		$RowObj->Data->PrimaryKey = $row["PRIMARY_KEY"];
+		$RowObj->Data->XfAtbTypName = $row["XF_ATB_TYP_NAME"];
+		$RowObj->Data->XkAtbName = $row["XK_ATB_NAME"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
+	break;
+
+case 'GetTsgFkey':
+	echo '[';
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.get_tsg_fkey (
+		:p_cube_row,
+		:p_fk_typ_name,
+		:p_code);
+	END;");
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
+
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'SELECT_FKEY_TSG';
+	$r = perform_db_request();
+	if (!$r) { 
+		echo ']';
+		return;
+	}
+	$ResponseObj->Rows = array();
+	if ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Data = new \stdClass();
+		$RowObj->Data->FkBotName = $row["FK_BOT_NAME"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
+	break;
+
+case 'GetTsgItems':
+	echo '[';
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.get_tsg_tsp_items (
+		:p_cube_row,
+		:p_fk_typ_name,
+		:p_code);
+	END;");
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
+
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'LIST_TSP';
+	$r = perform_db_request();
+	if (!$r) { 
+		echo ']';
+		return;
+	}
+	$ResponseObj->Rows = array();
+	while ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Key = new \stdClass();
+		$RowObj->Key->FkTypName = $row["FK_TYP_NAME"];
+		$RowObj->Key->FkTsgCode = $row["FK_TSG_CODE"];
+		$RowObj->Key->Code = $row["CODE"];
+		$RowObj->Display = '('.$row["CODE"].')'.' '.$row["NAME"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ',';
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.get_tsg_tsg_items (
+		:p_cube_row,
+		:p_fk_typ_name,
+		:p_code);
+	END;");
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
+
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'LIST_TSG';
+	$r = perform_db_request();
+	if (!$r) { 
+		echo ']';
+		return;
+	}
+	$ResponseObj->Rows = array();
+	while ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Key = new \stdClass();
+		$RowObj->Key->FkTypName = $row["FK_TYP_NAME"];
+		$RowObj->Key->Code = $row["CODE"];
+		$RowObj->Display = '('.$row["CODE"].')'.' '.$row["NAME"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
+	break;
+
+case 'CountTsgRestrictedItems':
+	echo '[';
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.count_tsg_tsg (
+		:p_cube_row,
+		:p_fk_typ_name,
+		:p_code);
+	END;");
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
+
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'COUNT_TSG';
+	$r = perform_db_request();
+	if (!$r) { 
+		echo ']';
+		return;
+	}
+	$ResponseObj->Rows = array();
+	if ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Data = new \stdClass();
+		$RowObj->Data->TypeCount = $row["TYPE_COUNT"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
+	break;
+
+case 'MoveTsg':
+	echo '[';
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.move_tsg (
+		:p_cube_pos_action,
+		:p_fk_typ_name,
+		:p_code,
+		:x_fk_typ_name,
+		:x_code);
+	END;");
+	oci_bind_by_name($stid,":p_cube_pos_action",$RequestObj->Parameters->Option->CubePosAction);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
+	oci_bind_by_name($stid,":x_fk_typ_name",$RequestObj->Parameters->Ref->FkTypName);
+	oci_bind_by_name($stid,":x_code",$RequestObj->Parameters->Ref->Code);
+
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'MOVE_TSG';
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		echo ']';
+		return;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
+	break;
+
+case 'CreateTsg':
+	echo '[';
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.insert_tsg (
+		:p_cube_pos_action,
+		:p_fk_bot_name,
+		:p_fk_typ_name,
+		:p_fk_tsg_code,
+		:p_code,
+		:p_name,
+		:p_primary_key,
+		:p_xf_atb_typ_name,
+		:p_xk_atb_name,
+		:x_fk_typ_name,
+		:x_code);
+	END;");
+	oci_bind_by_name($stid,":p_cube_pos_action",$RequestObj->Parameters->Option->CubePosAction);
+	oci_bind_by_name($stid,":p_fk_bot_name",$RequestObj->Parameters->Type->FkBotName);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_fk_tsg_code",$RequestObj->Parameters->Type->FkTsgCode);
+	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
+	oci_bind_by_name($stid,":p_primary_key",$RequestObj->Parameters->Type->PrimaryKey);
+	oci_bind_by_name($stid,":p_xf_atb_typ_name",$RequestObj->Parameters->Type->XfAtbTypName);
+	oci_bind_by_name($stid,":p_xk_atb_name",$RequestObj->Parameters->Type->XkAtbName);
+	oci_bind_by_name($stid,":x_fk_typ_name",$RequestObj->Parameters->Ref->FkTypName);
+	oci_bind_by_name($stid,":x_code",$RequestObj->Parameters->Ref->Code);
+
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'CREATE_TSG';
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		echo ']';
+		return;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
+	break;
+
+case 'UpdateTsg':
+	echo '[';
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.update_tsg (
+		:p_fk_bot_name,
+		:p_fk_typ_name,
+		:p_fk_tsg_code,
+		:p_code,
+		:p_name,
+		:p_primary_key,
+		:p_xf_atb_typ_name,
+		:p_xk_atb_name);
+	END;");
+	oci_bind_by_name($stid,":p_fk_bot_name",$RequestObj->Parameters->Type->FkBotName);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_fk_tsg_code",$RequestObj->Parameters->Type->FkTsgCode);
+	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
+	oci_bind_by_name($stid,":p_primary_key",$RequestObj->Parameters->Type->PrimaryKey);
+	oci_bind_by_name($stid,":p_xf_atb_typ_name",$RequestObj->Parameters->Type->XfAtbTypName);
+	oci_bind_by_name($stid,":p_xk_atb_name",$RequestObj->Parameters->Type->XkAtbName);
+
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'UPDATE_TSG';
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		echo ']';
+		return;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
+	break;
+
+case 'DeleteTsg':
+	echo '[';
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.delete_tsg (
+		:p_fk_typ_name,
+		:p_code);
+	END;");
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
+
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'DELETE_TSG';
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		echo ']';
+		return;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
+	break;
+
+case 'GetTspForTypList':
+	echo '[';
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.get_tsp_for_typ_list (
+		:p_cube_row,
+		:p_cube_scope_level,
+		:x_fk_typ_name);
+	END;");
+	oci_bind_by_name($stid,":p_cube_scope_level",$RequestObj->Parameters->Option->CubeScopeLevel);
+	oci_bind_by_name($stid,":x_fk_typ_name",$RequestObj->Parameters->Ref->FkTypName);
+
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'LIST_TSP';
+	$r = perform_db_request();
+	if (!$r) { 
+		echo ']';
+		return;
+	}
+	$ResponseObj->Rows = array();
+	while ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Key = new \stdClass();
+		$RowObj->Key->FkTypName = $row["FK_TYP_NAME"];
+		$RowObj->Key->FkTsgCode = $row["FK_TSG_CODE"];
+		$RowObj->Key->Code = $row["CODE"];
+		$RowObj->Display = $row["FK_TYP_NAME"].' '.$row["FK_TSG_CODE"].' ('.$row["CODE"].')'.' '.$row["NAME"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
+	break;
+
+case 'GetTspForTsgList':
+	echo '[';
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.get_tsp_for_tsg_list (
+		:p_cube_row,
+		:p_cube_scope_level,
+		:x_fk_typ_name,
+		:x_fk_tsg_code);
+	END;");
+	oci_bind_by_name($stid,":p_cube_scope_level",$RequestObj->Parameters->Option->CubeScopeLevel);
+	oci_bind_by_name($stid,":x_fk_typ_name",$RequestObj->Parameters->Ref->FkTypName);
+	oci_bind_by_name($stid,":x_fk_tsg_code",$RequestObj->Parameters->Ref->FkTsgCode);
+
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'LIST_TSP';
+	$r = perform_db_request();
+	if (!$r) { 
+		echo ']';
+		return;
+	}
+	$ResponseObj->Rows = array();
+	while ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Key = new \stdClass();
+		$RowObj->Key->FkTypName = $row["FK_TYP_NAME"];
+		$RowObj->Key->FkTsgCode = $row["FK_TSG_CODE"];
+		$RowObj->Key->Code = $row["CODE"];
+		$RowObj->Display = $row["FK_TYP_NAME"].' '.$row["FK_TSG_CODE"].' ('.$row["CODE"].')'.' '.$row["NAME"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
+	break;
+
+case 'GetTsp':
+	echo '[';
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.get_tsp (
+		:p_cube_row,
+		:p_fk_typ_name,
+		:p_fk_tsg_code,
+		:p_code);
+	END;");
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_fk_tsg_code",$RequestObj->Parameters->Type->FkTsgCode);
+	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
+
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'SELECT_TSP';
+	$r = perform_db_request();
+	if (!$r) { 
+		echo ']';
+		return;
+	}
+	$ResponseObj->Rows = array();
+	if ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Data = new \stdClass();
+		$RowObj->Data->FkBotName = $row["FK_BOT_NAME"];
+		$RowObj->Data->Name = $row["NAME"];
+		$RowObj->Data->XfTspTypName = $row["XF_TSP_TYP_NAME"];
+		$RowObj->Data->XfTspTsgCode = $row["XF_TSP_TSG_CODE"];
+		$RowObj->Data->XkTspCode = $row["XK_TSP_CODE"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
+	break;
+
+case 'MoveTsp':
+	echo '[';
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.move_tsp (
+		:p_cube_pos_action,
+		:p_fk_typ_name,
+		:p_fk_tsg_code,
+		:p_code,
+		:x_fk_typ_name,
+		:x_fk_tsg_code,
+		:x_code);
+	END;");
+	oci_bind_by_name($stid,":p_cube_pos_action",$RequestObj->Parameters->Option->CubePosAction);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_fk_tsg_code",$RequestObj->Parameters->Type->FkTsgCode);
+	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
+	oci_bind_by_name($stid,":x_fk_typ_name",$RequestObj->Parameters->Ref->FkTypName);
+	oci_bind_by_name($stid,":x_fk_tsg_code",$RequestObj->Parameters->Ref->FkTsgCode);
+	oci_bind_by_name($stid,":x_code",$RequestObj->Parameters->Ref->Code);
+
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'MOVE_TSP';
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		echo ']';
+		return;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
+	break;
+
+case 'CreateTsp':
+	echo '[';
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.insert_tsp (
+		:p_cube_pos_action,
+		:p_fk_bot_name,
+		:p_fk_typ_name,
+		:p_fk_tsg_code,
+		:p_code,
+		:p_name,
+		:p_xf_tsp_typ_name,
+		:p_xf_tsp_tsg_code,
+		:p_xk_tsp_code,
+		:x_fk_typ_name,
+		:x_fk_tsg_code,
+		:x_code);
+	END;");
+	oci_bind_by_name($stid,":p_cube_pos_action",$RequestObj->Parameters->Option->CubePosAction);
+	oci_bind_by_name($stid,":p_fk_bot_name",$RequestObj->Parameters->Type->FkBotName);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_fk_tsg_code",$RequestObj->Parameters->Type->FkTsgCode);
+	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
+	oci_bind_by_name($stid,":p_xf_tsp_typ_name",$RequestObj->Parameters->Type->XfTspTypName);
+	oci_bind_by_name($stid,":p_xf_tsp_tsg_code",$RequestObj->Parameters->Type->XfTspTsgCode);
+	oci_bind_by_name($stid,":p_xk_tsp_code",$RequestObj->Parameters->Type->XkTspCode);
+	oci_bind_by_name($stid,":x_fk_typ_name",$RequestObj->Parameters->Ref->FkTypName);
+	oci_bind_by_name($stid,":x_fk_tsg_code",$RequestObj->Parameters->Ref->FkTsgCode);
+	oci_bind_by_name($stid,":x_code",$RequestObj->Parameters->Ref->Code);
+
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'CREATE_TSP';
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		echo ']';
+		return;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
+	break;
+
+case 'UpdateTsp':
+	echo '[';
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.update_tsp (
+		:p_fk_bot_name,
+		:p_fk_typ_name,
+		:p_fk_tsg_code,
+		:p_code,
+		:p_name,
+		:p_xf_tsp_typ_name,
+		:p_xf_tsp_tsg_code,
+		:p_xk_tsp_code);
+	END;");
+	oci_bind_by_name($stid,":p_fk_bot_name",$RequestObj->Parameters->Type->FkBotName);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_fk_tsg_code",$RequestObj->Parameters->Type->FkTsgCode);
+	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
+	oci_bind_by_name($stid,":p_xf_tsp_typ_name",$RequestObj->Parameters->Type->XfTspTypName);
+	oci_bind_by_name($stid,":p_xf_tsp_tsg_code",$RequestObj->Parameters->Type->XfTspTsgCode);
+	oci_bind_by_name($stid,":p_xk_tsp_code",$RequestObj->Parameters->Type->XkTspCode);
+
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'UPDATE_TSP';
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		echo ']';
+		return;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
+	break;
+
+case 'DeleteTsp':
+	echo '[';
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.delete_tsp (
+		:p_fk_typ_name,
+		:p_fk_tsg_code,
+		:p_code);
+	END;");
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_fk_tsg_code",$RequestObj->Parameters->Type->FkTsgCode);
+	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
+
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'DELETE_TSP';
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		echo ']';
+		return;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
+	break;
+
 case 'GetAtbForTypList':
 	echo '[';
 
@@ -1400,7 +1932,7 @@ case 'GetAtbItems':
 		$RowObj->Key = new \stdClass();
 		$RowObj->Key->FkTypName = $row["FK_TYP_NAME"];
 		$RowObj->Key->FkAtbName = $row["FK_ATB_NAME"];
-		$RowObj->Display = $row["CUBE_TSG_TYPE"];
+		$RowObj->Display = '('.$row["CUBE_TSG_TYPE"].')';
 		$ResponseObj->Rows[] = $RowObj;
 	}
 	$ResponseText = json_encode($ResponseObj);
@@ -2058,10 +2590,14 @@ case 'GetRef':
 		:p_cube_row,
 		:p_fk_typ_name,
 		:p_sequence,
+		:p_cube_tsg_int_ext,
+		:p_xk_bot_name,
 		:p_xk_typ_name);
 	END;");
 	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
 	oci_bind_by_name($stid,":p_sequence",$RequestObj->Parameters->Type->Sequence);
+	oci_bind_by_name($stid,":p_cube_tsg_int_ext",$RequestObj->Parameters->Type->CubeTsgIntExt);
+	oci_bind_by_name($stid,":p_xk_bot_name",$RequestObj->Parameters->Type->XkBotName);
 	oci_bind_by_name($stid,":p_xk_typ_name",$RequestObj->Parameters->Type->XkTypName);
 
 	$responseObj = new \stdClass();
@@ -2098,10 +2634,14 @@ case 'GetRefFkey':
 		:p_cube_row,
 		:p_fk_typ_name,
 		:p_sequence,
+		:p_cube_tsg_int_ext,
+		:p_xk_bot_name,
 		:p_xk_typ_name);
 	END;");
 	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
 	oci_bind_by_name($stid,":p_sequence",$RequestObj->Parameters->Type->Sequence);
+	oci_bind_by_name($stid,":p_cube_tsg_int_ext",$RequestObj->Parameters->Type->CubeTsgIntExt);
+	oci_bind_by_name($stid,":p_xk_bot_name",$RequestObj->Parameters->Type->XkBotName);
 	oci_bind_by_name($stid,":p_xk_typ_name",$RequestObj->Parameters->Type->XkTypName);
 
 	$responseObj = new \stdClass();
@@ -2131,10 +2671,14 @@ case 'GetRefItems':
 		:p_cube_row,
 		:p_fk_typ_name,
 		:p_sequence,
+		:p_cube_tsg_int_ext,
+		:p_xk_bot_name,
 		:p_xk_typ_name);
 	END;");
 	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
 	oci_bind_by_name($stid,":p_sequence",$RequestObj->Parameters->Type->Sequence);
+	oci_bind_by_name($stid,":p_cube_tsg_int_ext",$RequestObj->Parameters->Type->CubeTsgIntExt);
+	oci_bind_by_name($stid,":p_xk_bot_name",$RequestObj->Parameters->Type->XkBotName);
 	oci_bind_by_name($stid,":p_xk_typ_name",$RequestObj->Parameters->Type->XkTypName);
 
 	$responseObj = new \stdClass();
@@ -2150,6 +2694,8 @@ case 'GetRefItems':
 		$RowObj->Key = new \stdClass();
 		$RowObj->Key->FkTypName = $row["FK_TYP_NAME"];
 		$RowObj->Key->FkRefSequence = $row["FK_REF_SEQUENCE"];
+		$RowObj->Key->FkRefCubeTsgIntExt = $row["FK_REF_CUBE_TSG_INT_EXT"];
+		$RowObj->Key->FkRefBotName = $row["FK_REF_BOT_NAME"];
 		$RowObj->Key->FkRefTypName = $row["FK_REF_TYP_NAME"];
 		$RowObj->Display = ' ';
 		$ResponseObj->Rows[] = $RowObj;
@@ -2162,10 +2708,14 @@ case 'GetRefItems':
 		:p_cube_row,
 		:p_fk_typ_name,
 		:p_sequence,
+		:p_cube_tsg_int_ext,
+		:p_xk_bot_name,
 		:p_xk_typ_name);
 	END;");
 	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
 	oci_bind_by_name($stid,":p_sequence",$RequestObj->Parameters->Type->Sequence);
+	oci_bind_by_name($stid,":p_cube_tsg_int_ext",$RequestObj->Parameters->Type->CubeTsgIntExt);
+	oci_bind_by_name($stid,":p_xk_bot_name",$RequestObj->Parameters->Type->XkBotName);
 	oci_bind_by_name($stid,":p_xk_typ_name",$RequestObj->Parameters->Type->XkTypName);
 
 	$responseObj = new \stdClass();
@@ -2181,6 +2731,8 @@ case 'GetRefItems':
 		$RowObj->Key = new \stdClass();
 		$RowObj->Key->FkTypName = $row["FK_TYP_NAME"];
 		$RowObj->Key->FkRefSequence = $row["FK_REF_SEQUENCE"];
+		$RowObj->Key->FkRefCubeTsgIntExt = $row["FK_REF_CUBE_TSG_INT_EXT"];
+		$RowObj->Key->FkRefBotName = $row["FK_REF_BOT_NAME"];
 		$RowObj->Key->FkRefTypName = $row["FK_REF_TYP_NAME"];
 		$RowObj->Key->XfTspTypName = $row["XF_TSP_TYP_NAME"];
 		$RowObj->Key->XfTspTsgCode = $row["XF_TSP_TSG_CODE"];
@@ -2196,10 +2748,14 @@ case 'GetRefItems':
 		:p_cube_row,
 		:p_fk_typ_name,
 		:p_sequence,
+		:p_cube_tsg_int_ext,
+		:p_xk_bot_name,
 		:p_xk_typ_name);
 	END;");
 	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
 	oci_bind_by_name($stid,":p_sequence",$RequestObj->Parameters->Type->Sequence);
+	oci_bind_by_name($stid,":p_cube_tsg_int_ext",$RequestObj->Parameters->Type->CubeTsgIntExt);
+	oci_bind_by_name($stid,":p_xk_bot_name",$RequestObj->Parameters->Type->XkBotName);
 	oci_bind_by_name($stid,":p_xk_typ_name",$RequestObj->Parameters->Type->XkTypName);
 
 	$responseObj = new \stdClass();
@@ -2215,6 +2771,8 @@ case 'GetRefItems':
 		$RowObj->Key = new \stdClass();
 		$RowObj->Key->FkTypName = $row["FK_TYP_NAME"];
 		$RowObj->Key->FkRefSequence = $row["FK_REF_SEQUENCE"];
+		$RowObj->Key->FkRefCubeTsgIntExt = $row["FK_REF_CUBE_TSG_INT_EXT"];
+		$RowObj->Key->FkRefBotName = $row["FK_REF_BOT_NAME"];
 		$RowObj->Key->FkRefTypName = $row["FK_REF_TYP_NAME"];
 		$RowObj->Key->XfTspTypName = $row["XF_TSP_TYP_NAME"];
 		$RowObj->Key->XfTspTsgCode = $row["XF_TSP_TSG_CODE"];
@@ -2235,10 +2793,14 @@ case 'CountRefRestrictedItems':
 		:p_cube_row,
 		:p_fk_typ_name,
 		:p_sequence,
+		:p_cube_tsg_int_ext,
+		:p_xk_bot_name,
 		:p_xk_typ_name);
 	END;");
 	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
 	oci_bind_by_name($stid,":p_sequence",$RequestObj->Parameters->Type->Sequence);
+	oci_bind_by_name($stid,":p_cube_tsg_int_ext",$RequestObj->Parameters->Type->CubeTsgIntExt);
+	oci_bind_by_name($stid,":p_xk_bot_name",$RequestObj->Parameters->Type->XkBotName);
 	oci_bind_by_name($stid,":p_xk_typ_name",$RequestObj->Parameters->Type->XkTypName);
 
 	$responseObj = new \stdClass();
@@ -2263,10 +2825,14 @@ case 'CountRefRestrictedItems':
 		:p_cube_row,
 		:p_fk_typ_name,
 		:p_sequence,
+		:p_cube_tsg_int_ext,
+		:p_xk_bot_name,
 		:p_xk_typ_name);
 	END;");
 	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
 	oci_bind_by_name($stid,":p_sequence",$RequestObj->Parameters->Type->Sequence);
+	oci_bind_by_name($stid,":p_cube_tsg_int_ext",$RequestObj->Parameters->Type->CubeTsgIntExt);
+	oci_bind_by_name($stid,":p_xk_bot_name",$RequestObj->Parameters->Type->XkBotName);
 	oci_bind_by_name($stid,":p_xk_typ_name",$RequestObj->Parameters->Type->XkTypName);
 
 	$responseObj = new \stdClass();
@@ -2296,17 +2862,25 @@ case 'MoveRef':
 		:p_cube_pos_action,
 		:p_fk_typ_name,
 		:p_sequence,
+		:p_cube_tsg_int_ext,
+		:p_xk_bot_name,
 		:p_xk_typ_name,
 		:x_fk_typ_name,
 		:x_sequence,
+		:x_cube_tsg_int_ext,
+		:x_xk_bot_name,
 		:x_xk_typ_name);
 	END;");
 	oci_bind_by_name($stid,":p_cube_pos_action",$RequestObj->Parameters->Option->CubePosAction);
 	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
 	oci_bind_by_name($stid,":p_sequence",$RequestObj->Parameters->Type->Sequence);
+	oci_bind_by_name($stid,":p_cube_tsg_int_ext",$RequestObj->Parameters->Type->CubeTsgIntExt);
+	oci_bind_by_name($stid,":p_xk_bot_name",$RequestObj->Parameters->Type->XkBotName);
 	oci_bind_by_name($stid,":p_xk_typ_name",$RequestObj->Parameters->Type->XkTypName);
 	oci_bind_by_name($stid,":x_fk_typ_name",$RequestObj->Parameters->Ref->FkTypName);
 	oci_bind_by_name($stid,":x_sequence",$RequestObj->Parameters->Ref->Sequence);
+	oci_bind_by_name($stid,":x_cube_tsg_int_ext",$RequestObj->Parameters->Ref->CubeTsgIntExt);
+	oci_bind_by_name($stid,":x_xk_bot_name",$RequestObj->Parameters->Ref->XkBotName);
 	oci_bind_by_name($stid,":x_xk_typ_name",$RequestObj->Parameters->Ref->XkTypName);
 
 	$responseObj = new \stdClass();
@@ -2337,10 +2911,14 @@ case 'CreateRef':
 		:p_scope,
 		:p_unchangeable,
 		:p_within_scope_extension,
+		:p_cube_tsg_int_ext,
+		:p_xk_bot_name,
 		:p_xk_typ_name,
 		:p_xk_typ_name_1,
 		:x_fk_typ_name,
 		:x_sequence,
+		:x_cube_tsg_int_ext,
+		:x_xk_bot_name,
 		:x_xk_typ_name);
 	END;");
 	oci_bind_by_name($stid,":p_cube_pos_action",$RequestObj->Parameters->Option->CubePosAction);
@@ -2353,10 +2931,14 @@ case 'CreateRef':
 	oci_bind_by_name($stid,":p_scope",$RequestObj->Parameters->Type->Scope);
 	oci_bind_by_name($stid,":p_unchangeable",$RequestObj->Parameters->Type->Unchangeable);
 	oci_bind_by_name($stid,":p_within_scope_extension",$RequestObj->Parameters->Type->WithinScopeExtension);
+	oci_bind_by_name($stid,":p_cube_tsg_int_ext",$RequestObj->Parameters->Type->CubeTsgIntExt);
+	oci_bind_by_name($stid,":p_xk_bot_name",$RequestObj->Parameters->Type->XkBotName);
 	oci_bind_by_name($stid,":p_xk_typ_name",$RequestObj->Parameters->Type->XkTypName);
 	oci_bind_by_name($stid,":p_xk_typ_name_1",$RequestObj->Parameters->Type->XkTypName1);
 	oci_bind_by_name($stid,":x_fk_typ_name",$RequestObj->Parameters->Ref->FkTypName);
 	oci_bind_by_name($stid,":x_sequence",$RequestObj->Parameters->Ref->Sequence);
+	oci_bind_by_name($stid,":x_cube_tsg_int_ext",$RequestObj->Parameters->Ref->CubeTsgIntExt);
+	oci_bind_by_name($stid,":x_xk_bot_name",$RequestObj->Parameters->Ref->XkBotName);
 	oci_bind_by_name($stid,":x_xk_typ_name",$RequestObj->Parameters->Ref->XkTypName);
 
 	$responseObj = new \stdClass();
@@ -2386,6 +2968,8 @@ case 'UpdateRef':
 		:p_scope,
 		:p_unchangeable,
 		:p_within_scope_extension,
+		:p_cube_tsg_int_ext,
+		:p_xk_bot_name,
 		:p_xk_typ_name,
 		:p_xk_typ_name_1);
 	END;");
@@ -2398,6 +2982,8 @@ case 'UpdateRef':
 	oci_bind_by_name($stid,":p_scope",$RequestObj->Parameters->Type->Scope);
 	oci_bind_by_name($stid,":p_unchangeable",$RequestObj->Parameters->Type->Unchangeable);
 	oci_bind_by_name($stid,":p_within_scope_extension",$RequestObj->Parameters->Type->WithinScopeExtension);
+	oci_bind_by_name($stid,":p_cube_tsg_int_ext",$RequestObj->Parameters->Type->CubeTsgIntExt);
+	oci_bind_by_name($stid,":p_xk_bot_name",$RequestObj->Parameters->Type->XkBotName);
 	oci_bind_by_name($stid,":p_xk_typ_name",$RequestObj->Parameters->Type->XkTypName);
 	oci_bind_by_name($stid,":p_xk_typ_name_1",$RequestObj->Parameters->Type->XkTypName1);
 
@@ -2421,10 +3007,14 @@ case 'DeleteRef':
 	$stid = oci_parse($conn, "BEGIN pkg_bot.delete_ref (
 		:p_fk_typ_name,
 		:p_sequence,
+		:p_cube_tsg_int_ext,
+		:p_xk_bot_name,
 		:p_xk_typ_name);
 	END;");
 	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
 	oci_bind_by_name($stid,":p_sequence",$RequestObj->Parameters->Type->Sequence);
+	oci_bind_by_name($stid,":p_cube_tsg_int_ext",$RequestObj->Parameters->Type->CubeTsgIntExt);
+	oci_bind_by_name($stid,":p_xk_bot_name",$RequestObj->Parameters->Type->XkBotName);
 	oci_bind_by_name($stid,":p_xk_typ_name",$RequestObj->Parameters->Type->XkTypName);
 
 	$responseObj = new \stdClass();
@@ -2448,10 +3038,14 @@ case 'GetDcr':
 		:p_cube_row,
 		:p_fk_typ_name,
 		:p_fk_ref_sequence,
+		:p_fk_ref_cube_tsg_int_ext,
+		:p_fk_ref_bot_name,
 		:p_fk_ref_typ_name);
 	END;");
 	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
 	oci_bind_by_name($stid,":p_fk_ref_sequence",$RequestObj->Parameters->Type->FkRefSequence);
+	oci_bind_by_name($stid,":p_fk_ref_cube_tsg_int_ext",$RequestObj->Parameters->Type->FkRefCubeTsgIntExt);
+	oci_bind_by_name($stid,":p_fk_ref_bot_name",$RequestObj->Parameters->Type->FkRefBotName);
 	oci_bind_by_name($stid,":p_fk_ref_typ_name",$RequestObj->Parameters->Type->FkRefTypName);
 
 	$responseObj = new \stdClass();
@@ -2482,12 +3076,16 @@ case 'CreateDcr':
 		:p_fk_bot_name,
 		:p_fk_typ_name,
 		:p_fk_ref_sequence,
+		:p_fk_ref_cube_tsg_int_ext,
+		:p_fk_ref_bot_name,
 		:p_fk_ref_typ_name,
 		:p_text);
 	END;");
 	oci_bind_by_name($stid,":p_fk_bot_name",$RequestObj->Parameters->Type->FkBotName);
 	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
 	oci_bind_by_name($stid,":p_fk_ref_sequence",$RequestObj->Parameters->Type->FkRefSequence);
+	oci_bind_by_name($stid,":p_fk_ref_cube_tsg_int_ext",$RequestObj->Parameters->Type->FkRefCubeTsgIntExt);
+	oci_bind_by_name($stid,":p_fk_ref_bot_name",$RequestObj->Parameters->Type->FkRefBotName);
 	oci_bind_by_name($stid,":p_fk_ref_typ_name",$RequestObj->Parameters->Type->FkRefTypName);
 	oci_bind_by_name($stid,":p_text",$RequestObj->Parameters->Type->Text);
 
@@ -2512,12 +3110,16 @@ case 'UpdateDcr':
 		:p_fk_bot_name,
 		:p_fk_typ_name,
 		:p_fk_ref_sequence,
+		:p_fk_ref_cube_tsg_int_ext,
+		:p_fk_ref_bot_name,
 		:p_fk_ref_typ_name,
 		:p_text);
 	END;");
 	oci_bind_by_name($stid,":p_fk_bot_name",$RequestObj->Parameters->Type->FkBotName);
 	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
 	oci_bind_by_name($stid,":p_fk_ref_sequence",$RequestObj->Parameters->Type->FkRefSequence);
+	oci_bind_by_name($stid,":p_fk_ref_cube_tsg_int_ext",$RequestObj->Parameters->Type->FkRefCubeTsgIntExt);
+	oci_bind_by_name($stid,":p_fk_ref_bot_name",$RequestObj->Parameters->Type->FkRefBotName);
 	oci_bind_by_name($stid,":p_fk_ref_typ_name",$RequestObj->Parameters->Type->FkRefTypName);
 	oci_bind_by_name($stid,":p_text",$RequestObj->Parameters->Type->Text);
 
@@ -2541,10 +3143,14 @@ case 'DeleteDcr':
 	$stid = oci_parse($conn, "BEGIN pkg_bot.delete_dcr (
 		:p_fk_typ_name,
 		:p_fk_ref_sequence,
+		:p_fk_ref_cube_tsg_int_ext,
+		:p_fk_ref_bot_name,
 		:p_fk_ref_typ_name);
 	END;");
 	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
 	oci_bind_by_name($stid,":p_fk_ref_sequence",$RequestObj->Parameters->Type->FkRefSequence);
+	oci_bind_by_name($stid,":p_fk_ref_cube_tsg_int_ext",$RequestObj->Parameters->Type->FkRefCubeTsgIntExt);
+	oci_bind_by_name($stid,":p_fk_ref_bot_name",$RequestObj->Parameters->Type->FkRefBotName);
 	oci_bind_by_name($stid,":p_fk_ref_typ_name",$RequestObj->Parameters->Type->FkRefTypName);
 
 	$responseObj = new \stdClass();
@@ -2568,6 +3174,8 @@ case 'GetRtr':
 		:p_cube_row,
 		:p_fk_typ_name,
 		:p_fk_ref_sequence,
+		:p_fk_ref_cube_tsg_int_ext,
+		:p_fk_ref_bot_name,
 		:p_fk_ref_typ_name,
 		:p_xf_tsp_typ_name,
 		:p_xf_tsp_tsg_code,
@@ -2575,6 +3183,8 @@ case 'GetRtr':
 	END;");
 	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
 	oci_bind_by_name($stid,":p_fk_ref_sequence",$RequestObj->Parameters->Type->FkRefSequence);
+	oci_bind_by_name($stid,":p_fk_ref_cube_tsg_int_ext",$RequestObj->Parameters->Type->FkRefCubeTsgIntExt);
+	oci_bind_by_name($stid,":p_fk_ref_bot_name",$RequestObj->Parameters->Type->FkRefBotName);
 	oci_bind_by_name($stid,":p_fk_ref_typ_name",$RequestObj->Parameters->Type->FkRefTypName);
 	oci_bind_by_name($stid,":p_xf_tsp_typ_name",$RequestObj->Parameters->Type->XfTspTypName);
 	oci_bind_by_name($stid,":p_xf_tsp_tsg_code",$RequestObj->Parameters->Type->XfTspTsgCode);
@@ -2608,6 +3218,8 @@ case 'CreateRtr':
 		:p_fk_bot_name,
 		:p_fk_typ_name,
 		:p_fk_ref_sequence,
+		:p_fk_ref_cube_tsg_int_ext,
+		:p_fk_ref_bot_name,
 		:p_fk_ref_typ_name,
 		:p_include_or_exclude,
 		:p_xf_tsp_typ_name,
@@ -2618,6 +3230,8 @@ case 'CreateRtr':
 	oci_bind_by_name($stid,":p_fk_bot_name",$RequestObj->Parameters->Type->FkBotName);
 	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
 	oci_bind_by_name($stid,":p_fk_ref_sequence",$RequestObj->Parameters->Type->FkRefSequence);
+	oci_bind_by_name($stid,":p_fk_ref_cube_tsg_int_ext",$RequestObj->Parameters->Type->FkRefCubeTsgIntExt);
+	oci_bind_by_name($stid,":p_fk_ref_bot_name",$RequestObj->Parameters->Type->FkRefBotName);
 	oci_bind_by_name($stid,":p_fk_ref_typ_name",$RequestObj->Parameters->Type->FkRefTypName);
 	oci_bind_by_name($stid,":p_include_or_exclude",$RequestObj->Parameters->Type->IncludeOrExclude);
 	oci_bind_by_name($stid,":p_xf_tsp_typ_name",$RequestObj->Parameters->Type->XfTspTypName);
@@ -2637,6 +3251,8 @@ case 'CreateRtr':
 		$RowObj->Key = new \stdClass();
 		$RowObj->Key->FkTypName = $row["FK_TYP_NAME"];
 		$RowObj->Key->FkRefSequence = $row["FK_REF_SEQUENCE"];
+		$RowObj->Key->FkRefCubeTsgIntExt = $row["FK_REF_CUBE_TSG_INT_EXT"];
+		$RowObj->Key->FkRefBotName = $row["FK_REF_BOT_NAME"];
 		$RowObj->Key->FkRefTypName = $row["FK_REF_TYP_NAME"];
 		$RowObj->Key->XfTspTypName = $row["XF_TSP_TYP_NAME"];
 		$RowObj->Key->XfTspTsgCode = $row["XF_TSP_TSG_CODE"];
@@ -2656,6 +3272,8 @@ case 'UpdateRtr':
 		:p_fk_bot_name,
 		:p_fk_typ_name,
 		:p_fk_ref_sequence,
+		:p_fk_ref_cube_tsg_int_ext,
+		:p_fk_ref_bot_name,
 		:p_fk_ref_typ_name,
 		:p_include_or_exclude,
 		:p_xf_tsp_typ_name,
@@ -2665,6 +3283,8 @@ case 'UpdateRtr':
 	oci_bind_by_name($stid,":p_fk_bot_name",$RequestObj->Parameters->Type->FkBotName);
 	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
 	oci_bind_by_name($stid,":p_fk_ref_sequence",$RequestObj->Parameters->Type->FkRefSequence);
+	oci_bind_by_name($stid,":p_fk_ref_cube_tsg_int_ext",$RequestObj->Parameters->Type->FkRefCubeTsgIntExt);
+	oci_bind_by_name($stid,":p_fk_ref_bot_name",$RequestObj->Parameters->Type->FkRefBotName);
 	oci_bind_by_name($stid,":p_fk_ref_typ_name",$RequestObj->Parameters->Type->FkRefTypName);
 	oci_bind_by_name($stid,":p_include_or_exclude",$RequestObj->Parameters->Type->IncludeOrExclude);
 	oci_bind_by_name($stid,":p_xf_tsp_typ_name",$RequestObj->Parameters->Type->XfTspTypName);
@@ -2691,6 +3311,8 @@ case 'DeleteRtr':
 	$stid = oci_parse($conn, "BEGIN pkg_bot.delete_rtr (
 		:p_fk_typ_name,
 		:p_fk_ref_sequence,
+		:p_fk_ref_cube_tsg_int_ext,
+		:p_fk_ref_bot_name,
 		:p_fk_ref_typ_name,
 		:p_xf_tsp_typ_name,
 		:p_xf_tsp_tsg_code,
@@ -2698,6 +3320,8 @@ case 'DeleteRtr':
 	END;");
 	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
 	oci_bind_by_name($stid,":p_fk_ref_sequence",$RequestObj->Parameters->Type->FkRefSequence);
+	oci_bind_by_name($stid,":p_fk_ref_cube_tsg_int_ext",$RequestObj->Parameters->Type->FkRefCubeTsgIntExt);
+	oci_bind_by_name($stid,":p_fk_ref_bot_name",$RequestObj->Parameters->Type->FkRefBotName);
 	oci_bind_by_name($stid,":p_fk_ref_typ_name",$RequestObj->Parameters->Type->FkRefTypName);
 	oci_bind_by_name($stid,":p_xf_tsp_typ_name",$RequestObj->Parameters->Type->XfTspTypName);
 	oci_bind_by_name($stid,":p_xf_tsp_tsg_code",$RequestObj->Parameters->Type->XfTspTsgCode);
@@ -2724,6 +3348,8 @@ case 'GetRts':
 		:p_cube_row,
 		:p_fk_typ_name,
 		:p_fk_ref_sequence,
+		:p_fk_ref_cube_tsg_int_ext,
+		:p_fk_ref_bot_name,
 		:p_fk_ref_typ_name,
 		:p_xf_tsp_typ_name,
 		:p_xf_tsp_tsg_code,
@@ -2731,6 +3357,8 @@ case 'GetRts':
 	END;");
 	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
 	oci_bind_by_name($stid,":p_fk_ref_sequence",$RequestObj->Parameters->Type->FkRefSequence);
+	oci_bind_by_name($stid,":p_fk_ref_cube_tsg_int_ext",$RequestObj->Parameters->Type->FkRefCubeTsgIntExt);
+	oci_bind_by_name($stid,":p_fk_ref_bot_name",$RequestObj->Parameters->Type->FkRefBotName);
 	oci_bind_by_name($stid,":p_fk_ref_typ_name",$RequestObj->Parameters->Type->FkRefTypName);
 	oci_bind_by_name($stid,":p_xf_tsp_typ_name",$RequestObj->Parameters->Type->XfTspTypName);
 	oci_bind_by_name($stid,":p_xf_tsp_tsg_code",$RequestObj->Parameters->Type->XfTspTsgCode);
@@ -2764,6 +3392,8 @@ case 'CreateRts':
 		:p_fk_bot_name,
 		:p_fk_typ_name,
 		:p_fk_ref_sequence,
+		:p_fk_ref_cube_tsg_int_ext,
+		:p_fk_ref_bot_name,
 		:p_fk_ref_typ_name,
 		:p_include_or_exclude,
 		:p_xf_tsp_typ_name,
@@ -2773,6 +3403,8 @@ case 'CreateRts':
 	oci_bind_by_name($stid,":p_fk_bot_name",$RequestObj->Parameters->Type->FkBotName);
 	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
 	oci_bind_by_name($stid,":p_fk_ref_sequence",$RequestObj->Parameters->Type->FkRefSequence);
+	oci_bind_by_name($stid,":p_fk_ref_cube_tsg_int_ext",$RequestObj->Parameters->Type->FkRefCubeTsgIntExt);
+	oci_bind_by_name($stid,":p_fk_ref_bot_name",$RequestObj->Parameters->Type->FkRefBotName);
 	oci_bind_by_name($stid,":p_fk_ref_typ_name",$RequestObj->Parameters->Type->FkRefTypName);
 	oci_bind_by_name($stid,":p_include_or_exclude",$RequestObj->Parameters->Type->IncludeOrExclude);
 	oci_bind_by_name($stid,":p_xf_tsp_typ_name",$RequestObj->Parameters->Type->XfTspTypName);
@@ -2800,6 +3432,8 @@ case 'UpdateRts':
 		:p_fk_bot_name,
 		:p_fk_typ_name,
 		:p_fk_ref_sequence,
+		:p_fk_ref_cube_tsg_int_ext,
+		:p_fk_ref_bot_name,
 		:p_fk_ref_typ_name,
 		:p_include_or_exclude,
 		:p_xf_tsp_typ_name,
@@ -2809,6 +3443,8 @@ case 'UpdateRts':
 	oci_bind_by_name($stid,":p_fk_bot_name",$RequestObj->Parameters->Type->FkBotName);
 	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
 	oci_bind_by_name($stid,":p_fk_ref_sequence",$RequestObj->Parameters->Type->FkRefSequence);
+	oci_bind_by_name($stid,":p_fk_ref_cube_tsg_int_ext",$RequestObj->Parameters->Type->FkRefCubeTsgIntExt);
+	oci_bind_by_name($stid,":p_fk_ref_bot_name",$RequestObj->Parameters->Type->FkRefBotName);
 	oci_bind_by_name($stid,":p_fk_ref_typ_name",$RequestObj->Parameters->Type->FkRefTypName);
 	oci_bind_by_name($stid,":p_include_or_exclude",$RequestObj->Parameters->Type->IncludeOrExclude);
 	oci_bind_by_name($stid,":p_xf_tsp_typ_name",$RequestObj->Parameters->Type->XfTspTypName);
@@ -2835,6 +3471,8 @@ case 'DeleteRts':
 	$stid = oci_parse($conn, "BEGIN pkg_bot.delete_rts (
 		:p_fk_typ_name,
 		:p_fk_ref_sequence,
+		:p_fk_ref_cube_tsg_int_ext,
+		:p_fk_ref_bot_name,
 		:p_fk_ref_typ_name,
 		:p_xf_tsp_typ_name,
 		:p_xf_tsp_tsg_code,
@@ -2842,6 +3480,8 @@ case 'DeleteRts':
 	END;");
 	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
 	oci_bind_by_name($stid,":p_fk_ref_sequence",$RequestObj->Parameters->Type->FkRefSequence);
+	oci_bind_by_name($stid,":p_fk_ref_cube_tsg_int_ext",$RequestObj->Parameters->Type->FkRefCubeTsgIntExt);
+	oci_bind_by_name($stid,":p_fk_ref_bot_name",$RequestObj->Parameters->Type->FkRefBotName);
 	oci_bind_by_name($stid,":p_fk_ref_typ_name",$RequestObj->Parameters->Type->FkRefTypName);
 	oci_bind_by_name($stid,":p_xf_tsp_typ_name",$RequestObj->Parameters->Type->XfTspTypName);
 	oci_bind_by_name($stid,":p_xf_tsp_tsg_code",$RequestObj->Parameters->Type->XfTspTsgCode);
@@ -3120,7 +3760,7 @@ case 'GetJsnItems':
 		$RowObj->Key->XfAtbTypName = $row["XF_ATB_TYP_NAME"];
 		$RowObj->Key->XkAtbName = $row["XK_ATB_NAME"];
 		$RowObj->Key->XkTypName = $row["XK_TYP_NAME"];
-		$RowObj->Display = $row["CUBE_TSG_OBJ_ARR"].' '.$row["CUBE_TSG_TYPE"].' '.$row["NAME"].' '.$row["LOCATION"];
+		$RowObj->Display = '('.$row["CUBE_TSG_OBJ_ARR"].')'.' ('.$row["CUBE_TSG_TYPE"].')'.' '.$row["NAME"].' '.$row["LOCATION"];
 		$ResponseObj->Rows[] = $RowObj;
 	}
 	$ResponseText = json_encode($ResponseObj);
@@ -3317,545 +3957,6 @@ case 'DeleteJsn':
 
 	break;
 
-case 'GetTsg':
-	echo '[';
-
-	$stid = oci_parse($conn, "BEGIN pkg_bot.get_tsg (
-		:p_cube_row,
-		:p_fk_typ_name,
-		:p_code);
-	END;");
-	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
-	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
-
-	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'SELECT_TSG';
-	$r = perform_db_request();
-	if (!$r) { 
-		echo ']';
-		return;
-	}
-	$ResponseObj->Rows = array();
-	if ($row = oci_fetch_assoc($curs)) {
-		$RowObj = new \stdClass();
-		$RowObj->Data = new \stdClass();
-		$RowObj->Data->FkBotName = $row["FK_BOT_NAME"];
-		$RowObj->Data->FkTsgCode = $row["FK_TSG_CODE"];
-		$RowObj->Data->Name = $row["NAME"];
-		$RowObj->Data->PrimaryKey = $row["PRIMARY_KEY"];
-		$RowObj->Data->XfAtbTypName = $row["XF_ATB_TYP_NAME"];
-		$RowObj->Data->XkAtbName = $row["XK_ATB_NAME"];
-		$ResponseObj->Rows[] = $RowObj;
-	}
-	$ResponseText = json_encode($ResponseObj);
-	echo $ResponseText;
-	echo ']';
-
-	break;
-
-case 'GetTsgFkey':
-	echo '[';
-
-	$stid = oci_parse($conn, "BEGIN pkg_bot.get_tsg_fkey (
-		:p_cube_row,
-		:p_fk_typ_name,
-		:p_code);
-	END;");
-	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
-	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
-
-	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'SELECT_FKEY_TSG';
-	$r = perform_db_request();
-	if (!$r) { 
-		echo ']';
-		return;
-	}
-	$ResponseObj->Rows = array();
-	if ($row = oci_fetch_assoc($curs)) {
-		$RowObj = new \stdClass();
-		$RowObj->Data = new \stdClass();
-		$RowObj->Data->FkBotName = $row["FK_BOT_NAME"];
-		$ResponseObj->Rows[] = $RowObj;
-	}
-	$ResponseText = json_encode($ResponseObj);
-	echo $ResponseText;
-	echo ']';
-
-	break;
-
-case 'GetTsgItems':
-	echo '[';
-
-	$stid = oci_parse($conn, "BEGIN pkg_bot.get_tsg_tsp_items (
-		:p_cube_row,
-		:p_fk_typ_name,
-		:p_code);
-	END;");
-	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
-	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
-
-	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'LIST_TSP';
-	$r = perform_db_request();
-	if (!$r) { 
-		echo ']';
-		return;
-	}
-	$ResponseObj->Rows = array();
-	while ($row = oci_fetch_assoc($curs)) {
-		$RowObj = new \stdClass();
-		$RowObj->Key = new \stdClass();
-		$RowObj->Key->FkTypName = $row["FK_TYP_NAME"];
-		$RowObj->Key->FkTsgCode = $row["FK_TSG_CODE"];
-		$RowObj->Key->Code = $row["CODE"];
-		$RowObj->Display = '('.$row["CODE"].')'.' '.$row["NAME"];
-		$ResponseObj->Rows[] = $RowObj;
-	}
-	$ResponseText = json_encode($ResponseObj);
-	echo $ResponseText;
-	echo ',';
-
-	$stid = oci_parse($conn, "BEGIN pkg_bot.get_tsg_tsg_items (
-		:p_cube_row,
-		:p_fk_typ_name,
-		:p_code);
-	END;");
-	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
-	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
-
-	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'LIST_TSG';
-	$r = perform_db_request();
-	if (!$r) { 
-		echo ']';
-		return;
-	}
-	$ResponseObj->Rows = array();
-	while ($row = oci_fetch_assoc($curs)) {
-		$RowObj = new \stdClass();
-		$RowObj->Key = new \stdClass();
-		$RowObj->Key->FkTypName = $row["FK_TYP_NAME"];
-		$RowObj->Key->Code = $row["CODE"];
-		$RowObj->Display = '('.$row["CODE"].')'.' '.$row["NAME"];
-		$ResponseObj->Rows[] = $RowObj;
-	}
-	$ResponseText = json_encode($ResponseObj);
-	echo $ResponseText;
-	echo ']';
-
-	break;
-
-case 'CountTsgRestrictedItems':
-	echo '[';
-
-	$stid = oci_parse($conn, "BEGIN pkg_bot.count_tsg_tsg (
-		:p_cube_row,
-		:p_fk_typ_name,
-		:p_code);
-	END;");
-	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
-	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
-
-	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'COUNT_TSG';
-	$r = perform_db_request();
-	if (!$r) { 
-		echo ']';
-		return;
-	}
-	$ResponseObj->Rows = array();
-	if ($row = oci_fetch_assoc($curs)) {
-		$RowObj = new \stdClass();
-		$RowObj->Data = new \stdClass();
-		$RowObj->Data->TypeCount = $row["TYPE_COUNT"];
-		$ResponseObj->Rows[] = $RowObj;
-	}
-	$ResponseText = json_encode($ResponseObj);
-	echo $ResponseText;
-	echo ']';
-
-	break;
-
-case 'MoveTsg':
-	echo '[';
-
-	$stid = oci_parse($conn, "BEGIN pkg_bot.move_tsg (
-		:p_cube_pos_action,
-		:p_fk_typ_name,
-		:p_code,
-		:x_fk_typ_name,
-		:x_code);
-	END;");
-	oci_bind_by_name($stid,":p_cube_pos_action",$RequestObj->Parameters->Option->CubePosAction);
-	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
-	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
-	oci_bind_by_name($stid,":x_fk_typ_name",$RequestObj->Parameters->Ref->FkTypName);
-	oci_bind_by_name($stid,":x_code",$RequestObj->Parameters->Ref->Code);
-
-	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'MOVE_TSG';
-	$r = oci_execute($stid);
-	if (!$r) {
-		ProcessDbError($stid);
-		echo ']';
-		return;
-	}
-	$ResponseText = json_encode($ResponseObj);
-	echo $ResponseText;
-	echo ']';
-
-	break;
-
-case 'CreateTsg':
-	echo '[';
-
-	$stid = oci_parse($conn, "BEGIN pkg_bot.insert_tsg (
-		:p_cube_pos_action,
-		:p_fk_bot_name,
-		:p_fk_typ_name,
-		:p_fk_tsg_code,
-		:p_code,
-		:p_name,
-		:p_primary_key,
-		:p_xf_atb_typ_name,
-		:p_xk_atb_name,
-		:x_fk_typ_name,
-		:x_code);
-	END;");
-	oci_bind_by_name($stid,":p_cube_pos_action",$RequestObj->Parameters->Option->CubePosAction);
-	oci_bind_by_name($stid,":p_fk_bot_name",$RequestObj->Parameters->Type->FkBotName);
-	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
-	oci_bind_by_name($stid,":p_fk_tsg_code",$RequestObj->Parameters->Type->FkTsgCode);
-	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
-	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
-	oci_bind_by_name($stid,":p_primary_key",$RequestObj->Parameters->Type->PrimaryKey);
-	oci_bind_by_name($stid,":p_xf_atb_typ_name",$RequestObj->Parameters->Type->XfAtbTypName);
-	oci_bind_by_name($stid,":p_xk_atb_name",$RequestObj->Parameters->Type->XkAtbName);
-	oci_bind_by_name($stid,":x_fk_typ_name",$RequestObj->Parameters->Ref->FkTypName);
-	oci_bind_by_name($stid,":x_code",$RequestObj->Parameters->Ref->Code);
-
-	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'CREATE_TSG';
-	$r = oci_execute($stid);
-	if (!$r) {
-		ProcessDbError($stid);
-		echo ']';
-		return;
-	}
-	$ResponseText = json_encode($ResponseObj);
-	echo $ResponseText;
-	echo ']';
-
-	break;
-
-case 'UpdateTsg':
-	echo '[';
-
-	$stid = oci_parse($conn, "BEGIN pkg_bot.update_tsg (
-		:p_fk_bot_name,
-		:p_fk_typ_name,
-		:p_fk_tsg_code,
-		:p_code,
-		:p_name,
-		:p_primary_key,
-		:p_xf_atb_typ_name,
-		:p_xk_atb_name);
-	END;");
-	oci_bind_by_name($stid,":p_fk_bot_name",$RequestObj->Parameters->Type->FkBotName);
-	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
-	oci_bind_by_name($stid,":p_fk_tsg_code",$RequestObj->Parameters->Type->FkTsgCode);
-	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
-	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
-	oci_bind_by_name($stid,":p_primary_key",$RequestObj->Parameters->Type->PrimaryKey);
-	oci_bind_by_name($stid,":p_xf_atb_typ_name",$RequestObj->Parameters->Type->XfAtbTypName);
-	oci_bind_by_name($stid,":p_xk_atb_name",$RequestObj->Parameters->Type->XkAtbName);
-
-	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'UPDATE_TSG';
-	$r = oci_execute($stid);
-	if (!$r) {
-		ProcessDbError($stid);
-		echo ']';
-		return;
-	}
-	$ResponseText = json_encode($ResponseObj);
-	echo $ResponseText;
-	echo ']';
-
-	break;
-
-case 'DeleteTsg':
-	echo '[';
-
-	$stid = oci_parse($conn, "BEGIN pkg_bot.delete_tsg (
-		:p_fk_typ_name,
-		:p_code);
-	END;");
-	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
-	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
-
-	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'DELETE_TSG';
-	$r = oci_execute($stid);
-	if (!$r) {
-		ProcessDbError($stid);
-		echo ']';
-		return;
-	}
-	$ResponseText = json_encode($ResponseObj);
-	echo $ResponseText;
-	echo ']';
-
-	break;
-
-case 'GetTspForTypList':
-	echo '[';
-
-	$stid = oci_parse($conn, "BEGIN pkg_bot.get_tsp_for_typ_list (
-		:p_cube_row,
-		:p_cube_scope_level,
-		:x_fk_typ_name);
-	END;");
-	oci_bind_by_name($stid,":p_cube_scope_level",$RequestObj->Parameters->Option->CubeScopeLevel);
-	oci_bind_by_name($stid,":x_fk_typ_name",$RequestObj->Parameters->Ref->FkTypName);
-
-	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'LIST_TSP';
-	$r = perform_db_request();
-	if (!$r) { 
-		echo ']';
-		return;
-	}
-	$ResponseObj->Rows = array();
-	while ($row = oci_fetch_assoc($curs)) {
-		$RowObj = new \stdClass();
-		$RowObj->Key = new \stdClass();
-		$RowObj->Key->FkTypName = $row["FK_TYP_NAME"];
-		$RowObj->Key->FkTsgCode = $row["FK_TSG_CODE"];
-		$RowObj->Key->Code = $row["CODE"];
-		$RowObj->Display = $row["FK_TYP_NAME"].' '.$row["FK_TSG_CODE"].' ('.$row["CODE"].')'.' '.$row["NAME"];
-		$ResponseObj->Rows[] = $RowObj;
-	}
-	$ResponseText = json_encode($ResponseObj);
-	echo $ResponseText;
-	echo ']';
-
-	break;
-
-case 'GetTspForTsgList':
-	echo '[';
-
-	$stid = oci_parse($conn, "BEGIN pkg_bot.get_tsp_for_tsg_list (
-		:p_cube_row,
-		:p_cube_scope_level,
-		:x_fk_typ_name,
-		:x_fk_tsg_code);
-	END;");
-	oci_bind_by_name($stid,":p_cube_scope_level",$RequestObj->Parameters->Option->CubeScopeLevel);
-	oci_bind_by_name($stid,":x_fk_typ_name",$RequestObj->Parameters->Ref->FkTypName);
-	oci_bind_by_name($stid,":x_fk_tsg_code",$RequestObj->Parameters->Ref->FkTsgCode);
-
-	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'LIST_TSP';
-	$r = perform_db_request();
-	if (!$r) { 
-		echo ']';
-		return;
-	}
-	$ResponseObj->Rows = array();
-	while ($row = oci_fetch_assoc($curs)) {
-		$RowObj = new \stdClass();
-		$RowObj->Key = new \stdClass();
-		$RowObj->Key->FkTypName = $row["FK_TYP_NAME"];
-		$RowObj->Key->FkTsgCode = $row["FK_TSG_CODE"];
-		$RowObj->Key->Code = $row["CODE"];
-		$RowObj->Display = $row["FK_TYP_NAME"].' '.$row["FK_TSG_CODE"].' ('.$row["CODE"].')'.' '.$row["NAME"];
-		$ResponseObj->Rows[] = $RowObj;
-	}
-	$ResponseText = json_encode($ResponseObj);
-	echo $ResponseText;
-	echo ']';
-
-	break;
-
-case 'GetTsp':
-	echo '[';
-
-	$stid = oci_parse($conn, "BEGIN pkg_bot.get_tsp (
-		:p_cube_row,
-		:p_fk_typ_name,
-		:p_fk_tsg_code,
-		:p_code);
-	END;");
-	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
-	oci_bind_by_name($stid,":p_fk_tsg_code",$RequestObj->Parameters->Type->FkTsgCode);
-	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
-
-	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'SELECT_TSP';
-	$r = perform_db_request();
-	if (!$r) { 
-		echo ']';
-		return;
-	}
-	$ResponseObj->Rows = array();
-	if ($row = oci_fetch_assoc($curs)) {
-		$RowObj = new \stdClass();
-		$RowObj->Data = new \stdClass();
-		$RowObj->Data->FkBotName = $row["FK_BOT_NAME"];
-		$RowObj->Data->Name = $row["NAME"];
-		$RowObj->Data->XfTspTypName = $row["XF_TSP_TYP_NAME"];
-		$RowObj->Data->XfTspTsgCode = $row["XF_TSP_TSG_CODE"];
-		$RowObj->Data->XkTspCode = $row["XK_TSP_CODE"];
-		$ResponseObj->Rows[] = $RowObj;
-	}
-	$ResponseText = json_encode($ResponseObj);
-	echo $ResponseText;
-	echo ']';
-
-	break;
-
-case 'MoveTsp':
-	echo '[';
-
-	$stid = oci_parse($conn, "BEGIN pkg_bot.move_tsp (
-		:p_cube_pos_action,
-		:p_fk_typ_name,
-		:p_fk_tsg_code,
-		:p_code,
-		:x_fk_typ_name,
-		:x_fk_tsg_code,
-		:x_code);
-	END;");
-	oci_bind_by_name($stid,":p_cube_pos_action",$RequestObj->Parameters->Option->CubePosAction);
-	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
-	oci_bind_by_name($stid,":p_fk_tsg_code",$RequestObj->Parameters->Type->FkTsgCode);
-	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
-	oci_bind_by_name($stid,":x_fk_typ_name",$RequestObj->Parameters->Ref->FkTypName);
-	oci_bind_by_name($stid,":x_fk_tsg_code",$RequestObj->Parameters->Ref->FkTsgCode);
-	oci_bind_by_name($stid,":x_code",$RequestObj->Parameters->Ref->Code);
-
-	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'MOVE_TSP';
-	$r = oci_execute($stid);
-	if (!$r) {
-		ProcessDbError($stid);
-		echo ']';
-		return;
-	}
-	$ResponseText = json_encode($ResponseObj);
-	echo $ResponseText;
-	echo ']';
-
-	break;
-
-case 'CreateTsp':
-	echo '[';
-
-	$stid = oci_parse($conn, "BEGIN pkg_bot.insert_tsp (
-		:p_cube_pos_action,
-		:p_fk_bot_name,
-		:p_fk_typ_name,
-		:p_fk_tsg_code,
-		:p_code,
-		:p_name,
-		:p_xf_tsp_typ_name,
-		:p_xf_tsp_tsg_code,
-		:p_xk_tsp_code,
-		:x_fk_typ_name,
-		:x_fk_tsg_code,
-		:x_code);
-	END;");
-	oci_bind_by_name($stid,":p_cube_pos_action",$RequestObj->Parameters->Option->CubePosAction);
-	oci_bind_by_name($stid,":p_fk_bot_name",$RequestObj->Parameters->Type->FkBotName);
-	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
-	oci_bind_by_name($stid,":p_fk_tsg_code",$RequestObj->Parameters->Type->FkTsgCode);
-	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
-	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
-	oci_bind_by_name($stid,":p_xf_tsp_typ_name",$RequestObj->Parameters->Type->XfTspTypName);
-	oci_bind_by_name($stid,":p_xf_tsp_tsg_code",$RequestObj->Parameters->Type->XfTspTsgCode);
-	oci_bind_by_name($stid,":p_xk_tsp_code",$RequestObj->Parameters->Type->XkTspCode);
-	oci_bind_by_name($stid,":x_fk_typ_name",$RequestObj->Parameters->Ref->FkTypName);
-	oci_bind_by_name($stid,":x_fk_tsg_code",$RequestObj->Parameters->Ref->FkTsgCode);
-	oci_bind_by_name($stid,":x_code",$RequestObj->Parameters->Ref->Code);
-
-	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'CREATE_TSP';
-	$r = oci_execute($stid);
-	if (!$r) {
-		ProcessDbError($stid);
-		echo ']';
-		return;
-	}
-	$ResponseText = json_encode($ResponseObj);
-	echo $ResponseText;
-	echo ']';
-
-	break;
-
-case 'UpdateTsp':
-	echo '[';
-
-	$stid = oci_parse($conn, "BEGIN pkg_bot.update_tsp (
-		:p_fk_bot_name,
-		:p_fk_typ_name,
-		:p_fk_tsg_code,
-		:p_code,
-		:p_name,
-		:p_xf_tsp_typ_name,
-		:p_xf_tsp_tsg_code,
-		:p_xk_tsp_code);
-	END;");
-	oci_bind_by_name($stid,":p_fk_bot_name",$RequestObj->Parameters->Type->FkBotName);
-	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
-	oci_bind_by_name($stid,":p_fk_tsg_code",$RequestObj->Parameters->Type->FkTsgCode);
-	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
-	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
-	oci_bind_by_name($stid,":p_xf_tsp_typ_name",$RequestObj->Parameters->Type->XfTspTypName);
-	oci_bind_by_name($stid,":p_xf_tsp_tsg_code",$RequestObj->Parameters->Type->XfTspTsgCode);
-	oci_bind_by_name($stid,":p_xk_tsp_code",$RequestObj->Parameters->Type->XkTspCode);
-
-	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'UPDATE_TSP';
-	$r = oci_execute($stid);
-	if (!$r) {
-		ProcessDbError($stid);
-		echo ']';
-		return;
-	}
-	$ResponseText = json_encode($ResponseObj);
-	echo $ResponseText;
-	echo ']';
-
-	break;
-
-case 'DeleteTsp':
-	echo '[';
-
-	$stid = oci_parse($conn, "BEGIN pkg_bot.delete_tsp (
-		:p_fk_typ_name,
-		:p_fk_tsg_code,
-		:p_code);
-	END;");
-	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
-	oci_bind_by_name($stid,":p_fk_tsg_code",$RequestObj->Parameters->Type->FkTsgCode);
-	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
-
-	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'DELETE_TSP';
-	$r = oci_execute($stid);
-	if (!$r) {
-		ProcessDbError($stid);
-		echo ']';
-		return;
-	}
-	$ResponseText = json_encode($ResponseObj);
-	echo $ResponseText;
-	echo ']';
-
-	break;
-
 case 'GetDct':
 	echo '[';
 
@@ -3976,7 +4077,7 @@ case 'GetDirSysItems':
 		$RowObj = new \stdClass();
 		$RowObj->Key = new \stdClass();
 		$RowObj->Key->Name = $row["NAME"];
-		$RowObj->Display = $row["NAME"].' '.$row["CUBE_TSG_TYPE"];
+		$RowObj->Display = $row["NAME"].' ('.$row["CUBE_TSG_TYPE"].')';
 		$ResponseObj->Rows[] = $RowObj;
 	}
 	$ResponseText = json_encode($ResponseObj);

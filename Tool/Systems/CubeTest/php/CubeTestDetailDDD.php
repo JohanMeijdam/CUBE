@@ -117,7 +117,6 @@ g_xmlhttp.onreadystatechange = function() {
 		} else {
 			alert ('Request error:\n'+g_xmlhttp.statusText);
 		}
-		
 	}
 }
 

@@ -45,6 +45,9 @@ g_xmlhttp.onreadystatechange = function() {
 					case 'LIST_ORD': AddTreeviewChildren(l_json_array[i].Rows,'TYP_ORD','icons/order.bmp'); break;
 					case 'MOVE_ORD': MoveNode (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.body._moveAction); break;
 					case 'LIST_ORR': AddTreeviewChildren(l_json_array[i].Rows,'TYP_ORR','icons/ordprod.bmp'); break;
+					case 'LIST_AAA': AddTreeviewChildren(l_json_array[i].Rows,'TYP_AAA','icons/.bmp'); break;
+					case 'LIST_BBB': AddTreeviewChildren(l_json_array[i].Rows,'TYP_BBB','icons/.bmp'); break;
+					case 'LIST_CCC': AddTreeviewChildren(l_json_array[i].Rows,'TYP_CCC','icons/.bmp'); break;
 					case "SELECT_CUBE_DSC":	document.getElementById("CubeDesc").value = l_json_array[i].Rows[0].Data.Value;	break;
 					case "ERROR": alert ('Server error:\n'+l_json_array[i].ErrorText); break;
 					default: alert ('Unknown reply:\n'+g_responseText);
@@ -66,6 +69,7 @@ function InitBody() {
 	AddTreeviewNode(l_objBody, 'DIR_KLN', null, 'icons/folder.bmp', 'Klanten', 'Y', ' ', null);
 	AddTreeviewNode(l_objBody, 'DIR_PRD', null, 'icons/folder.bmp', 'Produkten', 'Y', ' ', null);
 	AddTreeviewNode(l_objBody, 'DIR_ORD', null, 'icons/folder.bmp', 'Orders', 'Y', ' ', null);
+	AddTreeviewNode(l_objBody, 'DIR_AAA', null, 'icons/folder.bmp', 'AAAs', 'Y', ' ', null);
 }
 
 function DefineTypePosition (p_parentType, p_type, p_switch) {
@@ -85,6 +89,12 @@ function DefineTypePosition (p_parentType, p_type, p_switch) {
 		var l_count = 1; break;
 	case 'TYP_ORD':
 		switch (p_type) { case 'TYP_ORR': l_index = 2; break;}
+		var l_count = 1; break;
+	case 'TYP_AAA':
+		switch (p_type) { case 'TYP_BBB': l_index = 2; break;}
+		var l_count = 1; break;
+	case 'TYP_BBB':
+		switch (p_type) { case 'TYP_CCC': l_index = 2; break;}
 		var l_count = 1; break;
 	default: var l_count = 0;
 	}
@@ -141,6 +151,17 @@ function OpenCloseOnClick(p_obj) {
  		case 'TYP_ORD':
 			var l_json_id = JSON.parse(p_obj.parentNode.id)["TYP_ORD"];
 			PerformTrans( {Service:"GetOrdItems",Parameters:{Type:l_json_id}} );
+			break;
+ 		case 'DIR_AAA':
+			PerformTrans( {Service:"GetDirAaaItems"} );
+			break;
+ 		case 'TYP_AAA':
+			var l_json_id = JSON.parse(p_obj.parentNode.id)["TYP_AAA"];
+			PerformTrans( {Service:"GetAaaItems",Parameters:{Type:l_json_id}} );
+			break;
+ 		case 'TYP_BBB':
+			var l_json_id = JSON.parse(p_obj.parentNode.id)["TYP_BBB"];
+			PerformTrans( {Service:"GetBbbItems",Parameters:{Type:l_json_id}} );
 			break;
 		} 
 	}
@@ -345,6 +366,15 @@ function OpenMenu(p_obj) {
 			AddMenuItem(g_objMenuList, 'move', 'icons/cube_move.bmp','CubeMove','','CUBE_M_ORD',0,'N',0);
 		}
 		AddMenuItem(g_objMenuList, 'add order_regel', 'icons/ordprod.bmp','DetailORR','N','TYP_ORR',0,'N',2);
+		break;
+ 	case 'DIR_AAA':
+		AddMenuItem(g_objMenuList, 'add aaa', 'icons/.bmp','DetailAAA','N','TYP_AAA',0,'N',2);
+		break;
+ 	case 'TYP_AAA':
+		AddMenuItem(g_objMenuList, 'add bbb', 'icons/.bmp','DetailBBB','N','TYP_BBB',0,'N',2);
+		break;
+ 	case 'TYP_BBB':
+		AddMenuItem(g_objMenuList, 'add ccc', 'icons/.bmp','DetailCCC','N','TYP_CCC',0,'N',2);
 		break;
 	}
 }

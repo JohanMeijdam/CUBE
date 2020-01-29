@@ -17,6 +17,7 @@ Change log:
 02-03-2018 - Scoping in hierarchy selection (SCOPE_LEVEL) implemented.
 23-09-2018 - Argument JSON group (Option,Type,Ref) added.
 21-12-2019 - List encapsulated argument fix.
+30-12-2019 - List encapsulated based on starting type key.
 [[INCLUDE,templates\includes\general.cgt]]
 [[TEXT,SPEC_EXPORT_LIST]]
 			>OPERATION_TYPE:<<TYPE:I>>;
@@ -80,7 +81,7 @@ Change log:
 	+SERVICE[CUBE-SRV-[[EVAL:$mySrvCount++]]]:get_<<TYPE1:L>>_[[LOOP,TYPE_LIST_SCOPE]]for_<<TYPE_LIST_SCOPE1:L>>_[[ENDLOOP,TYPE_LIST_SCOPE]]list[[IF,TYPE:3=Y]]_<<TYPE_LIST:L>>[[ENDIF]]|list|N|E;
 		>SERVICE_TYPE:<<TYPE:I>>;
 		>SERVICE_TYPE_LIST:<<TYPE_LIST:I>>;[[IF:CHILD(TYPE_LIST_SCOPE:3=Y)]]
-		=ARGUMENT[CUBE-IMP-[[EVAL:$mySrvCount]]-UP_DOWN]|ARGUMENT_ATTRIBUTE,CUBE_SCOPE_LEVEL:p_|I|Option;[[ENDIF]][[IF:0=encapsulated]][[FOR,TYPE:N>N]][[LOOP,ATTRIBUTE:3=F[AND]CHILD(ATTRIBUTE_SOURCE:1=Y)]]
+		=ARGUMENT[CUBE-IMP-[[EVAL:$mySrvCount]]-UP_DOWN]|ARGUMENT_ATTRIBUTE,CUBE_SCOPE_LEVEL:p_|I|Option;[[ENDIF]][[IF:0=encapsulated]][[FOR,TYPE:N>N]][[LOOP,ATTRIBUTE:1=Y]]
 		=ARGUMENT[CUBE-IMP-[[EVAL:$mySrvCount]]-P-<<ATTRIBUTE:N>>]|ARGUMENT_ATTRIBUTE,<<ATTRIBUTE:I>>:p_|I|Type;[[ENDLOOP,ATTRIBUTE]][[ENDFOR]][[ELSIF:0=recursive]]
 		=ARGUMENT[CUBE-IMP-[[EVAL:$mySrvCount]]-UP_DOWN]|ARGUMENT_ATTRIBUTE,CUBE_UP_OR_DOWN:p_|I|Option;
 		=ARGUMENT[CUBE-IMP-[[EVAL:$mySrvCount]]-LEVEL]|ARGUMENT_ATTRIBUTE,CUBE_X_LEVEL:p_|I|Option;[[FOR,TYPE:N>N]][[LOOP,ATTRIBUTE:1=Y]]

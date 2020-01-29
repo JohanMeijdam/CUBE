@@ -1955,4 +1955,266 @@ END;
 /
 SHOW ERRORS;
 
+CREATE OR REPLACE PACKAGE pkg_aaa IS
+
+	TYPE c_cube_row IS REF CURSOR;
+	FUNCTION cube_pkg_cubetest RETURN VARCHAR2;
+	PROCEDURE get_aaa_root_items (
+			p_cube_row IN OUT c_cube_row);
+	PROCEDURE get_aaa (
+			p_cube_row IN OUT c_cube_row,
+			p_id IN NUMBER);
+	PROCEDURE get_aaa_bbb_items (
+			p_cube_row IN OUT c_cube_row,
+			p_id IN NUMBER);
+	PROCEDURE insert_aaa (
+			p_id IN NUMBER,
+			p_naam IN VARCHAR2);
+	PROCEDURE update_aaa (
+			p_id IN NUMBER,
+			p_naam IN VARCHAR2);
+	PROCEDURE delete_aaa (
+			p_id IN NUMBER);
+	PROCEDURE get_bbb (
+			p_cube_row IN OUT c_cube_row,
+			p_id IN NUMBER);
+	PROCEDURE get_bbb_fkey (
+			p_cube_row IN OUT c_cube_row,
+			p_id IN NUMBER);
+	PROCEDURE get_bbb_ccc_items (
+			p_cube_row IN OUT c_cube_row,
+			p_id IN NUMBER);
+	PROCEDURE insert_bbb (
+			p_fk_aaa_id IN NUMBER,
+			p_id IN NUMBER,
+			p_naam IN VARCHAR2);
+	PROCEDURE update_bbb (
+			p_fk_aaa_id IN NUMBER,
+			p_id IN NUMBER,
+			p_naam IN VARCHAR2);
+	PROCEDURE delete_bbb (
+			p_id IN NUMBER);
+	PROCEDURE get_ccc (
+			p_cube_row IN OUT c_cube_row,
+			p_id IN NUMBER);
+	PROCEDURE insert_ccc (
+			p_fk_aaa_id IN NUMBER,
+			p_fk_bbb_id IN NUMBER,
+			p_id IN NUMBER,
+			p_naam IN VARCHAR2);
+	PROCEDURE update_ccc (
+			p_fk_aaa_id IN NUMBER,
+			p_fk_bbb_id IN NUMBER,
+			p_id IN NUMBER,
+			p_naam IN VARCHAR2);
+	PROCEDURE delete_ccc (
+			p_id IN NUMBER);
+END;
+/
+SHOW ERRORS;
+
+CREATE OR REPLACE PACKAGE BODY pkg_aaa IS
+	FUNCTION cube_pkg_cubetest RETURN VARCHAR2 IS
+	BEGIN
+		RETURN 'cube_pkg_cubetest';
+	END;
+
+	PROCEDURE get_aaa_root_items (
+			p_cube_row IN OUT c_cube_row) IS
+	BEGIN
+		OPEN p_cube_row FOR
+			SELECT
+			  id
+			FROM v_aaa
+			ORDER BY id;
+	END;
+
+	PROCEDURE get_aaa (
+			p_cube_row IN OUT c_cube_row,
+			p_id IN NUMBER) IS
+	BEGIN
+		OPEN p_cube_row FOR
+			SELECT
+			  naam
+			FROM v_aaa
+			WHERE id = p_id;
+	END;
+
+	PROCEDURE get_aaa_bbb_items (
+			p_cube_row IN OUT c_cube_row,
+			p_id IN NUMBER) IS
+	BEGIN
+		OPEN p_cube_row FOR
+			SELECT
+			  id
+			FROM v_bbb
+			WHERE fk_aaa_id = p_id
+			ORDER BY id;
+	END;
+
+	PROCEDURE insert_aaa (
+			p_id IN NUMBER,
+			p_naam IN VARCHAR2) IS
+	BEGIN
+		INSERT INTO v_aaa (
+			cube_id,
+			id,
+			naam)
+		VALUES (
+			NULL,
+			p_id,
+			p_naam);
+	EXCEPTION
+		WHEN DUP_VAL_ON_INDEX THEN
+			RAISE_APPLICATION_ERROR (-20001, 'Type aaa already exists');
+	END;
+
+	PROCEDURE update_aaa (
+			p_id IN NUMBER,
+			p_naam IN VARCHAR2) IS
+	BEGIN
+		UPDATE v_aaa SET
+			naam = p_naam
+		WHERE id = p_id;
+	END;
+
+	PROCEDURE delete_aaa (
+			p_id IN NUMBER) IS
+	BEGIN
+		DELETE v_aaa
+		WHERE id = p_id;
+	END;
+
+	PROCEDURE get_bbb (
+			p_cube_row IN OUT c_cube_row,
+			p_id IN NUMBER) IS
+	BEGIN
+		OPEN p_cube_row FOR
+			SELECT
+			  fk_aaa_id,
+			  naam
+			FROM v_bbb
+			WHERE id = p_id;
+	END;
+
+	PROCEDURE get_bbb_fkey (
+			p_cube_row IN OUT c_cube_row,
+			p_id IN NUMBER) IS
+	BEGIN
+		OPEN p_cube_row FOR
+			SELECT
+			  fk_aaa_id
+			FROM v_bbb
+			WHERE id = p_id;
+	END;
+
+	PROCEDURE get_bbb_ccc_items (
+			p_cube_row IN OUT c_cube_row,
+			p_id IN NUMBER) IS
+	BEGIN
+		OPEN p_cube_row FOR
+			SELECT
+			  id
+			FROM v_ccc
+			WHERE fk_bbb_id = p_id
+			ORDER BY id;
+	END;
+
+	PROCEDURE insert_bbb (
+			p_fk_aaa_id IN NUMBER,
+			p_id IN NUMBER,
+			p_naam IN VARCHAR2) IS
+	BEGIN
+		INSERT INTO v_bbb (
+			cube_id,
+			fk_aaa_id,
+			id,
+			naam)
+		VALUES (
+			NULL,
+			p_fk_aaa_id,
+			p_id,
+			p_naam);
+	EXCEPTION
+		WHEN DUP_VAL_ON_INDEX THEN
+			RAISE_APPLICATION_ERROR (-20001, 'Type bbb already exists');
+	END;
+
+	PROCEDURE update_bbb (
+			p_fk_aaa_id IN NUMBER,
+			p_id IN NUMBER,
+			p_naam IN VARCHAR2) IS
+	BEGIN
+		UPDATE v_bbb SET
+			fk_aaa_id = p_fk_aaa_id,
+			naam = p_naam
+		WHERE id = p_id;
+	END;
+
+	PROCEDURE delete_bbb (
+			p_id IN NUMBER) IS
+	BEGIN
+		DELETE v_bbb
+		WHERE id = p_id;
+	END;
+
+	PROCEDURE get_ccc (
+			p_cube_row IN OUT c_cube_row,
+			p_id IN NUMBER) IS
+	BEGIN
+		OPEN p_cube_row FOR
+			SELECT
+			  fk_aaa_id,
+			  fk_bbb_id,
+			  naam
+			FROM v_ccc
+			WHERE id = p_id;
+	END;
+
+	PROCEDURE insert_ccc (
+			p_fk_aaa_id IN NUMBER,
+			p_fk_bbb_id IN NUMBER,
+			p_id IN NUMBER,
+			p_naam IN VARCHAR2) IS
+	BEGIN
+		INSERT INTO v_ccc (
+			cube_id,
+			fk_aaa_id,
+			fk_bbb_id,
+			id,
+			naam)
+		VALUES (
+			NULL,
+			p_fk_aaa_id,
+			p_fk_bbb_id,
+			p_id,
+			p_naam);
+	EXCEPTION
+		WHEN DUP_VAL_ON_INDEX THEN
+			RAISE_APPLICATION_ERROR (-20001, 'Type ccc already exists');
+	END;
+
+	PROCEDURE update_ccc (
+			p_fk_aaa_id IN NUMBER,
+			p_fk_bbb_id IN NUMBER,
+			p_id IN NUMBER,
+			p_naam IN VARCHAR2) IS
+	BEGIN
+		UPDATE v_ccc SET
+			fk_aaa_id = p_fk_aaa_id,
+			fk_bbb_id = p_fk_bbb_id,
+			naam = p_naam
+		WHERE id = p_id;
+	END;
+
+	PROCEDURE delete_ccc (
+			p_id IN NUMBER) IS
+	BEGIN
+		DELETE v_ccc
+		WHERE id = p_id;
+	END;
+END;
+/
+SHOW ERRORS;
+
 EXIT;

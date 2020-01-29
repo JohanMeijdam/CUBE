@@ -1537,7 +1537,11 @@ BEGIN
 		ELSE
 			r_bot_new.name := REPLACE(:NEW.name,' ','_');
 		END IF;
-		r_bot_new.cube_tsg_type := :NEW.cube_tsg_type;
+		IF :NEW.cube_tsg_type = ' ' THEN
+			r_bot_new.cube_tsg_type := ' ';
+		ELSE
+			r_bot_new.cube_tsg_type := REPLACE(:NEW.cube_tsg_type,' ','_');
+		END IF;
 		IF :NEW.directory = ' ' THEN
 			r_bot_new.directory := ' ';
 		ELSE
@@ -1743,7 +1747,11 @@ BEGIN
 		ELSE
 			r_der_new.fk_atb_name := REPLACE(:NEW.fk_atb_name,' ','_');
 		END IF;
-		r_der_new.cube_tsg_type := :NEW.cube_tsg_type;
+		IF :NEW.cube_tsg_type = ' ' THEN
+			r_der_new.cube_tsg_type := ' ';
+		ELSE
+			r_der_new.cube_tsg_type := REPLACE(:NEW.cube_tsg_type,' ','_');
+		END IF;
 		IF :NEW.aggregate_function = ' ' THEN
 			r_der_new.aggregate_function := ' ';
 		ELSE
@@ -2313,8 +2321,16 @@ BEGIN
 		ELSE
 			r_jsn_new.fk_jsn_typ_name := REPLACE(:NEW.fk_jsn_typ_name,' ','_');
 		END IF;
-		r_jsn_new.cube_tsg_obj_arr := :NEW.cube_tsg_obj_arr;
-		r_jsn_new.cube_tsg_type := :NEW.cube_tsg_type;
+		IF :NEW.cube_tsg_obj_arr = ' ' THEN
+			r_jsn_new.cube_tsg_obj_arr := ' ';
+		ELSE
+			r_jsn_new.cube_tsg_obj_arr := REPLACE(:NEW.cube_tsg_obj_arr,' ','_');
+		END IF;
+		IF :NEW.cube_tsg_type = ' ' THEN
+			r_jsn_new.cube_tsg_type := ' ';
+		ELSE
+			r_jsn_new.cube_tsg_type := REPLACE(:NEW.cube_tsg_type,' ','_');
+		END IF;
 		r_jsn_new.name := :NEW.name;
 		r_jsn_new.location := :NEW.location;
 		IF :NEW.xf_atb_typ_name = ' ' THEN
@@ -2695,7 +2711,11 @@ BEGIN
 		ELSE
 			r_sys_new.name := REPLACE(:NEW.name,' ','_');
 		END IF;
-		r_sys_new.cube_tsg_type := :NEW.cube_tsg_type;
+		IF :NEW.cube_tsg_type = ' ' THEN
+			r_sys_new.cube_tsg_type := ' ';
+		ELSE
+			r_sys_new.cube_tsg_type := REPLACE(:NEW.cube_tsg_type,' ','_');
+		END IF;
 		IF :NEW.database = ' ' THEN
 			r_sys_new.database := ' ';
 		ELSE

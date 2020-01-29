@@ -29,9 +29,10 @@ Change log:
 19-05-2019 - name recursive foreign key fix
 03-08-2019 - RESTRICTION_TYPE_SPEC_ATB for references fixed
 07-08-2019 - Default value for RESTRICTION_TYPE_SPEC_ATB key attributes.
-15-12-2019 - implementation of WITHIN_SCOPE_EXPANSION
-23-12-2019 - Javascript include files
-26-12-2019 - Recursive list fk argument fix
+15-12-2019 - implementation of WITHIN_SCOPE_EXPANSION.
+23-12-2019 - Javascript include files.
+26-12-2019 - Recursive list fk argument fixed.
+30-12-2019 - List encapsulated based on starting type key.
 [[INCLUDE,templates\includes\general.cgt]]
 [[TEXT,DETAIL_RECURSIVE_PARMS]]
 		Option: {[[IF,REFERENCE:4=PRA]]
@@ -158,7 +159,6 @@ g_xmlhttp.onreadystatechange = function() {
 		} else {
 			alert ('Request error:\n'+g_xmlhttp.statusText);
 		}
-		
 	}
 }
 
@@ -300,7 +300,7 @@ function StartSelect<<REFERENCE:S>>(p_event) {
 	document.body._SelectTop = p_event.clientY;
 	document.body._ListBoxCode = 'Ref<<REFERENCE:S>>';[[LOOP,REFERENCE_TYPE]][[IF:3=Y[AND]!8=Y[AND]!REFERENCE.4=ALL[AND]REFERENCE.PARENT(TYPE:0=<<REFERENCE_TYPE>>)]][[EVAL:($myFlag=0)]][[IF,REFERENCE:4=ENC]]
 	var Parameters = {
-		Type: {[[EVAL:($myFlag=1)]][[LOOP,ATTRIBUTE:3=F[AND]CHILD(ATTRIBUTE_SOURCE:1=Y)]]
+		Type: {[[EVAL:($myFlag=1)]][[LOOP,ATTRIBUTE:1=Y]]
 			<<ATTRIBUTE:C>>:document.getElementById("Input<<ATTRIBUTE:C>>").value[[IF:!LAST]],[[ENDIF]][[ENDLOOP,ATTRIBUTE]]
 		}[[IF:REFERENCE.CHILD(REFERENCE_SCOPE_ATTRIBUTE)]],
 		Ref: {[[FOR,REFERENCE:N>N]][[LOOP,REFERENCE_SCOPE_ATTRIBUTE]]

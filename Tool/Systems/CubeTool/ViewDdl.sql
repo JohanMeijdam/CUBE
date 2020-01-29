@@ -356,6 +356,35 @@ CREATE OR REPLACE VIEW v_type AS
 		transferable
 	FROM t_type
 /
+CREATE OR REPLACE VIEW v_type_specialisation_group AS 
+	SELECT
+		cube_id,
+		cube_sequence,
+		cube_level,
+		fk_bot_name,
+		fk_typ_name,
+		fk_tsg_code,
+		code,
+		name,
+		primary_key,
+		xf_atb_typ_name,
+		xk_atb_name
+	FROM t_type_specialisation_group
+/
+CREATE OR REPLACE VIEW v_type_specialisation AS 
+	SELECT
+		cube_id,
+		cube_sequence,
+		fk_bot_name,
+		fk_typ_name,
+		fk_tsg_code,
+		code,
+		name,
+		xf_tsp_typ_name,
+		xf_tsp_tsg_code,
+		xk_tsp_code
+	FROM t_type_specialisation
+/
 CREATE OR REPLACE VIEW v_attribute AS 
 	SELECT
 		cube_id,
@@ -418,6 +447,8 @@ CREATE OR REPLACE VIEW v_reference AS
 		scope,
 		unchangeable,
 		within_scope_extension,
+		cube_tsg_int_ext,
+		xk_bot_name,
 		xk_typ_name,
 		xk_typ_name_1
 	FROM t_reference
@@ -428,6 +459,8 @@ CREATE OR REPLACE VIEW v_description_reference AS
 		fk_bot_name,
 		fk_typ_name,
 		fk_ref_sequence,
+		fk_ref_cube_tsg_int_ext,
+		fk_ref_bot_name,
 		fk_ref_typ_name,
 		text
 	FROM t_description_reference
@@ -438,6 +471,8 @@ CREATE OR REPLACE VIEW v_restriction_type_spec_ref AS
 		fk_bot_name,
 		fk_typ_name,
 		fk_ref_sequence,
+		fk_ref_cube_tsg_int_ext,
+		fk_ref_bot_name,
 		fk_ref_typ_name,
 		include_or_exclude,
 		xf_tsp_typ_name,
@@ -451,6 +486,8 @@ CREATE OR REPLACE VIEW v_restriction_target_type_spec AS
 		fk_bot_name,
 		fk_typ_name,
 		fk_ref_sequence,
+		fk_ref_cube_tsg_int_ext,
+		fk_ref_bot_name,
 		fk_ref_typ_name,
 		include_or_exclude,
 		xf_tsp_typ_name,
@@ -490,35 +527,6 @@ CREATE OR REPLACE VIEW v_json_path AS
 		xk_typ_name
 	FROM t_json_path
 /
-CREATE OR REPLACE VIEW v_type_specialisation_group AS 
-	SELECT
-		cube_id,
-		cube_sequence,
-		cube_level,
-		fk_bot_name,
-		fk_typ_name,
-		fk_tsg_code,
-		code,
-		name,
-		primary_key,
-		xf_atb_typ_name,
-		xk_atb_name
-	FROM t_type_specialisation_group
-/
-CREATE OR REPLACE VIEW v_type_specialisation AS 
-	SELECT
-		cube_id,
-		cube_sequence,
-		fk_bot_name,
-		fk_typ_name,
-		fk_tsg_code,
-		code,
-		name,
-		xf_tsp_typ_name,
-		xf_tsp_tsg_code,
-		xk_tsp_code
-	FROM t_type_specialisation
-/
 CREATE OR REPLACE VIEW v_description_type AS 
 	SELECT
 		cube_id,
@@ -538,6 +546,14 @@ CREATE OR REPLACE PACKAGE pkg_bot_trg IS
 	PROCEDURE delete_typ (p_cube_rowid IN UROWID, p_typ IN OUT NOCOPY v_type%ROWTYPE);
 	PROCEDURE denorm_typ_typ (p_typ IN OUT NOCOPY v_type%ROWTYPE, p_typ_in IN v_type%ROWTYPE);
 	PROCEDURE get_denorm_typ_typ (p_typ IN OUT NOCOPY v_type%ROWTYPE);
+	PROCEDURE insert_tsg (p_tsg IN OUT NOCOPY v_type_specialisation_group%ROWTYPE);
+	PROCEDURE update_tsg (p_cube_rowid IN UROWID, p_tsg_old IN OUT NOCOPY v_type_specialisation_group%ROWTYPE, p_tsg_new IN OUT NOCOPY v_type_specialisation_group%ROWTYPE);
+	PROCEDURE delete_tsg (p_cube_rowid IN UROWID, p_tsg IN OUT NOCOPY v_type_specialisation_group%ROWTYPE);
+	PROCEDURE denorm_tsg_tsg (p_tsg IN OUT NOCOPY v_type_specialisation_group%ROWTYPE, p_tsg_in IN v_type_specialisation_group%ROWTYPE);
+	PROCEDURE get_denorm_tsg_tsg (p_tsg IN OUT NOCOPY v_type_specialisation_group%ROWTYPE);
+	PROCEDURE insert_tsp (p_tsp IN OUT NOCOPY v_type_specialisation%ROWTYPE);
+	PROCEDURE update_tsp (p_cube_rowid IN UROWID, p_tsp_old IN OUT NOCOPY v_type_specialisation%ROWTYPE, p_tsp_new IN OUT NOCOPY v_type_specialisation%ROWTYPE);
+	PROCEDURE delete_tsp (p_cube_rowid IN UROWID, p_tsp IN OUT NOCOPY v_type_specialisation%ROWTYPE);
 	PROCEDURE insert_atb (p_atb IN OUT NOCOPY v_attribute%ROWTYPE);
 	PROCEDURE update_atb (p_cube_rowid IN UROWID, p_atb_old IN OUT NOCOPY v_attribute%ROWTYPE, p_atb_new IN OUT NOCOPY v_attribute%ROWTYPE);
 	PROCEDURE delete_atb (p_cube_rowid IN UROWID, p_atb IN OUT NOCOPY v_attribute%ROWTYPE);
@@ -570,14 +586,6 @@ CREATE OR REPLACE PACKAGE pkg_bot_trg IS
 	PROCEDURE delete_jsn (p_cube_rowid IN UROWID, p_jsn IN OUT NOCOPY v_json_path%ROWTYPE);
 	PROCEDURE denorm_jsn_jsn (p_jsn IN OUT NOCOPY v_json_path%ROWTYPE, p_jsn_in IN v_json_path%ROWTYPE);
 	PROCEDURE get_denorm_jsn_jsn (p_jsn IN OUT NOCOPY v_json_path%ROWTYPE);
-	PROCEDURE insert_tsg (p_tsg IN OUT NOCOPY v_type_specialisation_group%ROWTYPE);
-	PROCEDURE update_tsg (p_cube_rowid IN UROWID, p_tsg_old IN OUT NOCOPY v_type_specialisation_group%ROWTYPE, p_tsg_new IN OUT NOCOPY v_type_specialisation_group%ROWTYPE);
-	PROCEDURE delete_tsg (p_cube_rowid IN UROWID, p_tsg IN OUT NOCOPY v_type_specialisation_group%ROWTYPE);
-	PROCEDURE denorm_tsg_tsg (p_tsg IN OUT NOCOPY v_type_specialisation_group%ROWTYPE, p_tsg_in IN v_type_specialisation_group%ROWTYPE);
-	PROCEDURE get_denorm_tsg_tsg (p_tsg IN OUT NOCOPY v_type_specialisation_group%ROWTYPE);
-	PROCEDURE insert_tsp (p_tsp IN OUT NOCOPY v_type_specialisation%ROWTYPE);
-	PROCEDURE update_tsp (p_cube_rowid IN UROWID, p_tsp_old IN OUT NOCOPY v_type_specialisation%ROWTYPE, p_tsp_new IN OUT NOCOPY v_type_specialisation%ROWTYPE);
-	PROCEDURE delete_tsp (p_cube_rowid IN UROWID, p_tsp IN OUT NOCOPY v_type_specialisation%ROWTYPE);
 	PROCEDURE insert_dct (p_dct IN OUT NOCOPY v_description_type%ROWTYPE);
 	PROCEDURE update_dct (p_cube_rowid IN UROWID, p_dct_old IN OUT NOCOPY v_description_type%ROWTYPE, p_dct_new IN OUT NOCOPY v_description_type%ROWTYPE);
 	PROCEDURE delete_dct (p_cube_rowid IN UROWID, p_dct IN OUT NOCOPY v_description_type%ROWTYPE);
@@ -686,6 +694,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 		UPDATE t_type SET 
 			cube_sequence = p_typ_new.cube_sequence,
 			cube_level = p_typ_new.cube_level,
+			fk_typ_name = p_typ_new.fk_typ_name,
 			code = p_typ_new.code,
 			flag_partial_key = p_typ_new.flag_partial_key,
 			flag_recursive = p_typ_new.flag_recursive,
@@ -753,6 +762,181 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			r_typ := NULL;
 		END IF;
 		denorm_typ_typ (p_typ, r_typ);
+	END;
+
+	PROCEDURE insert_tsg (p_tsg IN OUT NOCOPY v_type_specialisation_group%ROWTYPE) IS
+	BEGIN
+		p_tsg.cube_id := 'TSG-' || TO_CHAR(sq_tsg.NEXTVAL,'FM000000000000');
+		IF p_tsg.fk_tsg_code IS NOT NULL  THEN
+			-- Recursive
+			SELECT fk_bot_name
+			  INTO p_tsg.fk_bot_name
+			FROM t_type_specialisation_group
+			WHERE fk_typ_name = p_tsg.fk_typ_name
+			  AND code = p_tsg.fk_tsg_code;
+		ELSE
+			-- Parent
+			SELECT fk_bot_name
+			  INTO p_tsg.fk_bot_name
+			FROM t_type
+			WHERE name = p_tsg.fk_typ_name;
+			
+		END IF;
+		get_denorm_tsg_tsg (p_tsg);
+		INSERT INTO t_type_specialisation_group (
+			cube_id,
+			cube_sequence,
+			cube_level,
+			fk_bot_name,
+			fk_typ_name,
+			fk_tsg_code,
+			code,
+			name,
+			primary_key,
+			xf_atb_typ_name,
+			xk_atb_name)
+		VALUES (
+			p_tsg.cube_id,
+			p_tsg.cube_sequence,
+			p_tsg.cube_level,
+			p_tsg.fk_bot_name,
+			p_tsg.fk_typ_name,
+			p_tsg.fk_tsg_code,
+			p_tsg.code,
+			p_tsg.name,
+			p_tsg.primary_key,
+			p_tsg.xf_atb_typ_name,
+			p_tsg.xk_atb_name);
+	END;
+
+	PROCEDURE update_tsg (p_cube_rowid UROWID, p_tsg_old IN OUT NOCOPY v_type_specialisation_group%ROWTYPE, p_tsg_new IN OUT NOCOPY v_type_specialisation_group%ROWTYPE) IS
+
+		CURSOR c_tsg IS
+			SELECT ROWID cube_row_id, tsg.* FROM v_type_specialisation_group tsg
+			WHERE fk_typ_name = p_tsg_old.fk_typ_name
+			  AND fk_tsg_code = p_tsg_old.code;
+		
+		l_tsg_rowid UROWID;
+		r_tsg_old v_type_specialisation_group%ROWTYPE;
+		r_tsg_new v_type_specialisation_group%ROWTYPE;
+	BEGIN
+		IF NVL(p_tsg_old.fk_tsg_code,' ') <> NVL(p_tsg_new.fk_tsg_code,' ')  THEN
+			get_denorm_tsg_tsg (p_tsg_new);
+		END IF;
+		UPDATE t_type_specialisation_group SET 
+			cube_sequence = p_tsg_new.cube_sequence,
+			cube_level = p_tsg_new.cube_level,
+			fk_tsg_code = p_tsg_new.fk_tsg_code,
+			name = p_tsg_new.name,
+			primary_key = p_tsg_new.primary_key,
+			xf_atb_typ_name = p_tsg_new.xf_atb_typ_name,
+			xk_atb_name = p_tsg_new.xk_atb_name
+		WHERE rowid = p_cube_rowid;
+		IF NVL(p_tsg_old.cube_level,0) <> NVL(p_tsg_new.cube_level,0) THEN
+			OPEN c_tsg;
+			LOOP
+				FETCH c_tsg INTO
+					l_tsg_rowid,
+					r_tsg_old.cube_id,
+					r_tsg_old.cube_sequence,
+					r_tsg_old.cube_level,
+					r_tsg_old.fk_bot_name,
+					r_tsg_old.fk_typ_name,
+					r_tsg_old.fk_tsg_code,
+					r_tsg_old.code,
+					r_tsg_old.name,
+					r_tsg_old.primary_key,
+					r_tsg_old.xf_atb_typ_name,
+					r_tsg_old.xk_atb_name;
+				EXIT WHEN c_tsg%NOTFOUND;
+				r_tsg_new := r_tsg_old;
+				denorm_tsg_tsg (r_tsg_new, p_tsg_new);
+				update_tsg (l_tsg_rowid, r_tsg_old, r_tsg_new);
+			END LOOP;
+			CLOSE c_tsg;
+		END IF;
+	END;
+
+	PROCEDURE delete_tsg (p_cube_rowid UROWID, p_tsg IN OUT NOCOPY v_type_specialisation_group%ROWTYPE) IS
+	BEGIN
+		DELETE t_type_specialisation_group 
+		WHERE rowid = p_cube_rowid;
+	END;
+
+	PROCEDURE denorm_tsg_tsg (p_tsg IN OUT NOCOPY v_type_specialisation_group%ROWTYPE, p_tsg_in IN v_type_specialisation_group%ROWTYPE) IS
+	BEGIN
+		p_tsg.cube_level := NVL (p_tsg_in.cube_level, 0) + 1;
+	END;
+
+	PROCEDURE get_denorm_tsg_tsg (p_tsg IN OUT NOCOPY v_type_specialisation_group%ROWTYPE) IS
+
+		CURSOR c_tsg IS 
+			SELECT * FROM v_type_specialisation_group
+			WHERE fk_typ_name = p_tsg.fk_typ_name
+			  AND code = p_tsg.fk_tsg_code;
+		
+		r_tsg v_type_specialisation_group%ROWTYPE;
+	BEGIN
+		IF p_tsg.fk_tsg_code IS NOT NULL THEN
+			OPEN c_tsg;
+			FETCH c_tsg INTO r_tsg;
+			IF c_tsg%NOTFOUND THEN
+				r_tsg := NULL;
+			END IF;
+			CLOSE c_tsg;
+		ELSE
+			r_tsg := NULL;
+		END IF;
+		denorm_tsg_tsg (p_tsg, r_tsg);
+	END;
+
+	PROCEDURE insert_tsp (p_tsp IN OUT NOCOPY v_type_specialisation%ROWTYPE) IS
+	BEGIN
+		p_tsp.cube_id := 'TSP-' || TO_CHAR(sq_tsp.NEXTVAL,'FM000000000000');
+		SELECT fk_bot_name
+		  INTO p_tsp.fk_bot_name
+		FROM t_type_specialisation_group
+		WHERE fk_typ_name = p_tsp.fk_typ_name
+		  AND code = p_tsp.fk_tsg_code;
+		INSERT INTO t_type_specialisation (
+			cube_id,
+			cube_sequence,
+			fk_bot_name,
+			fk_typ_name,
+			fk_tsg_code,
+			code,
+			name,
+			xf_tsp_typ_name,
+			xf_tsp_tsg_code,
+			xk_tsp_code)
+		VALUES (
+			p_tsp.cube_id,
+			p_tsp.cube_sequence,
+			p_tsp.fk_bot_name,
+			p_tsp.fk_typ_name,
+			p_tsp.fk_tsg_code,
+			p_tsp.code,
+			p_tsp.name,
+			p_tsp.xf_tsp_typ_name,
+			p_tsp.xf_tsp_tsg_code,
+			p_tsp.xk_tsp_code);
+	END;
+
+	PROCEDURE update_tsp (p_cube_rowid UROWID, p_tsp_old IN OUT NOCOPY v_type_specialisation%ROWTYPE, p_tsp_new IN OUT NOCOPY v_type_specialisation%ROWTYPE) IS
+	BEGIN
+		UPDATE t_type_specialisation SET 
+			cube_sequence = p_tsp_new.cube_sequence,
+			name = p_tsp_new.name,
+			xf_tsp_typ_name = p_tsp_new.xf_tsp_typ_name,
+			xf_tsp_tsg_code = p_tsp_new.xf_tsp_tsg_code,
+			xk_tsp_code = p_tsp_new.xk_tsp_code
+		WHERE rowid = p_cube_rowid;
+	END;
+
+	PROCEDURE delete_tsp (p_cube_rowid UROWID, p_tsp IN OUT NOCOPY v_type_specialisation%ROWTYPE) IS
+	BEGIN
+		DELETE t_type_specialisation 
+		WHERE rowid = p_cube_rowid;
 	END;
 
 	PROCEDURE insert_atb (p_atb IN OUT NOCOPY v_attribute%ROWTYPE) IS
@@ -948,6 +1132,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			scope,
 			unchangeable,
 			within_scope_extension,
+			cube_tsg_int_ext,
+			xk_bot_name,
 			xk_typ_name,
 			xk_typ_name_1)
 		VALUES (
@@ -962,7 +1148,9 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			p_ref.scope,
 			p_ref.unchangeable,
 			p_ref.within_scope_extension,
-			p_ref.xk_typ_name,
+			p_ref.cube_tsg_int_ext,
+			NVL(p_ref.xk_bot_name,' '),
+			NVL(p_ref.xk_typ_name,' '),
 			p_ref.xk_typ_name_1);
 	END;
 
@@ -994,12 +1182,16 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 		FROM t_reference
 		WHERE fk_typ_name = p_dcr.fk_typ_name
 		  AND sequence = p_dcr.fk_ref_sequence
+		  AND cube_tsg_int_ext = p_dcr.fk_ref_cube_tsg_int_ext
+		  AND xk_bot_name = p_dcr.fk_ref_bot_name
 		  AND xk_typ_name = p_dcr.fk_ref_typ_name;
 		INSERT INTO t_description_reference (
 			cube_id,
 			fk_bot_name,
 			fk_typ_name,
 			fk_ref_sequence,
+			fk_ref_cube_tsg_int_ext,
+			fk_ref_bot_name,
 			fk_ref_typ_name,
 			text)
 		VALUES (
@@ -1007,6 +1199,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			p_dcr.fk_bot_name,
 			p_dcr.fk_typ_name,
 			p_dcr.fk_ref_sequence,
+			p_dcr.fk_ref_cube_tsg_int_ext,
+			p_dcr.fk_ref_bot_name,
 			p_dcr.fk_ref_typ_name,
 			p_dcr.text);
 	END;
@@ -1032,12 +1226,16 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 		FROM t_reference
 		WHERE fk_typ_name = p_rtr.fk_typ_name
 		  AND sequence = p_rtr.fk_ref_sequence
+		  AND cube_tsg_int_ext = p_rtr.fk_ref_cube_tsg_int_ext
+		  AND xk_bot_name = p_rtr.fk_ref_bot_name
 		  AND xk_typ_name = p_rtr.fk_ref_typ_name;
 		INSERT INTO t_restriction_type_spec_ref (
 			cube_id,
 			fk_bot_name,
 			fk_typ_name,
 			fk_ref_sequence,
+			fk_ref_cube_tsg_int_ext,
+			fk_ref_bot_name,
 			fk_ref_typ_name,
 			include_or_exclude,
 			xf_tsp_typ_name,
@@ -1048,6 +1246,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			p_rtr.fk_bot_name,
 			p_rtr.fk_typ_name,
 			p_rtr.fk_ref_sequence,
+			p_rtr.fk_ref_cube_tsg_int_ext,
+			p_rtr.fk_ref_bot_name,
 			p_rtr.fk_ref_typ_name,
 			p_rtr.include_or_exclude,
 			p_rtr.xf_tsp_typ_name,
@@ -1076,12 +1276,16 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 		FROM t_reference
 		WHERE fk_typ_name = p_rts.fk_typ_name
 		  AND sequence = p_rts.fk_ref_sequence
+		  AND cube_tsg_int_ext = p_rts.fk_ref_cube_tsg_int_ext
+		  AND xk_bot_name = p_rts.fk_ref_bot_name
 		  AND xk_typ_name = p_rts.fk_ref_typ_name;
 		INSERT INTO t_restriction_target_type_spec (
 			cube_id,
 			fk_bot_name,
 			fk_typ_name,
 			fk_ref_sequence,
+			fk_ref_cube_tsg_int_ext,
+			fk_ref_bot_name,
 			fk_ref_typ_name,
 			include_or_exclude,
 			xf_tsp_typ_name,
@@ -1092,6 +1296,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			p_rts.fk_bot_name,
 			p_rts.fk_typ_name,
 			p_rts.fk_ref_sequence,
+			p_rts.fk_ref_cube_tsg_int_ext,
+			p_rts.fk_ref_bot_name,
 			p_rts.fk_ref_typ_name,
 			p_rts.include_or_exclude,
 			p_rts.xf_tsp_typ_name,
@@ -1310,181 +1516,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 		denorm_jsn_jsn (p_jsn, r_jsn);
 	END;
 
-	PROCEDURE insert_tsg (p_tsg IN OUT NOCOPY v_type_specialisation_group%ROWTYPE) IS
-	BEGIN
-		p_tsg.cube_id := 'TSG-' || TO_CHAR(sq_tsg.NEXTVAL,'FM000000000000');
-		IF p_tsg.fk_tsg_code IS NOT NULL  THEN
-			-- Recursive
-			SELECT fk_bot_name
-			  INTO p_tsg.fk_bot_name
-			FROM t_type_specialisation_group
-			WHERE fk_typ_name = p_tsg.fk_typ_name
-			  AND code = p_tsg.fk_tsg_code;
-		ELSE
-			-- Parent
-			SELECT fk_bot_name
-			  INTO p_tsg.fk_bot_name
-			FROM t_type
-			WHERE name = p_tsg.fk_typ_name;
-			
-		END IF;
-		get_denorm_tsg_tsg (p_tsg);
-		INSERT INTO t_type_specialisation_group (
-			cube_id,
-			cube_sequence,
-			cube_level,
-			fk_bot_name,
-			fk_typ_name,
-			fk_tsg_code,
-			code,
-			name,
-			primary_key,
-			xf_atb_typ_name,
-			xk_atb_name)
-		VALUES (
-			p_tsg.cube_id,
-			p_tsg.cube_sequence,
-			p_tsg.cube_level,
-			p_tsg.fk_bot_name,
-			p_tsg.fk_typ_name,
-			p_tsg.fk_tsg_code,
-			p_tsg.code,
-			p_tsg.name,
-			p_tsg.primary_key,
-			p_tsg.xf_atb_typ_name,
-			p_tsg.xk_atb_name);
-	END;
-
-	PROCEDURE update_tsg (p_cube_rowid UROWID, p_tsg_old IN OUT NOCOPY v_type_specialisation_group%ROWTYPE, p_tsg_new IN OUT NOCOPY v_type_specialisation_group%ROWTYPE) IS
-
-		CURSOR c_tsg IS
-			SELECT ROWID cube_row_id, tsg.* FROM v_type_specialisation_group tsg
-			WHERE fk_typ_name = p_tsg_old.fk_typ_name
-			  AND fk_tsg_code = p_tsg_old.code;
-		
-		l_tsg_rowid UROWID;
-		r_tsg_old v_type_specialisation_group%ROWTYPE;
-		r_tsg_new v_type_specialisation_group%ROWTYPE;
-	BEGIN
-		IF NVL(p_tsg_old.fk_tsg_code,' ') <> NVL(p_tsg_new.fk_tsg_code,' ')  THEN
-			get_denorm_tsg_tsg (p_tsg_new);
-		END IF;
-		UPDATE t_type_specialisation_group SET 
-			cube_sequence = p_tsg_new.cube_sequence,
-			cube_level = p_tsg_new.cube_level,
-			fk_tsg_code = p_tsg_new.fk_tsg_code,
-			name = p_tsg_new.name,
-			primary_key = p_tsg_new.primary_key,
-			xf_atb_typ_name = p_tsg_new.xf_atb_typ_name,
-			xk_atb_name = p_tsg_new.xk_atb_name
-		WHERE rowid = p_cube_rowid;
-		IF NVL(p_tsg_old.cube_level,0) <> NVL(p_tsg_new.cube_level,0) THEN
-			OPEN c_tsg;
-			LOOP
-				FETCH c_tsg INTO
-					l_tsg_rowid,
-					r_tsg_old.cube_id,
-					r_tsg_old.cube_sequence,
-					r_tsg_old.cube_level,
-					r_tsg_old.fk_bot_name,
-					r_tsg_old.fk_typ_name,
-					r_tsg_old.fk_tsg_code,
-					r_tsg_old.code,
-					r_tsg_old.name,
-					r_tsg_old.primary_key,
-					r_tsg_old.xf_atb_typ_name,
-					r_tsg_old.xk_atb_name;
-				EXIT WHEN c_tsg%NOTFOUND;
-				r_tsg_new := r_tsg_old;
-				denorm_tsg_tsg (r_tsg_new, p_tsg_new);
-				update_tsg (l_tsg_rowid, r_tsg_old, r_tsg_new);
-			END LOOP;
-			CLOSE c_tsg;
-		END IF;
-	END;
-
-	PROCEDURE delete_tsg (p_cube_rowid UROWID, p_tsg IN OUT NOCOPY v_type_specialisation_group%ROWTYPE) IS
-	BEGIN
-		DELETE t_type_specialisation_group 
-		WHERE rowid = p_cube_rowid;
-	END;
-
-	PROCEDURE denorm_tsg_tsg (p_tsg IN OUT NOCOPY v_type_specialisation_group%ROWTYPE, p_tsg_in IN v_type_specialisation_group%ROWTYPE) IS
-	BEGIN
-		p_tsg.cube_level := NVL (p_tsg_in.cube_level, 0) + 1;
-	END;
-
-	PROCEDURE get_denorm_tsg_tsg (p_tsg IN OUT NOCOPY v_type_specialisation_group%ROWTYPE) IS
-
-		CURSOR c_tsg IS 
-			SELECT * FROM v_type_specialisation_group
-			WHERE fk_typ_name = p_tsg.fk_typ_name
-			  AND code = p_tsg.fk_tsg_code;
-		
-		r_tsg v_type_specialisation_group%ROWTYPE;
-	BEGIN
-		IF p_tsg.fk_tsg_code IS NOT NULL THEN
-			OPEN c_tsg;
-			FETCH c_tsg INTO r_tsg;
-			IF c_tsg%NOTFOUND THEN
-				r_tsg := NULL;
-			END IF;
-			CLOSE c_tsg;
-		ELSE
-			r_tsg := NULL;
-		END IF;
-		denorm_tsg_tsg (p_tsg, r_tsg);
-	END;
-
-	PROCEDURE insert_tsp (p_tsp IN OUT NOCOPY v_type_specialisation%ROWTYPE) IS
-	BEGIN
-		p_tsp.cube_id := 'TSP-' || TO_CHAR(sq_tsp.NEXTVAL,'FM000000000000');
-		SELECT fk_bot_name
-		  INTO p_tsp.fk_bot_name
-		FROM t_type_specialisation_group
-		WHERE fk_typ_name = p_tsp.fk_typ_name
-		  AND code = p_tsp.fk_tsg_code;
-		INSERT INTO t_type_specialisation (
-			cube_id,
-			cube_sequence,
-			fk_bot_name,
-			fk_typ_name,
-			fk_tsg_code,
-			code,
-			name,
-			xf_tsp_typ_name,
-			xf_tsp_tsg_code,
-			xk_tsp_code)
-		VALUES (
-			p_tsp.cube_id,
-			p_tsp.cube_sequence,
-			p_tsp.fk_bot_name,
-			p_tsp.fk_typ_name,
-			p_tsp.fk_tsg_code,
-			p_tsp.code,
-			p_tsp.name,
-			p_tsp.xf_tsp_typ_name,
-			p_tsp.xf_tsp_tsg_code,
-			p_tsp.xk_tsp_code);
-	END;
-
-	PROCEDURE update_tsp (p_cube_rowid UROWID, p_tsp_old IN OUT NOCOPY v_type_specialisation%ROWTYPE, p_tsp_new IN OUT NOCOPY v_type_specialisation%ROWTYPE) IS
-	BEGIN
-		UPDATE t_type_specialisation SET 
-			cube_sequence = p_tsp_new.cube_sequence,
-			name = p_tsp_new.name,
-			xf_tsp_typ_name = p_tsp_new.xf_tsp_typ_name,
-			xf_tsp_tsg_code = p_tsp_new.xf_tsp_tsg_code,
-			xk_tsp_code = p_tsp_new.xk_tsp_code
-		WHERE rowid = p_cube_rowid;
-	END;
-
-	PROCEDURE delete_tsp (p_cube_rowid UROWID, p_tsp IN OUT NOCOPY v_type_specialisation%ROWTYPE) IS
-	BEGIN
-		DELETE t_type_specialisation 
-		WHERE rowid = p_cube_rowid;
-	END;
-
 	PROCEDURE insert_dct (p_dct IN OUT NOCOPY v_description_type%ROWTYPE) IS
 	BEGIN
 		p_dct.cube_id := 'DCT-' || TO_CHAR(sq_dct.NEXTVAL,'FM000000000000');
@@ -1644,6 +1675,164 @@ BEGIN
 		pkg_bot_trg.update_typ (l_cube_rowid, r_typ_old, r_typ_new);
 	ELSIF DELETING THEN
 		pkg_bot_trg.delete_typ (l_cube_rowid, r_typ_old);
+	END IF;
+END;
+/
+SHOW ERRORS
+
+CREATE OR REPLACE TRIGGER trg_tsg
+INSTEAD OF INSERT OR DELETE OR UPDATE ON v_type_specialisation_group
+FOR EACH ROW
+DECLARE
+	l_cube_rowid UROWID;
+	r_tsg_new v_type_specialisation_group%ROWTYPE;
+	r_tsg_old v_type_specialisation_group%ROWTYPE;
+BEGIN
+	IF INSERTING OR UPDATING THEN
+		r_tsg_new.cube_sequence := :NEW.cube_sequence;
+		IF :NEW.fk_bot_name = ' ' THEN
+			r_tsg_new.fk_bot_name := ' ';
+		ELSE
+			r_tsg_new.fk_bot_name := REPLACE(:NEW.fk_bot_name,' ','_');
+		END IF;
+		IF :NEW.fk_typ_name = ' ' THEN
+			r_tsg_new.fk_typ_name := ' ';
+		ELSE
+			r_tsg_new.fk_typ_name := REPLACE(:NEW.fk_typ_name,' ','_');
+		END IF;
+		IF :NEW.fk_tsg_code = ' ' THEN
+			r_tsg_new.fk_tsg_code := ' ';
+		ELSE
+			r_tsg_new.fk_tsg_code := REPLACE(:NEW.fk_tsg_code,' ','_');
+		END IF;
+		IF :NEW.code = ' ' THEN
+			r_tsg_new.code := ' ';
+		ELSE
+			r_tsg_new.code := REPLACE(:NEW.code,' ','_');
+		END IF;
+		IF :NEW.name = ' ' THEN
+			r_tsg_new.name := ' ';
+		ELSE
+			r_tsg_new.name := REPLACE(:NEW.name,' ','_');
+		END IF;
+		r_tsg_new.primary_key := :NEW.primary_key;
+		IF :NEW.xf_atb_typ_name = ' ' THEN
+			r_tsg_new.xf_atb_typ_name := ' ';
+		ELSE
+			r_tsg_new.xf_atb_typ_name := REPLACE(:NEW.xf_atb_typ_name,' ','_');
+		END IF;
+		IF :NEW.xk_atb_name = ' ' THEN
+			r_tsg_new.xk_atb_name := ' ';
+		ELSE
+			r_tsg_new.xk_atb_name := REPLACE(:NEW.xk_atb_name,' ','_');
+		END IF;
+	END IF;
+	IF UPDATING THEN
+		r_tsg_new.cube_id := :OLD.cube_id;
+		r_tsg_new.cube_level := :OLD.cube_level;
+	END IF;
+	IF UPDATING OR DELETING THEN
+		SELECT rowid INTO l_cube_rowid FROM t_type_specialisation_group
+		WHERE fk_typ_name = :OLD.fk_typ_name
+		  AND code = :OLD.code;
+		r_tsg_old.cube_sequence := :OLD.cube_sequence;
+		r_tsg_old.fk_bot_name := :OLD.fk_bot_name;
+		r_tsg_old.fk_typ_name := :OLD.fk_typ_name;
+		r_tsg_old.fk_tsg_code := :OLD.fk_tsg_code;
+		r_tsg_old.code := :OLD.code;
+		r_tsg_old.name := :OLD.name;
+		r_tsg_old.primary_key := :OLD.primary_key;
+		r_tsg_old.xf_atb_typ_name := :OLD.xf_atb_typ_name;
+		r_tsg_old.xk_atb_name := :OLD.xk_atb_name;
+	END IF;
+
+	IF INSERTING THEN 
+		pkg_bot_trg.insert_tsg (r_tsg_new);
+	ELSIF UPDATING THEN
+		pkg_bot_trg.update_tsg (l_cube_rowid, r_tsg_old, r_tsg_new);
+	ELSIF DELETING THEN
+		pkg_bot_trg.delete_tsg (l_cube_rowid, r_tsg_old);
+	END IF;
+END;
+/
+SHOW ERRORS
+
+CREATE OR REPLACE TRIGGER trg_tsp
+INSTEAD OF INSERT OR DELETE OR UPDATE ON v_type_specialisation
+FOR EACH ROW
+DECLARE
+	l_cube_rowid UROWID;
+	r_tsp_new v_type_specialisation%ROWTYPE;
+	r_tsp_old v_type_specialisation%ROWTYPE;
+BEGIN
+	IF INSERTING OR UPDATING THEN
+		r_tsp_new.cube_sequence := :NEW.cube_sequence;
+		IF :NEW.fk_bot_name = ' ' THEN
+			r_tsp_new.fk_bot_name := ' ';
+		ELSE
+			r_tsp_new.fk_bot_name := REPLACE(:NEW.fk_bot_name,' ','_');
+		END IF;
+		IF :NEW.fk_typ_name = ' ' THEN
+			r_tsp_new.fk_typ_name := ' ';
+		ELSE
+			r_tsp_new.fk_typ_name := REPLACE(:NEW.fk_typ_name,' ','_');
+		END IF;
+		IF :NEW.fk_tsg_code = ' ' THEN
+			r_tsp_new.fk_tsg_code := ' ';
+		ELSE
+			r_tsp_new.fk_tsg_code := REPLACE(:NEW.fk_tsg_code,' ','_');
+		END IF;
+		IF :NEW.code = ' ' THEN
+			r_tsp_new.code := ' ';
+		ELSE
+			r_tsp_new.code := REPLACE(:NEW.code,' ','_');
+		END IF;
+		IF :NEW.name = ' ' THEN
+			r_tsp_new.name := ' ';
+		ELSE
+			r_tsp_new.name := REPLACE(:NEW.name,' ','_');
+		END IF;
+		IF :NEW.xf_tsp_typ_name = ' ' THEN
+			r_tsp_new.xf_tsp_typ_name := ' ';
+		ELSE
+			r_tsp_new.xf_tsp_typ_name := REPLACE(:NEW.xf_tsp_typ_name,' ','_');
+		END IF;
+		IF :NEW.xf_tsp_tsg_code = ' ' THEN
+			r_tsp_new.xf_tsp_tsg_code := ' ';
+		ELSE
+			r_tsp_new.xf_tsp_tsg_code := REPLACE(:NEW.xf_tsp_tsg_code,' ','_');
+		END IF;
+		IF :NEW.xk_tsp_code = ' ' THEN
+			r_tsp_new.xk_tsp_code := ' ';
+		ELSE
+			r_tsp_new.xk_tsp_code := REPLACE(:NEW.xk_tsp_code,' ','_');
+		END IF;
+	END IF;
+	IF UPDATING THEN
+		r_tsp_new.cube_id := :OLD.cube_id;
+	END IF;
+	IF UPDATING OR DELETING THEN
+		SELECT rowid INTO l_cube_rowid FROM t_type_specialisation
+		WHERE fk_typ_name = :OLD.fk_typ_name
+		  AND fk_tsg_code = :OLD.fk_tsg_code
+		  AND code = :OLD.code;
+		r_tsp_old.cube_sequence := :OLD.cube_sequence;
+		r_tsp_old.fk_bot_name := :OLD.fk_bot_name;
+		r_tsp_old.fk_typ_name := :OLD.fk_typ_name;
+		r_tsp_old.fk_tsg_code := :OLD.fk_tsg_code;
+		r_tsp_old.code := :OLD.code;
+		r_tsp_old.name := :OLD.name;
+		r_tsp_old.xf_tsp_typ_name := :OLD.xf_tsp_typ_name;
+		r_tsp_old.xf_tsp_tsg_code := :OLD.xf_tsp_tsg_code;
+		r_tsp_old.xk_tsp_code := :OLD.xk_tsp_code;
+	END IF;
+
+	IF INSERTING THEN 
+		pkg_bot_trg.insert_tsp (r_tsp_new);
+	ELSIF UPDATING THEN
+		pkg_bot_trg.update_tsp (l_cube_rowid, r_tsp_old, r_tsp_new);
+	ELSIF DELETING THEN
+		pkg_bot_trg.delete_tsp (l_cube_rowid, r_tsp_old);
 	END IF;
 END;
 /
@@ -1961,6 +2150,16 @@ BEGIN
 		ELSE
 			r_ref_new.within_scope_extension := REPLACE(:NEW.within_scope_extension,' ','_');
 		END IF;
+		IF :NEW.cube_tsg_int_ext = ' ' THEN
+			r_ref_new.cube_tsg_int_ext := ' ';
+		ELSE
+			r_ref_new.cube_tsg_int_ext := REPLACE(:NEW.cube_tsg_int_ext,' ','_');
+		END IF;
+		IF :NEW.xk_bot_name = ' ' THEN
+			r_ref_new.xk_bot_name := ' ';
+		ELSE
+			r_ref_new.xk_bot_name := REPLACE(:NEW.xk_bot_name,' ','_');
+		END IF;
 		IF :NEW.xk_typ_name = ' ' THEN
 			r_ref_new.xk_typ_name := ' ';
 		ELSE
@@ -1979,6 +2178,8 @@ BEGIN
 		SELECT rowid INTO l_cube_rowid FROM t_reference
 		WHERE fk_typ_name = :OLD.fk_typ_name
 		  AND sequence = :OLD.sequence
+		  AND cube_tsg_int_ext = :OLD.cube_tsg_int_ext
+		  AND xk_bot_name = :OLD.xk_bot_name
 		  AND xk_typ_name = :OLD.xk_typ_name;
 		r_ref_old.cube_sequence := :OLD.cube_sequence;
 		r_ref_old.fk_bot_name := :OLD.fk_bot_name;
@@ -1990,6 +2191,8 @@ BEGIN
 		r_ref_old.scope := :OLD.scope;
 		r_ref_old.unchangeable := :OLD.unchangeable;
 		r_ref_old.within_scope_extension := :OLD.within_scope_extension;
+		r_ref_old.cube_tsg_int_ext := :OLD.cube_tsg_int_ext;
+		r_ref_old.xk_bot_name := :OLD.xk_bot_name;
 		r_ref_old.xk_typ_name := :OLD.xk_typ_name;
 		r_ref_old.xk_typ_name_1 := :OLD.xk_typ_name_1;
 	END IF;
@@ -2025,6 +2228,16 @@ BEGIN
 			r_dcr_new.fk_typ_name := REPLACE(:NEW.fk_typ_name,' ','_');
 		END IF;
 		r_dcr_new.fk_ref_sequence := :NEW.fk_ref_sequence;
+		IF :NEW.fk_ref_cube_tsg_int_ext = ' ' THEN
+			r_dcr_new.fk_ref_cube_tsg_int_ext := ' ';
+		ELSE
+			r_dcr_new.fk_ref_cube_tsg_int_ext := REPLACE(:NEW.fk_ref_cube_tsg_int_ext,' ','_');
+		END IF;
+		IF :NEW.fk_ref_bot_name = ' ' THEN
+			r_dcr_new.fk_ref_bot_name := ' ';
+		ELSE
+			r_dcr_new.fk_ref_bot_name := REPLACE(:NEW.fk_ref_bot_name,' ','_');
+		END IF;
 		IF :NEW.fk_ref_typ_name = ' ' THEN
 			r_dcr_new.fk_ref_typ_name := ' ';
 		ELSE
@@ -2039,10 +2252,14 @@ BEGIN
 		SELECT rowid INTO l_cube_rowid FROM t_description_reference
 		WHERE fk_typ_name = :OLD.fk_typ_name
 		  AND fk_ref_sequence = :OLD.fk_ref_sequence
+		  AND fk_ref_cube_tsg_int_ext = :OLD.fk_ref_cube_tsg_int_ext
+		  AND fk_ref_bot_name = :OLD.fk_ref_bot_name
 		  AND fk_ref_typ_name = :OLD.fk_ref_typ_name;
 		r_dcr_old.fk_bot_name := :OLD.fk_bot_name;
 		r_dcr_old.fk_typ_name := :OLD.fk_typ_name;
 		r_dcr_old.fk_ref_sequence := :OLD.fk_ref_sequence;
+		r_dcr_old.fk_ref_cube_tsg_int_ext := :OLD.fk_ref_cube_tsg_int_ext;
+		r_dcr_old.fk_ref_bot_name := :OLD.fk_ref_bot_name;
 		r_dcr_old.fk_ref_typ_name := :OLD.fk_ref_typ_name;
 		r_dcr_old.text := :OLD.text;
 	END IF;
@@ -2078,6 +2295,16 @@ BEGIN
 			r_rtr_new.fk_typ_name := REPLACE(:NEW.fk_typ_name,' ','_');
 		END IF;
 		r_rtr_new.fk_ref_sequence := :NEW.fk_ref_sequence;
+		IF :NEW.fk_ref_cube_tsg_int_ext = ' ' THEN
+			r_rtr_new.fk_ref_cube_tsg_int_ext := ' ';
+		ELSE
+			r_rtr_new.fk_ref_cube_tsg_int_ext := REPLACE(:NEW.fk_ref_cube_tsg_int_ext,' ','_');
+		END IF;
+		IF :NEW.fk_ref_bot_name = ' ' THEN
+			r_rtr_new.fk_ref_bot_name := ' ';
+		ELSE
+			r_rtr_new.fk_ref_bot_name := REPLACE(:NEW.fk_ref_bot_name,' ','_');
+		END IF;
 		IF :NEW.fk_ref_typ_name = ' ' THEN
 			r_rtr_new.fk_ref_typ_name := ' ';
 		ELSE
@@ -2111,6 +2338,8 @@ BEGIN
 		SELECT rowid INTO l_cube_rowid FROM t_restriction_type_spec_ref
 		WHERE fk_typ_name = :OLD.fk_typ_name
 		  AND fk_ref_sequence = :OLD.fk_ref_sequence
+		  AND fk_ref_cube_tsg_int_ext = :OLD.fk_ref_cube_tsg_int_ext
+		  AND fk_ref_bot_name = :OLD.fk_ref_bot_name
 		  AND fk_ref_typ_name = :OLD.fk_ref_typ_name
 		  AND xf_tsp_typ_name = :OLD.xf_tsp_typ_name
 		  AND xf_tsp_tsg_code = :OLD.xf_tsp_tsg_code
@@ -2118,6 +2347,8 @@ BEGIN
 		r_rtr_old.fk_bot_name := :OLD.fk_bot_name;
 		r_rtr_old.fk_typ_name := :OLD.fk_typ_name;
 		r_rtr_old.fk_ref_sequence := :OLD.fk_ref_sequence;
+		r_rtr_old.fk_ref_cube_tsg_int_ext := :OLD.fk_ref_cube_tsg_int_ext;
+		r_rtr_old.fk_ref_bot_name := :OLD.fk_ref_bot_name;
 		r_rtr_old.fk_ref_typ_name := :OLD.fk_ref_typ_name;
 		r_rtr_old.include_or_exclude := :OLD.include_or_exclude;
 		r_rtr_old.xf_tsp_typ_name := :OLD.xf_tsp_typ_name;
@@ -2156,6 +2387,16 @@ BEGIN
 			r_rts_new.fk_typ_name := REPLACE(:NEW.fk_typ_name,' ','_');
 		END IF;
 		r_rts_new.fk_ref_sequence := :NEW.fk_ref_sequence;
+		IF :NEW.fk_ref_cube_tsg_int_ext = ' ' THEN
+			r_rts_new.fk_ref_cube_tsg_int_ext := ' ';
+		ELSE
+			r_rts_new.fk_ref_cube_tsg_int_ext := REPLACE(:NEW.fk_ref_cube_tsg_int_ext,' ','_');
+		END IF;
+		IF :NEW.fk_ref_bot_name = ' ' THEN
+			r_rts_new.fk_ref_bot_name := ' ';
+		ELSE
+			r_rts_new.fk_ref_bot_name := REPLACE(:NEW.fk_ref_bot_name,' ','_');
+		END IF;
 		IF :NEW.fk_ref_typ_name = ' ' THEN
 			r_rts_new.fk_ref_typ_name := ' ';
 		ELSE
@@ -2189,6 +2430,8 @@ BEGIN
 		SELECT rowid INTO l_cube_rowid FROM t_restriction_target_type_spec
 		WHERE fk_typ_name = :OLD.fk_typ_name
 		  AND fk_ref_sequence = :OLD.fk_ref_sequence
+		  AND fk_ref_cube_tsg_int_ext = :OLD.fk_ref_cube_tsg_int_ext
+		  AND fk_ref_bot_name = :OLD.fk_ref_bot_name
 		  AND fk_ref_typ_name = :OLD.fk_ref_typ_name
 		  AND xf_tsp_typ_name = :OLD.xf_tsp_typ_name
 		  AND xf_tsp_tsg_code = :OLD.xf_tsp_tsg_code
@@ -2196,6 +2439,8 @@ BEGIN
 		r_rts_old.fk_bot_name := :OLD.fk_bot_name;
 		r_rts_old.fk_typ_name := :OLD.fk_typ_name;
 		r_rts_old.fk_ref_sequence := :OLD.fk_ref_sequence;
+		r_rts_old.fk_ref_cube_tsg_int_ext := :OLD.fk_ref_cube_tsg_int_ext;
+		r_rts_old.fk_ref_bot_name := :OLD.fk_ref_bot_name;
 		r_rts_old.fk_ref_typ_name := :OLD.fk_ref_typ_name;
 		r_rts_old.include_or_exclude := :OLD.include_or_exclude;
 		r_rts_old.xf_tsp_typ_name := :OLD.xf_tsp_typ_name;
@@ -2382,164 +2627,6 @@ BEGIN
 		pkg_bot_trg.update_jsn (l_cube_rowid, r_jsn_old, r_jsn_new);
 	ELSIF DELETING THEN
 		pkg_bot_trg.delete_jsn (l_cube_rowid, r_jsn_old);
-	END IF;
-END;
-/
-SHOW ERRORS
-
-CREATE OR REPLACE TRIGGER trg_tsg
-INSTEAD OF INSERT OR DELETE OR UPDATE ON v_type_specialisation_group
-FOR EACH ROW
-DECLARE
-	l_cube_rowid UROWID;
-	r_tsg_new v_type_specialisation_group%ROWTYPE;
-	r_tsg_old v_type_specialisation_group%ROWTYPE;
-BEGIN
-	IF INSERTING OR UPDATING THEN
-		r_tsg_new.cube_sequence := :NEW.cube_sequence;
-		IF :NEW.fk_bot_name = ' ' THEN
-			r_tsg_new.fk_bot_name := ' ';
-		ELSE
-			r_tsg_new.fk_bot_name := REPLACE(:NEW.fk_bot_name,' ','_');
-		END IF;
-		IF :NEW.fk_typ_name = ' ' THEN
-			r_tsg_new.fk_typ_name := ' ';
-		ELSE
-			r_tsg_new.fk_typ_name := REPLACE(:NEW.fk_typ_name,' ','_');
-		END IF;
-		IF :NEW.fk_tsg_code = ' ' THEN
-			r_tsg_new.fk_tsg_code := ' ';
-		ELSE
-			r_tsg_new.fk_tsg_code := REPLACE(:NEW.fk_tsg_code,' ','_');
-		END IF;
-		IF :NEW.code = ' ' THEN
-			r_tsg_new.code := ' ';
-		ELSE
-			r_tsg_new.code := REPLACE(:NEW.code,' ','_');
-		END IF;
-		IF :NEW.name = ' ' THEN
-			r_tsg_new.name := ' ';
-		ELSE
-			r_tsg_new.name := REPLACE(:NEW.name,' ','_');
-		END IF;
-		r_tsg_new.primary_key := :NEW.primary_key;
-		IF :NEW.xf_atb_typ_name = ' ' THEN
-			r_tsg_new.xf_atb_typ_name := ' ';
-		ELSE
-			r_tsg_new.xf_atb_typ_name := REPLACE(:NEW.xf_atb_typ_name,' ','_');
-		END IF;
-		IF :NEW.xk_atb_name = ' ' THEN
-			r_tsg_new.xk_atb_name := ' ';
-		ELSE
-			r_tsg_new.xk_atb_name := REPLACE(:NEW.xk_atb_name,' ','_');
-		END IF;
-	END IF;
-	IF UPDATING THEN
-		r_tsg_new.cube_id := :OLD.cube_id;
-		r_tsg_new.cube_level := :OLD.cube_level;
-	END IF;
-	IF UPDATING OR DELETING THEN
-		SELECT rowid INTO l_cube_rowid FROM t_type_specialisation_group
-		WHERE fk_typ_name = :OLD.fk_typ_name
-		  AND code = :OLD.code;
-		r_tsg_old.cube_sequence := :OLD.cube_sequence;
-		r_tsg_old.fk_bot_name := :OLD.fk_bot_name;
-		r_tsg_old.fk_typ_name := :OLD.fk_typ_name;
-		r_tsg_old.fk_tsg_code := :OLD.fk_tsg_code;
-		r_tsg_old.code := :OLD.code;
-		r_tsg_old.name := :OLD.name;
-		r_tsg_old.primary_key := :OLD.primary_key;
-		r_tsg_old.xf_atb_typ_name := :OLD.xf_atb_typ_name;
-		r_tsg_old.xk_atb_name := :OLD.xk_atb_name;
-	END IF;
-
-	IF INSERTING THEN 
-		pkg_bot_trg.insert_tsg (r_tsg_new);
-	ELSIF UPDATING THEN
-		pkg_bot_trg.update_tsg (l_cube_rowid, r_tsg_old, r_tsg_new);
-	ELSIF DELETING THEN
-		pkg_bot_trg.delete_tsg (l_cube_rowid, r_tsg_old);
-	END IF;
-END;
-/
-SHOW ERRORS
-
-CREATE OR REPLACE TRIGGER trg_tsp
-INSTEAD OF INSERT OR DELETE OR UPDATE ON v_type_specialisation
-FOR EACH ROW
-DECLARE
-	l_cube_rowid UROWID;
-	r_tsp_new v_type_specialisation%ROWTYPE;
-	r_tsp_old v_type_specialisation%ROWTYPE;
-BEGIN
-	IF INSERTING OR UPDATING THEN
-		r_tsp_new.cube_sequence := :NEW.cube_sequence;
-		IF :NEW.fk_bot_name = ' ' THEN
-			r_tsp_new.fk_bot_name := ' ';
-		ELSE
-			r_tsp_new.fk_bot_name := REPLACE(:NEW.fk_bot_name,' ','_');
-		END IF;
-		IF :NEW.fk_typ_name = ' ' THEN
-			r_tsp_new.fk_typ_name := ' ';
-		ELSE
-			r_tsp_new.fk_typ_name := REPLACE(:NEW.fk_typ_name,' ','_');
-		END IF;
-		IF :NEW.fk_tsg_code = ' ' THEN
-			r_tsp_new.fk_tsg_code := ' ';
-		ELSE
-			r_tsp_new.fk_tsg_code := REPLACE(:NEW.fk_tsg_code,' ','_');
-		END IF;
-		IF :NEW.code = ' ' THEN
-			r_tsp_new.code := ' ';
-		ELSE
-			r_tsp_new.code := REPLACE(:NEW.code,' ','_');
-		END IF;
-		IF :NEW.name = ' ' THEN
-			r_tsp_new.name := ' ';
-		ELSE
-			r_tsp_new.name := REPLACE(:NEW.name,' ','_');
-		END IF;
-		IF :NEW.xf_tsp_typ_name = ' ' THEN
-			r_tsp_new.xf_tsp_typ_name := ' ';
-		ELSE
-			r_tsp_new.xf_tsp_typ_name := REPLACE(:NEW.xf_tsp_typ_name,' ','_');
-		END IF;
-		IF :NEW.xf_tsp_tsg_code = ' ' THEN
-			r_tsp_new.xf_tsp_tsg_code := ' ';
-		ELSE
-			r_tsp_new.xf_tsp_tsg_code := REPLACE(:NEW.xf_tsp_tsg_code,' ','_');
-		END IF;
-		IF :NEW.xk_tsp_code = ' ' THEN
-			r_tsp_new.xk_tsp_code := ' ';
-		ELSE
-			r_tsp_new.xk_tsp_code := REPLACE(:NEW.xk_tsp_code,' ','_');
-		END IF;
-	END IF;
-	IF UPDATING THEN
-		r_tsp_new.cube_id := :OLD.cube_id;
-	END IF;
-	IF UPDATING OR DELETING THEN
-		SELECT rowid INTO l_cube_rowid FROM t_type_specialisation
-		WHERE fk_typ_name = :OLD.fk_typ_name
-		  AND fk_tsg_code = :OLD.fk_tsg_code
-		  AND code = :OLD.code;
-		r_tsp_old.cube_sequence := :OLD.cube_sequence;
-		r_tsp_old.fk_bot_name := :OLD.fk_bot_name;
-		r_tsp_old.fk_typ_name := :OLD.fk_typ_name;
-		r_tsp_old.fk_tsg_code := :OLD.fk_tsg_code;
-		r_tsp_old.code := :OLD.code;
-		r_tsp_old.name := :OLD.name;
-		r_tsp_old.xf_tsp_typ_name := :OLD.xf_tsp_typ_name;
-		r_tsp_old.xf_tsp_tsg_code := :OLD.xf_tsp_tsg_code;
-		r_tsp_old.xk_tsp_code := :OLD.xk_tsp_code;
-	END IF;
-
-	IF INSERTING THEN 
-		pkg_bot_trg.insert_tsp (r_tsp_new);
-	ELSIF UPDATING THEN
-		pkg_bot_trg.update_tsp (l_cube_rowid, r_tsp_old, r_tsp_new);
-	ELSIF DELETING THEN
-		pkg_bot_trg.delete_tsp (l_cube_rowid, r_tsp_old);
 	END IF;
 END;
 /

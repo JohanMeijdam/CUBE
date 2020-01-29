@@ -45,6 +45,12 @@ CREATE SEQUENCE sq_ord START WITH 100000
 /
 CREATE SEQUENCE sq_orr START WITH 100000
 /
+CREATE SEQUENCE sq_aaa START WITH 100000
+/
+CREATE SEQUENCE sq_bbb START WITH 100000
+/
+CREATE SEQUENCE sq_ccc START WITH 100000
+/
 CREATE TABLE t_klant (
 	cube_id VARCHAR2(16),
 	cube_tsg_intext VARCHAR2(8) DEFAULT 'INT',
@@ -194,6 +200,38 @@ CREATE TABLE t_order_regel (
 	CONSTRAINT orr_ord_fk
 		FOREIGN KEY (fk_ord_code)
 		REFERENCES t_order (code)
+		ON DELETE CASCADE )
+/
+CREATE TABLE t_aaa (
+	cube_id VARCHAR2(16),
+	id NUMBER(8) DEFAULT '0',
+	naam VARCHAR2(40),
+	CONSTRAINT aaa_pk
+		PRIMARY KEY (id) )
+/
+CREATE TABLE t_bbb (
+	cube_id VARCHAR2(16),
+	fk_aaa_id NUMBER(8) DEFAULT '0',
+	id NUMBER(8) DEFAULT '0',
+	naam VARCHAR2(40),
+	CONSTRAINT bbb_pk
+		PRIMARY KEY (id),
+	CONSTRAINT bbb_aaa_fk
+		FOREIGN KEY (fk_aaa_id)
+		REFERENCES t_aaa (id)
+		ON DELETE CASCADE )
+/
+CREATE TABLE t_ccc (
+	cube_id VARCHAR2(16),
+	fk_aaa_id NUMBER(8) DEFAULT '0',
+	fk_bbb_id NUMBER(8) DEFAULT '0',
+	id NUMBER(8) DEFAULT '0',
+	naam VARCHAR2(40),
+	CONSTRAINT ccc_pk
+		PRIMARY KEY (id),
+	CONSTRAINT ccc_bbb_fk
+		FOREIGN KEY (fk_bbb_id)
+		REFERENCES t_bbb (id)
 		ON DELETE CASCADE )
 /
 EXIT;

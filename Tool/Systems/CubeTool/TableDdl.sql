@@ -37,6 +37,10 @@ CREATE SEQUENCE sq_bot START WITH 100000
 /
 CREATE SEQUENCE sq_typ START WITH 100000
 /
+CREATE SEQUENCE sq_tsg START WITH 100000
+/
+CREATE SEQUENCE sq_tsp START WITH 100000
+/
 CREATE SEQUENCE sq_atb START WITH 100000
 /
 CREATE SEQUENCE sq_der START WITH 100000
@@ -56,10 +60,6 @@ CREATE SEQUENCE sq_rts START WITH 100000
 CREATE SEQUENCE sq_rtt START WITH 100000
 /
 CREATE SEQUENCE sq_jsn START WITH 100000
-/
-CREATE SEQUENCE sq_tsg START WITH 100000
-/
-CREATE SEQUENCE sq_tsp START WITH 100000
 /
 CREATE SEQUENCE sq_dct START WITH 100000
 /
@@ -146,6 +146,47 @@ CREATE TABLE t_type (
 		REFERENCES t_type (name)
 		ON DELETE CASCADE )
 /
+CREATE TABLE t_type_specialisation_group (
+	cube_id VARCHAR2(16),
+	cube_sequence NUMBER(8),
+	cube_level NUMBER(8) DEFAULT '1',
+	fk_bot_name VARCHAR2(30),
+	fk_typ_name VARCHAR2(30),
+	fk_tsg_code VARCHAR2(16),
+	code VARCHAR2(16),
+	name VARCHAR2(30),
+	primary_key CHAR(1) DEFAULT 'N',
+	xf_atb_typ_name VARCHAR2(30),
+	xk_atb_name VARCHAR2(30),
+	CONSTRAINT tsg_pk
+		PRIMARY KEY (fk_typ_name, code),
+	CONSTRAINT tsg_typ_fk
+		FOREIGN KEY (fk_typ_name)
+		REFERENCES t_type (name)
+		ON DELETE CASCADE,
+	CONSTRAINT tsg_tsg_fk
+		FOREIGN KEY (fk_typ_name, fk_tsg_code)
+		REFERENCES t_type_specialisation_group (fk_typ_name, code)
+		ON DELETE CASCADE )
+/
+CREATE TABLE t_type_specialisation (
+	cube_id VARCHAR2(16),
+	cube_sequence NUMBER(8),
+	fk_bot_name VARCHAR2(30),
+	fk_typ_name VARCHAR2(30),
+	fk_tsg_code VARCHAR2(16),
+	code VARCHAR2(16),
+	name VARCHAR2(30),
+	xf_tsp_typ_name VARCHAR2(30),
+	xf_tsp_tsg_code VARCHAR2(16),
+	xk_tsp_code VARCHAR2(16),
+	CONSTRAINT tsp_pk
+		PRIMARY KEY (fk_typ_name, fk_tsg_code, code),
+	CONSTRAINT tsp_tsg_fk
+		FOREIGN KEY (fk_typ_name, fk_tsg_code)
+		REFERENCES t_type_specialisation_group (fk_typ_name, code)
+		ON DELETE CASCADE )
+/
 CREATE TABLE t_attribute (
 	cube_id VARCHAR2(16),
 	cube_sequence NUMBER(8),
@@ -223,10 +264,12 @@ CREATE TABLE t_reference (
 	scope VARCHAR2(3) DEFAULT 'ALL',
 	unchangeable CHAR(1) DEFAULT 'N',
 	within_scope_extension VARCHAR2(3),
+	cube_tsg_int_ext VARCHAR2(8) DEFAULT 'INT',
+	xk_bot_name VARCHAR2(30),
 	xk_typ_name VARCHAR2(30),
 	xk_typ_name_1 VARCHAR2(30),
 	CONSTRAINT ref_pk
-		PRIMARY KEY (fk_typ_name, sequence, xk_typ_name),
+		PRIMARY KEY (fk_typ_name, sequence, cube_tsg_int_ext, xk_bot_name, xk_typ_name),
 	CONSTRAINT ref_typ_fk
 		FOREIGN KEY (fk_typ_name)
 		REFERENCES t_type (name)
@@ -237,13 +280,15 @@ CREATE TABLE t_description_reference (
 	fk_bot_name VARCHAR2(30),
 	fk_typ_name VARCHAR2(30),
 	fk_ref_sequence NUMBER(1) DEFAULT '0',
+	fk_ref_cube_tsg_int_ext VARCHAR2(8),
+	fk_ref_bot_name VARCHAR2(30),
 	fk_ref_typ_name VARCHAR2(30),
 	text VARCHAR2(3999),
 	CONSTRAINT dcr_pk
-		PRIMARY KEY (fk_typ_name, fk_ref_sequence, fk_ref_typ_name),
+		PRIMARY KEY (fk_typ_name, fk_ref_sequence, fk_ref_cube_tsg_int_ext, fk_ref_bot_name, fk_ref_typ_name),
 	CONSTRAINT dcr_ref_fk
-		FOREIGN KEY (fk_typ_name, fk_ref_sequence, fk_ref_typ_name)
-		REFERENCES t_reference (fk_typ_name, sequence, xk_typ_name)
+		FOREIGN KEY (fk_typ_name, fk_ref_sequence, fk_ref_cube_tsg_int_ext, fk_ref_bot_name, fk_ref_typ_name)
+		REFERENCES t_reference (fk_typ_name, sequence, cube_tsg_int_ext, xk_bot_name, xk_typ_name)
 		ON DELETE CASCADE )
 /
 CREATE TABLE t_restriction_type_spec_ref (
@@ -251,16 +296,18 @@ CREATE TABLE t_restriction_type_spec_ref (
 	fk_bot_name VARCHAR2(30),
 	fk_typ_name VARCHAR2(30),
 	fk_ref_sequence NUMBER(1) DEFAULT '0',
+	fk_ref_cube_tsg_int_ext VARCHAR2(8),
+	fk_ref_bot_name VARCHAR2(30),
 	fk_ref_typ_name VARCHAR2(30),
 	include_or_exclude CHAR(2) DEFAULT 'IN',
 	xf_tsp_typ_name VARCHAR2(30),
 	xf_tsp_tsg_code VARCHAR2(16),
 	xk_tsp_code VARCHAR2(16),
 	CONSTRAINT rtr_pk
-		PRIMARY KEY (fk_typ_name, fk_ref_sequence, fk_ref_typ_name, xf_tsp_typ_name, xf_tsp_tsg_code, xk_tsp_code),
+		PRIMARY KEY (fk_typ_name, fk_ref_sequence, fk_ref_cube_tsg_int_ext, fk_ref_bot_name, fk_ref_typ_name, xf_tsp_typ_name, xf_tsp_tsg_code, xk_tsp_code),
 	CONSTRAINT rtr_ref_fk
-		FOREIGN KEY (fk_typ_name, fk_ref_sequence, fk_ref_typ_name)
-		REFERENCES t_reference (fk_typ_name, sequence, xk_typ_name)
+		FOREIGN KEY (fk_typ_name, fk_ref_sequence, fk_ref_cube_tsg_int_ext, fk_ref_bot_name, fk_ref_typ_name)
+		REFERENCES t_reference (fk_typ_name, sequence, cube_tsg_int_ext, xk_bot_name, xk_typ_name)
 		ON DELETE CASCADE )
 /
 CREATE TABLE t_restriction_target_type_spec (
@@ -268,16 +315,18 @@ CREATE TABLE t_restriction_target_type_spec (
 	fk_bot_name VARCHAR2(30),
 	fk_typ_name VARCHAR2(30),
 	fk_ref_sequence NUMBER(1) DEFAULT '0',
+	fk_ref_cube_tsg_int_ext VARCHAR2(8),
+	fk_ref_bot_name VARCHAR2(30),
 	fk_ref_typ_name VARCHAR2(30),
 	include_or_exclude CHAR(2) DEFAULT 'IN',
 	xf_tsp_typ_name VARCHAR2(30),
 	xf_tsp_tsg_code VARCHAR2(16),
 	xk_tsp_code VARCHAR2(16),
 	CONSTRAINT rts_pk
-		PRIMARY KEY (fk_typ_name, fk_ref_sequence, fk_ref_typ_name, xf_tsp_typ_name, xf_tsp_tsg_code, xk_tsp_code),
+		PRIMARY KEY (fk_typ_name, fk_ref_sequence, fk_ref_cube_tsg_int_ext, fk_ref_bot_name, fk_ref_typ_name, xf_tsp_typ_name, xf_tsp_tsg_code, xk_tsp_code),
 	CONSTRAINT rts_ref_fk
-		FOREIGN KEY (fk_typ_name, fk_ref_sequence, fk_ref_typ_name)
-		REFERENCES t_reference (fk_typ_name, sequence, xk_typ_name)
+		FOREIGN KEY (fk_typ_name, fk_ref_sequence, fk_ref_cube_tsg_int_ext, fk_ref_bot_name, fk_ref_typ_name)
+		REFERENCES t_reference (fk_typ_name, sequence, cube_tsg_int_ext, xk_bot_name, xk_typ_name)
 		ON DELETE CASCADE )
 /
 CREATE TABLE t_restriction_type_spec_typ (
@@ -322,47 +371,6 @@ CREATE TABLE t_json_path (
 	CONSTRAINT jsn_jsn_fk
 		FOREIGN KEY (fk_typ_name, fk_jsn_name, fk_jsn_location, fk_jsn_atb_typ_name, fk_jsn_atb_name, fk_jsn_typ_name)
 		REFERENCES t_json_path (fk_typ_name, name, location, xf_atb_typ_name, xk_atb_name, xk_typ_name)
-		ON DELETE CASCADE )
-/
-CREATE TABLE t_type_specialisation_group (
-	cube_id VARCHAR2(16),
-	cube_sequence NUMBER(8),
-	cube_level NUMBER(8) DEFAULT '1',
-	fk_bot_name VARCHAR2(30),
-	fk_typ_name VARCHAR2(30),
-	fk_tsg_code VARCHAR2(16),
-	code VARCHAR2(16),
-	name VARCHAR2(30),
-	primary_key CHAR(1) DEFAULT 'N',
-	xf_atb_typ_name VARCHAR2(30),
-	xk_atb_name VARCHAR2(30),
-	CONSTRAINT tsg_pk
-		PRIMARY KEY (fk_typ_name, code),
-	CONSTRAINT tsg_typ_fk
-		FOREIGN KEY (fk_typ_name)
-		REFERENCES t_type (name)
-		ON DELETE CASCADE,
-	CONSTRAINT tsg_tsg_fk
-		FOREIGN KEY (fk_typ_name, fk_tsg_code)
-		REFERENCES t_type_specialisation_group (fk_typ_name, code)
-		ON DELETE CASCADE )
-/
-CREATE TABLE t_type_specialisation (
-	cube_id VARCHAR2(16),
-	cube_sequence NUMBER(8),
-	fk_bot_name VARCHAR2(30),
-	fk_typ_name VARCHAR2(30),
-	fk_tsg_code VARCHAR2(16),
-	code VARCHAR2(16),
-	name VARCHAR2(30),
-	xf_tsp_typ_name VARCHAR2(30),
-	xf_tsp_tsg_code VARCHAR2(16),
-	xk_tsp_code VARCHAR2(16),
-	CONSTRAINT tsp_pk
-		PRIMARY KEY (fk_typ_name, fk_tsg_code, code),
-	CONSTRAINT tsp_tsg_fk
-		FOREIGN KEY (fk_typ_name, fk_tsg_code)
-		REFERENCES t_type_specialisation_group (fk_typ_name, code)
 		ON DELETE CASCADE )
 /
 CREATE TABLE t_description_type (

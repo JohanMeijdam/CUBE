@@ -1325,4 +1325,247 @@ END;
 /
 SHOW ERRORS
 
+CREATE OR REPLACE VIEW v_aaa AS 
+	SELECT
+		cube_id,
+		id,
+		naam
+	FROM t_aaa
+/
+CREATE OR REPLACE VIEW v_bbb AS 
+	SELECT
+		cube_id,
+		fk_aaa_id,
+		id,
+		naam
+	FROM t_bbb
+/
+CREATE OR REPLACE VIEW v_ccc AS 
+	SELECT
+		cube_id,
+		fk_aaa_id,
+		fk_bbb_id,
+		id,
+		naam
+	FROM t_ccc
+/
+
+CREATE OR REPLACE PACKAGE pkg_aaa_trg IS
+	FUNCTION cube_trg_cubetest RETURN VARCHAR2;
+	PROCEDURE insert_aaa (p_aaa IN OUT NOCOPY v_aaa%ROWTYPE);
+	PROCEDURE update_aaa (p_cube_rowid IN UROWID, p_aaa_old IN OUT NOCOPY v_aaa%ROWTYPE, p_aaa_new IN OUT NOCOPY v_aaa%ROWTYPE);
+	PROCEDURE delete_aaa (p_cube_rowid IN UROWID, p_aaa IN OUT NOCOPY v_aaa%ROWTYPE);
+	PROCEDURE insert_bbb (p_bbb IN OUT NOCOPY v_bbb%ROWTYPE);
+	PROCEDURE update_bbb (p_cube_rowid IN UROWID, p_bbb_old IN OUT NOCOPY v_bbb%ROWTYPE, p_bbb_new IN OUT NOCOPY v_bbb%ROWTYPE);
+	PROCEDURE delete_bbb (p_cube_rowid IN UROWID, p_bbb IN OUT NOCOPY v_bbb%ROWTYPE);
+	PROCEDURE insert_ccc (p_ccc IN OUT NOCOPY v_ccc%ROWTYPE);
+	PROCEDURE update_ccc (p_cube_rowid IN UROWID, p_ccc_old IN OUT NOCOPY v_ccc%ROWTYPE, p_ccc_new IN OUT NOCOPY v_ccc%ROWTYPE);
+	PROCEDURE delete_ccc (p_cube_rowid IN UROWID, p_ccc IN OUT NOCOPY v_ccc%ROWTYPE);
+END;
+/
+SHOW ERRORS;
+
+CREATE OR REPLACE PACKAGE BODY pkg_aaa_trg IS
+
+	FUNCTION cube_trg_cubetest RETURN VARCHAR2 IS
+	BEGIN
+		RETURN 'cube_trg_cubetest';
+	END;
+
+	PROCEDURE insert_aaa (p_aaa IN OUT NOCOPY v_aaa%ROWTYPE) IS
+	BEGIN
+		p_aaa.cube_id := 'AAA-' || TO_CHAR(sq_aaa.NEXTVAL,'FM000000000000');
+		INSERT INTO t_aaa (
+			cube_id,
+			id,
+			naam)
+		VALUES (
+			p_aaa.cube_id,
+			p_aaa.id,
+			p_aaa.naam);
+	END;
+
+	PROCEDURE update_aaa (p_cube_rowid UROWID, p_aaa_old IN OUT NOCOPY v_aaa%ROWTYPE, p_aaa_new IN OUT NOCOPY v_aaa%ROWTYPE) IS
+	BEGIN
+		UPDATE t_aaa SET 
+			naam = p_aaa_new.naam
+		WHERE rowid = p_cube_rowid;
+	END;
+
+	PROCEDURE delete_aaa (p_cube_rowid UROWID, p_aaa IN OUT NOCOPY v_aaa%ROWTYPE) IS
+	BEGIN
+		DELETE t_aaa 
+		WHERE rowid = p_cube_rowid;
+	END;
+
+	PROCEDURE insert_bbb (p_bbb IN OUT NOCOPY v_bbb%ROWTYPE) IS
+	BEGIN
+		p_bbb.cube_id := 'BBB-' || TO_CHAR(sq_bbb.NEXTVAL,'FM000000000000');
+		INSERT INTO t_bbb (
+			cube_id,
+			fk_aaa_id,
+			id,
+			naam)
+		VALUES (
+			p_bbb.cube_id,
+			p_bbb.fk_aaa_id,
+			p_bbb.id,
+			p_bbb.naam);
+	END;
+
+	PROCEDURE update_bbb (p_cube_rowid UROWID, p_bbb_old IN OUT NOCOPY v_bbb%ROWTYPE, p_bbb_new IN OUT NOCOPY v_bbb%ROWTYPE) IS
+	BEGIN
+		UPDATE t_bbb SET 
+			naam = p_bbb_new.naam
+		WHERE rowid = p_cube_rowid;
+	END;
+
+	PROCEDURE delete_bbb (p_cube_rowid UROWID, p_bbb IN OUT NOCOPY v_bbb%ROWTYPE) IS
+	BEGIN
+		DELETE t_bbb 
+		WHERE rowid = p_cube_rowid;
+	END;
+
+	PROCEDURE insert_ccc (p_ccc IN OUT NOCOPY v_ccc%ROWTYPE) IS
+	BEGIN
+		p_ccc.cube_id := 'CCC-' || TO_CHAR(sq_ccc.NEXTVAL,'FM000000000000');
+		SELECT fk_aaa_id
+		  INTO p_ccc.fk_aaa_id
+		FROM t_bbb
+		WHERE id = p_ccc.fk_bbb_id;
+		INSERT INTO t_ccc (
+			cube_id,
+			fk_aaa_id,
+			fk_bbb_id,
+			id,
+			naam)
+		VALUES (
+			p_ccc.cube_id,
+			p_ccc.fk_aaa_id,
+			p_ccc.fk_bbb_id,
+			p_ccc.id,
+			p_ccc.naam);
+	END;
+
+	PROCEDURE update_ccc (p_cube_rowid UROWID, p_ccc_old IN OUT NOCOPY v_ccc%ROWTYPE, p_ccc_new IN OUT NOCOPY v_ccc%ROWTYPE) IS
+	BEGIN
+		UPDATE t_ccc SET 
+			naam = p_ccc_new.naam
+		WHERE rowid = p_cube_rowid;
+	END;
+
+	PROCEDURE delete_ccc (p_cube_rowid UROWID, p_ccc IN OUT NOCOPY v_ccc%ROWTYPE) IS
+	BEGIN
+		DELETE t_ccc 
+		WHERE rowid = p_cube_rowid;
+	END;
+END;
+/
+SHOW ERRORS;
+
+CREATE OR REPLACE TRIGGER trg_aaa
+INSTEAD OF INSERT OR DELETE OR UPDATE ON v_aaa
+FOR EACH ROW
+DECLARE
+	l_cube_rowid UROWID;
+	r_aaa_new v_aaa%ROWTYPE;
+	r_aaa_old v_aaa%ROWTYPE;
+BEGIN
+	IF INSERTING OR UPDATING THEN
+		r_aaa_new.id := :NEW.id;
+		r_aaa_new.naam := :NEW.naam;
+	END IF;
+	IF UPDATING THEN
+		r_aaa_new.cube_id := :OLD.cube_id;
+	END IF;
+	IF UPDATING OR DELETING THEN
+		SELECT rowid INTO l_cube_rowid FROM t_aaa
+		WHERE id = :OLD.id;
+		r_aaa_old.id := :OLD.id;
+		r_aaa_old.naam := :OLD.naam;
+	END IF;
+
+	IF INSERTING THEN 
+		pkg_aaa_trg.insert_aaa (r_aaa_new);
+	ELSIF UPDATING THEN
+		pkg_aaa_trg.update_aaa (l_cube_rowid, r_aaa_old, r_aaa_new);
+	ELSIF DELETING THEN
+		pkg_aaa_trg.delete_aaa (l_cube_rowid, r_aaa_old);
+	END IF;
+END;
+/
+SHOW ERRORS
+
+CREATE OR REPLACE TRIGGER trg_bbb
+INSTEAD OF INSERT OR DELETE OR UPDATE ON v_bbb
+FOR EACH ROW
+DECLARE
+	l_cube_rowid UROWID;
+	r_bbb_new v_bbb%ROWTYPE;
+	r_bbb_old v_bbb%ROWTYPE;
+BEGIN
+	IF INSERTING OR UPDATING THEN
+		r_bbb_new.fk_aaa_id := :NEW.fk_aaa_id;
+		r_bbb_new.id := :NEW.id;
+		r_bbb_new.naam := :NEW.naam;
+	END IF;
+	IF UPDATING THEN
+		r_bbb_new.cube_id := :OLD.cube_id;
+	END IF;
+	IF UPDATING OR DELETING THEN
+		SELECT rowid INTO l_cube_rowid FROM t_bbb
+		WHERE id = :OLD.id;
+		r_bbb_old.fk_aaa_id := :OLD.fk_aaa_id;
+		r_bbb_old.id := :OLD.id;
+		r_bbb_old.naam := :OLD.naam;
+	END IF;
+
+	IF INSERTING THEN 
+		pkg_aaa_trg.insert_bbb (r_bbb_new);
+	ELSIF UPDATING THEN
+		pkg_aaa_trg.update_bbb (l_cube_rowid, r_bbb_old, r_bbb_new);
+	ELSIF DELETING THEN
+		pkg_aaa_trg.delete_bbb (l_cube_rowid, r_bbb_old);
+	END IF;
+END;
+/
+SHOW ERRORS
+
+CREATE OR REPLACE TRIGGER trg_ccc
+INSTEAD OF INSERT OR DELETE OR UPDATE ON v_ccc
+FOR EACH ROW
+DECLARE
+	l_cube_rowid UROWID;
+	r_ccc_new v_ccc%ROWTYPE;
+	r_ccc_old v_ccc%ROWTYPE;
+BEGIN
+	IF INSERTING OR UPDATING THEN
+		r_ccc_new.fk_aaa_id := :NEW.fk_aaa_id;
+		r_ccc_new.fk_bbb_id := :NEW.fk_bbb_id;
+		r_ccc_new.id := :NEW.id;
+		r_ccc_new.naam := :NEW.naam;
+	END IF;
+	IF UPDATING THEN
+		r_ccc_new.cube_id := :OLD.cube_id;
+	END IF;
+	IF UPDATING OR DELETING THEN
+		SELECT rowid INTO l_cube_rowid FROM t_ccc
+		WHERE id = :OLD.id;
+		r_ccc_old.fk_aaa_id := :OLD.fk_aaa_id;
+		r_ccc_old.fk_bbb_id := :OLD.fk_bbb_id;
+		r_ccc_old.id := :OLD.id;
+		r_ccc_old.naam := :OLD.naam;
+	END IF;
+
+	IF INSERTING THEN 
+		pkg_aaa_trg.insert_ccc (r_ccc_new);
+	ELSIF UPDATING THEN
+		pkg_aaa_trg.update_ccc (l_cube_rowid, r_ccc_old, r_ccc_new);
+	ELSIF DELETING THEN
+		pkg_aaa_trg.delete_ccc (l_cube_rowid, r_ccc_old);
+	END IF;
+END;
+/
+SHOW ERRORS
+
 EXIT;

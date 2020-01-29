@@ -69,7 +69,7 @@ g_xmlhttp.onreadystatechange = function() {
 									'TYP_JSN',
 									l_json_node_id,
 									'icons/braces.bmp', 
-									document.getElementById("InputCubeTsgObjArr").value.toLowerCase()+' '+document.getElementById("InputCubeTsgType").value.toLowerCase()+' '+document.getElementById("InputName").value.toLowerCase()+' '+document.getElementById("InputLocation").value.toLowerCase(),
+									'('+document.getElementById("InputCubeTsgObjArr").value.toLowerCase()+')'+' ('+document.getElementById("InputCubeTsgType").value.toLowerCase()+')'+' '+document.getElementById("InputName").value.toLowerCase()+' '+document.getElementById("InputLocation").value.toLowerCase(),
 									'N',
 									l_position,
 									l_objNodePos);
@@ -79,7 +79,7 @@ g_xmlhttp.onreadystatechange = function() {
 					case "UPDATE_JSN":
 						var l_objNode = parent.document.getElementById(g_node_id);
 						if (l_objNode != null) {
-							l_objNode.children[1].lastChild.nodeValue = ' '+document.getElementById("InputCubeTsgObjArr").value.toLowerCase()+' '+document.getElementById("InputCubeTsgType").value.toLowerCase()+' '+document.getElementById("InputName").value.toLowerCase()+' '+document.getElementById("InputLocation").value.toLowerCase();
+							l_objNode.children[1].lastChild.nodeValue = ' '+'('+document.getElementById("InputCubeTsgObjArr").value.toLowerCase()+')'+' ('+document.getElementById("InputCubeTsgType").value.toLowerCase()+')'+' '+document.getElementById("InputName").value.toLowerCase()+' '+document.getElementById("InputLocation").value.toLowerCase();
 					}
 						break;
 					case "DELETE_JSN":
@@ -118,7 +118,6 @@ g_xmlhttp.onreadystatechange = function() {
 		} else {
 			alert ('Request error:\n'+g_xmlhttp.statusText);
 		}
-		
 	}
 }
 

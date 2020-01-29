@@ -6,8 +6,8 @@ $_SESSION['views']=0;
 <link rel="stylesheet" href="base_css.php" />
 <script language="javascript" type="text/javascript" src="..\CubeGeneral\CubeInclude.js"></script>
 <script language="javascript" type="text/javascript" src="..\CubeGeneral\CubeDetailInclude.js"></script>
-<script language="javascript" type="text/javascript" src="CubeRootInclude.js"></script>
-<script language="javascript" type="text/javascript" src="CubeRootDetailInclude.js"></script>
+<script language="javascript" type="text/javascript" src="CubeTestInclude.js"></script>
+<script language="javascript" type="text/javascript" src="CubeTestDetailInclude.js"></script>
 <script language="javascript" type="text/javascript">
 <!--
 var g_option = null;
@@ -27,39 +27,41 @@ g_xmlhttp.onreadystatechange = function() {
 			}
 			for (i in l_json_array) {
 				switch (l_json_array[i].ResultName) {
-					case "SELECT_DCT":
+					case "SELECT_CCC":
 						var l_json_values = l_json_array[i].Rows[0].Data;
-						document.getElementById("InputFkBotName").value=l_json_values.FkBotName;
-						document.getElementById("InputText").value=l_json_values.Text;
+						document.getElementById("InputFkAaaId").value=l_json_values.FkAaaId;
+						document.getElementById("InputFkBbbId").value=l_json_values.FkBbbId;
+						document.getElementById("InputNaam").value=l_json_values.Naam;
 						break;
-					case "CREATE_DCT":
-						document.getElementById("InputFkBotName").disabled=true;
-						document.getElementById("InputFkTypName").disabled=true;
+					case "CREATE_CCC":
+						document.getElementById("InputFkAaaId").disabled=true;
+						document.getElementById("InputFkBbbId").disabled=true;
+						document.getElementById("InputId").disabled=true;
 						document.getElementById("ButtonCreate").disabled=true;
 						document.getElementById("ButtonUpdate").disabled=false;
 						document.getElementById("ButtonDelete").disabled=false;
 						var l_objNode = parent.document.getElementById(g_parent_node_id);
-						var l_json_node_id = {FkTypName:document.getElementById("InputFkTypName").value};
-						g_node_id = '{"TYP_DCT":'+JSON.stringify(l_json_node_id)+'}';
+						var l_json_node_id = {Id:document.getElementById("InputId").value};
+						g_node_id = '{"TYP_CCC":'+JSON.stringify(l_json_node_id)+'}';
 						if (l_objNode != null) {
 							if (l_objNode.firstChild._state == 'O') {
 								var l_position = 'L';
 								l_objNodePos = null;
 								parent.AddTreeviewNode(
 									l_objNode,
-									'TYP_DCT',
+									'TYP_CCC',
 									l_json_node_id,
-									'icons/desc.bmp', 
-									' ',
+									'icons/.bmp', 
+									document.getElementById("InputId").value.toLowerCase(),
 									'N',
 									l_position,
 									l_objNodePos);
 							}
 						}
 						break;
-					case "UPDATE_DCT":
+					case "UPDATE_CCC":
 						break;
-					case "DELETE_DCT":
+					case "DELETE_CCC":
 						document.getElementById("ButtonCreate").disabled=false;
 						document.getElementById("ButtonUpdate").disabled=true;
 						document.getElementById("ButtonDelete").disabled=true;
@@ -71,9 +73,9 @@ g_xmlhttp.onreadystatechange = function() {
 							l_objNode.parentNode.removeChild(l_objNode);
 						}
 						break;
-					case "SELECT_FKEY_TYP":
+					case "SELECT_FKEY_BBB":
 						var l_json_values = l_json_array[i].Rows[0].Data;
-						document.getElementById("InputFkBotName").value=l_json_values.FkBotName;
+						document.getElementById("InputFkAaaId").value=l_json_values.FkAaaId;
 						break;
 					case "ERROR":
 						alert ('Server error:\n'+l_json_array[i].ErrorText);
@@ -97,70 +99,73 @@ function InitBody() {
 	switch (l_json_argument.nodeType) {
 	case "D":
 		g_node_id = JSON.stringify(l_json_argument.objectId);
-		document.getElementById("InputFkTypName").value=l_json_objectKey.TYP_DCT.FkTypName;
+		document.getElementById("InputId").value=l_json_objectKey.TYP_CCC.Id;
 		document.getElementById("ButtonCreate").disabled=true;
 		PerformTrans( {
-			Service: "GetDct",
+			Service: "GetCcc",
 			Parameters: {
-				Type: l_json_objectKey.TYP_DCT
+				Type: l_json_objectKey.TYP_CCC
 			}
 		} );
-		document.getElementById("InputFkBotName").disabled=true;
-		document.getElementById("InputFkTypName").disabled=true;
+		document.getElementById("InputFkAaaId").disabled=true;
+		document.getElementById("InputFkBbbId").disabled=true;
+		document.getElementById("InputId").disabled=true;
 		break;
 	case "N":
 		g_parent_node_id = JSON.stringify(l_json_argument.objectId);
-		document.getElementById("InputFkTypName").value=l_json_objectKey.TYP_TYP.Name;
+		document.getElementById("InputFkBbbId").value=l_json_objectKey.TYP_BBB.Id;
 		document.getElementById("ButtonUpdate").disabled=true;
 		document.getElementById("ButtonDelete").disabled=true;
 		PerformTrans( {
-			Service: "GetTypFkey",
+			Service: "GetBbbFkey",
 			Parameters: {
-				Type: l_json_objectKey.TYP_TYP
+				Type: l_json_objectKey.TYP_BBB
 			}
 		} );
-		document.getElementById("InputFkBotName").disabled=true;
-		document.getElementById("InputFkTypName").disabled=true;
+		document.getElementById("InputFkAaaId").disabled=true;
+		document.getElementById("InputFkBbbId").disabled=true;
 		break;
 	default:
 		alert ('Error InitBody: '+l_argument[1]);
 	}
 }
 
-function CreateDct() {
+function CreateCcc() {
 	var Type = {
-		FkBotName: document.getElementById("InputFkBotName").value,
-		FkTypName: document.getElementById("InputFkTypName").value,
-		Text: document.getElementById("InputText").value
+		FkAaaId: document.getElementById("InputFkAaaId").value,
+		FkBbbId: document.getElementById("InputFkBbbId").value,
+		Id: document.getElementById("InputId").value,
+		Naam: document.getElementById("InputNaam").value
 	};
 	PerformTrans( {
-		Service: "CreateDct",
+		Service: "CreateCcc",
 		Parameters: {
 			Type
 		}
 	} );
 }
 
-function UpdateDct() {
+function UpdateCcc() {
 	var Type = {
-		FkBotName: document.getElementById("InputFkBotName").value,
-		FkTypName: document.getElementById("InputFkTypName").value,
-		Text: document.getElementById("InputText").value
+		FkAaaId: document.getElementById("InputFkAaaId").value,
+		FkBbbId: document.getElementById("InputFkBbbId").value,
+		Id: document.getElementById("InputId").value,
+		Naam: document.getElementById("InputNaam").value
 	};
 	PerformTrans( {
-		Service: "UpdateDct",
+		Service: "UpdateCcc",
 		Parameters: {
 			Type
 		}
 	} );
 }
 
-function DeleteDct() {
+function DeleteCcc() {
 	var Type = {
-		FkTypName: document.getElementById("InputFkTypName").value
+		Id: document.getElementById("InputId").value
 	};
 	PerformTrans( {
-		Service: "DeleteDct",
+		Service: "DeleteCcc",
 		Parameters: {
 			Type
 		}
@@ -169,20 +174,22 @@ function DeleteDct() {
 -->
 </script>
 </head><body oncontextmenu="return false;" onload="InitBody()" ondrop="drop(event)" ondragover="allowDrop(event)">
-<div><img src="icons/desc_large.bmp" /><span style="cursor:help" oncontextmenu="parent.OpenDescBox('DESC','DescriptionType','DESCRIPTION_TYPE','_',-1)"> DESCRIPTION_TYPE</span></div>
+<div><img src="icons/_large.bmp" /><span> CCC</span></div>
 <hr/>
 <table>
-<tr><td>BusinessObjectType.Name</td><td><div style="max-width:30em;">
-<input id="InputFkBotName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td><u>Type.Name</u></td><td><div style="max-width:30em;">
-<input id="InputFkTypName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td style="padding-top:10px;">Text</td></tr><tr><td colspan="2"><div>
-<textarea id="InputText" type="text" maxlength="3999" rows="5" style="white-space:normal;width:100%;"></textarea></div></td></tr>
+<tr><td>Aaa.Id</td><td><div style="max-width:9em;">
+<input id="InputFkAaaId" type="text" maxlength="9" style="width:100%;"></input></div></td></tr>
+<tr><td>Bbb.Id</td><td><div style="max-width:9em;">
+<input id="InputFkBbbId" type="text" maxlength="9" style="width:100%;"></input></div></td></tr>
+<tr><td><u>Id</u></td><td><div style="max-width:9em;">
+<input id="InputId" type="text" maxlength="9" style="width:100%;"></input></div></td></tr>
+<tr><td>Naam</td><td><div style="max-width:40em;">
+<input id="InputNaam" type="text" maxlength="40" style="width:100%;"></input></div></td></tr>
 <tr><td><br></td><td style="width:100%;"></td></tr>
 <tr><td/><td>
-<button id="ButtonCreate" type="button" onclick="CreateDct()">Create</button>&nbsp;&nbsp;&nbsp;
-<button id="ButtonUpdate" type="button" onclick="UpdateDct()">Update</button>&nbsp;&nbsp;&nbsp;
-<button id="ButtonDelete" type="button" onclick="DeleteDct()">Delete</button></td></tr>
+<button id="ButtonCreate" type="button" onclick="CreateCcc()">Create</button>&nbsp;&nbsp;&nbsp;
+<button id="ButtonUpdate" type="button" onclick="UpdateCcc()">Update</button>&nbsp;&nbsp;&nbsp;
+<button id="ButtonDelete" type="button" onclick="DeleteCcc()">Delete</button></td></tr>
 </table>
 <input id="InputCubeId" type="hidden"></input>
 </body>

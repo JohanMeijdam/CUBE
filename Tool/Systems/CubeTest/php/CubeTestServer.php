@@ -1861,6 +1861,432 @@ case 'DeleteOrr':
 
 	break;
 
+case 'GetDirAaaItems':
+	echo '[';
+
+	$stid = oci_parse($conn, "BEGIN pkg_aaa.get_aaa_root_items (:p_cube_row); END;");
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'LIST_AAA';
+	$r = perform_db_request();
+	if (!$r) { 
+		echo ']';
+		return;
+	}
+	$ResponseObj->Rows = array();
+	while ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Key = new \stdClass();
+		$RowObj->Key->Id = $row["ID"];
+		$RowObj->Display = $row["ID"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
+	break;
+
+case 'GetAaa':
+	echo '[';
+
+	$stid = oci_parse($conn, "BEGIN pkg_aaa.get_aaa (
+		:p_cube_row,
+		:p_id);
+	END;");
+	oci_bind_by_name($stid,":p_id",$RequestObj->Parameters->Type->Id);
+
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'SELECT_AAA';
+	$r = perform_db_request();
+	if (!$r) { 
+		echo ']';
+		return;
+	}
+	$ResponseObj->Rows = array();
+	if ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Data = new \stdClass();
+		$RowObj->Data->Naam = $row["NAAM"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
+	break;
+
+case 'GetAaaItems':
+	echo '[';
+
+	$stid = oci_parse($conn, "BEGIN pkg_aaa.get_aaa_bbb_items (
+		:p_cube_row,
+		:p_id);
+	END;");
+	oci_bind_by_name($stid,":p_id",$RequestObj->Parameters->Type->Id);
+
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'LIST_BBB';
+	$r = perform_db_request();
+	if (!$r) { 
+		echo ']';
+		return;
+	}
+	$ResponseObj->Rows = array();
+	while ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Key = new \stdClass();
+		$RowObj->Key->Id = $row["ID"];
+		$RowObj->Display = $row["ID"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
+	break;
+
+case 'CreateAaa':
+	echo '[';
+
+	$stid = oci_parse($conn, "BEGIN pkg_aaa.insert_aaa (
+		:p_id,
+		:p_naam);
+	END;");
+	oci_bind_by_name($stid,":p_id",$RequestObj->Parameters->Type->Id);
+	oci_bind_by_name($stid,":p_naam",$RequestObj->Parameters->Type->Naam);
+
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'CREATE_AAA';
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		echo ']';
+		return;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
+	break;
+
+case 'UpdateAaa':
+	echo '[';
+
+	$stid = oci_parse($conn, "BEGIN pkg_aaa.update_aaa (
+		:p_id,
+		:p_naam);
+	END;");
+	oci_bind_by_name($stid,":p_id",$RequestObj->Parameters->Type->Id);
+	oci_bind_by_name($stid,":p_naam",$RequestObj->Parameters->Type->Naam);
+
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'UPDATE_AAA';
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		echo ']';
+		return;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
+	break;
+
+case 'DeleteAaa':
+	echo '[';
+
+	$stid = oci_parse($conn, "BEGIN pkg_aaa.delete_aaa (
+		:p_id);
+	END;");
+	oci_bind_by_name($stid,":p_id",$RequestObj->Parameters->Type->Id);
+
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'DELETE_AAA';
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		echo ']';
+		return;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
+	break;
+
+case 'GetBbb':
+	echo '[';
+
+	$stid = oci_parse($conn, "BEGIN pkg_aaa.get_bbb (
+		:p_cube_row,
+		:p_id);
+	END;");
+	oci_bind_by_name($stid,":p_id",$RequestObj->Parameters->Type->Id);
+
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'SELECT_BBB';
+	$r = perform_db_request();
+	if (!$r) { 
+		echo ']';
+		return;
+	}
+	$ResponseObj->Rows = array();
+	if ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Data = new \stdClass();
+		$RowObj->Data->FkAaaId = $row["FK_AAA_ID"];
+		$RowObj->Data->Naam = $row["NAAM"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
+	break;
+
+case 'GetBbbFkey':
+	echo '[';
+
+	$stid = oci_parse($conn, "BEGIN pkg_aaa.get_bbb_fkey (
+		:p_cube_row,
+		:p_id);
+	END;");
+	oci_bind_by_name($stid,":p_id",$RequestObj->Parameters->Type->Id);
+
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'SELECT_FKEY_BBB';
+	$r = perform_db_request();
+	if (!$r) { 
+		echo ']';
+		return;
+	}
+	$ResponseObj->Rows = array();
+	if ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Data = new \stdClass();
+		$RowObj->Data->FkAaaId = $row["FK_AAA_ID"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
+	break;
+
+case 'GetBbbItems':
+	echo '[';
+
+	$stid = oci_parse($conn, "BEGIN pkg_aaa.get_bbb_ccc_items (
+		:p_cube_row,
+		:p_id);
+	END;");
+	oci_bind_by_name($stid,":p_id",$RequestObj->Parameters->Type->Id);
+
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'LIST_CCC';
+	$r = perform_db_request();
+	if (!$r) { 
+		echo ']';
+		return;
+	}
+	$ResponseObj->Rows = array();
+	while ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Key = new \stdClass();
+		$RowObj->Key->Id = $row["ID"];
+		$RowObj->Display = $row["ID"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
+	break;
+
+case 'CreateBbb':
+	echo '[';
+
+	$stid = oci_parse($conn, "BEGIN pkg_aaa.insert_bbb (
+		:p_fk_aaa_id,
+		:p_id,
+		:p_naam);
+	END;");
+	oci_bind_by_name($stid,":p_fk_aaa_id",$RequestObj->Parameters->Type->FkAaaId);
+	oci_bind_by_name($stid,":p_id",$RequestObj->Parameters->Type->Id);
+	oci_bind_by_name($stid,":p_naam",$RequestObj->Parameters->Type->Naam);
+
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'CREATE_BBB';
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		echo ']';
+		return;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
+	break;
+
+case 'UpdateBbb':
+	echo '[';
+
+	$stid = oci_parse($conn, "BEGIN pkg_aaa.update_bbb (
+		:p_fk_aaa_id,
+		:p_id,
+		:p_naam);
+	END;");
+	oci_bind_by_name($stid,":p_fk_aaa_id",$RequestObj->Parameters->Type->FkAaaId);
+	oci_bind_by_name($stid,":p_id",$RequestObj->Parameters->Type->Id);
+	oci_bind_by_name($stid,":p_naam",$RequestObj->Parameters->Type->Naam);
+
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'UPDATE_BBB';
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		echo ']';
+		return;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
+	break;
+
+case 'DeleteBbb':
+	echo '[';
+
+	$stid = oci_parse($conn, "BEGIN pkg_aaa.delete_bbb (
+		:p_id);
+	END;");
+	oci_bind_by_name($stid,":p_id",$RequestObj->Parameters->Type->Id);
+
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'DELETE_BBB';
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		echo ']';
+		return;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
+	break;
+
+case 'GetCcc':
+	echo '[';
+
+	$stid = oci_parse($conn, "BEGIN pkg_aaa.get_ccc (
+		:p_cube_row,
+		:p_id);
+	END;");
+	oci_bind_by_name($stid,":p_id",$RequestObj->Parameters->Type->Id);
+
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'SELECT_CCC';
+	$r = perform_db_request();
+	if (!$r) { 
+		echo ']';
+		return;
+	}
+	$ResponseObj->Rows = array();
+	if ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Data = new \stdClass();
+		$RowObj->Data->FkAaaId = $row["FK_AAA_ID"];
+		$RowObj->Data->FkBbbId = $row["FK_BBB_ID"];
+		$RowObj->Data->Naam = $row["NAAM"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
+	break;
+
+case 'CreateCcc':
+	echo '[';
+
+	$stid = oci_parse($conn, "BEGIN pkg_aaa.insert_ccc (
+		:p_fk_aaa_id,
+		:p_fk_bbb_id,
+		:p_id,
+		:p_naam);
+	END;");
+	oci_bind_by_name($stid,":p_fk_aaa_id",$RequestObj->Parameters->Type->FkAaaId);
+	oci_bind_by_name($stid,":p_fk_bbb_id",$RequestObj->Parameters->Type->FkBbbId);
+	oci_bind_by_name($stid,":p_id",$RequestObj->Parameters->Type->Id);
+	oci_bind_by_name($stid,":p_naam",$RequestObj->Parameters->Type->Naam);
+
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'CREATE_CCC';
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		echo ']';
+		return;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
+	break;
+
+case 'UpdateCcc':
+	echo '[';
+
+	$stid = oci_parse($conn, "BEGIN pkg_aaa.update_ccc (
+		:p_fk_aaa_id,
+		:p_fk_bbb_id,
+		:p_id,
+		:p_naam);
+	END;");
+	oci_bind_by_name($stid,":p_fk_aaa_id",$RequestObj->Parameters->Type->FkAaaId);
+	oci_bind_by_name($stid,":p_fk_bbb_id",$RequestObj->Parameters->Type->FkBbbId);
+	oci_bind_by_name($stid,":p_id",$RequestObj->Parameters->Type->Id);
+	oci_bind_by_name($stid,":p_naam",$RequestObj->Parameters->Type->Naam);
+
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'UPDATE_CCC';
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		echo ']';
+		return;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
+	break;
+
+case 'DeleteCcc':
+	echo '[';
+
+	$stid = oci_parse($conn, "BEGIN pkg_aaa.delete_ccc (
+		:p_id);
+	END;");
+	oci_bind_by_name($stid,":p_id",$RequestObj->Parameters->Type->Id);
+
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'DELETE_CCC';
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		echo ']';
+		return;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
+	break;
+
 default:
 	$ResponseObj = new \stdClass();
 	$ResponseObj->ResultName = 'ERROR';
