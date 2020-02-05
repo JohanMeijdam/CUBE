@@ -54,7 +54,7 @@ g_xmlhttp.onreadystatechange = function() {
 									'TYP_KLN',
 									l_json_node_id,
 									'icons/klant.bmp', 
-									document.getElementById("InputCubeTsgIntext").value.toLowerCase()+' '+document.getElementById("InputNummer").value.toLowerCase()+' ('+document.getElementById("InputAchternaam").value.toLowerCase()+')'+' '+document.getElementById("InputVoornaam").value.toLowerCase(),
+									'('+document.getElementById("InputCubeTsgIntext").value.toLowerCase()+')'+' '+document.getElementById("InputNummer").value.toLowerCase()+' ('+document.getElementById("InputAchternaam").value.toLowerCase()+')'+' '+document.getElementById("InputVoornaam").value.toLowerCase(),
 									'N',
 									l_position,
 									l_objNodePos);
@@ -64,7 +64,7 @@ g_xmlhttp.onreadystatechange = function() {
 					case "UPDATE_KLN":
 						var l_objNode = parent.document.getElementById(g_node_id);
 						if (l_objNode != null) {
-							l_objNode.children[1].lastChild.nodeValue = ' '+document.getElementById("InputCubeTsgIntext").value.toLowerCase()+' '+document.getElementById("InputNummer").value.toLowerCase()+' ('+document.getElementById("InputAchternaam").value.toLowerCase()+')'+' '+document.getElementById("InputVoornaam").value.toLowerCase();
+							l_objNode.children[1].lastChild.nodeValue = ' '+'('+document.getElementById("InputCubeTsgIntext").value.toLowerCase()+')'+' '+document.getElementById("InputNummer").value.toLowerCase()+' ('+document.getElementById("InputAchternaam").value.toLowerCase()+')'+' '+document.getElementById("InputVoornaam").value.toLowerCase();
 					}
 						break;
 					case "DELETE_KLN":

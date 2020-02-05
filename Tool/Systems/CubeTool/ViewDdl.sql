@@ -694,7 +694,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 		UPDATE t_type SET 
 			cube_sequence = p_typ_new.cube_sequence,
 			cube_level = p_typ_new.cube_level,
-			fk_typ_name = p_typ_new.fk_typ_name,
 			code = p_typ_new.code,
 			flag_partial_key = p_typ_new.flag_partial_key,
 			flag_recursive = p_typ_new.flag_recursive,

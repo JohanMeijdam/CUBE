@@ -247,8 +247,7 @@ CREATE OR REPLACE VIEW v_produkt AS
 		code,
 		prijs,
 		makelaar_naam,
-		bedrag_btw,
-		xk_kln_nummer
+		bedrag_btw
 	FROM t_produkt
 /
 CREATE OR REPLACE VIEW v_onderdeel AS 
@@ -261,10 +260,7 @@ CREATE OR REPLACE VIEW v_onderdeel AS
 		fk_ond_code,
 		code,
 		prijs,
-		omschrijving,
-		xf_ond_prd_cube_tsg_type,
-		xf_ond_prd_code,
-		xk_ond_code
+		omschrijving
 	FROM t_onderdeel
 /
 CREATE OR REPLACE VIEW v_onderdeel_deel AS 
@@ -275,10 +271,7 @@ CREATE OR REPLACE VIEW v_onderdeel_deel AS
 		fk_prd_code,
 		fk_ond_code,
 		code,
-		naam,
-		xf_ond_prd_cube_tsg_type,
-		xf_ond_prd_code,
-		xk_ond_code
+		naam
 	FROM t_onderdeel_deel
 /
 CREATE OR REPLACE VIEW v_onderdeel_deel_deel AS 
@@ -290,19 +283,7 @@ CREATE OR REPLACE VIEW v_onderdeel_deel_deel AS
 		fk_ond_code,
 		fk_odd_code,
 		code,
-		naam,
-		xf_ond_prd_cube_tsg_type,
-		xf_ond_prd_code,
-		xk_ond_code,
-		xf_ond_prd_cube_tsg_type_3,
-		xf_ond_prd_code_3,
-		xk_ond_code_3,
-		xf_ond_prd_cube_tsg_type_1,
-		xf_ond_prd_code_1,
-		xk_ond_code_1,
-		xf_ond_prd_cube_tsg_type_2,
-		xf_ond_prd_code_2,
-		xk_ond_code_2
+		naam
 	FROM t_onderdeel_deel_deel
 /
 CREATE OR REPLACE VIEW v_constructie AS 
@@ -313,6 +294,7 @@ CREATE OR REPLACE VIEW v_constructie AS
 		fk_ond_code,
 		code,
 		omschrijving,
+		xk_odd_code,
 		xk_odd_code_1
 	FROM t_constructie
 /
@@ -358,8 +340,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_prd_trg IS
 			code,
 			prijs,
 			makelaar_naam,
-			bedrag_btw,
-			xk_kln_nummer)
+			bedrag_btw)
 		VALUES (
 			p_prd.cube_id,
 			p_prd.cube_tsg_type,
@@ -368,8 +349,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_prd_trg IS
 			p_prd.code,
 			p_prd.prijs,
 			p_prd.makelaar_naam,
-			p_prd.bedrag_btw,
-			p_prd.xk_kln_nummer);
+			p_prd.bedrag_btw);
 	END;
 
 	PROCEDURE update_prd (p_cube_rowid UROWID, p_prd_old IN OUT NOCOPY v_produkt%ROWTYPE, p_prd_new IN OUT NOCOPY v_produkt%ROWTYPE) IS
@@ -377,8 +357,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_prd_trg IS
 		UPDATE t_produkt SET 
 			prijs = p_prd_new.prijs,
 			makelaar_naam = p_prd_new.makelaar_naam,
-			bedrag_btw = p_prd_new.bedrag_btw,
-			xk_kln_nummer = p_prd_new.xk_kln_nummer
+			bedrag_btw = p_prd_new.bedrag_btw
 		WHERE rowid = p_cube_rowid;
 	END;
 
@@ -401,10 +380,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_prd_trg IS
 			fk_ond_code,
 			code,
 			prijs,
-			omschrijving,
-			xf_ond_prd_cube_tsg_type,
-			xf_ond_prd_code,
-			xk_ond_code)
+			omschrijving)
 		VALUES (
 			p_ond.cube_id,
 			p_ond.cube_sequence,
@@ -414,10 +390,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_prd_trg IS
 			p_ond.fk_ond_code,
 			p_ond.code,
 			p_ond.prijs,
-			p_ond.omschrijving,
-			p_ond.xf_ond_prd_cube_tsg_type,
-			p_ond.xf_ond_prd_code,
-			p_ond.xk_ond_code);
+			p_ond.omschrijving);
 	END;
 
 	PROCEDURE update_ond (p_cube_rowid UROWID, p_ond_old IN OUT NOCOPY v_onderdeel%ROWTYPE, p_ond_new IN OUT NOCOPY v_onderdeel%ROWTYPE) IS
@@ -439,10 +412,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_prd_trg IS
 			cube_sequence = p_ond_new.cube_sequence,
 			cube_level = p_ond_new.cube_level,
 			prijs = p_ond_new.prijs,
-			omschrijving = p_ond_new.omschrijving,
-			xf_ond_prd_cube_tsg_type = p_ond_new.xf_ond_prd_cube_tsg_type,
-			xf_ond_prd_code = p_ond_new.xf_ond_prd_code,
-			xk_ond_code = p_ond_new.xk_ond_code
+			omschrijving = p_ond_new.omschrijving
 		WHERE rowid = p_cube_rowid;
 		IF NVL(p_ond_old.cube_level,0) <> NVL(p_ond_new.cube_level,0) THEN
 			OPEN c_ond;
@@ -457,10 +427,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_prd_trg IS
 					r_ond_old.fk_ond_code,
 					r_ond_old.code,
 					r_ond_old.prijs,
-					r_ond_old.omschrijving,
-					r_ond_old.xf_ond_prd_cube_tsg_type,
-					r_ond_old.xf_ond_prd_code,
-					r_ond_old.xk_ond_code;
+					r_ond_old.omschrijving;
 				EXIT WHEN c_ond%NOTFOUND;
 				r_ond_new := r_ond_old;
 				denorm_ond_ond (r_ond_new, p_ond_new);
@@ -514,10 +481,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_prd_trg IS
 			fk_prd_code,
 			fk_ond_code,
 			code,
-			naam,
-			xf_ond_prd_cube_tsg_type,
-			xf_ond_prd_code,
-			xk_ond_code)
+			naam)
 		VALUES (
 			p_odd.cube_id,
 			p_odd.cube_sequence,
@@ -525,20 +489,14 @@ CREATE OR REPLACE PACKAGE BODY pkg_prd_trg IS
 			p_odd.fk_prd_code,
 			p_odd.fk_ond_code,
 			p_odd.code,
-			p_odd.naam,
-			p_odd.xf_ond_prd_cube_tsg_type,
-			p_odd.xf_ond_prd_code,
-			p_odd.xk_ond_code);
+			p_odd.naam);
 	END;
 
 	PROCEDURE update_odd (p_cube_rowid UROWID, p_odd_old IN OUT NOCOPY v_onderdeel_deel%ROWTYPE, p_odd_new IN OUT NOCOPY v_onderdeel_deel%ROWTYPE) IS
 	BEGIN
 		UPDATE t_onderdeel_deel SET 
 			cube_sequence = p_odd_new.cube_sequence,
-			naam = p_odd_new.naam,
-			xf_ond_prd_cube_tsg_type = p_odd_new.xf_ond_prd_cube_tsg_type,
-			xf_ond_prd_code = p_odd_new.xf_ond_prd_code,
-			xk_ond_code = p_odd_new.xk_ond_code
+			naam = p_odd_new.naam
 		WHERE rowid = p_cube_rowid;
 	END;
 
@@ -563,19 +521,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_prd_trg IS
 			fk_ond_code,
 			fk_odd_code,
 			code,
-			naam,
-			xf_ond_prd_cube_tsg_type,
-			xf_ond_prd_code,
-			xk_ond_code,
-			xf_ond_prd_cube_tsg_type_3,
-			xf_ond_prd_code_3,
-			xk_ond_code_3,
-			xf_ond_prd_cube_tsg_type_1,
-			xf_ond_prd_code_1,
-			xk_ond_code_1,
-			xf_ond_prd_cube_tsg_type_2,
-			xf_ond_prd_code_2,
-			xk_ond_code_2)
+			naam)
 		VALUES (
 			p_ddd.cube_id,
 			p_ddd.cube_sequence,
@@ -584,38 +530,14 @@ CREATE OR REPLACE PACKAGE BODY pkg_prd_trg IS
 			p_ddd.fk_ond_code,
 			p_ddd.fk_odd_code,
 			p_ddd.code,
-			p_ddd.naam,
-			p_ddd.xf_ond_prd_cube_tsg_type,
-			p_ddd.xf_ond_prd_code,
-			p_ddd.xk_ond_code,
-			p_ddd.xf_ond_prd_cube_tsg_type_3,
-			p_ddd.xf_ond_prd_code_3,
-			p_ddd.xk_ond_code_3,
-			p_ddd.xf_ond_prd_cube_tsg_type_1,
-			p_ddd.xf_ond_prd_code_1,
-			p_ddd.xk_ond_code_1,
-			p_ddd.xf_ond_prd_cube_tsg_type_2,
-			p_ddd.xf_ond_prd_code_2,
-			p_ddd.xk_ond_code_2);
+			p_ddd.naam);
 	END;
 
 	PROCEDURE update_ddd (p_cube_rowid UROWID, p_ddd_old IN OUT NOCOPY v_onderdeel_deel_deel%ROWTYPE, p_ddd_new IN OUT NOCOPY v_onderdeel_deel_deel%ROWTYPE) IS
 	BEGIN
 		UPDATE t_onderdeel_deel_deel SET 
 			cube_sequence = p_ddd_new.cube_sequence,
-			naam = p_ddd_new.naam,
-			xf_ond_prd_cube_tsg_type = p_ddd_new.xf_ond_prd_cube_tsg_type,
-			xf_ond_prd_code = p_ddd_new.xf_ond_prd_code,
-			xk_ond_code = p_ddd_new.xk_ond_code,
-			xf_ond_prd_cube_tsg_type_3 = p_ddd_new.xf_ond_prd_cube_tsg_type_3,
-			xf_ond_prd_code_3 = p_ddd_new.xf_ond_prd_code_3,
-			xk_ond_code_3 = p_ddd_new.xk_ond_code_3,
-			xf_ond_prd_cube_tsg_type_1 = p_ddd_new.xf_ond_prd_cube_tsg_type_1,
-			xf_ond_prd_code_1 = p_ddd_new.xf_ond_prd_code_1,
-			xk_ond_code_1 = p_ddd_new.xk_ond_code_1,
-			xf_ond_prd_cube_tsg_type_2 = p_ddd_new.xf_ond_prd_cube_tsg_type_2,
-			xf_ond_prd_code_2 = p_ddd_new.xf_ond_prd_code_2,
-			xk_ond_code_2 = p_ddd_new.xk_ond_code_2
+			naam = p_ddd_new.naam
 		WHERE rowid = p_cube_rowid;
 	END;
 
@@ -635,6 +557,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_prd_trg IS
 			fk_ond_code,
 			code,
 			omschrijving,
+			xk_odd_code,
 			xk_odd_code_1)
 		VALUES (
 			p_cst.cube_id,
@@ -643,6 +566,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_prd_trg IS
 			p_cst.fk_ond_code,
 			p_cst.code,
 			p_cst.omschrijving,
+			p_cst.xk_odd_code,
 			p_cst.xk_odd_code_1);
 	END;
 
@@ -650,6 +574,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_prd_trg IS
 	BEGIN
 		UPDATE t_constructie SET 
 			omschrijving = p_cst_new.omschrijving,
+			xk_odd_code = p_cst_new.xk_odd_code,
 			xk_odd_code_1 = p_cst_new.xk_odd_code_1
 		WHERE rowid = p_cube_rowid;
 	END;
@@ -695,11 +620,6 @@ BEGIN
 		r_prd_new.prijs := :NEW.prijs;
 		r_prd_new.makelaar_naam := :NEW.makelaar_naam;
 		r_prd_new.bedrag_btw := :NEW.bedrag_btw;
-		IF :NEW.xk_kln_nummer = ' ' THEN
-			r_prd_new.xk_kln_nummer := ' ';
-		ELSE
-			r_prd_new.xk_kln_nummer := REPLACE(:NEW.xk_kln_nummer,' ','_');
-		END IF;
 	END IF;
 	IF UPDATING THEN
 		r_prd_new.cube_id := :OLD.cube_id;
@@ -715,7 +635,6 @@ BEGIN
 		r_prd_old.prijs := :OLD.prijs;
 		r_prd_old.makelaar_naam := :OLD.makelaar_naam;
 		r_prd_old.bedrag_btw := :OLD.bedrag_btw;
-		r_prd_old.xk_kln_nummer := :OLD.xk_kln_nummer;
 	END IF;
 
 	IF INSERTING THEN 
@@ -761,21 +680,6 @@ BEGIN
 		END IF;
 		r_ond_new.prijs := :NEW.prijs;
 		r_ond_new.omschrijving := :NEW.omschrijving;
-		IF :NEW.xf_ond_prd_cube_tsg_type = ' ' THEN
-			r_ond_new.xf_ond_prd_cube_tsg_type := ' ';
-		ELSE
-			r_ond_new.xf_ond_prd_cube_tsg_type := REPLACE(:NEW.xf_ond_prd_cube_tsg_type,' ','_');
-		END IF;
-		IF :NEW.xf_ond_prd_code = ' ' THEN
-			r_ond_new.xf_ond_prd_code := ' ';
-		ELSE
-			r_ond_new.xf_ond_prd_code := REPLACE(:NEW.xf_ond_prd_code,' ','_');
-		END IF;
-		IF :NEW.xk_ond_code = ' ' THEN
-			r_ond_new.xk_ond_code := ' ';
-		ELSE
-			r_ond_new.xk_ond_code := REPLACE(:NEW.xk_ond_code,' ','_');
-		END IF;
 	END IF;
 	IF UPDATING THEN
 		r_ond_new.cube_id := :OLD.cube_id;
@@ -793,9 +697,6 @@ BEGIN
 		r_ond_old.code := :OLD.code;
 		r_ond_old.prijs := :OLD.prijs;
 		r_ond_old.omschrijving := :OLD.omschrijving;
-		r_ond_old.xf_ond_prd_cube_tsg_type := :OLD.xf_ond_prd_cube_tsg_type;
-		r_ond_old.xf_ond_prd_code := :OLD.xf_ond_prd_code;
-		r_ond_old.xk_ond_code := :OLD.xk_ond_code;
 	END IF;
 
 	IF INSERTING THEN 
@@ -840,21 +741,6 @@ BEGIN
 			r_odd_new.code := REPLACE(:NEW.code,' ','_');
 		END IF;
 		r_odd_new.naam := :NEW.naam;
-		IF :NEW.xf_ond_prd_cube_tsg_type = ' ' THEN
-			r_odd_new.xf_ond_prd_cube_tsg_type := ' ';
-		ELSE
-			r_odd_new.xf_ond_prd_cube_tsg_type := REPLACE(:NEW.xf_ond_prd_cube_tsg_type,' ','_');
-		END IF;
-		IF :NEW.xf_ond_prd_code = ' ' THEN
-			r_odd_new.xf_ond_prd_code := ' ';
-		ELSE
-			r_odd_new.xf_ond_prd_code := REPLACE(:NEW.xf_ond_prd_code,' ','_');
-		END IF;
-		IF :NEW.xk_ond_code = ' ' THEN
-			r_odd_new.xk_ond_code := ' ';
-		ELSE
-			r_odd_new.xk_ond_code := REPLACE(:NEW.xk_ond_code,' ','_');
-		END IF;
 	END IF;
 	IF UPDATING THEN
 		r_odd_new.cube_id := :OLD.cube_id;
@@ -868,9 +754,6 @@ BEGIN
 		r_odd_old.fk_ond_code := :OLD.fk_ond_code;
 		r_odd_old.code := :OLD.code;
 		r_odd_old.naam := :OLD.naam;
-		r_odd_old.xf_ond_prd_cube_tsg_type := :OLD.xf_ond_prd_cube_tsg_type;
-		r_odd_old.xf_ond_prd_code := :OLD.xf_ond_prd_code;
-		r_odd_old.xk_ond_code := :OLD.xk_ond_code;
 	END IF;
 
 	IF INSERTING THEN 
@@ -920,66 +803,6 @@ BEGIN
 			r_ddd_new.code := REPLACE(:NEW.code,' ','_');
 		END IF;
 		r_ddd_new.naam := :NEW.naam;
-		IF :NEW.xf_ond_prd_cube_tsg_type = ' ' THEN
-			r_ddd_new.xf_ond_prd_cube_tsg_type := ' ';
-		ELSE
-			r_ddd_new.xf_ond_prd_cube_tsg_type := REPLACE(:NEW.xf_ond_prd_cube_tsg_type,' ','_');
-		END IF;
-		IF :NEW.xf_ond_prd_code = ' ' THEN
-			r_ddd_new.xf_ond_prd_code := ' ';
-		ELSE
-			r_ddd_new.xf_ond_prd_code := REPLACE(:NEW.xf_ond_prd_code,' ','_');
-		END IF;
-		IF :NEW.xk_ond_code = ' ' THEN
-			r_ddd_new.xk_ond_code := ' ';
-		ELSE
-			r_ddd_new.xk_ond_code := REPLACE(:NEW.xk_ond_code,' ','_');
-		END IF;
-		IF :NEW.xf_ond_prd_cube_tsg_type_3 = ' ' THEN
-			r_ddd_new.xf_ond_prd_cube_tsg_type_3 := ' ';
-		ELSE
-			r_ddd_new.xf_ond_prd_cube_tsg_type_3 := REPLACE(:NEW.xf_ond_prd_cube_tsg_type_3,' ','_');
-		END IF;
-		IF :NEW.xf_ond_prd_code_3 = ' ' THEN
-			r_ddd_new.xf_ond_prd_code_3 := ' ';
-		ELSE
-			r_ddd_new.xf_ond_prd_code_3 := REPLACE(:NEW.xf_ond_prd_code_3,' ','_');
-		END IF;
-		IF :NEW.xk_ond_code_3 = ' ' THEN
-			r_ddd_new.xk_ond_code_3 := ' ';
-		ELSE
-			r_ddd_new.xk_ond_code_3 := REPLACE(:NEW.xk_ond_code_3,' ','_');
-		END IF;
-		IF :NEW.xf_ond_prd_cube_tsg_type_1 = ' ' THEN
-			r_ddd_new.xf_ond_prd_cube_tsg_type_1 := ' ';
-		ELSE
-			r_ddd_new.xf_ond_prd_cube_tsg_type_1 := REPLACE(:NEW.xf_ond_prd_cube_tsg_type_1,' ','_');
-		END IF;
-		IF :NEW.xf_ond_prd_code_1 = ' ' THEN
-			r_ddd_new.xf_ond_prd_code_1 := ' ';
-		ELSE
-			r_ddd_new.xf_ond_prd_code_1 := REPLACE(:NEW.xf_ond_prd_code_1,' ','_');
-		END IF;
-		IF :NEW.xk_ond_code_1 = ' ' THEN
-			r_ddd_new.xk_ond_code_1 := ' ';
-		ELSE
-			r_ddd_new.xk_ond_code_1 := REPLACE(:NEW.xk_ond_code_1,' ','_');
-		END IF;
-		IF :NEW.xf_ond_prd_cube_tsg_type_2 = ' ' THEN
-			r_ddd_new.xf_ond_prd_cube_tsg_type_2 := ' ';
-		ELSE
-			r_ddd_new.xf_ond_prd_cube_tsg_type_2 := REPLACE(:NEW.xf_ond_prd_cube_tsg_type_2,' ','_');
-		END IF;
-		IF :NEW.xf_ond_prd_code_2 = ' ' THEN
-			r_ddd_new.xf_ond_prd_code_2 := ' ';
-		ELSE
-			r_ddd_new.xf_ond_prd_code_2 := REPLACE(:NEW.xf_ond_prd_code_2,' ','_');
-		END IF;
-		IF :NEW.xk_ond_code_2 = ' ' THEN
-			r_ddd_new.xk_ond_code_2 := ' ';
-		ELSE
-			r_ddd_new.xk_ond_code_2 := REPLACE(:NEW.xk_ond_code_2,' ','_');
-		END IF;
 	END IF;
 	IF UPDATING THEN
 		r_ddd_new.cube_id := :OLD.cube_id;
@@ -994,18 +817,6 @@ BEGIN
 		r_ddd_old.fk_odd_code := :OLD.fk_odd_code;
 		r_ddd_old.code := :OLD.code;
 		r_ddd_old.naam := :OLD.naam;
-		r_ddd_old.xf_ond_prd_cube_tsg_type := :OLD.xf_ond_prd_cube_tsg_type;
-		r_ddd_old.xf_ond_prd_code := :OLD.xf_ond_prd_code;
-		r_ddd_old.xk_ond_code := :OLD.xk_ond_code;
-		r_ddd_old.xf_ond_prd_cube_tsg_type_3 := :OLD.xf_ond_prd_cube_tsg_type_3;
-		r_ddd_old.xf_ond_prd_code_3 := :OLD.xf_ond_prd_code_3;
-		r_ddd_old.xk_ond_code_3 := :OLD.xk_ond_code_3;
-		r_ddd_old.xf_ond_prd_cube_tsg_type_1 := :OLD.xf_ond_prd_cube_tsg_type_1;
-		r_ddd_old.xf_ond_prd_code_1 := :OLD.xf_ond_prd_code_1;
-		r_ddd_old.xk_ond_code_1 := :OLD.xk_ond_code_1;
-		r_ddd_old.xf_ond_prd_cube_tsg_type_2 := :OLD.xf_ond_prd_cube_tsg_type_2;
-		r_ddd_old.xf_ond_prd_code_2 := :OLD.xf_ond_prd_code_2;
-		r_ddd_old.xk_ond_code_2 := :OLD.xk_ond_code_2;
 	END IF;
 
 	IF INSERTING THEN 
@@ -1049,6 +860,11 @@ BEGIN
 			r_cst_new.code := REPLACE(:NEW.code,' ','_');
 		END IF;
 		r_cst_new.omschrijving := :NEW.omschrijving;
+		IF :NEW.xk_odd_code = ' ' THEN
+			r_cst_new.xk_odd_code := ' ';
+		ELSE
+			r_cst_new.xk_odd_code := REPLACE(:NEW.xk_odd_code,' ','_');
+		END IF;
 		IF :NEW.xk_odd_code_1 = ' ' THEN
 			r_cst_new.xk_odd_code_1 := ' ';
 		ELSE
@@ -1069,6 +885,7 @@ BEGIN
 		r_cst_old.fk_ond_code := :OLD.fk_ond_code;
 		r_cst_old.code := :OLD.code;
 		r_cst_old.omschrijving := :OLD.omschrijving;
+		r_cst_old.xk_odd_code := :OLD.xk_odd_code;
 		r_cst_old.xk_odd_code_1 := :OLD.xk_odd_code_1;
 	END IF;
 
@@ -1100,10 +917,7 @@ CREATE OR REPLACE VIEW v_order_regel AS
 		aantal,
 		totaal_prijs,
 		xk_prd_cube_tsg_type,
-		xk_prd_code,
-		xk_prd_cube_tsg_type_1,
-		xk_prd_code_1,
-		xk_kln_nummer
+		xk_prd_code
 	FROM t_order_regel
 /
 
@@ -1167,10 +981,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_ord_trg IS
 			aantal,
 			totaal_prijs,
 			xk_prd_cube_tsg_type,
-			xk_prd_code,
-			xk_prd_cube_tsg_type_1,
-			xk_prd_code_1,
-			xk_kln_nummer)
+			xk_prd_code)
 		VALUES (
 			p_orr.cube_id,
 			p_orr.fk_ord_code,
@@ -1178,10 +989,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_ord_trg IS
 			p_orr.aantal,
 			p_orr.totaal_prijs,
 			p_orr.xk_prd_cube_tsg_type,
-			p_orr.xk_prd_code,
-			p_orr.xk_prd_cube_tsg_type_1,
-			p_orr.xk_prd_code_1,
-			p_orr.xk_kln_nummer);
+			p_orr.xk_prd_code);
 	END;
 
 	PROCEDURE update_orr (p_cube_rowid UROWID, p_orr_old IN OUT NOCOPY v_order_regel%ROWTYPE, p_orr_new IN OUT NOCOPY v_order_regel%ROWTYPE) IS
@@ -1190,9 +998,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_ord_trg IS
 			produkt_prijs = p_orr_new.produkt_prijs,
 			aantal = p_orr_new.aantal,
 			totaal_prijs = p_orr_new.totaal_prijs,
-			xk_prd_cube_tsg_type_1 = p_orr_new.xk_prd_cube_tsg_type_1,
-			xk_prd_code_1 = p_orr_new.xk_prd_code_1,
-			xk_kln_nummer = p_orr_new.xk_kln_nummer
+			xk_prd_cube_tsg_type = p_orr_new.xk_prd_cube_tsg_type,
+			xk_prd_code = p_orr_new.xk_prd_code
 		WHERE rowid = p_cube_rowid;
 	END;
 
@@ -1281,21 +1088,6 @@ BEGIN
 		ELSE
 			r_orr_new.xk_prd_code := REPLACE(:NEW.xk_prd_code,' ','_');
 		END IF;
-		IF :NEW.xk_prd_cube_tsg_type_1 = ' ' THEN
-			r_orr_new.xk_prd_cube_tsg_type_1 := ' ';
-		ELSE
-			r_orr_new.xk_prd_cube_tsg_type_1 := REPLACE(:NEW.xk_prd_cube_tsg_type_1,' ','_');
-		END IF;
-		IF :NEW.xk_prd_code_1 = ' ' THEN
-			r_orr_new.xk_prd_code_1 := ' ';
-		ELSE
-			r_orr_new.xk_prd_code_1 := REPLACE(:NEW.xk_prd_code_1,' ','_');
-		END IF;
-		IF :NEW.xk_kln_nummer = ' ' THEN
-			r_orr_new.xk_kln_nummer := ' ';
-		ELSE
-			r_orr_new.xk_kln_nummer := REPLACE(:NEW.xk_kln_nummer,' ','_');
-		END IF;
 	END IF;
 	IF UPDATING THEN
 		r_orr_new.cube_id := :OLD.cube_id;
@@ -1309,9 +1101,6 @@ BEGIN
 		r_orr_old.totaal_prijs := :OLD.totaal_prijs;
 		r_orr_old.xk_prd_cube_tsg_type := :OLD.xk_prd_cube_tsg_type;
 		r_orr_old.xk_prd_code := :OLD.xk_prd_code;
-		r_orr_old.xk_prd_cube_tsg_type_1 := :OLD.xk_prd_cube_tsg_type_1;
-		r_orr_old.xk_prd_code_1 := :OLD.xk_prd_code_1;
-		r_orr_old.xk_kln_nummer := :OLD.xk_kln_nummer;
 	END IF;
 
 	IF INSERTING THEN 

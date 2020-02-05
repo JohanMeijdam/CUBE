@@ -86,7 +86,6 @@ CREATE TABLE t_produkt (
 	prijs NUMBER(8,2),
 	makelaar_naam VARCHAR2(40),
 	bedrag_btw NUMBER(8,2),
-	xk_kln_nummer VARCHAR2(8),
 	CONSTRAINT prd_pk
 		PRIMARY KEY (cube_tsg_type, code) )
 /
@@ -100,9 +99,6 @@ CREATE TABLE t_onderdeel (
 	code VARCHAR2(8),
 	prijs NUMBER(8,2),
 	omschrijving VARCHAR2(120),
-	xf_ond_prd_cube_tsg_type VARCHAR2(8),
-	xf_ond_prd_code VARCHAR2(8),
-	xk_ond_code VARCHAR2(8),
 	CONSTRAINT ond_pk
 		PRIMARY KEY (fk_prd_cube_tsg_type, fk_prd_code, code),
 	CONSTRAINT ond_prd_fk
@@ -122,9 +118,6 @@ CREATE TABLE t_onderdeel_deel (
 	fk_ond_code VARCHAR2(8),
 	code VARCHAR2(8),
 	naam VARCHAR2(40),
-	xf_ond_prd_cube_tsg_type VARCHAR2(8),
-	xf_ond_prd_code VARCHAR2(8),
-	xk_ond_code VARCHAR2(8),
 	CONSTRAINT odd_pk
 		PRIMARY KEY (code),
 	CONSTRAINT odd_ond_fk
@@ -141,18 +134,6 @@ CREATE TABLE t_onderdeel_deel_deel (
 	fk_odd_code VARCHAR2(8),
 	code VARCHAR2(8),
 	naam VARCHAR2(40),
-	xf_ond_prd_cube_tsg_type VARCHAR2(8),
-	xf_ond_prd_code VARCHAR2(8),
-	xk_ond_code VARCHAR2(8),
-	xf_ond_prd_cube_tsg_type_3 VARCHAR2(8),
-	xf_ond_prd_code_3 VARCHAR2(8),
-	xk_ond_code_3 VARCHAR2(8),
-	xf_ond_prd_cube_tsg_type_1 VARCHAR2(8),
-	xf_ond_prd_code_1 VARCHAR2(8),
-	xk_ond_code_1 VARCHAR2(8),
-	xf_ond_prd_cube_tsg_type_2 VARCHAR2(8),
-	xf_ond_prd_code_2 VARCHAR2(8),
-	xk_ond_code_2 VARCHAR2(8),
 	CONSTRAINT ddd_pk
 		PRIMARY KEY (code),
 	CONSTRAINT ddd_odd_fk
@@ -167,6 +148,7 @@ CREATE TABLE t_constructie (
 	fk_ond_code VARCHAR2(8),
 	code VARCHAR2(8),
 	omschrijving VARCHAR2(120),
+	xk_odd_code VARCHAR2(8),
 	xk_odd_code_1 VARCHAR2(8),
 	CONSTRAINT cst_pk
 		PRIMARY KEY (fk_prd_cube_tsg_type, fk_prd_code, fk_ond_code, code),
@@ -192,9 +174,6 @@ CREATE TABLE t_order_regel (
 	totaal_prijs NUMBER(8,2),
 	xk_prd_cube_tsg_type VARCHAR2(8),
 	xk_prd_code VARCHAR2(8),
-	xk_prd_cube_tsg_type_1 VARCHAR2(8),
-	xk_prd_code_1 VARCHAR2(8),
-	xk_kln_nummer VARCHAR2(8),
 	CONSTRAINT orr_pk
 		PRIMARY KEY (fk_ord_code),
 	CONSTRAINT orr_ord_fk

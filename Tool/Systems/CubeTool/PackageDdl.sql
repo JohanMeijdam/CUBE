@@ -531,8 +531,6 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_api_url IN VARCHAR2);
 	PROCEDURE delete_bot (
 			p_name IN VARCHAR2);
-	PROCEDURE get_typ_list_all (
-			p_cube_row IN OUT c_cube_row);
 	PROCEDURE get_typ_for_bot_list_all (
 			p_cube_row IN OUT c_cube_row,
 			x_fk_bot_name IN VARCHAR2);
@@ -540,6 +538,11 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_cube_row IN OUT c_cube_row,
 			p_cube_scope_level IN NUMBER,
 			x_fk_typ_name IN VARCHAR2);
+	PROCEDURE get_typ_list_recursive (
+			p_cube_row IN OUT c_cube_row,
+			p_cube_up_or_down IN VARCHAR2,
+			p_cube_x_level IN NUMBER,
+			p_name IN VARCHAR2);
 	PROCEDURE get_typ (
 			p_cube_row IN OUT c_cube_row,
 			p_name IN VARCHAR2);
@@ -1375,18 +1378,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 		WHERE name = p_name;
 	END;
 
-	PROCEDURE get_typ_list_all (
-			p_cube_row IN OUT c_cube_row) IS
-	BEGIN
-		OPEN p_cube_row FOR
-			SELECT
-			  cube_sequence,
-			  name,
-			  code
-			FROM v_type
-			ORDER BY cube_sequence;
-	END;
-
 	PROCEDURE get_typ_for_bot_list_all (
 			p_cube_row IN OUT c_cube_row,
 			x_fk_bot_name IN VARCHAR2) IS
@@ -1439,6 +1430,47 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			  code
 			FROM v_type
 			WHERE fk_typ_name = l_name
+			ORDER BY cube_sequence;
+	END;
+
+	PROCEDURE get_typ_list_recursive (
+			p_cube_row IN OUT c_cube_row,
+			p_cube_up_or_down IN VARCHAR2,
+			p_cube_x_level IN NUMBER,
+			p_name IN VARCHAR2) IS
+	BEGIN
+		OPEN p_cube_row FOR
+			WITH anchor (
+				cube_sequence,
+				name,
+				code,
+				fk_typ_name,
+				cube_x_level) AS (
+				SELECT
+					cube_sequence,
+					name,
+					code,
+					fk_typ_name,
+					0 
+				FROM v_type
+				WHERE name = p_name
+				UNION ALL
+				SELECT
+					recursive.cube_sequence,
+					recursive.name,
+					recursive.code,
+					recursive.fk_typ_name,
+					anchor.cube_x_level+1
+				FROM v_type recursive, anchor
+				WHERE 	    ( 	    ( p_cube_up_or_down = 'D'
+						  AND anchor.name = recursive.fk_typ_name )
+					   OR 	    ( p_cube_up_or_down = 'U'
+						  AND anchor.fk_typ_name = recursive.name ) )
+				  AND anchor.cube_x_level < p_cube_x_level
+				)
+			SELECT DISTINCT cube_sequence, name, code
+			FROM anchor
+			WHERE cube_x_level > 0
 			ORDER BY cube_sequence;
 	END;
 

@@ -50,7 +50,7 @@ g_xmlhttp.onreadystatechange = function() {
 									'TYP_ORD',
 									l_json_node_id,
 									'icons/order.bmp', 
-									document.getElementById("InputCubeTsgIntExt").value.toLowerCase()+' '+document.getElementById("InputCode").value.toLowerCase(),
+									'('+document.getElementById("InputCubeTsgIntExt").value.toLowerCase()+')'+' '+document.getElementById("InputCode").value.toLowerCase(),
 									'N',
 									l_position,
 									l_objNodePos);
@@ -60,7 +60,7 @@ g_xmlhttp.onreadystatechange = function() {
 					case "UPDATE_ORD":
 						var l_objNode = parent.document.getElementById(g_node_id);
 						if (l_objNode != null) {
-							l_objNode.children[1].lastChild.nodeValue = ' '+document.getElementById("InputCubeTsgIntExt").value.toLowerCase()+' '+document.getElementById("InputCode").value.toLowerCase();
+							l_objNode.children[1].lastChild.nodeValue = ' '+'('+document.getElementById("InputCubeTsgIntExt").value.toLowerCase()+')'+' '+document.getElementById("InputCode").value.toLowerCase();
 					}
 						break;
 					case "DELETE_ORD":
@@ -210,11 +210,6 @@ function StartSelect001(p_event) {
 function ProcessTypeSpecialisation() {
 	if (document.getElementById("InputCubeTsgIntExt").value != ' ') {
 		document.getElementById("InputCubeTsgIntExt").disabled=true;
-		switch (document.getElementById("InputCubeTsgIntExt").value) {
-		case "INT":
-			document.getElementById("RowRefKlant0").style.display="none";
-			break;
-		}
 		document.getElementById("TableMain").style.display="inline";
 	}
 }
@@ -231,7 +226,7 @@ function ProcessTypeSpecialisation() {
 <table id="TableMain" style="display:none">
 <tr><td><u>Code</u></td><td><div style="max-width:8em;">
 <input id="InputCode" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td height=6></td></tr><tr id="RowRefKlant0"><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/klant.bmp"/> Klant (IsBesteldDoor)</legend>
+<tr><td height=6></td></tr><tr><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/klant.bmp"/> Klant (IsBesteldDoor)</legend>
 <table style="width:100%;">
 <tr><td>Klant.Nummer</td><td style="width:100%;"><div style="max-width:8em;">
 <input id="InputXkKlnNummer" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td>

@@ -34,9 +34,6 @@ g_xmlhttp.onreadystatechange = function() {
 						document.getElementById("InputTotaalPrijs").value=l_json_values.TotaalPrijs;
 						document.getElementById("InputXkPrdCubeTsgType").value=l_json_values.XkPrdCubeTsgType;
 						document.getElementById("InputXkPrdCode").value=l_json_values.XkPrdCode;
-						document.getElementById("InputXkPrdCubeTsgType1").value=l_json_values.XkPrdCubeTsgType1;
-						document.getElementById("InputXkPrdCode1").value=l_json_values.XkPrdCode1;
-						document.getElementById("InputXkKlnNummer").value=l_json_values.XkKlnNummer;
 						break;
 					case "CREATE_ORR":
 						document.getElementById("InputFkOrdCode").disabled=true;
@@ -88,12 +85,6 @@ g_xmlhttp.onreadystatechange = function() {
 					case "LIST_PRD":
 						OpenListBox(l_json_array[i].Rows,'produkt','Produkt','Y');
 						break;
-					case "LIST_PRD":
-						OpenListBox(l_json_array[i].Rows,'produkt','Produkt','Y');
-						break;
-					case "LIST_KLN":
-						OpenListBox(l_json_array[i].Rows,'klant','Klant','Y');
-						break;
 					case "ERROR":
 						alert ('Server error:\n'+l_json_array[i].ErrorText);
 						break;
@@ -125,9 +116,6 @@ function InitBody() {
 			}
 		} );
 		document.getElementById("InputFkOrdCode").disabled=true;
-		document.getElementById("InputXkPrdCubeTsgType").disabled=true;
-		document.getElementById("InputXkPrdCode").disabled=true;
-		document.getElementById("RefSelect001").disabled=true;
 		break;
 	case "N":
 		g_parent_node_id = JSON.stringify(l_json_argument.objectId);
@@ -148,10 +136,7 @@ function CreateOrr() {
 		Aantal: document.getElementById("InputAantal").value,
 		TotaalPrijs: document.getElementById("InputTotaalPrijs").value,
 		XkPrdCubeTsgType: document.getElementById("InputXkPrdCubeTsgType").value,
-		XkPrdCode: document.getElementById("InputXkPrdCode").value,
-		XkPrdCubeTsgType1: document.getElementById("InputXkPrdCubeTsgType1").value,
-		XkPrdCode1: document.getElementById("InputXkPrdCode1").value,
-		XkKlnNummer: document.getElementById("InputXkKlnNummer").value
+		XkPrdCode: document.getElementById("InputXkPrdCode").value
 	};
 	PerformTrans( {
 		Service: "CreateOrr",
@@ -168,10 +153,7 @@ function UpdateOrr() {
 		Aantal: document.getElementById("InputAantal").value,
 		TotaalPrijs: document.getElementById("InputTotaalPrijs").value,
 		XkPrdCubeTsgType: document.getElementById("InputXkPrdCubeTsgType").value,
-		XkPrdCode: document.getElementById("InputXkPrdCode").value,
-		XkPrdCubeTsgType1: document.getElementById("InputXkPrdCubeTsgType1").value,
-		XkPrdCode1: document.getElementById("InputXkPrdCode1").value,
-		XkKlnNummer: document.getElementById("InputXkKlnNummer").value
+		XkPrdCode: document.getElementById("InputXkPrdCode").value
 	};
 	PerformTrans( {
 		Service: "UpdateOrr",
@@ -211,25 +193,6 @@ function UpdateForeignKey(p_obj) {
 			document.getElementById("InputXkPrdCode").value = l_json_values.Code;
 		}
 		break;
-	case "Ref002":
-		if (l_values == '') {
-			document.getElementById("InputXkPrdCubeTsgType1").value = '';
-		} else {
-			document.getElementById("InputXkPrdCubeTsgType1").value = l_json_values.CubeTsgType;
-		}
-		if (l_values == '') {
-			document.getElementById("InputXkPrdCode1").value = '';
-		} else {
-			document.getElementById("InputXkPrdCode1").value = l_json_values.Code;
-		}
-		break;
-	case "Ref003":
-		if (l_values == '') {
-			document.getElementById("InputXkKlnNummer").value = '';
-		} else {
-			document.getElementById("InputXkKlnNummer").value = l_json_values.Nummer;
-		}
-		break;
 	default:
 		alert ('Error Listbox: '+document.body._ListBoxCode);
 	}
@@ -242,24 +205,6 @@ function StartSelect001(p_event) {
 	document.body._ListBoxCode = 'Ref001';
 	PerformTrans( {
 		Service: "GetPrdList"
-	} );
-}
-
-function StartSelect002(p_event) {
-	document.body._SelectLeft = p_event.clientX;
-	document.body._SelectTop = p_event.clientY;
-	document.body._ListBoxCode = 'Ref002';
-	PerformTrans( {
-		Service: "GetPrdList"
-	} );
-}
-
-function StartSelect003(p_event) {
-	document.body._SelectLeft = p_event.clientX;
-	document.body._SelectTop = p_event.clientY;
-	document.body._ListBoxCode = 'Ref003';
-	PerformTrans( {
-		Service: "GetKlnList"
 	} );
 }
 -->
@@ -283,20 +228,6 @@ function StartSelect003(p_event) {
 <td><button id="RefSelect001" type="button" onclick="StartSelect001(event)">Select</button></td></tr>
 <tr><td>Produkt.Code</td><td style="width:100%;"><div style="max-width:8em;">
 <input id="InputXkPrdCode" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td></tr>
-</table></fieldset></td></tr>
-<tr><td height=6></td></tr><tr><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/produkt.bmp"/> Produkt (BetreftMultiple)</legend>
-<table style="width:100%;">
-<tr><td>Produkt.Type</td><td style="width:100%;"><div style="max-width:8em;">
-<input id="InputXkPrdCubeTsgType1" type="text" maxlength="8" style="width:100%;" onchange="ReplaceSpaces(this);" disabled></input></div></td>
-<td><button id="RefSelect002" type="button" onclick="StartSelect002(event)">Select</button></td></tr>
-<tr><td>Produkt.Code</td><td style="width:100%;"><div style="max-width:8em;">
-<input id="InputXkPrdCode1" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td></tr>
-</table></fieldset></td></tr>
-<tr><td height=6></td></tr><tr><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/klant.bmp"/> Klant (Betreft)</legend>
-<table style="width:100%;">
-<tr><td>Klant.Nummer</td><td style="width:100%;"><div style="max-width:8em;">
-<input id="InputXkKlnNummer" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td>
-<td><button id="RefSelect003" type="button" onclick="StartSelect003(event)">Select</button></td></tr>
 </table></fieldset></td></tr>
 <tr><td><br></td><td style="width:100%;"></td></tr>
 <tr><td/><td>

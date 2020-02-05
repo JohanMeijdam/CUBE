@@ -36,19 +36,23 @@ g_xmlhttp.onreadystatechange = function() {
 						document.getElementById("InputScope").value=l_json_values.Scope;
 						document.getElementById("InputUnchangeable").value=l_json_values.Unchangeable;
 						document.getElementById("InputWithinScopeExtension").value=l_json_values.WithinScopeExtension;
+						document.getElementById("InputCubeTsgIntExt").value=l_json_values.CubeTsgIntExt;
 						document.getElementById("InputXkTypName1").value=l_json_values.XkTypName1;
+						ProcessTypeSpecialisation();
 						break;
 					case "CREATE_REF":
 						document.getElementById("InputFkBotName").disabled=true;
 						document.getElementById("InputFkTypName").disabled=true;
 						document.getElementById("InputSequence").disabled=true;
+						document.getElementById("InputXkBotName").disabled=true;
 						document.getElementById("InputXkTypName").disabled=true;
 						document.getElementById("RefSelect001").disabled=true;
+						document.getElementById("RefSelect002").disabled=true;
 						document.getElementById("ButtonCreate").disabled=true;
 						document.getElementById("ButtonUpdate").disabled=false;
 						document.getElementById("ButtonDelete").disabled=false;
 						var l_objNode = parent.document.getElementById(g_parent_node_id);
-						var l_json_node_id = {FkTypName:document.getElementById("InputFkTypName").value,Sequence:document.getElementById("InputSequence").value,XkTypName:document.getElementById("InputXkTypName").value};
+						var l_json_node_id = {FkTypName:document.getElementById("InputFkTypName").value,Sequence:document.getElementById("InputSequence").value,XkBotName:document.getElementById("InputXkBotName").value,XkTypName:document.getElementById("InputXkTypName").value};
 						g_node_id = '{"TYP_REF":'+JSON.stringify(l_json_node_id)+'}';
 						if (l_objNode != null) {
 							if (l_objNode.firstChild._state == 'O') {
@@ -59,7 +63,7 @@ g_xmlhttp.onreadystatechange = function() {
 									'TYP_REF',
 									l_json_node_id,
 									'icons/ref.bmp', 
-									document.getElementById("InputName").value.toLowerCase()+' '+document.getElementById("InputXkTypName").value.toLowerCase(),
+									document.getElementById("InputName").value.toLowerCase()+' ('+document.getElementById("InputCubeTsgIntExt").value.toLowerCase()+')'+' '+document.getElementById("InputXkBotName").value.toLowerCase()+' '+document.getElementById("InputXkTypName").value.toLowerCase(),
 									'N',
 									l_position,
 									l_objNodePos);
@@ -69,7 +73,7 @@ g_xmlhttp.onreadystatechange = function() {
 					case "UPDATE_REF":
 						var l_objNode = parent.document.getElementById(g_node_id);
 						if (l_objNode != null) {
-							l_objNode.children[1].lastChild.nodeValue = ' '+document.getElementById("InputName").value.toLowerCase()+' '+document.getElementById("InputXkTypName").value.toLowerCase();
+							l_objNode.children[1].lastChild.nodeValue = ' '+document.getElementById("InputName").value.toLowerCase()+' ('+document.getElementById("InputCubeTsgIntExt").value.toLowerCase()+')'+' '+document.getElementById("InputXkBotName").value.toLowerCase()+' '+document.getElementById("InputXkTypName").value.toLowerCase();
 					}
 						break;
 					case "DELETE_REF":
@@ -83,6 +87,9 @@ g_xmlhttp.onreadystatechange = function() {
 						if (l_objNode != null) {
 							l_objNode.parentNode.removeChild(l_objNode);
 						}
+						break;
+					case "LIST_BOT":
+						OpenListBox(l_json_array[i].Rows,'botype','BusinessObjectType','N');
 						break;
 					case "LIST_TYP":
 						OpenListBox(l_json_array[i].Rows,'type','Type','N');
@@ -119,6 +126,7 @@ function InitBody() {
 		g_node_id = JSON.stringify(l_json_argument.objectId);
 		document.getElementById("InputFkTypName").value=l_json_objectKey.TYP_REF.FkTypName;
 		document.getElementById("InputSequence").value=l_json_objectKey.TYP_REF.Sequence;
+		document.getElementById("InputXkBotName").value=l_json_objectKey.TYP_REF.XkBotName;
 		document.getElementById("InputXkTypName").value=l_json_objectKey.TYP_REF.XkTypName;
 		document.getElementById("ButtonCreate").disabled=true;
 		PerformTrans( {
@@ -130,8 +138,11 @@ function InitBody() {
 		document.getElementById("InputFkBotName").disabled=true;
 		document.getElementById("InputFkTypName").disabled=true;
 		document.getElementById("InputSequence").disabled=true;
+		document.getElementById("InputCubeTsgIntExt").disabled=true;
+		document.getElementById("InputXkBotName").disabled=true;
 		document.getElementById("InputXkTypName").disabled=true;
 		document.getElementById("RefSelect001").disabled=true;
+		document.getElementById("RefSelect002").disabled=true;
 		break;
 	case "N":
 		g_parent_node_id = JSON.stringify(l_json_argument.objectId);
@@ -167,6 +178,8 @@ function CreateRef() {
 		Scope: document.getElementById("InputScope").value,
 		Unchangeable: document.getElementById("InputUnchangeable").value,
 		WithinScopeExtension: document.getElementById("InputWithinScopeExtension").value,
+		CubeTsgIntExt: document.getElementById("InputCubeTsgIntExt").value,
+		XkBotName: document.getElementById("InputXkBotName").value,
 		XkTypName: document.getElementById("InputXkTypName").value,
 		XkTypName1: document.getElementById("InputXkTypName1").value
 	};
@@ -206,6 +219,8 @@ function UpdateRef() {
 		Scope: document.getElementById("InputScope").value,
 		Unchangeable: document.getElementById("InputUnchangeable").value,
 		WithinScopeExtension: document.getElementById("InputWithinScopeExtension").value,
+		CubeTsgIntExt: document.getElementById("InputCubeTsgIntExt").value,
+		XkBotName: document.getElementById("InputXkBotName").value,
 		XkTypName: document.getElementById("InputXkTypName").value,
 		XkTypName1: document.getElementById("InputXkTypName1").value
 	};
@@ -221,6 +236,7 @@ function DeleteRef() {
 	var Type = {
 		FkTypName: document.getElementById("InputFkTypName").value,
 		Sequence: document.getElementById("InputSequence").value,
+		XkBotName: document.getElementById("InputXkBotName").value,
 		XkTypName: document.getElementById("InputXkTypName").value
 	};
 	PerformTrans( {
@@ -239,12 +255,19 @@ function UpdateForeignKey(p_obj) {
 	switch (document.body._ListBoxCode){
 	case "Ref001":
 		if (l_values == '') {
+			document.getElementById("InputXkBotName").value = '';
+		} else {
+			document.getElementById("InputXkBotName").value = l_json_values.Name;
+		}
+		break;
+	case "Ref002":
+		if (l_values == '') {
 			document.getElementById("InputXkTypName").value = '';
 		} else {
 			document.getElementById("InputXkTypName").value = l_json_values.Name;
 		}
 		break;
-	case "Ref002":
+	case "Ref003":
 		if (l_values == '') {
 			document.getElementById("InputXkTypName1").value = '';
 		} else {
@@ -262,7 +285,7 @@ function StartSelect001(p_event) {
 	document.body._SelectTop = p_event.clientY;
 	document.body._ListBoxCode = 'Ref001';
 	PerformTrans( {
-		Service: "GetTypListAll"
+		Service: "GetBotList"
 	} );
 }
 
@@ -274,12 +297,46 @@ function StartSelect002(p_event) {
 		Service: "GetTypListAll"
 	} );
 }
+
+function StartSelect003(p_event) {
+	document.body._SelectLeft = p_event.clientX;
+	document.body._SelectTop = p_event.clientY;
+	document.body._ListBoxCode = 'Ref003';
+	PerformTrans( {
+		Service: "GetTypListAll"
+	} );
+}
+
+function ProcessTypeSpecialisation() {
+	if (document.getElementById("InputCubeTsgIntExt").value != ' ') {
+		document.getElementById("InputCubeTsgIntExt").disabled=true;
+		switch (document.getElementById("InputCubeTsgIntExt").value) {
+		case "INT":
+			document.getElementById("InputXkBotName").value=" ";
+			document.getElementById("RowRefBusinessObjectType0").style.display="none";
+			break;
+		case "EXT":
+			document.getElementById("RowAtbScope").style.display="none";
+			document.getElementById("RowAtbWithinScopeExtension").style.display="none";
+			document.getElementById("InputXkTypName").value=" ";
+			document.getElementById("RowRefType0").style.display="none";
+			document.getElementById("RowRefType1").style.display="none";
+			break;
+		}
+		document.getElementById("TableMain").style.display="inline";
+	}
+}
 -->
 </script>
 </head><body oncontextmenu="return false;" onload="InitBody()" ondrop="drop(event)" ondragover="allowDrop(event)">
-<div><img src="icons/ref_large.bmp" /><span> REFERENCE</span></div>
+<div><img src="icons/ref_large.bmp" /><span> REFERENCE /
+<select id="InputCubeTsgIntExt" type="text" onchange="ProcessTypeSpecialisation()">
+	<option value=" " selected>&lt;int_ext&gt;</option>
+	<option value="INT">INTERNAL</option>
+	<option value="EXT">EXTERNAL</option>
+</select></span></div>
 <hr/>
-<table>
+<table id="TableMain" style="display:none">
 <tr><td>BusinessObjectType.Name</td><td><div style="max-width:30em;">
 <input id="InputFkBotName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
 <tr><td><u>Type.Name</u></td><td><div style="max-width:30em;">
@@ -301,7 +358,7 @@ function StartSelect002(p_event) {
 </select></div></td></tr>
 <tr><td><u>Sequence</u></td><td><div style="max-width:2em;">
 <input id="InputSequence" type="text" maxlength="2" style="width:100%;"></input></div></td></tr>
-<tr><td style="cursor:help;" oncontextmenu="parent.OpenDescBox('REF','Reference.Scope','REFERENCE','SCOPE',-1)">Scope</td><td><div>
+<tr id="RowAtbScope"><td style="cursor:help;" oncontextmenu="parent.OpenDescBox('REF','Reference.Scope','REFERENCE','SCOPE',-1)">Scope</td><td><div>
 <select id="InputScope" type="text">
 	<option value=" " selected> </option>
 	<option value="ALL">All</option>
@@ -317,23 +374,29 @@ function StartSelect002(p_event) {
 	<option value="Y">Yes</option>
 	<option value="N">No</option>
 </select></div></td></tr>
-<tr><td>WithinScopeExtension</td><td><div>
+<tr id="RowAtbWithinScopeExtension"><td>WithinScopeExtension</td><td><div>
 <select id="InputWithinScopeExtension" type="text">
 	<option value=" " selected> </option>
 	<option value="PAR">Recursive parent</option>
 	<option value="REF">Referenced type</option>
 </select></div></td></tr>
-<tr><td height=6></td></tr><tr><td colspan=2><fieldset><legend style="cursor:help" oncontextmenu="parent.OpenDescBox('REF','Reference.Type (Refer)','REFERENCE','TYPE',0)"><img style="border:1 solid transparent;" src="icons/type.bmp"/> Type (Refer)</legend>
+<tr><td height=6></td></tr><tr id="RowRefBusinessObjectType0"><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/botype.bmp"/> BusinessObjectType (Refer)</legend>
+<table style="width:100%;">
+<tr><td><u>BusinessObjectType.Name</u></td><td style="width:100%;"><div style="max-width:30em;">
+<input id="InputXkBotName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td>
+<td><button id="RefSelect001" type="button" onclick="StartSelect001(event)">Select</button></td></tr>
+</table></fieldset></td></tr>
+<tr><td height=6></td></tr><tr id="RowRefType0"><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/type.bmp"/> Type (Refer)</legend>
 <table style="width:100%;">
 <tr><td><u>Type.Name</u></td><td style="width:100%;"><div style="max-width:30em;">
 <input id="InputXkTypName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td>
-<td><button id="RefSelect001" type="button" onclick="StartSelect001(event)">Select</button></td></tr>
+<td><button id="RefSelect002" type="button" onclick="StartSelect002(event)">Select</button></td></tr>
 </table></fieldset></td></tr>
-<tr><td height=6></td></tr><tr><td colspan=2><fieldset><legend style="cursor:help" oncontextmenu="parent.OpenDescBox('REF','Reference.Type (WithinScopeOf)','REFERENCE','TYPE',1)"><img style="border:1 solid transparent;" src="icons/type.bmp"/> Type (WithinScopeOf)</legend>
+<tr><td height=6></td></tr><tr id="RowRefType1"><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/type.bmp"/> Type (WithinScopeOf)</legend>
 <table style="width:100%;">
 <tr><td>Type.Name</td><td style="width:100%;"><div style="max-width:30em;">
 <input id="InputXkTypName1" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td>
-<td><button id="RefSelect002" type="button" onclick="StartSelect002(event)">Select</button></td></tr>
+<td><button id="RefSelect003" type="button" onclick="StartSelect003(event)">Select</button></td></tr>
 </table></fieldset></td></tr>
 <tr><td><br></td><td style="width:100%;"></td></tr>
 <tr><td/><td>

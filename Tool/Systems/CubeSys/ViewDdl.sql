@@ -47,6 +47,9 @@ CREATE OR REPLACE PACKAGE BODY pkg_cube_dsc_trg IS
 	PROCEDURE insert_cube_dsc (p_cube_dsc IN OUT NOCOPY v_cube_description%ROWTYPE) IS
 	BEGIN
 		p_cube_dsc.cube_id := 'CUBE_DSC-' || TO_CHAR(sq_cube_dsc.NEXTVAL,'FM0000000');
+		p_cube_dsc.type_name := NVL(p_cube_dsc.type_name,' ');
+		p_cube_dsc.attribute_type_name := NVL(p_cube_dsc.attribute_type_name,' ');
+		p_cube_dsc.sequence := NVL(p_cube_dsc.sequence,0);
 		INSERT INTO t_cube_description (
 			cube_id,
 			type_name,

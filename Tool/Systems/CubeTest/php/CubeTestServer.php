@@ -25,7 +25,7 @@ case 'GetDirKlnItems':
 		$RowObj = new \stdClass();
 		$RowObj->Key = new \stdClass();
 		$RowObj->Key->Nummer = $row["NUMMER"];
-		$RowObj->Display = $row["CUBE_TSG_INTEXT"].' '.$row["NUMMER"].' ('.$row["ACHTERNAAM"].')'.' '.$row["VOORNAAM"];
+		$RowObj->Display = '('.$row["CUBE_TSG_INTEXT"].')'.' '.$row["NUMMER"].' ('.$row["ACHTERNAAM"].')'.' '.$row["VOORNAAM"];
 		$ResponseObj->Rows[] = $RowObj;
 	}
 	$ResponseText = json_encode($ResponseObj);
@@ -50,7 +50,7 @@ case 'GetKlnList':
 		$RowObj = new \stdClass();
 		$RowObj->Key = new \stdClass();
 		$RowObj->Key->Nummer = $row["NUMMER"];
-		$RowObj->Display = $row["CUBE_TSG_INTEXT"].' '.$row["NUMMER"].' ('.$row["ACHTERNAAM"].')'.' '.$row["VOORNAAM"];
+		$RowObj->Display = '('.$row["CUBE_TSG_INTEXT"].')'.' '.$row["NUMMER"].' ('.$row["ACHTERNAAM"].')'.' '.$row["VOORNAAM"];
 		$ResponseObj->Rows[] = $RowObj;
 	}
 	$ResponseText = json_encode($ResponseObj);
@@ -118,7 +118,7 @@ case 'GetKlnItems':
 		$RowObj->Key->PostcodeLetters = $row["POSTCODE_LETTERS"];
 		$RowObj->Key->CubeTsgTest = $row["CUBE_TSG_TEST"];
 		$RowObj->Key->Huisnummer = $row["HUISNUMMER"];
-		$RowObj->Display = $row["POSTCODE_CIJFERS"].' '.$row["POSTCODE_LETTERS"].' '.$row["CUBE_TSG_TEST"].' '.$row["HUISNUMMER"];
+		$RowObj->Display = $row["POSTCODE_CIJFERS"].' '.$row["POSTCODE_LETTERS"].' ('.$row["CUBE_TSG_TEST"].')'.' '.$row["HUISNUMMER"];
 		$ResponseObj->Rows[] = $RowObj;
 	}
 	$ResponseText = json_encode($ResponseObj);
@@ -294,7 +294,7 @@ case 'GetDirPrdItems':
 		$RowObj->Key = new \stdClass();
 		$RowObj->Key->CubeTsgType = $row["CUBE_TSG_TYPE"];
 		$RowObj->Key->Code = $row["CODE"];
-		$RowObj->Display = $row["CUBE_TSG_TYPE"].' '.$row["CUBE_TSG_SOORT"].' '.$row["CUBE_TSG_SOORT1"].' '.$row["CODE"];
+		$RowObj->Display = '('.$row["CUBE_TSG_TYPE"].')'.' ('.$row["CUBE_TSG_SOORT"].')'.' ('.$row["CUBE_TSG_SOORT1"].')'.' '.$row["CODE"];
 		$ResponseObj->Rows[] = $RowObj;
 	}
 	$ResponseText = json_encode($ResponseObj);
@@ -320,7 +320,7 @@ case 'GetPrdList':
 		$RowObj->Key = new \stdClass();
 		$RowObj->Key->CubeTsgType = $row["CUBE_TSG_TYPE"];
 		$RowObj->Key->Code = $row["CODE"];
-		$RowObj->Display = $row["CUBE_TSG_TYPE"].' '.$row["CUBE_TSG_SOORT"].' '.$row["CUBE_TSG_SOORT1"].' '.$row["CODE"];
+		$RowObj->Display = '('.$row["CUBE_TSG_TYPE"].')'.' ('.$row["CUBE_TSG_SOORT"].')'.' ('.$row["CUBE_TSG_SOORT1"].')'.' '.$row["CODE"];
 		$ResponseObj->Rows[] = $RowObj;
 	}
 	$ResponseText = json_encode($ResponseObj);
@@ -380,7 +380,6 @@ case 'GetPrd':
 		$RowObj->Data->Prijs = $row["PRIJS"];
 		$RowObj->Data->MakelaarNaam = $row["MAKELAAR_NAAM"];
 		$RowObj->Data->BedragBtw = $row["BEDRAG_BTW"];
-		$RowObj->Data->XkKlnNummer = $row["XK_KLN_NUMMER"];
 		$ResponseObj->Rows[] = $RowObj;
 	}
 	$ResponseText = json_encode($ResponseObj);
@@ -465,7 +464,6 @@ case 'CreatePrd':
 		:p_prijs,
 		:p_makelaar_naam,
 		:p_bedrag_btw,
-		:p_xk_kln_nummer,
 		:p_cube_row);
 	END;");
 	oci_bind_by_name($stid,":p_cube_tsg_type",$RequestObj->Parameters->Type->CubeTsgType);
@@ -475,7 +473,6 @@ case 'CreatePrd':
 	oci_bind_by_name($stid,":p_prijs",$RequestObj->Parameters->Type->Prijs);
 	oci_bind_by_name($stid,":p_makelaar_naam",$RequestObj->Parameters->Type->MakelaarNaam);
 	oci_bind_by_name($stid,":p_bedrag_btw",$RequestObj->Parameters->Type->BedragBtw);
-	oci_bind_by_name($stid,":p_xk_kln_nummer",$RequestObj->Parameters->Type->XkKlnNummer);
 
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'CREATE_PRD';
@@ -508,8 +505,7 @@ case 'UpdatePrd':
 		:p_code,
 		:p_prijs,
 		:p_makelaar_naam,
-		:p_bedrag_btw,
-		:p_xk_kln_nummer);
+		:p_bedrag_btw);
 	END;");
 	oci_bind_by_name($stid,":p_cube_tsg_type",$RequestObj->Parameters->Type->CubeTsgType);
 	oci_bind_by_name($stid,":p_cube_tsg_soort",$RequestObj->Parameters->Type->CubeTsgSoort);
@@ -518,7 +514,6 @@ case 'UpdatePrd':
 	oci_bind_by_name($stid,":p_prijs",$RequestObj->Parameters->Type->Prijs);
 	oci_bind_by_name($stid,":p_makelaar_naam",$RequestObj->Parameters->Type->MakelaarNaam);
 	oci_bind_by_name($stid,":p_bedrag_btw",$RequestObj->Parameters->Type->BedragBtw);
-	oci_bind_by_name($stid,":p_xk_kln_nummer",$RequestObj->Parameters->Type->XkKlnNummer);
 
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'UPDATE_PRD';
@@ -558,46 +553,6 @@ case 'DeletePrd':
 
 	break;
 
-case 'GetOndListRecursive':
-	echo '[';
-
-	$stid = oci_parse($conn, "BEGIN pkg_prd.get_ond_list_recursive (
-		:p_cube_row,
-		:p_cube_up_or_down,
-		:p_cube_x_level,
-		:p_fk_prd_cube_tsg_type,
-		:p_fk_prd_code,
-		:p_code);
-	END;");
-	oci_bind_by_name($stid,":p_cube_up_or_down",$RequestObj->Parameters->Option->CubeUpOrDown);
-	oci_bind_by_name($stid,":p_cube_x_level",$RequestObj->Parameters->Option->CubeXLevel);
-	oci_bind_by_name($stid,":p_fk_prd_cube_tsg_type",$RequestObj->Parameters->Type->FkPrdCubeTsgType);
-	oci_bind_by_name($stid,":p_fk_prd_code",$RequestObj->Parameters->Type->FkPrdCode);
-	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
-
-	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'LIST_OND';
-	$r = perform_db_request();
-	if (!$r) { 
-		echo ']';
-		return;
-	}
-	$ResponseObj->Rows = array();
-	while ($row = oci_fetch_assoc($curs)) {
-		$RowObj = new \stdClass();
-		$RowObj->Key = new \stdClass();
-		$RowObj->Key->FkPrdCubeTsgType = $row["FK_PRD_CUBE_TSG_TYPE"];
-		$RowObj->Key->FkPrdCode = $row["FK_PRD_CODE"];
-		$RowObj->Key->Code = $row["CODE"];
-		$RowObj->Display = $row["FK_PRD_CUBE_TSG_TYPE"].' '.$row["FK_PRD_CODE"].' '.$row["CODE"];
-		$ResponseObj->Rows[] = $RowObj;
-	}
-	$ResponseText = json_encode($ResponseObj);
-	echo $ResponseText;
-	echo ']';
-
-	break;
-
 case 'GetOnd':
 	echo '[';
 
@@ -625,9 +580,6 @@ case 'GetOnd':
 		$RowObj->Data->FkOndCode = $row["FK_OND_CODE"];
 		$RowObj->Data->Prijs = $row["PRIJS"];
 		$RowObj->Data->Omschrijving = $row["OMSCHRIJVING"];
-		$RowObj->Data->XfOndPrdCubeTsgType = $row["XF_OND_PRD_CUBE_TSG_TYPE"];
-		$RowObj->Data->XfOndPrdCode = $row["XF_OND_PRD_CODE"];
-		$RowObj->Data->XkOndCode = $row["XK_OND_CODE"];
 		$ResponseObj->Rows[] = $RowObj;
 	}
 	$ResponseText = json_encode($ResponseObj);
@@ -839,9 +791,6 @@ case 'CreateOnd':
 		:p_code,
 		:p_prijs,
 		:p_omschrijving,
-		:p_xf_ond_prd_cube_tsg_type,
-		:p_xf_ond_prd_code,
-		:p_xk_ond_code,
 		:x_fk_prd_cube_tsg_type,
 		:x_fk_prd_code,
 		:x_code);
@@ -853,9 +802,6 @@ case 'CreateOnd':
 	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
 	oci_bind_by_name($stid,":p_prijs",$RequestObj->Parameters->Type->Prijs);
 	oci_bind_by_name($stid,":p_omschrijving",$RequestObj->Parameters->Type->Omschrijving);
-	oci_bind_by_name($stid,":p_xf_ond_prd_cube_tsg_type",$RequestObj->Parameters->Type->XfOndPrdCubeTsgType);
-	oci_bind_by_name($stid,":p_xf_ond_prd_code",$RequestObj->Parameters->Type->XfOndPrdCode);
-	oci_bind_by_name($stid,":p_xk_ond_code",$RequestObj->Parameters->Type->XkOndCode);
 	oci_bind_by_name($stid,":x_fk_prd_cube_tsg_type",$RequestObj->Parameters->Ref->FkPrdCubeTsgType);
 	oci_bind_by_name($stid,":x_fk_prd_code",$RequestObj->Parameters->Ref->FkPrdCode);
 	oci_bind_by_name($stid,":x_code",$RequestObj->Parameters->Ref->Code);
@@ -883,10 +829,7 @@ case 'UpdateOnd':
 		:p_fk_ond_code,
 		:p_code,
 		:p_prijs,
-		:p_omschrijving,
-		:p_xf_ond_prd_cube_tsg_type,
-		:p_xf_ond_prd_code,
-		:p_xk_ond_code);
+		:p_omschrijving);
 	END;");
 	oci_bind_by_name($stid,":p_fk_prd_cube_tsg_type",$RequestObj->Parameters->Type->FkPrdCubeTsgType);
 	oci_bind_by_name($stid,":p_fk_prd_code",$RequestObj->Parameters->Type->FkPrdCode);
@@ -894,9 +837,6 @@ case 'UpdateOnd':
 	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
 	oci_bind_by_name($stid,":p_prijs",$RequestObj->Parameters->Type->Prijs);
 	oci_bind_by_name($stid,":p_omschrijving",$RequestObj->Parameters->Type->Omschrijving);
-	oci_bind_by_name($stid,":p_xf_ond_prd_cube_tsg_type",$RequestObj->Parameters->Type->XfOndPrdCubeTsgType);
-	oci_bind_by_name($stid,":p_xf_ond_prd_code",$RequestObj->Parameters->Type->XfOndPrdCode);
-	oci_bind_by_name($stid,":p_xk_ond_code",$RequestObj->Parameters->Type->XkOndCode);
 
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'UPDATE_OND';
@@ -931,6 +871,31 @@ case 'DeleteOnd':
 		ProcessDbError($stid);
 		echo ']';
 		return;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
+	break;
+
+case 'GetOddList':
+	echo '[';
+
+	$stid = oci_parse($conn, "BEGIN pkg_prd.get_odd_list (:p_cube_row); END;");
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'LIST_ODD';
+	$r = perform_db_request();
+	if (!$r) { 
+		echo ']';
+		return;
+	}
+	$ResponseObj->Rows = array();
+	while ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Key = new \stdClass();
+		$RowObj->Key->Code = $row["CODE"];
+		$RowObj->Display = $row["CODE"];
+		$ResponseObj->Rows[] = $RowObj;
 	}
 	$ResponseText = json_encode($ResponseObj);
 	echo $ResponseText;
@@ -998,9 +963,6 @@ case 'GetOdd':
 		$RowObj->Data->FkPrdCode = $row["FK_PRD_CODE"];
 		$RowObj->Data->FkOndCode = $row["FK_OND_CODE"];
 		$RowObj->Data->Naam = $row["NAAM"];
-		$RowObj->Data->XfOndPrdCubeTsgType = $row["XF_OND_PRD_CUBE_TSG_TYPE"];
-		$RowObj->Data->XfOndPrdCode = $row["XF_OND_PRD_CODE"];
-		$RowObj->Data->XkOndCode = $row["XK_OND_CODE"];
 		$ResponseObj->Rows[] = $RowObj;
 	}
 	$ResponseText = json_encode($ResponseObj);
@@ -1106,9 +1068,6 @@ case 'CreateOdd':
 		:p_fk_ond_code,
 		:p_code,
 		:p_naam,
-		:p_xf_ond_prd_cube_tsg_type,
-		:p_xf_ond_prd_code,
-		:p_xk_ond_code,
 		:x_code);
 	END;");
 	oci_bind_by_name($stid,":p_cube_pos_action",$RequestObj->Parameters->Option->CubePosAction);
@@ -1117,9 +1076,6 @@ case 'CreateOdd':
 	oci_bind_by_name($stid,":p_fk_ond_code",$RequestObj->Parameters->Type->FkOndCode);
 	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
 	oci_bind_by_name($stid,":p_naam",$RequestObj->Parameters->Type->Naam);
-	oci_bind_by_name($stid,":p_xf_ond_prd_cube_tsg_type",$RequestObj->Parameters->Type->XfOndPrdCubeTsgType);
-	oci_bind_by_name($stid,":p_xf_ond_prd_code",$RequestObj->Parameters->Type->XfOndPrdCode);
-	oci_bind_by_name($stid,":p_xk_ond_code",$RequestObj->Parameters->Type->XkOndCode);
 	oci_bind_by_name($stid,":x_code",$RequestObj->Parameters->Ref->Code);
 
 	$responseObj = new \stdClass();
@@ -1144,19 +1100,13 @@ case 'UpdateOdd':
 		:p_fk_prd_code,
 		:p_fk_ond_code,
 		:p_code,
-		:p_naam,
-		:p_xf_ond_prd_cube_tsg_type,
-		:p_xf_ond_prd_code,
-		:p_xk_ond_code);
+		:p_naam);
 	END;");
 	oci_bind_by_name($stid,":p_fk_prd_cube_tsg_type",$RequestObj->Parameters->Type->FkPrdCubeTsgType);
 	oci_bind_by_name($stid,":p_fk_prd_code",$RequestObj->Parameters->Type->FkPrdCode);
 	oci_bind_by_name($stid,":p_fk_ond_code",$RequestObj->Parameters->Type->FkOndCode);
 	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
 	oci_bind_by_name($stid,":p_naam",$RequestObj->Parameters->Type->Naam);
-	oci_bind_by_name($stid,":p_xf_ond_prd_cube_tsg_type",$RequestObj->Parameters->Type->XfOndPrdCubeTsgType);
-	oci_bind_by_name($stid,":p_xf_ond_prd_code",$RequestObj->Parameters->Type->XfOndPrdCode);
-	oci_bind_by_name($stid,":p_xk_ond_code",$RequestObj->Parameters->Type->XkOndCode);
 
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'UPDATE_ODD';
@@ -1219,18 +1169,6 @@ case 'GetDdd':
 		$RowObj->Data->FkOndCode = $row["FK_OND_CODE"];
 		$RowObj->Data->FkOddCode = $row["FK_ODD_CODE"];
 		$RowObj->Data->Naam = $row["NAAM"];
-		$RowObj->Data->XfOndPrdCubeTsgType = $row["XF_OND_PRD_CUBE_TSG_TYPE"];
-		$RowObj->Data->XfOndPrdCode = $row["XF_OND_PRD_CODE"];
-		$RowObj->Data->XkOndCode = $row["XK_OND_CODE"];
-		$RowObj->Data->XfOndPrdCubeTsgType3 = $row["XF_OND_PRD_CUBE_TSG_TYPE_3"];
-		$RowObj->Data->XfOndPrdCode3 = $row["XF_OND_PRD_CODE_3"];
-		$RowObj->Data->XkOndCode3 = $row["XK_OND_CODE_3"];
-		$RowObj->Data->XfOndPrdCubeTsgType1 = $row["XF_OND_PRD_CUBE_TSG_TYPE_1"];
-		$RowObj->Data->XfOndPrdCode1 = $row["XF_OND_PRD_CODE_1"];
-		$RowObj->Data->XkOndCode1 = $row["XK_OND_CODE_1"];
-		$RowObj->Data->XfOndPrdCubeTsgType2 = $row["XF_OND_PRD_CUBE_TSG_TYPE_2"];
-		$RowObj->Data->XfOndPrdCode2 = $row["XF_OND_PRD_CODE_2"];
-		$RowObj->Data->XkOndCode2 = $row["XK_OND_CODE_2"];
 		$ResponseObj->Rows[] = $RowObj;
 	}
 	$ResponseText = json_encode($ResponseObj);
@@ -1276,18 +1214,6 @@ case 'CreateDdd':
 		:p_fk_odd_code,
 		:p_code,
 		:p_naam,
-		:p_xf_ond_prd_cube_tsg_type,
-		:p_xf_ond_prd_code,
-		:p_xk_ond_code,
-		:p_xf_ond_prd_cube_tsg_type_3,
-		:p_xf_ond_prd_code_3,
-		:p_xk_ond_code_3,
-		:p_xf_ond_prd_cube_tsg_type_1,
-		:p_xf_ond_prd_code_1,
-		:p_xk_ond_code_1,
-		:p_xf_ond_prd_cube_tsg_type_2,
-		:p_xf_ond_prd_code_2,
-		:p_xk_ond_code_2,
 		:x_code);
 	END;");
 	oci_bind_by_name($stid,":p_cube_pos_action",$RequestObj->Parameters->Option->CubePosAction);
@@ -1297,18 +1223,6 @@ case 'CreateDdd':
 	oci_bind_by_name($stid,":p_fk_odd_code",$RequestObj->Parameters->Type->FkOddCode);
 	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
 	oci_bind_by_name($stid,":p_naam",$RequestObj->Parameters->Type->Naam);
-	oci_bind_by_name($stid,":p_xf_ond_prd_cube_tsg_type",$RequestObj->Parameters->Type->XfOndPrdCubeTsgType);
-	oci_bind_by_name($stid,":p_xf_ond_prd_code",$RequestObj->Parameters->Type->XfOndPrdCode);
-	oci_bind_by_name($stid,":p_xk_ond_code",$RequestObj->Parameters->Type->XkOndCode);
-	oci_bind_by_name($stid,":p_xf_ond_prd_cube_tsg_type_3",$RequestObj->Parameters->Type->XfOndPrdCubeTsgType3);
-	oci_bind_by_name($stid,":p_xf_ond_prd_code_3",$RequestObj->Parameters->Type->XfOndPrdCode3);
-	oci_bind_by_name($stid,":p_xk_ond_code_3",$RequestObj->Parameters->Type->XkOndCode3);
-	oci_bind_by_name($stid,":p_xf_ond_prd_cube_tsg_type_1",$RequestObj->Parameters->Type->XfOndPrdCubeTsgType1);
-	oci_bind_by_name($stid,":p_xf_ond_prd_code_1",$RequestObj->Parameters->Type->XfOndPrdCode1);
-	oci_bind_by_name($stid,":p_xk_ond_code_1",$RequestObj->Parameters->Type->XkOndCode1);
-	oci_bind_by_name($stid,":p_xf_ond_prd_cube_tsg_type_2",$RequestObj->Parameters->Type->XfOndPrdCubeTsgType2);
-	oci_bind_by_name($stid,":p_xf_ond_prd_code_2",$RequestObj->Parameters->Type->XfOndPrdCode2);
-	oci_bind_by_name($stid,":p_xk_ond_code_2",$RequestObj->Parameters->Type->XkOndCode2);
 	oci_bind_by_name($stid,":x_code",$RequestObj->Parameters->Ref->Code);
 
 	$responseObj = new \stdClass();
@@ -1334,19 +1248,7 @@ case 'UpdateDdd':
 		:p_fk_ond_code,
 		:p_fk_odd_code,
 		:p_code,
-		:p_naam,
-		:p_xf_ond_prd_cube_tsg_type,
-		:p_xf_ond_prd_code,
-		:p_xk_ond_code,
-		:p_xf_ond_prd_cube_tsg_type_3,
-		:p_xf_ond_prd_code_3,
-		:p_xk_ond_code_3,
-		:p_xf_ond_prd_cube_tsg_type_1,
-		:p_xf_ond_prd_code_1,
-		:p_xk_ond_code_1,
-		:p_xf_ond_prd_cube_tsg_type_2,
-		:p_xf_ond_prd_code_2,
-		:p_xk_ond_code_2);
+		:p_naam);
 	END;");
 	oci_bind_by_name($stid,":p_fk_prd_cube_tsg_type",$RequestObj->Parameters->Type->FkPrdCubeTsgType);
 	oci_bind_by_name($stid,":p_fk_prd_code",$RequestObj->Parameters->Type->FkPrdCode);
@@ -1354,18 +1256,6 @@ case 'UpdateDdd':
 	oci_bind_by_name($stid,":p_fk_odd_code",$RequestObj->Parameters->Type->FkOddCode);
 	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
 	oci_bind_by_name($stid,":p_naam",$RequestObj->Parameters->Type->Naam);
-	oci_bind_by_name($stid,":p_xf_ond_prd_cube_tsg_type",$RequestObj->Parameters->Type->XfOndPrdCubeTsgType);
-	oci_bind_by_name($stid,":p_xf_ond_prd_code",$RequestObj->Parameters->Type->XfOndPrdCode);
-	oci_bind_by_name($stid,":p_xk_ond_code",$RequestObj->Parameters->Type->XkOndCode);
-	oci_bind_by_name($stid,":p_xf_ond_prd_cube_tsg_type_3",$RequestObj->Parameters->Type->XfOndPrdCubeTsgType3);
-	oci_bind_by_name($stid,":p_xf_ond_prd_code_3",$RequestObj->Parameters->Type->XfOndPrdCode3);
-	oci_bind_by_name($stid,":p_xk_ond_code_3",$RequestObj->Parameters->Type->XkOndCode3);
-	oci_bind_by_name($stid,":p_xf_ond_prd_cube_tsg_type_1",$RequestObj->Parameters->Type->XfOndPrdCubeTsgType1);
-	oci_bind_by_name($stid,":p_xf_ond_prd_code_1",$RequestObj->Parameters->Type->XfOndPrdCode1);
-	oci_bind_by_name($stid,":p_xk_ond_code_1",$RequestObj->Parameters->Type->XkOndCode1);
-	oci_bind_by_name($stid,":p_xf_ond_prd_cube_tsg_type_2",$RequestObj->Parameters->Type->XfOndPrdCubeTsgType2);
-	oci_bind_by_name($stid,":p_xf_ond_prd_code_2",$RequestObj->Parameters->Type->XfOndPrdCode2);
-	oci_bind_by_name($stid,":p_xk_ond_code_2",$RequestObj->Parameters->Type->XkOndCode2);
 
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'UPDATE_DDD';
@@ -1430,6 +1320,7 @@ case 'GetCst':
 		$RowObj = new \stdClass();
 		$RowObj->Data = new \stdClass();
 		$RowObj->Data->Omschrijving = $row["OMSCHRIJVING"];
+		$RowObj->Data->XkOddCode = $row["XK_ODD_CODE"];
 		$RowObj->Data->XkOddCode1 = $row["XK_ODD_CODE_1"];
 		$ResponseObj->Rows[] = $RowObj;
 	}
@@ -1448,6 +1339,7 @@ case 'CreateCst':
 		:p_fk_ond_code,
 		:p_code,
 		:p_omschrijving,
+		:p_xk_odd_code,
 		:p_xk_odd_code_1);
 	END;");
 	oci_bind_by_name($stid,":p_fk_prd_cube_tsg_type",$RequestObj->Parameters->Type->FkPrdCubeTsgType);
@@ -1455,6 +1347,7 @@ case 'CreateCst':
 	oci_bind_by_name($stid,":p_fk_ond_code",$RequestObj->Parameters->Type->FkOndCode);
 	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
 	oci_bind_by_name($stid,":p_omschrijving",$RequestObj->Parameters->Type->Omschrijving);
+	oci_bind_by_name($stid,":p_xk_odd_code",$RequestObj->Parameters->Type->XkOddCode);
 	oci_bind_by_name($stid,":p_xk_odd_code_1",$RequestObj->Parameters->Type->XkOddCode1);
 
 	$responseObj = new \stdClass();
@@ -1480,6 +1373,7 @@ case 'UpdateCst':
 		:p_fk_ond_code,
 		:p_code,
 		:p_omschrijving,
+		:p_xk_odd_code,
 		:p_xk_odd_code_1);
 	END;");
 	oci_bind_by_name($stid,":p_fk_prd_cube_tsg_type",$RequestObj->Parameters->Type->FkPrdCubeTsgType);
@@ -1487,6 +1381,7 @@ case 'UpdateCst':
 	oci_bind_by_name($stid,":p_fk_ond_code",$RequestObj->Parameters->Type->FkOndCode);
 	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
 	oci_bind_by_name($stid,":p_omschrijving",$RequestObj->Parameters->Type->Omschrijving);
+	oci_bind_by_name($stid,":p_xk_odd_code",$RequestObj->Parameters->Type->XkOddCode);
 	oci_bind_by_name($stid,":p_xk_odd_code_1",$RequestObj->Parameters->Type->XkOddCode1);
 
 	$responseObj = new \stdClass();
@@ -1547,7 +1442,7 @@ case 'GetDirOrdItems':
 		$RowObj = new \stdClass();
 		$RowObj->Key = new \stdClass();
 		$RowObj->Key->Code = $row["CODE"];
-		$RowObj->Display = $row["CUBE_TSG_INT_EXT"].' '.$row["CODE"];
+		$RowObj->Display = '('.$row["CUBE_TSG_INT_EXT"].')'.' '.$row["CODE"];
 		$ResponseObj->Rows[] = $RowObj;
 	}
 	$ResponseText = json_encode($ResponseObj);
@@ -1745,9 +1640,6 @@ case 'GetOrr':
 		$RowObj->Data->TotaalPrijs = $row["TOTAAL_PRIJS"];
 		$RowObj->Data->XkPrdCubeTsgType = $row["XK_PRD_CUBE_TSG_TYPE"];
 		$RowObj->Data->XkPrdCode = $row["XK_PRD_CODE"];
-		$RowObj->Data->XkPrdCubeTsgType1 = $row["XK_PRD_CUBE_TSG_TYPE_1"];
-		$RowObj->Data->XkPrdCode1 = $row["XK_PRD_CODE_1"];
-		$RowObj->Data->XkKlnNummer = $row["XK_KLN_NUMMER"];
 		$ResponseObj->Rows[] = $RowObj;
 	}
 	$ResponseText = json_encode($ResponseObj);
@@ -1766,9 +1658,6 @@ case 'CreateOrr':
 		:p_totaal_prijs,
 		:p_xk_prd_cube_tsg_type,
 		:p_xk_prd_code,
-		:p_xk_prd_cube_tsg_type_1,
-		:p_xk_prd_code_1,
-		:p_xk_kln_nummer,
 		:p_cube_row);
 	END;");
 	oci_bind_by_name($stid,":p_fk_ord_code",$RequestObj->Parameters->Type->FkOrdCode);
@@ -1777,9 +1666,6 @@ case 'CreateOrr':
 	oci_bind_by_name($stid,":p_totaal_prijs",$RequestObj->Parameters->Type->TotaalPrijs);
 	oci_bind_by_name($stid,":p_xk_prd_cube_tsg_type",$RequestObj->Parameters->Type->XkPrdCubeTsgType);
 	oci_bind_by_name($stid,":p_xk_prd_code",$RequestObj->Parameters->Type->XkPrdCode);
-	oci_bind_by_name($stid,":p_xk_prd_cube_tsg_type_1",$RequestObj->Parameters->Type->XkPrdCubeTsgType1);
-	oci_bind_by_name($stid,":p_xk_prd_code_1",$RequestObj->Parameters->Type->XkPrdCode1);
-	oci_bind_by_name($stid,":p_xk_kln_nummer",$RequestObj->Parameters->Type->XkKlnNummer);
 
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'CREATE_ORR';
@@ -1810,10 +1696,7 @@ case 'UpdateOrr':
 		:p_aantal,
 		:p_totaal_prijs,
 		:p_xk_prd_cube_tsg_type,
-		:p_xk_prd_code,
-		:p_xk_prd_cube_tsg_type_1,
-		:p_xk_prd_code_1,
-		:p_xk_kln_nummer);
+		:p_xk_prd_code);
 	END;");
 	oci_bind_by_name($stid,":p_fk_ord_code",$RequestObj->Parameters->Type->FkOrdCode);
 	oci_bind_by_name($stid,":p_produkt_prijs",$RequestObj->Parameters->Type->ProduktPrijs);
@@ -1821,9 +1704,6 @@ case 'UpdateOrr':
 	oci_bind_by_name($stid,":p_totaal_prijs",$RequestObj->Parameters->Type->TotaalPrijs);
 	oci_bind_by_name($stid,":p_xk_prd_cube_tsg_type",$RequestObj->Parameters->Type->XkPrdCubeTsgType);
 	oci_bind_by_name($stid,":p_xk_prd_code",$RequestObj->Parameters->Type->XkPrdCode);
-	oci_bind_by_name($stid,":p_xk_prd_cube_tsg_type_1",$RequestObj->Parameters->Type->XkPrdCubeTsgType1);
-	oci_bind_by_name($stid,":p_xk_prd_code_1",$RequestObj->Parameters->Type->XkPrdCode1);
-	oci_bind_by_name($stid,":p_xk_kln_nummer",$RequestObj->Parameters->Type->XkKlnNummer);
 
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'UPDATE_ORR';

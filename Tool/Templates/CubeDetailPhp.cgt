@@ -298,15 +298,7 @@ function UpdateForeignKey(p_obj) {
 function StartSelect<<REFERENCE:S>>(p_event) {
 	document.body._SelectLeft = p_event.clientX;
 	document.body._SelectTop = p_event.clientY;
-	document.body._ListBoxCode = 'Ref<<REFERENCE:S>>';[[LOOP,REFERENCE_TYPE]][[IF:3=Y[AND]!8=Y[AND]!REFERENCE.4=ALL[AND]REFERENCE.PARENT(TYPE:0=<<REFERENCE_TYPE>>)]][[EVAL:($myFlag=0)]][[IF,REFERENCE:4=ENC]]
-	var Parameters = {
-		Type: {[[EVAL:($myFlag=1)]][[LOOP,ATTRIBUTE:1=Y]]
-			<<ATTRIBUTE:C>>:document.getElementById("Input<<ATTRIBUTE:C>>").value[[IF:!LAST]],[[ENDIF]][[ENDLOOP,ATTRIBUTE]]
-		}[[IF:REFERENCE.CHILD(REFERENCE_SCOPE_ATTRIBUTE)]],
-		Ref: {[[FOR,REFERENCE:N>N]][[LOOP,REFERENCE_SCOPE_ATTRIBUTE]]
-			<<REFERENCE_SCOPE_ATTRIBUTE:C>>:document.getElementById("Input<<REFERENCE_SCOPE_ATTRIBUTE:C>>").value[[IF:!LAST]],[[ENDIF]][[ENDLOOP,REFERENCE_SCOPE_ATTRIBUTE]][[ENDFOR]]
-		}[[ENDIF]]
-	};[[ELSIF,REFERENCE_TYPE:0=<<TYPE>>]]
+	document.body._ListBoxCode = 'Ref<<REFERENCE:S>>';[[LOOP,REFERENCE_TYPE]][[IF:3=Y[AND]!8=Y[AND]!REFERENCE.4=ALL[AND]REFERENCE.PARENT(TYPE:0=<<REFERENCE_TYPE>>)]][[EVAL:($myFlag=0)]][[IF,REFERENCE_TYPE:0=<<TYPE>>]]
 	var Parameters = {[[EVAL:($myFlag=1)]]<<TEXT,DETAIL_RECURSIVE_PARMS>>
 		Type: {[[LOOP,ATTRIBUTE:1=Y]]
 			<<ATTRIBUTE:C>>:document.getElementById("Input<<ATTRIBUTE:C>>").value[[IF:!LAST]],[[ENDIF]][[ENDLOOP,ATTRIBUTE]]

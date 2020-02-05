@@ -30,6 +30,7 @@ g_xmlhttp.onreadystatechange = function() {
 					case "SELECT_CST":
 						var l_json_values = l_json_array[i].Rows[0].Data;
 						document.getElementById("InputOmschrijving").value=l_json_values.Omschrijving;
+						document.getElementById("InputXkOddCode").value=l_json_values.XkOddCode;
 						document.getElementById("InputXkOddCode1").value=l_json_values.XkOddCode1;
 						break;
 					case "CREATE_CST":
@@ -72,6 +73,9 @@ g_xmlhttp.onreadystatechange = function() {
 						if (l_objNode != null) {
 							l_objNode.parentNode.removeChild(l_objNode);
 						}
+						break;
+					case "LIST_ODD":
+						OpenListBox(l_json_array[i].Rows,'type','OnderdeelDeel','Y');
 						break;
 					case "LIST_ODD":
 						OpenListBox(l_json_array[i].Rows,'type','OnderdeelDeel','Y');
@@ -137,6 +141,7 @@ function CreateCst() {
 		FkOndCode: document.getElementById("InputFkOndCode").value,
 		Code: document.getElementById("InputCode").value,
 		Omschrijving: document.getElementById("InputOmschrijving").value,
+		XkOddCode: document.getElementById("InputXkOddCode").value,
 		XkOddCode1: document.getElementById("InputXkOddCode1").value
 	};
 	PerformTrans( {
@@ -154,6 +159,7 @@ function UpdateCst() {
 		FkOndCode: document.getElementById("InputFkOndCode").value,
 		Code: document.getElementById("InputCode").value,
 		Omschrijving: document.getElementById("InputOmschrijving").value,
+		XkOddCode: document.getElementById("InputXkOddCode").value,
 		XkOddCode1: document.getElementById("InputXkOddCode1").value
 	};
 	PerformTrans( {
@@ -187,6 +193,13 @@ function UpdateForeignKey(p_obj) {
 	switch (document.body._ListBoxCode){
 	case "Ref001":
 		if (l_values == '') {
+			document.getElementById("InputXkOddCode").value = '';
+		} else {
+			document.getElementById("InputXkOddCode").value = l_json_values.Code;
+		}
+		break;
+	case "Ref002":
+		if (l_values == '') {
 			document.getElementById("InputXkOddCode1").value = '';
 		} else {
 			document.getElementById("InputXkOddCode1").value = l_json_values.Code;
@@ -202,6 +215,15 @@ function StartSelect001(p_event) {
 	document.body._SelectLeft = p_event.clientX;
 	document.body._SelectTop = p_event.clientY;
 	document.body._ListBoxCode = 'Ref001';
+	PerformTrans( {
+		Service: "GetOddList"
+	} );
+}
+
+function StartSelect002(p_event) {
+	document.body._SelectLeft = p_event.clientX;
+	document.body._SelectTop = p_event.clientY;
+	document.body._ListBoxCode = 'Ref002';
 	var Parameters = {
 		Option: {
 			CubeScopeLevel:0
@@ -237,11 +259,17 @@ function StartSelect001(p_event) {
 <input id="InputCode" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
 <tr><td style="padding-top:10px;">Omschrijving</td></tr><tr><td colspan="2"><div>
 <textarea id="InputOmschrijving" type="text" maxlength="120" rows="5" style="white-space:normal;width:100%;"></textarea></div></td></tr>
-<tr><td height=6></td></tr><tr><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/type.bmp"/> OnderdeelDeel (Betreft)</legend>
+<tr><td height=6></td></tr><tr><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/type.bmp"/> OnderdeelDeel (ZonderScope)</legend>
+<table style="width:100%;">
+<tr><td>OnderdeelDeel.Code</td><td style="width:100%;"><div style="max-width:8em;">
+<input id="InputXkOddCode" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td>
+<td><button id="RefSelect001" type="button" onclick="StartSelect001(event)">Select</button></td></tr>
+</table></fieldset></td></tr>
+<tr><td height=6></td></tr><tr><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/type.bmp"/> OnderdeelDeel (MetScope)</legend>
 <table style="width:100%;">
 <tr><td>OnderdeelDeel.Code</td><td style="width:100%;"><div style="max-width:8em;">
 <input id="InputXkOddCode1" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td>
-<td><button id="RefSelect001" type="button" onclick="StartSelect001(event)">Select</button></td></tr>
+<td><button id="RefSelect002" type="button" onclick="StartSelect002(event)">Select</button></td></tr>
 </table></fieldset></td></tr>
 <tr><td><br></td><td style="width:100%;"></td></tr>
 <tr><td/><td>

@@ -32,9 +32,6 @@ g_xmlhttp.onreadystatechange = function() {
 						document.getElementById("InputFkOndCode").value=l_json_values.FkOndCode;
 						document.getElementById("InputPrijs").value=l_json_values.Prijs;
 						document.getElementById("InputOmschrijving").value=l_json_values.Omschrijving;
-						document.getElementById("InputXfOndPrdCubeTsgType").value=l_json_values.XfOndPrdCubeTsgType;
-						document.getElementById("InputXfOndPrdCode").value=l_json_values.XfOndPrdCode;
-						document.getElementById("InputXkOndCode").value=l_json_values.XkOndCode;
 						break;
 					case "CREATE_OND":
 						document.getElementById("InputFkPrdCubeTsgType").disabled=true;
@@ -76,9 +73,6 @@ g_xmlhttp.onreadystatechange = function() {
 						if (l_objNode != null) {
 							l_objNode.parentNode.removeChild(l_objNode);
 						}
-						break;
-					case "LIST_OND":
-						OpenListBox(l_json_array[i].Rows,'part','Onderdeel','Y');
 						break;
 					case "ERROR":
 						alert ('Server error:\n'+l_json_array[i].ErrorText);
@@ -152,10 +146,7 @@ function CreateOnd() {
 		FkOndCode: document.getElementById("InputFkOndCode").value,
 		Code: document.getElementById("InputCode").value,
 		Prijs: document.getElementById("InputPrijs").value,
-		Omschrijving: document.getElementById("InputOmschrijving").value,
-		XfOndPrdCubeTsgType: document.getElementById("InputXfOndPrdCubeTsgType").value,
-		XfOndPrdCode: document.getElementById("InputXfOndPrdCode").value,
-		XkOndCode: document.getElementById("InputXkOndCode").value
+		Omschrijving: document.getElementById("InputOmschrijving").value
 	};
 	var l_pos_action = g_json_option.Code;
 	var Option = {
@@ -189,10 +180,7 @@ function UpdateOnd() {
 		FkOndCode: document.getElementById("InputFkOndCode").value,
 		Code: document.getElementById("InputCode").value,
 		Prijs: document.getElementById("InputPrijs").value,
-		Omschrijving: document.getElementById("InputOmschrijving").value,
-		XfOndPrdCubeTsgType: document.getElementById("InputXfOndPrdCubeTsgType").value,
-		XfOndPrdCode: document.getElementById("InputXfOndPrdCode").value,
-		XkOndCode: document.getElementById("InputXkOndCode").value
+		Omschrijving: document.getElementById("InputOmschrijving").value
 	};
 	PerformTrans( {
 		Service: "UpdateOnd",
@@ -213,56 +201,6 @@ function DeleteOnd() {
 		Parameters: {
 			Type
 		}
-	} );
-}
-
-function UpdateForeignKey(p_obj) {
-	var l_values = p_obj.options[p_obj.selectedIndex].value;
-	if (l_values != '') {
-		var l_json_values = JSON.parse(l_values);
-	}
-	switch (document.body._ListBoxCode){
-	case "Ref001":
-		if (l_values == '') {
-			document.getElementById("InputXfOndPrdCubeTsgType").value = '';
-		} else {
-			document.getElementById("InputXfOndPrdCubeTsgType").value = l_json_values.FkPrdCubeTsgType;
-		}
-		if (l_values == '') {
-			document.getElementById("InputXfOndPrdCode").value = '';
-		} else {
-			document.getElementById("InputXfOndPrdCode").value = l_json_values.FkPrdCode;
-		}
-		if (l_values == '') {
-			document.getElementById("InputXkOndCode").value = '';
-		} else {
-			document.getElementById("InputXkOndCode").value = l_json_values.Code;
-		}
-		break;
-	default:
-		alert ('Error Listbox: '+document.body._ListBoxCode);
-	}
-	CloseListBox();
-}
-
-function StartSelect001(p_event) {
-	document.body._SelectLeft = p_event.clientX;
-	document.body._SelectTop = p_event.clientY;
-	document.body._ListBoxCode = 'Ref001';
-	var Parameters = {
-		Option: {
-			CubeUpOrDown:"U",
-			CubeXLevel:9999
-		},
-		Type: {
-			FkPrdCubeTsgType:document.getElementById("InputFkPrdCubeTsgType").value,
-			FkPrdCode:document.getElementById("InputFkPrdCode").value,
-			Code:document.getElementById("InputCode").value
-		}
-	};
-	PerformTrans( {
-		Service: "GetOndListRecursive",
-		Parameters
 	} );
 }
 -->
@@ -287,16 +225,6 @@ function StartSelect001(p_event) {
 <input id="InputPrijs" type="text" maxlength="9" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
 <tr><td style="padding-top:10px;">Omschrijving</td></tr><tr><td colspan="2"><div>
 <textarea id="InputOmschrijving" type="text" maxlength="120" rows="5" style="white-space:normal;width:100%;"></textarea></div></td></tr>
-<tr><td height=6></td></tr><tr><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/part.bmp"/> Onderdeel (LijktOp)</legend>
-<table style="width:100%;">
-<tr><td>Produkt.Type</td><td style="width:100%;"><div style="max-width:8em;">
-<input id="InputXfOndPrdCubeTsgType" type="text" maxlength="8" style="width:100%;" onchange="ReplaceSpaces(this);" disabled></input></div></td>
-<td><button id="RefSelect001" type="button" onclick="StartSelect001(event)">Select</button></td></tr>
-<tr><td>Produkt.Code</td><td style="width:100%;"><div style="max-width:8em;">
-<input id="InputXfOndPrdCode" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td></tr>
-<tr><td>Onderdeel.Code</td><td style="width:100%;"><div style="max-width:8em;">
-<input id="InputXkOndCode" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td></tr>
-</table></fieldset></td></tr>
 <tr><td><br></td><td style="width:100%;"></td></tr>
 <tr><td/><td>
 <button id="ButtonCreate" type="button" onclick="CreateOnd()">Create</button>&nbsp;&nbsp;&nbsp;

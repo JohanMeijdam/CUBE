@@ -59,6 +59,28 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
+	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBEROOT' AND sequence_name = 'SQ_TSG';
+	IF l_count = 0 THEN
+		EXECUTE IMMEDIATE 
+		'CREATE SEQUENCE sq_tsg START WITH 100000';
+		DBMS_OUTPUT.PUT_LINE('Sequence SQ_TSG created');
+	END IF;
+END;
+/
+DECLARE
+	l_count NUMBER(4);
+BEGIN
+	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBEROOT' AND sequence_name = 'SQ_TSP';
+	IF l_count = 0 THEN
+		EXECUTE IMMEDIATE 
+		'CREATE SEQUENCE sq_tsp START WITH 100000';
+		DBMS_OUTPUT.PUT_LINE('Sequence SQ_TSP created');
+	END IF;
+END;
+/
+DECLARE
+	l_count NUMBER(4);
+BEGIN
 	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBEROOT' AND sequence_name = 'SQ_ATB';
 	IF l_count = 0 THEN
 		EXECUTE IMMEDIATE 
@@ -163,28 +185,6 @@ BEGIN
 		EXECUTE IMMEDIATE 
 		'CREATE SEQUENCE sq_jsn START WITH 100000';
 		DBMS_OUTPUT.PUT_LINE('Sequence SQ_JSN created');
-	END IF;
-END;
-/
-DECLARE
-	l_count NUMBER(4);
-BEGIN
-	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBEROOT' AND sequence_name = 'SQ_TSG';
-	IF l_count = 0 THEN
-		EXECUTE IMMEDIATE 
-		'CREATE SEQUENCE sq_tsg START WITH 100000';
-		DBMS_OUTPUT.PUT_LINE('Sequence SQ_TSG created');
-	END IF;
-END;
-/
-DECLARE
-	l_count NUMBER(4);
-BEGIN
-	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBEROOT' AND sequence_name = 'SQ_TSP';
-	IF l_count = 0 THEN
-		EXECUTE IMMEDIATE 
-		'CREATE SEQUENCE sq_tsp START WITH 100000';
-		DBMS_OUTPUT.PUT_LINE('Sequence SQ_TSP created');
 	END IF;
 END;
 /
@@ -622,6 +622,203 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Prepare table T_TYPE_SPECIALISATION_GROUP');
+	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = 'CUBEROOT' AND table_name = 'T_TYPE_SPECIALISATION_GROUP';
+	IF l_count = 0 THEN
+		EXECUTE IMMEDIATE
+		'CREATE TABLE t_type_specialisation_group (
+			cube_id VARCHAR2(16),
+			cube_sequence NUMBER(8),
+			cube_level NUMBER(8) DEFAULT ''1'',
+			fk_bot_name VARCHAR2(30),
+			fk_typ_name VARCHAR2(30),
+			fk_tsg_code VARCHAR2(16),
+			code VARCHAR2(16),
+			name VARCHAR2(30),
+			primary_key CHAR(1) DEFAULT ''N'',
+			xf_atb_typ_name VARCHAR2(30),
+			xk_atb_name VARCHAR2(30))';
+		DBMS_OUTPUT.PUT_LINE('Table T_TYPE_SPECIALISATION_GROUP created');
+	ELSE
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_TYPE_SPECIALISATION_GROUP' AND column_name = 'CUBE_ID';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_type_specialisation_group ADD cube_id VARCHAR2(16)';
+			DBMS_OUTPUT.PUT_LINE('Column T_TYPE_SPECIALISATION_GROUP.CUBE_ID created');
+		END IF;
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_TYPE_SPECIALISATION_GROUP' AND column_name = 'CUBE_SEQUENCE';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_type_specialisation_group ADD cube_sequence NUMBER(8)';
+			DBMS_OUTPUT.PUT_LINE('Column T_TYPE_SPECIALISATION_GROUP.CUBE_SEQUENCE created');
+		END IF;
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_TYPE_SPECIALISATION_GROUP' AND column_name = 'CUBE_LEVEL';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_type_specialisation_group ADD cube_level NUMBER(8) DEFAULT ''1''';
+			DBMS_OUTPUT.PUT_LINE('Column T_TYPE_SPECIALISATION_GROUP.CUBE_LEVEL created');
+		END IF;
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_TYPE_SPECIALISATION_GROUP' AND column_name = 'FK_BOT_NAME';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_type_specialisation_group ADD fk_bot_name VARCHAR2(30)';
+			DBMS_OUTPUT.PUT_LINE('Column T_TYPE_SPECIALISATION_GROUP.FK_BOT_NAME created');
+		END IF;
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_TYPE_SPECIALISATION_GROUP' AND column_name = 'FK_TYP_NAME';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_type_specialisation_group ADD fk_typ_name VARCHAR2(30)';
+			DBMS_OUTPUT.PUT_LINE('Column T_TYPE_SPECIALISATION_GROUP.FK_TYP_NAME created');
+		END IF;
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_TYPE_SPECIALISATION_GROUP' AND column_name = 'FK_TSG_CODE';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_type_specialisation_group ADD fk_tsg_code VARCHAR2(16)';
+			DBMS_OUTPUT.PUT_LINE('Column T_TYPE_SPECIALISATION_GROUP.FK_TSG_CODE created');
+		END IF;
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_TYPE_SPECIALISATION_GROUP' AND column_name = 'CODE';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_type_specialisation_group ADD code VARCHAR2(16)';
+			DBMS_OUTPUT.PUT_LINE('Column T_TYPE_SPECIALISATION_GROUP.CODE created');
+		END IF;
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_TYPE_SPECIALISATION_GROUP' AND column_name = 'NAME';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_type_specialisation_group ADD name VARCHAR2(30)';
+			DBMS_OUTPUT.PUT_LINE('Column T_TYPE_SPECIALISATION_GROUP.NAME created');
+		END IF;
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_TYPE_SPECIALISATION_GROUP' AND column_name = 'PRIMARY_KEY';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_type_specialisation_group ADD primary_key CHAR(1) DEFAULT ''N''';
+			DBMS_OUTPUT.PUT_LINE('Column T_TYPE_SPECIALISATION_GROUP.PRIMARY_KEY created');
+		END IF;
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_TYPE_SPECIALISATION_GROUP' AND column_name = 'XF_ATB_TYP_NAME';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_type_specialisation_group ADD xf_atb_typ_name VARCHAR2(30)';
+			DBMS_OUTPUT.PUT_LINE('Column T_TYPE_SPECIALISATION_GROUP.XF_ATB_TYP_NAME created');
+		END IF;
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_TYPE_SPECIALISATION_GROUP' AND column_name = 'XK_ATB_NAME';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_type_specialisation_group ADD xk_atb_name VARCHAR2(30)';
+			DBMS_OUTPUT.PUT_LINE('Column T_TYPE_SPECIALISATION_GROUP.XK_ATB_NAME created');
+		END IF;
+		FOR r_key IN (SELECT constraint_name FROM all_constraints WHERE owner = 'CUBEROOT' AND table_name = 'T_TYPE_SPECIALISATION_GROUP' AND constraint_type IN ('P','U','R') ORDER BY constraint_type DESC)
+		LOOP
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_type_specialisation_group DROP CONSTRAINT ' || r_key.constraint_name || ' CASCADE';
+			DBMS_OUTPUT.PUT_LINE('Primary Key T_TYPE_SPECIALISATION_GROUP.' || UPPER(r_key.constraint_name) || ' dropped');
+		END LOOP;
+		FOR r_index IN (SELECT index_name FROM all_indexes WHERE owner = 'CUBEROOT' AND table_name = 'T_TYPE_SPECIALISATION_GROUP')
+		LOOP
+			EXECUTE IMMEDIATE
+			'DROP INDEX ' || r_index.index_name;
+			DBMS_OUTPUT.PUT_LINE('Index T_TYPE_SPECIALISATION_GROUP.' || UPPER(r_index.index_name) || ' dropped');
+		END LOOP;
+	END IF;
+END;
+/
+DECLARE
+	l_count NUMBER(4);
+BEGIN
+	DBMS_OUTPUT.PUT_LINE('Prepare table T_TYPE_SPECIALISATION');
+	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = 'CUBEROOT' AND table_name = 'T_TYPE_SPECIALISATION';
+	IF l_count = 0 THEN
+		EXECUTE IMMEDIATE
+		'CREATE TABLE t_type_specialisation (
+			cube_id VARCHAR2(16),
+			cube_sequence NUMBER(8),
+			fk_bot_name VARCHAR2(30),
+			fk_typ_name VARCHAR2(30),
+			fk_tsg_code VARCHAR2(16),
+			code VARCHAR2(16),
+			name VARCHAR2(30),
+			xf_tsp_typ_name VARCHAR2(30),
+			xf_tsp_tsg_code VARCHAR2(16),
+			xk_tsp_code VARCHAR2(16))';
+		DBMS_OUTPUT.PUT_LINE('Table T_TYPE_SPECIALISATION created');
+	ELSE
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_TYPE_SPECIALISATION' AND column_name = 'CUBE_ID';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_type_specialisation ADD cube_id VARCHAR2(16)';
+			DBMS_OUTPUT.PUT_LINE('Column T_TYPE_SPECIALISATION.CUBE_ID created');
+		END IF;
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_TYPE_SPECIALISATION' AND column_name = 'CUBE_SEQUENCE';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_type_specialisation ADD cube_sequence NUMBER(8)';
+			DBMS_OUTPUT.PUT_LINE('Column T_TYPE_SPECIALISATION.CUBE_SEQUENCE created');
+		END IF;
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_TYPE_SPECIALISATION' AND column_name = 'FK_BOT_NAME';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_type_specialisation ADD fk_bot_name VARCHAR2(30)';
+			DBMS_OUTPUT.PUT_LINE('Column T_TYPE_SPECIALISATION.FK_BOT_NAME created');
+		END IF;
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_TYPE_SPECIALISATION' AND column_name = 'FK_TYP_NAME';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_type_specialisation ADD fk_typ_name VARCHAR2(30)';
+			DBMS_OUTPUT.PUT_LINE('Column T_TYPE_SPECIALISATION.FK_TYP_NAME created');
+		END IF;
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_TYPE_SPECIALISATION' AND column_name = 'FK_TSG_CODE';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_type_specialisation ADD fk_tsg_code VARCHAR2(16)';
+			DBMS_OUTPUT.PUT_LINE('Column T_TYPE_SPECIALISATION.FK_TSG_CODE created');
+		END IF;
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_TYPE_SPECIALISATION' AND column_name = 'CODE';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_type_specialisation ADD code VARCHAR2(16)';
+			DBMS_OUTPUT.PUT_LINE('Column T_TYPE_SPECIALISATION.CODE created');
+		END IF;
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_TYPE_SPECIALISATION' AND column_name = 'NAME';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_type_specialisation ADD name VARCHAR2(30)';
+			DBMS_OUTPUT.PUT_LINE('Column T_TYPE_SPECIALISATION.NAME created');
+		END IF;
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_TYPE_SPECIALISATION' AND column_name = 'XF_TSP_TYP_NAME';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_type_specialisation ADD xf_tsp_typ_name VARCHAR2(30)';
+			DBMS_OUTPUT.PUT_LINE('Column T_TYPE_SPECIALISATION.XF_TSP_TYP_NAME created');
+		END IF;
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_TYPE_SPECIALISATION' AND column_name = 'XF_TSP_TSG_CODE';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_type_specialisation ADD xf_tsp_tsg_code VARCHAR2(16)';
+			DBMS_OUTPUT.PUT_LINE('Column T_TYPE_SPECIALISATION.XF_TSP_TSG_CODE created');
+		END IF;
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_TYPE_SPECIALISATION' AND column_name = 'XK_TSP_CODE';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_type_specialisation ADD xk_tsp_code VARCHAR2(16)';
+			DBMS_OUTPUT.PUT_LINE('Column T_TYPE_SPECIALISATION.XK_TSP_CODE created');
+		END IF;
+		FOR r_key IN (SELECT constraint_name FROM all_constraints WHERE owner = 'CUBEROOT' AND table_name = 'T_TYPE_SPECIALISATION' AND constraint_type IN ('P','U','R') ORDER BY constraint_type DESC)
+		LOOP
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_type_specialisation DROP CONSTRAINT ' || r_key.constraint_name || ' CASCADE';
+			DBMS_OUTPUT.PUT_LINE('Primary Key T_TYPE_SPECIALISATION.' || UPPER(r_key.constraint_name) || ' dropped');
+		END LOOP;
+		FOR r_index IN (SELECT index_name FROM all_indexes WHERE owner = 'CUBEROOT' AND table_name = 'T_TYPE_SPECIALISATION')
+		LOOP
+			EXECUTE IMMEDIATE
+			'DROP INDEX ' || r_index.index_name;
+			DBMS_OUTPUT.PUT_LINE('Index T_TYPE_SPECIALISATION.' || UPPER(r_index.index_name) || ' dropped');
+		END LOOP;
+	END IF;
+END;
+/
+DECLARE
+	l_count NUMBER(4);
+BEGIN
 	DBMS_OUTPUT.PUT_LINE('Prepare table T_ATTRIBUTE');
 	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = 'CUBEROOT' AND table_name = 'T_ATTRIBUTE';
 	IF l_count = 0 THEN
@@ -969,6 +1166,8 @@ BEGIN
 			scope VARCHAR2(3) DEFAULT ''ALL'',
 			unchangeable CHAR(1) DEFAULT ''N'',
 			within_scope_extension VARCHAR2(3),
+			cube_tsg_int_ext VARCHAR2(8) DEFAULT ''INT'',
+			xk_bot_name VARCHAR2(30),
 			xk_typ_name VARCHAR2(30),
 			xk_typ_name_1 VARCHAR2(30))';
 		DBMS_OUTPUT.PUT_LINE('Table T_REFERENCE created');
@@ -1039,6 +1238,18 @@ BEGIN
 			'ALTER TABLE t_reference ADD within_scope_extension VARCHAR2(3)';
 			DBMS_OUTPUT.PUT_LINE('Column T_REFERENCE.WITHIN_SCOPE_EXTENSION created');
 		END IF;
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_REFERENCE' AND column_name = 'CUBE_TSG_INT_EXT';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_reference ADD cube_tsg_int_ext VARCHAR2(8) DEFAULT ''INT''';
+			DBMS_OUTPUT.PUT_LINE('Column T_REFERENCE.CUBE_TSG_INT_EXT created');
+		END IF;
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_REFERENCE' AND column_name = 'XK_BOT_NAME';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_reference ADD xk_bot_name VARCHAR2(30)';
+			DBMS_OUTPUT.PUT_LINE('Column T_REFERENCE.XK_BOT_NAME created');
+		END IF;
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_REFERENCE' AND column_name = 'XK_TYP_NAME';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
@@ -1078,6 +1289,7 @@ BEGIN
 			fk_bot_name VARCHAR2(30),
 			fk_typ_name VARCHAR2(30),
 			fk_ref_sequence NUMBER(1) DEFAULT ''0'',
+			fk_ref_bot_name VARCHAR2(30),
 			fk_ref_typ_name VARCHAR2(30),
 			text VARCHAR2(3999))';
 		DBMS_OUTPUT.PUT_LINE('Table T_DESCRIPTION_REFERENCE created');
@@ -1105,6 +1317,12 @@ BEGIN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_description_reference ADD fk_ref_sequence NUMBER(1) DEFAULT ''0''';
 			DBMS_OUTPUT.PUT_LINE('Column T_DESCRIPTION_REFERENCE.FK_REF_SEQUENCE created');
+		END IF;
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_DESCRIPTION_REFERENCE' AND column_name = 'FK_REF_BOT_NAME';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_description_reference ADD fk_ref_bot_name VARCHAR2(30)';
+			DBMS_OUTPUT.PUT_LINE('Column T_DESCRIPTION_REFERENCE.FK_REF_BOT_NAME created');
 		END IF;
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_DESCRIPTION_REFERENCE' AND column_name = 'FK_REF_TYP_NAME';
 		IF l_count = 0 THEN
@@ -1145,6 +1363,7 @@ BEGIN
 			fk_bot_name VARCHAR2(30),
 			fk_typ_name VARCHAR2(30),
 			fk_ref_sequence NUMBER(1) DEFAULT ''0'',
+			fk_ref_bot_name VARCHAR2(30),
 			fk_ref_typ_name VARCHAR2(30),
 			include_or_exclude CHAR(2) DEFAULT ''IN'',
 			xf_tsp_typ_name VARCHAR2(30),
@@ -1175,6 +1394,12 @@ BEGIN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_restriction_type_spec_ref ADD fk_ref_sequence NUMBER(1) DEFAULT ''0''';
 			DBMS_OUTPUT.PUT_LINE('Column T_RESTRICTION_TYPE_SPEC_REF.FK_REF_SEQUENCE created');
+		END IF;
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_RESTRICTION_TYPE_SPEC_REF' AND column_name = 'FK_REF_BOT_NAME';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_restriction_type_spec_ref ADD fk_ref_bot_name VARCHAR2(30)';
+			DBMS_OUTPUT.PUT_LINE('Column T_RESTRICTION_TYPE_SPEC_REF.FK_REF_BOT_NAME created');
 		END IF;
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_RESTRICTION_TYPE_SPEC_REF' AND column_name = 'FK_REF_TYP_NAME';
 		IF l_count = 0 THEN
@@ -1233,6 +1458,7 @@ BEGIN
 			fk_bot_name VARCHAR2(30),
 			fk_typ_name VARCHAR2(30),
 			fk_ref_sequence NUMBER(1) DEFAULT ''0'',
+			fk_ref_bot_name VARCHAR2(30),
 			fk_ref_typ_name VARCHAR2(30),
 			include_or_exclude CHAR(2) DEFAULT ''IN'',
 			xf_tsp_typ_name VARCHAR2(30),
@@ -1263,6 +1489,12 @@ BEGIN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_restriction_target_type_spec ADD fk_ref_sequence NUMBER(1) DEFAULT ''0''';
 			DBMS_OUTPUT.PUT_LINE('Column T_RESTRICTION_TARGET_TYPE_SPEC.FK_REF_SEQUENCE created');
+		END IF;
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_RESTRICTION_TARGET_TYPE_SPEC' AND column_name = 'FK_REF_BOT_NAME';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_restriction_target_type_spec ADD fk_ref_bot_name VARCHAR2(30)';
+			DBMS_OUTPUT.PUT_LINE('Column T_RESTRICTION_TARGET_TYPE_SPEC.FK_REF_BOT_NAME created');
 		END IF;
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_RESTRICTION_TARGET_TYPE_SPEC' AND column_name = 'FK_REF_TYP_NAME';
 		IF l_count = 0 THEN
@@ -1523,203 +1755,6 @@ BEGIN
 			EXECUTE IMMEDIATE
 			'DROP INDEX ' || r_index.index_name;
 			DBMS_OUTPUT.PUT_LINE('Index T_JSON_PATH.' || UPPER(r_index.index_name) || ' dropped');
-		END LOOP;
-	END IF;
-END;
-/
-DECLARE
-	l_count NUMBER(4);
-BEGIN
-	DBMS_OUTPUT.PUT_LINE('Prepare table T_TYPE_SPECIALISATION_GROUP');
-	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = 'CUBEROOT' AND table_name = 'T_TYPE_SPECIALISATION_GROUP';
-	IF l_count = 0 THEN
-		EXECUTE IMMEDIATE
-		'CREATE TABLE t_type_specialisation_group (
-			cube_id VARCHAR2(16),
-			cube_sequence NUMBER(8),
-			cube_level NUMBER(8) DEFAULT ''1'',
-			fk_bot_name VARCHAR2(30),
-			fk_typ_name VARCHAR2(30),
-			fk_tsg_code VARCHAR2(16),
-			code VARCHAR2(16),
-			name VARCHAR2(30),
-			primary_key CHAR(1) DEFAULT ''N'',
-			xf_atb_typ_name VARCHAR2(30),
-			xk_atb_name VARCHAR2(30))';
-		DBMS_OUTPUT.PUT_LINE('Table T_TYPE_SPECIALISATION_GROUP created');
-	ELSE
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_TYPE_SPECIALISATION_GROUP' AND column_name = 'CUBE_ID';
-		IF l_count = 0 THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_type_specialisation_group ADD cube_id VARCHAR2(16)';
-			DBMS_OUTPUT.PUT_LINE('Column T_TYPE_SPECIALISATION_GROUP.CUBE_ID created');
-		END IF;
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_TYPE_SPECIALISATION_GROUP' AND column_name = 'CUBE_SEQUENCE';
-		IF l_count = 0 THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_type_specialisation_group ADD cube_sequence NUMBER(8)';
-			DBMS_OUTPUT.PUT_LINE('Column T_TYPE_SPECIALISATION_GROUP.CUBE_SEQUENCE created');
-		END IF;
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_TYPE_SPECIALISATION_GROUP' AND column_name = 'CUBE_LEVEL';
-		IF l_count = 0 THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_type_specialisation_group ADD cube_level NUMBER(8) DEFAULT ''1''';
-			DBMS_OUTPUT.PUT_LINE('Column T_TYPE_SPECIALISATION_GROUP.CUBE_LEVEL created');
-		END IF;
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_TYPE_SPECIALISATION_GROUP' AND column_name = 'FK_BOT_NAME';
-		IF l_count = 0 THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_type_specialisation_group ADD fk_bot_name VARCHAR2(30)';
-			DBMS_OUTPUT.PUT_LINE('Column T_TYPE_SPECIALISATION_GROUP.FK_BOT_NAME created');
-		END IF;
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_TYPE_SPECIALISATION_GROUP' AND column_name = 'FK_TYP_NAME';
-		IF l_count = 0 THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_type_specialisation_group ADD fk_typ_name VARCHAR2(30)';
-			DBMS_OUTPUT.PUT_LINE('Column T_TYPE_SPECIALISATION_GROUP.FK_TYP_NAME created');
-		END IF;
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_TYPE_SPECIALISATION_GROUP' AND column_name = 'FK_TSG_CODE';
-		IF l_count = 0 THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_type_specialisation_group ADD fk_tsg_code VARCHAR2(16)';
-			DBMS_OUTPUT.PUT_LINE('Column T_TYPE_SPECIALISATION_GROUP.FK_TSG_CODE created');
-		END IF;
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_TYPE_SPECIALISATION_GROUP' AND column_name = 'CODE';
-		IF l_count = 0 THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_type_specialisation_group ADD code VARCHAR2(16)';
-			DBMS_OUTPUT.PUT_LINE('Column T_TYPE_SPECIALISATION_GROUP.CODE created');
-		END IF;
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_TYPE_SPECIALISATION_GROUP' AND column_name = 'NAME';
-		IF l_count = 0 THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_type_specialisation_group ADD name VARCHAR2(30)';
-			DBMS_OUTPUT.PUT_LINE('Column T_TYPE_SPECIALISATION_GROUP.NAME created');
-		END IF;
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_TYPE_SPECIALISATION_GROUP' AND column_name = 'PRIMARY_KEY';
-		IF l_count = 0 THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_type_specialisation_group ADD primary_key CHAR(1) DEFAULT ''N''';
-			DBMS_OUTPUT.PUT_LINE('Column T_TYPE_SPECIALISATION_GROUP.PRIMARY_KEY created');
-		END IF;
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_TYPE_SPECIALISATION_GROUP' AND column_name = 'XF_ATB_TYP_NAME';
-		IF l_count = 0 THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_type_specialisation_group ADD xf_atb_typ_name VARCHAR2(30)';
-			DBMS_OUTPUT.PUT_LINE('Column T_TYPE_SPECIALISATION_GROUP.XF_ATB_TYP_NAME created');
-		END IF;
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_TYPE_SPECIALISATION_GROUP' AND column_name = 'XK_ATB_NAME';
-		IF l_count = 0 THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_type_specialisation_group ADD xk_atb_name VARCHAR2(30)';
-			DBMS_OUTPUT.PUT_LINE('Column T_TYPE_SPECIALISATION_GROUP.XK_ATB_NAME created');
-		END IF;
-		FOR r_key IN (SELECT constraint_name FROM all_constraints WHERE owner = 'CUBEROOT' AND table_name = 'T_TYPE_SPECIALISATION_GROUP' AND constraint_type IN ('P','U','R') ORDER BY constraint_type DESC)
-		LOOP
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_type_specialisation_group DROP CONSTRAINT ' || r_key.constraint_name || ' CASCADE';
-			DBMS_OUTPUT.PUT_LINE('Primary Key T_TYPE_SPECIALISATION_GROUP.' || UPPER(r_key.constraint_name) || ' dropped');
-		END LOOP;
-		FOR r_index IN (SELECT index_name FROM all_indexes WHERE owner = 'CUBEROOT' AND table_name = 'T_TYPE_SPECIALISATION_GROUP')
-		LOOP
-			EXECUTE IMMEDIATE
-			'DROP INDEX ' || r_index.index_name;
-			DBMS_OUTPUT.PUT_LINE('Index T_TYPE_SPECIALISATION_GROUP.' || UPPER(r_index.index_name) || ' dropped');
-		END LOOP;
-	END IF;
-END;
-/
-DECLARE
-	l_count NUMBER(4);
-BEGIN
-	DBMS_OUTPUT.PUT_LINE('Prepare table T_TYPE_SPECIALISATION');
-	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = 'CUBEROOT' AND table_name = 'T_TYPE_SPECIALISATION';
-	IF l_count = 0 THEN
-		EXECUTE IMMEDIATE
-		'CREATE TABLE t_type_specialisation (
-			cube_id VARCHAR2(16),
-			cube_sequence NUMBER(8),
-			fk_bot_name VARCHAR2(30),
-			fk_typ_name VARCHAR2(30),
-			fk_tsg_code VARCHAR2(16),
-			code VARCHAR2(16),
-			name VARCHAR2(30),
-			xf_tsp_typ_name VARCHAR2(30),
-			xf_tsp_tsg_code VARCHAR2(16),
-			xk_tsp_code VARCHAR2(16))';
-		DBMS_OUTPUT.PUT_LINE('Table T_TYPE_SPECIALISATION created');
-	ELSE
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_TYPE_SPECIALISATION' AND column_name = 'CUBE_ID';
-		IF l_count = 0 THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_type_specialisation ADD cube_id VARCHAR2(16)';
-			DBMS_OUTPUT.PUT_LINE('Column T_TYPE_SPECIALISATION.CUBE_ID created');
-		END IF;
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_TYPE_SPECIALISATION' AND column_name = 'CUBE_SEQUENCE';
-		IF l_count = 0 THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_type_specialisation ADD cube_sequence NUMBER(8)';
-			DBMS_OUTPUT.PUT_LINE('Column T_TYPE_SPECIALISATION.CUBE_SEQUENCE created');
-		END IF;
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_TYPE_SPECIALISATION' AND column_name = 'FK_BOT_NAME';
-		IF l_count = 0 THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_type_specialisation ADD fk_bot_name VARCHAR2(30)';
-			DBMS_OUTPUT.PUT_LINE('Column T_TYPE_SPECIALISATION.FK_BOT_NAME created');
-		END IF;
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_TYPE_SPECIALISATION' AND column_name = 'FK_TYP_NAME';
-		IF l_count = 0 THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_type_specialisation ADD fk_typ_name VARCHAR2(30)';
-			DBMS_OUTPUT.PUT_LINE('Column T_TYPE_SPECIALISATION.FK_TYP_NAME created');
-		END IF;
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_TYPE_SPECIALISATION' AND column_name = 'FK_TSG_CODE';
-		IF l_count = 0 THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_type_specialisation ADD fk_tsg_code VARCHAR2(16)';
-			DBMS_OUTPUT.PUT_LINE('Column T_TYPE_SPECIALISATION.FK_TSG_CODE created');
-		END IF;
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_TYPE_SPECIALISATION' AND column_name = 'CODE';
-		IF l_count = 0 THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_type_specialisation ADD code VARCHAR2(16)';
-			DBMS_OUTPUT.PUT_LINE('Column T_TYPE_SPECIALISATION.CODE created');
-		END IF;
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_TYPE_SPECIALISATION' AND column_name = 'NAME';
-		IF l_count = 0 THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_type_specialisation ADD name VARCHAR2(30)';
-			DBMS_OUTPUT.PUT_LINE('Column T_TYPE_SPECIALISATION.NAME created');
-		END IF;
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_TYPE_SPECIALISATION' AND column_name = 'XF_TSP_TYP_NAME';
-		IF l_count = 0 THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_type_specialisation ADD xf_tsp_typ_name VARCHAR2(30)';
-			DBMS_OUTPUT.PUT_LINE('Column T_TYPE_SPECIALISATION.XF_TSP_TYP_NAME created');
-		END IF;
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_TYPE_SPECIALISATION' AND column_name = 'XF_TSP_TSG_CODE';
-		IF l_count = 0 THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_type_specialisation ADD xf_tsp_tsg_code VARCHAR2(16)';
-			DBMS_OUTPUT.PUT_LINE('Column T_TYPE_SPECIALISATION.XF_TSP_TSG_CODE created');
-		END IF;
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_TYPE_SPECIALISATION' AND column_name = 'XK_TSP_CODE';
-		IF l_count = 0 THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_type_specialisation ADD xk_tsp_code VARCHAR2(16)';
-			DBMS_OUTPUT.PUT_LINE('Column T_TYPE_SPECIALISATION.XK_TSP_CODE created');
-		END IF;
-		FOR r_key IN (SELECT constraint_name FROM all_constraints WHERE owner = 'CUBEROOT' AND table_name = 'T_TYPE_SPECIALISATION' AND constraint_type IN ('P','U','R') ORDER BY constraint_type DESC)
-		LOOP
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_type_specialisation DROP CONSTRAINT ' || r_key.constraint_name || ' CASCADE';
-			DBMS_OUTPUT.PUT_LINE('Primary Key T_TYPE_SPECIALISATION.' || UPPER(r_key.constraint_name) || ' dropped');
-		END LOOP;
-		FOR r_index IN (SELECT index_name FROM all_indexes WHERE owner = 'CUBEROOT' AND table_name = 'T_TYPE_SPECIALISATION')
-		LOOP
-			EXECUTE IMMEDIATE
-			'DROP INDEX ' || r_index.index_name;
-			DBMS_OUTPUT.PUT_LINE('Index T_TYPE_SPECIALISATION.' || UPPER(r_index.index_name) || ' dropped');
 		END LOOP;
 	END IF;
 END;
@@ -2265,6 +2300,175 @@ BEGIN
 END;
 /
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Maintain table T_TYPE_SPECIALISATION_GROUP');
+	FOR r_field IN (SELECT column_name,
+		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
+		data_default old_default_value,
+  		DECODE(column_name,
+			'CUBE_ID','VARCHAR2(16)',
+			'CUBE_SEQUENCE','NUMBER(8)',
+			'CUBE_LEVEL','NUMBER(8)',
+			'FK_BOT_NAME','VARCHAR2(30)',
+			'FK_TYP_NAME','VARCHAR2(30)',
+			'FK_TSG_CODE','VARCHAR2(16)',
+			'CODE','VARCHAR2(16)',
+			'NAME','VARCHAR2(30)',
+			'PRIMARY_KEY','CHAR(1)',
+			'XF_ATB_TYP_NAME','VARCHAR2(30)',
+			'XK_ATB_NAME','VARCHAR2(30)',NULL) new_domain,
+		DECODE(column_name,
+			'CUBE_ID',NULL,
+			'CUBE_SEQUENCE',NULL,
+			'CUBE_LEVEL','''1''',
+			'FK_BOT_NAME',NULL,
+			'FK_TYP_NAME',NULL,
+			'FK_TSG_CODE',NULL,
+			'CODE',NULL,
+			'NAME',NULL,
+			'PRIMARY_KEY','''N''',
+			'XF_ATB_TYP_NAME',NULL,
+			'XK_ATB_NAME',NULL,NULL) new_default_value
+  		FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_TYPE_SPECIALISATION_GROUP')
+	LOOP
+		IF r_field.old_domain <> r_field.new_domain THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_type_specialisation_group RENAME COLUMN ' || r_field.column_name || ' TO old#domain#field';
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_type_specialisation_group ADD ' || r_field.column_name || ' ' || r_field.new_domain;
+ 			IF r_field.new_domain = 'VARCHAR2' THEN  
+				EXECUTE IMMEDIATE
+				'UPDATE t_type_specialisation_group SET ' || r_field.column_name || '= TRIM(old#domain#field)';
+			ELSE
+				EXECUTE IMMEDIATE
+				'UPDATE t_type_specialisation_group SET ' || r_field.column_name || '= old#domain#field';
+			END IF;
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_type_specialisation_group DROP COLUMN old#domain#field';
+			DBMS_OUTPUT.PUT_LINE('Field T_TYPE_SPECIALISATION_GROUP.' || UPPER(r_field.column_name) || ' converted from ' || r_field.old_domain || ' to ' || r_field.new_domain);
+		END IF;
+		IF NOT((r_field.old_default_value IS NULL AND r_field.new_default_value IS NULL) OR r_field.old_default_value = r_field.new_default_value) THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_type_specialisation_group MODIFY (' || r_field.column_name || ' DEFAULT ' || NVL(r_field.new_default_value,'NULL') || ')';
+			DBMS_OUTPUT.PUT_LINE('Field T_TYPE_SPECIALISATION_GROUP.' || UPPER(r_field.column_name) || ' default value set to ' || NVL(r_field.new_default_value,'NULL'));
+		END IF;
+	END LOOP;
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_type_specialisation_group ADD CONSTRAINT tsg_pk
+		PRIMARY KEY (
+			fk_typ_name,
+			code )';
+	DBMS_OUTPUT.PUT_LINE('Primary Key T_TYPE_SPECIALISATION_GROUP.TSG_PK created');
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_type_specialisation_group ADD CONSTRAINT tsg_typ_fk
+		FOREIGN KEY (fk_typ_name)
+		REFERENCES t_type (name)
+		ON DELETE CASCADE';
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_type_specialisation_group ADD CONSTRAINT tsg_tsg_fk
+		FOREIGN KEY (fk_typ_name, fk_tsg_code)
+		REFERENCES t_type_specialisation_group (fk_typ_name, code)
+		ON DELETE CASCADE';
+	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_TYPE_SPECIALISATION_GROUP' AND column_name NOT IN (
+							'CUBE_ID',
+							'CUBE_SEQUENCE',
+							'CUBE_LEVEL',
+							'FK_BOT_NAME',
+							'FK_TYP_NAME',
+							'FK_TSG_CODE',
+							'CODE',
+							'NAME',
+							'PRIMARY_KEY',
+							'XF_ATB_TYP_NAME',
+							'XK_ATB_NAME'))
+	LOOP
+		EXECUTE IMMEDIATE
+		'ALTER TABLE t_type_specialisation_group DROP COLUMN ' || r_field.column_name;
+		DBMS_OUTPUT.PUT_LINE('Field T_TYPE_SPECIALISATION_GROUP.' || UPPER(r_field.column_name) || ' dropped');
+	END LOOP;
+END;
+/
+BEGIN
+	DBMS_OUTPUT.PUT_LINE('Maintain table T_TYPE_SPECIALISATION');
+	FOR r_field IN (SELECT column_name,
+		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
+		data_default old_default_value,
+  		DECODE(column_name,
+			'CUBE_ID','VARCHAR2(16)',
+			'CUBE_SEQUENCE','NUMBER(8)',
+			'FK_BOT_NAME','VARCHAR2(30)',
+			'FK_TYP_NAME','VARCHAR2(30)',
+			'FK_TSG_CODE','VARCHAR2(16)',
+			'CODE','VARCHAR2(16)',
+			'NAME','VARCHAR2(30)',
+			'XF_TSP_TYP_NAME','VARCHAR2(30)',
+			'XF_TSP_TSG_CODE','VARCHAR2(16)',
+			'XK_TSP_CODE','VARCHAR2(16)',NULL) new_domain,
+		DECODE(column_name,
+			'CUBE_ID',NULL,
+			'CUBE_SEQUENCE',NULL,
+			'FK_BOT_NAME',NULL,
+			'FK_TYP_NAME',NULL,
+			'FK_TSG_CODE',NULL,
+			'CODE',NULL,
+			'NAME',NULL,
+			'XF_TSP_TYP_NAME',NULL,
+			'XF_TSP_TSG_CODE',NULL,
+			'XK_TSP_CODE',NULL,NULL) new_default_value
+  		FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_TYPE_SPECIALISATION')
+	LOOP
+		IF r_field.old_domain <> r_field.new_domain THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_type_specialisation RENAME COLUMN ' || r_field.column_name || ' TO old#domain#field';
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_type_specialisation ADD ' || r_field.column_name || ' ' || r_field.new_domain;
+ 			IF r_field.new_domain = 'VARCHAR2' THEN  
+				EXECUTE IMMEDIATE
+				'UPDATE t_type_specialisation SET ' || r_field.column_name || '= TRIM(old#domain#field)';
+			ELSE
+				EXECUTE IMMEDIATE
+				'UPDATE t_type_specialisation SET ' || r_field.column_name || '= old#domain#field';
+			END IF;
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_type_specialisation DROP COLUMN old#domain#field';
+			DBMS_OUTPUT.PUT_LINE('Field T_TYPE_SPECIALISATION.' || UPPER(r_field.column_name) || ' converted from ' || r_field.old_domain || ' to ' || r_field.new_domain);
+		END IF;
+		IF NOT((r_field.old_default_value IS NULL AND r_field.new_default_value IS NULL) OR r_field.old_default_value = r_field.new_default_value) THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_type_specialisation MODIFY (' || r_field.column_name || ' DEFAULT ' || NVL(r_field.new_default_value,'NULL') || ')';
+			DBMS_OUTPUT.PUT_LINE('Field T_TYPE_SPECIALISATION.' || UPPER(r_field.column_name) || ' default value set to ' || NVL(r_field.new_default_value,'NULL'));
+		END IF;
+	END LOOP;
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_type_specialisation ADD CONSTRAINT tsp_pk
+		PRIMARY KEY (
+			fk_typ_name,
+			fk_tsg_code,
+			code )';
+	DBMS_OUTPUT.PUT_LINE('Primary Key T_TYPE_SPECIALISATION.TSP_PK created');
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_type_specialisation ADD CONSTRAINT tsp_tsg_fk
+		FOREIGN KEY (fk_typ_name, fk_tsg_code)
+		REFERENCES t_type_specialisation_group (fk_typ_name, code)
+		ON DELETE CASCADE';
+	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_TYPE_SPECIALISATION' AND column_name NOT IN (
+							'CUBE_ID',
+							'CUBE_SEQUENCE',
+							'FK_BOT_NAME',
+							'FK_TYP_NAME',
+							'FK_TSG_CODE',
+							'CODE',
+							'NAME',
+							'XF_TSP_TYP_NAME',
+							'XF_TSP_TSG_CODE',
+							'XK_TSP_CODE'))
+	LOOP
+		EXECUTE IMMEDIATE
+		'ALTER TABLE t_type_specialisation DROP COLUMN ' || r_field.column_name;
+		DBMS_OUTPUT.PUT_LINE('Field T_TYPE_SPECIALISATION.' || UPPER(r_field.column_name) || ' dropped');
+	END LOOP;
+END;
+/
+BEGIN
 	DBMS_OUTPUT.PUT_LINE('Maintain table T_ATTRIBUTE');
 	FOR r_field IN (SELECT column_name,
 		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
@@ -2583,6 +2787,8 @@ BEGIN
 			'SCOPE','VARCHAR2(3)',
 			'UNCHANGEABLE','CHAR(1)',
 			'WITHIN_SCOPE_EXTENSION','VARCHAR2(3)',
+			'CUBE_TSG_INT_EXT','VARCHAR2(8)',
+			'XK_BOT_NAME','VARCHAR2(30)',
 			'XK_TYP_NAME','VARCHAR2(30)',
 			'XK_TYP_NAME_1','VARCHAR2(30)',NULL) new_domain,
 		DECODE(column_name,
@@ -2597,6 +2803,8 @@ BEGIN
 			'SCOPE','''ALL''',
 			'UNCHANGEABLE','''N''',
 			'WITHIN_SCOPE_EXTENSION',NULL,
+			'CUBE_TSG_INT_EXT','''INT''',
+			'XK_BOT_NAME',NULL,
 			'XK_TYP_NAME',NULL,
 			'XK_TYP_NAME_1',NULL,NULL) new_default_value
   		FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_REFERENCE')
@@ -2628,6 +2836,7 @@ BEGIN
 		PRIMARY KEY (
 			fk_typ_name,
 			sequence,
+			xk_bot_name,
 			xk_typ_name )';
 	DBMS_OUTPUT.PUT_LINE('Primary Key T_REFERENCE.REF_PK created');
 	EXECUTE IMMEDIATE
@@ -2647,6 +2856,8 @@ BEGIN
 							'SCOPE',
 							'UNCHANGEABLE',
 							'WITHIN_SCOPE_EXTENSION',
+							'CUBE_TSG_INT_EXT',
+							'XK_BOT_NAME',
 							'XK_TYP_NAME',
 							'XK_TYP_NAME_1'))
 	LOOP
@@ -2666,6 +2877,7 @@ BEGIN
 			'FK_BOT_NAME','VARCHAR2(30)',
 			'FK_TYP_NAME','VARCHAR2(30)',
 			'FK_REF_SEQUENCE','NUMBER(1)',
+			'FK_REF_BOT_NAME','VARCHAR2(30)',
 			'FK_REF_TYP_NAME','VARCHAR2(30)',
 			'TEXT','VARCHAR2(3999)',NULL) new_domain,
 		DECODE(column_name,
@@ -2673,6 +2885,7 @@ BEGIN
 			'FK_BOT_NAME',NULL,
 			'FK_TYP_NAME',NULL,
 			'FK_REF_SEQUENCE','''0''',
+			'FK_REF_BOT_NAME',NULL,
 			'FK_REF_TYP_NAME',NULL,
 			'TEXT',NULL,NULL) new_default_value
   		FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_DESCRIPTION_REFERENCE')
@@ -2704,18 +2917,20 @@ BEGIN
 		PRIMARY KEY (
 			fk_typ_name,
 			fk_ref_sequence,
+			fk_ref_bot_name,
 			fk_ref_typ_name )';
 	DBMS_OUTPUT.PUT_LINE('Primary Key T_DESCRIPTION_REFERENCE.DCR_PK created');
 	EXECUTE IMMEDIATE
 	'ALTER TABLE t_description_reference ADD CONSTRAINT dcr_ref_fk
-		FOREIGN KEY (fk_typ_name, fk_ref_sequence, fk_ref_typ_name)
-		REFERENCES t_reference (fk_typ_name, sequence, xk_typ_name)
+		FOREIGN KEY (fk_typ_name, fk_ref_sequence, fk_ref_bot_name, fk_ref_typ_name)
+		REFERENCES t_reference (fk_typ_name, sequence, xk_bot_name, xk_typ_name)
 		ON DELETE CASCADE';
 	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_DESCRIPTION_REFERENCE' AND column_name NOT IN (
 							'CUBE_ID',
 							'FK_BOT_NAME',
 							'FK_TYP_NAME',
 							'FK_REF_SEQUENCE',
+							'FK_REF_BOT_NAME',
 							'FK_REF_TYP_NAME',
 							'TEXT'))
 	LOOP
@@ -2735,6 +2950,7 @@ BEGIN
 			'FK_BOT_NAME','VARCHAR2(30)',
 			'FK_TYP_NAME','VARCHAR2(30)',
 			'FK_REF_SEQUENCE','NUMBER(1)',
+			'FK_REF_BOT_NAME','VARCHAR2(30)',
 			'FK_REF_TYP_NAME','VARCHAR2(30)',
 			'INCLUDE_OR_EXCLUDE','CHAR(2)',
 			'XF_TSP_TYP_NAME','VARCHAR2(30)',
@@ -2745,6 +2961,7 @@ BEGIN
 			'FK_BOT_NAME',NULL,
 			'FK_TYP_NAME',NULL,
 			'FK_REF_SEQUENCE','''0''',
+			'FK_REF_BOT_NAME',NULL,
 			'FK_REF_TYP_NAME',NULL,
 			'INCLUDE_OR_EXCLUDE','''IN''',
 			'XF_TSP_TYP_NAME',NULL,
@@ -2779,6 +2996,7 @@ BEGIN
 		PRIMARY KEY (
 			fk_typ_name,
 			fk_ref_sequence,
+			fk_ref_bot_name,
 			fk_ref_typ_name,
 			xf_tsp_typ_name,
 			xf_tsp_tsg_code,
@@ -2786,14 +3004,15 @@ BEGIN
 	DBMS_OUTPUT.PUT_LINE('Primary Key T_RESTRICTION_TYPE_SPEC_REF.RTR_PK created');
 	EXECUTE IMMEDIATE
 	'ALTER TABLE t_restriction_type_spec_ref ADD CONSTRAINT rtr_ref_fk
-		FOREIGN KEY (fk_typ_name, fk_ref_sequence, fk_ref_typ_name)
-		REFERENCES t_reference (fk_typ_name, sequence, xk_typ_name)
+		FOREIGN KEY (fk_typ_name, fk_ref_sequence, fk_ref_bot_name, fk_ref_typ_name)
+		REFERENCES t_reference (fk_typ_name, sequence, xk_bot_name, xk_typ_name)
 		ON DELETE CASCADE';
 	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_RESTRICTION_TYPE_SPEC_REF' AND column_name NOT IN (
 							'CUBE_ID',
 							'FK_BOT_NAME',
 							'FK_TYP_NAME',
 							'FK_REF_SEQUENCE',
+							'FK_REF_BOT_NAME',
 							'FK_REF_TYP_NAME',
 							'INCLUDE_OR_EXCLUDE',
 							'XF_TSP_TYP_NAME',
@@ -2816,6 +3035,7 @@ BEGIN
 			'FK_BOT_NAME','VARCHAR2(30)',
 			'FK_TYP_NAME','VARCHAR2(30)',
 			'FK_REF_SEQUENCE','NUMBER(1)',
+			'FK_REF_BOT_NAME','VARCHAR2(30)',
 			'FK_REF_TYP_NAME','VARCHAR2(30)',
 			'INCLUDE_OR_EXCLUDE','CHAR(2)',
 			'XF_TSP_TYP_NAME','VARCHAR2(30)',
@@ -2826,6 +3046,7 @@ BEGIN
 			'FK_BOT_NAME',NULL,
 			'FK_TYP_NAME',NULL,
 			'FK_REF_SEQUENCE','''0''',
+			'FK_REF_BOT_NAME',NULL,
 			'FK_REF_TYP_NAME',NULL,
 			'INCLUDE_OR_EXCLUDE','''IN''',
 			'XF_TSP_TYP_NAME',NULL,
@@ -2860,6 +3081,7 @@ BEGIN
 		PRIMARY KEY (
 			fk_typ_name,
 			fk_ref_sequence,
+			fk_ref_bot_name,
 			fk_ref_typ_name,
 			xf_tsp_typ_name,
 			xf_tsp_tsg_code,
@@ -2867,14 +3089,15 @@ BEGIN
 	DBMS_OUTPUT.PUT_LINE('Primary Key T_RESTRICTION_TARGET_TYPE_SPEC.RTS_PK created');
 	EXECUTE IMMEDIATE
 	'ALTER TABLE t_restriction_target_type_spec ADD CONSTRAINT rts_ref_fk
-		FOREIGN KEY (fk_typ_name, fk_ref_sequence, fk_ref_typ_name)
-		REFERENCES t_reference (fk_typ_name, sequence, xk_typ_name)
+		FOREIGN KEY (fk_typ_name, fk_ref_sequence, fk_ref_bot_name, fk_ref_typ_name)
+		REFERENCES t_reference (fk_typ_name, sequence, xk_bot_name, xk_typ_name)
 		ON DELETE CASCADE';
 	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_RESTRICTION_TARGET_TYPE_SPEC' AND column_name NOT IN (
 							'CUBE_ID',
 							'FK_BOT_NAME',
 							'FK_TYP_NAME',
 							'FK_REF_SEQUENCE',
+							'FK_REF_BOT_NAME',
 							'FK_REF_TYP_NAME',
 							'INCLUDE_OR_EXCLUDE',
 							'XF_TSP_TYP_NAME',
@@ -3067,175 +3290,6 @@ BEGIN
 		EXECUTE IMMEDIATE
 		'ALTER TABLE t_json_path DROP COLUMN ' || r_field.column_name;
 		DBMS_OUTPUT.PUT_LINE('Field T_JSON_PATH.' || UPPER(r_field.column_name) || ' dropped');
-	END LOOP;
-END;
-/
-BEGIN
-	DBMS_OUTPUT.PUT_LINE('Maintain table T_TYPE_SPECIALISATION_GROUP');
-	FOR r_field IN (SELECT column_name,
-		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
-		data_default old_default_value,
-  		DECODE(column_name,
-			'CUBE_ID','VARCHAR2(16)',
-			'CUBE_SEQUENCE','NUMBER(8)',
-			'CUBE_LEVEL','NUMBER(8)',
-			'FK_BOT_NAME','VARCHAR2(30)',
-			'FK_TYP_NAME','VARCHAR2(30)',
-			'FK_TSG_CODE','VARCHAR2(16)',
-			'CODE','VARCHAR2(16)',
-			'NAME','VARCHAR2(30)',
-			'PRIMARY_KEY','CHAR(1)',
-			'XF_ATB_TYP_NAME','VARCHAR2(30)',
-			'XK_ATB_NAME','VARCHAR2(30)',NULL) new_domain,
-		DECODE(column_name,
-			'CUBE_ID',NULL,
-			'CUBE_SEQUENCE',NULL,
-			'CUBE_LEVEL','''1''',
-			'FK_BOT_NAME',NULL,
-			'FK_TYP_NAME',NULL,
-			'FK_TSG_CODE',NULL,
-			'CODE',NULL,
-			'NAME',NULL,
-			'PRIMARY_KEY','''N''',
-			'XF_ATB_TYP_NAME',NULL,
-			'XK_ATB_NAME',NULL,NULL) new_default_value
-  		FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_TYPE_SPECIALISATION_GROUP')
-	LOOP
-		IF r_field.old_domain <> r_field.new_domain THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_type_specialisation_group RENAME COLUMN ' || r_field.column_name || ' TO old#domain#field';
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_type_specialisation_group ADD ' || r_field.column_name || ' ' || r_field.new_domain;
- 			IF r_field.new_domain = 'VARCHAR2' THEN  
-				EXECUTE IMMEDIATE
-				'UPDATE t_type_specialisation_group SET ' || r_field.column_name || '= TRIM(old#domain#field)';
-			ELSE
-				EXECUTE IMMEDIATE
-				'UPDATE t_type_specialisation_group SET ' || r_field.column_name || '= old#domain#field';
-			END IF;
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_type_specialisation_group DROP COLUMN old#domain#field';
-			DBMS_OUTPUT.PUT_LINE('Field T_TYPE_SPECIALISATION_GROUP.' || UPPER(r_field.column_name) || ' converted from ' || r_field.old_domain || ' to ' || r_field.new_domain);
-		END IF;
-		IF NOT((r_field.old_default_value IS NULL AND r_field.new_default_value IS NULL) OR r_field.old_default_value = r_field.new_default_value) THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_type_specialisation_group MODIFY (' || r_field.column_name || ' DEFAULT ' || NVL(r_field.new_default_value,'NULL') || ')';
-			DBMS_OUTPUT.PUT_LINE('Field T_TYPE_SPECIALISATION_GROUP.' || UPPER(r_field.column_name) || ' default value set to ' || NVL(r_field.new_default_value,'NULL'));
-		END IF;
-	END LOOP;
-	EXECUTE IMMEDIATE
-	'ALTER TABLE t_type_specialisation_group ADD CONSTRAINT tsg_pk
-		PRIMARY KEY (
-			fk_typ_name,
-			code )';
-	DBMS_OUTPUT.PUT_LINE('Primary Key T_TYPE_SPECIALISATION_GROUP.TSG_PK created');
-	EXECUTE IMMEDIATE
-	'ALTER TABLE t_type_specialisation_group ADD CONSTRAINT tsg_typ_fk
-		FOREIGN KEY (fk_typ_name)
-		REFERENCES t_type (name)
-		ON DELETE CASCADE';
-	EXECUTE IMMEDIATE
-	'ALTER TABLE t_type_specialisation_group ADD CONSTRAINT tsg_tsg_fk
-		FOREIGN KEY (fk_typ_name, fk_tsg_code)
-		REFERENCES t_type_specialisation_group (fk_typ_name, code)
-		ON DELETE CASCADE';
-	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_TYPE_SPECIALISATION_GROUP' AND column_name NOT IN (
-							'CUBE_ID',
-							'CUBE_SEQUENCE',
-							'CUBE_LEVEL',
-							'FK_BOT_NAME',
-							'FK_TYP_NAME',
-							'FK_TSG_CODE',
-							'CODE',
-							'NAME',
-							'PRIMARY_KEY',
-							'XF_ATB_TYP_NAME',
-							'XK_ATB_NAME'))
-	LOOP
-		EXECUTE IMMEDIATE
-		'ALTER TABLE t_type_specialisation_group DROP COLUMN ' || r_field.column_name;
-		DBMS_OUTPUT.PUT_LINE('Field T_TYPE_SPECIALISATION_GROUP.' || UPPER(r_field.column_name) || ' dropped');
-	END LOOP;
-END;
-/
-BEGIN
-	DBMS_OUTPUT.PUT_LINE('Maintain table T_TYPE_SPECIALISATION');
-	FOR r_field IN (SELECT column_name,
-		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
-		data_default old_default_value,
-  		DECODE(column_name,
-			'CUBE_ID','VARCHAR2(16)',
-			'CUBE_SEQUENCE','NUMBER(8)',
-			'FK_BOT_NAME','VARCHAR2(30)',
-			'FK_TYP_NAME','VARCHAR2(30)',
-			'FK_TSG_CODE','VARCHAR2(16)',
-			'CODE','VARCHAR2(16)',
-			'NAME','VARCHAR2(30)',
-			'XF_TSP_TYP_NAME','VARCHAR2(30)',
-			'XF_TSP_TSG_CODE','VARCHAR2(16)',
-			'XK_TSP_CODE','VARCHAR2(16)',NULL) new_domain,
-		DECODE(column_name,
-			'CUBE_ID',NULL,
-			'CUBE_SEQUENCE',NULL,
-			'FK_BOT_NAME',NULL,
-			'FK_TYP_NAME',NULL,
-			'FK_TSG_CODE',NULL,
-			'CODE',NULL,
-			'NAME',NULL,
-			'XF_TSP_TYP_NAME',NULL,
-			'XF_TSP_TSG_CODE',NULL,
-			'XK_TSP_CODE',NULL,NULL) new_default_value
-  		FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_TYPE_SPECIALISATION')
-	LOOP
-		IF r_field.old_domain <> r_field.new_domain THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_type_specialisation RENAME COLUMN ' || r_field.column_name || ' TO old#domain#field';
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_type_specialisation ADD ' || r_field.column_name || ' ' || r_field.new_domain;
- 			IF r_field.new_domain = 'VARCHAR2' THEN  
-				EXECUTE IMMEDIATE
-				'UPDATE t_type_specialisation SET ' || r_field.column_name || '= TRIM(old#domain#field)';
-			ELSE
-				EXECUTE IMMEDIATE
-				'UPDATE t_type_specialisation SET ' || r_field.column_name || '= old#domain#field';
-			END IF;
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_type_specialisation DROP COLUMN old#domain#field';
-			DBMS_OUTPUT.PUT_LINE('Field T_TYPE_SPECIALISATION.' || UPPER(r_field.column_name) || ' converted from ' || r_field.old_domain || ' to ' || r_field.new_domain);
-		END IF;
-		IF NOT((r_field.old_default_value IS NULL AND r_field.new_default_value IS NULL) OR r_field.old_default_value = r_field.new_default_value) THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_type_specialisation MODIFY (' || r_field.column_name || ' DEFAULT ' || NVL(r_field.new_default_value,'NULL') || ')';
-			DBMS_OUTPUT.PUT_LINE('Field T_TYPE_SPECIALISATION.' || UPPER(r_field.column_name) || ' default value set to ' || NVL(r_field.new_default_value,'NULL'));
-		END IF;
-	END LOOP;
-	EXECUTE IMMEDIATE
-	'ALTER TABLE t_type_specialisation ADD CONSTRAINT tsp_pk
-		PRIMARY KEY (
-			fk_typ_name,
-			fk_tsg_code,
-			code )';
-	DBMS_OUTPUT.PUT_LINE('Primary Key T_TYPE_SPECIALISATION.TSP_PK created');
-	EXECUTE IMMEDIATE
-	'ALTER TABLE t_type_specialisation ADD CONSTRAINT tsp_tsg_fk
-		FOREIGN KEY (fk_typ_name, fk_tsg_code)
-		REFERENCES t_type_specialisation_group (fk_typ_name, code)
-		ON DELETE CASCADE';
-	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_TYPE_SPECIALISATION' AND column_name NOT IN (
-							'CUBE_ID',
-							'CUBE_SEQUENCE',
-							'FK_BOT_NAME',
-							'FK_TYP_NAME',
-							'FK_TSG_CODE',
-							'CODE',
-							'NAME',
-							'XF_TSP_TYP_NAME',
-							'XF_TSP_TSG_CODE',
-							'XK_TSP_CODE'))
-	LOOP
-		EXECUTE IMMEDIATE
-		'ALTER TABLE t_type_specialisation DROP COLUMN ' || r_field.column_name;
-		DBMS_OUTPUT.PUT_LINE('Field T_TYPE_SPECIALISATION.' || UPPER(r_field.column_name) || ' dropped');
 	END LOOP;
 END;
 /

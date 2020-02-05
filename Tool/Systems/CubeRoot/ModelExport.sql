@@ -79,6 +79,95 @@ DECLARE
 	END;
 
 
+	PROCEDURE report_tsp (p_tsg IN t_type_specialisation_group%ROWTYPE) IS
+	BEGIN
+		FOR r_tsp IN (
+			SELECT *				
+			FROM t_type_specialisation
+			WHERE fk_bot_name = p_tsg.fk_bot_name
+			  AND fk_typ_name = p_tsg.fk_typ_name
+			  AND fk_tsg_code = p_tsg.code
+			ORDER BY cube_sequence )
+		LOOP
+			DBMS_OUTPUT.PUT_LINE (ftabs || '+TYPE_SPECIALISATION[' || r_tsp.cube_id || ']:' || fenperc(r_tsp.code) || '|' || fenperc(r_tsp.name) || ';');
+				l_level := l_level + 1;
+				BEGIN
+					SELECT cube_id INTO l_cube_id FROM t_type_specialisation
+					WHERE fk_typ_name = r_tsp.xf_tsp_typ_name
+					  AND fk_tsg_code = r_tsp.xf_tsp_tsg_code
+					  AND code = r_tsp.xk_tsp_code;
+
+					DBMS_OUTPUT.PUT_LINE (ftabs || '>TYPE_SPECIALISATION:' || l_cube_id || ';');
+				EXCEPTION
+					WHEN NO_DATA_FOUND THEN
+						NULL; 
+				END;
+				l_level := l_level - 1;
+			DBMS_OUTPUT.PUT_LINE (ftabs || '-TYPE_SPECIALISATION:' || r_tsp.code || ';');
+		END LOOP;
+	END;
+
+
+	PROCEDURE report_tsg_recursive (p_tsg IN t_type_specialisation_group%ROWTYPE) IS
+	BEGIN
+		FOR r_tsg IN (
+			SELECT *				
+			FROM t_type_specialisation_group
+			WHERE fk_bot_name = p_tsg.fk_bot_name
+			  AND fk_typ_name = p_tsg.fk_typ_name
+			  AND fk_tsg_code = p_tsg.code
+			ORDER BY cube_sequence )
+		LOOP
+			DBMS_OUTPUT.PUT_LINE (ftabs || '+TYPE_SPECIALISATION_GROUP[' || r_tsg.cube_id || ']:' || fenperc(r_tsg.code) || '|' || fenperc(r_tsg.name) || '|' || fenperc(r_tsg.primary_key) || ';');
+				l_level := l_level + 1;
+				report_tsp (r_tsg);
+				report_tsg_recursive (r_tsg);
+				BEGIN
+					SELECT cube_id INTO l_cube_id FROM t_attribute
+					WHERE fk_typ_name = r_tsg.xf_atb_typ_name
+					  AND name = r_tsg.xk_atb_name;
+
+					DBMS_OUTPUT.PUT_LINE (ftabs || '>ATTRIBUTE:' || l_cube_id || ';');
+				EXCEPTION
+					WHEN NO_DATA_FOUND THEN
+						NULL; 
+				END;
+				l_level := l_level - 1;
+			DBMS_OUTPUT.PUT_LINE (ftabs || '-TYPE_SPECIALISATION_GROUP:' || r_tsg.code || ';');
+		END LOOP;
+	END;
+
+
+	PROCEDURE report_tsg (p_typ IN t_type%ROWTYPE) IS
+	BEGIN
+		FOR r_tsg IN (
+			SELECT *				
+			FROM t_type_specialisation_group
+			WHERE fk_bot_name = p_typ.fk_bot_name
+			  AND fk_typ_name = p_typ.name
+			  AND fk_tsg_code IS NULL
+			ORDER BY cube_sequence )
+		LOOP
+			DBMS_OUTPUT.PUT_LINE (ftabs || '+TYPE_SPECIALISATION_GROUP[' || r_tsg.cube_id || ']:' || fenperc(r_tsg.code) || '|' || fenperc(r_tsg.name) || '|' || fenperc(r_tsg.primary_key) || ';');
+				l_level := l_level + 1;
+				report_tsp (r_tsg);
+				report_tsg_recursive (r_tsg);
+				BEGIN
+					SELECT cube_id INTO l_cube_id FROM t_attribute
+					WHERE fk_typ_name = r_tsg.xf_atb_typ_name
+					  AND name = r_tsg.xk_atb_name;
+
+					DBMS_OUTPUT.PUT_LINE (ftabs || '>ATTRIBUTE:' || l_cube_id || ';');
+				EXCEPTION
+					WHEN NO_DATA_FOUND THEN
+						NULL; 
+				END;
+				l_level := l_level - 1;
+			DBMS_OUTPUT.PUT_LINE (ftabs || '-TYPE_SPECIALISATION_GROUP:' || r_tsg.code || ';');
+		END LOOP;
+	END;
+
+
 	PROCEDURE report_der (p_atb IN t_attribute%ROWTYPE) IS
 	BEGIN
 		FOR r_der IN (
@@ -198,6 +287,7 @@ DECLARE
 			WHERE fk_bot_name = p_ref.fk_bot_name
 			  AND fk_typ_name = p_ref.fk_typ_name
 			  AND fk_ref_sequence = p_ref.sequence
+			  AND fk_ref_bot_name = p_ref.xk_bot_name
 			  AND fk_ref_typ_name = p_ref.xk_typ_name
 			ORDER BY cube_id )
 		LOOP
@@ -216,8 +306,9 @@ DECLARE
 			WHERE fk_bot_name = p_ref.fk_bot_name
 			  AND fk_typ_name = p_ref.fk_typ_name
 			  AND fk_ref_sequence = p_ref.sequence
+			  AND fk_ref_bot_name = p_ref.xk_bot_name
 			  AND fk_ref_typ_name = p_ref.xk_typ_name
-			ORDER BY fk_typ_name, fk_ref_sequence, fk_ref_typ_name, xf_tsp_typ_name, xf_tsp_tsg_code, xk_tsp_code )
+			ORDER BY fk_typ_name, fk_ref_sequence, fk_ref_bot_name, fk_ref_typ_name, xf_tsp_typ_name, xf_tsp_tsg_code, xk_tsp_code )
 		LOOP
 			DBMS_OUTPUT.PUT_LINE (ftabs || '+RESTRICTION_TYPE_SPEC_REF[' || r_rtr.cube_id || ']:' || fenperc(r_rtr.include_or_exclude) || ';');
 				l_level := l_level + 1;
@@ -246,6 +337,7 @@ DECLARE
 			WHERE fk_bot_name = p_ref.fk_bot_name
 			  AND fk_typ_name = p_ref.fk_typ_name
 			  AND fk_ref_sequence = p_ref.sequence
+			  AND fk_ref_bot_name = p_ref.xk_bot_name
 			  AND fk_ref_typ_name = p_ref.xk_typ_name
 			ORDER BY cube_id )
 		LOOP
@@ -277,11 +369,20 @@ DECLARE
 			  AND fk_typ_name = p_typ.name
 			ORDER BY cube_sequence )
 		LOOP
-			DBMS_OUTPUT.PUT_LINE (ftabs || '+REFERENCE[' || r_ref.cube_id || ']:' || fenperc(r_ref.name) || '|' || fenperc(r_ref.primary_key) || '|' || fenperc(r_ref.code_display_key) || '|' || fenperc(r_ref.sequence) || '|' || fenperc(r_ref.scope) || '|' || fenperc(r_ref.unchangeable) || '|' || fenperc(r_ref.within_scope_extension) || ';');
+			DBMS_OUTPUT.PUT_LINE (ftabs || '+REFERENCE[' || r_ref.cube_id || ']:' || fenperc(r_ref.name) || '|' || fenperc(r_ref.primary_key) || '|' || fenperc(r_ref.code_display_key) || '|' || fenperc(r_ref.sequence) || '|' || fenperc(r_ref.scope) || '|' || fenperc(r_ref.unchangeable) || '|' || fenperc(r_ref.within_scope_extension) || '|' || fenperc(r_ref.cube_tsg_int_ext) || ';');
 				l_level := l_level + 1;
 				report_dcr (r_ref);
 				report_rtr (r_ref);
 				report_rts (r_ref);
+				BEGIN
+					SELECT cube_id INTO l_cube_id FROM t_business_object_type
+					WHERE name = r_ref.xk_bot_name;
+
+					DBMS_OUTPUT.PUT_LINE (ftabs || '>BUSINESS_OBJECT_TYPE:' || l_cube_id || ';');
+				EXCEPTION
+					WHEN NO_DATA_FOUND THEN
+						NULL; 
+				END;
 				BEGIN
 					SELECT cube_id INTO l_cube_id FROM t_type
 					WHERE name = r_ref.xk_typ_name;
@@ -418,95 +519,6 @@ DECLARE
 	END;
 
 
-	PROCEDURE report_tsp (p_tsg IN t_type_specialisation_group%ROWTYPE) IS
-	BEGIN
-		FOR r_tsp IN (
-			SELECT *				
-			FROM t_type_specialisation
-			WHERE fk_bot_name = p_tsg.fk_bot_name
-			  AND fk_typ_name = p_tsg.fk_typ_name
-			  AND fk_tsg_code = p_tsg.code
-			ORDER BY cube_sequence )
-		LOOP
-			DBMS_OUTPUT.PUT_LINE (ftabs || '+TYPE_SPECIALISATION[' || r_tsp.cube_id || ']:' || fenperc(r_tsp.code) || '|' || fenperc(r_tsp.name) || ';');
-				l_level := l_level + 1;
-				BEGIN
-					SELECT cube_id INTO l_cube_id FROM t_type_specialisation
-					WHERE fk_typ_name = r_tsp.xf_tsp_typ_name
-					  AND fk_tsg_code = r_tsp.xf_tsp_tsg_code
-					  AND code = r_tsp.xk_tsp_code;
-
-					DBMS_OUTPUT.PUT_LINE (ftabs || '>TYPE_SPECIALISATION:' || l_cube_id || ';');
-				EXCEPTION
-					WHEN NO_DATA_FOUND THEN
-						NULL; 
-				END;
-				l_level := l_level - 1;
-			DBMS_OUTPUT.PUT_LINE (ftabs || '-TYPE_SPECIALISATION:' || r_tsp.code || ';');
-		END LOOP;
-	END;
-
-
-	PROCEDURE report_tsg_recursive (p_tsg IN t_type_specialisation_group%ROWTYPE) IS
-	BEGIN
-		FOR r_tsg IN (
-			SELECT *				
-			FROM t_type_specialisation_group
-			WHERE fk_bot_name = p_tsg.fk_bot_name
-			  AND fk_typ_name = p_tsg.fk_typ_name
-			  AND fk_tsg_code = p_tsg.code
-			ORDER BY cube_sequence )
-		LOOP
-			DBMS_OUTPUT.PUT_LINE (ftabs || '+TYPE_SPECIALISATION_GROUP[' || r_tsg.cube_id || ']:' || fenperc(r_tsg.code) || '|' || fenperc(r_tsg.name) || '|' || fenperc(r_tsg.primary_key) || ';');
-				l_level := l_level + 1;
-				report_tsp (r_tsg);
-				report_tsg_recursive (r_tsg);
-				BEGIN
-					SELECT cube_id INTO l_cube_id FROM t_attribute
-					WHERE fk_typ_name = r_tsg.xf_atb_typ_name
-					  AND name = r_tsg.xk_atb_name;
-
-					DBMS_OUTPUT.PUT_LINE (ftabs || '>ATTRIBUTE:' || l_cube_id || ';');
-				EXCEPTION
-					WHEN NO_DATA_FOUND THEN
-						NULL; 
-				END;
-				l_level := l_level - 1;
-			DBMS_OUTPUT.PUT_LINE (ftabs || '-TYPE_SPECIALISATION_GROUP:' || r_tsg.code || ';');
-		END LOOP;
-	END;
-
-
-	PROCEDURE report_tsg (p_typ IN t_type%ROWTYPE) IS
-	BEGIN
-		FOR r_tsg IN (
-			SELECT *				
-			FROM t_type_specialisation_group
-			WHERE fk_bot_name = p_typ.fk_bot_name
-			  AND fk_typ_name = p_typ.name
-			  AND fk_tsg_code IS NULL
-			ORDER BY cube_sequence )
-		LOOP
-			DBMS_OUTPUT.PUT_LINE (ftabs || '+TYPE_SPECIALISATION_GROUP[' || r_tsg.cube_id || ']:' || fenperc(r_tsg.code) || '|' || fenperc(r_tsg.name) || '|' || fenperc(r_tsg.primary_key) || ';');
-				l_level := l_level + 1;
-				report_tsp (r_tsg);
-				report_tsg_recursive (r_tsg);
-				BEGIN
-					SELECT cube_id INTO l_cube_id FROM t_attribute
-					WHERE fk_typ_name = r_tsg.xf_atb_typ_name
-					  AND name = r_tsg.xk_atb_name;
-
-					DBMS_OUTPUT.PUT_LINE (ftabs || '>ATTRIBUTE:' || l_cube_id || ';');
-				EXCEPTION
-					WHEN NO_DATA_FOUND THEN
-						NULL; 
-				END;
-				l_level := l_level - 1;
-			DBMS_OUTPUT.PUT_LINE (ftabs || '-TYPE_SPECIALISATION_GROUP:' || r_tsg.code || ';');
-		END LOOP;
-	END;
-
-
 	PROCEDURE report_dct (p_typ IN t_type%ROWTYPE) IS
 	BEGIN
 		FOR r_dct IN (
@@ -534,11 +546,11 @@ DECLARE
 		LOOP
 			DBMS_OUTPUT.PUT_LINE (ftabs || '+TYPE[' || r_typ.cube_id || ']:' || fenperc(r_typ.name) || '|' || fenperc(r_typ.code) || '|' || fenperc(r_typ.flag_partial_key) || '|' || fenperc(r_typ.flag_recursive) || '|' || fenperc(r_typ.recursive_cardinality) || '|' || fenperc(r_typ.cardinality) || '|' || fenperc(r_typ.sort_order) || '|' || fenperc(r_typ.icon) || '|' || fenperc(r_typ.transferable) || ';');
 				l_level := l_level + 1;
+				report_tsg (r_typ);
 				report_atb (r_typ);
 				report_ref (r_typ);
 				report_rtt (r_typ);
 				report_jsn (r_typ);
-				report_tsg (r_typ);
 				report_dct (r_typ);
 				report_typ_recursive (r_typ);
 				l_level := l_level - 1;
@@ -558,11 +570,11 @@ DECLARE
 		LOOP
 			DBMS_OUTPUT.PUT_LINE (ftabs || '+TYPE[' || r_typ.cube_id || ']:' || fenperc(r_typ.name) || '|' || fenperc(r_typ.code) || '|' || fenperc(r_typ.flag_partial_key) || '|' || fenperc(r_typ.flag_recursive) || '|' || fenperc(r_typ.recursive_cardinality) || '|' || fenperc(r_typ.cardinality) || '|' || fenperc(r_typ.sort_order) || '|' || fenperc(r_typ.icon) || '|' || fenperc(r_typ.transferable) || ';');
 				l_level := l_level + 1;
+				report_tsg (r_typ);
 				report_atb (r_typ);
 				report_ref (r_typ);
 				report_rtt (r_typ);
 				report_jsn (r_typ);
-				report_tsg (r_typ);
 				report_dct (r_typ);
 				report_typ_recursive (r_typ);
 				l_level := l_level - 1;
@@ -665,6 +677,17 @@ BEGIN
 	DBMS_OUTPUT.PUT_LINE ('			=PROPERTY:6|SortOrder| Values: N(No sort), K(Key), P(Position);');
 	DBMS_OUTPUT.PUT_LINE ('			=PROPERTY:7|Icon|;');
 	DBMS_OUTPUT.PUT_LINE ('			=PROPERTY:8|Transferable|'||REPLACE('Indication%20that%20in%20case%20of%20a%20recursive%20type%20the%20type%20may%20moved%20to%20an%20other%20parent%20in%20the%20hierarchy.','%20',' ')||' Values: Y(Yes), N(No);');
+	DBMS_OUTPUT.PUT_LINE ('			+META_TYPE:TYPE_SPECIALISATION_GROUP|'||REPLACE('A%20group%20of%20classifications%20of%20the%20type.','%20',' ')||';');
+	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:0|Code|;');
+	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:1|Name|;');
+	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:2|PrimaryKey|'||REPLACE('Indication%20that%20the%20type%20specification%20group%20is%20part%20of%20the%20unique%20identification%20of%20the%20type.','%20',' ')||' Values: Y(Yes), N(No);');
+	DBMS_OUTPUT.PUT_LINE ('				=ASSOCIATION:ATTRIBUTE|IsLocatedAfter|ATTRIBUTE|'||REPLACE('Defines%20the%20location%20of%20the%20classifying%20attribute%20within%20the%20type.','%20',' ')||';');
+	DBMS_OUTPUT.PUT_LINE ('				+META_TYPE:TYPE_SPECIALISATION|'||REPLACE('A%20classification%20of%20the%20type.','%20',' ')||';');
+	DBMS_OUTPUT.PUT_LINE ('					=PROPERTY:0|Code|;');
+	DBMS_OUTPUT.PUT_LINE ('					=PROPERTY:1|Name|;');
+	DBMS_OUTPUT.PUT_LINE ('					=ASSOCIATION:TYPE_SPECIALISATION|Specialise|TYPE_SPECIALISATION|;');
+	DBMS_OUTPUT.PUT_LINE ('				-META_TYPE:TYPE_SPECIALISATION;');
+	DBMS_OUTPUT.PUT_LINE ('			-META_TYPE:TYPE_SPECIALISATION_GROUP;');
 	DBMS_OUTPUT.PUT_LINE ('			+META_TYPE:ATTRIBUTE|;');
 	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:0|Name|'||REPLACE('Unique%20identifier%20of%20the%20attribute.','%20',' ')||';');
 	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:1|PrimaryKey|'||REPLACE('Indication%20that%20attribute%20is%20part%20of%20the%20unique%20identification%20of%20the%20type.','%20',' ')||' Values: Y(Yes), N(No);');
@@ -696,8 +719,10 @@ BEGIN
 	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:4|Scope|'||REPLACE('In%20case%20of%20a%20recursive%20target%2C%20the%20definition%20of%20the%20collection%20of%20the%20types%20to%20select.','%20',' ')||' Values: ALL(All), ENC(Encapsulated), PRA(Parents all), PR1(Parents first level), CHA(Children all), CH1(Children first level);');
 	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:5|Unchangeable|'||REPLACE('Indication%20that%20after%20the%20creation%20of%20the%20type%20the%20reference%20can%20not%20be%20changed.%20So%20in%20case%20of%20a%20recursive%20reference%20the%20indication%20too%20that%20the%20relation%20is%20used%20to%20select%20the%20parents%20or%20children%20in%20the%20hierarchy.','%20',' ')||' Values: Y(Yes), N(No);');
 	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:6|WithinScopeExtension| Values: PAR(Recursive parent), REF(Referenced type);');
-	DBMS_OUTPUT.PUT_LINE ('				=ASSOCIATION:REFERENCE_TYPE|Refer|TYPE|'||REPLACE('The%20target%20entity%20type%20of%20the%20reference.','%20',' ')||';');
-	DBMS_OUTPUT.PUT_LINE ('				=ASSOCIATION:REFERENCE_TYPE_WITHIN_SCOPE_OF|WithinScopeOf|TYPE|'||REPLACE('In%20case%20of%20non%20recursive%20target%20or%20a%20scope%20all%20recursive%20target%20the%20common%20type%20for%20the%20selection.','%20',' ')||';');
+	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:7|CubeTsgIntExt| Values: INT(INTERNAL), EXT(EXTERNAL);');
+	DBMS_OUTPUT.PUT_LINE ('				=ASSOCIATION:BUSINESS_OBJECT_TYPE|Refer|BUSINESS_OBJECT_TYPE|;');
+	DBMS_OUTPUT.PUT_LINE ('				=ASSOCIATION:REFERENCE_TYPE|Refer|TYPE|;');
+	DBMS_OUTPUT.PUT_LINE ('				=ASSOCIATION:REFERENCE_TYPE_WITHIN_SCOPE_OF|WithinScopeOf|TYPE|;');
 	DBMS_OUTPUT.PUT_LINE ('				+META_TYPE:DESCRIPTION_REFERENCE|;');
 	DBMS_OUTPUT.PUT_LINE ('					=PROPERTY:0|Text|;');
 	DBMS_OUTPUT.PUT_LINE ('				-META_TYPE:DESCRIPTION_REFERENCE;');
@@ -722,17 +747,6 @@ BEGIN
 	DBMS_OUTPUT.PUT_LINE ('				=ASSOCIATION:ATTRIBUTE|Concerns|ATTRIBUTE|;');
 	DBMS_OUTPUT.PUT_LINE ('				=ASSOCIATION:JSON_PATH_TYPE|Concerns|TYPE|;');
 	DBMS_OUTPUT.PUT_LINE ('			-META_TYPE:JSON_PATH;');
-	DBMS_OUTPUT.PUT_LINE ('			+META_TYPE:TYPE_SPECIALISATION_GROUP|'||REPLACE('A%20group%20of%20classifications%20of%20the%20type.','%20',' ')||';');
-	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:0|Code|;');
-	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:1|Name|;');
-	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:2|PrimaryKey|'||REPLACE('Indication%20that%20the%20type%20specification%20group%20is%20part%20of%20the%20unique%20identification%20of%20the%20type.','%20',' ')||' Values: Y(Yes), N(No);');
-	DBMS_OUTPUT.PUT_LINE ('				=ASSOCIATION:ATTRIBUTE|IsLocatedAfter|ATTRIBUTE|'||REPLACE('Defines%20the%20location%20of%20the%20classifying%20attribute%20within%20the%20type.','%20',' ')||';');
-	DBMS_OUTPUT.PUT_LINE ('				+META_TYPE:TYPE_SPECIALISATION|'||REPLACE('A%20classification%20of%20the%20type.','%20',' ')||';');
-	DBMS_OUTPUT.PUT_LINE ('					=PROPERTY:0|Code|;');
-	DBMS_OUTPUT.PUT_LINE ('					=PROPERTY:1|Name|;');
-	DBMS_OUTPUT.PUT_LINE ('					=ASSOCIATION:TYPE_SPECIALISATION|Specialise|TYPE_SPECIALISATION|;');
-	DBMS_OUTPUT.PUT_LINE ('				-META_TYPE:TYPE_SPECIALISATION;');
-	DBMS_OUTPUT.PUT_LINE ('			-META_TYPE:TYPE_SPECIALISATION_GROUP;');
 	DBMS_OUTPUT.PUT_LINE ('			+META_TYPE:DESCRIPTION_TYPE|'||REPLACE('Test%0D%0AMet%20LF%20en%20%22%20en%20%27%20%20en%20%25%20%20%20%20%25%0D%0AEInde','%20',' ')||';');
 	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:0|Text|;');
 	DBMS_OUTPUT.PUT_LINE ('			-META_TYPE:DESCRIPTION_TYPE;');

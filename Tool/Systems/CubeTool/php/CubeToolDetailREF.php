@@ -310,8 +310,18 @@ function StartSelect003(p_event) {
 	document.body._SelectLeft = p_event.clientX;
 	document.body._SelectTop = p_event.clientY;
 	document.body._ListBoxCode = 'Ref003';
+	var Parameters = {
+		Option: {
+			CubeUpOrDown:"U",
+			CubeXLevel:9999
+		},
+		Type: {
+			Name:document.getElementById("InputFkTypName").value
+		}
+	};
 	PerformTrans( {
-		Service: "GetTypListAll"
+		Service: "GetTypListRecursive",
+		Parameters
 	} );
 }
 

@@ -34,7 +34,6 @@ g_xmlhttp.onreadystatechange = function() {
 						document.getElementById("InputPrijs").value=l_json_values.Prijs;
 						document.getElementById("InputMakelaarNaam").value=l_json_values.MakelaarNaam;
 						document.getElementById("InputBedragBtw").value=l_json_values.BedragBtw;
-						document.getElementById("InputXkKlnNummer").value=l_json_values.XkKlnNummer;
 						ProcessTypeSpecialisation();
 						break;
 					case "CREATE_PRD":
@@ -60,7 +59,7 @@ g_xmlhttp.onreadystatechange = function() {
 									'TYP_PRD',
 									l_json_node_id,
 									'icons/produkt.bmp', 
-									document.getElementById("InputCubeTsgType").value.toLowerCase()+' '+document.getElementById("InputCubeTsgSoort").value.toLowerCase()+' '+document.getElementById("InputCubeTsgSoort1").value.toLowerCase()+' '+document.getElementById("InputCode").value.toLowerCase(),
+									'('+document.getElementById("InputCubeTsgType").value.toLowerCase()+')'+' ('+document.getElementById("InputCubeTsgSoort").value.toLowerCase()+')'+' ('+document.getElementById("InputCubeTsgSoort1").value.toLowerCase()+')'+' '+document.getElementById("InputCode").value.toLowerCase(),
 									'N',
 									l_position,
 									l_objNodePos);
@@ -70,7 +69,7 @@ g_xmlhttp.onreadystatechange = function() {
 					case "UPDATE_PRD":
 						var l_objNode = parent.document.getElementById(g_node_id);
 						if (l_objNode != null) {
-							l_objNode.children[1].lastChild.nodeValue = ' '+document.getElementById("InputCubeTsgType").value.toLowerCase()+' '+document.getElementById("InputCubeTsgSoort").value.toLowerCase()+' '+document.getElementById("InputCubeTsgSoort1").value.toLowerCase()+' '+document.getElementById("InputCode").value.toLowerCase();
+							l_objNode.children[1].lastChild.nodeValue = ' '+'('+document.getElementById("InputCubeTsgType").value.toLowerCase()+')'+' ('+document.getElementById("InputCubeTsgSoort").value.toLowerCase()+')'+' ('+document.getElementById("InputCubeTsgSoort1").value.toLowerCase()+')'+' '+document.getElementById("InputCode").value.toLowerCase();
 					}
 						break;
 					case "DELETE_PRD":
@@ -84,9 +83,6 @@ g_xmlhttp.onreadystatechange = function() {
 						if (l_objNode != null) {
 							l_objNode.parentNode.removeChild(l_objNode);
 						}
-						break;
-					case "LIST_KLN":
-						OpenListBox(l_json_array[i].Rows,'klant','Klant','Y');
 						break;
 					case "ERROR":
 						alert ('Server error:\n'+l_json_array[i].ErrorText);
@@ -142,8 +138,7 @@ function CreatePrd() {
 		Code: document.getElementById("InputCode").value,
 		Prijs: document.getElementById("InputPrijs").value,
 		MakelaarNaam: document.getElementById("InputMakelaarNaam").value,
-		BedragBtw: document.getElementById("InputBedragBtw").value,
-		XkKlnNummer: document.getElementById("InputXkKlnNummer").value
+		BedragBtw: document.getElementById("InputBedragBtw").value
 	};
 	PerformTrans( {
 		Service: "CreatePrd",
@@ -161,8 +156,7 @@ function UpdatePrd() {
 		Code: document.getElementById("InputCode").value,
 		Prijs: document.getElementById("InputPrijs").value,
 		MakelaarNaam: document.getElementById("InputMakelaarNaam").value,
-		BedragBtw: document.getElementById("InputBedragBtw").value,
-		XkKlnNummer: document.getElementById("InputXkKlnNummer").value
+		BedragBtw: document.getElementById("InputBedragBtw").value
 	};
 	PerformTrans( {
 		Service: "UpdatePrd",
@@ -185,34 +179,6 @@ function DeletePrd() {
 	} );
 }
 
-function UpdateForeignKey(p_obj) {
-	var l_values = p_obj.options[p_obj.selectedIndex].value;
-	if (l_values != '') {
-		var l_json_values = JSON.parse(l_values);
-	}
-	switch (document.body._ListBoxCode){
-	case "Ref001":
-		if (l_values == '') {
-			document.getElementById("InputXkKlnNummer").value = '';
-		} else {
-			document.getElementById("InputXkKlnNummer").value = l_json_values.Nummer;
-		}
-		break;
-	default:
-		alert ('Error Listbox: '+document.body._ListBoxCode);
-	}
-	CloseListBox();
-}
-
-function StartSelect001(p_event) {
-	document.body._SelectLeft = p_event.clientX;
-	document.body._SelectTop = p_event.clientY;
-	document.body._ListBoxCode = 'Ref001';
-	PerformTrans( {
-		Service: "GetKlnList"
-	} );
-}
-
 function ProcessTypeSpecialisation() {
 	if (document.getElementById("InputCubeTsgType").value != ' ' && document.getElementById("InputCubeTsgSoort").value != ' ' && document.getElementById("InputCubeTsgSoort1").value != ' ') {
 		document.getElementById("InputCubeTsgType").disabled=true;
@@ -221,9 +187,6 @@ function ProcessTypeSpecialisation() {
 		switch (document.getElementById("InputCubeTsgType").value) {
 		case "P":
 			document.getElementById("RowAtbBedragBtw").style.display="none";
-			break;
-		case "Z":
-			document.getElementById("RowRefKlant0").style.display="none";
 			break;
 		}
 		switch (document.getElementById("InputCubeTsgSoort").value) {
@@ -280,12 +243,6 @@ function ResetFieldCubeTsgSoort1(p_field_id) {
 <input id="InputMakelaarNaam" type="text" maxlength="40" style="width:100%;"></input></div></td></tr>
 <tr id="RowAtbBedragBtw"><td>BedragBtw</td><td><div style="max-width:9em;">
 <input id="InputBedragBtw" type="text" maxlength="9" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td height=6></td></tr><tr id="RowRefKlant0"><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/klant.bmp"/> Klant (IsVoor)</legend>
-<table style="width:100%;">
-<tr><td>Klant.Nummer</td><td style="width:100%;"><div style="max-width:8em;">
-<input id="InputXkKlnNummer" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td>
-<td><button id="RefSelect001" type="button" onclick="StartSelect001(event)">Select</button></td></tr>
-</table></fieldset></td></tr>
 <tr><td><br></td><td style="width:100%;"></td></tr>
 <tr><td/><td>
 <button id="ButtonCreate" type="button" onclick="CreatePrd()">Create</button>&nbsp;&nbsp;&nbsp;

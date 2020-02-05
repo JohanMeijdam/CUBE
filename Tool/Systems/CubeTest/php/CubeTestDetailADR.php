@@ -51,7 +51,7 @@ g_xmlhttp.onreadystatechange = function() {
 									'TYP_ADR',
 									l_json_node_id,
 									'icons/adres.bmp', 
-									document.getElementById("InputPostcodeCijfers").value.toLowerCase()+' '+document.getElementById("InputPostcodeLetters").value.toLowerCase()+' '+document.getElementById("InputCubeTsgTest").value.toLowerCase()+' '+document.getElementById("InputHuisnummer").value.toLowerCase(),
+									document.getElementById("InputPostcodeCijfers").value.toLowerCase()+' '+document.getElementById("InputPostcodeLetters").value.toLowerCase()+' ('+document.getElementById("InputCubeTsgTest").value.toLowerCase()+')'+' '+document.getElementById("InputHuisnummer").value.toLowerCase(),
 									'N',
 									l_position,
 									l_objNodePos);

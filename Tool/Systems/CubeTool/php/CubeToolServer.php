@@ -730,31 +730,6 @@ case 'DeleteBot':
 
 	break;
 
-case 'GetTypListAll':
-	echo '[';
-
-	$stid = oci_parse($conn, "BEGIN pkg_bot.get_typ_list_all (:p_cube_row); END;");
-	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'LIST_TYP';
-	$r = perform_db_request();
-	if (!$r) { 
-		echo ']';
-		return;
-	}
-	$ResponseObj->Rows = array();
-	while ($row = oci_fetch_assoc($curs)) {
-		$RowObj = new \stdClass();
-		$RowObj->Key = new \stdClass();
-		$RowObj->Key->Name = $row["NAME"];
-		$RowObj->Display = $row["NAME"].' ('.$row["CODE"].')';
-		$ResponseObj->Rows[] = $RowObj;
-	}
-	$ResponseText = json_encode($ResponseObj);
-	echo $ResponseText;
-	echo ']';
-
-	break;
-
 case 'GetTypForBotListAll':
 	echo '[';
 
@@ -795,6 +770,40 @@ case 'GetTypForTypListAll':
 	END;");
 	oci_bind_by_name($stid,":p_cube_scope_level",$RequestObj->Parameters->Option->CubeScopeLevel);
 	oci_bind_by_name($stid,":x_fk_typ_name",$RequestObj->Parameters->Ref->FkTypName);
+
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'LIST_TYP';
+	$r = perform_db_request();
+	if (!$r) { 
+		echo ']';
+		return;
+	}
+	$ResponseObj->Rows = array();
+	while ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Key = new \stdClass();
+		$RowObj->Key->Name = $row["NAME"];
+		$RowObj->Display = $row["NAME"].' ('.$row["CODE"].')';
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
+	break;
+
+case 'GetTypListRecursive':
+	echo '[';
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.get_typ_list_recursive (
+		:p_cube_row,
+		:p_cube_up_or_down,
+		:p_cube_x_level,
+		:p_name);
+	END;");
+	oci_bind_by_name($stid,":p_cube_up_or_down",$RequestObj->Parameters->Option->CubeUpOrDown);
+	oci_bind_by_name($stid,":p_cube_x_level",$RequestObj->Parameters->Option->CubeXLevel);
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'LIST_TYP';
