@@ -531,6 +531,8 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_api_url IN VARCHAR2);
 	PROCEDURE delete_bot (
 			p_name IN VARCHAR2);
+	PROCEDURE get_typ_list_all (
+			p_cube_row IN OUT c_cube_row);
 	PROCEDURE get_typ_for_bot_list_all (
 			p_cube_row IN OUT c_cube_row,
 			x_fk_bot_name IN VARCHAR2);
@@ -538,11 +540,6 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_cube_row IN OUT c_cube_row,
 			p_cube_scope_level IN NUMBER,
 			x_fk_typ_name IN VARCHAR2);
-	PROCEDURE get_typ_list_recursive (
-			p_cube_row IN OUT c_cube_row,
-			p_cube_up_or_down IN VARCHAR2,
-			p_cube_x_level IN NUMBER,
-			p_name IN VARCHAR2);
 	PROCEDURE get_typ (
 			p_cube_row IN OUT c_cube_row,
 			p_name IN VARCHAR2);
@@ -846,61 +843,52 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_cube_row IN OUT c_cube_row,
 			p_fk_typ_name IN VARCHAR2,
 			p_sequence IN NUMBER,
-			p_cube_tsg_int_ext IN VARCHAR2,
 			p_xk_bot_name IN VARCHAR2,
 			p_xk_typ_name IN VARCHAR2);
 	PROCEDURE get_ref_fkey (
 			p_cube_row IN OUT c_cube_row,
 			p_fk_typ_name IN VARCHAR2,
 			p_sequence IN NUMBER,
-			p_cube_tsg_int_ext IN VARCHAR2,
 			p_xk_bot_name IN VARCHAR2,
 			p_xk_typ_name IN VARCHAR2);
 	PROCEDURE get_ref_dcr_items (
 			p_cube_row IN OUT c_cube_row,
 			p_fk_typ_name IN VARCHAR2,
 			p_sequence IN NUMBER,
-			p_cube_tsg_int_ext IN VARCHAR2,
 			p_xk_bot_name IN VARCHAR2,
 			p_xk_typ_name IN VARCHAR2);
 	PROCEDURE get_ref_rtr_items (
 			p_cube_row IN OUT c_cube_row,
 			p_fk_typ_name IN VARCHAR2,
 			p_sequence IN NUMBER,
-			p_cube_tsg_int_ext IN VARCHAR2,
 			p_xk_bot_name IN VARCHAR2,
 			p_xk_typ_name IN VARCHAR2);
 	PROCEDURE get_ref_rts_items (
 			p_cube_row IN OUT c_cube_row,
 			p_fk_typ_name IN VARCHAR2,
 			p_sequence IN NUMBER,
-			p_cube_tsg_int_ext IN VARCHAR2,
 			p_xk_bot_name IN VARCHAR2,
 			p_xk_typ_name IN VARCHAR2);
 	PROCEDURE count_ref_dcr (
 			p_cube_row IN OUT c_cube_row,
 			p_fk_typ_name IN VARCHAR2,
 			p_sequence IN NUMBER,
-			p_cube_tsg_int_ext IN VARCHAR2,
 			p_xk_bot_name IN VARCHAR2,
 			p_xk_typ_name IN VARCHAR2);
 	PROCEDURE count_ref_rts (
 			p_cube_row IN OUT c_cube_row,
 			p_fk_typ_name IN VARCHAR2,
 			p_sequence IN NUMBER,
-			p_cube_tsg_int_ext IN VARCHAR2,
 			p_xk_bot_name IN VARCHAR2,
 			p_xk_typ_name IN VARCHAR2);
 	PROCEDURE move_ref (
 			p_cube_pos_action IN VARCHAR2,
 			p_fk_typ_name IN VARCHAR2,
 			p_sequence IN NUMBER,
-			p_cube_tsg_int_ext IN VARCHAR2,
 			p_xk_bot_name IN VARCHAR2,
 			p_xk_typ_name IN VARCHAR2,
 			x_fk_typ_name IN VARCHAR2,
 			x_sequence IN NUMBER,
-			x_cube_tsg_int_ext IN VARCHAR2,
 			x_xk_bot_name IN VARCHAR2,
 			x_xk_typ_name IN VARCHAR2);
 	PROCEDURE insert_ref (
@@ -920,7 +908,6 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_xk_typ_name_1 IN VARCHAR2,
 			x_fk_typ_name IN VARCHAR2,
 			x_sequence IN NUMBER,
-			x_cube_tsg_int_ext IN VARCHAR2,
 			x_xk_bot_name IN VARCHAR2,
 			x_xk_typ_name IN VARCHAR2);
 	PROCEDURE update_ref (
@@ -940,21 +927,18 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 	PROCEDURE delete_ref (
 			p_fk_typ_name IN VARCHAR2,
 			p_sequence IN NUMBER,
-			p_cube_tsg_int_ext IN VARCHAR2,
 			p_xk_bot_name IN VARCHAR2,
 			p_xk_typ_name IN VARCHAR2);
 	PROCEDURE get_dcr (
 			p_cube_row IN OUT c_cube_row,
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_ref_sequence IN NUMBER,
-			p_fk_ref_cube_tsg_int_ext IN VARCHAR2,
 			p_fk_ref_bot_name IN VARCHAR2,
 			p_fk_ref_typ_name IN VARCHAR2);
 	PROCEDURE insert_dcr (
 			p_fk_bot_name IN VARCHAR2,
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_ref_sequence IN NUMBER,
-			p_fk_ref_cube_tsg_int_ext IN VARCHAR2,
 			p_fk_ref_bot_name IN VARCHAR2,
 			p_fk_ref_typ_name IN VARCHAR2,
 			p_text IN VARCHAR2);
@@ -962,21 +946,18 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_fk_bot_name IN VARCHAR2,
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_ref_sequence IN NUMBER,
-			p_fk_ref_cube_tsg_int_ext IN VARCHAR2,
 			p_fk_ref_bot_name IN VARCHAR2,
 			p_fk_ref_typ_name IN VARCHAR2,
 			p_text IN VARCHAR2);
 	PROCEDURE delete_dcr (
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_ref_sequence IN NUMBER,
-			p_fk_ref_cube_tsg_int_ext IN VARCHAR2,
 			p_fk_ref_bot_name IN VARCHAR2,
 			p_fk_ref_typ_name IN VARCHAR2);
 	PROCEDURE get_rtr (
 			p_cube_row IN OUT c_cube_row,
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_ref_sequence IN NUMBER,
-			p_fk_ref_cube_tsg_int_ext IN VARCHAR2,
 			p_fk_ref_bot_name IN VARCHAR2,
 			p_fk_ref_typ_name IN VARCHAR2,
 			p_xf_tsp_typ_name IN VARCHAR2,
@@ -986,7 +967,6 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_fk_bot_name IN VARCHAR2,
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_ref_sequence IN NUMBER,
-			p_fk_ref_cube_tsg_int_ext IN VARCHAR2,
 			p_fk_ref_bot_name IN VARCHAR2,
 			p_fk_ref_typ_name IN VARCHAR2,
 			p_include_or_exclude IN CHAR,
@@ -998,7 +978,6 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_fk_bot_name IN VARCHAR2,
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_ref_sequence IN NUMBER,
-			p_fk_ref_cube_tsg_int_ext IN VARCHAR2,
 			p_fk_ref_bot_name IN VARCHAR2,
 			p_fk_ref_typ_name IN VARCHAR2,
 			p_include_or_exclude IN CHAR,
@@ -1008,7 +987,6 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 	PROCEDURE delete_rtr (
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_ref_sequence IN NUMBER,
-			p_fk_ref_cube_tsg_int_ext IN VARCHAR2,
 			p_fk_ref_bot_name IN VARCHAR2,
 			p_fk_ref_typ_name IN VARCHAR2,
 			p_xf_tsp_typ_name IN VARCHAR2,
@@ -1018,7 +996,6 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_cube_row IN OUT c_cube_row,
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_ref_sequence IN NUMBER,
-			p_fk_ref_cube_tsg_int_ext IN VARCHAR2,
 			p_fk_ref_bot_name IN VARCHAR2,
 			p_fk_ref_typ_name IN VARCHAR2,
 			p_xf_tsp_typ_name IN VARCHAR2,
@@ -1028,7 +1005,6 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_fk_bot_name IN VARCHAR2,
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_ref_sequence IN NUMBER,
-			p_fk_ref_cube_tsg_int_ext IN VARCHAR2,
 			p_fk_ref_bot_name IN VARCHAR2,
 			p_fk_ref_typ_name IN VARCHAR2,
 			p_include_or_exclude IN CHAR,
@@ -1039,7 +1015,6 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_fk_bot_name IN VARCHAR2,
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_ref_sequence IN NUMBER,
-			p_fk_ref_cube_tsg_int_ext IN VARCHAR2,
 			p_fk_ref_bot_name IN VARCHAR2,
 			p_fk_ref_typ_name IN VARCHAR2,
 			p_include_or_exclude IN CHAR,
@@ -1049,7 +1024,6 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 	PROCEDURE delete_rts (
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_ref_sequence IN NUMBER,
-			p_fk_ref_cube_tsg_int_ext IN VARCHAR2,
 			p_fk_ref_bot_name IN VARCHAR2,
 			p_fk_ref_typ_name IN VARCHAR2,
 			p_xf_tsp_typ_name IN VARCHAR2,
@@ -1378,6 +1352,18 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 		WHERE name = p_name;
 	END;
 
+	PROCEDURE get_typ_list_all (
+			p_cube_row IN OUT c_cube_row) IS
+	BEGIN
+		OPEN p_cube_row FOR
+			SELECT
+			  cube_sequence,
+			  name,
+			  code
+			FROM v_type
+			ORDER BY cube_sequence;
+	END;
+
 	PROCEDURE get_typ_for_bot_list_all (
 			p_cube_row IN OUT c_cube_row,
 			x_fk_bot_name IN VARCHAR2) IS
@@ -1430,47 +1416,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			  code
 			FROM v_type
 			WHERE fk_typ_name = l_name
-			ORDER BY cube_sequence;
-	END;
-
-	PROCEDURE get_typ_list_recursive (
-			p_cube_row IN OUT c_cube_row,
-			p_cube_up_or_down IN VARCHAR2,
-			p_cube_x_level IN NUMBER,
-			p_name IN VARCHAR2) IS
-	BEGIN
-		OPEN p_cube_row FOR
-			WITH anchor (
-				cube_sequence,
-				name,
-				code,
-				fk_typ_name,
-				cube_x_level) AS (
-				SELECT
-					cube_sequence,
-					name,
-					code,
-					fk_typ_name,
-					0 
-				FROM v_type
-				WHERE name = p_name
-				UNION ALL
-				SELECT
-					recursive.cube_sequence,
-					recursive.name,
-					recursive.code,
-					recursive.fk_typ_name,
-					anchor.cube_x_level+1
-				FROM v_type recursive, anchor
-				WHERE 	    ( 	    ( p_cube_up_or_down = 'D'
-						  AND anchor.name = recursive.fk_typ_name )
-					   OR 	    ( p_cube_up_or_down = 'U'
-						  AND anchor.fk_typ_name = recursive.name ) )
-				  AND anchor.cube_x_level < p_cube_x_level
-				)
-			SELECT DISTINCT cube_sequence, name, code
-			FROM anchor
-			WHERE cube_x_level > 0
 			ORDER BY cube_sequence;
 	END;
 
@@ -2998,7 +2943,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_cube_row IN OUT c_cube_row,
 			p_fk_typ_name IN VARCHAR2,
 			p_sequence IN NUMBER,
-			p_cube_tsg_int_ext IN VARCHAR2,
 			p_xk_bot_name IN VARCHAR2,
 			p_xk_typ_name IN VARCHAR2) IS
 	BEGIN
@@ -3011,11 +2955,11 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			  scope,
 			  unchangeable,
 			  within_scope_extension,
+			  cube_tsg_int_ext,
 			  xk_typ_name_1
 			FROM v_reference
 			WHERE fk_typ_name = p_fk_typ_name
 			  AND sequence = p_sequence
-			  AND cube_tsg_int_ext = p_cube_tsg_int_ext
 			  AND xk_bot_name = p_xk_bot_name
 			  AND xk_typ_name = p_xk_typ_name;
 	END;
@@ -3024,7 +2968,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_cube_row IN OUT c_cube_row,
 			p_fk_typ_name IN VARCHAR2,
 			p_sequence IN NUMBER,
-			p_cube_tsg_int_ext IN VARCHAR2,
 			p_xk_bot_name IN VARCHAR2,
 			p_xk_typ_name IN VARCHAR2) IS
 	BEGIN
@@ -3034,7 +2977,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			FROM v_reference
 			WHERE fk_typ_name = p_fk_typ_name
 			  AND sequence = p_sequence
-			  AND cube_tsg_int_ext = p_cube_tsg_int_ext
 			  AND xk_bot_name = p_xk_bot_name
 			  AND xk_typ_name = p_xk_typ_name;
 	END;
@@ -3043,7 +2985,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_cube_row IN OUT c_cube_row,
 			p_fk_typ_name IN VARCHAR2,
 			p_sequence IN NUMBER,
-			p_cube_tsg_int_ext IN VARCHAR2,
 			p_xk_bot_name IN VARCHAR2,
 			p_xk_typ_name IN VARCHAR2) IS
 	BEGIN
@@ -3051,23 +2992,20 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			SELECT
 			  fk_typ_name,
 			  fk_ref_sequence,
-			  fk_ref_cube_tsg_int_ext,
 			  fk_ref_bot_name,
 			  fk_ref_typ_name
 			FROM v_description_reference
 			WHERE fk_typ_name = p_fk_typ_name
 			  AND fk_ref_sequence = p_sequence
-			  AND fk_ref_cube_tsg_int_ext = p_cube_tsg_int_ext
 			  AND fk_ref_bot_name = p_xk_bot_name
 			  AND fk_ref_typ_name = p_xk_typ_name
-			ORDER BY fk_typ_name, fk_ref_sequence, fk_ref_cube_tsg_int_ext, fk_ref_bot_name, fk_ref_typ_name;
+			ORDER BY fk_typ_name, fk_ref_sequence, fk_ref_bot_name, fk_ref_typ_name;
 	END;
 
 	PROCEDURE get_ref_rtr_items (
 			p_cube_row IN OUT c_cube_row,
 			p_fk_typ_name IN VARCHAR2,
 			p_sequence IN NUMBER,
-			p_cube_tsg_int_ext IN VARCHAR2,
 			p_xk_bot_name IN VARCHAR2,
 			p_xk_typ_name IN VARCHAR2) IS
 	BEGIN
@@ -3075,7 +3013,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			SELECT
 			  fk_typ_name,
 			  fk_ref_sequence,
-			  fk_ref_cube_tsg_int_ext,
 			  fk_ref_bot_name,
 			  fk_ref_typ_name,
 			  xf_tsp_typ_name,
@@ -3084,17 +3021,15 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			FROM v_restriction_type_spec_ref
 			WHERE fk_typ_name = p_fk_typ_name
 			  AND fk_ref_sequence = p_sequence
-			  AND fk_ref_cube_tsg_int_ext = p_cube_tsg_int_ext
 			  AND fk_ref_bot_name = p_xk_bot_name
 			  AND fk_ref_typ_name = p_xk_typ_name
-			ORDER BY fk_typ_name, fk_ref_sequence, fk_ref_cube_tsg_int_ext, fk_ref_bot_name, fk_ref_typ_name, xf_tsp_typ_name, xf_tsp_tsg_code, xk_tsp_code;
+			ORDER BY fk_typ_name, fk_ref_sequence, fk_ref_bot_name, fk_ref_typ_name, xf_tsp_typ_name, xf_tsp_tsg_code, xk_tsp_code;
 	END;
 
 	PROCEDURE get_ref_rts_items (
 			p_cube_row IN OUT c_cube_row,
 			p_fk_typ_name IN VARCHAR2,
 			p_sequence IN NUMBER,
-			p_cube_tsg_int_ext IN VARCHAR2,
 			p_xk_bot_name IN VARCHAR2,
 			p_xk_typ_name IN VARCHAR2) IS
 	BEGIN
@@ -3102,7 +3037,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			SELECT
 			  fk_typ_name,
 			  fk_ref_sequence,
-			  fk_ref_cube_tsg_int_ext,
 			  fk_ref_bot_name,
 			  fk_ref_typ_name,
 			  include_or_exclude,
@@ -3112,17 +3046,15 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			FROM v_restriction_target_type_spec
 			WHERE fk_typ_name = p_fk_typ_name
 			  AND fk_ref_sequence = p_sequence
-			  AND fk_ref_cube_tsg_int_ext = p_cube_tsg_int_ext
 			  AND fk_ref_bot_name = p_xk_bot_name
 			  AND fk_ref_typ_name = p_xk_typ_name
-			ORDER BY fk_typ_name, fk_ref_sequence, fk_ref_cube_tsg_int_ext, fk_ref_bot_name, fk_ref_typ_name, include_or_exclude, xf_tsp_typ_name, xf_tsp_tsg_code, xk_tsp_code;
+			ORDER BY fk_typ_name, fk_ref_sequence, fk_ref_bot_name, fk_ref_typ_name, include_or_exclude, xf_tsp_typ_name, xf_tsp_tsg_code, xk_tsp_code;
 	END;
 
 	PROCEDURE count_ref_dcr (
 			p_cube_row IN OUT c_cube_row,
 			p_fk_typ_name IN VARCHAR2,
 			p_sequence IN NUMBER,
-			p_cube_tsg_int_ext IN VARCHAR2,
 			p_xk_bot_name IN VARCHAR2,
 			p_xk_typ_name IN VARCHAR2) IS
 	BEGIN
@@ -3132,7 +3064,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			FROM v_description_reference
 			WHERE fk_typ_name = p_fk_typ_name
 			  AND fk_ref_sequence = p_sequence
-			  AND fk_ref_cube_tsg_int_ext = p_cube_tsg_int_ext
 			  AND fk_ref_bot_name = p_xk_bot_name
 			  AND fk_ref_typ_name = p_xk_typ_name;
 	END;
@@ -3141,7 +3072,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_cube_row IN OUT c_cube_row,
 			p_fk_typ_name IN VARCHAR2,
 			p_sequence IN NUMBER,
-			p_cube_tsg_int_ext IN VARCHAR2,
 			p_xk_bot_name IN VARCHAR2,
 			p_xk_typ_name IN VARCHAR2) IS
 	BEGIN
@@ -3151,7 +3081,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			FROM v_restriction_target_type_spec
 			WHERE fk_typ_name = p_fk_typ_name
 			  AND fk_ref_sequence = p_sequence
-			  AND fk_ref_cube_tsg_int_ext = p_cube_tsg_int_ext
 			  AND fk_ref_bot_name = p_xk_bot_name
 			  AND fk_ref_typ_name = p_xk_typ_name;
 	END;
@@ -3161,7 +3090,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_cube_pos_action IN VARCHAR2,
 			p_fk_typ_name IN VARCHAR2,
 			p_sequence IN NUMBER,
-			p_cube_tsg_int_ext IN VARCHAR2,
 			p_xk_bot_name IN VARCHAR2,
 			p_xk_typ_name IN VARCHAR2) IS
 		l_cube_pos_action VARCHAR2(1);
@@ -3188,7 +3116,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 				FROM v_reference
 				WHERE fk_typ_name = p_fk_typ_name
 				  AND sequence = p_sequence
-				  AND cube_tsg_int_ext = p_cube_tsg_int_ext
 				  AND xk_bot_name = p_xk_bot_name
 				  AND xk_typ_name = p_xk_typ_name;
 			END IF;
@@ -3226,12 +3153,10 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_cube_pos_action IN VARCHAR2,
 			p_fk_typ_name IN VARCHAR2,
 			p_sequence IN NUMBER,
-			p_cube_tsg_int_ext IN VARCHAR2,
 			p_xk_bot_name IN VARCHAR2,
 			p_xk_typ_name IN VARCHAR2,
 			x_fk_typ_name IN VARCHAR2,
 			x_sequence IN NUMBER,
-			x_cube_tsg_int_ext IN VARCHAR2,
 			x_xk_bot_name IN VARCHAR2,
 			x_xk_typ_name IN VARCHAR2) IS
 		l_cube_sequence NUMBER(8);
@@ -3240,12 +3165,11 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 		IF NVL (p_cube_pos_action, ' ') NOT IN ('A', 'B', 'F', 'L') THEN
 			RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
 		END IF;
-		determine_position_ref (l_cube_sequence, p_cube_pos_action, x_fk_typ_name, x_sequence, x_cube_tsg_int_ext, x_xk_bot_name, x_xk_typ_name);
+		determine_position_ref (l_cube_sequence, p_cube_pos_action, x_fk_typ_name, x_sequence, x_xk_bot_name, x_xk_typ_name);
 		UPDATE v_reference SET
 			cube_sequence = l_cube_sequence
 		WHERE fk_typ_name = p_fk_typ_name
 		  AND sequence = p_sequence
-		  AND cube_tsg_int_ext = p_cube_tsg_int_ext
 		  AND xk_bot_name = p_xk_bot_name
 		  AND xk_typ_name = p_xk_typ_name;
 		IF SQL%NOTFOUND THEN
@@ -3270,7 +3194,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_xk_typ_name_1 IN VARCHAR2,
 			x_fk_typ_name IN VARCHAR2,
 			x_sequence IN NUMBER,
-			x_cube_tsg_int_ext IN VARCHAR2,
 			x_xk_bot_name IN VARCHAR2,
 			x_xk_typ_name IN VARCHAR2) IS
 		l_cube_sequence NUMBER(8);
@@ -3279,7 +3202,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 		IF NVL (p_cube_pos_action, ' ') NOT IN ('A', 'B', 'F', 'L') THEN
 			RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
 		END IF;
-		determine_position_ref (l_cube_sequence, p_cube_pos_action, x_fk_typ_name, x_sequence, x_cube_tsg_int_ext, x_xk_bot_name, x_xk_typ_name);
+		determine_position_ref (l_cube_sequence, p_cube_pos_action, x_fk_typ_name, x_sequence, x_xk_bot_name, x_xk_typ_name);
 		INSERT INTO v_reference (
 			cube_id,
 			cube_sequence,
@@ -3340,10 +3263,10 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			scope = p_scope,
 			unchangeable = p_unchangeable,
 			within_scope_extension = p_within_scope_extension,
+			cube_tsg_int_ext = p_cube_tsg_int_ext,
 			xk_typ_name_1 = p_xk_typ_name_1
 		WHERE fk_typ_name = p_fk_typ_name
 		  AND sequence = p_sequence
-		  AND cube_tsg_int_ext = p_cube_tsg_int_ext
 		  AND xk_bot_name = p_xk_bot_name
 		  AND xk_typ_name = p_xk_typ_name;
 	END;
@@ -3351,14 +3274,12 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 	PROCEDURE delete_ref (
 			p_fk_typ_name IN VARCHAR2,
 			p_sequence IN NUMBER,
-			p_cube_tsg_int_ext IN VARCHAR2,
 			p_xk_bot_name IN VARCHAR2,
 			p_xk_typ_name IN VARCHAR2) IS
 	BEGIN
 		DELETE v_reference
 		WHERE fk_typ_name = p_fk_typ_name
 		  AND sequence = p_sequence
-		  AND cube_tsg_int_ext = p_cube_tsg_int_ext
 		  AND xk_bot_name = p_xk_bot_name
 		  AND xk_typ_name = p_xk_typ_name;
 	END;
@@ -3367,7 +3288,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_cube_row IN OUT c_cube_row,
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_ref_sequence IN NUMBER,
-			p_fk_ref_cube_tsg_int_ext IN VARCHAR2,
 			p_fk_ref_bot_name IN VARCHAR2,
 			p_fk_ref_typ_name IN VARCHAR2) IS
 	BEGIN
@@ -3378,7 +3298,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			FROM v_description_reference
 			WHERE fk_typ_name = p_fk_typ_name
 			  AND fk_ref_sequence = p_fk_ref_sequence
-			  AND fk_ref_cube_tsg_int_ext = p_fk_ref_cube_tsg_int_ext
 			  AND fk_ref_bot_name = p_fk_ref_bot_name
 			  AND fk_ref_typ_name = p_fk_ref_typ_name;
 	END;
@@ -3387,7 +3306,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_fk_bot_name IN VARCHAR2,
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_ref_sequence IN NUMBER,
-			p_fk_ref_cube_tsg_int_ext IN VARCHAR2,
 			p_fk_ref_bot_name IN VARCHAR2,
 			p_fk_ref_typ_name IN VARCHAR2,
 			p_text IN VARCHAR2) IS
@@ -3397,7 +3315,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			fk_bot_name,
 			fk_typ_name,
 			fk_ref_sequence,
-			fk_ref_cube_tsg_int_ext,
 			fk_ref_bot_name,
 			fk_ref_typ_name,
 			text)
@@ -3406,7 +3323,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_fk_bot_name,
 			p_fk_typ_name,
 			p_fk_ref_sequence,
-			p_fk_ref_cube_tsg_int_ext,
 			p_fk_ref_bot_name,
 			p_fk_ref_typ_name,
 			p_text);
@@ -3419,7 +3335,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_fk_bot_name IN VARCHAR2,
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_ref_sequence IN NUMBER,
-			p_fk_ref_cube_tsg_int_ext IN VARCHAR2,
 			p_fk_ref_bot_name IN VARCHAR2,
 			p_fk_ref_typ_name IN VARCHAR2,
 			p_text IN VARCHAR2) IS
@@ -3429,7 +3344,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			text = p_text
 		WHERE fk_typ_name = p_fk_typ_name
 		  AND fk_ref_sequence = p_fk_ref_sequence
-		  AND fk_ref_cube_tsg_int_ext = p_fk_ref_cube_tsg_int_ext
 		  AND fk_ref_bot_name = p_fk_ref_bot_name
 		  AND fk_ref_typ_name = p_fk_ref_typ_name;
 	END;
@@ -3437,14 +3351,12 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 	PROCEDURE delete_dcr (
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_ref_sequence IN NUMBER,
-			p_fk_ref_cube_tsg_int_ext IN VARCHAR2,
 			p_fk_ref_bot_name IN VARCHAR2,
 			p_fk_ref_typ_name IN VARCHAR2) IS
 	BEGIN
 		DELETE v_description_reference
 		WHERE fk_typ_name = p_fk_typ_name
 		  AND fk_ref_sequence = p_fk_ref_sequence
-		  AND fk_ref_cube_tsg_int_ext = p_fk_ref_cube_tsg_int_ext
 		  AND fk_ref_bot_name = p_fk_ref_bot_name
 		  AND fk_ref_typ_name = p_fk_ref_typ_name;
 	END;
@@ -3453,7 +3365,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_cube_row IN OUT c_cube_row,
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_ref_sequence IN NUMBER,
-			p_fk_ref_cube_tsg_int_ext IN VARCHAR2,
 			p_fk_ref_bot_name IN VARCHAR2,
 			p_fk_ref_typ_name IN VARCHAR2,
 			p_xf_tsp_typ_name IN VARCHAR2,
@@ -3467,7 +3378,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			FROM v_restriction_type_spec_ref
 			WHERE fk_typ_name = p_fk_typ_name
 			  AND fk_ref_sequence = p_fk_ref_sequence
-			  AND fk_ref_cube_tsg_int_ext = p_fk_ref_cube_tsg_int_ext
 			  AND fk_ref_bot_name = p_fk_ref_bot_name
 			  AND fk_ref_typ_name = p_fk_ref_typ_name
 			  AND xf_tsp_typ_name = p_xf_tsp_typ_name
@@ -3479,7 +3389,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_cube_row IN OUT c_cube_row,
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_ref_sequence IN NUMBER,
-			p_fk_ref_cube_tsg_int_ext IN VARCHAR2,
 			p_fk_ref_bot_name IN VARCHAR2,
 			p_fk_ref_typ_name IN VARCHAR2,
 			p_xf_tsp_typ_name IN VARCHAR2,
@@ -3490,7 +3399,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			SELECT
 			  fk_typ_name,
 			  fk_ref_sequence,
-			  fk_ref_cube_tsg_int_ext,
 			  fk_ref_bot_name,
 			  fk_ref_typ_name,
 			  xf_tsp_typ_name,
@@ -3502,45 +3410,36 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 				  AND fk_ref_sequence > p_fk_ref_sequence )
 			   OR 	    ( fk_typ_name = p_fk_typ_name
 				  AND fk_ref_sequence = p_fk_ref_sequence
-				  AND fk_ref_cube_tsg_int_ext > p_fk_ref_cube_tsg_int_ext )
-			   OR 	    ( fk_typ_name = p_fk_typ_name
-				  AND fk_ref_sequence = p_fk_ref_sequence
-				  AND fk_ref_cube_tsg_int_ext = p_fk_ref_cube_tsg_int_ext
 				  AND fk_ref_bot_name > p_fk_ref_bot_name )
 			   OR 	    ( fk_typ_name = p_fk_typ_name
 				  AND fk_ref_sequence = p_fk_ref_sequence
-				  AND fk_ref_cube_tsg_int_ext = p_fk_ref_cube_tsg_int_ext
 				  AND fk_ref_bot_name = p_fk_ref_bot_name
 				  AND fk_ref_typ_name > p_fk_ref_typ_name )
 			   OR 	    ( fk_typ_name = p_fk_typ_name
 				  AND fk_ref_sequence = p_fk_ref_sequence
-				  AND fk_ref_cube_tsg_int_ext = p_fk_ref_cube_tsg_int_ext
 				  AND fk_ref_bot_name = p_fk_ref_bot_name
 				  AND fk_ref_typ_name = p_fk_ref_typ_name
 				  AND xf_tsp_typ_name > p_xf_tsp_typ_name )
 			   OR 	    ( fk_typ_name = p_fk_typ_name
 				  AND fk_ref_sequence = p_fk_ref_sequence
-				  AND fk_ref_cube_tsg_int_ext = p_fk_ref_cube_tsg_int_ext
 				  AND fk_ref_bot_name = p_fk_ref_bot_name
 				  AND fk_ref_typ_name = p_fk_ref_typ_name
 				  AND xf_tsp_typ_name = p_xf_tsp_typ_name
 				  AND xf_tsp_tsg_code > p_xf_tsp_tsg_code )
 			   OR 	    ( fk_typ_name = p_fk_typ_name
 				  AND fk_ref_sequence = p_fk_ref_sequence
-				  AND fk_ref_cube_tsg_int_ext = p_fk_ref_cube_tsg_int_ext
 				  AND fk_ref_bot_name = p_fk_ref_bot_name
 				  AND fk_ref_typ_name = p_fk_ref_typ_name
 				  AND xf_tsp_typ_name = p_xf_tsp_typ_name
 				  AND xf_tsp_tsg_code = p_xf_tsp_tsg_code
 				  AND xk_tsp_code > p_xk_tsp_code )
-			ORDER BY fk_typ_name, fk_ref_sequence, fk_ref_cube_tsg_int_ext, fk_ref_bot_name, fk_ref_typ_name, xf_tsp_typ_name, xf_tsp_tsg_code, xk_tsp_code;
+			ORDER BY fk_typ_name, fk_ref_sequence, fk_ref_bot_name, fk_ref_typ_name, xf_tsp_typ_name, xf_tsp_tsg_code, xk_tsp_code;
 	END;
 
 	PROCEDURE insert_rtr (
 			p_fk_bot_name IN VARCHAR2,
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_ref_sequence IN NUMBER,
-			p_fk_ref_cube_tsg_int_ext IN VARCHAR2,
 			p_fk_ref_bot_name IN VARCHAR2,
 			p_fk_ref_typ_name IN VARCHAR2,
 			p_include_or_exclude IN CHAR,
@@ -3554,7 +3453,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			fk_bot_name,
 			fk_typ_name,
 			fk_ref_sequence,
-			fk_ref_cube_tsg_int_ext,
 			fk_ref_bot_name,
 			fk_ref_typ_name,
 			include_or_exclude,
@@ -3566,7 +3464,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_fk_bot_name,
 			p_fk_typ_name,
 			p_fk_ref_sequence,
-			p_fk_ref_cube_tsg_int_ext,
 			p_fk_ref_bot_name,
 			p_fk_ref_typ_name,
 			p_include_or_exclude,
@@ -3574,7 +3471,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_xf_tsp_tsg_code,
 			p_xk_tsp_code);
 
-		get_next_rtr (p_cube_row, p_fk_typ_name, p_fk_ref_sequence, p_fk_ref_cube_tsg_int_ext, p_fk_ref_bot_name, p_fk_ref_typ_name, p_xf_tsp_typ_name, p_xf_tsp_tsg_code, p_xk_tsp_code);
+		get_next_rtr (p_cube_row, p_fk_typ_name, p_fk_ref_sequence, p_fk_ref_bot_name, p_fk_ref_typ_name, p_xf_tsp_typ_name, p_xf_tsp_tsg_code, p_xk_tsp_code);
 	EXCEPTION
 		WHEN DUP_VAL_ON_INDEX THEN
 			RAISE_APPLICATION_ERROR (-20001, 'Type restriction_type_spec_ref already exists');
@@ -3584,7 +3481,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_fk_bot_name IN VARCHAR2,
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_ref_sequence IN NUMBER,
-			p_fk_ref_cube_tsg_int_ext IN VARCHAR2,
 			p_fk_ref_bot_name IN VARCHAR2,
 			p_fk_ref_typ_name IN VARCHAR2,
 			p_include_or_exclude IN CHAR,
@@ -3597,7 +3493,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			include_or_exclude = p_include_or_exclude
 		WHERE fk_typ_name = p_fk_typ_name
 		  AND fk_ref_sequence = p_fk_ref_sequence
-		  AND fk_ref_cube_tsg_int_ext = p_fk_ref_cube_tsg_int_ext
 		  AND fk_ref_bot_name = p_fk_ref_bot_name
 		  AND fk_ref_typ_name = p_fk_ref_typ_name
 		  AND xf_tsp_typ_name = p_xf_tsp_typ_name
@@ -3608,7 +3503,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 	PROCEDURE delete_rtr (
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_ref_sequence IN NUMBER,
-			p_fk_ref_cube_tsg_int_ext IN VARCHAR2,
 			p_fk_ref_bot_name IN VARCHAR2,
 			p_fk_ref_typ_name IN VARCHAR2,
 			p_xf_tsp_typ_name IN VARCHAR2,
@@ -3618,7 +3512,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 		DELETE v_restriction_type_spec_ref
 		WHERE fk_typ_name = p_fk_typ_name
 		  AND fk_ref_sequence = p_fk_ref_sequence
-		  AND fk_ref_cube_tsg_int_ext = p_fk_ref_cube_tsg_int_ext
 		  AND fk_ref_bot_name = p_fk_ref_bot_name
 		  AND fk_ref_typ_name = p_fk_ref_typ_name
 		  AND xf_tsp_typ_name = p_xf_tsp_typ_name
@@ -3630,7 +3523,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_cube_row IN OUT c_cube_row,
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_ref_sequence IN NUMBER,
-			p_fk_ref_cube_tsg_int_ext IN VARCHAR2,
 			p_fk_ref_bot_name IN VARCHAR2,
 			p_fk_ref_typ_name IN VARCHAR2,
 			p_xf_tsp_typ_name IN VARCHAR2,
@@ -3644,7 +3536,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			FROM v_restriction_target_type_spec
 			WHERE fk_typ_name = p_fk_typ_name
 			  AND fk_ref_sequence = p_fk_ref_sequence
-			  AND fk_ref_cube_tsg_int_ext = p_fk_ref_cube_tsg_int_ext
 			  AND fk_ref_bot_name = p_fk_ref_bot_name
 			  AND fk_ref_typ_name = p_fk_ref_typ_name
 			  AND xf_tsp_typ_name = p_xf_tsp_typ_name
@@ -3656,7 +3547,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_fk_bot_name IN VARCHAR2,
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_ref_sequence IN NUMBER,
-			p_fk_ref_cube_tsg_int_ext IN VARCHAR2,
 			p_fk_ref_bot_name IN VARCHAR2,
 			p_fk_ref_typ_name IN VARCHAR2,
 			p_include_or_exclude IN CHAR,
@@ -3669,7 +3559,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			fk_bot_name,
 			fk_typ_name,
 			fk_ref_sequence,
-			fk_ref_cube_tsg_int_ext,
 			fk_ref_bot_name,
 			fk_ref_typ_name,
 			include_or_exclude,
@@ -3681,7 +3570,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_fk_bot_name,
 			p_fk_typ_name,
 			p_fk_ref_sequence,
-			p_fk_ref_cube_tsg_int_ext,
 			p_fk_ref_bot_name,
 			p_fk_ref_typ_name,
 			p_include_or_exclude,
@@ -3697,7 +3585,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_fk_bot_name IN VARCHAR2,
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_ref_sequence IN NUMBER,
-			p_fk_ref_cube_tsg_int_ext IN VARCHAR2,
 			p_fk_ref_bot_name IN VARCHAR2,
 			p_fk_ref_typ_name IN VARCHAR2,
 			p_include_or_exclude IN CHAR,
@@ -3710,7 +3597,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			include_or_exclude = p_include_or_exclude
 		WHERE fk_typ_name = p_fk_typ_name
 		  AND fk_ref_sequence = p_fk_ref_sequence
-		  AND fk_ref_cube_tsg_int_ext = p_fk_ref_cube_tsg_int_ext
 		  AND fk_ref_bot_name = p_fk_ref_bot_name
 		  AND fk_ref_typ_name = p_fk_ref_typ_name
 		  AND xf_tsp_typ_name = p_xf_tsp_typ_name
@@ -3721,7 +3607,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 	PROCEDURE delete_rts (
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_ref_sequence IN NUMBER,
-			p_fk_ref_cube_tsg_int_ext IN VARCHAR2,
 			p_fk_ref_bot_name IN VARCHAR2,
 			p_fk_ref_typ_name IN VARCHAR2,
 			p_xf_tsp_typ_name IN VARCHAR2,
@@ -3731,7 +3616,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 		DELETE v_restriction_target_type_spec
 		WHERE fk_typ_name = p_fk_typ_name
 		  AND fk_ref_sequence = p_fk_ref_sequence
-		  AND fk_ref_cube_tsg_int_ext = p_fk_ref_cube_tsg_int_ext
 		  AND fk_ref_bot_name = p_fk_ref_bot_name
 		  AND fk_ref_typ_name = p_fk_ref_typ_name
 		  AND xf_tsp_typ_name = p_xf_tsp_typ_name

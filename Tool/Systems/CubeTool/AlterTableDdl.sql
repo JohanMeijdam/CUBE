@@ -1311,7 +1311,6 @@ BEGIN
 			fk_bot_name VARCHAR2(30),
 			fk_typ_name VARCHAR2(30),
 			fk_ref_sequence NUMBER(1) DEFAULT ''0'',
-			fk_ref_cube_tsg_int_ext VARCHAR2(8),
 			fk_ref_bot_name VARCHAR2(30),
 			fk_ref_typ_name VARCHAR2(30),
 			text VARCHAR2(3999))';
@@ -1340,12 +1339,6 @@ BEGIN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_description_reference ADD fk_ref_sequence NUMBER(1) DEFAULT ''0''';
 			DBMS_OUTPUT.PUT_LINE('Column T_DESCRIPTION_REFERENCE.FK_REF_SEQUENCE created');
-		END IF;
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_DESCRIPTION_REFERENCE' AND column_name = 'FK_REF_CUBE_TSG_INT_EXT';
-		IF l_count = 0 THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_description_reference ADD fk_ref_cube_tsg_int_ext VARCHAR2(8)';
-			DBMS_OUTPUT.PUT_LINE('Column T_DESCRIPTION_REFERENCE.FK_REF_CUBE_TSG_INT_EXT created');
 		END IF;
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_DESCRIPTION_REFERENCE' AND column_name = 'FK_REF_BOT_NAME';
 		IF l_count = 0 THEN
@@ -1392,7 +1385,6 @@ BEGIN
 			fk_bot_name VARCHAR2(30),
 			fk_typ_name VARCHAR2(30),
 			fk_ref_sequence NUMBER(1) DEFAULT ''0'',
-			fk_ref_cube_tsg_int_ext VARCHAR2(8),
 			fk_ref_bot_name VARCHAR2(30),
 			fk_ref_typ_name VARCHAR2(30),
 			include_or_exclude CHAR(2) DEFAULT ''IN'',
@@ -1424,12 +1416,6 @@ BEGIN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_restriction_type_spec_ref ADD fk_ref_sequence NUMBER(1) DEFAULT ''0''';
 			DBMS_OUTPUT.PUT_LINE('Column T_RESTRICTION_TYPE_SPEC_REF.FK_REF_SEQUENCE created');
-		END IF;
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_RESTRICTION_TYPE_SPEC_REF' AND column_name = 'FK_REF_CUBE_TSG_INT_EXT';
-		IF l_count = 0 THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_restriction_type_spec_ref ADD fk_ref_cube_tsg_int_ext VARCHAR2(8)';
-			DBMS_OUTPUT.PUT_LINE('Column T_RESTRICTION_TYPE_SPEC_REF.FK_REF_CUBE_TSG_INT_EXT created');
 		END IF;
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_RESTRICTION_TYPE_SPEC_REF' AND column_name = 'FK_REF_BOT_NAME';
 		IF l_count = 0 THEN
@@ -1494,7 +1480,6 @@ BEGIN
 			fk_bot_name VARCHAR2(30),
 			fk_typ_name VARCHAR2(30),
 			fk_ref_sequence NUMBER(1) DEFAULT ''0'',
-			fk_ref_cube_tsg_int_ext VARCHAR2(8),
 			fk_ref_bot_name VARCHAR2(30),
 			fk_ref_typ_name VARCHAR2(30),
 			include_or_exclude CHAR(2) DEFAULT ''IN'',
@@ -1526,12 +1511,6 @@ BEGIN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_restriction_target_type_spec ADD fk_ref_sequence NUMBER(1) DEFAULT ''0''';
 			DBMS_OUTPUT.PUT_LINE('Column T_RESTRICTION_TARGET_TYPE_SPEC.FK_REF_SEQUENCE created');
-		END IF;
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_RESTRICTION_TARGET_TYPE_SPEC' AND column_name = 'FK_REF_CUBE_TSG_INT_EXT';
-		IF l_count = 0 THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_restriction_target_type_spec ADD fk_ref_cube_tsg_int_ext VARCHAR2(8)';
-			DBMS_OUTPUT.PUT_LINE('Column T_RESTRICTION_TARGET_TYPE_SPEC.FK_REF_CUBE_TSG_INT_EXT created');
 		END IF;
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_RESTRICTION_TARGET_TYPE_SPEC' AND column_name = 'FK_REF_BOT_NAME';
 		IF l_count = 0 THEN
@@ -2971,7 +2950,6 @@ BEGIN
 		PRIMARY KEY (
 			fk_typ_name,
 			sequence,
-			cube_tsg_int_ext,
 			xk_bot_name,
 			xk_typ_name )';
 	DBMS_OUTPUT.PUT_LINE('Primary Key T_REFERENCE.REF_PK created');
@@ -3013,7 +2991,6 @@ BEGIN
 			'FK_BOT_NAME','VARCHAR2(30)',
 			'FK_TYP_NAME','VARCHAR2(30)',
 			'FK_REF_SEQUENCE','NUMBER(1)',
-			'FK_REF_CUBE_TSG_INT_EXT','VARCHAR2(8)',
 			'FK_REF_BOT_NAME','VARCHAR2(30)',
 			'FK_REF_TYP_NAME','VARCHAR2(30)',
 			'TEXT','VARCHAR2(3999)',NULL) new_domain,
@@ -3022,7 +2999,6 @@ BEGIN
 			'FK_BOT_NAME',NULL,
 			'FK_TYP_NAME',NULL,
 			'FK_REF_SEQUENCE','''0''',
-			'FK_REF_CUBE_TSG_INT_EXT',NULL,
 			'FK_REF_BOT_NAME',NULL,
 			'FK_REF_TYP_NAME',NULL,
 			'TEXT',NULL,NULL) new_default_value
@@ -3055,21 +3031,19 @@ BEGIN
 		PRIMARY KEY (
 			fk_typ_name,
 			fk_ref_sequence,
-			fk_ref_cube_tsg_int_ext,
 			fk_ref_bot_name,
 			fk_ref_typ_name )';
 	DBMS_OUTPUT.PUT_LINE('Primary Key T_DESCRIPTION_REFERENCE.DCR_PK created');
 	EXECUTE IMMEDIATE
 	'ALTER TABLE t_description_reference ADD CONSTRAINT dcr_ref_fk
-		FOREIGN KEY (fk_typ_name, fk_ref_sequence, fk_ref_cube_tsg_int_ext, fk_ref_bot_name, fk_ref_typ_name)
-		REFERENCES t_reference (fk_typ_name, sequence, cube_tsg_int_ext, xk_bot_name, xk_typ_name)
+		FOREIGN KEY (fk_typ_name, fk_ref_sequence, fk_ref_bot_name, fk_ref_typ_name)
+		REFERENCES t_reference (fk_typ_name, sequence, xk_bot_name, xk_typ_name)
 		ON DELETE CASCADE';
 	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_DESCRIPTION_REFERENCE' AND column_name NOT IN (
 							'CUBE_ID',
 							'FK_BOT_NAME',
 							'FK_TYP_NAME',
 							'FK_REF_SEQUENCE',
-							'FK_REF_CUBE_TSG_INT_EXT',
 							'FK_REF_BOT_NAME',
 							'FK_REF_TYP_NAME',
 							'TEXT'))
@@ -3090,7 +3064,6 @@ BEGIN
 			'FK_BOT_NAME','VARCHAR2(30)',
 			'FK_TYP_NAME','VARCHAR2(30)',
 			'FK_REF_SEQUENCE','NUMBER(1)',
-			'FK_REF_CUBE_TSG_INT_EXT','VARCHAR2(8)',
 			'FK_REF_BOT_NAME','VARCHAR2(30)',
 			'FK_REF_TYP_NAME','VARCHAR2(30)',
 			'INCLUDE_OR_EXCLUDE','CHAR(2)',
@@ -3102,7 +3075,6 @@ BEGIN
 			'FK_BOT_NAME',NULL,
 			'FK_TYP_NAME',NULL,
 			'FK_REF_SEQUENCE','''0''',
-			'FK_REF_CUBE_TSG_INT_EXT',NULL,
 			'FK_REF_BOT_NAME',NULL,
 			'FK_REF_TYP_NAME',NULL,
 			'INCLUDE_OR_EXCLUDE','''IN''',
@@ -3138,7 +3110,6 @@ BEGIN
 		PRIMARY KEY (
 			fk_typ_name,
 			fk_ref_sequence,
-			fk_ref_cube_tsg_int_ext,
 			fk_ref_bot_name,
 			fk_ref_typ_name,
 			xf_tsp_typ_name,
@@ -3147,15 +3118,14 @@ BEGIN
 	DBMS_OUTPUT.PUT_LINE('Primary Key T_RESTRICTION_TYPE_SPEC_REF.RTR_PK created');
 	EXECUTE IMMEDIATE
 	'ALTER TABLE t_restriction_type_spec_ref ADD CONSTRAINT rtr_ref_fk
-		FOREIGN KEY (fk_typ_name, fk_ref_sequence, fk_ref_cube_tsg_int_ext, fk_ref_bot_name, fk_ref_typ_name)
-		REFERENCES t_reference (fk_typ_name, sequence, cube_tsg_int_ext, xk_bot_name, xk_typ_name)
+		FOREIGN KEY (fk_typ_name, fk_ref_sequence, fk_ref_bot_name, fk_ref_typ_name)
+		REFERENCES t_reference (fk_typ_name, sequence, xk_bot_name, xk_typ_name)
 		ON DELETE CASCADE';
 	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_RESTRICTION_TYPE_SPEC_REF' AND column_name NOT IN (
 							'CUBE_ID',
 							'FK_BOT_NAME',
 							'FK_TYP_NAME',
 							'FK_REF_SEQUENCE',
-							'FK_REF_CUBE_TSG_INT_EXT',
 							'FK_REF_BOT_NAME',
 							'FK_REF_TYP_NAME',
 							'INCLUDE_OR_EXCLUDE',
@@ -3179,7 +3149,6 @@ BEGIN
 			'FK_BOT_NAME','VARCHAR2(30)',
 			'FK_TYP_NAME','VARCHAR2(30)',
 			'FK_REF_SEQUENCE','NUMBER(1)',
-			'FK_REF_CUBE_TSG_INT_EXT','VARCHAR2(8)',
 			'FK_REF_BOT_NAME','VARCHAR2(30)',
 			'FK_REF_TYP_NAME','VARCHAR2(30)',
 			'INCLUDE_OR_EXCLUDE','CHAR(2)',
@@ -3191,7 +3160,6 @@ BEGIN
 			'FK_BOT_NAME',NULL,
 			'FK_TYP_NAME',NULL,
 			'FK_REF_SEQUENCE','''0''',
-			'FK_REF_CUBE_TSG_INT_EXT',NULL,
 			'FK_REF_BOT_NAME',NULL,
 			'FK_REF_TYP_NAME',NULL,
 			'INCLUDE_OR_EXCLUDE','''IN''',
@@ -3227,7 +3195,6 @@ BEGIN
 		PRIMARY KEY (
 			fk_typ_name,
 			fk_ref_sequence,
-			fk_ref_cube_tsg_int_ext,
 			fk_ref_bot_name,
 			fk_ref_typ_name,
 			xf_tsp_typ_name,
@@ -3236,15 +3203,14 @@ BEGIN
 	DBMS_OUTPUT.PUT_LINE('Primary Key T_RESTRICTION_TARGET_TYPE_SPEC.RTS_PK created');
 	EXECUTE IMMEDIATE
 	'ALTER TABLE t_restriction_target_type_spec ADD CONSTRAINT rts_ref_fk
-		FOREIGN KEY (fk_typ_name, fk_ref_sequence, fk_ref_cube_tsg_int_ext, fk_ref_bot_name, fk_ref_typ_name)
-		REFERENCES t_reference (fk_typ_name, sequence, cube_tsg_int_ext, xk_bot_name, xk_typ_name)
+		FOREIGN KEY (fk_typ_name, fk_ref_sequence, fk_ref_bot_name, fk_ref_typ_name)
+		REFERENCES t_reference (fk_typ_name, sequence, xk_bot_name, xk_typ_name)
 		ON DELETE CASCADE';
 	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_RESTRICTION_TARGET_TYPE_SPEC' AND column_name NOT IN (
 							'CUBE_ID',
 							'FK_BOT_NAME',
 							'FK_TYP_NAME',
 							'FK_REF_SEQUENCE',
-							'FK_REF_CUBE_TSG_INT_EXT',
 							'FK_REF_BOT_NAME',
 							'FK_REF_TYP_NAME',
 							'INCLUDE_OR_EXCLUDE',

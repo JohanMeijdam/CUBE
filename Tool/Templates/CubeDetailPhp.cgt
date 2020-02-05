@@ -33,6 +33,7 @@ Change log:
 23-12-2019 - Javascript include files.
 26-12-2019 - Recursive list fk argument fixed.
 30-12-2019 - List encapsulated based on starting type key.
+05-02-2020 - Reference scope type ENCAPSULATED removed.
 [[INCLUDE,templates\includes\general.cgt]]
 [[TEXT,DETAIL_RECURSIVE_PARMS]]
 		Option: {[[IF,REFERENCE:4=PRA]]
@@ -310,7 +311,7 @@ function StartSelect<<REFERENCE:S>>(p_event) {
 		}
 	};[[ENDIF]]
 	PerformTrans( {
-		Service: "<<TEXT,DETAIL_GET_LIST_NAME>>[[IF,REFERENCE:4=ENC]]Encapsulated[[ELSE]]Recursive[[ENDIF]]"[[IF:EVAL:$myFlag]],
+		Service: "<<TEXT,DETAIL_GET_LIST_NAME>>Recursive"[[IF:EVAL:$myFlag]],
 		Parameters[[ENDIF]]
 	} );[[ELSE]][[IF,REFERENCE:4=ALL[AND]CHILD(REFERENCE_SCOPE_ATTRIBUTE)]]
 	var Parameters = {[[IF,REFERENCE:CHILD(REFERENCE_TYPE_WITHIN_SCOPE_OF:3=Y)]]
