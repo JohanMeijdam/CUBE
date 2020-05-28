@@ -851,6 +851,12 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_sequence IN NUMBER,
 			p_xk_bot_name IN VARCHAR2,
 			p_xk_typ_name IN VARCHAR2);
+	PROCEDURE get_ref_rfp_items (
+			p_cube_row IN OUT c_cube_row,
+			p_fk_typ_name IN VARCHAR2,
+			p_sequence IN NUMBER,
+			p_xk_bot_name IN VARCHAR2,
+			p_xk_typ_name IN VARCHAR2);
 	PROCEDURE get_ref_dcr_items (
 			p_cube_row IN OUT c_cube_row,
 			p_fk_typ_name IN VARCHAR2,
@@ -929,6 +935,78 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_sequence IN NUMBER,
 			p_xk_bot_name IN VARCHAR2,
 			p_xk_typ_name IN VARCHAR2);
+	PROCEDURE get_rfp (
+			p_cube_row IN OUT c_cube_row,
+			p_fk_typ_name IN VARCHAR2,
+			p_fk_ref_sequence IN NUMBER,
+			p_fk_ref_bot_name IN VARCHAR2,
+			p_fk_ref_typ_name IN VARCHAR2,
+			p_xk_typ_name IN VARCHAR2,
+			p_xk_typ_name_1 IN VARCHAR2);
+	PROCEDURE get_rfp_fkey (
+			p_cube_row IN OUT c_cube_row,
+			p_fk_typ_name IN VARCHAR2,
+			p_fk_ref_sequence IN NUMBER,
+			p_fk_ref_bot_name IN VARCHAR2,
+			p_fk_ref_typ_name IN VARCHAR2,
+			p_xk_typ_name IN VARCHAR2,
+			p_xk_typ_name_1 IN VARCHAR2);
+	PROCEDURE get_rfp_rfp_items (
+			p_cube_row IN OUT c_cube_row,
+			p_fk_typ_name IN VARCHAR2,
+			p_fk_ref_sequence IN NUMBER,
+			p_fk_ref_bot_name IN VARCHAR2,
+			p_fk_ref_typ_name IN VARCHAR2,
+			p_xk_typ_name IN VARCHAR2,
+			p_xk_typ_name_1 IN VARCHAR2);
+	PROCEDURE move_rfp (
+			p_cube_pos_action IN VARCHAR2,
+			p_fk_typ_name IN VARCHAR2,
+			p_fk_ref_sequence IN NUMBER,
+			p_fk_ref_bot_name IN VARCHAR2,
+			p_fk_ref_typ_name IN VARCHAR2,
+			p_xk_typ_name IN VARCHAR2,
+			p_xk_typ_name_1 IN VARCHAR2,
+			x_fk_typ_name IN VARCHAR2,
+			x_fk_ref_sequence IN NUMBER,
+			x_fk_ref_bot_name IN VARCHAR2,
+			x_fk_ref_typ_name IN VARCHAR2,
+			x_xk_typ_name IN VARCHAR2,
+			x_xk_typ_name_1 IN VARCHAR2);
+	PROCEDURE insert_rfp (
+			p_cube_pos_action IN VARCHAR2,
+			p_fk_bot_name IN VARCHAR2,
+			p_fk_typ_name IN VARCHAR2,
+			p_fk_ref_sequence IN NUMBER,
+			p_fk_ref_bot_name IN VARCHAR2,
+			p_fk_ref_typ_name IN VARCHAR2,
+			p_fk_rfp_typ_name IN VARCHAR2,
+			p_fk_rfp_typ_name_1 IN VARCHAR2,
+			p_xk_typ_name IN VARCHAR2,
+			p_xk_typ_name_1 IN VARCHAR2,
+			x_fk_typ_name IN VARCHAR2,
+			x_fk_ref_sequence IN NUMBER,
+			x_fk_ref_bot_name IN VARCHAR2,
+			x_fk_ref_typ_name IN VARCHAR2,
+			x_xk_typ_name IN VARCHAR2,
+			x_xk_typ_name_1 IN VARCHAR2);
+	PROCEDURE update_rfp (
+			p_fk_bot_name IN VARCHAR2,
+			p_fk_typ_name IN VARCHAR2,
+			p_fk_ref_sequence IN NUMBER,
+			p_fk_ref_bot_name IN VARCHAR2,
+			p_fk_ref_typ_name IN VARCHAR2,
+			p_fk_rfp_typ_name IN VARCHAR2,
+			p_fk_rfp_typ_name_1 IN VARCHAR2,
+			p_xk_typ_name IN VARCHAR2,
+			p_xk_typ_name_1 IN VARCHAR2);
+	PROCEDURE delete_rfp (
+			p_fk_typ_name IN VARCHAR2,
+			p_fk_ref_sequence IN NUMBER,
+			p_fk_ref_bot_name IN VARCHAR2,
+			p_fk_ref_typ_name IN VARCHAR2,
+			p_xk_typ_name IN VARCHAR2,
+			p_xk_typ_name_1 IN VARCHAR2);
 	PROCEDURE get_dcr (
 			p_cube_row IN OUT c_cube_row,
 			p_fk_typ_name IN VARCHAR2,
@@ -2981,6 +3059,32 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			  AND xk_typ_name = p_xk_typ_name;
 	END;
 
+	PROCEDURE get_ref_rfp_items (
+			p_cube_row IN OUT c_cube_row,
+			p_fk_typ_name IN VARCHAR2,
+			p_sequence IN NUMBER,
+			p_xk_bot_name IN VARCHAR2,
+			p_xk_typ_name IN VARCHAR2) IS
+	BEGIN
+		OPEN p_cube_row FOR
+			SELECT
+			  cube_sequence,
+			  fk_typ_name,
+			  fk_ref_sequence,
+			  fk_ref_bot_name,
+			  fk_ref_typ_name,
+			  xk_typ_name,
+			  xk_typ_name_1
+			FROM v_reference_part
+			WHERE fk_typ_name = p_fk_typ_name
+			  AND fk_ref_sequence = p_sequence
+			  AND fk_ref_bot_name = p_xk_bot_name
+			  AND fk_ref_typ_name = p_xk_typ_name
+			  AND fk_rfp_typ_name IS NULL
+			  AND fk_rfp_typ_name_1 IS NULL
+			ORDER BY fk_typ_name, fk_ref_sequence, fk_ref_bot_name, fk_ref_typ_name, cube_sequence;
+	END;
+
 	PROCEDURE get_ref_dcr_items (
 			p_cube_row IN OUT c_cube_row,
 			p_fk_typ_name IN VARCHAR2,
@@ -3282,6 +3386,350 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 		  AND sequence = p_sequence
 		  AND xk_bot_name = p_xk_bot_name
 		  AND xk_typ_name = p_xk_typ_name;
+	END;
+
+	PROCEDURE get_rfp (
+			p_cube_row IN OUT c_cube_row,
+			p_fk_typ_name IN VARCHAR2,
+			p_fk_ref_sequence IN NUMBER,
+			p_fk_ref_bot_name IN VARCHAR2,
+			p_fk_ref_typ_name IN VARCHAR2,
+			p_xk_typ_name IN VARCHAR2,
+			p_xk_typ_name_1 IN VARCHAR2) IS
+	BEGIN
+		OPEN p_cube_row FOR
+			SELECT
+			  fk_bot_name,
+			  fk_rfp_typ_name,
+			  fk_rfp_typ_name_1
+			FROM v_reference_part
+			WHERE fk_typ_name = p_fk_typ_name
+			  AND fk_ref_sequence = p_fk_ref_sequence
+			  AND fk_ref_bot_name = p_fk_ref_bot_name
+			  AND fk_ref_typ_name = p_fk_ref_typ_name
+			  AND xk_typ_name = p_xk_typ_name
+			  AND xk_typ_name_1 = p_xk_typ_name_1;
+	END;
+
+	PROCEDURE get_rfp_fkey (
+			p_cube_row IN OUT c_cube_row,
+			p_fk_typ_name IN VARCHAR2,
+			p_fk_ref_sequence IN NUMBER,
+			p_fk_ref_bot_name IN VARCHAR2,
+			p_fk_ref_typ_name IN VARCHAR2,
+			p_xk_typ_name IN VARCHAR2,
+			p_xk_typ_name_1 IN VARCHAR2) IS
+	BEGIN
+		OPEN p_cube_row FOR
+			SELECT
+			  fk_bot_name
+			FROM v_reference_part
+			WHERE fk_typ_name = p_fk_typ_name
+			  AND fk_ref_sequence = p_fk_ref_sequence
+			  AND fk_ref_bot_name = p_fk_ref_bot_name
+			  AND fk_ref_typ_name = p_fk_ref_typ_name
+			  AND xk_typ_name = p_xk_typ_name
+			  AND xk_typ_name_1 = p_xk_typ_name_1;
+	END;
+
+	PROCEDURE get_rfp_rfp_items (
+			p_cube_row IN OUT c_cube_row,
+			p_fk_typ_name IN VARCHAR2,
+			p_fk_ref_sequence IN NUMBER,
+			p_fk_ref_bot_name IN VARCHAR2,
+			p_fk_ref_typ_name IN VARCHAR2,
+			p_xk_typ_name IN VARCHAR2,
+			p_xk_typ_name_1 IN VARCHAR2) IS
+	BEGIN
+		OPEN p_cube_row FOR
+			SELECT
+			  cube_sequence,
+			  fk_typ_name,
+			  fk_ref_sequence,
+			  fk_ref_bot_name,
+			  fk_ref_typ_name,
+			  xk_typ_name,
+			  xk_typ_name_1
+			FROM v_reference_part
+			WHERE fk_typ_name = p_fk_typ_name
+			  AND fk_ref_sequence = p_fk_ref_sequence
+			  AND fk_ref_bot_name = p_fk_ref_bot_name
+			  AND fk_ref_typ_name = p_fk_ref_typ_name
+			  AND fk_rfp_typ_name = p_xk_typ_name
+			  AND fk_rfp_typ_name_1 = p_xk_typ_name_1
+			ORDER BY fk_typ_name, fk_ref_sequence, fk_ref_bot_name, fk_ref_typ_name, cube_sequence;
+	END;
+
+	PROCEDURE check_no_part_rfp (
+			p_fk_typ_name IN VARCHAR2,
+			p_fk_ref_sequence IN NUMBER,
+			p_fk_ref_bot_name IN VARCHAR2,
+			p_fk_ref_typ_name IN VARCHAR2,
+			p_xk_typ_name IN VARCHAR2,
+			p_xk_typ_name_1 IN VARCHAR2,
+			x_xk_typ_name IN VARCHAR2,
+			x_xk_typ_name_1 IN VARCHAR2) IS
+		l_xk_typ_name v_reference_part.xk_typ_name%TYPE;
+		l_xk_typ_name_1 v_reference_part.xk_typ_name_1%TYPE;
+	BEGIN
+		l_xk_typ_name := x_xk_typ_name;
+		l_xk_typ_name_1 := x_xk_typ_name_1;
+		LOOP
+			IF l_xk_typ_name IS NULL
+			  AND l_xk_typ_name_1 IS NULL THEN
+				EXIT; -- OK
+			END IF;
+			IF l_xk_typ_name = p_xk_typ_name
+			  AND l_xk_typ_name_1 = p_xk_typ_name_1 THEN
+				RAISE_APPLICATION_ERROR (-20003, 'Target Type reference_part in hierarchy of moving object');
+			END IF;
+			SELECT fk_rfp_typ_name, fk_rfp_typ_name_1
+			INTO l_xk_typ_name, l_xk_typ_name_1
+			FROM v_reference_part
+			WHERE fk_typ_name = p_fk_typ_name
+			  AND fk_ref_sequence = p_fk_ref_sequence
+			  AND fk_ref_bot_name = p_fk_ref_bot_name
+			  AND fk_ref_typ_name = p_fk_ref_typ_name
+			  AND xk_typ_name = l_xk_typ_name
+			  AND xk_typ_name_1 = l_xk_typ_name_1;
+		END LOOP;
+	END;
+
+	PROCEDURE determine_position_rfp (
+			p_cube_sequence OUT NUMBER,
+			p_cube_pos_action IN VARCHAR2,
+			p_fk_typ_name IN VARCHAR2,
+			p_fk_ref_sequence IN NUMBER,
+			p_fk_ref_bot_name IN VARCHAR2,
+			p_fk_ref_typ_name IN VARCHAR2,
+			p_fk_rfp_typ_name IN VARCHAR2,
+			p_fk_rfp_typ_name_1 IN VARCHAR2,
+			p_xk_typ_name IN VARCHAR2,
+			p_xk_typ_name_1 IN VARCHAR2) IS
+		l_cube_pos_action VARCHAR2(1);
+		l_cube_position_sequ NUMBER(8);
+		l_cube_near_sequ NUMBER(8);
+		l_cube_count NUMBER(8) := 1024;
+	BEGIN
+		-- A=After B=Before F=First L=Last
+		CASE p_cube_pos_action
+		WHEN 'F' THEN
+			l_cube_position_sequ := 0;
+			l_cube_pos_action := 'A';
+		WHEN 'L' THEN
+			l_cube_position_sequ := 99999999;
+			l_cube_pos_action := 'B';
+		ELSE
+			l_cube_pos_action := p_cube_pos_action;
+		END CASE;
+		LOOP
+			IF p_cube_pos_action IN ('B', 'A') THEN
+				-- Read sequence number of the target.
+				SELECT NVL (MAX (cube_sequence), DECODE (p_cube_pos_action, 'B', 99999999, 0))
+				INTO l_cube_position_sequ
+				FROM v_reference_part
+				WHERE fk_typ_name = p_fk_typ_name
+				  AND fk_ref_sequence = p_fk_ref_sequence
+				  AND fk_ref_bot_name = p_fk_ref_bot_name
+				  AND fk_ref_typ_name = p_fk_ref_typ_name
+				  AND xk_typ_name = p_xk_typ_name
+				  AND xk_typ_name_1 = p_xk_typ_name_1;
+			END IF;
+			-- read sequence number near the target.
+			SELECT DECODE (l_cube_pos_action, 'B', NVL (MAX (cube_sequence), 0), NVL (MIN (cube_sequence), 99999999))
+			INTO l_cube_near_sequ
+			FROM v_reference_part
+			WHERE fk_typ_name = p_fk_typ_name
+			  AND fk_ref_sequence = p_fk_ref_sequence
+			  AND fk_ref_bot_name = p_fk_ref_bot_name
+			  AND fk_ref_typ_name = p_fk_ref_typ_name
+			  AND 	    ( 	    ( fk_rfp_typ_name IS NULL
+					  AND p_fk_rfp_typ_name IS NULL )
+				   OR 	    ( fk_rfp_typ_name_1 IS NULL
+					  AND p_fk_rfp_typ_name_1 IS NULL )
+				   OR fk_rfp_typ_name = p_fk_rfp_typ_name
+				   OR fk_rfp_typ_name_1 = p_fk_rfp_typ_name_1 )
+			  AND 	    ( 	    ( l_cube_pos_action = 'B'
+					  AND cube_sequence < l_cube_position_sequ )
+				   OR 	    ( l_cube_pos_action = 'A'
+					  AND cube_sequence > l_cube_position_sequ ) );
+			IF ABS (l_cube_position_sequ - l_cube_near_sequ) > 1 THEN
+				p_cube_sequence := l_cube_position_sequ - (l_cube_position_sequ - l_cube_near_sequ) / 2; -- Formula both directions OK.
+				EXIT;
+			ELSE
+				-- renumber.
+				FOR r_rfp IN (
+					SELECT
+					  rowid row_id
+					FROM v_reference_part
+					WHERE fk_typ_name = p_fk_typ_name
+					  AND fk_ref_sequence = p_fk_ref_sequence
+					  AND fk_ref_bot_name = p_fk_ref_bot_name
+					  AND fk_ref_typ_name = p_fk_ref_typ_name
+					  AND 	    ( 	    ( fk_rfp_typ_name IS NULL
+							  AND p_fk_rfp_typ_name IS NULL )
+						   OR 	    ( fk_rfp_typ_name_1 IS NULL
+							  AND p_fk_rfp_typ_name_1 IS NULL )
+						   OR fk_rfp_typ_name = p_fk_rfp_typ_name
+						   OR fk_rfp_typ_name_1 = p_fk_rfp_typ_name_1 )
+					ORDER BY cube_sequence)
+				LOOP
+					UPDATE v_reference_part SET
+						cube_sequence = l_cube_count
+					WHERE rowid = r_rfp.row_id;
+					l_cube_count := l_cube_count + 1024;
+				END LOOP;
+			END IF;
+		END LOOP;
+	END;
+
+	PROCEDURE move_rfp (
+			p_cube_pos_action IN VARCHAR2,
+			p_fk_typ_name IN VARCHAR2,
+			p_fk_ref_sequence IN NUMBER,
+			p_fk_ref_bot_name IN VARCHAR2,
+			p_fk_ref_typ_name IN VARCHAR2,
+			p_xk_typ_name IN VARCHAR2,
+			p_xk_typ_name_1 IN VARCHAR2,
+			x_fk_typ_name IN VARCHAR2,
+			x_fk_ref_sequence IN NUMBER,
+			x_fk_ref_bot_name IN VARCHAR2,
+			x_fk_ref_typ_name IN VARCHAR2,
+			x_xk_typ_name IN VARCHAR2,
+			x_xk_typ_name_1 IN VARCHAR2) IS
+		l_cube_sequence NUMBER(8);
+		l_fk_rfp_typ_name v_reference_part.fk_rfp_typ_name%TYPE;
+		l_fk_rfp_typ_name_1 v_reference_part.fk_rfp_typ_name_1%TYPE;
+	BEGIN
+		-- A=After B=Before F=First L=Last
+		IF NVL (p_cube_pos_action, ' ') NOT IN ('A', 'B', 'F', 'L') THEN
+			RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
+		END IF;
+		-- Get parent id of the target.
+		IF p_cube_pos_action IN ('B', 'A') THEN
+			SELECT fk_rfp_typ_name, fk_rfp_typ_name_1
+			INTO l_fk_rfp_typ_name, l_fk_rfp_typ_name_1
+			FROM v_reference_part
+			WHERE fk_typ_name = x_fk_typ_name
+			  AND fk_ref_sequence = x_fk_ref_sequence
+			  AND fk_ref_bot_name = x_fk_ref_bot_name
+			  AND fk_ref_typ_name = x_fk_ref_typ_name
+			  AND xk_typ_name = x_xk_typ_name
+			  AND xk_typ_name_1 = x_xk_typ_name_1;
+		ELSE
+			l_fk_rfp_typ_name := x_xk_typ_name;
+			l_fk_rfp_typ_name_1 := x_xk_typ_name_1;
+		END IF;
+		check_no_part_rfp (p_fk_typ_name, p_fk_ref_sequence, p_fk_ref_bot_name, p_fk_ref_typ_name, p_xk_typ_name, p_xk_typ_name_1, l_fk_rfp_typ_name, l_fk_rfp_typ_name_1);
+		determine_position_rfp (l_cube_sequence, p_cube_pos_action, x_fk_typ_name, x_fk_ref_sequence, x_fk_ref_bot_name, x_fk_ref_typ_name, l_fk_rfp_typ_name, l_fk_rfp_typ_name_1, x_xk_typ_name, x_xk_typ_name_1);
+		UPDATE v_reference_part SET
+			fk_rfp_typ_name = l_fk_rfp_typ_name,
+			fk_rfp_typ_name_1 = l_fk_rfp_typ_name_1,
+			cube_sequence = l_cube_sequence
+		WHERE fk_typ_name = p_fk_typ_name
+		  AND fk_ref_sequence = p_fk_ref_sequence
+		  AND fk_ref_bot_name = p_fk_ref_bot_name
+		  AND fk_ref_typ_name = p_fk_ref_typ_name
+		  AND xk_typ_name = p_xk_typ_name
+		  AND xk_typ_name_1 = p_xk_typ_name_1;
+		IF SQL%NOTFOUND THEN
+			RAISE_APPLICATION_ERROR (-20002, 'Type reference_part not found');
+		END IF;
+	END;
+
+	PROCEDURE insert_rfp (
+			p_cube_pos_action IN VARCHAR2,
+			p_fk_bot_name IN VARCHAR2,
+			p_fk_typ_name IN VARCHAR2,
+			p_fk_ref_sequence IN NUMBER,
+			p_fk_ref_bot_name IN VARCHAR2,
+			p_fk_ref_typ_name IN VARCHAR2,
+			p_fk_rfp_typ_name IN VARCHAR2,
+			p_fk_rfp_typ_name_1 IN VARCHAR2,
+			p_xk_typ_name IN VARCHAR2,
+			p_xk_typ_name_1 IN VARCHAR2,
+			x_fk_typ_name IN VARCHAR2,
+			x_fk_ref_sequence IN NUMBER,
+			x_fk_ref_bot_name IN VARCHAR2,
+			x_fk_ref_typ_name IN VARCHAR2,
+			x_xk_typ_name IN VARCHAR2,
+			x_xk_typ_name_1 IN VARCHAR2) IS
+		l_cube_sequence NUMBER(8);
+	BEGIN
+		-- A=After B=Before F=First L=Last
+		IF NVL (p_cube_pos_action, ' ') NOT IN ('A', 'B', 'F', 'L') THEN
+			RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
+		END IF;
+		determine_position_rfp (l_cube_sequence, p_cube_pos_action, x_fk_typ_name, x_fk_ref_sequence, x_fk_ref_bot_name, x_fk_ref_typ_name, p_fk_rfp_typ_name, p_fk_rfp_typ_name_1, x_xk_typ_name, x_xk_typ_name_1);
+		INSERT INTO v_reference_part (
+			cube_id,
+			cube_sequence,
+			cube_level,
+			fk_bot_name,
+			fk_typ_name,
+			fk_ref_sequence,
+			fk_ref_bot_name,
+			fk_ref_typ_name,
+			fk_rfp_typ_name,
+			fk_rfp_typ_name_1,
+			xk_typ_name,
+			xk_typ_name_1)
+		VALUES (
+			NULL,
+			l_cube_sequence,
+			NULL,
+			p_fk_bot_name,
+			p_fk_typ_name,
+			p_fk_ref_sequence,
+			p_fk_ref_bot_name,
+			p_fk_ref_typ_name,
+			p_fk_rfp_typ_name,
+			p_fk_rfp_typ_name_1,
+			p_xk_typ_name,
+			p_xk_typ_name_1);
+	EXCEPTION
+		WHEN DUP_VAL_ON_INDEX THEN
+			RAISE_APPLICATION_ERROR (-20001, 'Type reference_part already exists');
+	END;
+
+	PROCEDURE update_rfp (
+			p_fk_bot_name IN VARCHAR2,
+			p_fk_typ_name IN VARCHAR2,
+			p_fk_ref_sequence IN NUMBER,
+			p_fk_ref_bot_name IN VARCHAR2,
+			p_fk_ref_typ_name IN VARCHAR2,
+			p_fk_rfp_typ_name IN VARCHAR2,
+			p_fk_rfp_typ_name_1 IN VARCHAR2,
+			p_xk_typ_name IN VARCHAR2,
+			p_xk_typ_name_1 IN VARCHAR2) IS
+	BEGIN
+		UPDATE v_reference_part SET
+			fk_bot_name = p_fk_bot_name,
+			fk_rfp_typ_name = p_fk_rfp_typ_name,
+			fk_rfp_typ_name_1 = p_fk_rfp_typ_name_1
+		WHERE fk_typ_name = p_fk_typ_name
+		  AND fk_ref_sequence = p_fk_ref_sequence
+		  AND fk_ref_bot_name = p_fk_ref_bot_name
+		  AND fk_ref_typ_name = p_fk_ref_typ_name
+		  AND xk_typ_name = p_xk_typ_name
+		  AND xk_typ_name_1 = p_xk_typ_name_1;
+	END;
+
+	PROCEDURE delete_rfp (
+			p_fk_typ_name IN VARCHAR2,
+			p_fk_ref_sequence IN NUMBER,
+			p_fk_ref_bot_name IN VARCHAR2,
+			p_fk_ref_typ_name IN VARCHAR2,
+			p_xk_typ_name IN VARCHAR2,
+			p_xk_typ_name_1 IN VARCHAR2) IS
+	BEGIN
+		DELETE v_reference_part
+		WHERE fk_typ_name = p_fk_typ_name
+		  AND fk_ref_sequence = p_fk_ref_sequence
+		  AND fk_ref_bot_name = p_fk_ref_bot_name
+		  AND fk_ref_typ_name = p_fk_ref_typ_name
+		  AND xk_typ_name = p_xk_typ_name
+		  AND xk_typ_name_1 = p_xk_typ_name_1;
 	END;
 
 	PROCEDURE get_dcr (

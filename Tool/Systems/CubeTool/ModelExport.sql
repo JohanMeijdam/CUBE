@@ -279,6 +279,88 @@ DECLARE
 	END;
 
 
+	PROCEDURE report_rfp_recursive (p_rfp IN t_reference_part%ROWTYPE) IS
+	BEGIN
+		FOR r_rfp IN (
+			SELECT *				
+			FROM t_reference_part
+			WHERE fk_bot_name = p_rfp.fk_bot_name
+			  AND fk_typ_name = p_rfp.fk_typ_name
+			  AND fk_ref_sequence = p_rfp.fk_ref_sequence
+			  AND fk_ref_bot_name = p_rfp.fk_ref_bot_name
+			  AND fk_ref_typ_name = p_rfp.fk_ref_typ_name
+			  AND fk_rfp_typ_name = p_rfp.xk_typ_name
+			  AND fk_rfp_typ_name_1 = p_rfp.xk_typ_name_1
+			ORDER BY cube_sequence )
+		LOOP
+			DBMS_OUTPUT.PUT_LINE (ftabs || '+REFERENCE_PART[' || r_rfp.cube_id || ']:' || ';');
+				l_level := l_level + 1;
+				report_rfp_recursive (r_rfp);
+				BEGIN
+					SELECT cube_id INTO l_cube_id FROM t_type
+					WHERE name = r_rfp.xk_typ_name;
+
+					DBMS_OUTPUT.PUT_LINE (ftabs || '>REFERENCE_PART_TYPE:' || l_cube_id || ';');
+				EXCEPTION
+					WHEN NO_DATA_FOUND THEN
+						NULL; 
+				END;
+				BEGIN
+					SELECT cube_id INTO l_cube_id FROM t_type
+					WHERE name = r_rfp.xk_typ_name_1;
+
+					DBMS_OUTPUT.PUT_LINE (ftabs || '>REFERENCE_PART_TYPE_IS_TARGET:' || l_cube_id || ';');
+				EXCEPTION
+					WHEN NO_DATA_FOUND THEN
+						NULL; 
+				END;
+				l_level := l_level - 1;
+			DBMS_OUTPUT.PUT_LINE (ftabs || '-REFERENCE_PART:' || ';');
+		END LOOP;
+	END;
+
+
+	PROCEDURE report_rfp (p_ref IN t_reference%ROWTYPE) IS
+	BEGIN
+		FOR r_rfp IN (
+			SELECT *				
+			FROM t_reference_part
+			WHERE fk_bot_name = p_ref.fk_bot_name
+			  AND fk_typ_name = p_ref.fk_typ_name
+			  AND fk_ref_sequence = p_ref.sequence
+			  AND fk_ref_bot_name = p_ref.xk_bot_name
+			  AND fk_ref_typ_name = p_ref.xk_typ_name
+			  AND fk_rfp_typ_name IS NULL
+			  AND fk_rfp_typ_name_1 IS NULL
+			ORDER BY cube_sequence )
+		LOOP
+			DBMS_OUTPUT.PUT_LINE (ftabs || '+REFERENCE_PART[' || r_rfp.cube_id || ']:' || ';');
+				l_level := l_level + 1;
+				report_rfp_recursive (r_rfp);
+				BEGIN
+					SELECT cube_id INTO l_cube_id FROM t_type
+					WHERE name = r_rfp.xk_typ_name;
+
+					DBMS_OUTPUT.PUT_LINE (ftabs || '>REFERENCE_PART_TYPE:' || l_cube_id || ';');
+				EXCEPTION
+					WHEN NO_DATA_FOUND THEN
+						NULL; 
+				END;
+				BEGIN
+					SELECT cube_id INTO l_cube_id FROM t_type
+					WHERE name = r_rfp.xk_typ_name_1;
+
+					DBMS_OUTPUT.PUT_LINE (ftabs || '>REFERENCE_PART_TYPE_IS_TARGET:' || l_cube_id || ';');
+				EXCEPTION
+					WHEN NO_DATA_FOUND THEN
+						NULL; 
+				END;
+				l_level := l_level - 1;
+			DBMS_OUTPUT.PUT_LINE (ftabs || '-REFERENCE_PART:' || ';');
+		END LOOP;
+	END;
+
+
 	PROCEDURE report_dcr (p_ref IN t_reference%ROWTYPE) IS
 	BEGIN
 		FOR r_dcr IN (
@@ -371,6 +453,7 @@ DECLARE
 		LOOP
 			DBMS_OUTPUT.PUT_LINE (ftabs || '+REFERENCE[' || r_ref.cube_id || ']:' || fenperc(r_ref.name) || '|' || fenperc(r_ref.primary_key) || '|' || fenperc(r_ref.code_display_key) || '|' || fenperc(r_ref.sequence) || '|' || fenperc(r_ref.scope) || '|' || fenperc(r_ref.unchangeable) || '|' || fenperc(r_ref.within_scope_extension) || '|' || fenperc(r_ref.cube_tsg_int_ext) || ';');
 				l_level := l_level + 1;
+				report_rfp (r_ref);
 				report_dcr (r_ref);
 				report_rtr (r_ref);
 				report_rts (r_ref);
@@ -754,6 +837,10 @@ BEGIN
 	DBMS_OUTPUT.PUT_LINE ('				=ASSOCIATION:BUSINESS_OBJECT_TYPE|Refer|BUSINESS_OBJECT_TYPE|;');
 	DBMS_OUTPUT.PUT_LINE ('				=ASSOCIATION:REFERENCE_TYPE|Refer|TYPE|;');
 	DBMS_OUTPUT.PUT_LINE ('				=ASSOCIATION:REFERENCE_TYPE_WITHIN_SCOPE_OF|WithinScopeOf|TYPE|;');
+	DBMS_OUTPUT.PUT_LINE ('				+META_TYPE:REFERENCE_PART|;');
+	DBMS_OUTPUT.PUT_LINE ('					=ASSOCIATION:REFERENCE_PART_TYPE|IsSource|TYPE|;');
+	DBMS_OUTPUT.PUT_LINE ('					=ASSOCIATION:REFERENCE_PART_TYPE_IS_TARGET|IsTarget|TYPE|;');
+	DBMS_OUTPUT.PUT_LINE ('				-META_TYPE:REFERENCE_PART;');
 	DBMS_OUTPUT.PUT_LINE ('				+META_TYPE:DESCRIPTION_REFERENCE|;');
 	DBMS_OUTPUT.PUT_LINE ('					=PROPERTY:0|Text|;');
 	DBMS_OUTPUT.PUT_LINE ('				-META_TYPE:DESCRIPTION_REFERENCE;');

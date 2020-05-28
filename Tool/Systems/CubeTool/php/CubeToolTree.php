@@ -52,6 +52,8 @@ g_xmlhttp.onreadystatechange = function() {
 					case 'LIST_RTA': AddTreeviewChildren(l_json_array[i].Rows,'TYP_RTA','icons/restrict.bmp'); break;
 					case 'LIST_REF': AddTreeviewChildren(l_json_array[i].Rows,'TYP_REF','icons/ref.bmp'); break;
 					case 'MOVE_REF': MoveNode (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.body._moveAction); break;
+					case 'LIST_RFP': AddTreeviewChildren(l_json_array[i].Rows,'TYP_RFP','icons/refpart.bmp'); break;
+					case 'MOVE_RFP': MoveNode (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.body._moveAction); break;
 					case 'LIST_DCR': AddTreeviewChildren(l_json_array[i].Rows,'TYP_DCR','icons/desc.bmp'); break;
 					case 'COUNT_DCR': CheckMenuItem('TYP_DCR',l_json_array[i].Rows[0].Data.TypeCount); break;
 					case 'LIST_RTR': AddTreeviewChildren(l_json_array[i].Rows,'TYP_RTR','icons/restrict.bmp'); break;
@@ -116,8 +118,11 @@ function DefineTypePosition (p_parentType, p_type, p_switch) {
 		switch (p_type) { case 'TYP_DER': l_index = 2; break; case 'TYP_DCA': l_index = 3; break; case 'TYP_RTA': l_index = 4; break;}
 		var l_count = 3; break;
 	case 'TYP_REF':
-		switch (p_type) { case 'TYP_DCR': l_index = 2; break; case 'TYP_RTR': l_index = 3; break; case 'TYP_RTS': l_index = 4; break;}
-		var l_count = 3; break;
+		switch (p_type) { case 'TYP_RFP': l_index = 2; break; case 'TYP_DCR': l_index = 3; break; case 'TYP_RTR': l_index = 4; break; case 'TYP_RTS': l_index = 5; break;}
+		var l_count = 4; break;
+	case 'TYP_RFP':
+		switch (p_type) {case 'TYP_RFP': l_index = 2; break;}
+		var l_count = 1; break;
 	case 'TYP_JSN':
 		switch (p_type) {case 'TYP_JSN': l_index = 2; break;}
 		var l_count = 1; break;
@@ -187,6 +192,10 @@ function OpenCloseOnClick(p_obj) {
  		case 'TYP_REF':
 			var l_json_id = JSON.parse(p_obj.parentNode.id)["TYP_REF"];
 			PerformTrans( {Service:"GetRefItems",Parameters:{Type:l_json_id}} );
+			break;
+ 		case 'TYP_RFP':
+			var l_json_id = JSON.parse(p_obj.parentNode.id)["TYP_RFP"];
+			PerformTrans( {Service:"GetRfpItems",Parameters:{Type:l_json_id}} );
 			break;
  		case 'TYP_JSN':
 			var l_json_id = JSON.parse(p_obj.parentNode.id)["TYP_JSN"];
@@ -262,6 +271,9 @@ function OpenDetail(p_obj) {
 			case 'TYP_REF':
 				PerformTrans( {Service:"MoveRef",Parameters:{Option:{CubePosAction:document.body._moveAction},Type:l_json_id,Ref:l_json_id_ref}} );
 				break;
+			case 'TYP_RFP':
+				PerformTrans( {Service:"MoveRfp",Parameters:{Option:{CubePosAction:document.body._moveAction},Type:l_json_id,Ref:l_json_id_ref}} );
+				break;
 			case 'TYP_JSN':
 				PerformTrans( {Service:"MoveJsn",Parameters:{Option:{CubePosAction:document.body._moveAction},Type:l_json_id,Ref:l_json_id_ref}} );
 				break;
@@ -295,6 +307,10 @@ function OpenDetail(p_obj) {
 				case 'TYP_TYP':
 					var l_json_id_ref = JSON.parse(document.body._objNodePosId)[l_obj._type];
 					PerformTrans( {Service:"MoveTyp",Parameters:{Option:{CubePosAction:document.body._moveAction},Type:l_json_id,Ref:l_json_id_ref}} );
+					break;
+				case 'TYP_RFP':
+					var l_json_id_ref = JSON.parse(document.body._objNodePosId)[l_obj._type];
+					PerformTrans( {Service:"MoveRfp",Parameters:{Option:{CubePosAction:document.body._moveAction},Type:l_json_id,Ref:l_json_id_ref}} );
 					break;
 				case 'TYP_JSN':
 					var l_json_id_ref = JSON.parse(document.body._objNodePosId)[l_obj._type];
@@ -459,11 +475,23 @@ function OpenMenu(p_obj) {
 		if (l_childCount > 1) {
 			AddMenuItem(g_objMenuList, 'move', 'icons/cube_move.bmp','CubeMove','','CUBE_M_REF',0,'N',0);
 		}
-		AddMenuItem(g_objMenuList, 'add description_reference', 'icons/desc.bmp','DetailDCR','N','TYP_DCR',1,'N',2);
-		AddMenuItem(g_objMenuList, 'add restriction_type_spec_ref', 'icons/restrict.bmp','DetailRTR','N','TYP_RTR',0,'N',3);
-		AddMenuItem(g_objMenuList, 'add restriction_target_type_spec', 'icons/restrtgt.bmp','DetailRTS','N','TYP_RTS',1,'N',4);
+		AddMenuItem(g_objMenuList, 'add reference_part', 'icons/refpart.bmp','CubeAdd','N','TYP_RFP',0,'N',2);
+		AddMenuItem(g_objMenuList, 'add description_reference', 'icons/desc.bmp','DetailDCR','N','TYP_DCR',1,'N',3);
+		AddMenuItem(g_objMenuList, 'add restriction_type_spec_ref', 'icons/restrict.bmp','DetailRTR','N','TYP_RTR',0,'N',4);
+		AddMenuItem(g_objMenuList, 'add restriction_target_type_spec', 'icons/restrtgt.bmp','DetailRTS','N','TYP_RTS',1,'N',5);
 		var l_json_id = l_json_node_id[l_type_id];
 		PerformTrans( {Service:"CountRefRestrictedItems",Parameters:{Type:l_json_id}} );
+		break;
+ 	case 'TYP_RFP':
+		if (l_childCount > 1) {
+			AddMenuItem(g_objMenuList, 'move', 'icons/cube_move.bmp','CubeMove','','CUBE_M_RFP',0,'N',0);
+		}
+		var l_json_parent_node_id = JSON.parse(p_obj.parentNode.parentNode.parentNode.id);
+		var l_parent_type_id = Object.keys(l_json_parent_node_id)[0];
+		if (l_childCount > 1 || l_type_id == l_parent_type_id) {
+			AddMenuItem(g_objMenuList, 'change parent', 'icons/cube_change_par.bmp','CubeChangePar','','CUBE_P_RFP',0,'Y',0);
+		}
+		AddMenuItem(g_objMenuList, 'add reference_part', 'icons/refpart.bmp','CubeAdd','R','TYP_RFP',0,'N',2);
 		break;
  	case 'TYP_JSN':
 		if (l_childCount > 1) {

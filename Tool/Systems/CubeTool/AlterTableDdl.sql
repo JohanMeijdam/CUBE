@@ -136,6 +136,17 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
+	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBETOOL' AND sequence_name = 'SQ_RFP';
+	IF l_count = 0 THEN
+		EXECUTE IMMEDIATE 
+		'CREATE SEQUENCE sq_rfp START WITH 100000';
+		DBMS_OUTPUT.PUT_LINE('Sequence SQ_RFP created');
+	END IF;
+END;
+/
+DECLARE
+	l_count NUMBER(4);
+BEGIN
 	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBETOOL' AND sequence_name = 'SQ_DCR';
 	IF l_count = 0 THEN
 		EXECUTE IMMEDIATE 
@@ -1295,6 +1306,115 @@ BEGIN
 			EXECUTE IMMEDIATE
 			'DROP INDEX ' || r_index.index_name;
 			DBMS_OUTPUT.PUT_LINE('Index T_REFERENCE.' || UPPER(r_index.index_name) || ' dropped');
+		END LOOP;
+	END IF;
+END;
+/
+DECLARE
+	l_count NUMBER(4);
+BEGIN
+	DBMS_OUTPUT.PUT_LINE('Prepare table T_REFERENCE_PART');
+	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = 'CUBETOOL' AND table_name = 'T_REFERENCE_PART';
+	IF l_count = 0 THEN
+		EXECUTE IMMEDIATE
+		'CREATE TABLE t_reference_part (
+			cube_id VARCHAR2(16),
+			cube_sequence NUMBER(8),
+			cube_level NUMBER(8) DEFAULT ''1'',
+			fk_bot_name VARCHAR2(30),
+			fk_typ_name VARCHAR2(30),
+			fk_ref_sequence NUMBER(1) DEFAULT ''0'',
+			fk_ref_bot_name VARCHAR2(30),
+			fk_ref_typ_name VARCHAR2(30),
+			fk_rfp_typ_name VARCHAR2(30),
+			fk_rfp_typ_name_1 VARCHAR2(30),
+			xk_typ_name VARCHAR2(30),
+			xk_typ_name_1 VARCHAR2(30))';
+		DBMS_OUTPUT.PUT_LINE('Table T_REFERENCE_PART created');
+	ELSE
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_REFERENCE_PART' AND column_name = 'CUBE_ID';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_reference_part ADD cube_id VARCHAR2(16)';
+			DBMS_OUTPUT.PUT_LINE('Column T_REFERENCE_PART.CUBE_ID created');
+		END IF;
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_REFERENCE_PART' AND column_name = 'CUBE_SEQUENCE';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_reference_part ADD cube_sequence NUMBER(8)';
+			DBMS_OUTPUT.PUT_LINE('Column T_REFERENCE_PART.CUBE_SEQUENCE created');
+		END IF;
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_REFERENCE_PART' AND column_name = 'CUBE_LEVEL';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_reference_part ADD cube_level NUMBER(8) DEFAULT ''1''';
+			DBMS_OUTPUT.PUT_LINE('Column T_REFERENCE_PART.CUBE_LEVEL created');
+		END IF;
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_REFERENCE_PART' AND column_name = 'FK_BOT_NAME';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_reference_part ADD fk_bot_name VARCHAR2(30)';
+			DBMS_OUTPUT.PUT_LINE('Column T_REFERENCE_PART.FK_BOT_NAME created');
+		END IF;
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_REFERENCE_PART' AND column_name = 'FK_TYP_NAME';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_reference_part ADD fk_typ_name VARCHAR2(30)';
+			DBMS_OUTPUT.PUT_LINE('Column T_REFERENCE_PART.FK_TYP_NAME created');
+		END IF;
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_REFERENCE_PART' AND column_name = 'FK_REF_SEQUENCE';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_reference_part ADD fk_ref_sequence NUMBER(1) DEFAULT ''0''';
+			DBMS_OUTPUT.PUT_LINE('Column T_REFERENCE_PART.FK_REF_SEQUENCE created');
+		END IF;
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_REFERENCE_PART' AND column_name = 'FK_REF_BOT_NAME';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_reference_part ADD fk_ref_bot_name VARCHAR2(30)';
+			DBMS_OUTPUT.PUT_LINE('Column T_REFERENCE_PART.FK_REF_BOT_NAME created');
+		END IF;
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_REFERENCE_PART' AND column_name = 'FK_REF_TYP_NAME';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_reference_part ADD fk_ref_typ_name VARCHAR2(30)';
+			DBMS_OUTPUT.PUT_LINE('Column T_REFERENCE_PART.FK_REF_TYP_NAME created');
+		END IF;
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_REFERENCE_PART' AND column_name = 'FK_RFP_TYP_NAME';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_reference_part ADD fk_rfp_typ_name VARCHAR2(30)';
+			DBMS_OUTPUT.PUT_LINE('Column T_REFERENCE_PART.FK_RFP_TYP_NAME created');
+		END IF;
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_REFERENCE_PART' AND column_name = 'FK_RFP_TYP_NAME_1';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_reference_part ADD fk_rfp_typ_name_1 VARCHAR2(30)';
+			DBMS_OUTPUT.PUT_LINE('Column T_REFERENCE_PART.FK_RFP_TYP_NAME_1 created');
+		END IF;
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_REFERENCE_PART' AND column_name = 'XK_TYP_NAME';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_reference_part ADD xk_typ_name VARCHAR2(30)';
+			DBMS_OUTPUT.PUT_LINE('Column T_REFERENCE_PART.XK_TYP_NAME created');
+		END IF;
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_REFERENCE_PART' AND column_name = 'XK_TYP_NAME_1';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_reference_part ADD xk_typ_name_1 VARCHAR2(30)';
+			DBMS_OUTPUT.PUT_LINE('Column T_REFERENCE_PART.XK_TYP_NAME_1 created');
+		END IF;
+		FOR r_key IN (SELECT constraint_name FROM all_constraints WHERE owner = 'CUBETOOL' AND table_name = 'T_REFERENCE_PART' AND constraint_type IN ('P','U','R') ORDER BY constraint_type DESC)
+		LOOP
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_reference_part DROP CONSTRAINT ' || r_key.constraint_name || ' CASCADE';
+			DBMS_OUTPUT.PUT_LINE('Primary Key T_REFERENCE_PART.' || UPPER(r_key.constraint_name) || ' dropped');
+		END LOOP;
+		FOR r_index IN (SELECT index_name FROM all_indexes WHERE owner = 'CUBETOOL' AND table_name = 'T_REFERENCE_PART')
+		LOOP
+			EXECUTE IMMEDIATE
+			'DROP INDEX ' || r_index.index_name;
+			DBMS_OUTPUT.PUT_LINE('Index T_REFERENCE_PART.' || UPPER(r_index.index_name) || ' dropped');
 		END LOOP;
 	END IF;
 END;
@@ -2978,6 +3098,101 @@ BEGIN
 		EXECUTE IMMEDIATE
 		'ALTER TABLE t_reference DROP COLUMN ' || r_field.column_name;
 		DBMS_OUTPUT.PUT_LINE('Field T_REFERENCE.' || UPPER(r_field.column_name) || ' dropped');
+	END LOOP;
+END;
+/
+BEGIN
+	DBMS_OUTPUT.PUT_LINE('Maintain table T_REFERENCE_PART');
+	FOR r_field IN (SELECT column_name,
+		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
+		data_default old_default_value,
+  		DECODE(column_name,
+			'CUBE_ID','VARCHAR2(16)',
+			'CUBE_SEQUENCE','NUMBER(8)',
+			'CUBE_LEVEL','NUMBER(8)',
+			'FK_BOT_NAME','VARCHAR2(30)',
+			'FK_TYP_NAME','VARCHAR2(30)',
+			'FK_REF_SEQUENCE','NUMBER(1)',
+			'FK_REF_BOT_NAME','VARCHAR2(30)',
+			'FK_REF_TYP_NAME','VARCHAR2(30)',
+			'FK_RFP_TYP_NAME','VARCHAR2(30)',
+			'FK_RFP_TYP_NAME_1','VARCHAR2(30)',
+			'XK_TYP_NAME','VARCHAR2(30)',
+			'XK_TYP_NAME_1','VARCHAR2(30)',NULL) new_domain,
+		DECODE(column_name,
+			'CUBE_ID',NULL,
+			'CUBE_SEQUENCE',NULL,
+			'CUBE_LEVEL','''1''',
+			'FK_BOT_NAME',NULL,
+			'FK_TYP_NAME',NULL,
+			'FK_REF_SEQUENCE','''0''',
+			'FK_REF_BOT_NAME',NULL,
+			'FK_REF_TYP_NAME',NULL,
+			'FK_RFP_TYP_NAME',NULL,
+			'FK_RFP_TYP_NAME_1',NULL,
+			'XK_TYP_NAME',NULL,
+			'XK_TYP_NAME_1',NULL,NULL) new_default_value
+  		FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_REFERENCE_PART')
+	LOOP
+		IF r_field.old_domain <> r_field.new_domain THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_reference_part RENAME COLUMN ' || r_field.column_name || ' TO old#domain#field';
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_reference_part ADD ' || r_field.column_name || ' ' || r_field.new_domain;
+ 			IF r_field.new_domain = 'VARCHAR2' THEN  
+				EXECUTE IMMEDIATE
+				'UPDATE t_reference_part SET ' || r_field.column_name || '= TRIM(old#domain#field)';
+			ELSE
+				EXECUTE IMMEDIATE
+				'UPDATE t_reference_part SET ' || r_field.column_name || '= old#domain#field';
+			END IF;
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_reference_part DROP COLUMN old#domain#field';
+			DBMS_OUTPUT.PUT_LINE('Field T_REFERENCE_PART.' || UPPER(r_field.column_name) || ' converted from ' || r_field.old_domain || ' to ' || r_field.new_domain);
+		END IF;
+		IF NOT((r_field.old_default_value IS NULL AND r_field.new_default_value IS NULL) OR r_field.old_default_value = r_field.new_default_value) THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_reference_part MODIFY (' || r_field.column_name || ' DEFAULT ' || NVL(r_field.new_default_value,'NULL') || ')';
+			DBMS_OUTPUT.PUT_LINE('Field T_REFERENCE_PART.' || UPPER(r_field.column_name) || ' default value set to ' || NVL(r_field.new_default_value,'NULL'));
+		END IF;
+	END LOOP;
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_reference_part ADD CONSTRAINT rfp_pk
+		PRIMARY KEY (
+			fk_typ_name,
+			fk_ref_sequence,
+			fk_ref_bot_name,
+			fk_ref_typ_name,
+			xk_typ_name,
+			xk_typ_name_1 )';
+	DBMS_OUTPUT.PUT_LINE('Primary Key T_REFERENCE_PART.RFP_PK created');
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_reference_part ADD CONSTRAINT rfp_ref_fk
+		FOREIGN KEY (fk_typ_name, fk_ref_sequence, fk_ref_bot_name, fk_ref_typ_name)
+		REFERENCES t_reference (fk_typ_name, sequence, xk_bot_name, xk_typ_name)
+		ON DELETE CASCADE';
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_reference_part ADD CONSTRAINT rfp_rfp_fk
+		FOREIGN KEY (fk_typ_name, fk_ref_sequence, fk_ref_bot_name, fk_ref_typ_name, fk_rfp_typ_name, fk_rfp_typ_name_1)
+		REFERENCES t_reference_part (fk_typ_name, fk_ref_sequence, fk_ref_bot_name, fk_ref_typ_name, xk_typ_name, xk_typ_name_1)
+		ON DELETE CASCADE';
+	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_REFERENCE_PART' AND column_name NOT IN (
+							'CUBE_ID',
+							'CUBE_SEQUENCE',
+							'CUBE_LEVEL',
+							'FK_BOT_NAME',
+							'FK_TYP_NAME',
+							'FK_REF_SEQUENCE',
+							'FK_REF_BOT_NAME',
+							'FK_REF_TYP_NAME',
+							'FK_RFP_TYP_NAME',
+							'FK_RFP_TYP_NAME_1',
+							'XK_TYP_NAME',
+							'XK_TYP_NAME_1'))
+	LOOP
+		EXECUTE IMMEDIATE
+		'ALTER TABLE t_reference_part DROP COLUMN ' || r_field.column_name;
+		DBMS_OUTPUT.PUT_LINE('Field T_REFERENCE_PART.' || UPPER(r_field.column_name) || ' dropped');
 	END LOOP;
 END;
 /

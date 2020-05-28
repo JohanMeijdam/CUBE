@@ -47,11 +47,8 @@
 		-	Bij een REFERENCE WithinScopeSourceOrTarget impelementeren. 
 			In case of "within scope of" type that it concerns the source type or the target type of the reference. 
 		
--	DESIGN ERROR: Scope level -1 kan meerdere types opleveren. Selectie levert nu maar 1 child type?
-		WITHIN_SCOPE_LEVEL beperken tot 0 en 1, andere hebben geen betekenis 
-		 
--	BUG Transfarable type mag niet worden geplaatst op een plaats waar de caridinality wordt overschreden.
+-	BUG Transfarable type mag niet worden geplaatst op een plaats waar de cardinality wordt overschreden.
 
 -	Bij een update waarschuwen als er iets is gewijzigd dat de wijziging ongedaan wordt gemaakt als niet op Update is gedrukt.
 
--	 Attribuut voor specialisation group!
+-	Attribuut voor specialisation group!

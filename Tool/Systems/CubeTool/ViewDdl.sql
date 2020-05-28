@@ -459,6 +459,22 @@ CREATE OR REPLACE VIEW v_reference AS
 		xk_typ_name_1
 	FROM t_reference
 /
+CREATE OR REPLACE VIEW v_reference_part AS 
+	SELECT
+		cube_id,
+		cube_sequence,
+		cube_level,
+		fk_bot_name,
+		fk_typ_name,
+		fk_ref_sequence,
+		fk_ref_bot_name,
+		fk_ref_typ_name,
+		fk_rfp_typ_name,
+		fk_rfp_typ_name_1,
+		xk_typ_name,
+		xk_typ_name_1
+	FROM t_reference_part
+/
 CREATE OR REPLACE VIEW v_description_reference AS 
 	SELECT
 		cube_id,
@@ -572,6 +588,11 @@ CREATE OR REPLACE PACKAGE pkg_bot_trg IS
 	PROCEDURE insert_ref (p_ref IN OUT NOCOPY v_reference%ROWTYPE);
 	PROCEDURE update_ref (p_cube_rowid IN UROWID, p_ref_old IN OUT NOCOPY v_reference%ROWTYPE, p_ref_new IN OUT NOCOPY v_reference%ROWTYPE);
 	PROCEDURE delete_ref (p_cube_rowid IN UROWID, p_ref IN OUT NOCOPY v_reference%ROWTYPE);
+	PROCEDURE insert_rfp (p_rfp IN OUT NOCOPY v_reference_part%ROWTYPE);
+	PROCEDURE update_rfp (p_cube_rowid IN UROWID, p_rfp_old IN OUT NOCOPY v_reference_part%ROWTYPE, p_rfp_new IN OUT NOCOPY v_reference_part%ROWTYPE);
+	PROCEDURE delete_rfp (p_cube_rowid IN UROWID, p_rfp IN OUT NOCOPY v_reference_part%ROWTYPE);
+	PROCEDURE denorm_rfp_rfp (p_rfp IN OUT NOCOPY v_reference_part%ROWTYPE, p_rfp_in IN v_reference_part%ROWTYPE);
+	PROCEDURE get_denorm_rfp_rfp (p_rfp IN OUT NOCOPY v_reference_part%ROWTYPE);
 	PROCEDURE insert_dcr (p_dcr IN OUT NOCOPY v_description_reference%ROWTYPE);
 	PROCEDURE update_dcr (p_cube_rowid IN UROWID, p_dcr_old IN OUT NOCOPY v_description_reference%ROWTYPE, p_dcr_new IN OUT NOCOPY v_description_reference%ROWTYPE);
 	PROCEDURE delete_dcr (p_cube_rowid IN UROWID, p_dcr IN OUT NOCOPY v_description_reference%ROWTYPE);
@@ -1214,6 +1235,155 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 	BEGIN
 		DELETE t_reference 
 		WHERE rowid = p_cube_rowid;
+	END;
+
+	PROCEDURE insert_rfp (p_rfp IN OUT NOCOPY v_reference_part%ROWTYPE) IS
+	BEGIN
+		p_rfp.cube_id := 'RFP-' || TO_CHAR(sq_rfp.NEXTVAL,'FM000000000000');
+		p_rfp.fk_bot_name := NVL(p_rfp.fk_bot_name,' ');
+		p_rfp.fk_typ_name := NVL(p_rfp.fk_typ_name,' ');
+		p_rfp.fk_ref_sequence := NVL(p_rfp.fk_ref_sequence,0);
+		p_rfp.fk_ref_bot_name := NVL(p_rfp.fk_ref_bot_name,' ');
+		p_rfp.fk_ref_typ_name := NVL(p_rfp.fk_ref_typ_name,' ');
+		p_rfp.xk_typ_name := NVL(p_rfp.xk_typ_name,' ');
+		p_rfp.xk_typ_name_1 := NVL(p_rfp.xk_typ_name_1,' ');
+		IF p_rfp.fk_rfp_typ_name IS NOT NULL OR p_rfp.fk_rfp_typ_name_1 IS NOT NULL  THEN
+			-- Recursive
+			SELECT fk_bot_name
+			  INTO p_rfp.fk_bot_name
+			FROM t_reference_part
+			WHERE fk_typ_name = p_rfp.fk_typ_name
+			  AND fk_ref_sequence = p_rfp.fk_ref_sequence
+			  AND fk_ref_bot_name = p_rfp.fk_ref_bot_name
+			  AND fk_ref_typ_name = p_rfp.fk_ref_typ_name
+			  AND xk_typ_name = p_rfp.fk_rfp_typ_name
+			  AND xk_typ_name_1 = p_rfp.fk_rfp_typ_name_1;
+		ELSE
+			-- Parent
+			SELECT fk_bot_name
+			  INTO p_rfp.fk_bot_name
+			FROM t_reference
+			WHERE fk_typ_name = p_rfp.fk_typ_name
+			  AND sequence = p_rfp.fk_ref_sequence
+			  AND xk_bot_name = p_rfp.fk_ref_bot_name
+			  AND xk_typ_name = p_rfp.fk_ref_typ_name;
+			
+		END IF;
+		get_denorm_rfp_rfp (p_rfp);
+		INSERT INTO t_reference_part (
+			cube_id,
+			cube_sequence,
+			cube_level,
+			fk_bot_name,
+			fk_typ_name,
+			fk_ref_sequence,
+			fk_ref_bot_name,
+			fk_ref_typ_name,
+			fk_rfp_typ_name,
+			fk_rfp_typ_name_1,
+			xk_typ_name,
+			xk_typ_name_1)
+		VALUES (
+			p_rfp.cube_id,
+			p_rfp.cube_sequence,
+			p_rfp.cube_level,
+			p_rfp.fk_bot_name,
+			p_rfp.fk_typ_name,
+			p_rfp.fk_ref_sequence,
+			p_rfp.fk_ref_bot_name,
+			p_rfp.fk_ref_typ_name,
+			p_rfp.fk_rfp_typ_name,
+			p_rfp.fk_rfp_typ_name_1,
+			p_rfp.xk_typ_name,
+			p_rfp.xk_typ_name_1);
+	END;
+
+	PROCEDURE update_rfp (p_cube_rowid UROWID, p_rfp_old IN OUT NOCOPY v_reference_part%ROWTYPE, p_rfp_new IN OUT NOCOPY v_reference_part%ROWTYPE) IS
+
+		CURSOR c_rfp IS
+			SELECT ROWID cube_row_id, rfp.* FROM v_reference_part rfp
+			WHERE fk_typ_name = p_rfp_old.fk_typ_name
+			  AND fk_ref_sequence = p_rfp_old.fk_ref_sequence
+			  AND fk_ref_bot_name = p_rfp_old.fk_ref_bot_name
+			  AND fk_ref_typ_name = p_rfp_old.fk_ref_typ_name
+			  AND fk_rfp_typ_name = p_rfp_old.xk_typ_name
+			  AND fk_rfp_typ_name_1 = p_rfp_old.xk_typ_name_1;
+		
+		l_rfp_rowid UROWID;
+		r_rfp_old v_reference_part%ROWTYPE;
+		r_rfp_new v_reference_part%ROWTYPE;
+	BEGIN
+		IF NVL(p_rfp_old.fk_rfp_typ_name,' ') <> NVL(p_rfp_new.fk_rfp_typ_name,' ') 
+		OR NVL(p_rfp_old.fk_rfp_typ_name_1,' ') <> NVL(p_rfp_new.fk_rfp_typ_name_1,' ')  THEN
+			get_denorm_rfp_rfp (p_rfp_new);
+		END IF;
+		UPDATE t_reference_part SET 
+			cube_sequence = p_rfp_new.cube_sequence,
+			cube_level = p_rfp_new.cube_level,
+			fk_rfp_typ_name = p_rfp_new.fk_rfp_typ_name,
+			fk_rfp_typ_name_1 = p_rfp_new.fk_rfp_typ_name_1
+		WHERE rowid = p_cube_rowid;
+		IF NVL(p_rfp_old.cube_level,0) <> NVL(p_rfp_new.cube_level,0) THEN
+			OPEN c_rfp;
+			LOOP
+				FETCH c_rfp INTO
+					l_rfp_rowid,
+					r_rfp_old.cube_id,
+					r_rfp_old.cube_sequence,
+					r_rfp_old.cube_level,
+					r_rfp_old.fk_bot_name,
+					r_rfp_old.fk_typ_name,
+					r_rfp_old.fk_ref_sequence,
+					r_rfp_old.fk_ref_bot_name,
+					r_rfp_old.fk_ref_typ_name,
+					r_rfp_old.fk_rfp_typ_name,
+					r_rfp_old.fk_rfp_typ_name_1,
+					r_rfp_old.xk_typ_name,
+					r_rfp_old.xk_typ_name_1;
+				EXIT WHEN c_rfp%NOTFOUND;
+				r_rfp_new := r_rfp_old;
+				denorm_rfp_rfp (r_rfp_new, p_rfp_new);
+				update_rfp (l_rfp_rowid, r_rfp_old, r_rfp_new);
+			END LOOP;
+			CLOSE c_rfp;
+		END IF;
+	END;
+
+	PROCEDURE delete_rfp (p_cube_rowid UROWID, p_rfp IN OUT NOCOPY v_reference_part%ROWTYPE) IS
+	BEGIN
+		DELETE t_reference_part 
+		WHERE rowid = p_cube_rowid;
+	END;
+
+	PROCEDURE denorm_rfp_rfp (p_rfp IN OUT NOCOPY v_reference_part%ROWTYPE, p_rfp_in IN v_reference_part%ROWTYPE) IS
+	BEGIN
+		p_rfp.cube_level := NVL (p_rfp_in.cube_level, 0) + 1;
+	END;
+
+	PROCEDURE get_denorm_rfp_rfp (p_rfp IN OUT NOCOPY v_reference_part%ROWTYPE) IS
+
+		CURSOR c_rfp IS 
+			SELECT * FROM v_reference_part
+			WHERE fk_typ_name = p_rfp.fk_typ_name
+			  AND fk_ref_sequence = p_rfp.fk_ref_sequence
+			  AND fk_ref_bot_name = p_rfp.fk_ref_bot_name
+			  AND fk_ref_typ_name = p_rfp.fk_ref_typ_name
+			  AND xk_typ_name = p_rfp.fk_rfp_typ_name
+			  AND xk_typ_name_1 = p_rfp.fk_rfp_typ_name_1;
+		
+		r_rfp v_reference_part%ROWTYPE;
+	BEGIN
+		IF p_rfp.fk_rfp_typ_name IS NOT NULL AND p_rfp.fk_rfp_typ_name_1 IS NOT NULL THEN
+			OPEN c_rfp;
+			FETCH c_rfp INTO r_rfp;
+			IF c_rfp%NOTFOUND THEN
+				r_rfp := NULL;
+			END IF;
+			CLOSE c_rfp;
+		ELSE
+			r_rfp := NULL;
+		END IF;
+		denorm_rfp_rfp (p_rfp, r_rfp);
 	END;
 
 	PROCEDURE insert_dcr (p_dcr IN OUT NOCOPY v_description_reference%ROWTYPE) IS
@@ -2270,6 +2440,93 @@ BEGIN
 		pkg_bot_trg.update_ref (l_cube_rowid, r_ref_old, r_ref_new);
 	ELSIF DELETING THEN
 		pkg_bot_trg.delete_ref (l_cube_rowid, r_ref_old);
+	END IF;
+END;
+/
+SHOW ERRORS
+
+CREATE OR REPLACE TRIGGER trg_rfp
+INSTEAD OF INSERT OR DELETE OR UPDATE ON v_reference_part
+FOR EACH ROW
+DECLARE
+	l_cube_rowid UROWID;
+	r_rfp_new v_reference_part%ROWTYPE;
+	r_rfp_old v_reference_part%ROWTYPE;
+BEGIN
+	IF INSERTING OR UPDATING THEN
+		r_rfp_new.cube_sequence := :NEW.cube_sequence;
+		IF :NEW.fk_bot_name = ' ' THEN
+			r_rfp_new.fk_bot_name := ' ';
+		ELSE
+			r_rfp_new.fk_bot_name := REPLACE(:NEW.fk_bot_name,' ','_');
+		END IF;
+		IF :NEW.fk_typ_name = ' ' THEN
+			r_rfp_new.fk_typ_name := ' ';
+		ELSE
+			r_rfp_new.fk_typ_name := REPLACE(:NEW.fk_typ_name,' ','_');
+		END IF;
+		r_rfp_new.fk_ref_sequence := :NEW.fk_ref_sequence;
+		IF :NEW.fk_ref_bot_name = ' ' THEN
+			r_rfp_new.fk_ref_bot_name := ' ';
+		ELSE
+			r_rfp_new.fk_ref_bot_name := REPLACE(:NEW.fk_ref_bot_name,' ','_');
+		END IF;
+		IF :NEW.fk_ref_typ_name = ' ' THEN
+			r_rfp_new.fk_ref_typ_name := ' ';
+		ELSE
+			r_rfp_new.fk_ref_typ_name := REPLACE(:NEW.fk_ref_typ_name,' ','_');
+		END IF;
+		IF :NEW.fk_rfp_typ_name = ' ' THEN
+			r_rfp_new.fk_rfp_typ_name := ' ';
+		ELSE
+			r_rfp_new.fk_rfp_typ_name := REPLACE(:NEW.fk_rfp_typ_name,' ','_');
+		END IF;
+		IF :NEW.fk_rfp_typ_name_1 = ' ' THEN
+			r_rfp_new.fk_rfp_typ_name_1 := ' ';
+		ELSE
+			r_rfp_new.fk_rfp_typ_name_1 := REPLACE(:NEW.fk_rfp_typ_name_1,' ','_');
+		END IF;
+		IF :NEW.xk_typ_name = ' ' THEN
+			r_rfp_new.xk_typ_name := ' ';
+		ELSE
+			r_rfp_new.xk_typ_name := REPLACE(:NEW.xk_typ_name,' ','_');
+		END IF;
+		IF :NEW.xk_typ_name_1 = ' ' THEN
+			r_rfp_new.xk_typ_name_1 := ' ';
+		ELSE
+			r_rfp_new.xk_typ_name_1 := REPLACE(:NEW.xk_typ_name_1,' ','_');
+		END IF;
+	END IF;
+	IF UPDATING THEN
+		r_rfp_new.cube_id := :OLD.cube_id;
+		r_rfp_new.cube_level := :OLD.cube_level;
+	END IF;
+	IF UPDATING OR DELETING THEN
+		SELECT rowid INTO l_cube_rowid FROM t_reference_part
+		WHERE fk_typ_name = :OLD.fk_typ_name
+		  AND fk_ref_sequence = :OLD.fk_ref_sequence
+		  AND fk_ref_bot_name = :OLD.fk_ref_bot_name
+		  AND fk_ref_typ_name = :OLD.fk_ref_typ_name
+		  AND xk_typ_name = :OLD.xk_typ_name
+		  AND xk_typ_name_1 = :OLD.xk_typ_name_1;
+		r_rfp_old.cube_sequence := :OLD.cube_sequence;
+		r_rfp_old.fk_bot_name := :OLD.fk_bot_name;
+		r_rfp_old.fk_typ_name := :OLD.fk_typ_name;
+		r_rfp_old.fk_ref_sequence := :OLD.fk_ref_sequence;
+		r_rfp_old.fk_ref_bot_name := :OLD.fk_ref_bot_name;
+		r_rfp_old.fk_ref_typ_name := :OLD.fk_ref_typ_name;
+		r_rfp_old.fk_rfp_typ_name := :OLD.fk_rfp_typ_name;
+		r_rfp_old.fk_rfp_typ_name_1 := :OLD.fk_rfp_typ_name_1;
+		r_rfp_old.xk_typ_name := :OLD.xk_typ_name;
+		r_rfp_old.xk_typ_name_1 := :OLD.xk_typ_name_1;
+	END IF;
+
+	IF INSERTING THEN 
+		pkg_bot_trg.insert_rfp (r_rfp_new);
+	ELSIF UPDATING THEN
+		pkg_bot_trg.update_rfp (l_cube_rowid, r_rfp_old, r_rfp_new);
+	ELSIF DELETING THEN
+		pkg_bot_trg.delete_rfp (l_cube_rowid, r_rfp_old);
 	END IF;
 END;
 /
