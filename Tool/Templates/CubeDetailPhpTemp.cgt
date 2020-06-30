@@ -53,7 +53,7 @@ Change log:
 [[TEXT,DETAIL_MAXLENGTH]] maxlength="[[IF:2=DATE]]10[[ELSIF:2=NUMBER]][[EVAL:<<INFORMATION_TYPE_ELEMENT3>>+1]][[ELSE]]<<INFORMATION_TYPE_ELEMENT3>>[[ENDIF]]"[[ENDTEXT]]
 [[TEXT,DETAIL_STYLE_MAX-WIDTH]] style="max-width:[[IF:2=DATE]]12ch[[ELSIF:2=NUMBER]][[EVAL:<<INFORMATION_TYPE_ELEMENT3>>+1]]em[[ELSE]]<<INFORMATION_TYPE_ELEMENT3>>em[[ENDIF]];"[[ENDTEXT]]
 [[TEXT,DETAIL_ONCHANGE]][[IF:5=N[OR]7=N]] onchange="[[IF:5=N]]ToUpperCase(this);[[ENDIF]][[IF:7=N]]ReplaceSpaces(this);[[ENDIF]]"[[ENDIF]][[ENDTEXT]]
-[[BODY]][[LOOP,SYSTEM:0=<<1>>]][[LOOP,SYSTEM_FORM]][[LOOP,FORM]][[FILE,<<2>>\<<1>><<FORM>>.php]][[LOOP,TYPE]]<?php
+[[BODY]][[LOOP,SYSTEM:0=<<1>>]][[LOOP,SYSTEM_PAGE]][[LOOP,PAGE]][[FILE,<<2>>\<<1>><<PAGE>>.php]][[LOOP,TYPE]]<?php
 session_start();
 $_SESSION['views']=0;
 ?><html>
@@ -366,25 +366,26 @@ function ResetField<<ATTRIBUTE:C>>(p_field_id) {
 	<option value="<<PERMITTED_VALUE>>"><<PERMITTED_VALUE1>></option>[[ENDLOOP,PERMITTED_VALUE]]
 </select>[[ELSE]]<div[[IF:!2=TEXT[OR]8=LIN]]<<TEXT,DETAIL_STYLE_MAX-WIDTH>>[[ENDIF]]>
 <[[IF:2=TEXT[AND]!8=LIN]]textarea[[ELSE]]input[[ENDIF]] id="Input<<ATTRIBUTE:C>>" type="text"<<TEXT,DETAIL_MAXLENGTH>>[[IF:2=TEXT[AND]!8=LIN]] rows="[[IF:8=COD]]11[[ELSE]]5[[ENDIF]]"[[ENDIF]] style="[[IF:2=TEXT[AND]!8=LIN]][[IF:8=COD]]overflow:auto;white-space:pre;font-family:courier new;font-size:12px;[[ELSE]]white-space:normal;[[ENDIF]][[ENDIF]]width:100%;"<<TEXT,DETAIL_ONCHANGE>>[[IF,ATTRIBUTE:CHILD(DERIVATION)[OR]CHILD(DENORMALIZATION)[OR]CHILD(AGGREGATION)]] disabled[[ENDIF]]></[[IF:2=TEXT[AND]!8=LIN]]textarea[[ELSE]]input[[ENDIF]]>[[ENDIF]]</div></td>[[ENDLOOP,INFORMATION_TYPE_ELEMENT]]</tr>[[ENDLOOP,ATTRIBUTE]][[LOOP,REFERENCE]]
-<tr><td height=6></td></tr><tr[[IF:CHILD(RESTRICTION_TYPE_SPEC_REF)]] id="RowRef[[LOOP,REFERENCE_TYPE]]<<REFERENCE_TYPE:C>>[[ENDLOOP,REFERENCE_TYPE]]<<REFERENCE3>>"[[ENDIF]]><td colspan=2><fieldset><legend[[IF:CHILD(DESCRIPTION_REFERENCE)]] style="cursor:help" oncontextmenu="parent.OpenDescBox('<<TYPE7:U>>','<<TYPE:C>>.[[LOOP,REFERENCE_TYPE]]<<REFERENCE_TYPE:C>> (<<REFERENCE:C>>)','<<TYPE:U>>','<<REFERENCE_TYPE>>[[ENDLOOP,REFERENCE_TYPE]]',<<REFERENCE3>>)"[[ENDIF]]>[[LOOP,REFERENCE_TYPE]]<img style="border:1 solid transparent;" src="icons/<<REFERENCE_TYPE7:L>>.bmp"/> <<REFERENCE_TYPE:C>>[[ENDLOOP,REFERENCE_TYPE]] (<<REFERENCE:C>>)</legend>
-<table style="width:100%;">[[LOOP,FKEY]]
+[[LOOP,FKEY]]
 <tr><td>[[IF,REFERENCE:1=Y]]<u>[[ENDIF]]<<TEXT,DETAIL_ROOT_NAME>>[[IF,REFERENCE:1=Y]]</u>[[ENDIF]]</td><td style="width:100%;">[[LOOP,INFORMATION_TYPE_ELEMENT]]<div<<TEXT,DETAIL_STYLE_MAX-WIDTH>>>
 <input id="Input<<FKEY:C>>" type="text"<<TEXT,DETAIL_MAXLENGTH>> style="width:100%;"<<TEXT,DETAIL_ONCHANGE>> disabled></input></div>[[ENDLOOP,INFORMATION_TYPE_ELEMENT]]</td>[[IF:FIRST]]
-<td><button id="RefSelect<<REFERENCE:S>>" type="button" onclick="StartSelect<<REFERENCE:S>>(event)">Select</button></td>[[ENDIF]]</tr>[[ENDLOOP,FKEY]]
-</table></fieldset></td></tr>[[ENDLOOP,REFERENCE]]
-<tr><td><br></td><td style="width:100%;"></td></tr>[[ENDLOOP,TYPE]][[LOOP,FORM_FIELD:!1=H]]
-<tr><td><<FORM_FIELD2>></td><td><div>
-<select id="Input<<FORM_FIELD>>" type="text">
+<td><button id="RefSelect<<REFERENCE:S>>" type="button" onclick="StartSelect<<REFERENCE:S>>(event)">Select</button></td>[[ENDIF]]</tr>[[ENDLOOP,FKEY]][[ENDLOOP,REFERENCE]][[ENDLOOP,TYPE]][[****[[LOOP,PAGE_FIELD:!3=H]]
+<tr><td><<PAGE_FIELD2>></td><td><div>
+<select id="<<PAGE_FIELD1>>" type="text">
 	<option value=" " selected> </option>
 	<option value="Y">Yes</option>
 	<option value="N">No</option>
-</select></div></td></tr>[[ENDLOOP,FORM_FIELD]]
+</select></div></td></tr>[[ENDLOOP,PAGE_FIELD]]*****]][[LOOP,GROUP_BOX]]
+<tr><td height=6></td></tr><tr[[IF:!1=#]] id="<<GROUP_BOX1>>"[[ENDIF]]><td colspan=2><fieldset><legend[[LOOP,DESCRIPTION]] style="cursor:help" oncontextmenu="parent.OpenDescBox('<<PAGE3:U>>','<<DESCRIPTION:C>>.<<GROUP_BOX2>>','<<DESCRIPTION>>','<<DESCRIPTION1>>',<<DESCRIPTION2>>)"[[ENDLOOP,DESCRIPTION]]><img style="border:1 solid transparent;" src="icons/<<GROUP_BOX3:L>>.bmp"/> <<GROUP_BOX2>></legend>
+<table style="width:100%;">
+</table></fieldset></td></tr>[[ENDLOOP,GROUP_BOX]]
+<tr><td><br></td><td style="width:100%;"></td></tr>
 <tr><td/><td>[[LOOP,BUTTON]]
-<button id="Button<<BUTTON>>" type="button" onclick="[[LOOP,SERVICE]]<<SERVICE:C>>[[ENDLOOP,SERVICE]]()"><<BUTTON>></button>[[IF:!LAST]]&nbsp;&nbsp;&nbsp;[[ENDIF]][[ENDLOOP,BUTTON]]</td></tr>
-</table>[[LOOP,FORM_FIELD:1=H]]
-<input id="Input<<FORM_FIELD>>" type="hidden"></input>[[ENDLOOP,FORM_FIELD]]
+<button id="<<BUTTON1>>" type="button" onclick="[[LOOP,SERVICE]]<<SERVICE:C>>[[ENDLOOP,SERVICE]]()"><<BUTTON>></button>[[IF:!LAST]]&nbsp;&nbsp;&nbsp;[[ENDIF]][[ENDLOOP,BUTTON]]</td></tr>
+</table>[[LOOP,PAGE_FIELD:3=H]]
+<input id="<<PAGE_FIELD1>>" type="hidden"></input>[[ENDLOOP,PAGE_FIELD]]
 </body>
 </html>
-[[ENDLOOP,FORM]][[ENDLOOP,SYSTEM_FORM]][[ENDLOOP,SYSTEM]][[FILE,<<2>>\<<1>>DetailInclude.js]]<!--
+[[ENDLOOP,PAGE]][[ENDLOOP,SYSTEM_PAGE]][[ENDLOOP,SYSTEM]][[FILE,<<2>>\<<1>>DetailInclude.js]]<!--
 -->
 [[ENDBODY]]

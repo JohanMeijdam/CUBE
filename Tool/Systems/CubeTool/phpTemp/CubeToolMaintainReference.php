@@ -385,103 +385,28 @@ function ProcessTypeSpecialisation() {
 	<option value="PAR">Recursive parent</option>
 	<option value="REF">Referenced type</option>
 </select></div></td></tr>
-<tr><td height=6></td></tr><tr id="RowRefBusinessObjectType0"><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/botype.bmp"/> BusinessObjectType (Refer)</legend>
-<table style="width:100%;">
+
 <tr><td><u>BusinessObjectType.Name</u></td><td style="width:100%;"><div style="max-width:30em;">
 <input id="InputXkBotName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td>
 <td><button id="RefSelect001" type="button" onclick="StartSelect001(event)">Select</button></td></tr>
-</table></fieldset></td></tr>
-<tr><td height=6></td></tr><tr id="RowRefType0"><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/type.bmp"/> Type (Refer)</legend>
-<table style="width:100%;">
+
 <tr><td><u>Type.Name</u></td><td style="width:100%;"><div style="max-width:30em;">
 <input id="InputXkTypName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td>
 <td><button id="RefSelect002" type="button" onclick="StartSelect002(event)">Select</button></td></tr>
-</table></fieldset></td></tr>
-<tr><td height=6></td></tr><tr id="RowRefType1"><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/type.bmp"/> Type (WithinScopeOf)</legend>
-<table style="width:100%;">
+
 <tr><td>Type.Name</td><td style="width:100%;"><div style="max-width:30em;">
 <input id="InputXkTypName1" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td>
 <td><button id="RefSelect003" type="button" onclick="StartSelect003(event)">Select</button></td></tr>
+<tr><td height=6></td></tr><tr id="RowRefBusinessObjectType0"><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/botype.bmp"/> BusinessObjectType (Refer)</legend>
+<table style="width:100%;">
+</table></fieldset></td></tr>
+<tr><td height=6></td></tr><tr id="RowRefType0"><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/type.bmp"/> Type (Refer)</legend>
+<table style="width:100%;">
+</table></fieldset></td></tr>
+<tr><td height=6></td></tr><tr id="RowRefType1"><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/type.bmp"/> Type (WithinScopeOf)</legend>
+<table style="width:100%;">
 </table></fieldset></td></tr>
 <tr><td><br></td><td style="width:100%;"></td></tr>
-<tr><td>BusinessObjectType.Name</td><td><div>
-<select id="InputFkBotName" type="text">
-	<option value=" " selected> </option>
-	<option value="Y">Yes</option>
-	<option value="N">No</option>
-</select></div></td></tr>
-<tr><td>Type.Name</td><td><div>
-<select id="InputFkTypName" type="text">
-	<option value=" " selected> </option>
-	<option value="Y">Yes</option>
-	<option value="N">No</option>
-</select></div></td></tr>
-<tr><td>Name</td><td><div>
-<select id="InputName" type="text">
-	<option value=" " selected> </option>
-	<option value="Y">Yes</option>
-	<option value="N">No</option>
-</select></div></td></tr>
-<tr><td>PrimaryKey</td><td><div>
-<select id="InputPrimaryKey" type="text">
-	<option value=" " selected> </option>
-	<option value="Y">Yes</option>
-	<option value="N">No</option>
-</select></div></td></tr>
-<tr><td>CodeDisplayKey</td><td><div>
-<select id="InputCodeDisplayKey" type="text">
-	<option value=" " selected> </option>
-	<option value="Y">Yes</option>
-	<option value="N">No</option>
-</select></div></td></tr>
-<tr><td>Sequence</td><td><div>
-<select id="InputSequence" type="text">
-	<option value=" " selected> </option>
-	<option value="Y">Yes</option>
-	<option value="N">No</option>
-</select></div></td></tr>
-<tr><td>Scope</td><td><div>
-<select id="InputScope" type="text">
-	<option value=" " selected> </option>
-	<option value="Y">Yes</option>
-	<option value="N">No</option>
-</select></div></td></tr>
-<tr><td>Unchangeable</td><td><div>
-<select id="InputUnchangeable" type="text">
-	<option value=" " selected> </option>
-	<option value="Y">Yes</option>
-	<option value="N">No</option>
-</select></div></td></tr>
-<tr><td>WithinScopeExtension</td><td><div>
-<select id="InputWithinScopeExtension" type="text">
-	<option value=" " selected> </option>
-	<option value="Y">Yes</option>
-	<option value="N">No</option>
-</select></div></td></tr>
-<tr><td>CubeTsgIntExt</td><td><div>
-<select id="InputCubeTsgIntExt" type="text">
-	<option value=" " selected> </option>
-	<option value="Y">Yes</option>
-	<option value="N">No</option>
-</select></div></td></tr>
-<tr><td>BusinessObjectType.Name</td><td><div>
-<select id="InputXkBotName" type="text">
-	<option value=" " selected> </option>
-	<option value="Y">Yes</option>
-	<option value="N">No</option>
-</select></div></td></tr>
-<tr><td>Type.Name</td><td><div>
-<select id="InputXkTypName" type="text">
-	<option value=" " selected> </option>
-	<option value="Y">Yes</option>
-	<option value="N">No</option>
-</select></div></td></tr>
-<tr><td>Type.Name</td><td><div>
-<select id="InputXkTypName1" type="text">
-	<option value=" " selected> </option>
-	<option value="Y">Yes</option>
-	<option value="N">No</option>
-</select></div></td></tr>
 <tr><td/><td>
 <button id="ButtonCreate" type="button" onclick="CreateRef()">Create</button>&nbsp;&nbsp;&nbsp;
 <button id="ButtonUpdate" type="button" onclick="UpdateRef()">Update</button>&nbsp;&nbsp;&nbsp;

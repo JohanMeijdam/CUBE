@@ -210,42 +210,6 @@ function ProcessTypeSpecialisation() {
 <tr id="RowAtbTablePrefix"><td>TablePrefix</td><td><div style="max-width:4em;">
 <input id="InputTablePrefix" type="text" maxlength="4" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
 <tr><td><br></td><td style="width:100%;"></td></tr>
-<tr><td>Name</td><td><div>
-<select id="InputName" type="text">
-	<option value=" " selected> </option>
-	<option value="Y">Yes</option>
-	<option value="N">No</option>
-</select></div></td></tr>
-<tr><td>CubeTsgType</td><td><div>
-<select id="InputCubeTsgType" type="text">
-	<option value=" " selected> </option>
-	<option value="Y">Yes</option>
-	<option value="N">No</option>
-</select></div></td></tr>
-<tr><td>Database</td><td><div>
-<select id="InputDatabase" type="text">
-	<option value=" " selected> </option>
-	<option value="Y">Yes</option>
-	<option value="N">No</option>
-</select></div></td></tr>
-<tr><td>Schema</td><td><div>
-<select id="InputSchema" type="text">
-	<option value=" " selected> </option>
-	<option value="Y">Yes</option>
-	<option value="N">No</option>
-</select></div></td></tr>
-<tr><td>Password</td><td><div>
-<select id="InputPassword" type="text">
-	<option value=" " selected> </option>
-	<option value="Y">Yes</option>
-	<option value="N">No</option>
-</select></div></td></tr>
-<tr><td>TablePrefix</td><td><div>
-<select id="InputTablePrefix" type="text">
-	<option value=" " selected> </option>
-	<option value="Y">Yes</option>
-	<option value="N">No</option>
-</select></div></td></tr>
 <tr><td/><td>
 <button id="ButtonCreate" type="button" onclick="CreateSys()">Create</button>&nbsp;&nbsp;&nbsp;
 <button id="ButtonUpdate" type="button" onclick="UpdateSys()">Update</button>&nbsp;&nbsp;&nbsp;

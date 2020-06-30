@@ -239,66 +239,6 @@ function DeleteIte() {
 	<option value="COD">Code</option>
 </select></div></td></tr>
 <tr><td><br></td><td style="width:100%;"></td></tr>
-<tr><td>InformationType.Name</td><td><div>
-<select id="InputFkItpName" type="text">
-	<option value=" " selected> </option>
-	<option value="Y">Yes</option>
-	<option value="N">No</option>
-</select></div></td></tr>
-<tr><td>Sequence</td><td><div>
-<select id="InputSequence" type="text">
-	<option value=" " selected> </option>
-	<option value="Y">Yes</option>
-	<option value="N">No</option>
-</select></div></td></tr>
-<tr><td>Suffix</td><td><div>
-<select id="InputSuffix" type="text">
-	<option value=" " selected> </option>
-	<option value="Y">Yes</option>
-	<option value="N">No</option>
-</select></div></td></tr>
-<tr><td>Domain</td><td><div>
-<select id="InputDomain" type="text">
-	<option value=" " selected> </option>
-	<option value="Y">Yes</option>
-	<option value="N">No</option>
-</select></div></td></tr>
-<tr><td>Length</td><td><div>
-<select id="InputLength" type="text">
-	<option value=" " selected> </option>
-	<option value="Y">Yes</option>
-	<option value="N">No</option>
-</select></div></td></tr>
-<tr><td>Decimals</td><td><div>
-<select id="InputDecimals" type="text">
-	<option value=" " selected> </option>
-	<option value="Y">Yes</option>
-	<option value="N">No</option>
-</select></div></td></tr>
-<tr><td>CaseSensitive</td><td><div>
-<select id="InputCaseSensitive" type="text">
-	<option value=" " selected> </option>
-	<option value="Y">Yes</option>
-	<option value="N">No</option>
-</select></div></td></tr>
-<tr><td>DefaultValue</td><td><div>
-<select id="InputDefaultValue" type="text">
-	<option value=" " selected> </option>
-	<option value="Y">Yes</option>
-	<option value="N">No</option>
-</select></div></td></tr>
-<tr><td>SpacesAllowed</td><td><div>
-<select id="InputSpacesAllowed" type="text">
-	<option value=" " selected> </option>
-	<option value="Y">Yes</option>
-	<option value="N">No</option>
-</select></div></td></tr>
-<tr><td>Presentation</td><td><div>
-<select id="InputPresentation" type="text">
-	<option value=" " selected> </option>
-	<option value="Y">Yes</option>
-	<option value="N">No</option>
-</select></div></td></tr>
 <tr><td/><td>
 <button id="ButtonCreate" type="button" onclick="CreateIte()">Create</button>&nbsp;&nbsp;&nbsp;
 <button id="ButtonUpdate" type="button" onclick="UpdateIte()">Update</button>&nbsp;&nbsp;&nbsp;

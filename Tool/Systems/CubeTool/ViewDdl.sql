@@ -1026,8 +1026,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			code_foreign_key = p_atb_new.code_foreign_key,
 			flag_hidden = p_atb_new.flag_hidden,
 			default_value = p_atb_new.default_value,
-			unchangeable = p_atb_new.unchangeable,
-			xk_itp_name = p_atb_new.xk_itp_name
+			unchangeable = p_atb_new.unchangeable
 		WHERE rowid = p_cube_rowid;
 	END;
 

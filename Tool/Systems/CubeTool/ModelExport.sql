@@ -855,7 +855,7 @@ BEGIN
 	DBMS_OUTPUT.PUT_LINE ('			-META_TYPE:REFERENCE;');
 	DBMS_OUTPUT.PUT_LINE ('			+META_TYPE:RESTRICTION_TYPE_SPEC_TYP|;');
 	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:0|IncludeOrExclude|'||REPLACE('Indication%20that%20the%20child%20type%20is%20valid%20(included)%20or%20invalid%20(excluded)%20for%20the%20concerning%20type%20specialisation.','%20',' ')||' Values: IN(Include), EX(Exclude);');
-	DBMS_OUTPUT.PUT_LINE ('				=ASSOCIATION:TYPE_SPECIALISATION|IsValidFor|TYPE_SPECIALISATION|;');
+	DBMS_OUTPUT.PUT_LINE ('				=ASSOCIATION:TYPE_SPECIALISATION|IsValidFor|TYPE_SPECIALISATION|'||REPLACE('Reference%20to%20the%20type%20specialistion%20of%20the%20restriction%20rule.','%20',' ')||';');
 	DBMS_OUTPUT.PUT_LINE ('			-META_TYPE:RESTRICTION_TYPE_SPEC_TYP;');
 	DBMS_OUTPUT.PUT_LINE ('			+META_TYPE:JSON_PATH|;');
 	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:0|CubeTsgObjArr| Values: OBJ(OBJECT), ARR(ARRAY);');

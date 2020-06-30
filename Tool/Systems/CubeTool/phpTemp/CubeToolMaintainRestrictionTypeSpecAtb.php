@@ -268,8 +268,7 @@ function StartSelect001(p_event) {
 	<option value="IN">Include</option>
 	<option value="EX">Exclude</option>
 </select></div></td></tr>
-<tr><td height=6></td></tr><tr><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/typespec.bmp"/> TypeSpecialisation (IsValidFor)</legend>
-<table style="width:100%;">
+
 <tr><td><u>Type.Name</u></td><td style="width:100%;"><div style="max-width:30em;">
 <input id="InputXfTspTypName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td>
 <td><button id="RefSelect001" type="button" onclick="StartSelect001(event)">Select</button></td></tr>
@@ -277,50 +276,10 @@ function StartSelect001(p_event) {
 <input id="InputXfTspTsgCode" type="text" maxlength="16" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td></tr>
 <tr><td><u>TypeSpecialisation.Code</u></td><td style="width:100%;"><div style="max-width:16em;">
 <input id="InputXkTspCode" type="text" maxlength="16" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td></tr>
+<tr><td height=6></td></tr><tr><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/typespec.bmp"/> TypeSpecialisation (IsValidFor)</legend>
+<table style="width:100%;">
 </table></fieldset></td></tr>
 <tr><td><br></td><td style="width:100%;"></td></tr>
-<tr><td>BusinessObjectType.Name</td><td><div>
-<select id="InputFkBotName" type="text">
-	<option value=" " selected> </option>
-	<option value="Y">Yes</option>
-	<option value="N">No</option>
-</select></div></td></tr>
-<tr><td>Type.Name</td><td><div>
-<select id="InputFkTypName" type="text">
-	<option value=" " selected> </option>
-	<option value="Y">Yes</option>
-	<option value="N">No</option>
-</select></div></td></tr>
-<tr><td>Attribute.Name</td><td><div>
-<select id="InputFkAtbName" type="text">
-	<option value=" " selected> </option>
-	<option value="Y">Yes</option>
-	<option value="N">No</option>
-</select></div></td></tr>
-<tr><td>IncludeOrExclude</td><td><div>
-<select id="InputIncludeOrExclude" type="text">
-	<option value=" " selected> </option>
-	<option value="Y">Yes</option>
-	<option value="N">No</option>
-</select></div></td></tr>
-<tr><td>Type.Name</td><td><div>
-<select id="InputXfTspTypName" type="text">
-	<option value=" " selected> </option>
-	<option value="Y">Yes</option>
-	<option value="N">No</option>
-</select></div></td></tr>
-<tr><td>TypeSpecialisationGroup.Code</td><td><div>
-<select id="InputXfTspTsgCode" type="text">
-	<option value=" " selected> </option>
-	<option value="Y">Yes</option>
-	<option value="N">No</option>
-</select></div></td></tr>
-<tr><td>TypeSpecialisation.Code</td><td><div>
-<select id="InputXkTspCode" type="text">
-	<option value=" " selected> </option>
-	<option value="Y">Yes</option>
-	<option value="N">No</option>
-</select></div></td></tr>
 <tr><td/><td>
 <button id="ButtonCreate" type="button" onclick="CreateRta()">Create</button>&nbsp;&nbsp;&nbsp;
 <button id="ButtonUpdate" type="button" onclick="UpdateRta()">Update</button>&nbsp;&nbsp;&nbsp;

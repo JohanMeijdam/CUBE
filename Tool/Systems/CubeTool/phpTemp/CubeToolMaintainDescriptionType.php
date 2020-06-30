@@ -179,24 +179,6 @@ function DeleteDct() {
 <tr><td style="padding-top:10px;">Text</td></tr><tr><td colspan="2"><div>
 <textarea id="InputText" type="text" maxlength="3999" rows="5" style="white-space:normal;width:100%;"></textarea></div></td></tr>
 <tr><td><br></td><td style="width:100%;"></td></tr>
-<tr><td>BusinessObjectType.Name</td><td><div>
-<select id="InputFkBotName" type="text">
-	<option value=" " selected> </option>
-	<option value="Y">Yes</option>
-	<option value="N">No</option>
-</select></div></td></tr>
-<tr><td>Type.Name</td><td><div>
-<select id="InputFkTypName" type="text">
-	<option value=" " selected> </option>
-	<option value="Y">Yes</option>
-	<option value="N">No</option>
-</select></div></td></tr>
-<tr><td>Text</td><td><div>
-<select id="InputText" type="text">
-	<option value=" " selected> </option>
-	<option value="Y">Yes</option>
-	<option value="N">No</option>
-</select></div></td></tr>
 <tr><td/><td>
 <button id="ButtonCreate" type="button" onclick="CreateDct()">Create</button>&nbsp;&nbsp;&nbsp;
 <button id="ButtonUpdate" type="button" onclick="UpdateDct()">Update</button>&nbsp;&nbsp;&nbsp;

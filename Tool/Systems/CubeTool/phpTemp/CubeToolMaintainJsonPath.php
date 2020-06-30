@@ -431,105 +431,23 @@ function ProcessTypeSpecialisation() {
 <input id="InputName" type="text" maxlength="32" style="width:100%;"></input></div></td></tr>
 <tr id="RowAtbLocation"><td style="cursor:help;" oncontextmenu="parent.OpenDescBox('BRACES','JsonPath.Location','JSON_PATH','LOCATION',-1)"><u>Location</u></td><td><div style="max-width:9em;">
 <input id="InputLocation" type="text" maxlength="9" style="width:100%;"></input></div></td></tr>
-<tr><td height=6></td></tr><tr id="RowRefAttribute0"><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/attrib.bmp"/> Attribute (Concerns)</legend>
-<table style="width:100%;">
+
 <tr><td><u>Type.Name</u></td><td style="width:100%;"><div style="max-width:30em;">
 <input id="InputXfAtbTypName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td>
 <td><button id="RefSelect001" type="button" onclick="StartSelect001(event)">Select</button></td></tr>
 <tr><td><u>Attribute.Name</u></td><td style="width:100%;"><div style="max-width:30em;">
 <input id="InputXkAtbName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td></tr>
-</table></fieldset></td></tr>
-<tr><td height=6></td></tr><tr id="RowRefType0"><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/type.bmp"/> Type (Concerns)</legend>
-<table style="width:100%;">
+
 <tr><td><u>Type.Name</u></td><td style="width:100%;"><div style="max-width:30em;">
 <input id="InputXkTypName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td>
 <td><button id="RefSelect002" type="button" onclick="StartSelect002(event)">Select</button></td></tr>
+<tr><td height=6></td></tr><tr id="RowRefAttribute0"><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/attrib.bmp"/> Attribute (Concerns)</legend>
+<table style="width:100%;">
+</table></fieldset></td></tr>
+<tr><td height=6></td></tr><tr id="RowRefType0"><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/type.bmp"/> Type (Concerns)</legend>
+<table style="width:100%;">
 </table></fieldset></td></tr>
 <tr><td><br></td><td style="width:100%;"></td></tr>
-<tr><td>BusinessObjectType.Name</td><td><div>
-<select id="InputFkBotName" type="text">
-	<option value=" " selected> </option>
-	<option value="Y">Yes</option>
-	<option value="N">No</option>
-</select></div></td></tr>
-<tr><td>Type.Name</td><td><div>
-<select id="InputFkTypName" type="text">
-	<option value=" " selected> </option>
-	<option value="Y">Yes</option>
-	<option value="N">No</option>
-</select></div></td></tr>
-<tr><td>JsonPath.Name</td><td><div>
-<select id="InputFkJsnName" type="text">
-	<option value=" " selected> </option>
-	<option value="Y">Yes</option>
-	<option value="N">No</option>
-</select></div></td></tr>
-<tr><td>JsonPath.Location</td><td><div>
-<select id="InputFkJsnLocation" type="text">
-	<option value=" " selected> </option>
-	<option value="Y">Yes</option>
-	<option value="N">No</option>
-</select></div></td></tr>
-<tr><td>Type.Name</td><td><div>
-<select id="InputFkJsnAtbTypName" type="text">
-	<option value=" " selected> </option>
-	<option value="Y">Yes</option>
-	<option value="N">No</option>
-</select></div></td></tr>
-<tr><td>Attribute.Name</td><td><div>
-<select id="InputFkJsnAtbName" type="text">
-	<option value=" " selected> </option>
-	<option value="Y">Yes</option>
-	<option value="N">No</option>
-</select></div></td></tr>
-<tr><td>Type.Name</td><td><div>
-<select id="InputFkJsnTypName" type="text">
-	<option value=" " selected> </option>
-	<option value="Y">Yes</option>
-	<option value="N">No</option>
-</select></div></td></tr>
-<tr><td>CubeTsgObjArr</td><td><div>
-<select id="InputCubeTsgObjArr" type="text">
-	<option value=" " selected> </option>
-	<option value="Y">Yes</option>
-	<option value="N">No</option>
-</select></div></td></tr>
-<tr><td>CubeTsgType</td><td><div>
-<select id="InputCubeTsgType" type="text">
-	<option value=" " selected> </option>
-	<option value="Y">Yes</option>
-	<option value="N">No</option>
-</select></div></td></tr>
-<tr><td>Name</td><td><div>
-<select id="InputName" type="text">
-	<option value=" " selected> </option>
-	<option value="Y">Yes</option>
-	<option value="N">No</option>
-</select></div></td></tr>
-<tr><td>Location</td><td><div>
-<select id="InputLocation" type="text">
-	<option value=" " selected> </option>
-	<option value="Y">Yes</option>
-	<option value="N">No</option>
-</select></div></td></tr>
-<tr><td>Type.Name</td><td><div>
-<select id="InputXfAtbTypName" type="text">
-	<option value=" " selected> </option>
-	<option value="Y">Yes</option>
-	<option value="N">No</option>
-</select></div></td></tr>
-<tr><td>Attribute.Name</td><td><div>
-<select id="InputXkAtbName" type="text">
-	<option value=" " selected> </option>
-	<option value="Y">Yes</option>
-	<option value="N">No</option>
-</select></div></td></tr>
-<tr><td>Type.Name</td><td><div>
-<select id="InputXkTypName" type="text">
-	<option value=" " selected> </option>
-	<option value="Y">Yes</option>
-	<option value="N">No</option>
-</select></div></td></tr>
 <tr><td/><td>
 <button id="ButtonCreate" type="button" onclick="CreateJsn()">Create</button>&nbsp;&nbsp;&nbsp;
 <button id="ButtonUpdate" type="button" onclick="UpdateJsn()">Update</button>&nbsp;&nbsp;&nbsp;

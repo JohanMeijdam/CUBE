@@ -201,30 +201,6 @@ function DeleteVal() {
 <tr><td>Prompt</td><td><div style="max-width:32em;">
 <input id="InputPrompt" type="text" maxlength="32" style="width:100%;"></input></div></td></tr>
 <tr><td><br></td><td style="width:100%;"></td></tr>
-<tr><td>InformationType.Name</td><td><div>
-<select id="InputFkItpName" type="text">
-	<option value=" " selected> </option>
-	<option value="Y">Yes</option>
-	<option value="N">No</option>
-</select></div></td></tr>
-<tr><td>InformationTypeElement.Sequence</td><td><div>
-<select id="InputFkIteSequence" type="text">
-	<option value=" " selected> </option>
-	<option value="Y">Yes</option>
-	<option value="N">No</option>
-</select></div></td></tr>
-<tr><td>Code</td><td><div>
-<select id="InputCode" type="text">
-	<option value=" " selected> </option>
-	<option value="Y">Yes</option>
-	<option value="N">No</option>
-</select></div></td></tr>
-<tr><td>Prompt</td><td><div>
-<select id="InputPrompt" type="text">
-	<option value=" " selected> </option>
-	<option value="Y">Yes</option>
-	<option value="N">No</option>
-</select></div></td></tr>
 <tr><td/><td>
 <button id="ButtonCreate" type="button" onclick="CreateVal()">Create</button>&nbsp;&nbsp;&nbsp;
 <button id="ButtonUpdate" type="button" onclick="UpdateVal()">Update</button>&nbsp;&nbsp;&nbsp;

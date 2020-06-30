@@ -279,61 +279,21 @@ function ProcessTypeSpecialisation() {
 	<option value="MIN">Minimum</option>
 	<option value="MAX">Maximum</option>
 </select></div></td></tr>
-<tr><td height=6></td></tr><tr><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/type.bmp"/> Type (ConcernsParent)</legend>
-<table style="width:100%;">
+
 <tr><td>Type.Name</td><td style="width:100%;"><div style="max-width:30em;">
 <input id="InputXkTypName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td>
 <td><button id="RefSelect001" type="button" onclick="StartSelect001(event)">Select</button></td></tr>
-</table></fieldset></td></tr>
-<tr><td height=6></td></tr><tr><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/type.bmp"/> Type (ConcernsChild)</legend>
-<table style="width:100%;">
+
 <tr><td>Type.Name</td><td style="width:100%;"><div style="max-width:30em;">
 <input id="InputXkTypName1" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td>
 <td><button id="RefSelect002" type="button" onclick="StartSelect002(event)">Select</button></td></tr>
+<tr><td height=6></td></tr><tr><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/type.bmp"/> Type (ConcernsParent)</legend>
+<table style="width:100%;">
+</table></fieldset></td></tr>
+<tr><td height=6></td></tr><tr><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/type.bmp"/> Type (ConcernsChild)</legend>
+<table style="width:100%;">
 </table></fieldset></td></tr>
 <tr><td><br></td><td style="width:100%;"></td></tr>
-<tr><td>BusinessObjectType.Name</td><td><div>
-<select id="InputFkBotName" type="text">
-	<option value=" " selected> </option>
-	<option value="Y">Yes</option>
-	<option value="N">No</option>
-</select></div></td></tr>
-<tr><td>Type.Name</td><td><div>
-<select id="InputFkTypName" type="text">
-	<option value=" " selected> </option>
-	<option value="Y">Yes</option>
-	<option value="N">No</option>
-</select></div></td></tr>
-<tr><td>Attribute.Name</td><td><div>
-<select id="InputFkAtbName" type="text">
-	<option value=" " selected> </option>
-	<option value="Y">Yes</option>
-	<option value="N">No</option>
-</select></div></td></tr>
-<tr><td>CubeTsgType</td><td><div>
-<select id="InputCubeTsgType" type="text">
-	<option value=" " selected> </option>
-	<option value="Y">Yes</option>
-	<option value="N">No</option>
-</select></div></td></tr>
-<tr><td>AggregateFunction</td><td><div>
-<select id="InputAggregateFunction" type="text">
-	<option value=" " selected> </option>
-	<option value="Y">Yes</option>
-	<option value="N">No</option>
-</select></div></td></tr>
-<tr><td>Type.Name</td><td><div>
-<select id="InputXkTypName" type="text">
-	<option value=" " selected> </option>
-	<option value="Y">Yes</option>
-	<option value="N">No</option>
-</select></div></td></tr>
-<tr><td>Type.Name</td><td><div>
-<select id="InputXkTypName1" type="text">
-	<option value=" " selected> </option>
-	<option value="Y">Yes</option>
-	<option value="N">No</option>
-</select></div></td></tr>
 <tr><td/><td>
 <button id="ButtonCreate" type="button" onclick="CreateDer()">Create</button>&nbsp;&nbsp;&nbsp;
 <button id="ButtonUpdate" type="button" onclick="UpdateDer()">Update</button>&nbsp;&nbsp;&nbsp;

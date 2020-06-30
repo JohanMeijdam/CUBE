@@ -120,6 +120,8 @@ function InitBody() {
 		document.getElementById("InputFkBotName").disabled=true;
 		document.getElementById("InputFkTypName").disabled=true;
 		document.getElementById("InputName").disabled=true;
+		document.getElementById("InputXkItpName").disabled=true;
+		document.getElementById("RefSelect001").disabled=true;
 		break;
 	case "N":
 		g_parent_node_id = JSON.stringify(l_json_argument.objectId);

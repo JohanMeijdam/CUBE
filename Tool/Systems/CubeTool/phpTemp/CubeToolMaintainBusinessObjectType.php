@@ -213,30 +213,6 @@ function ProcessTypeSpecialisation() {
 <tr id="RowAtbApiUrl"><td style="cursor:help;" oncontextmenu="parent.OpenDescBox('BOTYPE','BusinessObjectType.ApiUrl','BUSINESS_OBJECT_TYPE','API_URL',-1)">ApiUrl</td><td><div style="max-width:300em;">
 <input id="InputApiUrl" type="text" maxlength="300" style="width:100%;" onchange="ReplaceSpaces(this);"></input></div></td></tr>
 <tr><td><br></td><td style="width:100%;"></td></tr>
-<tr><td>Name</td><td><div>
-<select id="InputName" type="text">
-	<option value=" " selected> </option>
-	<option value="Y">Yes</option>
-	<option value="N">No</option>
-</select></div></td></tr>
-<tr><td>CubeTsgType</td><td><div>
-<select id="InputCubeTsgType" type="text">
-	<option value=" " selected> </option>
-	<option value="Y">Yes</option>
-	<option value="N">No</option>
-</select></div></td></tr>
-<tr><td>Directory</td><td><div>
-<select id="InputDirectory" type="text">
-	<option value=" " selected> </option>
-	<option value="Y">Yes</option>
-	<option value="N">No</option>
-</select></div></td></tr>
-<tr><td>ApiUrl</td><td><div>
-<select id="InputApiUrl" type="text">
-	<option value=" " selected> </option>
-	<option value="Y">Yes</option>
-	<option value="N">No</option>
-</select></div></td></tr>
 <tr><td/><td>
 <button id="ButtonCreate" type="button" onclick="CreateBot()">Create</button>&nbsp;&nbsp;&nbsp;
 <button id="ButtonUpdate" type="button" onclick="UpdateBot()">Update</button>&nbsp;&nbsp;&nbsp;
