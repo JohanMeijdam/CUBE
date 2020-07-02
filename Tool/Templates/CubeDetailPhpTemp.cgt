@@ -365,11 +365,8 @@ function ResetField<<ATTRIBUTE:C>>(p_field_id) {
 	<option value=" " selected> </option>[[LOOP,PERMITTED_VALUE]]
 	<option value="<<PERMITTED_VALUE>>"><<PERMITTED_VALUE1>></option>[[ENDLOOP,PERMITTED_VALUE]]
 </select>[[ELSE]]<div[[IF:!2=TEXT[OR]8=LIN]]<<TEXT,DETAIL_STYLE_MAX-WIDTH>>[[ENDIF]]>
-<[[IF:2=TEXT[AND]!8=LIN]]textarea[[ELSE]]input[[ENDIF]] id="Input<<ATTRIBUTE:C>>" type="text"<<TEXT,DETAIL_MAXLENGTH>>[[IF:2=TEXT[AND]!8=LIN]] rows="[[IF:8=COD]]11[[ELSE]]5[[ENDIF]]"[[ENDIF]] style="[[IF:2=TEXT[AND]!8=LIN]][[IF:8=COD]]overflow:auto;white-space:pre;font-family:courier new;font-size:12px;[[ELSE]]white-space:normal;[[ENDIF]][[ENDIF]]width:100%;"<<TEXT,DETAIL_ONCHANGE>>[[IF,ATTRIBUTE:CHILD(DERIVATION)[OR]CHILD(DENORMALIZATION)[OR]CHILD(AGGREGATION)]] disabled[[ENDIF]]></[[IF:2=TEXT[AND]!8=LIN]]textarea[[ELSE]]input[[ENDIF]]>[[ENDIF]]</div></td>[[ENDLOOP,INFORMATION_TYPE_ELEMENT]]</tr>[[ENDLOOP,ATTRIBUTE]][[LOOP,REFERENCE]]
-[[LOOP,FKEY]]
-<tr><td>[[IF,REFERENCE:1=Y]]<u>[[ENDIF]]<<TEXT,DETAIL_ROOT_NAME>>[[IF,REFERENCE:1=Y]]</u>[[ENDIF]]</td><td style="width:100%;">[[LOOP,INFORMATION_TYPE_ELEMENT]]<div<<TEXT,DETAIL_STYLE_MAX-WIDTH>>>
-<input id="Input<<FKEY:C>>" type="text"<<TEXT,DETAIL_MAXLENGTH>> style="width:100%;"<<TEXT,DETAIL_ONCHANGE>> disabled></input></div>[[ENDLOOP,INFORMATION_TYPE_ELEMENT]]</td>[[IF:FIRST]]
-<td><button id="RefSelect<<REFERENCE:S>>" type="button" onclick="StartSelect<<REFERENCE:S>>(event)">Select</button></td>[[ENDIF]]</tr>[[ENDLOOP,FKEY]][[ENDLOOP,REFERENCE]][[ENDLOOP,TYPE]][[****[[LOOP,PAGE_FIELD:!3=H]]
+<[[IF:2=TEXT[AND]!8=LIN]]textarea[[ELSE]]input[[ENDIF]] id="Input<<ATTRIBUTE:C>>" type="text"<<TEXT,DETAIL_MAXLENGTH>>[[IF:2=TEXT[AND]!8=LIN]] rows="[[IF:8=COD]]11[[ELSE]]5[[ENDIF]]"[[ENDIF]] style="[[IF:2=TEXT[AND]!8=LIN]][[IF:8=COD]]overflow:auto;white-space:pre;font-family:courier new;font-size:12px;[[ELSE]]white-space:normal;[[ENDIF]][[ENDIF]]width:100%;"<<TEXT,DETAIL_ONCHANGE>>[[IF,ATTRIBUTE:CHILD(DERIVATION)[OR]CHILD(DENORMALIZATION)[OR]CHILD(AGGREGATION)]] disabled[[ENDIF]]></[[IF:2=TEXT[AND]!8=LIN]]textarea[[ELSE]]input[[ENDIF]]>[[ENDIF]]</div></td>[[ENDLOOP,INFORMATION_TYPE_ELEMENT]]</tr>[[ENDLOOP,ATTRIBUTE]][[LOOP,REFERENCE]][[LOOP,FKEY]][[IF:FIRST]]
+<td><button id="RefSelect<<REFERENCE:S>>" type="button" onclick="StartSelect<<REFERENCE:S>>(event)">Select</button></td>[[ENDIF]][[ENDLOOP,FKEY]][[ENDLOOP,REFERENCE]][[ENDLOOP,TYPE]][[****[[LOOP,PAGE_FIELD:!3=H]]
 <tr><td><<PAGE_FIELD2>></td><td><div>
 <select id="<<PAGE_FIELD1>>" type="text">
 	<option value=" " selected> </option>
@@ -377,12 +374,14 @@ function ResetField<<ATTRIBUTE:C>>(p_field_id) {
 	<option value="N">No</option>
 </select></div></td></tr>[[ENDLOOP,PAGE_FIELD]]*****]][[LOOP,GROUP_BOX]]
 <tr><td height=6></td></tr><tr[[IF:!1=#]] id="<<GROUP_BOX1>>"[[ENDIF]]><td colspan=2><fieldset><legend[[LOOP,DESCRIPTION]] style="cursor:help" oncontextmenu="parent.OpenDescBox('<<PAGE3:U>>','<<DESCRIPTION:C>>.<<GROUP_BOX2>>','<<DESCRIPTION>>','<<DESCRIPTION1>>',<<DESCRIPTION2>>)"[[ENDLOOP,DESCRIPTION]]><img style="border:1 solid transparent;" src="icons/<<GROUP_BOX3:L>>.bmp"/> <<GROUP_BOX2>></legend>
-<table style="width:100%;">
+<table style="width:100%;">[[LOOP,GROUP_BOX_FIELD]]
+<tr><td>[[IF:3=Y]]<u>[[ENDIF]]<<GROUP_BOX_FIELD2>>[[IF:3=Y]]</u>[[ENDIF]]</td><td style="width:100%;"><div style="max-width:<<GROUP_BOX_FIELD6>>;">
+<input id="<<GROUP_BOX_FIELD1>>" type="text" maxlength="<<GROUP_BOX_FIELD5>>" style="width:100%;"[[IF:7=Y[OR]8=Y]] onchange="[[IF:7=Y]]ToUpperCase(this);[[ENDIF]][[IF:8=Y]]ReplaceSpaces(this);[[ENDIF]]"[[ENDIF]] disabled></input></div></td></tr>[[ENDLOOP,GROUP_BOX_FIELD]]
 </table></fieldset></td></tr>[[ENDLOOP,GROUP_BOX]]
 <tr><td><br></td><td style="width:100%;"></td></tr>
 <tr><td/><td>[[LOOP,BUTTON]]
 <button id="<<BUTTON1>>" type="button" onclick="[[LOOP,SERVICE]]<<SERVICE:C>>[[ENDLOOP,SERVICE]]()"><<BUTTON>></button>[[IF:!LAST]]&nbsp;&nbsp;&nbsp;[[ENDIF]][[ENDLOOP,BUTTON]]</td></tr>
-</table>[[LOOP,PAGE_FIELD:3=H]]
+</table>[[LOOP,PAGE_FIELD:4=hidden]]
 <input id="<<PAGE_FIELD1>>" type="hidden"></input>[[ENDLOOP,PAGE_FIELD]]
 </body>
 </html>

@@ -385,26 +385,23 @@ function ProcessTypeSpecialisation() {
 	<option value="PAR">Recursive parent</option>
 	<option value="REF">Referenced type</option>
 </select></div></td></tr>
-
-<tr><td><u>BusinessObjectType.Name</u></td><td style="width:100%;"><div style="max-width:30em;">
-<input id="InputXkBotName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td>
-<td><button id="RefSelect001" type="button" onclick="StartSelect001(event)">Select</button></td></tr>
-
-<tr><td><u>Type.Name</u></td><td style="width:100%;"><div style="max-width:30em;">
-<input id="InputXkTypName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td>
-<td><button id="RefSelect002" type="button" onclick="StartSelect002(event)">Select</button></td></tr>
-
-<tr><td>Type.Name</td><td style="width:100%;"><div style="max-width:30em;">
-<input id="InputXkTypName1" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td>
-<td><button id="RefSelect003" type="button" onclick="StartSelect003(event)">Select</button></td></tr>
+<td><button id="RefSelect001" type="button" onclick="StartSelect001(event)">Select</button></td>
+<td><button id="RefSelect002" type="button" onclick="StartSelect002(event)">Select</button></td>
+<td><button id="RefSelect003" type="button" onclick="StartSelect003(event)">Select</button></td>
 <tr><td height=6></td></tr><tr id="RowRefBusinessObjectType0"><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/botype.bmp"/> BusinessObjectType (Refer)</legend>
 <table style="width:100%;">
+<tr><td><u>BusinessObjectType.Name</u></td><td style="width:100%;"><div style="max-width:30em;">
+<input id="InputXkBotName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td></tr>
 </table></fieldset></td></tr>
 <tr><td height=6></td></tr><tr id="RowRefType0"><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/type.bmp"/> Type (Refer)</legend>
 <table style="width:100%;">
+<tr><td><u>Type.Name</u></td><td style="width:100%;"><div style="max-width:30em;">
+<input id="InputXkTypName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td></tr>
 </table></fieldset></td></tr>
 <tr><td height=6></td></tr><tr id="RowRefType1"><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/type.bmp"/> Type (WithinScopeOf)</legend>
 <table style="width:100%;">
+<tr><td>Type.Name</td><td style="width:100%;"><div style="max-width:30em;">
+<input id="InputXkTypName1" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td></tr>
 </table></fieldset></td></tr>
 <tr><td><br></td><td style="width:100%;"></td></tr>
 <tr><td/><td>
