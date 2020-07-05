@@ -188,6 +188,14 @@ function DeleteDca() {
 <input id="InputFkAtbName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
 <tr><td style="padding-top:10px;">Text</td></tr><tr><td colspan="2"><div>
 <textarea id="InputText" type="text" maxlength="3999" rows="5" style="white-space:normal;width:100%;"></textarea></div></td></tr>
+<tr><td>BusinessObjectType.Name</td><td><div>
+<input id="InputFkBotName" type="text">
+<tr><td>Type.Name</td><td><div>
+<input id="InputFkTypName" type="text">
+<tr><td>Attribute.Name</td><td><div>
+<input id="InputFkAtbName" type="text">
+<tr><td>Text</td><td><div>
+<textarea id="InputText" type="text">
 <tr><td><br></td><td style="width:100%;"></td></tr>
 <tr><td/><td>
 <button id="ButtonCreate" type="button" onclick="CreateDca()">Create</button>&nbsp;&nbsp;&nbsp;

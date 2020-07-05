@@ -175,10 +175,14 @@ function DeleteArg() {
 <input id="InputFkFunName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
 <tr><td><u>Name</u></td><td><div style="max-width:30em;">
 <input id="InputName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr><td>Function.Name</td><td><div>
+<input id="InputFkFunName" type="text">
+<tr><td>Name</td><td><div>
+<input id="InputName" type="text">
 <tr><td><br></td><td style="width:100%;"></td></tr>
 <tr><td/><td>
 <button id="ButtonCreate" type="button" onclick="CreateArg()">Create</button>&nbsp;&nbsp;&nbsp;
-<button id="ButtonUpdate" type="button" onclick="Cube-srv-arg-upd()">Update</button>&nbsp;&nbsp;&nbsp;
+<button id="ButtonUpdate" type="button" onclick="UpdateArg()">Update</button>&nbsp;&nbsp;&nbsp;
 <button id="ButtonDelete" type="button" onclick="DeleteArg()">Delete</button></td></tr>
 </table>
 <input id="InputCubeId" type="hidden"></input>

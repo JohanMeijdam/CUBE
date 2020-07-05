@@ -206,16 +206,18 @@ function StartSelect001(p_event) {
 <table>
 <tr><td><u>System.Name</u></td><td><div style="max-width:30em;">
 <input id="InputFkSysName" type="text" maxlength="30" style="width:100%;" onchange="ReplaceSpaces(this);"></input></div></td></tr>
-<td><button id="RefSelect001" type="button" onclick="StartSelect001(event)">Select</button></td>
-<tr><td height=6></td></tr><tr><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/botype.bmp"/> BusinessObjectType (Has)</legend>
+<tr><td>System.Name</td><td><div>
+<input id="InputFkSysName" type="text">
+<tr><td height=6></td></tr><tr id="RowRefBusinessObjectType0"><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/botype.bmp"/> BusinessObjectType (Has)</legend>
 <table style="width:100%;">
-<tr><td><u>BusinessObjectType.Name</u></td><td style="width:100%;"><div style="max-width:30em;">
-<input id="InputXkBotName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td></tr>
+<tr><td><u>BusinessObjectType.Name</u></td><td style="width:100%;"><div style="max-width:;">
+<input id="InputXkBotName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td>
+<td><button id="RefSelect001" type="button" onclick="StartSelect001(event)">Select</button></td></tr>
 </table></fieldset></td></tr>
 <tr><td><br></td><td style="width:100%;"></td></tr>
 <tr><td/><td>
 <button id="ButtonCreate" type="button" onclick="CreateSbt()">Create</button>&nbsp;&nbsp;&nbsp;
-<button id="ButtonUpdate" type="button" onclick="Cube-srv-sbt-upd()">Update</button>&nbsp;&nbsp;&nbsp;
+<button id="ButtonUpdate" type="button" onclick="UpdateSbt()">Update</button>&nbsp;&nbsp;&nbsp;
 <button id="ButtonDelete" type="button" onclick="DeleteSbt()">Delete</button></td></tr>
 </table>
 <input id="InputCubeId" type="hidden"></input>

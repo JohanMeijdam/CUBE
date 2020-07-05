@@ -278,14 +278,24 @@ function StartSelect001(p_event) {
 <input id="InputCode" type="text" maxlength="16" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
 <tr><td>Name</td><td><div style="max-width:30em;">
 <input id="InputName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<td><button id="RefSelect001" type="button" onclick="StartSelect001(event)">Select</button></td>
-<tr><td height=6></td></tr><tr><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/typespec.bmp"/> TypeSpecialisation (Specialise)</legend>
+<tr><td>BusinessObjectType.Name</td><td><div>
+<input id="InputFkBotName" type="text">
+<tr><td>Type.Name</td><td><div>
+<input id="InputFkTypName" type="text">
+<tr><td>TypeSpecialisationGroup.Code</td><td><div>
+<input id="InputFkTsgCode" type="text">
+<tr><td>Code</td><td><div>
+<input id="InputCode" type="text">
+<tr><td>Name</td><td><div>
+<input id="InputName" type="text">
+<tr><td height=6></td></tr><tr id="RowRefTypeSpecialisation0"><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/typespec.bmp"/> TypeSpecialisation (Specialise)</legend>
 <table style="width:100%;">
-<tr><td>Type.Name</td><td style="width:100%;"><div style="max-width:30em;">
-<input id="InputXfTspTypName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td></tr>
-<tr><td>TypeSpecialisationGroup.Code</td><td style="width:100%;"><div style="max-width:16em;">
+<tr><td>Type.Name</td><td style="width:100%;"><div style="max-width:;">
+<input id="InputXfTspTypName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td>
+<td><button id="RefSelect001" type="button" onclick="StartSelect001(event)">Select</button></td></tr>
+<tr><td>TypeSpecialisationGroup.Code</td><td style="width:100%;"><div style="max-width:;">
 <input id="InputXfTspTsgCode" type="text" maxlength="16" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td></tr>
-<tr><td>TypeSpecialisation.Code</td><td style="width:100%;"><div style="max-width:16em;">
+<tr><td>TypeSpecialisation.Code</td><td style="width:100%;"><div style="max-width:;">
 <input id="InputXkTspCode" type="text" maxlength="16" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td></tr>
 </table></fieldset></td></tr>
 <tr><td><br></td><td style="width:100%;"></td></tr>

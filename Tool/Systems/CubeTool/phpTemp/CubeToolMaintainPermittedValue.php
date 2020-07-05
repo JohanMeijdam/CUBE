@@ -200,6 +200,14 @@ function DeleteVal() {
 <input id="InputCode" type="text" maxlength="16" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
 <tr><td>Prompt</td><td><div style="max-width:32em;">
 <input id="InputPrompt" type="text" maxlength="32" style="width:100%;"></input></div></td></tr>
+<tr><td>InformationType.Name</td><td><div>
+<input id="InputFkItpName" type="text">
+<tr><td>InformationTypeElement.Sequence</td><td><div>
+<input id="InputFkIteSequence" type="text">
+<tr><td>Code</td><td><div>
+<input id="InputCode" type="text">
+<tr><td>Prompt</td><td><div>
+<input id="InputPrompt" type="text">
 <tr><td><br></td><td style="width:100%;"></td></tr>
 <tr><td/><td>
 <button id="ButtonCreate" type="button" onclick="CreateVal()">Create</button>&nbsp;&nbsp;&nbsp;

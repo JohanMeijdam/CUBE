@@ -360,29 +360,33 @@ function ResetField<<ATTRIBUTE:C>>(p_field_id) {
 </select>[[ENDLOOP,*ATTRIBUTE]][[REPEAT]][[ENDLOOP,TYPE_SPECIALISATION_GROUP]]</span></div>
 <hr/>
 <table[[IF:CHILD(TYPE_SPECIALISATION_GROUP)]] id="TableMain" style="display:none"[[ENDIF]]>[[LOOP,ATTRIBUTE:!3=X[AND]4=N[AND]!CHILD(ATTRIBUTE_TYPE_SPECIALISATION_GROUP)]]
-<tr[[IF:CHILD(RESTRICTION_TYPE_SPEC_ATB)]] id="RowAtb<<ATTRIBUTE:C>>"[[ENDIF]]><td[[IF:CHILD(INFORMATION_TYPE_ELEMENT:2=TEXT[AND]!8=LIN)[OR]CHILD(DESCRIPTION_ATTRIBUTE)]] style="[[IF:CHILD(INFORMATION_TYPE_ELEMENT:2=TEXT[AND]!8=LIN)]]padding-top:10px;[[ENDIF]][[IF:CHILD(DESCRIPTION_ATTRIBUTE)]]cursor:help;[[ENDIF]]"[[ENDIF]][[IF:CHILD(DESCRIPTION_ATTRIBUTE)]] oncontextmenu="parent.OpenDescBox('<<TYPE7:U>>','<<TYPE:C>>.<<ATTRIBUTE:C>>','<<TYPE:U>>','<<ATTRIBUTE:U>>',-1)"[[ENDIF]]>[[IF:1=Y]]<u>[[ENDIF]][[IF:3=N]]<<ATTRIBUTE:C>>[[ELSE]]<<TEXT,DETAIL_ROOT_NAME>>[[ENDIF]][[IF:1=Y]]</u>[[ENDIF]]</td>[[LOOP,INFORMATION_TYPE_ELEMENT]][[IF:2=TEXT[AND]!8=LIN]]</tr><tr><td colspan="2">[[ELSE]]<td>[[ENDIF]][[IF,ATTRIBUTE:[[**!3=F[AND]!3=R[AND]**]]CHILD(INFORMATION_TYPE_ELEMENT:CHILD(PERMITTED_VALUE))]]<div>
+<tr[[IF:CHILD(RESTRICTION_TYPE_SPEC_ATB)]] id="RowAtb<<ATTRIBUTE:C>>"[[ENDIF]]><td[[IF:CHILD(INFORMATION_TYPE_ELEMENT:2=TEXT[AND]!8=LIN)[OR]CHILD(DESCRIPTION_ATTRIBUTE)]] style="[[IF:CHILD(INFORMATION_TYPE_ELEMENT:2=TEXT[AND]!8=LIN)]]padding-top:10px;[[ENDIF]][[IF:CHILD(DESCRIPTION_ATTRIBUTE)]]cursor:help;[[ENDIF]]"[[ENDIF]][[IF:CHILD(DESCRIPTION_ATTRIBUTE)]] oncontextmenu="parent.OpenDescBox('<<TYPE7:U>>','<<TYPE:C>>.<<ATTRIBUTE:C>>','<<TYPE:U>>','<<ATTRIBUTE:U>>',-1)"[[ENDIF]]>[[IF:1=Y]]<u>[[ENDIF]][[IF:3=N]]<<ATTRIBUTE:C>>[[ELSE]]<<TEXT,DETAIL_ROOT_NAME>>[[ENDIF]][[IF:1=Y]]</u>[[ENDIF]]</td>[[LOOP,INFORMATION_TYPE_ELEMENT]][[IF:2=TEXT[AND]!8=LIN]]</tr><tr><td colspan="2">[[ELSE]]<td>[[ENDIF]][[IF,ATTRIBUTE:CHILD(INFORMATION_TYPE_ELEMENT:CHILD(PERMITTED_VALUE))]]<div>
 <select id="Input<<ATTRIBUTE:C>>" type="text">
 	<option value=" " selected> </option>[[LOOP,PERMITTED_VALUE]]
 	<option value="<<PERMITTED_VALUE>>"><<PERMITTED_VALUE1>></option>[[ENDLOOP,PERMITTED_VALUE]]
 </select>[[ELSE]]<div[[IF:!2=TEXT[OR]8=LIN]]<<TEXT,DETAIL_STYLE_MAX-WIDTH>>[[ENDIF]]>
-<[[IF:2=TEXT[AND]!8=LIN]]textarea[[ELSE]]input[[ENDIF]] id="Input<<ATTRIBUTE:C>>" type="text"<<TEXT,DETAIL_MAXLENGTH>>[[IF:2=TEXT[AND]!8=LIN]] rows="[[IF:8=COD]]11[[ELSE]]5[[ENDIF]]"[[ENDIF]] style="[[IF:2=TEXT[AND]!8=LIN]][[IF:8=COD]]overflow:auto;white-space:pre;font-family:courier new;font-size:12px;[[ELSE]]white-space:normal;[[ENDIF]][[ENDIF]]width:100%;"<<TEXT,DETAIL_ONCHANGE>>[[IF,ATTRIBUTE:CHILD(DERIVATION)[OR]CHILD(DENORMALIZATION)[OR]CHILD(AGGREGATION)]] disabled[[ENDIF]]></[[IF:2=TEXT[AND]!8=LIN]]textarea[[ELSE]]input[[ENDIF]]>[[ENDIF]]</div></td>[[ENDLOOP,INFORMATION_TYPE_ELEMENT]]</tr>[[ENDLOOP,ATTRIBUTE]][[LOOP,REFERENCE]][[LOOP,FKEY]][[IF:FIRST]]
-<td><button id="RefSelect<<REFERENCE:S>>" type="button" onclick="StartSelect<<REFERENCE:S>>(event)">Select</button></td>[[ENDIF]][[ENDLOOP,FKEY]][[ENDLOOP,REFERENCE]][[ENDLOOP,TYPE]][[****[[LOOP,PAGE_FIELD:!3=H]]
-<tr><td><<PAGE_FIELD2>></td><td><div>
-<select id="<<PAGE_FIELD1>>" type="text">
-	<option value=" " selected> </option>
-	<option value="Y">Yes</option>
-	<option value="N">No</option>
-</select></div></td></tr>[[ENDLOOP,PAGE_FIELD]]*****]][[LOOP,GROUP_BOX]]
-<tr><td height=6></td></tr><tr[[IF:!1=#]] id="<<GROUP_BOX1>>"[[ENDIF]]><td colspan=2><fieldset><legend[[LOOP,DESCRIPTION]] style="cursor:help" oncontextmenu="parent.OpenDescBox('<<PAGE3:U>>','<<DESCRIPTION:C>>.<<GROUP_BOX2>>','<<DESCRIPTION>>','<<DESCRIPTION1>>',<<DESCRIPTION2>>)"[[ENDLOOP,DESCRIPTION]]><img style="border:1 solid transparent;" src="icons/<<GROUP_BOX3:L>>.bmp"/> <<GROUP_BOX2>></legend>
+<[[IF:2=TEXT[AND]!8=LIN]]textarea[[ELSE]]input[[ENDIF]] id="Input<<ATTRIBUTE:C>>" type="text"<<TEXT,DETAIL_MAXLENGTH>>[[IF:2=TEXT[AND]!8=LIN]] rows="[[IF:8=COD]]11[[ELSE]]5[[ENDIF]]"[[ENDIF]] style="[[IF:2=TEXT[AND]!8=LIN]][[IF:8=COD]]overflow:auto;white-space:pre;font-family:courier new;font-size:12px;[[ELSE]]white-space:normal;[[ENDIF]][[ENDIF]]width:100%;"<<TEXT,DETAIL_ONCHANGE>>[[IF,ATTRIBUTE:CHILD(DERIVATION)[OR]CHILD(DENORMALIZATION)[OR]CHILD(AGGREGATION)]] disabled[[ENDIF]]></[[IF:2=TEXT[AND]!8=LIN]]textarea[[ELSE]]input[[ENDIF]]>[[ENDIF]]</div></td>[[ENDLOOP,INFORMATION_TYPE_ELEMENT]]</tr>[[ENDLOOP,ATTRIBUTE]][[ENDLOOP,TYPE]][[LOOP,PAGE_FIELD:!3=hidden[AND]!CHILD(*GROUP_BOX)]]
+<tr><td><<PAGE_FIELD1>></td><td><div>
+[[**]][[IF:3=text-line]]<input id="<<PAGE_FIELD>>" type="text">[[*
+*]][[ELSIF:3=text-desc]]<textarea id="<<PAGE_FIELD>>" type="text">[[*
+*]][[ELSIF:3=text-code]]<textarea id="<<PAGE_FIELD>>" type="text">[[*
+*]][[ELSIF:3=selection]]<select id="<<PAGE_FIELD>>" type="text">
+ 	<option value=" " selected> </option>[[LOOP,OPTION]]
+	<option value="<<OPTION>>"><<OPTION1>></option>[[ENDLOOP,OPTION]]
+</select></div></td></tr>[[*
+*]][[ELSIF:3=number]]<input id="<<PAGE_FIELD>>" type="text">[[*
+*]][[ELSIF:3=date]]<input id="<<PAGE_FIELD>>" type="text">[[[ENDIF]][[ENDLOOP,PAGE_FIELD]][[LOOP,GROUP_BOX]]
+<tr><td height=6></td></tr><tr id="<<GROUP_BOX>>"><td colspan=2><fieldset><legend[[LOOP,DESCRIPTION]] style="cursor:help" oncontextmenu="parent.OpenDescBox('<<PAGE3:U>>','<<DESCRIPTION:C>>.<<GROUP_BOX1>>','<<DESCRIPTION>>','<<DESCRIPTION1>>',<<DESCRIPTION2>>)"[[ENDLOOP,DESCRIPTION]]><img style="border:1 solid transparent;" src="icons/<<GROUP_BOX2:L>>.bmp"/> <<GROUP_BOX1>></legend>
 <table style="width:100%;">[[LOOP,GROUP_BOX_FIELD]]
-<tr><td>[[IF:3=Y]]<u>[[ENDIF]]<<GROUP_BOX_FIELD2>>[[IF:3=Y]]</u>[[ENDIF]]</td><td style="width:100%;"><div style="max-width:<<GROUP_BOX_FIELD6>>;">
-<input id="<<GROUP_BOX_FIELD1>>" type="text" maxlength="<<GROUP_BOX_FIELD5>>" style="width:100%;"[[IF:7=Y[OR]8=Y]] onchange="[[IF:7=Y]]ToUpperCase(this);[[ENDIF]][[IF:8=Y]]ReplaceSpaces(this);[[ENDIF]]"[[ENDIF]] disabled></input></div></td></tr>[[ENDLOOP,GROUP_BOX_FIELD]]
+<tr><td>[[IF:2=Y]]<u>[[ENDIF]]<<GROUP_BOX_FIELD1>>[[IF:2=Y]]</u>[[ENDIF]]</td><td style="width:100%;"><div style="max-width:<<GROUP_BOX_FIELD5>>;">
+<input id="<<GROUP_BOX_FIELD>>" type="text" maxlength="<<GROUP_BOX_FIELD4>>" style="width:100%;"[[IF:6=Y[OR]7=Y]] onchange="[[IF:6=Y]]ToUpperCase(this);[[ENDIF]][[IF:7=Y]]ReplaceSpaces(this);[[ENDIF]]"[[ENDIF]] disabled></input></div></td>[[IF:FIRST]][[FORV,GROUP_BOX:N>N]][[LOOP,GROUP_BOX_BUTTON]]
+<td><button id="<<GROUP_BOX_BUTTON>>" type="button" onclick="<<GROUP_BOX_BUTTON2>>"><<GROUP_BOX_BUTTON1>></button></td>[[ENDLOOP,GROUP_BOX_BUTTON]][[ENDFOR]][[ENDIF]]</tr>[[ENDLOOP,GROUP_BOX_FIELD]]
 </table></fieldset></td></tr>[[ENDLOOP,GROUP_BOX]]
 <tr><td><br></td><td style="width:100%;"></td></tr>
-<tr><td/><td>[[LOOP,BUTTON]]
-<button id="<<BUTTON1>>" type="button" onclick="[[LOOP,SERVICE]]<<SERVICE:C>>[[ENDLOOP,SERVICE]]()"><<BUTTON>></button>[[IF:!LAST]]&nbsp;&nbsp;&nbsp;[[ENDIF]][[ENDLOOP,BUTTON]]</td></tr>
-</table>[[LOOP,PAGE_FIELD:4=hidden]]
-<input id="<<PAGE_FIELD1>>" type="hidden"></input>[[ENDLOOP,PAGE_FIELD]]
+<tr><td/><td>[[LOOP,BUTTON:!CHILD(*GROUP_BOX)]]
+<button id="<<BUTTON>>" type="button" onclick="<<BUTTON2>>"><<BUTTON1>></button>[[IF:!LAST]]&nbsp;&nbsp;&nbsp;[[ENDIF]][[ENDLOOP,BUTTON]]</td></tr>
+</table>[[LOOP,PAGE_FIELD:3=hidden]]
+<input id="<<PAGE_FIELD>>" type="hidden"></input>[[ENDLOOP,PAGE_FIELD]]
 </body>
 </html>
 [[ENDLOOP,PAGE]][[ENDLOOP,SYSTEM_PAGE]][[ENDLOOP,SYSTEM]][[FILE,<<2>>\<<1>>DetailInclude.js]]<!--

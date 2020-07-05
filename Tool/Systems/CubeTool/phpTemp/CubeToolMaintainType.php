@@ -290,6 +290,61 @@ function DeleteTyp() {
 	<option value="Y">Yes</option>
 	<option value="N">No</option>
 </select></div></td></tr>
+<tr><td>BusinessObjectType.Name</td><td><div>
+<input id="InputFkBotName" type="text">
+<tr><td>Type.Name</td><td><div>
+<input id="InputFkTypName" type="text">
+<tr><td>Name</td><td><div>
+<input id="InputName" type="text">
+<tr><td>Code</td><td><div>
+<input id="InputCode" type="text">
+<tr><td>FlagPartialKey</td><td><div>
+<select id="InputFlagPartialKey" type="text">
+ 	<option value=" " selected> </option>
+	<option value="Y">Yes</option>
+	<option value="N">No</option>
+</select></div></td></tr>
+<tr><td>FlagRecursive</td><td><div>
+<select id="InputFlagRecursive" type="text">
+ 	<option value=" " selected> </option>
+	<option value="Y">Yes</option>
+	<option value="N">No</option>
+</select></div></td></tr>
+<tr><td>RecursiveCardinality</td><td><div>
+<select id="InputRecursiveCardinality" type="text">
+ 	<option value=" " selected> </option>
+	<option value="1">1</option>
+	<option value="2">2</option>
+	<option value="3">3</option>
+	<option value="4">4</option>
+	<option value="5">5</option>
+	<option value="N">Many</option>
+</select></div></td></tr>
+<tr><td>Cardinality</td><td><div>
+<select id="InputCardinality" type="text">
+ 	<option value=" " selected> </option>
+	<option value="1">1</option>
+	<option value="2">2</option>
+	<option value="3">3</option>
+	<option value="4">4</option>
+	<option value="5">5</option>
+	<option value="N">Many</option>
+</select></div></td></tr>
+<tr><td>SortOrder</td><td><div>
+<select id="InputSortOrder" type="text">
+ 	<option value=" " selected> </option>
+	<option value="N">No sort</option>
+	<option value="K">Key</option>
+	<option value="P">Position</option>
+</select></div></td></tr>
+<tr><td>Icon</td><td><div>
+<input id="InputIcon" type="text">
+<tr><td>Transferable</td><td><div>
+<select id="InputTransferable" type="text">
+ 	<option value=" " selected> </option>
+	<option value="Y">Yes</option>
+	<option value="N">No</option>
+</select></div></td></tr>
 <tr><td><br></td><td style="width:100%;"></td></tr>
 <tr><td/><td>
 <button id="ButtonCreate" type="button" onclick="CreateTyp()">Create</button>&nbsp;&nbsp;&nbsp;

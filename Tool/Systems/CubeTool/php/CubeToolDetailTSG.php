@@ -298,7 +298,7 @@ function StartSelect001(p_event) {
 	<option value="Y">Yes</option>
 	<option value="N">No</option>
 </select></div></td></tr>
-<tr><td height=6></td></tr><tr><td colspan=2><fieldset><legend style="cursor:help" oncontextmenu="parent.OpenDescBox('TSPGROUP','TypeSpecialisationGroup.Attribute (IsLocatedAfter)','TYPE_SPECIALISATION_GROUP','ATTRIBUTE',0)"><img style="border:1 solid transparent;" src="icons/attrib.bmp"/> Attribute (IsLocatedAfter)</legend>
+<tr><td height=6></td></tr><tr id="RowRefAttribute0"><td colspan=2><fieldset><legend style="cursor:help" oncontextmenu="parent.OpenDescBox('TSPGROUP','TypeSpecialisationGroup.Attribute (IsLocatedAfter)','TYPE_SPECIALISATION_GROUP','ATTRIBUTE',0)"><img style="border:1 solid transparent;" src="icons/attrib.bmp"/> Attribute (IsLocatedAfter)</legend>
 <table style="width:100%;">
 <tr><td>Type.Name</td><td style="width:100%;"><div style="max-width:30em;">
 <input id="InputXfAtbTypName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td>

@@ -290,11 +290,49 @@ function StartSelect001(p_event) {
 	<option value="Y">Yes</option>
 	<option value="N">No</option>
 </select></div></td></tr>
-<td><button id="RefSelect001" type="button" onclick="StartSelect001(event)">Select</button></td>
-<tr><td height=6></td></tr><tr><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/inftype.bmp"/> InformationType (HasDomain)</legend>
+<tr><td>BusinessObjectType.Name</td><td><div>
+<input id="InputFkBotName" type="text">
+<tr><td>Type.Name</td><td><div>
+<input id="InputFkTypName" type="text">
+<tr><td>Name</td><td><div>
+<input id="InputName" type="text">
+<tr><td>PrimaryKey</td><td><div>
+<select id="InputPrimaryKey" type="text">
+ 	<option value=" " selected> </option>
+	<option value="Y">Yes</option>
+	<option value="N">No</option>
+</select></div></td></tr>
+<tr><td>CodeDisplayKey</td><td><div>
+<select id="InputCodeDisplayKey" type="text">
+ 	<option value=" " selected> </option>
+	<option value="Y">Yes</option>
+	<option value="S">Sub</option>
+	<option value="N">No</option>
+</select></div></td></tr>
+<tr><td>CodeForeignKey</td><td><div>
+<select id="InputCodeForeignKey" type="text">
+ 	<option value=" " selected> </option>
+	<option value="N">None</option>
+</select></div></td></tr>
+<tr><td>FlagHidden</td><td><div>
+<select id="InputFlagHidden" type="text">
+ 	<option value=" " selected> </option>
+	<option value="Y">Yes</option>
+	<option value="N">No</option>
+</select></div></td></tr>
+<tr><td>DefaultValue</td><td><div>
+<input id="InputDefaultValue" type="text">
+<tr><td>Unchangeable</td><td><div>
+<select id="InputUnchangeable" type="text">
+ 	<option value=" " selected> </option>
+	<option value="Y">Yes</option>
+	<option value="N">No</option>
+</select></div></td></tr>
+<tr><td height=6></td></tr><tr id="RowRefInformationType0"><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/inftype.bmp"/> InformationType (HasDomain)</legend>
 <table style="width:100%;">
-<tr><td>InformationType.Name</td><td style="width:100%;"><div style="max-width:30em;">
-<input id="InputXkItpName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td></tr>
+<tr><td>InformationType.Name</td><td style="width:100%;"><div style="max-width:;">
+<input id="InputXkItpName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td>
+<td><button id="RefSelect001" type="button" onclick="StartSelect001(event)">Select</button></td></tr>
 </table></fieldset></td></tr>
 <tr><td><br></td><td style="width:100%;"></td></tr>
 <tr><td/><td>

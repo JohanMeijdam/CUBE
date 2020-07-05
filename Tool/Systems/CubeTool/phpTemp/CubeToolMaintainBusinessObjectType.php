@@ -212,6 +212,19 @@ function ProcessTypeSpecialisation() {
 <input id="InputDirectory" type="text" maxlength="80" style="width:100%;" onchange="ReplaceSpaces(this);"></input></div></td></tr>
 <tr id="RowAtbApiUrl"><td style="cursor:help;" oncontextmenu="parent.OpenDescBox('BOTYPE','BusinessObjectType.ApiUrl','BUSINESS_OBJECT_TYPE','API_URL',-1)">ApiUrl</td><td><div style="max-width:300em;">
 <input id="InputApiUrl" type="text" maxlength="300" style="width:100%;" onchange="ReplaceSpaces(this);"></input></div></td></tr>
+<tr><td>Name</td><td><div>
+<input id="InputName" type="text">
+<tr><td>CubeTsgType</td><td><div>
+<select id="InputCubeTsgType" type="text">
+ 	<option value=" " selected> </option>
+	<option value="INT">INTERNAL</option>
+	<option value="EXT">EXTERNAL</option>
+	<option value="RET">REUSABLE_TYPE</option>
+</select></div></td></tr>
+<tr><td>Directory</td><td><div>
+<input id="InputDirectory" type="text">
+<tr><td>ApiUrl</td><td><div>
+<input id="InputApiUrl" type="text">
 <tr><td><br></td><td style="width:100%;"></td></tr>
 <tr><td/><td>
 <button id="ButtonCreate" type="button" onclick="CreateBot()">Create</button>&nbsp;&nbsp;&nbsp;

@@ -298,12 +298,28 @@ function StartSelect001(p_event) {
 	<option value="Y">Yes</option>
 	<option value="N">No</option>
 </select></div></td></tr>
-<td><button id="RefSelect001" type="button" onclick="StartSelect001(event)">Select</button></td>
-<tr><td height=6></td></tr><tr><td colspan=2><fieldset><legend style="cursor:help" oncontextmenu="parent.OpenDescBox('TSPGROUP','TypeSpecialisationGroup.Attribute (IsLocatedAfter)','TYPE_SPECIALISATION_GROUP','ATTRIBUTE',0)"><img style="border:1 solid transparent;" src="icons/attrib.bmp"/> Attribute (IsLocatedAfter)</legend>
+<tr><td>BusinessObjectType.Name</td><td><div>
+<input id="InputFkBotName" type="text">
+<tr><td>Type.Name</td><td><div>
+<input id="InputFkTypName" type="text">
+<tr><td>TypeSpecialisationGroup.Code</td><td><div>
+<input id="InputFkTsgCode" type="text">
+<tr><td>Code</td><td><div>
+<input id="InputCode" type="text">
+<tr><td>Name</td><td><div>
+<input id="InputName" type="text">
+<tr><td>PrimaryKey</td><td><div>
+<select id="InputPrimaryKey" type="text">
+ 	<option value=" " selected> </option>
+	<option value="Y">Yes</option>
+	<option value="N">No</option>
+</select></div></td></tr>
+<tr><td height=6></td></tr><tr id="RowRefAttribute0"><td colspan=2><fieldset><legend style="cursor:help" oncontextmenu="parent.OpenDescBox('TSPGROUP','TypeSpecialisationGroup.Attribute (IsLocatedAfter)','TYPE_SPECIALISATION_GROUP','ATTRIBUTE',0)"><img style="border:1 solid transparent;" src="icons/attrib.bmp"/> Attribute (IsLocatedAfter)</legend>
 <table style="width:100%;">
-<tr><td>Type.Name</td><td style="width:100%;"><div style="max-width:30em;">
-<input id="InputXfAtbTypName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td></tr>
-<tr><td>Attribute.Name</td><td style="width:100%;"><div style="max-width:30em;">
+<tr><td>Type.Name</td><td style="width:100%;"><div style="max-width:;">
+<input id="InputXfAtbTypName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td>
+<td><button id="RefSelect001" type="button" onclick="StartSelect001(event)">Select</button></td></tr>
+<tr><td>Attribute.Name</td><td style="width:100%;"><div style="max-width:;">
 <input id="InputXkAtbName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td></tr>
 </table></fieldset></td></tr>
 <tr><td><br></td><td style="width:100%;"></td></tr>

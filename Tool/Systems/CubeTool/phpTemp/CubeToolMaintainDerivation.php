@@ -279,17 +279,38 @@ function ProcessTypeSpecialisation() {
 	<option value="MIN">Minimum</option>
 	<option value="MAX">Maximum</option>
 </select></div></td></tr>
-<td><button id="RefSelect001" type="button" onclick="StartSelect001(event)">Select</button></td>
-<td><button id="RefSelect002" type="button" onclick="StartSelect002(event)">Select</button></td>
-<tr><td height=6></td></tr><tr><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/type.bmp"/> Type (ConcernsParent)</legend>
+<tr><td>BusinessObjectType.Name</td><td><div>
+<input id="InputFkBotName" type="text">
+<tr><td>Type.Name</td><td><div>
+<input id="InputFkTypName" type="text">
+<tr><td>Attribute.Name</td><td><div>
+<input id="InputFkAtbName" type="text">
+<tr><td>CubeTsgType</td><td><div>
+<select id="InputCubeTsgType" type="text">
+ 	<option value=" " selected> </option>
+	<option value="DN">DENORMALIZATION</option>
+	<option value="IN">INTERNAL</option>
+	<option value="AG">AGGREGATION</option>
+</select></div></td></tr>
+<tr><td>AggregateFunction</td><td><div>
+<select id="InputAggregateFunction" type="text">
+ 	<option value=" " selected> </option>
+	<option value="SUM">Sum</option>
+	<option value="AVG">Average</option>
+	<option value="MIN">Minimum</option>
+	<option value="MAX">Maximum</option>
+</select></div></td></tr>
+<tr><td height=6></td></tr><tr id="RowRefType0"><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/type.bmp"/> Type (ConcernsParent)</legend>
 <table style="width:100%;">
-<tr><td>Type.Name</td><td style="width:100%;"><div style="max-width:30em;">
-<input id="InputXkTypName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td></tr>
+<tr><td>Type.Name</td><td style="width:100%;"><div style="max-width:;">
+<input id="InputXkTypName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td>
+<td><button id="RefSelect001" type="button" onclick="StartSelect001(event)">Select</button></td></tr>
 </table></fieldset></td></tr>
-<tr><td height=6></td></tr><tr><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/type.bmp"/> Type (ConcernsChild)</legend>
+<tr><td height=6></td></tr><tr id="RowRefType1"><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/type.bmp"/> Type (ConcernsChild)</legend>
 <table style="width:100%;">
-<tr><td>Type.Name</td><td style="width:100%;"><div style="max-width:30em;">
-<input id="InputXkTypName1" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td></tr>
+<tr><td>Type.Name</td><td style="width:100%;"><div style="max-width:;">
+<input id="InputXkTypName1" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td>
+<td><button id="RefSelect002" type="button" onclick="StartSelect002(event)">Select</button></td></tr>
 </table></fieldset></td></tr>
 <tr><td><br></td><td style="width:100%;"></td></tr>
 <tr><td/><td>

@@ -206,7 +206,7 @@ function StartSelect001(p_event) {
 <table>
 <tr><td><u>System.Name</u></td><td><div style="max-width:30em;">
 <input id="InputFkSysName" type="text" maxlength="30" style="width:100%;" onchange="ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td height=6></td></tr><tr><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/botype.bmp"/> BusinessObjectType (Has)</legend>
+<tr><td height=6></td></tr><tr id="RowRefBusinessObjectType0"><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/botype.bmp"/> BusinessObjectType (Has)</legend>
 <table style="width:100%;">
 <tr><td><u>BusinessObjectType.Name</u></td><td style="width:100%;"><div style="max-width:30em;">
 <input id="InputXkBotName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td>

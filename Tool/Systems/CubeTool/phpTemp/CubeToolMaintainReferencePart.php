@@ -332,17 +332,31 @@ function StartSelect002(p_event) {
 <input id="InputFkRfpTypName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
 <tr><td>Type.Name</td><td><div style="max-width:30em;">
 <input id="InputFkRfpTypName1" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<td><button id="RefSelect001" type="button" onclick="StartSelect001(event)">Select</button></td>
-<td><button id="RefSelect002" type="button" onclick="StartSelect002(event)">Select</button></td>
-<tr><td height=6></td></tr><tr><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/type.bmp"/> Type (IsSource)</legend>
+<tr><td>BusinessObjectType.Name</td><td><div>
+<input id="InputFkBotName" type="text">
+<tr><td>Type.Name</td><td><div>
+<input id="InputFkTypName" type="text">
+<tr><td>Reference.Sequence</td><td><div>
+<input id="InputFkRefSequence" type="text">
+<tr><td>Reference.Name</td><td><div>
+<input id="InputFkRefBotName" type="text">
+<tr><td>Reference.Name</td><td><div>
+<input id="InputFkRefTypName" type="text">
+<tr><td>Type.Name</td><td><div>
+<input id="InputFkRfpTypName" type="text">
+<tr><td>Type.Name</td><td><div>
+<input id="InputFkRfpTypName1" type="text">
+<tr><td height=6></td></tr><tr id="RowRefType0"><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/type.bmp"/> Type (IsSource)</legend>
 <table style="width:100%;">
-<tr><td><u>Type.Name</u></td><td style="width:100%;"><div style="max-width:30em;">
-<input id="InputXkTypName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td></tr>
+<tr><td><u>Type.Name</u></td><td style="width:100%;"><div style="max-width:;">
+<input id="InputXkTypName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td>
+<td><button id="RefSelect001" type="button" onclick="StartSelect001(event)">Select</button></td></tr>
 </table></fieldset></td></tr>
-<tr><td height=6></td></tr><tr><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/type.bmp"/> Type (IsTarget)</legend>
+<tr><td height=6></td></tr><tr id="RowRefType1"><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/type.bmp"/> Type (IsTarget)</legend>
 <table style="width:100%;">
-<tr><td><u>Type.Name</u></td><td style="width:100%;"><div style="max-width:30em;">
-<input id="InputXkTypName1" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td></tr>
+<tr><td><u>Type.Name</u></td><td style="width:100%;"><div style="max-width:;">
+<input id="InputXkTypName1" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td>
+<td><button id="RefSelect002" type="button" onclick="StartSelect002(event)">Select</button></td></tr>
 </table></fieldset></td></tr>
 <tr><td><br></td><td style="width:100%;"></td></tr>
 <tr><td/><td>

@@ -209,6 +209,22 @@ function ProcessTypeSpecialisation() {
 <input id="InputPassword" type="text" maxlength="20" style="width:100%;" onchange="ReplaceSpaces(this);"></input></div></td></tr>
 <tr id="RowAtbTablePrefix"><td>TablePrefix</td><td><div style="max-width:4em;">
 <input id="InputTablePrefix" type="text" maxlength="4" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr><td>Name</td><td><div>
+<input id="InputName" type="text">
+<tr><td>CubeTsgType</td><td><div>
+<select id="InputCubeTsgType" type="text">
+ 	<option value=" " selected> </option>
+	<option value="PRIMARY">PRIMARY_SYSTEM</option>
+	<option value="SUPPORT">SUPPORTING_SYSTEM</option>
+</select></div></td></tr>
+<tr><td>Database</td><td><div>
+<input id="InputDatabase" type="text">
+<tr><td>Schema</td><td><div>
+<input id="InputSchema" type="text">
+<tr><td>Password</td><td><div>
+<input id="InputPassword" type="text">
+<tr><td>TablePrefix</td><td><div>
+<input id="InputTablePrefix" type="text">
 <tr><td><br></td><td style="width:100%;"></td></tr>
 <tr><td/><td>
 <button id="ButtonCreate" type="button" onclick="CreateSys()">Create</button>&nbsp;&nbsp;&nbsp;
