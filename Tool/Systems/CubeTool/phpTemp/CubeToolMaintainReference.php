@@ -343,29 +343,22 @@ function ProcessTypeSpecialisation() {
 </select></span></div>
 <hr/>
 <table id="TableMain" style="display:none">
-<tr><td>BusinessObjectType.Name</td><td><div style="max-width:30em;">
-<input id="InputFkBotName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td><u>Type.Name</u></td><td><div style="max-width:30em;">
-<input id="InputFkTypName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td>Name</td><td><div style="max-width:30em;">
-<input id="InputName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td style="cursor:help;" oncontextmenu="parent.OpenDescBox('REF','Reference.PrimaryKey','REFERENCE','PRIMARY_KEY',-1)">PrimaryKey</td><td><div>
-<select id="InputPrimaryKey" type="text">
+<tr><td>BusinessObjectType.Name</td><td><div style="max-width:30em;"><input id="InputFkBotName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr><td><u>Type.Name</u></td><td><div style="max-width:30em;"><input id="InputFkTypName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr><td>Name</td><td><div style="max-width:30em;"><input id="InputName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr><td style="cursor:help;" oncontextmenu="parent.OpenDescBox('REF','Reference.PrimaryKey','REFERENCE','PRIMARY_KEY',-1)">PrimaryKey</td><td><div><select id="InputPrimaryKey" type="text">
 	<option value=" " selected> </option>
 	<option value="Y">Yes</option>
 	<option value="N">No</option>
 </select></div></td></tr>
-<tr><td>CodeDisplayKey</td><td><div>
-<select id="InputCodeDisplayKey" type="text">
+<tr><td>CodeDisplayKey</td><td><div><select id="InputCodeDisplayKey" type="text">
 	<option value=" " selected> </option>
 	<option value="Y">Yes</option>
 	<option value="S">Sub</option>
 	<option value="N">No</option>
 </select></div></td></tr>
-<tr><td><u>Sequence</u></td><td><div style="max-width:2em;">
-<input id="InputSequence" type="text" maxlength="2" style="width:100%;"></input></div></td></tr>
-<tr id="RowAtbScope"><td style="cursor:help;" oncontextmenu="parent.OpenDescBox('REF','Reference.Scope','REFERENCE','SCOPE',-1)">Scope</td><td><div>
-<select id="InputScope" type="text">
+<tr><td><u>Sequence</u></td><td><div style="max-width:2em;"><input id="InputSequence" type="text" maxlength="2"></input></div></td></tr>
+<tr><td style="cursor:help;" oncontextmenu="parent.OpenDescBox('REF','Reference.Scope','REFERENCE','SCOPE',-1)">Scope</td><td><div><select id="InputScope" type="text">
 	<option value=" " selected> </option>
 	<option value="ALL">All</option>
 	<option value="PRA">Parents all</option>
@@ -373,82 +366,29 @@ function ProcessTypeSpecialisation() {
 	<option value="CHA">Children all</option>
 	<option value="CH1">Children first level</option>
 </select></div></td></tr>
-<tr><td style="cursor:help;" oncontextmenu="parent.OpenDescBox('REF','Reference.Unchangeable','REFERENCE','UNCHANGEABLE',-1)">Unchangeable</td><td><div>
-<select id="InputUnchangeable" type="text">
+<tr><td style="cursor:help;" oncontextmenu="parent.OpenDescBox('REF','Reference.Unchangeable','REFERENCE','UNCHANGEABLE',-1)">Unchangeable</td><td><div><select id="InputUnchangeable" type="text">
 	<option value=" " selected> </option>
 	<option value="Y">Yes</option>
 	<option value="N">No</option>
 </select></div></td></tr>
-<tr id="RowAtbWithinScopeExtension"><td>WithinScopeExtension</td><td><div>
-<select id="InputWithinScopeExtension" type="text">
+<tr><td>WithinScopeExtension</td><td><div><select id="InputWithinScopeExtension" type="text">
 	<option value=" " selected> </option>
 	<option value="PAR">Recursive parent</option>
 	<option value="REF">Referenced type</option>
-</select></div></td></tr>
-<tr><td>BusinessObjectType.Name</td><td><div>
-<input id="InputFkBotName" type="text">
-<tr><td>Type.Name</td><td><div>
-<input id="InputFkTypName" type="text">
-<tr><td>Name</td><td><div>
-<input id="InputName" type="text">
-<tr><td>PrimaryKey</td><td><div>
-<select id="InputPrimaryKey" type="text">
- 	<option value=" " selected> </option>
-	<option value="Y">Yes</option>
-	<option value="N">No</option>
-</select></div></td></tr>
-<tr><td>CodeDisplayKey</td><td><div>
-<select id="InputCodeDisplayKey" type="text">
- 	<option value=" " selected> </option>
-	<option value="Y">Yes</option>
-	<option value="S">Sub</option>
-	<option value="N">No</option>
-</select></div></td></tr>
-<tr><td>Sequence</td><td><div>
-<input id="InputSequence" type="text">
-<tr><td>Scope</td><td><div>
-<select id="InputScope" type="text">
- 	<option value=" " selected> </option>
-	<option value="ALL">All</option>
-	<option value="PRA">Parents all</option>
-	<option value="PR1">Parents first level</option>
-	<option value="CHA">Children all</option>
-	<option value="CH1">Children first level</option>
-</select></div></td></tr>
-<tr><td>Unchangeable</td><td><div>
-<select id="InputUnchangeable" type="text">
- 	<option value=" " selected> </option>
-	<option value="Y">Yes</option>
-	<option value="N">No</option>
-</select></div></td></tr>
-<tr><td>WithinScopeExtension</td><td><div>
-<select id="InputWithinScopeExtension" type="text">
- 	<option value=" " selected> </option>
-	<option value="PAR">Recursive parent</option>
-	<option value="REF">Referenced type</option>
-</select></div></td></tr>
-<tr><td>CubeTsgIntExt</td><td><div>
-<select id="InputCubeTsgIntExt" type="text">
- 	<option value=" " selected> </option>
-	<option value="INT">INTERNAL</option>
-	<option value="EXT">EXTERNAL</option>
 </select></div></td></tr>
 <tr><td height=6></td></tr><tr id="RowRefBusinessObjectType0"><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/botype.bmp"/> BusinessObjectType (Refer)</legend>
 <table style="width:100%;">
-<tr><td><u>BusinessObjectType.Name</u></td><td style="width:100%;"><div style="max-width:;">
-<input id="InputXkBotName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td>
+<tr><td><u>BusinessObjectType.Name</u></td><td style="width:100%;"><div style="max-width:30em;"><input id="InputXkBotName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td>
 <td><button id="RefSelect001" type="button" onclick="StartSelect001(event)">Select</button></td></tr>
 </table></fieldset></td></tr>
 <tr><td height=6></td></tr><tr id="RowRefType0"><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/type.bmp"/> Type (Refer)</legend>
 <table style="width:100%;">
-<tr><td><u>Type.Name</u></td><td style="width:100%;"><div style="max-width:;">
-<input id="InputXkTypName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td>
+<tr><td><u>Type.Name</u></td><td style="width:100%;"><div style="max-width:30em;"><input id="InputXkTypName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td>
 <td><button id="RefSelect002" type="button" onclick="StartSelect002(event)">Select</button></td></tr>
 </table></fieldset></td></tr>
 <tr><td height=6></td></tr><tr id="RowRefType1"><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/type.bmp"/> Type (WithinScopeOf)</legend>
 <table style="width:100%;">
-<tr><td>Type.Name</td><td style="width:100%;"><div style="max-width:;">
-<input id="InputXkTypName1" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td>
+<tr><td>Type.Name</td><td style="width:100%;"><div style="max-width:30em;"><input id="InputXkTypName1" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td>
 <td><button id="RefSelect003" type="button" onclick="StartSelect003(event)">Select</button></td></tr>
 </table></fieldset></td></tr>
 <tr><td><br></td><td style="width:100%;"></td></tr>

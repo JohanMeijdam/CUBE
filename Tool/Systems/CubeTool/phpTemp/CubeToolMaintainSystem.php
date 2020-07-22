@@ -199,32 +199,11 @@ function ProcessTypeSpecialisation() {
 </select></span></div>
 <hr/>
 <table id="TableMain" style="display:none">
-<tr><td><u>Name</u></td><td><div style="max-width:30em;">
-<input id="InputName" type="text" maxlength="30" style="width:100%;" onchange="ReplaceSpaces(this);"></input></div></td></tr>
-<tr id="RowAtbDatabase"><td style="cursor:help;" oncontextmenu="parent.OpenDescBox('SYSTEM','System.Database','SYSTEM','DATABASE',-1)">Database</td><td><div style="max-width:30em;">
-<input id="InputDatabase" type="text" maxlength="30" style="width:100%;" onchange="ReplaceSpaces(this);"></input></div></td></tr>
-<tr id="RowAtbSchema"><td>Schema</td><td><div style="max-width:30em;">
-<input id="InputSchema" type="text" maxlength="30" style="width:100%;" onchange="ReplaceSpaces(this);"></input></div></td></tr>
-<tr id="RowAtbPassword"><td>Password</td><td><div style="max-width:20em;">
-<input id="InputPassword" type="text" maxlength="20" style="width:100%;" onchange="ReplaceSpaces(this);"></input></div></td></tr>
-<tr id="RowAtbTablePrefix"><td>TablePrefix</td><td><div style="max-width:4em;">
-<input id="InputTablePrefix" type="text" maxlength="4" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td>Name</td><td><div>
-<input id="InputName" type="text">
-<tr><td>CubeTsgType</td><td><div>
-<select id="InputCubeTsgType" type="text">
- 	<option value=" " selected> </option>
-	<option value="PRIMARY">PRIMARY_SYSTEM</option>
-	<option value="SUPPORT">SUPPORTING_SYSTEM</option>
-</select></div></td></tr>
-<tr><td>Database</td><td><div>
-<input id="InputDatabase" type="text">
-<tr><td>Schema</td><td><div>
-<input id="InputSchema" type="text">
-<tr><td>Password</td><td><div>
-<input id="InputPassword" type="text">
-<tr><td>TablePrefix</td><td><div>
-<input id="InputTablePrefix" type="text">
+<tr><td><u>Name</u></td><td><div style="max-width:30em;"><input id="InputName" type="text" maxlength="30" style="width:100%;" onchange="ReplaceSpaces(this);"></input></div></td></tr>
+<tr><td style="cursor:help;" oncontextmenu="parent.OpenDescBox('SYSTEM','System.Database','SYSTEM','DATABASE',-1)">Database</td><td><div style="max-width:30em;"><input id="InputDatabase" type="text" maxlength="30" style="width:100%;" onchange="ReplaceSpaces(this);"></input></div></td></tr>
+<tr><td>Schema</td><td><div style="max-width:30em;"><input id="InputSchema" type="text" maxlength="30" style="width:100%;" onchange="ReplaceSpaces(this);"></input></div></td></tr>
+<tr><td>Password</td><td><div style="max-width:20em;"><input id="InputPassword" type="text" maxlength="20" style="width:100%;" onchange="ReplaceSpaces(this);"></input></div></td></tr>
+<tr><td>TablePrefix</td><td><div style="max-width:4em;"><input id="InputTablePrefix" type="text" maxlength="4" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
 <tr><td><br></td><td style="width:100%;"></td></tr>
 <tr><td/><td>
 <button id="ButtonCreate" type="button" onclick="CreateSys()">Create</button>&nbsp;&nbsp;&nbsp;

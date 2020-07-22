@@ -413,36 +413,24 @@ function ProcessTypeSpecialisation() {
 </select></span></div>
 <hr/>
 <table id="TableMain" style="display:none">
-<tr><td>BusinessObjectType.Name</td><td><div style="max-width:30em;">
-<input id="InputFkBotName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td><u>Type.Name</u></td><td><div style="max-width:30em;">
-<input id="InputFkTypName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td>JsonPath.Name</td><td><div style="max-width:32em;">
-<input id="InputFkJsnName" type="text" maxlength="32" style="width:100%;"></input></div></td></tr>
-<tr><td>JsonPath.Location</td><td><div style="max-width:9em;">
-<input id="InputFkJsnLocation" type="text" maxlength="9" style="width:100%;"></input></div></td></tr>
-<tr><td>Type.Name</td><td><div style="max-width:30em;">
-<input id="InputFkJsnAtbTypName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td>Attribute.Name</td><td><div style="max-width:30em;">
-<input id="InputFkJsnAtbName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td>Type.Name</td><td><div style="max-width:30em;">
-<input id="InputFkJsnTypName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr id="RowAtbName"><td style="cursor:help;" oncontextmenu="parent.OpenDescBox('BRACES','JsonPath.Name','JSON_PATH','NAME',-1)"><u>Name</u></td><td><div style="max-width:32em;">
-<input id="InputName" type="text" maxlength="32" style="width:100%;"></input></div></td></tr>
-<tr id="RowAtbLocation"><td style="cursor:help;" oncontextmenu="parent.OpenDescBox('BRACES','JsonPath.Location','JSON_PATH','LOCATION',-1)"><u>Location</u></td><td><div style="max-width:9em;">
-<input id="InputLocation" type="text" maxlength="9" style="width:100%;"></input></div></td></tr>
+<tr><td>BusinessObjectType.Name</td><td><div style="max-width:30em;"><input id="InputFkBotName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr><td><u>Type.Name</u></td><td><div style="max-width:30em;"><input id="InputFkTypName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr><td>JsonPath.Name</td><td><div style="max-width:32em;"><input id="InputFkJsnName" type="text" maxlength="32" style="width:100%;"></input></div></td></tr>
+<tr><td>JsonPath.Location</td><td><div style="max-width:9em;"><input id="InputFkJsnLocation" type="text" maxlength="9" style="width:100%;"></input></div></td></tr>
+<tr><td>Type.Name</td><td><div style="max-width:30em;"><input id="InputFkJsnAtbTypName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr><td>Attribute.Name</td><td><div style="max-width:30em;"><input id="InputFkJsnAtbName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr><td>Type.Name</td><td><div style="max-width:30em;"><input id="InputFkJsnTypName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr id="RowAtbName"><td style="cursor:help;" oncontextmenu="parent.OpenDescBox('BRACES','JsonPath.Name','JSON_PATH','NAME',-1)"><u>Name</u></td><td><div style="max-width:32em;"><input id="InputName" type="text" maxlength="32" style="width:100%;"></input></div></td></tr>
+<tr id="RowAtbLocation"><td style="cursor:help;" oncontextmenu="parent.OpenDescBox('BRACES','JsonPath.Location','JSON_PATH','LOCATION',-1)"><u>Location</u></td><td><div style="max-width:9em;"><input id="InputLocation" type="text" maxlength="9" style="width:100%;"></input></div></td></tr>
 <tr><td height=6></td></tr><tr id="RowRefAttribute0"><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/attrib.bmp"/> Attribute (Concerns)</legend>
 <table style="width:100%;">
-<tr><td><u>Type.Name</u></td><td style="width:100%;"><div style="max-width:30em;">
-<input id="InputXfAtbTypName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td>
+<tr><td><u>Type.Name</u></td><td style="width:100%;"><div style="max-width:30em;"><input id="InputXfAtbTypName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td>
 <td><button id="RefSelect001" type="button" onclick="StartSelect001(event)">Select</button></td></tr>
-<tr><td><u>Attribute.Name</u></td><td style="width:100%;"><div style="max-width:30em;">
-<input id="InputXkAtbName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td></tr>
+<tr><td><u>Attribute.Name</u></td><td style="width:100%;"><div style="max-width:30em;"><input id="InputXkAtbName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td></tr>
 </table></fieldset></td></tr>
 <tr><td height=6></td></tr><tr id="RowRefType0"><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/type.bmp"/> Type (Concerns)</legend>
 <table style="width:100%;">
-<tr><td><u>Type.Name</u></td><td style="width:100%;"><div style="max-width:30em;">
-<input id="InputXkTypName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td>
+<tr><td><u>Type.Name</u></td><td style="width:100%;"><div style="max-width:30em;"><input id="InputXkTypName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td>
 <td><button id="RefSelect002" type="button" onclick="StartSelect002(event)">Select</button></td></tr>
 </table></fieldset></td></tr>
 <tr><td><br></td><td style="width:100%;"></td></tr>

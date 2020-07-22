@@ -248,35 +248,19 @@ function StartSelect001(p_event) {
 <div><img src="icons/restrict_large.bmp" /><span> RESTRICTION_TYPE_SPEC_TYP</span></div>
 <hr/>
 <table>
-<tr><td>BusinessObjectType.Name</td><td><div style="max-width:30em;">
-<input id="InputFkBotName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td><u>Type.Name</u></td><td><div style="max-width:30em;">
-<input id="InputFkTypName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td style="cursor:help;" oncontextmenu="parent.OpenDescBox('RESTRICT','RestrictionTypeSpecTyp.IncludeOrExclude','RESTRICTION_TYPE_SPEC_TYP','INCLUDE_OR_EXCLUDE',-1)">IncludeOrExclude</td><td><div>
-<select id="InputIncludeOrExclude" type="text">
+<tr><td>BusinessObjectType.Name</td><td><div style="max-width:30em;"><input id="InputFkBotName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr><td><u>Type.Name</u></td><td><div style="max-width:30em;"><input id="InputFkTypName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr><td style="cursor:help;" oncontextmenu="parent.OpenDescBox('RESTRICT','RestrictionTypeSpecTyp.IncludeOrExclude','RESTRICTION_TYPE_SPEC_TYP','INCLUDE_OR_EXCLUDE',-1)">IncludeOrExclude</td><td><div><select id="InputIncludeOrExclude" type="text">
 	<option value=" " selected> </option>
-	<option value="IN">Include</option>
-	<option value="EX">Exclude</option>
-</select></div></td></tr>
-<tr><td>BusinessObjectType.Name</td><td><div>
-<input id="InputFkBotName" type="text">
-<tr><td>Type.Name</td><td><div>
-<input id="InputFkTypName" type="text">
-<tr><td>IncludeOrExclude</td><td><div>
-<select id="InputIncludeOrExclude" type="text">
- 	<option value=" " selected> </option>
 	<option value="IN">Include</option>
 	<option value="EX">Exclude</option>
 </select></div></td></tr>
 <tr><td height=6></td></tr><tr id="RowRefTypeSpecialisation0"><td colspan=2><fieldset><legend style="cursor:help" oncontextmenu="parent.OpenDescBox('RESTRICT','RestrictionTypeSpecTyp.TypeSpecialisation (IsValidFor)','RESTRICTION_TYPE_SPEC_TYP','TYPE_SPECIALISATION',0)"><img style="border:1 solid transparent;" src="icons/typespec.bmp"/> TypeSpecialisation (IsValidFor)</legend>
 <table style="width:100%;">
-<tr><td><u>Type.Name</u></td><td style="width:100%;"><div style="max-width:;">
-<input id="InputXfTspTypName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td>
+<tr><td><u>Type.Name</u></td><td style="width:100%;"><div style="max-width:30em;"><input id="InputXfTspTypName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td>
 <td><button id="RefSelect001" type="button" onclick="StartSelect001(event)">Select</button></td></tr>
-<tr><td><u>TypeSpecialisationGroup.Code</u></td><td style="width:100%;"><div style="max-width:;">
-<input id="InputXfTspTsgCode" type="text" maxlength="16" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td></tr>
-<tr><td><u>TypeSpecialisation.Code</u></td><td style="width:100%;"><div style="max-width:;">
-<input id="InputXkTspCode" type="text" maxlength="16" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td></tr>
+<tr><td><u>TypeSpecialisationGroup.Code</u></td><td style="width:100%;"><div style="max-width:16em;"><input id="InputXfTspTsgCode" type="text" maxlength="16" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td></tr>
+<tr><td><u>TypeSpecialisation.Code</u></td><td style="width:100%;"><div style="max-width:16em;"><input id="InputXkTspCode" type="text" maxlength="16" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td></tr>
 </table></fieldset></td></tr>
 <tr><td><br></td><td style="width:100%;"></td></tr>
 <tr><td/><td>

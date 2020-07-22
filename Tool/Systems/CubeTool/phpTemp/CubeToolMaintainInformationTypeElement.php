@@ -198,14 +198,10 @@ function DeleteIte() {
 <div><img src="icons/infelem_large.bmp" /><span> INFORMATION_TYPE_ELEMENT</span></div>
 <hr/>
 <table>
-<tr><td><u>InformationType.Name</u></td><td><div style="max-width:30em;">
-<input id="InputFkItpName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td><u>Sequence</u></td><td><div style="max-width:9em;">
-<input id="InputSequence" type="text" maxlength="9" style="width:100%;"></input></div></td></tr>
-<tr><td>Suffix</td><td><div style="max-width:12em;">
-<input id="InputSuffix" type="text" maxlength="12" style="width:100%;" onchange="ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td>Domain</td><td><div>
-<select id="InputDomain" type="text">
+<tr><td><u>InformationType.Name</u></td><td><div style="max-width:30em;"><input id="InputFkItpName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr><td><u>Sequence</u></td><td><div style="max-width:9em;"><input id="InputSequence" type="text" maxlength="9"></input></div></td></tr>
+<tr><td>Suffix</td><td><div style="max-width:12em;"><input id="InputSuffix" type="text" maxlength="12" style="width:100%;" onchange="ReplaceSpaces(this);"></input></div></td></tr>
+<tr><td>Domain</td><td><div><select id="InputDomain" type="text">
 	<option value=" " selected> </option>
 	<option value="TEXT">Text</option>
 	<option value="NUMBER">Number</option>
@@ -213,67 +209,21 @@ function DeleteIte() {
 	<option value="TIME">Time</option>
 	<option value="DATETIME-LOCAL">Timestamp</option>
 </select></div></td></tr>
-<tr><td>Length</td><td><div style="max-width:9em;">
-<input id="InputLength" type="text" maxlength="9" style="width:100%;"></input></div></td></tr>
-<tr><td>Decimals</td><td><div style="max-width:9em;">
-<input id="InputDecimals" type="text" maxlength="9" style="width:100%;"></input></div></td></tr>
-<tr><td>CaseSensitive</td><td><div>
-<select id="InputCaseSensitive" type="text">
+<tr><td>Length</td><td><div style="max-width:9em;"><input id="InputLength" type="text" maxlength="9"></input></div></td></tr>
+<tr><td>Decimals</td><td><div style="max-width:9em;"><input id="InputDecimals" type="text" maxlength="9"></input></div></td></tr>
+<tr><td>CaseSensitive</td><td><div><select id="InputCaseSensitive" type="text">
 	<option value=" " selected> </option>
 	<option value="Y">Yes</option>
 	<option value="N">No</option>
 </select></div></td></tr>
-<tr><td>DefaultValue</td><td><div style="max-width:32em;">
-<input id="InputDefaultValue" type="text" maxlength="32" style="width:100%;"></input></div></td></tr>
-<tr><td>SpacesAllowed</td><td><div>
-<select id="InputSpacesAllowed" type="text">
+<tr><td>DefaultValue</td><td><div style="max-width:32em;"><input id="InputDefaultValue" type="text" maxlength="32" style="width:100%;"></input></div></td></tr>
+<tr><td>SpacesAllowed</td><td><div><select id="InputSpacesAllowed" type="text">
 	<option value=" " selected> </option>
 	<option value="Y">Yes</option>
 	<option value="N">No</option>
 </select></div></td></tr>
-<tr><td style="cursor:help;" oncontextmenu="parent.OpenDescBox('INFELEM','InformationTypeElement.Presentation','INFORMATION_TYPE_ELEMENT','PRESENTATION',-1)">Presentation</td><td><div>
-<select id="InputPresentation" type="text">
+<tr><td style="cursor:help;" oncontextmenu="parent.OpenDescBox('INFELEM','InformationTypeElement.Presentation','INFORMATION_TYPE_ELEMENT','PRESENTATION',-1)">Presentation</td><td><div><select id="InputPresentation" type="text">
 	<option value=" " selected> </option>
-	<option value="LIN">Line</option>
-	<option value="DES">Description</option>
-	<option value="COD">Code</option>
-</select></div></td></tr>
-<tr><td>InformationType.Name</td><td><div>
-<input id="InputFkItpName" type="text">
-<tr><td>Sequence</td><td><div>
-<input id="InputSequence" type="text">
-<tr><td>Suffix</td><td><div>
-<input id="InputSuffix" type="text">
-<tr><td>Domain</td><td><div>
-<select id="InputDomain" type="text">
- 	<option value=" " selected> </option>
-	<option value="TEXT">Text</option>
-	<option value="NUMBER">Number</option>
-	<option value="DATE">Date</option>
-	<option value="TIME">Time</option>
-	<option value="DATETIME-LOCAL">Timestamp</option>
-</select></div></td></tr>
-<tr><td>Length</td><td><div>
-<input id="InputLength" type="text">
-<tr><td>Decimals</td><td><div>
-<input id="InputDecimals" type="text">
-<tr><td>CaseSensitive</td><td><div>
-<select id="InputCaseSensitive" type="text">
- 	<option value=" " selected> </option>
-	<option value="Y">Yes</option>
-	<option value="N">No</option>
-</select></div></td></tr>
-<tr><td>DefaultValue</td><td><div>
-<input id="InputDefaultValue" type="text">
-<tr><td>SpacesAllowed</td><td><div>
-<select id="InputSpacesAllowed" type="text">
- 	<option value=" " selected> </option>
-	<option value="Y">Yes</option>
-	<option value="N">No</option>
-</select></div></td></tr>
-<tr><td>Presentation</td><td><div>
-<select id="InputPresentation" type="text">
- 	<option value=" " selected> </option>
 	<option value="LIN">Line</option>
 	<option value="DES">Description</option>
 	<option value="COD">Code</option>

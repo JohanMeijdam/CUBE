@@ -150,10 +150,7 @@ function DeleteItp() {
 <div><img src="icons/inftype_large.bmp" /><span> INFORMATION_TYPE</span></div>
 <hr/>
 <table>
-<tr><td><u>Name</u></td><td><div style="max-width:30em;">
-<input id="InputName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td>Name</td><td><div>
-<input id="InputName" type="text">
+<tr><td><u>Name</u></td><td><div style="max-width:30em;"><input id="InputName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
 <tr><td><br></td><td style="width:100%;"></td></tr>
 <tr><td/><td>
 <button id="ButtonCreate" type="button" onclick="CreateItp()">Create</button>&nbsp;&nbsp;&nbsp;
