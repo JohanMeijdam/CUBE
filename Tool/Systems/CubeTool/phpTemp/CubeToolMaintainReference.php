@@ -343,22 +343,22 @@ function ProcessTypeSpecialisation() {
 </select></span></div>
 <hr/>
 <table id="TableMain" style="display:none">
-<tr><td>BusinessObjectType.Name</td><td><div style="max-width:30em;"><input id="InputFkBotName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td><u>Type.Name</u></td><td><div style="max-width:30em;"><input id="InputFkTypName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td>Name</td><td><div style="max-width:30em;"><input id="InputName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td style="cursor:help;" oncontextmenu="parent.OpenDescBox('REF','Reference.PrimaryKey','REFERENCE','PRIMARY_KEY',-1)">PrimaryKey</td><td><div><select id="InputPrimaryKey" type="text">
+<tr id="RowAtbFkBotName"><td>BusinessObjectType.Name</td><td><div style="max-width:30em;"><input id="InputFkBotName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr id="RowAtbFkTypName"><td><u>Type.Name</u></td><td><div style="max-width:30em;"><input id="InputFkTypName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr id="RowAtbName"><td>Name</td><td><div style="max-width:30em;"><input id="InputName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr id="RowAtbPrimaryKey"><td style="cursor:help;" oncontextmenu="parent.OpenDescBox('REF','Reference.PrimaryKey','REFERENCE','PRIMARY_KEY',-1)">PrimaryKey</td><td><div><select id="InputPrimaryKey" type="text">
 	<option value=" " selected> </option>
 	<option value="Y">Yes</option>
 	<option value="N">No</option>
 </select></div></td></tr>
-<tr><td>CodeDisplayKey</td><td><div><select id="InputCodeDisplayKey" type="text">
+<tr id="RowAtbCodeDisplayKey"><td>CodeDisplayKey</td><td><div><select id="InputCodeDisplayKey" type="text">
 	<option value=" " selected> </option>
 	<option value="Y">Yes</option>
 	<option value="S">Sub</option>
 	<option value="N">No</option>
 </select></div></td></tr>
-<tr><td><u>Sequence</u></td><td><div style="max-width:2em;"><input id="InputSequence" type="text" maxlength="2"></input></div></td></tr>
-<tr><td style="cursor:help;" oncontextmenu="parent.OpenDescBox('REF','Reference.Scope','REFERENCE','SCOPE',-1)">Scope</td><td><div><select id="InputScope" type="text">
+<tr id="RowAtbSequence"><td><u>Sequence</u></td><td><div style="max-width:2em;"><input id="InputSequence" type="text" maxlength="2" style="width:100%;"></input></div></td></tr>
+<tr id="RowAtbScope"><td style="cursor:help;" oncontextmenu="parent.OpenDescBox('REF','Reference.Scope','REFERENCE','SCOPE',-1)">Scope</td><td><div><select id="InputScope" type="text">
 	<option value=" " selected> </option>
 	<option value="ALL">All</option>
 	<option value="PRA">Parents all</option>
@@ -366,12 +366,12 @@ function ProcessTypeSpecialisation() {
 	<option value="CHA">Children all</option>
 	<option value="CH1">Children first level</option>
 </select></div></td></tr>
-<tr><td style="cursor:help;" oncontextmenu="parent.OpenDescBox('REF','Reference.Unchangeable','REFERENCE','UNCHANGEABLE',-1)">Unchangeable</td><td><div><select id="InputUnchangeable" type="text">
+<tr id="RowAtbUnchangeable"><td style="cursor:help;" oncontextmenu="parent.OpenDescBox('REF','Reference.Unchangeable','REFERENCE','UNCHANGEABLE',-1)">Unchangeable</td><td><div><select id="InputUnchangeable" type="text">
 	<option value=" " selected> </option>
 	<option value="Y">Yes</option>
 	<option value="N">No</option>
 </select></div></td></tr>
-<tr><td>WithinScopeExtension</td><td><div><select id="InputWithinScopeExtension" type="text">
+<tr id="RowAtbWithinScopeExtension"><td>WithinScopeExtension</td><td><div><select id="InputWithinScopeExtension" type="text">
 	<option value=" " selected> </option>
 	<option value="PAR">Recursive parent</option>
 	<option value="REF">Referenced type</option>

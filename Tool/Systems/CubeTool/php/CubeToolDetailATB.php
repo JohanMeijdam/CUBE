@@ -252,31 +252,31 @@ function StartSelect001(p_event) {
 <div><img src="icons/attrib_large.bmp" /><span> ATTRIBUTE</span></div>
 <hr/>
 <table>
-<tr><td>BusinessObjectType.Name</td><td><div style="max-width:30em;"><input id="InputFkBotName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td><u>Type.Name</u></td><td><div style="max-width:30em;"><input id="InputFkTypName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td style="cursor:help;" oncontextmenu="parent.OpenDescBox('ATTRIB','Attribute.Name','ATTRIBUTE','NAME',-1)"><u>Name</u></td><td><div style="max-width:30em;"><input id="InputName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td style="cursor:help;" oncontextmenu="parent.OpenDescBox('ATTRIB','Attribute.PrimaryKey','ATTRIBUTE','PRIMARY_KEY',-1)">PrimaryKey</td><td><div><select id="InputPrimaryKey" type="text">
+<tr id="RowAtbFkBotName"><td>BusinessObjectType.Name</td><td><div style="max-width:30em;"><input id="InputFkBotName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr id="RowAtbFkTypName"><td><u>Type.Name</u></td><td><div style="max-width:30em;"><input id="InputFkTypName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr id="RowAtbName"><td style="cursor:help;" oncontextmenu="parent.OpenDescBox('ATTRIB','Attribute.Name','ATTRIBUTE','NAME',-1)"><u>Name</u></td><td><div style="max-width:30em;"><input id="InputName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr id="RowAtbPrimaryKey"><td style="cursor:help;" oncontextmenu="parent.OpenDescBox('ATTRIB','Attribute.PrimaryKey','ATTRIBUTE','PRIMARY_KEY',-1)">PrimaryKey</td><td><div><select id="InputPrimaryKey" type="text">
 	<option value=" " selected> </option>
 	<option value="Y">Yes</option>
 	<option value="N">No</option>
 </select></div></td></tr>
-<tr><td>CodeDisplayKey</td><td><div><select id="InputCodeDisplayKey" type="text">
+<tr id="RowAtbCodeDisplayKey"><td>CodeDisplayKey</td><td><div><select id="InputCodeDisplayKey" type="text">
 	<option value=" " selected> </option>
 	<option value="Y">Yes</option>
 	<option value="S">Sub</option>
 	<option value="N">No</option>
 </select></div></td></tr>
-<tr><td>CodeForeignKey</td><td><div><select id="InputCodeForeignKey" type="text">
+<tr id="RowAtbCodeForeignKey"><td>CodeForeignKey</td><td><div><select id="InputCodeForeignKey" type="text">
 	<option value=" " selected> </option>
 	<option value="N">None</option>
 </select></div></td></tr>
-<tr><td>FlagHidden</td><td><div><select id="InputFlagHidden" type="text">
+<tr id="RowAtbFlagHidden"><td>FlagHidden</td><td><div><select id="InputFlagHidden" type="text">
 	<option value=" " selected> </option>
 	<option value="Y">Yes</option>
 	<option value="N">No</option>
 </select></div></td></tr>
-<tr><td style="cursor:help;" oncontextmenu="parent.OpenDescBox('ATTRIB','Attribute.DefaultValue','ATTRIBUTE','DEFAULT_VALUE',-1)">DefaultValue</td><td><div style="max-width:40em;"><input id="InputDefaultValue" type="text" maxlength="40" style="width:100%;"></input></div></td></tr>
-<tr><td style="cursor:help;" oncontextmenu="parent.OpenDescBox('ATTRIB','Attribute.Unchangeable','ATTRIBUTE','UNCHANGEABLE',-1)">Unchangeable</td><td><div><select id="InputUnchangeable" type="text">
+<tr id="RowAtbDefaultValue"><td style="cursor:help;" oncontextmenu="parent.OpenDescBox('ATTRIB','Attribute.DefaultValue','ATTRIBUTE','DEFAULT_VALUE',-1)">DefaultValue</td><td><div style="max-width:40em;"><input id="InputDefaultValue" type="text" maxlength="40" style="width:100%;"></input></div></td></tr>
+<tr id="RowAtbUnchangeable"><td style="cursor:help;" oncontextmenu="parent.OpenDescBox('ATTRIB','Attribute.Unchangeable','ATTRIBUTE','UNCHANGEABLE',-1)">Unchangeable</td><td><div><select id="InputUnchangeable" type="text">
 	<option value=" " selected> </option>
 	<option value="Y">Yes</option>
 	<option value="N">No</option>
