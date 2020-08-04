@@ -416,6 +416,7 @@ CREATE TABLE t_system (
 	schema VARCHAR2(30),
 	password VARCHAR2(20),
 	table_prefix VARCHAR2(4),
+	description VARCHAR2(3999),
 	CONSTRAINT sys_pk
 		PRIMARY KEY (name) )
 /

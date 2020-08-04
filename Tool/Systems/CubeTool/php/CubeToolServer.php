@@ -4390,6 +4390,7 @@ case 'GetSys':
 		$RowObj->Data->Schema = $row["SCHEMA"];
 		$RowObj->Data->Password = $row["PASSWORD"];
 		$RowObj->Data->TablePrefix = $row["TABLE_PREFIX"];
+		$RowObj->Data->Description = $row["DESCRIPTION"];
 		$ResponseObj->Rows[] = $RowObj;
 	}
 	$ResponseText = json_encode($ResponseObj);
@@ -4439,6 +4440,7 @@ case 'CreateSys':
 		:p_schema,
 		:p_password,
 		:p_table_prefix,
+		:p_description,
 		:p_cube_row);
 	END;");
 	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
@@ -4447,6 +4449,7 @@ case 'CreateSys':
 	oci_bind_by_name($stid,":p_schema",$RequestObj->Parameters->Type->Schema);
 	oci_bind_by_name($stid,":p_password",$RequestObj->Parameters->Type->Password);
 	oci_bind_by_name($stid,":p_table_prefix",$RequestObj->Parameters->Type->TablePrefix);
+	oci_bind_by_name($stid,":p_description",$RequestObj->Parameters->Type->Description);
 
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'CREATE_SYS';
@@ -4477,7 +4480,8 @@ case 'UpdateSys':
 		:p_database,
 		:p_schema,
 		:p_password,
-		:p_table_prefix);
+		:p_table_prefix,
+		:p_description);
 	END;");
 	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 	oci_bind_by_name($stid,":p_cube_tsg_type",$RequestObj->Parameters->Type->CubeTsgType);
@@ -4485,6 +4489,7 @@ case 'UpdateSys':
 	oci_bind_by_name($stid,":p_schema",$RequestObj->Parameters->Type->Schema);
 	oci_bind_by_name($stid,":p_password",$RequestObj->Parameters->Type->Password);
 	oci_bind_by_name($stid,":p_table_prefix",$RequestObj->Parameters->Type->TablePrefix);
+	oci_bind_by_name($stid,":p_description",$RequestObj->Parameters->Type->Description);
 
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'UPDATE_SYS';

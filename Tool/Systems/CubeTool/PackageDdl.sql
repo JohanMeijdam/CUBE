@@ -4665,6 +4665,7 @@ CREATE OR REPLACE PACKAGE pkg_sys IS
 			p_schema IN VARCHAR2,
 			p_password IN VARCHAR2,
 			p_table_prefix IN VARCHAR2,
+			p_description IN VARCHAR2,
 			p_cube_row IN OUT c_cube_row);
 	PROCEDURE update_sys (
 			p_name IN VARCHAR2,
@@ -4672,7 +4673,8 @@ CREATE OR REPLACE PACKAGE pkg_sys IS
 			p_database IN VARCHAR2,
 			p_schema IN VARCHAR2,
 			p_password IN VARCHAR2,
-			p_table_prefix IN VARCHAR2);
+			p_table_prefix IN VARCHAR2,
+			p_description IN VARCHAR2);
 	PROCEDURE delete_sys (
 			p_name IN VARCHAR2);
 	PROCEDURE move_sbt (
@@ -4721,7 +4723,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_sys IS
 			  database,
 			  schema,
 			  password,
-			  table_prefix
+			  table_prefix,
+			  description
 			FROM v_system
 			WHERE name = p_name;
 	END;
@@ -4759,6 +4762,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_sys IS
 			p_schema IN VARCHAR2,
 			p_password IN VARCHAR2,
 			p_table_prefix IN VARCHAR2,
+			p_description IN VARCHAR2,
 			p_cube_row IN OUT c_cube_row) IS
 	BEGIN
 		INSERT INTO v_system (
@@ -4768,7 +4772,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_sys IS
 			database,
 			schema,
 			password,
-			table_prefix)
+			table_prefix,
+			description)
 		VALUES (
 			NULL,
 			p_name,
@@ -4776,7 +4781,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_sys IS
 			p_database,
 			p_schema,
 			p_password,
-			p_table_prefix);
+			p_table_prefix,
+			p_description);
 
 		get_next_sys (p_cube_row, p_name);
 	EXCEPTION
@@ -4790,14 +4796,16 @@ CREATE OR REPLACE PACKAGE BODY pkg_sys IS
 			p_database IN VARCHAR2,
 			p_schema IN VARCHAR2,
 			p_password IN VARCHAR2,
-			p_table_prefix IN VARCHAR2) IS
+			p_table_prefix IN VARCHAR2,
+			p_description IN VARCHAR2) IS
 	BEGIN
 		UPDATE v_system SET
 			cube_tsg_type = p_cube_tsg_type,
 			database = p_database,
 			schema = p_schema,
 			password = p_password,
-			table_prefix = p_table_prefix
+			table_prefix = p_table_prefix,
+			description = p_description
 		WHERE name = p_name;
 	END;
 

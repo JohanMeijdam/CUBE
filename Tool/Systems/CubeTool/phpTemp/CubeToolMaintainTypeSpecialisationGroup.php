@@ -287,7 +287,7 @@ function StartSelect001(p_event) {
 <tr id="RowAtbFkTsgCode"><td>TypeSpecialisationGroup.Code</td><td><div style="max-width:16em;"><input id="InputFkTsgCode" type="text" maxlength="16" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
 <tr id="RowAtbCode"><td><u>Code</u></td><td><div style="max-width:16em;"><input id="InputCode" type="text" maxlength="16" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
 <tr id="RowAtbName"><td>Name</td><td><div style="max-width:30em;"><input id="InputName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr id="RowAtbPrimaryKey"><td style="cursor:help;" oncontextmenu="parent.OpenDescBox('TSPGROUP','TypeSpecialisationGroup.PrimaryKey','TYPE_SPECIALISATION_GROUP','PRIMARY_KEY',-1)">PrimaryKey</td><td><div><select id="InputPrimaryKey" type="text">
+<tr id="RowAtbPrimaryKey"><td style="cursor:help" oncontextmenu="parent.OpenDescBox('TSPGROUP','TypeSpecialisationGroup.PrimaryKey','TYPE_SPECIALISATION_GROUP','PRIMARY_KEY',-1)">PrimaryKey</td><td><div><select id="InputPrimaryKey" type="text">
 	<option value=" " selected> </option>
 	<option value="Y">Yes</option>
 	<option value="N">No</option>

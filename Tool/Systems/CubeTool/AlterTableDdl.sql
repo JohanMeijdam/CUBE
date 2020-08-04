@@ -1968,7 +1968,8 @@ BEGIN
 			database VARCHAR2(30),
 			schema VARCHAR2(30),
 			password VARCHAR2(20),
-			table_prefix VARCHAR2(4))';
+			table_prefix VARCHAR2(4),
+			description VARCHAR2(3999))';
 		DBMS_OUTPUT.PUT_LINE('Table T_SYSTEM created');
 	ELSE
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_SYSTEM' AND column_name = 'CUBE_ID';
@@ -2012,6 +2013,12 @@ BEGIN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_system ADD table_prefix VARCHAR2(4)';
 			DBMS_OUTPUT.PUT_LINE('Column T_SYSTEM.TABLE_PREFIX created');
+		END IF;
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_SYSTEM' AND column_name = 'DESCRIPTION';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_system ADD description VARCHAR2(3999)';
+			DBMS_OUTPUT.PUT_LINE('Column T_SYSTEM.DESCRIPTION created');
 		END IF;
 		FOR r_key IN (SELECT constraint_name FROM all_constraints WHERE owner = 'CUBETOOL' AND table_name = 'T_SYSTEM' AND constraint_type IN ('P','U','R') ORDER BY constraint_type DESC)
 		LOOP
@@ -3695,7 +3702,8 @@ BEGIN
 			'DATABASE','VARCHAR2(30)',
 			'SCHEMA','VARCHAR2(30)',
 			'PASSWORD','VARCHAR2(20)',
-			'TABLE_PREFIX','VARCHAR2(4)',NULL) new_domain,
+			'TABLE_PREFIX','VARCHAR2(4)',
+			'DESCRIPTION','VARCHAR2(3999)',NULL) new_domain,
 		DECODE(column_name,
 			'CUBE_ID',NULL,
 			'NAME',NULL,
@@ -3703,7 +3711,8 @@ BEGIN
 			'DATABASE',NULL,
 			'SCHEMA',NULL,
 			'PASSWORD',NULL,
-			'TABLE_PREFIX',NULL,NULL) new_default_value
+			'TABLE_PREFIX',NULL,
+			'DESCRIPTION',NULL,NULL) new_default_value
   		FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_SYSTEM')
 	LOOP
 		IF r_field.old_domain <> r_field.new_domain THEN
@@ -3740,7 +3749,8 @@ BEGIN
 							'DATABASE',
 							'SCHEMA',
 							'PASSWORD',
-							'TABLE_PREFIX'))
+							'TABLE_PREFIX',
+							'DESCRIPTION'))
 	LOOP
 		EXECUTE IMMEDIATE
 		'ALTER TABLE t_system DROP COLUMN ' || r_field.column_name;

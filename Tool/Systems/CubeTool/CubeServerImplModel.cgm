@@ -9366,6 +9366,9 @@
 			+GET:;
 				=EXPRESSION:REF_NAME|table_prefix;
 			-GET:;
+			+GET:;
+				=EXPRESSION:REF_NAME|description;
+			-GET:;
 			+SELECTION:;
 				+EXPRESSION:LOGICAL|AND;
 					+EXPRESSION:CONDITION|=;
@@ -9434,6 +9437,7 @@
 		=ARGUMENT:p_schema|IN|VARCHAR2;
 		=ARGUMENT:p_password|IN|VARCHAR2;
 		=ARGUMENT:p_table_prefix|IN|VARCHAR2;
+		=ARGUMENT:p_description|IN|VARCHAR2;
 		=ARGUMENT:p_cube_row|IN OUT|c_cube_row;
 		+STATEMENT:CREATE|v_system;
 			+SET:cube_id;
@@ -9456,6 +9460,9 @@
 			-SET:;
 			+SET:table_prefix;
 				=EXPRESSION:REF_NAME|p_table_prefix;
+			-SET:;
+			+SET:description;
+				=EXPRESSION:REF_NAME|p_description;
 			-SET:;
 		-STATEMENT:;
 		=STATEMENT:SPACE|;
@@ -9481,6 +9488,7 @@
 		=ARGUMENT:p_schema|IN|VARCHAR2;
 		=ARGUMENT:p_password|IN|VARCHAR2;
 		=ARGUMENT:p_table_prefix|IN|VARCHAR2;
+		=ARGUMENT:p_description|IN|VARCHAR2;
 		+STATEMENT:UPDATE|v_system;
 			+SET:cube_tsg_type;
 				=EXPRESSION:REF_NAME|p_cube_tsg_type;
@@ -9496,6 +9504,9 @@
 			-SET:;
 			+SET:table_prefix;
 				=EXPRESSION:REF_NAME|p_table_prefix;
+			-SET:;
+			+SET:description;
+				=EXPRESSION:REF_NAME|p_description;
 			-SET:;
 			+SELECTION:;
 				+EXPRESSION:LOGICAL|AND;

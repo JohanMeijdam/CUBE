@@ -2985,7 +2985,8 @@ CREATE OR REPLACE VIEW v_system AS
 		database,
 		schema,
 		password,
-		table_prefix
+		table_prefix,
+		description
 	FROM t_system
 /
 CREATE OR REPLACE VIEW v_system_bo_type AS 
@@ -3027,7 +3028,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_sys_trg IS
 			database,
 			schema,
 			password,
-			table_prefix)
+			table_prefix,
+			description)
 		VALUES (
 			p_sys.cube_id,
 			p_sys.name,
@@ -3035,7 +3037,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_sys_trg IS
 			p_sys.database,
 			p_sys.schema,
 			p_sys.password,
-			p_sys.table_prefix);
+			p_sys.table_prefix,
+			p_sys.description);
 	END;
 
 	PROCEDURE update_sys (p_cube_rowid UROWID, p_sys_old IN OUT NOCOPY v_system%ROWTYPE, p_sys_new IN OUT NOCOPY v_system%ROWTYPE) IS
@@ -3044,7 +3047,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_sys_trg IS
 			database = p_sys_new.database,
 			schema = p_sys_new.schema,
 			password = p_sys_new.password,
-			table_prefix = p_sys_new.table_prefix
+			table_prefix = p_sys_new.table_prefix,
+			description = p_sys_new.description
 		WHERE rowid = p_cube_rowid;
 	END;
 
@@ -3126,6 +3130,7 @@ BEGIN
 		ELSE
 			r_sys_new.table_prefix := REPLACE(:NEW.table_prefix,' ','_');
 		END IF;
+		r_sys_new.description := :NEW.description;
 	END IF;
 	IF UPDATING THEN
 		r_sys_new.cube_id := :OLD.cube_id;
@@ -3139,6 +3144,7 @@ BEGIN
 		r_sys_old.schema := :OLD.schema;
 		r_sys_old.password := :OLD.password;
 		r_sys_old.table_prefix := :OLD.table_prefix;
+		r_sys_old.description := :OLD.description;
 	END IF;
 
 	IF INSERTING THEN 

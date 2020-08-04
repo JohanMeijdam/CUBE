@@ -34,6 +34,7 @@ g_xmlhttp.onreadystatechange = function() {
 						document.getElementById("InputSchema").value=l_json_values.Schema;
 						document.getElementById("InputPassword").value=l_json_values.Password;
 						document.getElementById("InputTablePrefix").value=l_json_values.TablePrefix;
+						document.getElementById("InputDescription").value=l_json_values.Description;
 						ProcessTypeSpecialisation();
 						break;
 					case "CREATE_SYS":
@@ -133,7 +134,8 @@ function CreateSys() {
 		Database: document.getElementById("InputDatabase").value,
 		Schema: document.getElementById("InputSchema").value,
 		Password: document.getElementById("InputPassword").value,
-		TablePrefix: document.getElementById("InputTablePrefix").value
+		TablePrefix: document.getElementById("InputTablePrefix").value,
+		Description: document.getElementById("InputDescription").value
 	};
 	PerformTrans( {
 		Service: "CreateSys",
@@ -150,7 +152,8 @@ function UpdateSys() {
 		Database: document.getElementById("InputDatabase").value,
 		Schema: document.getElementById("InputSchema").value,
 		Password: document.getElementById("InputPassword").value,
-		TablePrefix: document.getElementById("InputTablePrefix").value
+		TablePrefix: document.getElementById("InputTablePrefix").value,
+		Description: document.getElementById("InputDescription").value
 	};
 	PerformTrans( {
 		Service: "UpdateSys",
@@ -200,10 +203,11 @@ function ProcessTypeSpecialisation() {
 <hr/>
 <table id="TableMain" style="display:none">
 <tr id="RowAtbName"><td><u>Name</u></td><td><div style="max-width:30em;"><input id="InputName" type="text" maxlength="30" style="width:100%;" onchange="ReplaceSpaces(this);"></input></div></td></tr>
-<tr id="RowAtbDatabase"><td style="cursor:help;" oncontextmenu="parent.OpenDescBox('SYSTEM','System.Database','SYSTEM','DATABASE',-1)">Database</td><td><div style="max-width:30em;"><input id="InputDatabase" type="text" maxlength="30" style="width:100%;" onchange="ReplaceSpaces(this);"></input></div></td></tr>
+<tr id="RowAtbDatabase"><td style="cursor:help" oncontextmenu="parent.OpenDescBox('SYSTEM','System.Database','SYSTEM','DATABASE',-1)">Database</td><td><div style="max-width:30em;"><input id="InputDatabase" type="text" maxlength="30" style="width:100%;" onchange="ReplaceSpaces(this);"></input></div></td></tr>
 <tr id="RowAtbSchema"><td>Schema</td><td><div style="max-width:30em;"><input id="InputSchema" type="text" maxlength="30" style="width:100%;" onchange="ReplaceSpaces(this);"></input></div></td></tr>
 <tr id="RowAtbPassword"><td>Password</td><td><div style="max-width:20em;"><input id="InputPassword" type="text" maxlength="20" style="width:100%;" onchange="ReplaceSpaces(this);"></input></div></td></tr>
 <tr id="RowAtbTablePrefix"><td>TablePrefix</td><td><div style="max-width:4em;"><input id="InputTablePrefix" type="text" maxlength="4" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr id="RowAtbDescription"><td style="cursor:help" oncontextmenu="parent.OpenDescBox('SYSTEM','System.Description','SYSTEM','DESCRIPTION',-1)">Description</td><td><div><textarea id="InputDescription" type="text" maxlength="3999"></textarea></div></td></tr>
 <tr><td><br></td><td style="width:100%;"></td></tr>
 <tr><td/><td>
 <button id="ButtonCreate" type="button" onclick="CreateSys()">Create</button>&nbsp;&nbsp;&nbsp;
