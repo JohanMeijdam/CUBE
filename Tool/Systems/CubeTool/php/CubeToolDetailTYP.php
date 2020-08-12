@@ -235,21 +235,21 @@ function DeleteTyp() {
 <div><img src="icons/type_large.bmp" /><span style="cursor:help" oncontextmenu="parent.OpenDescBox('TYPE','Type','TYPE','_',-1)"> TYPE</span></div>
 <hr/>
 <table>
-<tr id="RowAtbFkBotName"><td>BusinessObjectType.Name</td><td><div style="max-width:30em;"><input id="InputFkBotName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr id="RowAtbFkTypName"><td>Type.Name</td><td><div style="max-width:30em;"><input id="InputFkTypName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr id="RowAtbName"><td><u>Name</u></td><td><div style="max-width:30em;"><input id="InputName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr id="RowAtbCode"><td>Code</td><td><div style="max-width:3em;"><input id="InputCode" type="text" maxlength="3" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr id="RowAtbFlagPartialKey"><td>FlagPartialKey</td><td><div><select id="InputFlagPartialKey" type="text">
+<tr id="RowAtbFkBotName"><td><div>BusinessObjectType.Name</div></td><td><div style="max-width:30em;"><input id="InputFkBotName" type="text" maxlength="30" style="width:100%" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr id="RowAtbFkTypName"><td><div>Type.Name</div></td><td><div style="max-width:30em;"><input id="InputFkTypName" type="text" maxlength="30" style="width:100%" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr id="RowAtbName"><td><u><div>Name</div></u></td><td><div style="max-width:30em;"><input id="InputName" type="text" maxlength="30" style="width:100%" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr id="RowAtbCode"><td><div>Code</div></td><td><div style="max-width:3em;"><input id="InputCode" type="text" maxlength="3" style="width:100%" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr id="RowAtbFlagPartialKey"><td><div>FlagPartialKey</div></td><td><div><select id="InputFlagPartialKey" type="text">
 	<option value=" " selected> </option>
 	<option value="Y">Yes</option>
 	<option value="N">No</option>
 </select></div></td></tr>
-<tr id="RowAtbFlagRecursive"><td>FlagRecursive</td><td><div><select id="InputFlagRecursive" type="text">
+<tr id="RowAtbFlagRecursive"><td><div>FlagRecursive</div></td><td><div><select id="InputFlagRecursive" type="text">
 	<option value=" " selected> </option>
 	<option value="Y">Yes</option>
 	<option value="N">No</option>
 </select></div></td></tr>
-<tr id="RowAtbRecursiveCardinality"><td>RecursiveCardinality</td><td><div><select id="InputRecursiveCardinality" type="text">
+<tr id="RowAtbRecursiveCardinality"><td><div>RecursiveCardinality</div></td><td><div><select id="InputRecursiveCardinality" type="text">
 	<option value=" " selected> </option>
 	<option value="1">1</option>
 	<option value="2">2</option>
@@ -258,7 +258,7 @@ function DeleteTyp() {
 	<option value="5">5</option>
 	<option value="N">Many</option>
 </select></div></td></tr>
-<tr id="RowAtbCardinality"><td>Cardinality</td><td><div><select id="InputCardinality" type="text">
+<tr id="RowAtbCardinality"><td><div>Cardinality</div></td><td><div><select id="InputCardinality" type="text">
 	<option value=" " selected> </option>
 	<option value="1">1</option>
 	<option value="2">2</option>
@@ -267,19 +267,19 @@ function DeleteTyp() {
 	<option value="5">5</option>
 	<option value="N">Many</option>
 </select></div></td></tr>
-<tr id="RowAtbSortOrder"><td>SortOrder</td><td><div><select id="InputSortOrder" type="text">
+<tr id="RowAtbSortOrder"><td><div>SortOrder</div></td><td><div><select id="InputSortOrder" type="text">
 	<option value=" " selected> </option>
 	<option value="N">No sort</option>
 	<option value="K">Key</option>
 	<option value="P">Position</option>
 </select></div></td></tr>
-<tr id="RowAtbIcon"><td>Icon</td><td><div style="max-width:8em;"><input id="InputIcon" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr id="RowAtbTransferable"><td style="cursor:help" oncontextmenu="parent.OpenDescBox('TYPE','Type.Transferable','TYPE','TRANSFERABLE',-1)">Transferable</td><td><div><select id="InputTransferable" type="text">
+<tr id="RowAtbIcon"><td><div>Icon</div></td><td><div style="max-width:8em;"><input id="InputIcon" type="text" maxlength="8" style="width:100%" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr id="RowAtbTransferable"><td style="cursor:help" oncontextmenu="parent.OpenDescBox('TYPE','Type.Transferable','TYPE','TRANSFERABLE',-1)"><div>Transferable</div></td><td><div><select id="InputTransferable" type="text">
 	<option value=" " selected> </option>
 	<option value="Y">Yes</option>
 	<option value="N">No</option>
 </select></div></td></tr>
-<tr><td><br></td><td style="width:100%;"></td></tr>
+<tr><td><br></td><td style="width:100%"></td></tr>
 <tr><td/><td>
 <button id="ButtonCreate" type="button" onclick="CreateTyp()">Create</button>&nbsp;&nbsp;&nbsp;
 <button id="ButtonUpdate" type="button" onclick="UpdateTyp()">Update</button>&nbsp;&nbsp;&nbsp;

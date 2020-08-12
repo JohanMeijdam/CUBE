@@ -171,9 +171,9 @@ function DeleteArg() {
 <div><img src="icons/funcatb_large.bmp" /><span> ARGUMENT</span></div>
 <hr/>
 <table>
-<tr id="RowAtbFkFunName"><td><u>Function.Name</u></td><td><div style="max-width:30em;"><input id="InputFkFunName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr id="RowAtbName"><td><u>Name</u></td><td><div style="max-width:30em;"><input id="InputName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td><br></td><td style="width:100%;"></td></tr>
+<tr id="RowAtbFkFunName"><td><u><div>Function.Name</div></u></td><td><div style="max-width:30em;"><input id="InputFkFunName" type="text" maxlength="30" style="width:100%" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr id="RowAtbName"><td><u><div>Name</div></u></td><td><div style="max-width:30em;"><input id="InputName" type="text" maxlength="30" style="width:100%" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr><td><br></td><td style="width:100%"></td></tr>
 <tr><td/><td>
 <button id="ButtonCreate" type="button" onclick="CreateArg()">Create</button>&nbsp;&nbsp;&nbsp;
 <button id="ButtonUpdate" type="button" onclick="UpdateArg()">Update</button>&nbsp;&nbsp;&nbsp;

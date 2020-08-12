@@ -192,11 +192,11 @@ function DeleteVal() {
 <div><img src="icons/value_large.bmp" /><span> PERMITTED_VALUE</span></div>
 <hr/>
 <table>
-<tr id="RowAtbFkItpName"><td><u>InformationType.Name</u></td><td><div style="max-width:30em;"><input id="InputFkItpName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr id="RowAtbFkIteSequence"><td><u>InformationTypeElement.Sequence</u></td><td><div style="max-width:9em;"><input id="InputFkIteSequence" type="text" maxlength="9" style="width:100%;"></input></div></td></tr>
-<tr id="RowAtbCode"><td><u>Code</u></td><td><div style="max-width:16em;"><input id="InputCode" type="text" maxlength="16" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr id="RowAtbPrompt"><td>Prompt</td><td><div style="max-width:32em;"><input id="InputPrompt" type="text" maxlength="32" style="width:100%;"></input></div></td></tr>
-<tr><td><br></td><td style="width:100%;"></td></tr>
+<tr id="RowAtbFkItpName"><td><u><div>InformationType.Name</div></u></td><td><div style="max-width:30em;"><input id="InputFkItpName" type="text" maxlength="30" style="width:100%" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr id="RowAtbFkIteSequence"><td><u><div>InformationTypeElement.Sequence</div></u></td><td><div style="max-width:9em;"><input id="InputFkIteSequence" type="text" maxlength="9" style="width:100%"></input></div></td></tr>
+<tr id="RowAtbCode"><td><u><div>Code</div></u></td><td><div style="max-width:16em;"><input id="InputCode" type="text" maxlength="16" style="width:100%" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr id="RowAtbPrompt"><td><div>Prompt</div></td><td><div style="max-width:32em;"><input id="InputPrompt" type="text" maxlength="32" style="width:100%"></input></div></td></tr>
+<tr><td><br></td><td style="width:100%"></td></tr>
 <tr><td/><td>
 <button id="ButtonCreate" type="button" onclick="CreateVal()">Create</button>&nbsp;&nbsp;&nbsp;
 <button id="ButtonUpdate" type="button" onclick="UpdateVal()">Update</button>&nbsp;&nbsp;&nbsp;

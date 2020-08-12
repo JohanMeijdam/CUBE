@@ -54,15 +54,15 @@ Change log:
 [[TEXT,DETAIL_STYLE_MAX-WIDTH]] style="max-width:[[IF:2=DATE]]12ch[[ELSIF:2=NUMBER]][[EVAL:<<INFORMATION_TYPE_ELEMENT3>>+1]]em[[ELSE]]<<INFORMATION_TYPE_ELEMENT3>>em[[ENDIF]];"[[ENDTEXT]]
 [[TEXT,DETAIL_ONCHANGE]][[IF:5=N[OR]7=N]] onchange="[[IF:5=N]]ToUpperCase(this);[[ENDIF]][[IF:7=N]]ReplaceSpaces(this);[[ENDIF]]"[[ENDIF]][[ENDTEXT]]
 [[TEXT,DETAIL_INPUT]][[*
-   *]][[IF:3=text-line]]<div style="max-width:<<PAGE_FIELD4>>em;"><input id="<<PAGE_FIELD>>" type="text" maxlength="<<PAGE_FIELD4>>" style="width:100%;"[[IF:6=Y[OR]7=Y]] onchange="[[IF:6=Y]]ToUpperCase(this);[[ENDIF]][[IF:7=Y]]ReplaceSpaces(this);[[ENDIF]]"[[ENDIF]][[IF:5=Y]] disabled[[ENDIF]]></input></div>[[*
-*]][[ELSIF:3=text-desc]]<div><textarea id="<<PAGE_FIELD>>" type="text" maxlength="<<PAGE_FIELD4>>"[[IF:5=Y]] disabled[[ENDIF]]></textarea></div>[[*
-*]][[ELSIF:3=text-code]]<div><textarea id="<<PAGE_FIELD>>" type="text" maxlength="<<PAGE_FIELD4>>"[[IF:5=Y]] disabled[[ENDIF]]></textarea></div>[[*
+   *]][[IF:3=text-line]]<div style="max-width:<<PAGE_FIELD4>>em;"><input id="<<PAGE_FIELD>>" type="text" maxlength="<<PAGE_FIELD4>>" style="width:100%"[[IF:6=Y[OR]7=Y]] onchange="[[IF:6=Y]]ToUpperCase(this);[[ENDIF]][[IF:7=Y]]ReplaceSpaces(this);[[ENDIF]]"[[ENDIF]][[IF:5=Y]] disabled[[ENDIF]]></input></div>[[*
+*]][[ELSIF:3=text-desc]]<div><textarea id="<<PAGE_FIELD>>" type="text" maxlength="<<PAGE_FIELD4>>" rows="5" style="white-space:normal;width:100%"[[IF:5=Y]] disabled[[ENDIF]]></textarea></div>[[*
+*]][[ELSIF:3=text-code]]<div><textarea id="<<PAGE_FIELD>>" type="text" maxlength="<<PAGE_FIELD4>>" rows="11" style="overflow:auto;white-space:pre;font-family:courier new;font-size:12px;width:100%"[[IF:5=Y]] disabled[[ENDIF]]></textarea></div>[[*
 *]][[ELSIF:3=selection]]<div><select id="<<PAGE_FIELD>>" type="text"[[IF:5=Y]] disabled[[ENDIF]]>
 	<option value=" " selected> </option>[[LOOP,OPTION]]
 	<option value="<<OPTION>>"><<OPTION1>></option>[[ENDLOOP,OPTION]]
 </select></div>[[*
-*]][[ELSIF:3=number]]<div style="max-width:[[EVAL:<<PAGE_FIELD4>>+1]]em;"><input id="<<PAGE_FIELD>>" type="text" maxlength="[[EVAL:<<PAGE_FIELD4>>+1]]" style="width:100%;"[[IF:5=Y]] disabled[[ENDIF]]></input></div>[[*
-*]][[ELSIF:3=date]]<div style="max-width:12ch;"><input id="<<PAGE_FIELD>>" type="text" maxlength="10" style="width:100%;"[[IF:5=Y]] disabled[[ENDIF]]></input></div>[[ENDIF]][[ENDTEXT]]
+*]][[ELSIF:3=number]]<div style="max-width:[[EVAL:<<PAGE_FIELD4>>+1]]em;"><input id="<<PAGE_FIELD>>" type="text" maxlength="[[EVAL:<<PAGE_FIELD4>>+1]]" style="width:100%"[[IF:5=Y]] disabled[[ENDIF]]></input></div>[[*
+*]][[ELSIF:3=date]]<div style="max-width:12ch;"><input id="<<PAGE_FIELD>>" type="text" maxlength="10" style="width:100%"[[IF:5=Y]] disabled[[ENDIF]]></input></div>[[ENDIF]][[ENDTEXT]]
 [[TEXT,DETAIL_DESCRIPTION]][[LOOP,DESCRIPTION]] style="cursor:help" oncontextmenu="parent.OpenDescBox('<<DESCRIPTION3>>','<<DESCRIPTION4>>','<<DESCRIPTION>>','<<DESCRIPTION1>>',<<DESCRIPTION2>>)"[[ENDLOOP,DESCRIPTION]][[ENDTEXT]]
 [[BODY]][[LOOP,SYSTEM:0=<<1>>]][[LOOP,SYSTEM_PAGE]][[LOOP,PAGE]][[FILE,<<2>>\<<1>><<PAGE>>.php]][[LOOP,TYPE]]<?php
 session_start();
@@ -371,13 +371,13 @@ function ResetField<<ATTRIBUTE:C>>(p_field_id) {
 </select>[[ENDLOOP,*ATTRIBUTE]][[REPEAT]][[ENDLOOP,TYPE_SPECIALISATION_GROUP]]</span></div>
 <hr/>
 <table[[IF:CHILD(TYPE_SPECIALISATION_GROUP)]] id="TableMain" style="display:none"[[ENDIF]]>[[ENDLOOP,TYPE]][[LOOP,PAGE_ROW]]
-<tr id="<<PAGE_ROW>>">[[LOOP,PAGE_FIELD]]<td<<TEXT,DETAIL_DESCRIPTION>>>[[IF:2=Y]]<u>[[ENDIF]]<<PAGE_FIELD1>>[[IF:2=Y]]</u>[[ENDIF]]</td><td><<TEXT,DETAIL_INPUT>></td>[[ENDLOOP,PAGE_FIELD]]</tr>[[ENDLOOP,PAGE_ROW]][[LOOP,GROUP_BOX]]
+<tr id="<<PAGE_ROW>>"><td<<TEXT,DETAIL_DESCRIPTION>>>[[LOOP,PAGE_FIELD]][[IF:2=Y]]<u>[[ENDIF]]<div[[IF,PAGE_ROW:1=area]] style="padding-top:10px"[[ENDIF]]><<PAGE_FIELD1>></div>[[IF:2=Y]]</u>[[ENDIF]]</td>[[IF,PAGE_ROW:1=area]]</tr><tr><td colspan="2">[[ELSE]]<td>[[ENDIF]]<<TEXT,DETAIL_INPUT>>[[ENDLOOP,PAGE_FIELD]]</td></tr>[[ENDLOOP,PAGE_ROW]][[LOOP,GROUP_BOX]]
 <tr><td height=6></td></tr><tr id="<<GROUP_BOX>>"><td colspan=2><fieldset><legend<<TEXT,DETAIL_DESCRIPTION>>><img style="border:1 solid transparent;" src="icons/<<GROUP_BOX2>>.bmp"/> <<GROUP_BOX1>></legend>
-<table style="width:100%;">[[LOOP,PAGE_FIELD]]
-<tr><td>[[IF:2=Y]]<u>[[ENDIF]]<<PAGE_FIELD1>>[[IF:2=Y]]</u>[[ENDIF]]</td><td style="width:100%;"><<TEXT,DETAIL_INPUT>></td>[[IF:FIRST]][[FORV,GROUP_BOX:N>N]][[LOOP,BUTTON]]
+<table style="width:100%">[[LOOP,PAGE_FIELD]]
+<tr><td>[[IF:2=Y]]<u>[[ENDIF]]<<PAGE_FIELD1>>[[IF:2=Y]]</u>[[ENDIF]]</td><td style="width:100%"><<TEXT,DETAIL_INPUT>></td>[[IF:FIRST]][[FORV,GROUP_BOX:N>N]][[LOOP,BUTTON]]
 <td><button id="<<BUTTON>>" type="button" onclick="<<BUTTON2>>"><<BUTTON1>></button></td>[[ENDLOOP,BUTTON]][[ENDFOR]][[ENDIF]]</tr>[[ENDLOOP,PAGE_FIELD]]
 </table></fieldset></td></tr>[[ENDLOOP,GROUP_BOX]]
-<tr><td><br></td><td style="width:100%;"></td></tr>
+<tr><td><br></td><td style="width:100%"></td></tr>
 <tr><td/><td>[[LOOP,BUTTON:!CHILD(*GROUP_BOX)]]
 <button id="<<BUTTON>>" type="button" onclick="<<BUTTON2>>"><<BUTTON1>></button>[[IF:!LAST]]&nbsp;&nbsp;&nbsp;[[ENDIF]][[ENDLOOP,BUTTON]]</td></tr>
 </table>[[LOOP,PAGE_FIELD:3=hidden]]
