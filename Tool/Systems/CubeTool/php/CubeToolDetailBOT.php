@@ -197,7 +197,7 @@ function ProcessTypeSpecialisation() {
 -->
 </script>
 </head><body oncontextmenu="return false;" onload="InitBody()" ondrop="drop(event)" ondragover="allowDrop(event)">
-<div><img src="icons/botype_large.bmp" /><span style="cursor:help" oncontextmenu="parent.OpenDescBox('BOTYPE','BusinessObjectType','BUSINESS_OBJECT_TYPE','_',-1)"> BUSINESS_OBJECT_TYPE /
+<div><img src="icons/botype_large.bmp" /><span style="cursor:help" oncontextmenu="parent.OpenDescBox('botype','BusinessObjectType','BUSINESS_OBJECT_TYPE','_',-1)"> BUSINESS_OBJECT_TYPE /
 <select id="InputCubeTsgType" type="text" onchange="ProcessTypeSpecialisation()">
 	<option value=" " selected>&lt;type&gt;</option>
 	<option value="INT">INTERNAL</option>
@@ -208,7 +208,7 @@ function ProcessTypeSpecialisation() {
 <table id="TableMain" style="display:none">
 <tr id="RowAtbName"><td><u><div>Name</div></u></td><td><div style="max-width:30em;"><input id="InputName" type="text" maxlength="30" style="width:100%" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
 <tr id="RowAtbDirectory"><td><div>Directory</div></td><td><div style="max-width:80em;"><input id="InputDirectory" type="text" maxlength="80" style="width:100%" onchange="ReplaceSpaces(this);"></input></div></td></tr>
-<tr id="RowAtbApiUrl"><td style="cursor:help" oncontextmenu="parent.OpenDescBox('BOTYPE','BusinessObjectType.ApiUrl','BUSINESS_OBJECT_TYPE','API_URL',-1)"><div>ApiUrl</div></td><td><div style="max-width:300em;"><input id="InputApiUrl" type="text" maxlength="300" style="width:100%" onchange="ReplaceSpaces(this);"></input></div></td></tr>
+<tr id="RowAtbApiUrl"><td style="cursor:help" oncontextmenu="parent.OpenDescBox('botype','BusinessObjectType.ApiUrl','BUSINESS_OBJECT_TYPE','API_URL',-1)"><div>ApiUrl</div></td><td><div style="max-width:300em;"><input id="InputApiUrl" type="text" maxlength="300" style="width:100%" onchange="ReplaceSpaces(this);"></input></div></td></tr>
 <tr><td><br></td><td style="width:100%"></td></tr>
 <tr><td/><td>
 <button id="ButtonCreate" type="button" onclick="CreateBot()">Create</button>&nbsp;&nbsp;&nbsp;

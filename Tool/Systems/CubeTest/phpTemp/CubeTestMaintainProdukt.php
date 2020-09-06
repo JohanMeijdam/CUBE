@@ -232,6 +232,22 @@ function ResetFieldCubeTsgSoort1(p_field_id) {
 	<option id="ValCubeTsgSoort1-GARAGE" style="display:none" value="GARAGE">GARAGE</option>
 	<option id="ValCubeTsgSoort1-WOON" style="display:none" value="WOON">WOONHUIS</option>
 	<option id="ValCubeTsgSoort1-VERVOER" style="display:none" value="VERVOER">VERVOERMIDDEL</option>
+</select>
+<select id="InputCubeTsgType" type="text">
+	<option value="  selected">&lt;type&gt;</option>
+	<option value="P">PARTICULIER</option>
+	<option value="Z">ZAKELIJK</option>
+</select>
+<select id="InputCubeTsgSoort" type="text">
+	<option value="  selected">&lt;soort&gt;</option>
+	<option value="R">ROEREND_GOED</option>
+	<option value="O">ONROEREND_GOED</option>
+</select>
+<select id="InputCubeTsgSoort1" type="text">
+	<option value="  selected">&lt;soort1&gt;</option>
+	<option id="ValCubeTsgSoort1-GARAGE" style="display:none" value="GARAGE">GARAGE</option>
+	<option id="ValCubeTsgSoort1-WOON" style="display:none" value="WOON">WOONHUIS</option>
+	<option id="ValCubeTsgSoort1-VERVOER" style="display:none" value="VERVOER">VERVOERMIDDEL</option>
 </select></span></div>
 <hr/>
 <table id="TableMain" style="display:none">

@@ -245,33 +245,26 @@ function StartSelect002(p_event) {
 <div><img src="icons/type_large.bmp" /><span> CONSTRUCTIE</span></div>
 <hr/>
 <table>
-<tr><td><u>Produkt.Type</u></td><td><div>
-<select id="InputFkPrdCubeTsgType" type="text">
+<tr id="RowAtbFkPrdCubeTsgType"><td><u><div>Produkt.Type</div></u></td><td><div><select id="InputFkPrdCubeTsgType" type="text">
 	<option value=" " selected> </option>
 	<option value="P">PARTICULIER</option>
 	<option value="Z">ZAKELIJK</option>
 </select></div></td></tr>
-<tr><td><u>Produkt.Code</u></td><td><div style="max-width:8em;">
-<input id="InputFkPrdCode" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td><u>Onderdeel.Code</u></td><td><div style="max-width:8em;">
-<input id="InputFkOndCode" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td><u>Code</u></td><td><div style="max-width:8em;">
-<input id="InputCode" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td style="padding-top:10px;">Omschrijving</td></tr><tr><td colspan="2"><div>
-<textarea id="InputOmschrijving" type="text" maxlength="120" rows="5" style="white-space:normal;width:100%;"></textarea></div></td></tr>
-<tr><td height=6></td></tr><tr><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/type.bmp"/> OnderdeelDeel (ZonderScope)</legend>
-<table style="width:100%;">
-<tr><td>OnderdeelDeel.Code</td><td style="width:100%;"><div style="max-width:8em;">
-<input id="InputXkOddCode" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td>
+<tr id="RowAtbFkPrdCode"><td><u><div>Produkt.Code</div></u></td><td><div style="max-width:8em;"><input id="InputFkPrdCode" type="text" maxlength="8" style="width:100%" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr id="RowAtbFkOndCode"><td><u><div>Onderdeel.Code</div></u></td><td><div style="max-width:8em;"><input id="InputFkOndCode" type="text" maxlength="8" style="width:100%" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr id="RowAtbCode"><td><u><div>Code</div></u></td><td><div style="max-width:8em;"><input id="InputCode" type="text" maxlength="8" style="width:100%" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr id="RowAtbOmschrijving"><td><div style="padding-top:10px">Omschrijving</div></td></tr><tr><td colspan="2"><div><textarea id="InputOmschrijving" type="text" maxlength="120" rows="5" style="white-space:normal;width:100%"></textarea></div></td></tr>
+<tr><td height=6></td></tr><tr id="RowRefOnderdeelDeel0"><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/type.bmp"/> OnderdeelDeel (ZonderScope)</legend>
+<table style="width:100%">
+<tr><td>OnderdeelDeel.Code</td><td style="width:100%"><div style="max-width:8em;"><input id="InputXkOddCode" type="text" maxlength="8" style="width:100%" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td>
 <td><button id="RefSelect001" type="button" onclick="StartSelect001(event)">Select</button></td></tr>
 </table></fieldset></td></tr>
-<tr><td height=6></td></tr><tr><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/type.bmp"/> OnderdeelDeel (MetScope)</legend>
-<table style="width:100%;">
-<tr><td>OnderdeelDeel.Code</td><td style="width:100%;"><div style="max-width:8em;">
-<input id="InputXkOddCode1" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td>
+<tr><td height=6></td></tr><tr id="RowRefOnderdeelDeel1"><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/type.bmp"/> OnderdeelDeel (MetScope)</legend>
+<table style="width:100%">
+<tr><td>OnderdeelDeel.Code</td><td style="width:100%"><div style="max-width:8em;"><input id="InputXkOddCode1" type="text" maxlength="8" style="width:100%" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td>
 <td><button id="RefSelect002" type="button" onclick="StartSelect002(event)">Select</button></td></tr>
 </table></fieldset></td></tr>
-<tr><td><br></td><td style="width:100%;"></td></tr>
+<tr><td><br></td><td style="width:100%"></td></tr>
 <tr><td/><td>
 <button id="ButtonCreate" type="button" onclick="CreateCst()">Create</button>&nbsp;&nbsp;&nbsp;
 <button id="ButtonUpdate" type="button" onclick="UpdateCst()">Update</button>&nbsp;&nbsp;&nbsp;

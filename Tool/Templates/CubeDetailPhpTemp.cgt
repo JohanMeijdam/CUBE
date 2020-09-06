@@ -54,15 +54,14 @@ Change log:
 [[TEXT,DETAIL_STYLE_MAX-WIDTH]] style="max-width:[[IF:2=DATE]]12ch[[ELSIF:2=NUMBER]][[EVAL:<<INFORMATION_TYPE_ELEMENT3>>+1]]em[[ELSE]]<<INFORMATION_TYPE_ELEMENT3>>em[[ENDIF]];"[[ENDTEXT]]
 [[TEXT,DETAIL_ONCHANGE]][[IF:5=N[OR]7=N]] onchange="[[IF:5=N]]ToUpperCase(this);[[ENDIF]][[IF:7=N]]ReplaceSpaces(this);[[ENDIF]]"[[ENDIF]][[ENDTEXT]]
 [[TEXT,DETAIL_INPUT]][[*
-   *]][[IF:3=text-line]]<div style="max-width:<<PAGE_FIELD4>>em;"><input id="<<PAGE_FIELD>>" type="text" maxlength="<<PAGE_FIELD4>>" style="width:100%"[[IF:6=Y[OR]7=Y]] onchange="[[IF:6=Y]]ToUpperCase(this);[[ENDIF]][[IF:7=Y]]ReplaceSpaces(this);[[ENDIF]]"[[ENDIF]][[IF:5=Y]] disabled[[ENDIF]]></input></div>[[*
-*]][[ELSIF:3=text-desc]]<div><textarea id="<<PAGE_FIELD>>" type="text" maxlength="<<PAGE_FIELD4>>" rows="5" style="white-space:normal;width:100%"[[IF:5=Y]] disabled[[ENDIF]]></textarea></div>[[*
-*]][[ELSIF:3=text-code]]<div><textarea id="<<PAGE_FIELD>>" type="text" maxlength="<<PAGE_FIELD4>>" rows="11" style="overflow:auto;white-space:pre;font-family:courier new;font-size:12px;width:100%"[[IF:5=Y]] disabled[[ENDIF]]></textarea></div>[[*
-*]][[ELSIF:3=selection]]<div><select id="<<PAGE_FIELD>>" type="text"[[IF:5=Y]] disabled[[ENDIF]]>
-	<option value=" " selected> </option>[[LOOP,OPTION]]
-	<option value="<<OPTION>>"><<OPTION1>></option>[[ENDLOOP,OPTION]]
-</select></div>[[*
-*]][[ELSIF:3=number]]<div style="max-width:[[EVAL:<<PAGE_FIELD4>>+1]]em;"><input id="<<PAGE_FIELD>>" type="text" maxlength="[[EVAL:<<PAGE_FIELD4>>+1]]" style="width:100%"[[IF:5=Y]] disabled[[ENDIF]]></input></div>[[*
-*]][[ELSIF:3=date]]<div style="max-width:12ch;"><input id="<<PAGE_FIELD>>" type="text" maxlength="10" style="width:100%"[[IF:5=Y]] disabled[[ENDIF]]></input></div>[[ENDIF]][[ENDTEXT]]
+   *]][[IF:3=text-line]]<div style="max-width:<<PAGE_FIELD4>>em;"><input id="Input<<PAGE_FIELD>>" type="text" maxlength="<<PAGE_FIELD4>>" style="width:100%"[[IF:6=Y[OR]7=Y]] onchange="[[IF:6=Y]]ToUpperCase(this);[[ENDIF]][[IF:7=Y]]ReplaceSpaces(this);[[ENDIF]]"[[ENDIF]][[IF:5=Y]] disabled[[ENDIF]]></input></div>[[*
+*]][[ELSIF:3=text-desc]]<div><textarea id="Input<<PAGE_FIELD>>" type="text" maxlength="<<PAGE_FIELD4>>" rows="5" style="white-space:normal;width:100%"[[IF:5=Y]] disabled[[ENDIF]]></textarea></div>[[*
+*]][[ELSIF:3=text-code]]<div><textarea id="Input<<PAGE_FIELD>>" type="text" maxlength="<<PAGE_FIELD4>>" rows="11" style="overflow:auto;white-space:pre;font-family:courier new;font-size:12px;width:100%"[[IF:5=Y]] disabled[[ENDIF]]></textarea></div>[[*
+*]][[ELSIF:3=selection]][[IF:!CHILD(*PAGE_HEADER)]]<div>[[ENDIF]]<select id="Input<<PAGE_FIELD>>" type="text"[[IF:5=Y]] disabled[[ENDIF]]>[[LOOP,OPTION]]
+	<option[[IF:!FIRST]][[IF,PAGE_FIELD:8=Y]] id="Val<<PAGE_FIELD>>-<<OPTION>>" style="display:none"[[ENDIF]][[ENDIF]] value="<<OPTION>>[[IF:FIRST]] selected[[ENDIF]]"><<OPTION1:HE>></option>[[ENDLOOP,OPTION]]
+</select>[[IF:!CHILD(*PAGE_HEADER)]]</div>[[ENDIF]][[*
+*]][[ELSIF:3=number]]<div style="max-width:[[EVAL:<<PAGE_FIELD4>>+1]]em;"><input id="Input<<PAGE_FIELD>>" type="text" maxlength="[[EVAL:<<PAGE_FIELD4>>+1]]" style="width:100%"[[IF:5=Y]] disabled[[ENDIF]]></input></div>[[*
+*]][[ELSIF:3=date]]<div style="max-width:12ch;"><input id="Input<<PAGE_FIELD>>" type="text" maxlength="10" style="width:100%"[[IF:5=Y]] disabled[[ENDIF]]></input></div>[[ENDIF]][[ENDTEXT]]
 [[TEXT,DETAIL_DESCRIPTION]][[LOOP,DESCRIPTION]] style="cursor:help" oncontextmenu="parent.OpenDescBox('<<DESCRIPTION3>>','<<DESCRIPTION4>>','<<DESCRIPTION>>','<<DESCRIPTION1>>',<<DESCRIPTION2>>)"[[ENDLOOP,DESCRIPTION]][[ENDTEXT]]
 [[BODY]][[LOOP,SYSTEM:0=<<1>>]][[LOOP,SYSTEM_PAGE]][[LOOP,PAGE]][[FILE,<<2>>\<<1>><<PAGE>>.php]][[LOOP,TYPE]]<?php
 session_start();
@@ -364,13 +363,14 @@ function ResetField<<ATTRIBUTE:C>>(p_field_id) {
 -->
 </script>
 </head><body oncontextmenu="return false;" onload="InitBody()" ondrop="drop(event)" ondragover="allowDrop(event)">
-<div><img src="icons/<<PAGE3>>_large.bmp" /><span<<TEXT,DETAIL_DESCRIPTION>>>[[LOOP,TYPE]] <<TYPE:U>>[[LOOP,TYPE_SPECIALISATION_GROUP]][[LOOP,*ATTRIBUTE]][[IF:CHILD(ATTRIBUTE_GROUP)]] <b>.</b>[[ELSE]] /[[ENDIF]]
+<div><img src="icons/<<PAGE3>>.bmp" /><span<<TEXT,DETAIL_DESCRIPTION>>> <<PAGE2>>[[LOOP,TYPE]][[LOOP,TYPE_SPECIALISATION_GROUP]][[LOOP,*ATTRIBUTE]][[IF:CHILD(ATTRIBUTE_GROUP)]] <b>.</b>[[ELSE]] /[[ENDIF]]
 <select id="Input<<ATTRIBUTE:C>>" type="text" onchange="[[IF:CHILD(*ATTRIBUTE_GROUP)]]ResetField[[LOOP,*ATTRIBUTE_GROUP]][[LOOP,^ATTRIBUTE]]<<^ATTRIBUTE:C>>[[ENDLOOP,^ATTRIBUTE]][[ENDLOOP,*ATTRIBUTE_GROUP]]('Input<<ATTRIBUTE:C>>')[[ELSE]]ProcessTypeSpecialisation()[[ENDIF]]">
 	<option value=" " selected>&lt;[[LOOP,ATTRIBUTE_TYPE_SPECIALISATION_GROUP]]<<ATTRIBUTE_TYPE_SPECIALISATION_GROUP:L>>[[ENDLOOP,ATTRIBUTE_TYPE_SPECIALISATION_GROUP]]&gt;</option>[[LOOP,INFORMATION_TYPE_ELEMENT]][[LOOP,PERMITTED_VALUE]]
 	<option [[IF,*ATTRIBUTE:CHILD(ATTRIBUTE_GROUP)]]id="Val<<ATTRIBUTE:C>>-<<PERMITTED_VALUE>>" style="display:none" [[ENDIF]]value="<<PERMITTED_VALUE>>"><<PERMITTED_VALUE1>></option>[[ENDLOOP,PERMITTED_VALUE]][[ENDLOOP,INFORMATION_TYPE_ELEMENT]]
-</select>[[ENDLOOP,*ATTRIBUTE]][[REPEAT]][[ENDLOOP,TYPE_SPECIALISATION_GROUP]]</span></div>
+</select>[[ENDLOOP,*ATTRIBUTE]][[REPEAT]][[ENDLOOP,TYPE_SPECIALISATION_GROUP]][[ENDLOOP,TYPE]][[LOOP,PAGE_HEADER]][[LOOP,PAGE_FIELD]]
+<<TEXT,DETAIL_INPUT>>[[ENDLOOP,PAGE_FIELD]]</span></div>
 <hr/>
-<table[[IF:CHILD(TYPE_SPECIALISATION_GROUP)]] id="TableMain" style="display:none"[[ENDIF]]>[[ENDLOOP,TYPE]][[LOOP,PAGE_ROW]]
+<table[[IF:CHILD(PAGE_FIELD)]] id="TableMain" style="display:none"[[ENDIF]]>[[ENDLOOP,PAGE_HEADER]][[LOOP,PAGE_ROW]]
 <tr id="<<PAGE_ROW>>"><td<<TEXT,DETAIL_DESCRIPTION>>>[[LOOP,PAGE_FIELD]][[IF:2=Y]]<u>[[ENDIF]]<div[[IF,PAGE_ROW:1=area]] style="padding-top:10px"[[ENDIF]]><<PAGE_FIELD1>></div>[[IF:2=Y]]</u>[[ENDIF]]</td>[[IF,PAGE_ROW:1=area]]</tr><tr><td colspan="2">[[ELSE]]<td>[[ENDIF]]<<TEXT,DETAIL_INPUT>>[[ENDLOOP,PAGE_FIELD]]</td></tr>[[ENDLOOP,PAGE_ROW]][[LOOP,GROUP_BOX]]
 <tr><td height=6></td></tr><tr id="<<GROUP_BOX>>"><td colspan=2><fieldset><legend<<TEXT,DETAIL_DESCRIPTION>>><img style="border:1 solid transparent;" src="icons/<<GROUP_BOX2>>.bmp"/> <<GROUP_BOX1>></legend>
 <table style="width:100%">[[LOOP,PAGE_FIELD]]
@@ -381,7 +381,7 @@ function ResetField<<ATTRIBUTE:C>>(p_field_id) {
 <tr><td/><td>[[LOOP,BUTTON:!CHILD(*GROUP_BOX)]]
 <button id="<<BUTTON>>" type="button" onclick="<<BUTTON2>>"><<BUTTON1>></button>[[IF:!LAST]]&nbsp;&nbsp;&nbsp;[[ENDIF]][[ENDLOOP,BUTTON]]</td></tr>
 </table>[[LOOP,PAGE_FIELD:3=hidden]]
-<input id="<<PAGE_FIELD>>" type="hidden"></input>[[ENDLOOP,PAGE_FIELD]]
+<input id="Input<<PAGE_FIELD>>" type="hidden"></input>[[ENDLOOP,PAGE_FIELD]]
 </body>
 </html>
 [[ENDLOOP,PAGE]][[ENDLOOP,SYSTEM_PAGE]][[ENDLOOP,SYSTEM]][[FILE,<<2>>\<<1>>DetailInclude.js]]<!--

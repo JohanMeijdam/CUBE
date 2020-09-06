@@ -279,7 +279,7 @@ function StartSelect001(p_event) {
 -->
 </script>
 </head><body oncontextmenu="return false;" onload="InitBody()" ondrop="drop(event)" ondragover="allowDrop(event)">
-<div><img src="icons/tspgroup_large.bmp" /><span style="cursor:help" oncontextmenu="parent.OpenDescBox('TSPGROUP','TypeSpecialisationGroup','TYPE_SPECIALISATION_GROUP','_',-1)"> TYPE_SPECIALISATION_GROUP</span></div>
+<div><img src="icons/tspgroup_large.bmp" /><span style="cursor:help" oncontextmenu="parent.OpenDescBox('tspgroup','TypeSpecialisationGroup','TYPE_SPECIALISATION_GROUP','_',-1)"> TYPE_SPECIALISATION_GROUP</span></div>
 <hr/>
 <table>
 <tr id="RowAtbFkBotName"><td><div>BusinessObjectType.Name</div></td><td><div style="max-width:30em;"><input id="InputFkBotName" type="text" maxlength="30" style="width:100%" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
@@ -287,12 +287,12 @@ function StartSelect001(p_event) {
 <tr id="RowAtbFkTsgCode"><td><div>TypeSpecialisationGroup.Code</div></td><td><div style="max-width:16em;"><input id="InputFkTsgCode" type="text" maxlength="16" style="width:100%" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
 <tr id="RowAtbCode"><td><u><div>Code</div></u></td><td><div style="max-width:16em;"><input id="InputCode" type="text" maxlength="16" style="width:100%" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
 <tr id="RowAtbName"><td><div>Name</div></td><td><div style="max-width:30em;"><input id="InputName" type="text" maxlength="30" style="width:100%" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr id="RowAtbPrimaryKey"><td style="cursor:help" oncontextmenu="parent.OpenDescBox('TSPGROUP','TypeSpecialisationGroup.PrimaryKey','TYPE_SPECIALISATION_GROUP','PRIMARY_KEY',-1)"><div>PrimaryKey</div></td><td><div><select id="InputPrimaryKey" type="text">
+<tr id="RowAtbPrimaryKey"><td style="cursor:help" oncontextmenu="parent.OpenDescBox('tspgroup','TypeSpecialisationGroup.PrimaryKey','TYPE_SPECIALISATION_GROUP','PRIMARY_KEY',-1)"><div>PrimaryKey</div></td><td><div><select id="InputPrimaryKey" type="text">
 	<option value=" " selected> </option>
 	<option value="Y">Yes</option>
 	<option value="N">No</option>
 </select></div></td></tr>
-<tr><td height=6></td></tr><tr id="RowRefAttribute0"><td colspan=2><fieldset><legend style="cursor:help" oncontextmenu="parent.OpenDescBox('TSPGROUP','TypeSpecialisationGroup.Attribute (IsLocatedAfter)','TYPE_SPECIALISATION_GROUP','ATTRIBUTE',0)"><img style="border:1 solid transparent;" src="icons/attrib.bmp"/> Attribute (IsLocatedAfter)</legend>
+<tr><td height=6></td></tr><tr id="RowRefAttribute0"><td colspan=2><fieldset><legend style="cursor:help" oncontextmenu="parent.OpenDescBox('tspgroup','TypeSpecialisationGroup.Attribute (IsLocatedAfter)','TYPE_SPECIALISATION_GROUP','ATTRIBUTE',0)"><img style="border:1 solid transparent;" src="icons/attrib.bmp"/> Attribute (IsLocatedAfter)</legend>
 <table style="width:100%">
 <tr><td>Type.Name</td><td style="width:100%"><div style="max-width:30em;"><input id="InputXfAtbTypName" type="text" maxlength="30" style="width:100%" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td>
 <td><button id="RefSelect001" type="button" onclick="StartSelect001(event)">Select</button></td></tr>

@@ -259,7 +259,7 @@ function StartSelect001(p_event) {
 <tr id="RowAtbFkBotName"><td><div>BusinessObjectType.Name</div></td><td><div style="max-width:30em;"><input id="InputFkBotName" type="text" maxlength="30" style="width:100%" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
 <tr id="RowAtbFkTypName"><td><u><div>Type.Name</div></u></td><td><div style="max-width:30em;"><input id="InputFkTypName" type="text" maxlength="30" style="width:100%" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
 <tr id="RowAtbFkAtbName"><td><u><div>Attribute.Name</div></u></td><td><div style="max-width:30em;"><input id="InputFkAtbName" type="text" maxlength="30" style="width:100%" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr id="RowAtbIncludeOrExclude"><td style="cursor:help" oncontextmenu="parent.OpenDescBox('RESTRICT','RestrictionTypeSpecAtb.IncludeOrExclude','RESTRICTION_TYPE_SPEC_ATB','INCLUDE_OR_EXCLUDE',-1)"><div>IncludeOrExclude</div></td><td><div><select id="InputIncludeOrExclude" type="text">
+<tr id="RowAtbIncludeOrExclude"><td style="cursor:help" oncontextmenu="parent.OpenDescBox('restrict','RestrictionTypeSpecAtb.IncludeOrExclude','RESTRICTION_TYPE_SPEC_ATB','INCLUDE_OR_EXCLUDE',-1)"><div>IncludeOrExclude</div></td><td><div><select id="InputIncludeOrExclude" type="text">
 	<option value=" " selected> </option>
 	<option value="IN">Include</option>
 	<option value="EX">Exclude</option>

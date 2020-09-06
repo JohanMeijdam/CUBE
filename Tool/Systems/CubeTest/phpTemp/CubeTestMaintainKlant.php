@@ -187,19 +187,13 @@ function ProcessTypeSpecialisation() {
 </select></span></div>
 <hr/>
 <table id="TableMain" style="display:none">
-<tr><td><u>Nummer</u></td><td><div style="max-width:8em;">
-<input id="InputNummer" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td>Achternaam</td><td><div style="max-width:40em;">
-<input id="InputAchternaam" type="text" maxlength="40" style="width:100%;"></input></div></td></tr>
-<tr><td>GeboorteDatum</td><td><div style="max-width:12ch;">
-<input id="InputGeboorteDatum" type="text" maxlength="10" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td>Leeftijd</td><td><div style="max-width:9em;">
-<input id="InputLeeftijd" type="text" maxlength="9" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td>Voornaam</td><td><div style="max-width:40em;">
-<input id="InputVoornaam" type="text" maxlength="40" style="width:100%;"></input></div></td></tr>
-<tr><td>Tussenvoegsel</td><td><div style="max-width:40em;">
-<input id="InputTussenvoegsel" type="text" maxlength="40" style="width:100%;"></input></div></td></tr>
-<tr><td><br></td><td style="width:100%;"></td></tr>
+<tr id="RowAtbNummer"><td><u><div>Nummer</div></u></td><td><div style="max-width:8em;"><input id="InputNummer" type="text" maxlength="8" style="width:100%" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr id="RowAtbAchternaam"><td><div>Achternaam</div></td><td><div style="max-width:40em;"><input id="InputAchternaam" type="text" maxlength="40" style="width:100%"></input></div></td></tr>
+<tr id="RowAtbGeboorteDatum"><td><div>GeboorteDatum</div></td><td><div style="max-width:12ch;"><input id="InputGeboorteDatum" type="text" maxlength="10" style="width:100%"></input></div></td></tr>
+<tr id="RowAtbLeeftijd"><td><div>Leeftijd</div></td><td><div style="max-width:9em;"><input id="InputLeeftijd" type="text" maxlength="9" style="width:100%"></input></div></td></tr>
+<tr id="RowAtbVoornaam"><td><div>Voornaam</div></td><td><div style="max-width:40em;"><input id="InputVoornaam" type="text" maxlength="40" style="width:100%"></input></div></td></tr>
+<tr id="RowAtbTussenvoegsel"><td><div>Tussenvoegsel</div></td><td><div style="max-width:40em;"><input id="InputTussenvoegsel" type="text" maxlength="40" style="width:100%"></input></div></td></tr>
+<tr><td><br></td><td style="width:100%"></td></tr>
 <tr><td/><td>
 <button id="ButtonCreate" type="button" onclick="CreateKln()">Create</button>&nbsp;&nbsp;&nbsp;
 <button id="ButtonUpdate" type="button" onclick="UpdateKln()">Update</button>&nbsp;&nbsp;&nbsp;

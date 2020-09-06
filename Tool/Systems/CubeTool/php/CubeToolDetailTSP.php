@@ -265,7 +265,7 @@ function StartSelect001(p_event) {
 -->
 </script>
 </head><body oncontextmenu="return false;" onload="InitBody()" ondrop="drop(event)" ondragover="allowDrop(event)">
-<div><img src="icons/typespec_large.bmp" /><span style="cursor:help" oncontextmenu="parent.OpenDescBox('TYPESPEC','TypeSpecialisation','TYPE_SPECIALISATION','_',-1)"> TYPE_SPECIALISATION</span></div>
+<div><img src="icons/typespec_large.bmp" /><span style="cursor:help" oncontextmenu="parent.OpenDescBox('typespec','TypeSpecialisation','TYPE_SPECIALISATION','_',-1)"> TYPE_SPECIALISATION</span></div>
 <hr/>
 <table>
 <tr id="RowAtbFkBotName"><td><div>BusinessObjectType.Name</div></td><td><div style="max-width:30em;"><input id="InputFkBotName" type="text" maxlength="30" style="width:100%" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>

@@ -113,9 +113,9 @@ function InitBody() {
 		break;
 	case "N":
 		g_parent_node_id = JSON.stringify(l_json_argument.objectId);
-		document.getElementById("InputFkPrdCubeTsgType").value=l_json_objectKey.TYP_OND.FkPrdCubeTsgType;
-		document.getElementById("InputFkPrdCode").value=l_json_objectKey.TYP_OND.FkPrdCode;
-		document.getElementById("InputFkOndCode").value=l_json_objectKey.TYP_OND.Code;
+		document.getElementById("InputFkPrdCubeTsgType").value=l_json_objectKey.TYP_<<TYPE(N-1)1>>.FkPrdCubeTsgType;
+		document.getElementById("InputFkPrdCode").value=l_json_objectKey.TYP_<<TYPE(N-1)1>>.FkPrdCode;
+		document.getElementById("InputFkOndCode").value=l_json_objectKey.TYP_<<TYPE(N-1)1>>.Code;
 		document.getElementById("ButtonUpdate").disabled=true;
 		document.getElementById("ButtonDelete").disabled=true;
 		document.getElementById("InputFkPrdCubeTsgType").disabled=true;
@@ -194,7 +194,7 @@ function DeleteOdd() {
 <hr/>
 <table>
 <tr id="RowAtbFkPrdCubeTsgType"><td><div>Produkt.Type</div></td><td><div><select id="InputFkPrdCubeTsgType" type="text">
-	<option value=" " selected> </option>
+	<option value="  selected"> </option>
 	<option value="P">PARTICULIER</option>
 	<option value="Z">ZAKELIJK</option>
 </select></div></td></tr>

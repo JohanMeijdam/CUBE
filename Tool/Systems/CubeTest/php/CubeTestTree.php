@@ -29,8 +29,6 @@ g_xmlhttp.onreadystatechange = function() {
 			for (i in l_json_array) {
 				switch (l_json_array[i].ResultName) {
 					case '': break;
-					case 'LIST_KLN': AddTreeviewChildren(l_json_array[i].Rows,'TYP_KLN','icons/klant.bmp'); break;
-					case 'LIST_ADR': AddTreeviewChildren(l_json_array[i].Rows,'TYP_ADR','icons/adres.bmp'); break;
 					case 'LIST_PRD': AddTreeviewChildren(l_json_array[i].Rows,'TYP_PRD','icons/produkt.bmp'); break;
 					case 'COUNT_PRD': CheckMenuItem('TYP_PRD',l_json_array[i].Rows[0].Data.TypeCount); break;
 					case 'LIST_OND': AddTreeviewChildren(l_json_array[i].Rows,'TYP_OND','icons/part.bmp'); break;
@@ -42,12 +40,6 @@ g_xmlhttp.onreadystatechange = function() {
 					case 'LIST_DDD': AddTreeviewChildren(l_json_array[i].Rows,'TYP_DDD','icons/attrib.bmp'); break;
 					case 'MOVE_DDD': MoveNode (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.body._moveAction); break;
 					case 'LIST_CST': AddTreeviewChildren(l_json_array[i].Rows,'TYP_CST','icons/type.bmp'); break;
-					case 'LIST_ORD': AddTreeviewChildren(l_json_array[i].Rows,'TYP_ORD','icons/order.bmp'); break;
-					case 'MOVE_ORD': MoveNode (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.body._moveAction); break;
-					case 'LIST_ORR': AddTreeviewChildren(l_json_array[i].Rows,'TYP_ORR','icons/ordprod.bmp'); break;
-					case 'LIST_AAA': AddTreeviewChildren(l_json_array[i].Rows,'TYP_AAA','icons/.bmp'); break;
-					case 'LIST_BBB': AddTreeviewChildren(l_json_array[i].Rows,'TYP_BBB','icons/.bmp'); break;
-					case 'LIST_CCC': AddTreeviewChildren(l_json_array[i].Rows,'TYP_CCC','icons/.bmp'); break;
 					case "SELECT_CUBE_DSC":	document.getElementById("CubeDesc").value = l_json_array[i].Rows[0].Data.Value;	break;
 					case "ERROR": alert ('Server error:\n'+l_json_array[i].ErrorText); break;
 					default: alert ('Unknown reply:\n'+g_responseText);
@@ -66,18 +58,12 @@ function InitBody() {
 	l_objBody = document.getElementById('TreeBody');
 	l_objBody._type = 'ROOT';
 	l_objBody.childNodes[0]._index = 0;
-	AddTreeviewNode(l_objBody, 'DIR_KLN', null, 'icons/folder.bmp', 'Klanten', 'Y', ' ', null);
 	AddTreeviewNode(l_objBody, 'DIR_PRD', null, 'icons/folder.bmp', 'Produkten', 'Y', ' ', null);
-	AddTreeviewNode(l_objBody, 'DIR_ORD', null, 'icons/folder.bmp', 'Orders', 'Y', ' ', null);
-	AddTreeviewNode(l_objBody, 'DIR_AAA', null, 'icons/folder.bmp', 'AAAs', 'Y', ' ', null);
 }
 
 function DefineTypePosition (p_parentType, p_type, p_switch) {
 	var l_index = 0;
 	switch (p_parentType) {
-	case 'TYP_KLN':
-		switch (p_type) { case 'TYP_ADR': l_index = 2; break;}
-		var l_count = 1; break;
 	case 'TYP_PRD':
 		switch (p_type) { case 'TYP_OND': l_index = 2; break;}
 		var l_count = 1; break;
@@ -86,15 +72,6 @@ function DefineTypePosition (p_parentType, p_type, p_switch) {
 		var l_count = 3; break;
 	case 'TYP_ODD':
 		switch (p_type) { case 'TYP_DDD': l_index = 2; break;}
-		var l_count = 1; break;
-	case 'TYP_ORD':
-		switch (p_type) { case 'TYP_ORR': l_index = 2; break;}
-		var l_count = 1; break;
-	case 'TYP_AAA':
-		switch (p_type) { case 'TYP_BBB': l_index = 2; break;}
-		var l_count = 1; break;
-	case 'TYP_BBB':
-		switch (p_type) { case 'TYP_CCC': l_index = 2; break;}
 		var l_count = 1; break;
 	default: var l_count = 0;
 	}
@@ -123,13 +100,6 @@ function OpenCloseOnClick(p_obj) {
 		p_obj.src = 'icons/open_h.bmp';
 
 		switch (p_obj.parentNode._type) {
- 		case 'DIR_KLN':
-			PerformTrans( {Service:"GetDirKlnItems"} );
-			break;
- 		case 'TYP_KLN':
-			var l_json_id = JSON.parse(p_obj.parentNode.id)["TYP_KLN"];
-			PerformTrans( {Service:"GetKlnItems",Parameters:{Type:l_json_id}} );
-			break;
  		case 'DIR_PRD':
 			PerformTrans( {Service:"GetDirPrdItems"} );
 			break;
@@ -144,24 +114,6 @@ function OpenCloseOnClick(p_obj) {
  		case 'TYP_ODD':
 			var l_json_id = JSON.parse(p_obj.parentNode.id)["TYP_ODD"];
 			PerformTrans( {Service:"GetOddItems",Parameters:{Type:l_json_id}} );
-			break;
- 		case 'DIR_ORD':
-			PerformTrans( {Service:"GetDirOrdItems"} );
-			break;
- 		case 'TYP_ORD':
-			var l_json_id = JSON.parse(p_obj.parentNode.id)["TYP_ORD"];
-			PerformTrans( {Service:"GetOrdItems",Parameters:{Type:l_json_id}} );
-			break;
- 		case 'DIR_AAA':
-			PerformTrans( {Service:"GetDirAaaItems"} );
-			break;
- 		case 'TYP_AAA':
-			var l_json_id = JSON.parse(p_obj.parentNode.id)["TYP_AAA"];
-			PerformTrans( {Service:"GetAaaItems",Parameters:{Type:l_json_id}} );
-			break;
- 		case 'TYP_BBB':
-			var l_json_id = JSON.parse(p_obj.parentNode.id)["TYP_BBB"];
-			PerformTrans( {Service:"GetBbbItems",Parameters:{Type:l_json_id}} );
 			break;
 		} 
 	}
@@ -206,9 +158,6 @@ function OpenDetail(p_obj) {
 				break;
 			case 'TYP_DDD':
 				PerformTrans( {Service:"MoveDdd",Parameters:{Option:{CubePosAction:document.body._moveAction},Type:l_json_id,Ref:l_json_id_ref}} );
-				break;
-			case 'TYP_ORD':
-				PerformTrans( {Service:"MoveOrd",Parameters:{Option:{CubePosAction:document.body._moveAction},Type:l_json_id,Ref:l_json_id_ref}} );
 				break;
 			}
 		}
@@ -322,12 +271,6 @@ function OpenMenu(p_obj) {
 	g_objMenuList.colSpan = '2';
 
 	switch (l_type_id) {
- 	case 'DIR_KLN':
-		AddMenuItem(g_objMenuList, 'add klant', 'icons/klant.bmp','DetailKLN','N','TYP_KLN',0,'N',2);
-		break;
- 	case 'TYP_KLN':
-		AddMenuItem(g_objMenuList, 'add adres', 'icons/adres.bmp','DetailADR','N','TYP_ADR',0,'N',2);
-		break;
  	case 'DIR_PRD':
 		AddMenuItem(g_objMenuList, 'add produkt', 'icons/produkt.bmp','DetailPRD','N','TYP_PRD',4,'N',2);
 		PerformTrans( {Service:"CountPrd"} );
@@ -357,24 +300,6 @@ function OpenMenu(p_obj) {
 		if (l_childCount > 1) {
 			AddMenuItem(g_objMenuList, 'move', 'icons/cube_move.bmp','CubeMove','','CUBE_M_DDD',0,'N',0);
 		}
-		break;
- 	case 'DIR_ORD':
-		AddMenuItem(g_objMenuList, 'add order', 'icons/order.bmp','CubeAdd','N','TYP_ORD',0,'N',2);
-		break;
- 	case 'TYP_ORD':
-		if (l_childCount > 1) {
-			AddMenuItem(g_objMenuList, 'move', 'icons/cube_move.bmp','CubeMove','','CUBE_M_ORD',0,'N',0);
-		}
-		AddMenuItem(g_objMenuList, 'add order_regel', 'icons/ordprod.bmp','DetailORR','N','TYP_ORR',0,'N',2);
-		break;
- 	case 'DIR_AAA':
-		AddMenuItem(g_objMenuList, 'add aaa', 'icons/.bmp','DetailAAA','N','TYP_AAA',0,'N',2);
-		break;
- 	case 'TYP_AAA':
-		AddMenuItem(g_objMenuList, 'add bbb', 'icons/.bmp','DetailBBB','N','TYP_BBB',0,'N',2);
-		break;
- 	case 'TYP_BBB':
-		AddMenuItem(g_objMenuList, 'add ccc', 'icons/.bmp','DetailCCC','N','TYP_CCC',0,'N',2);
 		break;
 	}
 }

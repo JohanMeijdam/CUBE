@@ -119,7 +119,7 @@ function InitBody() {
 		break;
 	case "N":
 		g_parent_node_id = JSON.stringify(l_json_argument.objectId);
-		document.getElementById("InputFkOrdCode").value=l_json_objectKey.TYP_ORD.Code;
+		document.getElementById("InputFkOrdCode").value=l_json_objectKey.TYP_<<TYPE(N-1)1>>.Code;
 		document.getElementById("ButtonUpdate").disabled=true;
 		document.getElementById("ButtonDelete").disabled=true;
 		document.getElementById("InputFkOrdCode").disabled=true;
@@ -213,23 +213,21 @@ function StartSelect001(p_event) {
 <div><img src="icons/ordprod_large.bmp" /><span> ORDER_REGEL</span></div>
 <hr/>
 <table>
-<tr><td><u>Order.Code</u></td><td><div style="max-width:8em;">
-<input id="InputFkOrdCode" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td>ProduktPrijs</td><td><div style="max-width:9em;">
-<input id="InputProduktPrijs" type="text" maxlength="9" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td>Aantal</td><td><div style="max-width:9em;">
-<input id="InputAantal" type="text" maxlength="9" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td>TotaalPrijs</td><td><div style="max-width:9em;">
-<input id="InputTotaalPrijs" type="text" maxlength="9" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td height=6></td></tr><tr><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/produkt.bmp"/> Produkt (Betreft)</legend>
-<table style="width:100%;">
-<tr><td>Produkt.Type</td><td style="width:100%;"><div style="max-width:8em;">
-<input id="InputXkPrdCubeTsgType" type="text" maxlength="8" style="width:100%;" onchange="ReplaceSpaces(this);" disabled></input></div></td>
+<tr id="RowAtbFkOrdCode"><td><u><div>Order.Code</div></u></td><td><div style="max-width:8em;"><input id="InputFkOrdCode" type="text" maxlength="8" style="width:100%" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr id="RowAtbProduktPrijs"><td><div>ProduktPrijs</div></td><td><div style="max-width:9em;"><input id="InputProduktPrijs" type="text" maxlength="9" style="width:100%"></input></div></td></tr>
+<tr id="RowAtbAantal"><td><div>Aantal</div></td><td><div style="max-width:9em;"><input id="InputAantal" type="text" maxlength="9" style="width:100%"></input></div></td></tr>
+<tr id="RowAtbTotaalPrijs"><td><div>TotaalPrijs</div></td><td><div style="max-width:9em;"><input id="InputTotaalPrijs" type="text" maxlength="9" style="width:100%"></input></div></td></tr>
+<tr><td height=6></td></tr><tr id="RowRefProdukt0"><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/produkt.bmp"/> Produkt (Betreft)</legend>
+<table style="width:100%">
+<tr><td>Produkt.Type</td><td style="width:100%"><div><select id="InputXkPrdCubeTsgType" type="text">
+	<option value=" " selected> </option>
+	<option value="P">PARTICULIER</option>
+	<option value="Z">ZAKELIJK</option>
+</select></div></td>
 <td><button id="RefSelect001" type="button" onclick="StartSelect001(event)">Select</button></td></tr>
-<tr><td>Produkt.Code</td><td style="width:100%;"><div style="max-width:8em;">
-<input id="InputXkPrdCode" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td></tr>
+<tr><td>Produkt.Code</td><td style="width:100%"><div style="max-width:8em;"><input id="InputXkPrdCode" type="text" maxlength="8" style="width:100%" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td></tr>
 </table></fieldset></td></tr>
-<tr><td><br></td><td style="width:100%;"></td></tr>
+<tr><td><br></td><td style="width:100%"></td></tr>
 <tr><td/><td>
 <button id="ButtonCreate" type="button" onclick="CreateOrr()">Create</button>&nbsp;&nbsp;&nbsp;
 <button id="ButtonUpdate" type="button" onclick="UpdateOrr()">Update</button>&nbsp;&nbsp;&nbsp;

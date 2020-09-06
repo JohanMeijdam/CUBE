@@ -346,7 +346,7 @@ function ProcessTypeSpecialisation() {
 <tr id="RowAtbFkBotName"><td><div>BusinessObjectType.Name</div></td><td><div style="max-width:30em;"><input id="InputFkBotName" type="text" maxlength="30" style="width:100%" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
 <tr id="RowAtbFkTypName"><td><u><div>Type.Name</div></u></td><td><div style="max-width:30em;"><input id="InputFkTypName" type="text" maxlength="30" style="width:100%" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
 <tr id="RowAtbName"><td><div>Name</div></td><td><div style="max-width:30em;"><input id="InputName" type="text" maxlength="30" style="width:100%" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr id="RowAtbPrimaryKey"><td style="cursor:help" oncontextmenu="parent.OpenDescBox('REF','Reference.PrimaryKey','REFERENCE','PRIMARY_KEY',-1)"><div>PrimaryKey</div></td><td><div><select id="InputPrimaryKey" type="text">
+<tr id="RowAtbPrimaryKey"><td style="cursor:help" oncontextmenu="parent.OpenDescBox('ref','Reference.PrimaryKey','REFERENCE','PRIMARY_KEY',-1)"><div>PrimaryKey</div></td><td><div><select id="InputPrimaryKey" type="text">
 	<option value=" " selected> </option>
 	<option value="Y">Yes</option>
 	<option value="N">No</option>
@@ -358,7 +358,7 @@ function ProcessTypeSpecialisation() {
 	<option value="N">No</option>
 </select></div></td></tr>
 <tr id="RowAtbSequence"><td><u><div>Sequence</div></u></td><td><div style="max-width:2em;"><input id="InputSequence" type="text" maxlength="2" style="width:100%"></input></div></td></tr>
-<tr id="RowAtbScope"><td style="cursor:help" oncontextmenu="parent.OpenDescBox('REF','Reference.Scope','REFERENCE','SCOPE',-1)"><div>Scope</div></td><td><div><select id="InputScope" type="text">
+<tr id="RowAtbScope"><td style="cursor:help" oncontextmenu="parent.OpenDescBox('ref','Reference.Scope','REFERENCE','SCOPE',-1)"><div>Scope</div></td><td><div><select id="InputScope" type="text">
 	<option value=" " selected> </option>
 	<option value="ALL">All</option>
 	<option value="PRA">Parents all</option>
@@ -366,7 +366,7 @@ function ProcessTypeSpecialisation() {
 	<option value="CHA">Children all</option>
 	<option value="CH1">Children first level</option>
 </select></div></td></tr>
-<tr id="RowAtbUnchangeable"><td style="cursor:help" oncontextmenu="parent.OpenDescBox('REF','Reference.Unchangeable','REFERENCE','UNCHANGEABLE',-1)"><div>Unchangeable</div></td><td><div><select id="InputUnchangeable" type="text">
+<tr id="RowAtbUnchangeable"><td style="cursor:help" oncontextmenu="parent.OpenDescBox('ref','Reference.Unchangeable','REFERENCE','UNCHANGEABLE',-1)"><div>Unchangeable</div></td><td><div><select id="InputUnchangeable" type="text">
 	<option value=" " selected> </option>
 	<option value="Y">Yes</option>
 	<option value="N">No</option>

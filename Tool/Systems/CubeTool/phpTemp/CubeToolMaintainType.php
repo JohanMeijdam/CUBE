@@ -232,7 +232,7 @@ function DeleteTyp() {
 -->
 </script>
 </head><body oncontextmenu="return false;" onload="InitBody()" ondrop="drop(event)" ondragover="allowDrop(event)">
-<div><img src="icons/type_large.bmp" /><span style="cursor:help" oncontextmenu="parent.OpenDescBox('TYPE','Type','TYPE','_',-1)"> TYPE</span></div>
+<div><img src="icons/type_large.bmp" /><span style="cursor:help" oncontextmenu="parent.OpenDescBox('type','Type','TYPE','_',-1)"> TYPE</span></div>
 <hr/>
 <table>
 <tr id="RowAtbFkBotName"><td><div>BusinessObjectType.Name</div></td><td><div style="max-width:30em;"><input id="InputFkBotName" type="text" maxlength="30" style="width:100%" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
@@ -274,7 +274,7 @@ function DeleteTyp() {
 	<option value="P">Position</option>
 </select></div></td></tr>
 <tr id="RowAtbIcon"><td><div>Icon</div></td><td><div style="max-width:8em;"><input id="InputIcon" type="text" maxlength="8" style="width:100%" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr id="RowAtbTransferable"><td style="cursor:help" oncontextmenu="parent.OpenDescBox('TYPE','Type.Transferable','TYPE','TRANSFERABLE',-1)"><div>Transferable</div></td><td><div><select id="InputTransferable" type="text">
+<tr id="RowAtbTransferable"><td style="cursor:help" oncontextmenu="parent.OpenDescBox('type','Type.Transferable','TYPE','TRANSFERABLE',-1)"><div>Transferable</div></td><td><div><select id="InputTransferable" type="text">
 	<option value=" " selected> </option>
 	<option value="Y">Yes</option>
 	<option value="N">No</option>

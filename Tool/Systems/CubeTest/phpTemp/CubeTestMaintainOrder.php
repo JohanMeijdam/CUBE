@@ -224,15 +224,13 @@ function ProcessTypeSpecialisation() {
 </select></span></div>
 <hr/>
 <table id="TableMain" style="display:none">
-<tr><td><u>Code</u></td><td><div style="max-width:8em;">
-<input id="InputCode" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td height=6></td></tr><tr><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/klant.bmp"/> Klant (IsBesteldDoor)</legend>
-<table style="width:100%;">
-<tr><td>Klant.Nummer</td><td style="width:100%;"><div style="max-width:8em;">
-<input id="InputXkKlnNummer" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td>
+<tr id="RowAtbCode"><td><u><div>Code</div></u></td><td><div style="max-width:8em;"><input id="InputCode" type="text" maxlength="8" style="width:100%" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr><td height=6></td></tr><tr id="RowRefKlant0"><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/klant.bmp"/> Klant (IsBesteldDoor)</legend>
+<table style="width:100%">
+<tr><td>Klant.Nummer</td><td style="width:100%"><div style="max-width:8em;"><input id="InputXkKlnNummer" type="text" maxlength="8" style="width:100%" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td>
 <td><button id="RefSelect001" type="button" onclick="StartSelect001(event)">Select</button></td></tr>
 </table></fieldset></td></tr>
-<tr><td><br></td><td style="width:100%;"></td></tr>
+<tr><td><br></td><td style="width:100%"></td></tr>
 <tr><td/><td>
 <button id="ButtonCreate" type="button" onclick="CreateOrd()">Create</button>&nbsp;&nbsp;&nbsp;
 <button id="ButtonUpdate" type="button" onclick="UpdateOrd()">Update</button>&nbsp;&nbsp;&nbsp;

@@ -109,7 +109,7 @@ function InitBody() {
 		break;
 	case "N":
 		g_parent_node_id = JSON.stringify(l_json_argument.objectId);
-		document.getElementById("InputFkKlnNummer").value=l_json_objectKey.TYP_KLN.Nummer;
+		document.getElementById("InputFkKlnNummer").value=l_json_objectKey.TYP_<<TYPE(N-1)1>>.Nummer;
 		document.getElementById("ButtonUpdate").disabled=true;
 		document.getElementById("ButtonDelete").disabled=true;
 		document.getElementById("InputFkKlnNummer").disabled=true;
@@ -182,15 +182,11 @@ function ProcessTypeSpecialisation() {
 </select></span></div>
 <hr/>
 <table id="TableMain" style="display:none">
-<tr><td><u>Klant.Nummer</u></td><td><div style="max-width:8em;">
-<input id="InputFkKlnNummer" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td><u>PostcodeCijfers</u></td><td><div style="max-width:5em;">
-<input id="InputPostcodeCijfers" type="text" maxlength="5" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td><u>PostcodeLetters</u></td><td><div style="max-width:2em;">
-<input id="InputPostcodeLetters" type="text" maxlength="2" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td><u>Huisnummer</u></td><td><div style="max-width:9em;">
-<input id="InputHuisnummer" type="text" maxlength="9" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td><br></td><td style="width:100%;"></td></tr>
+<tr id="RowAtbFkKlnNummer"><td><u><div>Klant.Nummer</div></u></td><td><div style="max-width:8em;"><input id="InputFkKlnNummer" type="text" maxlength="8" style="width:100%" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr id="RowAtbPostcodeCijfers"><td><u><div>PostcodeCijfers</div></u></td><td><div style="max-width:5em;"><input id="InputPostcodeCijfers" type="text" maxlength="5" style="width:100%"></input></div></td></tr>
+<tr id="RowAtbPostcodeLetters"><td><u><div>PostcodeLetters</div></u></td><td><div style="max-width:2em;"><input id="InputPostcodeLetters" type="text" maxlength="2" style="width:100%" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr id="RowAtbHuisnummer"><td><u><div>Huisnummer</div></u></td><td><div style="max-width:9em;"><input id="InputHuisnummer" type="text" maxlength="9" style="width:100%"></input></div></td></tr>
+<tr><td><br></td><td style="width:100%"></td></tr>
 <tr><td/><td>
 <button id="ButtonCreate" type="button" onclick="CreateAdr()">Create</button>&nbsp;&nbsp;&nbsp;
 <button id="ButtonUpdate" type="button" onclick="UpdateAdr()">Update</button>&nbsp;&nbsp;&nbsp;

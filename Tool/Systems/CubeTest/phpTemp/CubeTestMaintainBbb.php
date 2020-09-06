@@ -106,7 +106,7 @@ function InitBody() {
 		break;
 	case "N":
 		g_parent_node_id = JSON.stringify(l_json_argument.objectId);
-		document.getElementById("InputFkAaaId").value=l_json_objectKey.TYP_AAA.Id;
+		document.getElementById("InputFkAaaId").value=l_json_objectKey.TYP_<<TYPE(N-1)1>>.Id;
 		document.getElementById("ButtonUpdate").disabled=true;
 		document.getElementById("ButtonDelete").disabled=true;
 		document.getElementById("InputFkAaaId").disabled=true;
@@ -161,13 +161,10 @@ function DeleteBbb() {
 <div><img src="icons/_large.bmp" /><span> BBB</span></div>
 <hr/>
 <table>
-<tr><td>Aaa.Id</td><td><div style="max-width:9em;">
-<input id="InputFkAaaId" type="text" maxlength="9" style="width:100%;"></input></div></td></tr>
-<tr><td><u>Id</u></td><td><div style="max-width:9em;">
-<input id="InputId" type="text" maxlength="9" style="width:100%;"></input></div></td></tr>
-<tr><td>Naam</td><td><div style="max-width:40em;">
-<input id="InputNaam" type="text" maxlength="40" style="width:100%;"></input></div></td></tr>
-<tr><td><br></td><td style="width:100%;"></td></tr>
+<tr id="RowAtbFkAaaId"><td><div>Aaa.Id</div></td><td><div style="max-width:9em;"><input id="InputFkAaaId" type="text" maxlength="9" style="width:100%"></input></div></td></tr>
+<tr id="RowAtbId"><td><u><div>Id</div></u></td><td><div style="max-width:9em;"><input id="InputId" type="text" maxlength="9" style="width:100%"></input></div></td></tr>
+<tr id="RowAtbNaam"><td><div>Naam</div></td><td><div style="max-width:40em;"><input id="InputNaam" type="text" maxlength="40" style="width:100%"></input></div></td></tr>
+<tr><td><br></td><td style="width:100%"></td></tr>
 <tr><td/><td>
 <button id="ButtonCreate" type="button" onclick="CreateBbb()">Create</button>&nbsp;&nbsp;&nbsp;
 <button id="ButtonUpdate" type="button" onclick="UpdateBbb()">Update</button>&nbsp;&nbsp;&nbsp;

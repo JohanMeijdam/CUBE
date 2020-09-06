@@ -203,11 +203,11 @@ function ProcessTypeSpecialisation() {
 <hr/>
 <table id="TableMain" style="display:none">
 <tr id="RowAtbName"><td><u><div>Name</div></u></td><td><div style="max-width:30em;"><input id="InputName" type="text" maxlength="30" style="width:100%" onchange="ReplaceSpaces(this);"></input></div></td></tr>
-<tr id="RowAtbDatabase"><td style="cursor:help" oncontextmenu="parent.OpenDescBox('SYSTEM','System.Database','SYSTEM','DATABASE',-1)"><div>Database</div></td><td><div style="max-width:30em;"><input id="InputDatabase" type="text" maxlength="30" style="width:100%" onchange="ReplaceSpaces(this);"></input></div></td></tr>
+<tr id="RowAtbDatabase"><td style="cursor:help" oncontextmenu="parent.OpenDescBox('system','System.Database','SYSTEM','DATABASE',-1)"><div>Database</div></td><td><div style="max-width:30em;"><input id="InputDatabase" type="text" maxlength="30" style="width:100%" onchange="ReplaceSpaces(this);"></input></div></td></tr>
 <tr id="RowAtbSchema"><td><div>Schema</div></td><td><div style="max-width:30em;"><input id="InputSchema" type="text" maxlength="30" style="width:100%" onchange="ReplaceSpaces(this);"></input></div></td></tr>
 <tr id="RowAtbPassword"><td><div>Password</div></td><td><div style="max-width:20em;"><input id="InputPassword" type="text" maxlength="20" style="width:100%" onchange="ReplaceSpaces(this);"></input></div></td></tr>
 <tr id="RowAtbTablePrefix"><td><div>TablePrefix</div></td><td><div style="max-width:4em;"><input id="InputTablePrefix" type="text" maxlength="4" style="width:100%" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr id="RowAtbDescription"><td style="cursor:help" oncontextmenu="parent.OpenDescBox('SYSTEM','System.Description','SYSTEM','DESCRIPTION',-1)"><div style="padding-top:10px">Description</div></td></tr><tr><td colspan="2"><div><textarea id="InputDescription" type="text" maxlength="3999" rows="5" style="white-space:normal;width:100%"></textarea></div></td></tr>
+<tr id="RowAtbDescription"><td style="cursor:help" oncontextmenu="parent.OpenDescBox('system','System.Description','SYSTEM','DESCRIPTION',-1)"><div style="padding-top:10px">Description</div></td></tr><tr><td colspan="2"><div><textarea id="InputDescription" type="text" maxlength="3999" rows="5" style="white-space:normal;width:100%"></textarea></div></td></tr>
 <tr><td><br></td><td style="width:100%"></td></tr>
 <tr><td/><td>
 <button id="ButtonCreate" type="button" onclick="CreateSys()">Create</button>&nbsp;&nbsp;&nbsp;

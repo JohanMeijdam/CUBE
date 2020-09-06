@@ -222,7 +222,7 @@ function DeleteIte() {
 	<option value="Y">Yes</option>
 	<option value="N">No</option>
 </select></div></td></tr>
-<tr id="RowAtbPresentation"><td style="cursor:help" oncontextmenu="parent.OpenDescBox('INFELEM','InformationTypeElement.Presentation','INFORMATION_TYPE_ELEMENT','PRESENTATION',-1)"><div>Presentation</div></td><td><div><select id="InputPresentation" type="text">
+<tr id="RowAtbPresentation"><td style="cursor:help" oncontextmenu="parent.OpenDescBox('infelem','InformationTypeElement.Presentation','INFORMATION_TYPE_ELEMENT','PRESENTATION',-1)"><div>Presentation</div></td><td><div><select id="InputPresentation" type="text">
 	<option value=" " selected> </option>
 	<option value="LIN">Line</option>
 	<option value="DES">Description</option>

@@ -209,23 +209,17 @@ function DeleteDdd() {
 <div><img src="icons/attrib_large.bmp" /><span> ONDERDEEL_DEEL_DEEL</span></div>
 <hr/>
 <table>
-<tr><td>Produkt.Type</td><td><div>
-<select id="InputFkPrdCubeTsgType" type="text">
+<tr id="RowAtbFkPrdCubeTsgType"><td><div>Produkt.Type</div></td><td><div><select id="InputFkPrdCubeTsgType" type="text">
 	<option value=" " selected> </option>
 	<option value="P">PARTICULIER</option>
 	<option value="Z">ZAKELIJK</option>
 </select></div></td></tr>
-<tr><td>Produkt.Code</td><td><div style="max-width:8em;">
-<input id="InputFkPrdCode" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td>Onderdeel.Code</td><td><div style="max-width:8em;">
-<input id="InputFkOndCode" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td>OnderdeelDeel.Code</td><td><div style="max-width:8em;">
-<input id="InputFkOddCode" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td><u>Code</u></td><td><div style="max-width:8em;">
-<input id="InputCode" type="text" maxlength="8" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td>Naam</td><td><div style="max-width:40em;">
-<input id="InputNaam" type="text" maxlength="40" style="width:100%;"></input></div></td></tr>
-<tr><td><br></td><td style="width:100%;"></td></tr>
+<tr id="RowAtbFkPrdCode"><td><div>Produkt.Code</div></td><td><div style="max-width:8em;"><input id="InputFkPrdCode" type="text" maxlength="8" style="width:100%" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr id="RowAtbFkOndCode"><td><div>Onderdeel.Code</div></td><td><div style="max-width:8em;"><input id="InputFkOndCode" type="text" maxlength="8" style="width:100%" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr id="RowAtbFkOddCode"><td><div>OnderdeelDeel.Code</div></td><td><div style="max-width:8em;"><input id="InputFkOddCode" type="text" maxlength="8" style="width:100%" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr id="RowAtbCode"><td><u><div>Code</div></u></td><td><div style="max-width:8em;"><input id="InputCode" type="text" maxlength="8" style="width:100%" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr id="RowAtbNaam"><td><div>Naam</div></td><td><div style="max-width:40em;"><input id="InputNaam" type="text" maxlength="40" style="width:100%"></input></div></td></tr>
+<tr><td><br></td><td style="width:100%"></td></tr>
 <tr><td/><td>
 <button id="ButtonCreate" type="button" onclick="CreateDdd()">Create</button>&nbsp;&nbsp;&nbsp;
 <button id="ButtonUpdate" type="button" onclick="UpdateDdd()">Update</button>&nbsp;&nbsp;&nbsp;
