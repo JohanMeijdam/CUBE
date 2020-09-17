@@ -14,7 +14,7 @@ echo Start > %logfile%
 ::goto Database
 ::goto Views
 ::goto Packages
-goto Application
+::goto Application
 ::goto System
 echo Extract Cube Model
 sqlplus.exe cubetool/composys@composys @Systems\CubeTool\ModelExport.sql %sysdir%\CubeModel.cgm %sysname% REPLACE >> %logfile% 2>&1

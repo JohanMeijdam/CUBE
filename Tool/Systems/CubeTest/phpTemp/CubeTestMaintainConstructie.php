@@ -246,7 +246,7 @@ function StartSelect002(p_event) {
 <hr/>
 <table>
 <tr id="RowAtbFkPrdCubeTsgType"><td><u><div>Produkt.Type</div></u></td><td><div><select id="InputFkPrdCubeTsgType" type="text">
-	<option value="  selected"> </option>
+	<option value=" " selected> </option>
 	<option value="P">PARTICULIER</option>
 	<option value="Z">ZAKELIJK</option>
 </select></div></td></tr>

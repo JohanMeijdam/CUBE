@@ -194,7 +194,7 @@ function DeleteOdd() {
 <hr/>
 <table>
 <tr id="RowAtbFkPrdCubeTsgType"><td><div>Produkt.Type</div></td><td><div><select id="InputFkPrdCubeTsgType" type="text">
-	<option value="  selected"> </option>
+	<option value=" " selected> </option>
 	<option value="P">PARTICULIER</option>
 	<option value="Z">ZAKELIJK</option>
 </select></div></td></tr>
