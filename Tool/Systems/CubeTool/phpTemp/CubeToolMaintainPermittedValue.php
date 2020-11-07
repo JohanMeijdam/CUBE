@@ -114,8 +114,8 @@ function InitBody() {
 		break;
 	case "N":
 		g_parent_node_id = JSON.stringify(l_json_argument.objectId);
-		document.getElementById("InputFkItpName").value=l_json_objectKey.TYP_<<TYPE(N-1)1>>.FkItpName;
-		document.getElementById("InputFkIteSequence").value=l_json_objectKey.TYP_<<TYPE(N-1)1>>.Sequence;
+		document.getElementById("InputFkItpName").value=l_json_objectKey.TYP_ITE.FkItpName;
+		document.getElementById("InputFkIteSequence").value=l_json_objectKey.TYP_ITE.Sequence;
 		document.getElementById("ButtonUpdate").disabled=true;
 		document.getElementById("ButtonDelete").disabled=true;
 		document.getElementById("InputFkItpName").disabled=true;

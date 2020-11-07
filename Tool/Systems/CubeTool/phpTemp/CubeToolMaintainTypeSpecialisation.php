@@ -83,7 +83,7 @@ g_xmlhttp.onreadystatechange = function() {
 					case "LIST_TSP":
 						OpenListBox(l_json_array[i].Rows,'typespec','TypeSpecialisation','Y');
 						break;
-					case "SELECT_FKEY_<<TYPE(N-1)1:U>>":
+					case "SELECT_FKEY_TSG":
 						var l_json_values = l_json_array[i].Rows[0].Data;
 						document.getElementById("InputFkBotName").value=l_json_values.FkBotName;
 						break;
@@ -127,14 +127,14 @@ function InitBody() {
 		break;
 	case "N":
 		g_parent_node_id = JSON.stringify(l_json_argument.objectId);
-		document.getElementById("InputFkTypName").value=l_json_objectKey.TYP_<<TYPE(N-1)1>>.FkTypName;
-		document.getElementById("InputFkTsgCode").value=l_json_objectKey.TYP_<<TYPE(N-1)1>>.Code;
+		document.getElementById("InputFkTypName").value=l_json_objectKey.TYP_TSG.FkTypName;
+		document.getElementById("InputFkTsgCode").value=l_json_objectKey.TYP_TSG.Code;
 		document.getElementById("ButtonUpdate").disabled=true;
 		document.getElementById("ButtonDelete").disabled=true;
 		PerformTrans( {
-			Service: "Get<<TYPE(N-1)1:C>>Fkey",
+			Service: "GetTsgFkey",
 			Parameters: {
-				Type: l_json_objectKey.TYP_<<TYPE(N-1)1>>
+				Type: l_json_objectKey.TYP_TSG
 			}
 		} );
 		document.getElementById("InputFkBotName").disabled=true;

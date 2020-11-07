@@ -100,7 +100,7 @@ function InitBody() {
 		break;
 	case "N":
 		g_parent_node_id = JSON.stringify(l_json_argument.objectId);
-		document.getElementById("InputFkFunName").value=l_json_objectKey.TYP_<<TYPE(N-1)1>>.Name;
+		document.getElementById("InputFkFunName").value=l_json_objectKey.TYP_FUN.Name;
 		document.getElementById("ButtonUpdate").disabled=true;
 		document.getElementById("ButtonDelete").disabled=true;
 		document.getElementById("InputFkFunName").disabled=true;

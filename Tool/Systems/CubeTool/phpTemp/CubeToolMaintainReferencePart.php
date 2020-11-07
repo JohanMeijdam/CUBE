@@ -86,7 +86,7 @@ g_xmlhttp.onreadystatechange = function() {
 					case "LIST_TYP":
 						OpenListBox(l_json_array[i].Rows,'type','Type','N');
 						break;
-					case "SELECT_FKEY_<<TYPE(N-1)1:U>>":
+					case "SELECT_FKEY_REF":
 						var l_json_values = l_json_array[i].Rows[0].Data;
 						document.getElementById("InputFkBotName").value=l_json_values.FkBotName;
 						break;
@@ -145,16 +145,16 @@ function InitBody() {
 		break;
 	case "N":
 		g_parent_node_id = JSON.stringify(l_json_argument.objectId);
-		document.getElementById("InputFkTypName").value=l_json_objectKey.TYP_<<TYPE(N-1)1>>.FkTypName;
-		document.getElementById("InputFkRefSequence").value=l_json_objectKey.TYP_<<TYPE(N-1)1>>.Sequence;
-		document.getElementById("InputFkRefBotName").value=l_json_objectKey.TYP_<<TYPE(N-1)1>>.XkBotName;
-		document.getElementById("InputFkRefTypName").value=l_json_objectKey.TYP_<<TYPE(N-1)1>>.XkTypName;
+		document.getElementById("InputFkTypName").value=l_json_objectKey.TYP_REF.FkTypName;
+		document.getElementById("InputFkRefSequence").value=l_json_objectKey.TYP_REF.Sequence;
+		document.getElementById("InputFkRefBotName").value=l_json_objectKey.TYP_REF.XkBotName;
+		document.getElementById("InputFkRefTypName").value=l_json_objectKey.TYP_REF.XkTypName;
 		document.getElementById("ButtonUpdate").disabled=true;
 		document.getElementById("ButtonDelete").disabled=true;
 		PerformTrans( {
-			Service: "Get<<TYPE(N-1)1:C>>Fkey",
+			Service: "GetRefFkey",
 			Parameters: {
-				Type: l_json_objectKey.TYP_<<TYPE(N-1)1>>
+				Type: l_json_objectKey.TYP_REF
 			}
 		} );
 		document.getElementById("InputFkBotName").disabled=true;
