@@ -29,17 +29,17 @@ g_xmlhttp.onreadystatechange = function() {
 			for (i in l_json_array) {
 				switch (l_json_array[i].ResultName) {
 					case '': break;
-					case 'LIST_PRD': AddTreeviewChildren(l_json_array[i].Rows,'TYP_PRD','icons/produkt.bmp'); break;
+					case 'LIST_PRD': AddTreeviewChildren(l_json_array[i].Rows,'TYP_PRD','icons/produkt.bmp','Produkt'); break;
 					case 'COUNT_PRD': CheckMenuItem('TYP_PRD',l_json_array[i].Rows[0].Data.TypeCount); break;
-					case 'LIST_OND': AddTreeviewChildren(l_json_array[i].Rows,'TYP_OND','icons/part.bmp'); break;
+					case 'LIST_OND': AddTreeviewChildren(l_json_array[i].Rows,'TYP_OND','icons/part.bmp','Onderdeel'); break;
 					case 'COUNT_OND': CheckMenuItem('TYP_OND',l_json_array[i].Rows[0].Data.TypeCount); break;
 					case 'MOVE_OND': MoveNode (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.body._moveAction); break;
-					case 'LIST_ODD': AddTreeviewChildren(l_json_array[i].Rows,'TYP_ODD','icons/type.bmp'); break;
+					case 'LIST_ODD': AddTreeviewChildren(l_json_array[i].Rows,'TYP_ODD','icons/type.bmp','OnderdeelDeel'); break;
 					case 'COUNT_ODD': CheckMenuItem('TYP_ODD',l_json_array[i].Rows[0].Data.TypeCount); break;
 					case 'MOVE_ODD': MoveNode (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.body._moveAction); break;
-					case 'LIST_DDD': AddTreeviewChildren(l_json_array[i].Rows,'TYP_DDD','icons/attrib.bmp'); break;
+					case 'LIST_DDD': AddTreeviewChildren(l_json_array[i].Rows,'TYP_DDD','icons/attrib.bmp','OnderdeelDeelDeel'); break;
 					case 'MOVE_DDD': MoveNode (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.body._moveAction); break;
-					case 'LIST_CST': AddTreeviewChildren(l_json_array[i].Rows,'TYP_CST','icons/type.bmp'); break;
+					case 'LIST_CST': AddTreeviewChildren(l_json_array[i].Rows,'TYP_CST','icons/type.bmp','Constructie'); break;
 					case "SELECT_CUBE_DSC":	document.getElementById("CubeDesc").value = l_json_array[i].Rows[0].Data.Value;	break;
 					case "ERROR": alert ('Server error:\n'+l_json_array[i].ErrorText); break;
 					default: alert ('Unknown reply:\n'+g_responseText);
@@ -58,7 +58,7 @@ function InitBody() {
 	l_objBody = document.getElementById('TreeBody');
 	l_objBody._type = 'ROOT';
 	l_objBody.childNodes[0]._index = 0;
-	AddTreeviewNode(l_objBody, 'DIR_PRD', null, 'icons/folder.bmp', 'Produkten', 'Y', ' ', null);
+	AddTreeviewNode(l_objBody, 'DIR_PRD', null, 'icons/folder.bmp', null, 'Produkten', 'Y', ' ', null);
 }
 
 function DefineTypePosition (p_parentType, p_type, p_switch) {
@@ -130,7 +130,7 @@ function OpenDetail(p_obj) {
 	case 'N':
 		ResetState();
 		if (p_obj.parentNode._type.substr(0,4) == 'TYP_') {
-			OpenDetailPage(p_obj.parentNode._type.substr(4), 'D', p_obj.parentNode.id, null);
+			OpenDetailPage(p_obj.parentNode._name, 'D', p_obj.parentNode.id, null);
 		}
 		break;
 	case 'M':
@@ -196,19 +196,19 @@ function OpenDetail(p_obj) {
 				var l_option = '{"Code":"B","Type":'+g_objNodeDiv.children[g_currentChildIndex].firstChild.id+'}';
 			}
 			ResetState();
-			OpenDetailPage(g_currentObjType.substr(4), g_currentNodeType, g_currentObjId, l_option);
+			OpenDetailPage(g_currentObjName, g_currentNodeType, g_currentObjId, l_option);
 		}
 		break;
 	}
 }
 
-function OpenDetailPage (p_code, p_nodeType, p_objId, p_option) {
+function OpenDetailPage (p_name, p_nodeType, p_objId, p_option) {
 	if (p_option == null) {
 		var l_option = '';
 	} else {
 		var l_option = ',"Option":'+p_option;
 	}
-	document.getElementById('DetailFrame').src='CubeTestDetail'+p_code+'.php?'+encodeURIComponent('{"nodeType":"'+p_nodeType+'","objectId":'+p_objId+l_option+'}');
+	document.getElementById('DetailFrame').src='CubeTestMaintain'+p_name+'.php?'+encodeURIComponent('{"nodeType":"'+p_nodeType+'","objectId":'+p_objId+l_option+'}');
 }
 
 function OpenMenu(p_obj) {
@@ -234,6 +234,7 @@ function OpenMenu(p_obj) {
 	g_objNodeDiv = p_obj.parentNode;
 	g_currentObjId = g_objNodeDiv.id;
 	g_currentObjType = g_objNodeDiv._type;
+	g_currentObjName = g_objNodeDiv._name;
 	g_currentSpanIndex = g_objNodeDiv.parentNode._index;
 	g_currentObjIndex = g_objNodeDiv._index;
 	g_currentParentId = g_objNodeDiv._parentId;
@@ -272,33 +273,33 @@ function OpenMenu(p_obj) {
 
 	switch (l_type_id) {
  	case 'DIR_PRD':
-		AddMenuItem(g_objMenuList, 'add produkt', 'icons/produkt.bmp','DetailPRD','N','TYP_PRD',4,'N',2);
+		AddMenuItem(g_objMenuList, 'add produkt', 'icons/produkt.bmp','DetailPRD','N','TYP_PRD','Produkt',4,'N',2);
 		PerformTrans( {Service:"CountPrd"} );
 		break;
  	case 'TYP_PRD':
-		AddMenuItem(g_objMenuList, 'add onderdeel', 'icons/part.bmp','CubeAdd','N','TYP_OND',3,'N',2);
+		AddMenuItem(g_objMenuList, 'add onderdeel', 'icons/part.bmp','CubeAdd','N','TYP_OND','Onderdeel',3,'N',2);
 		var l_json_id = l_json_node_id[l_type_id];
 		PerformTrans( {Service:"CountPrdRestrictedItems",Parameters:{Type:l_json_id}} );
 		break;
  	case 'TYP_OND':
 		if (l_childCount > 1) {
-			AddMenuItem(g_objMenuList, 'move', 'icons/cube_move.bmp','CubeMove','','CUBE_M_OND',0,'N',0);
+			AddMenuItem(g_objMenuList, 'move', 'icons/cube_move.bmp','CubeMove','','CUBE_M_OND','',0,'N',0);
 		}
-		AddMenuItem(g_objMenuList, 'add onderdeel_deel', 'icons/type.bmp','CubeAdd','N','TYP_ODD',2,'N',2);
-		AddMenuItem(g_objMenuList, 'add constructie', 'icons/type.bmp','DetailCST','N','TYP_CST',0,'N',3);
-		AddMenuItem(g_objMenuList, 'add onderdeel', 'icons/part.bmp','CubeAdd','R','TYP_OND',2,'N',4);
+		AddMenuItem(g_objMenuList, 'add onderdeel_deel', 'icons/type.bmp','CubeAdd','N','TYP_ODD','OnderdeelDeel',2,'N',2);
+		AddMenuItem(g_objMenuList, 'add constructie', 'icons/type.bmp','DetailCST','N','TYP_CST','Constructie',0,'N',3);
+		AddMenuItem(g_objMenuList, 'add onderdeel', 'icons/part.bmp','CubeAdd','R','TYP_OND','Onderdeel',2,'N',4);
 		var l_json_id = l_json_node_id[l_type_id];
 		PerformTrans( {Service:"CountOndRestrictedItems",Parameters:{Type:l_json_id}} );
 		break;
  	case 'TYP_ODD':
 		if (l_childCount > 1) {
-			AddMenuItem(g_objMenuList, 'move', 'icons/cube_move.bmp','CubeMove','','CUBE_M_ODD',0,'N',0);
+			AddMenuItem(g_objMenuList, 'move', 'icons/cube_move.bmp','CubeMove','','CUBE_M_ODD','',0,'N',0);
 		}
-		AddMenuItem(g_objMenuList, 'add onderdeel_deel_deel', 'icons/attrib.bmp','CubeAdd','N','TYP_DDD',0,'N',2);
+		AddMenuItem(g_objMenuList, 'add onderdeel_deel_deel', 'icons/attrib.bmp','CubeAdd','N','TYP_DDD','OnderdeelDeelDeel',0,'N',2);
 		break;
  	case 'TYP_DDD':
 		if (l_childCount > 1) {
-			AddMenuItem(g_objMenuList, 'move', 'icons/cube_move.bmp','CubeMove','','CUBE_M_DDD',0,'N',0);
+			AddMenuItem(g_objMenuList, 'move', 'icons/cube_move.bmp','CubeMove','','CUBE_M_DDD','',0,'N',0);
 		}
 		break;
 	}

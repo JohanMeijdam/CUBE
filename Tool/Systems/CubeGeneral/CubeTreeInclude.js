@@ -10,13 +10,13 @@ var g_currentObjId;
 var g_currentObjType;
 var g_currentNodeType;
 
-function AddTreeviewChildren(p_json_rows, p_type, p_icon) {
+function AddTreeviewChildren(p_json_rows, p_type, p_icon, p_name) {
 	for (i in p_json_rows) {
-		AddTreeviewNode(g_objNodeDiv, p_type, p_json_rows[i].Key, p_icon, p_json_rows[i].Display.toLowerCase(), 'N', ' ', null);
+		AddTreeviewNode(g_objNodeDiv, p_type, p_json_rows[i].Key, p_icon, p_name, p_json_rows[i].Display.toLowerCase(), 'N', ' ', null);
 	}
 }
 
-function AddTreeviewNode(p_obj, p_type, p_json_id, p_icon, p_text, p_root, p_position, p_objPosition) {
+function AddTreeviewNode(p_obj, p_type, p_json_id, p_icon, p_name, p_text, p_root, p_position, p_objPosition) {
 	var l_objDiv = document.createElement('DIV');
 	l_objDiv.style.paddingLeft = "12px";
 	var l_objImg = document.createElement('IMG');
@@ -57,6 +57,7 @@ function AddTreeviewNode(p_obj, p_type, p_json_id, p_icon, p_text, p_root, p_pos
 		l_objDiv.appendChild(l_objSpan2);
 	}
 	l_objDiv._type = p_type;
+	l_objDiv._name = p_name;
 	l_objDiv.id = AssembleObjId (p_type, p_json_id);
 
 	if (p_root == 'Y') {
@@ -290,7 +291,7 @@ function GetDescription(p_type,p_attribute_type,p_sequence) {
 	g_xmlhttp.send(l_requestText);
 }
 
-function AddMenuItem(p_obj, p_text, p_icon, p_code, p_nodeType, p_type, p_cardinality, p_flagPosition, p_childIndex) {
+function AddMenuItem(p_obj, p_text, p_icon, p_code, p_nodeType, p_type, p_name, p_cardinality, p_flagPosition, p_childIndex) {
 
 	var l_objDiv = document.createElement('DIV');
 	var l_objSpan = document.createElement('SPAN');
@@ -305,6 +306,7 @@ function AddMenuItem(p_obj, p_text, p_icon, p_code, p_nodeType, p_type, p_cardin
 	l_objDiv._code = p_code;
 	l_objDiv._nodeType = p_nodeType;
 	l_objDiv._type = p_type;
+	l_objDiv._name = p_name;
 	l_objDiv._cardinality = p_cardinality;
 	l_objDiv._flagPosition = p_flagPosition;
 	l_objDiv._childIndex = p_childIndex;
@@ -333,9 +335,9 @@ function OpenMenuItem(p_obj) {
 		break;
 	case 'CubeAdd':
 		if (g_objNodeDiv.firstChild._state == 'C') {
-			OpenDetailPage(p_obj._type.substr(4), p_obj._nodeType, g_currentObjId, '{"Code":"L"}');
+			OpenDetailPage(p_obj._name, p_obj._nodeType, g_currentObjId, '{"Code":"L"}');
 		} else if (g_objNodeDiv.children[p_obj._childIndex].children.length == 0) {
-			OpenDetailPage(p_obj._type.substr(4), p_obj._nodeType, g_currentObjId, '{"Code":"F"}');
+			OpenDetailPage(p_obj._name, p_obj._nodeType, g_currentObjId, '{"Code":"F"}');
 		} else {
 			document.body.style.cursor = "url(icons/pointer-pos.cur), default";
 			document.body._state = "A";
@@ -345,7 +347,7 @@ function OpenMenuItem(p_obj) {
 		}
 		break;
 	default:
-		OpenDetailPage(p_obj._type.substr(4), p_obj._nodeType, g_currentObjId, null);
+		OpenDetailPage(p_obj._name, p_obj._nodeType, g_currentObjId, null);
 	}
 }
 

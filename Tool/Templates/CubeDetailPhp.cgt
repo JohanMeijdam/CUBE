@@ -34,6 +34,7 @@ Change log:
 26-12-2019 - Recursive list fk argument fixed.
 30-12-2019 - List encapsulated based on starting type key.
 05-02-2020 - Reference scope type ENCAPSULATED removed.
+08-11-2020 - Use of PAGE model.
 [[INCLUDE,templates\includes\general.cgt]]
 [[TEXT,DETAIL_RECURSIVE_PARMS]]
 		Option: {[[IF,REFERENCE:4=PRA]]
@@ -52,8 +53,19 @@ Change log:
 [[TEXT,DETAIL_ROOT_NAME]][[LOOP,ATTRIBUTE_ROOT_TYPE]]<<ATTRIBUTE_ROOT_TYPE:C>>[[ENDLOOP,ATTRIBUTE_ROOT_TYPE]].[[LOOP,ATTRIBUTE_ROOT]][[IF:CHILD(ATTRIBUTE_TYPE_SPECIALISATION_GROUP)]][[LOOP,ATTRIBUTE_TYPE_SPECIALISATION_GROUP]]<<ATTRIBUTE_TYPE_SPECIALISATION_GROUP1:C>>[[ENDLOOP,ATTRIBUTE_TYPE_SPECIALISATION_GROUP]][[ELSE]]<<ATTRIBUTE_ROOT:C>>[[ENDIF]][[ENDLOOP,ATTRIBUTE_ROOT]][[ENDTEXT]]
 [[TEXT,DETAIL_MAXLENGTH]] maxlength="[[IF:2=DATE]]10[[ELSIF:2=NUMBER]][[EVAL:<<INFORMATION_TYPE_ELEMENT3>>+1]][[ELSE]]<<INFORMATION_TYPE_ELEMENT3>>[[ENDIF]]"[[ENDTEXT]]
 [[TEXT,DETAIL_STYLE_MAX-WIDTH]] style="max-width:[[IF:2=DATE]]12ch[[ELSIF:2=NUMBER]][[EVAL:<<INFORMATION_TYPE_ELEMENT3>>+1]]em[[ELSE]]<<INFORMATION_TYPE_ELEMENT3>>em[[ENDIF]];"[[ENDTEXT]]
-[[TEXT,DETAIL_ONCHANGE]][[IF:!2=NUMBER]][[IF:5=N[OR]7=N]] onchange="[[IF:5=N]]ToUpperCase(this);[[ENDIF]][[IF:7=N]]ReplaceSpaces(this);[[ENDIF]]"[[ENDIF]][[ENDIF]][[ENDTEXT]]
-[[BODY]][[LOOP,SYSTEM:0=<<1>>]][[LOOP,SYSTEM_BO_TYPE]][[LOOP,BUSINESS_OBJECT_TYPE]][[LOOP,TYPE]][[FILE,<<2>>\<<1>>Detail<<TYPE1:U>>.php]]<?php
+[[TEXT,DETAIL_ONCHANGE]][[IF:5=N[OR]7=N]] onchange="[[IF:5=N]]ToUpperCase(this);[[ENDIF]][[IF:7=N]]ReplaceSpaces(this);[[ENDIF]]"[[ENDIF]][[ENDTEXT]]
+[[TEXT,DETAIL_CHANGE_EVENT]][[IF:CHILD(CHANGE_EVENT)]] onchange="[[LOOP,CHANGE_EVENT]]<<CHANGE_EVENT>>[[ENDLOOP,CHANGE_EVENT]]"[[ENDIF]][[ENDTEXT]]
+[[TEXT,DETAIL_INPUT]][[*
+   *]][[IF:3=text-line]]<div style="max-width:<<PAGE_FIELD4>>em;"><input id="Input<<PAGE_FIELD>>" type="text"<<TEXT,DETAIL_CHANGE_EVENT>> maxlength="<<PAGE_FIELD4>>" style="width:100%"[[IF:6=Y[OR]7=Y]] onchange="[[IF:6=Y]]ToUpperCase(this);[[ENDIF]][[IF:7=Y]]ReplaceSpaces(this);[[ENDIF]]"[[ENDIF]][[IF:5=Y]] disabled[[ENDIF]]></input></div>[[*
+*]][[ELSIF:3=text-desc]]<div><textarea id="Input<<PAGE_FIELD>>" type="text"<<TEXT,DETAIL_CHANGE_EVENT>> maxlength="<<PAGE_FIELD4>>" rows="5" style="white-space:normal;width:100%"[[IF:5=Y]] disabled[[ENDIF]]></textarea></div>[[*
+*]][[ELSIF:3=text-code]]<div><textarea id="Input<<PAGE_FIELD>>" type="text"<<TEXT,DETAIL_CHANGE_EVENT>> maxlength="<<PAGE_FIELD4>>" rows="11" style="overflow:auto;white-space:pre;font-family:courier new;font-size:12px;width:100%"[[IF:5=Y]] disabled[[ENDIF]]></textarea></div>[[*
+*]][[ELSIF:3=selection]][[IF:!CHILD(*PAGE_SELECTOR_SWITCH)]]<div>[[ENDIF]]<select id="Input<<PAGE_FIELD>>" type="text"<<TEXT,DETAIL_CHANGE_EVENT>>[[IF:5=Y]] disabled[[ENDIF]]>[[LOOP,OPTION]]
+	<option[[IF:!FIRST]][[IF,PAGE_FIELD:8=Y]] id="Val<<PAGE_FIELD>>-<<OPTION>>" style="display:none"[[ENDIF]][[ENDIF]] value="<<OPTION>>"[[IF:FIRST]] selected[[ENDIF]]><<OPTION1:HE>></option>[[ENDLOOP,OPTION]]
+</select>[[IF:!CHILD(*PAGE_SELECTOR_SWITCH)]]</div>[[ENDIF]][[*
+*]][[ELSIF:3=number]]<div style="max-width:[[EVAL:<<PAGE_FIELD4>>+1]]em;"><input id="Input<<PAGE_FIELD>>" type="text"<<TEXT,DETAIL_CHANGE_EVENT>> maxlength="[[EVAL:<<PAGE_FIELD4>>+1]]" style="width:100%"[[IF:5=Y]] disabled[[ENDIF]]></input></div>[[*
+*]][[ELSIF:3=date]]<div style="max-width:12ch;"><input id="Input<<PAGE_FIELD>>" type="text"<<TEXT,DETAIL_CHANGE_EVENT>> maxlength="10" style="width:100%"[[IF:5=Y]] disabled[[ENDIF]]></input></div>[[ENDIF]][[ENDTEXT]]
+[[TEXT,DETAIL_DESCRIPTION]][[LOOP,DESCRIPTION]] style="cursor:help" oncontextmenu="parent.OpenDescBox('<<DESCRIPTION3>>','<<DESCRIPTION4>>','<<DESCRIPTION>>','<<DESCRIPTION1>>',<<DESCRIPTION2>>)"[[ENDLOOP,DESCRIPTION]][[ENDTEXT]]
+[[BODY]][[LOOP,SYSTEM:0=<<1>>]][[LOOP,SYSTEM_PAGE]][[LOOP,PAGE]][[FILE,<<2>>\<<1>><<PAGE>>.php]][[LOOP,TYPE]]<?php
 session_start();
 $_SESSION['views']=0;
 ?><html>
@@ -142,7 +154,7 @@ g_xmlhttp.onreadystatechange = function() {
 					case "LIST_<<REFERENCE_TYPE1:U>>":
 						OpenListBox(l_json_array[i].Rows,'<<REFERENCE_TYPE7:L>>','<<REFERENCE_TYPE:C>>',[[IF,REFERENCE:1=Y]]'N'[[ELSE]]'Y'[[ENDIF]]);
 						break;[[ENDLOOP,REFERENCE_TYPE]][[ENDLOOP,REFERENCE]][[IF:CHILD(ATTRIBUTE:3=F[AND]CHILD(ATTRIBUTE_SOURCE:1=N))]]
-					case "SELECT_FKEY_<<TYPE(N-1)1:U>>":
+					case "SELECT_FKEY_[[LOOP,^TYPE]]<<^TYPE1:U>>[[ENDLOOP,^TYPE]]":
 						var l_json_values = l_json_array[i].Rows[0].Data;[[LOOP,ATTRIBUTE:3=F[AND]CHILD(ATTRIBUTE_SOURCE:1=N)]]
 						document.getElementById("Input<<ATTRIBUTE:C>>").value=l_json_values.<<ATTRIBUTE:C>>;[[ENDLOOP,ATTRIBUTE]]
 						break;[[ENDIF]][[IF:3=Y[AND]CHILD(ATTRIBUTE:1=N[AND]3=F)]]
@@ -187,13 +199,13 @@ function InitBody() {
 		break;
 	case "N":
 		g_parent_node_id = JSON.stringify(l_json_argument.objectId);[[LOOP,ATTRIBUTE:3=F[AND]CHILD(ATTRIBUTE_SOURCE:1=Y)]]
-		document.getElementById("Input<<ATTRIBUTE:C>>").value=l_json_objectKey.TYP_<<TYPE(N-1)1>>.[[LOOP,ATTRIBUTE_SOURCE]]<<ATTRIBUTE_SOURCE:C>>[[ENDLOOP,ATTRIBUTE_SOURCE]];[[ENDLOOP,ATTRIBUTE]]
+		document.getElementById("Input<<ATTRIBUTE:C>>").value=l_json_objectKey.TYP_[[LOOP,ATTRIBUTE_SOURCE]][[LOOP,^TYPE]]<<^TYPE1>>[[ENDLOOP,^TYPE]].<<ATTRIBUTE_SOURCE:C>>[[ENDLOOP,ATTRIBUTE_SOURCE]];[[ENDLOOP,ATTRIBUTE]]
 		document.getElementById("ButtonUpdate").disabled=true;
 		document.getElementById("ButtonDelete").disabled=true;[[IF:CHILD(ATTRIBUTE:3=F[AND]CHILD(ATTRIBUTE_SOURCE:1=N))]]
 		PerformTrans( {
-			Service: "Get<<TYPE(N-1)1:C>>Fkey",
+			Service: "Get[[LOOP,^TYPE]]<<^TYPE1:C>>[[ENDLOOP,^TYPE]]Fkey",
 			Parameters: {
-				Type: l_json_objectKey.TYP_<<TYPE(N-1)1>>
+				Type: l_json_objectKey.TYP_[[LOOP,^TYPE]]<<^TYPE1>>[[ENDLOOP,^TYPE]]
 			}
 		} );[[ENDIF]][[LOOP,ATTRIBUTE:(3=F[OR]3=R)[AND]4=N]]
 		document.getElementById("Input<<ATTRIBUTE:C>>").disabled=true;[[ENDLOOP,ATTRIBUTE]]
@@ -349,35 +361,27 @@ function ResetField<<ATTRIBUTE:C>>(p_field_id) {
 		document.getElementById("Val<<ATTRIBUTE:C>>-<<PERMITTED_VALUE>>").style.display="[[IF:0=<<PERMITTED_VALUE(N-1)>>]]inline[[ELSE]]none[[ENDIF]]";[[ENDLOOP,PERMITTED_VALUE_GROUP]][[ENDLOOP,PERMITTED_VALUE]][[ENDLOOP,INFORMATION_TYPE_ELEMENT]][[ENDFOR]]
 		break;[[ENDLOOP,PERMITTED_VALUE]][[ENDLOOP,INFORMATION_TYPE_ELEMENT]][[ENDLOOP,ATTRIBUTE_GROUP_ATTRIBUTE]][[ENDLOOP,ATTRIBUTE_GROUP]]
 	}
-}[[ENDLOOP,ATTRIBUTE]]
+}[[ENDLOOP,ATTRIBUTE]][[ENDLOOP,TYPE]]
 -->
 </script>
 </head><body oncontextmenu="return false;" onload="InitBody()" ondrop="drop(event)" ondragover="allowDrop(event)">
-<div><img src="icons/<<TYPE7:L>>_large.bmp" /><span[[IF:CHILD(DESCRIPTION_TYPE)]] style="cursor:help" oncontextmenu="parent.OpenDescBox('<<TYPE7:L>>','<<TYPE:C>>','<<TYPE:U>>','_',-1)"[[ENDIF]]> <<TYPE:U>>[[LOOP,TYPE_SPECIALISATION_GROUP]][[LOOP,*ATTRIBUTE]][[IF:CHILD(ATTRIBUTE_GROUP)]] <b>.</b>[[ELSE]] /[[ENDIF]]
-<select id="Input<<ATTRIBUTE:C>>" type="text" onchange="[[IF:CHILD(*ATTRIBUTE_GROUP)]]ResetField[[LOOP,*ATTRIBUTE_GROUP]][[LOOP,^ATTRIBUTE]]<<^ATTRIBUTE:C>>[[ENDLOOP,^ATTRIBUTE]][[ENDLOOP,*ATTRIBUTE_GROUP]]('Input<<ATTRIBUTE:C>>')[[ELSE]]ProcessTypeSpecialisation()[[ENDIF]]">
-	<option value=" " selected>&lt;[[LOOP,ATTRIBUTE_TYPE_SPECIALISATION_GROUP]]<<ATTRIBUTE_TYPE_SPECIALISATION_GROUP:L>>[[ENDLOOP,ATTRIBUTE_TYPE_SPECIALISATION_GROUP]]&gt;</option>[[LOOP,INFORMATION_TYPE_ELEMENT]][[LOOP,PERMITTED_VALUE]]
-	<option [[IF,*ATTRIBUTE:CHILD(ATTRIBUTE_GROUP)]]id="Val<<ATTRIBUTE:C>>-<<PERMITTED_VALUE>>" style="display:none" [[ENDIF]]value="<<PERMITTED_VALUE>>"><<PERMITTED_VALUE1>></option>[[ENDLOOP,PERMITTED_VALUE]][[ENDLOOP,INFORMATION_TYPE_ELEMENT]]
-</select>[[ENDLOOP,*ATTRIBUTE]][[REPEAT]][[ENDLOOP,TYPE_SPECIALISATION_GROUP]]</span></div>
+<div><img src="icons/<<PAGE3>>.bmp" /><span<<TEXT,DETAIL_DESCRIPTION>>> <<PAGE2>>[[LOOP,PAGE_HEADER]][[LOOP,PAGE_SELECTOR_SWITCH]] /[[LOOP,PAGE_FIELD]][[IF:!FIRST]] <b>.</b>[[ENDIF]]
+<<TEXT,DETAIL_INPUT>>[[ENDLOOP,PAGE_FIELD]][[ENDLOOP,PAGE_SELECTOR_SWITCH]]</span></div>
 <hr/>
-<table[[IF:CHILD(TYPE_SPECIALISATION_GROUP)]] id="TableMain" style="display:none"[[ENDIF]]>[[LOOP,ATTRIBUTE:!3=X[AND]4=N[AND]!CHILD(ATTRIBUTE_TYPE_SPECIALISATION_GROUP)]]
-<tr id="RowAtb<<ATTRIBUTE:C>>"><td[[IF:CHILD(DESCRIPTION_ATTRIBUTE)]] style="cursor:help"[[ENDIF]][[IF:CHILD(DESCRIPTION_ATTRIBUTE)]] oncontextmenu="parent.OpenDescBox('<<TYPE7:L>>','<<TYPE:C>>.<<ATTRIBUTE:C>>','<<TYPE:U>>','<<ATTRIBUTE:U>>',-1)"[[ENDIF]]>[[IF:1=Y]]<u>[[ENDIF]]<div[[IF:CHILD(INFORMATION_TYPE_ELEMENT:2=TEXT[AND]!8=LIN)]] style="padding-top:10px"[[ENDIF]]>[[IF:3=N]]<<ATTRIBUTE:C>>[[ELSE]]<<TEXT,DETAIL_ROOT_NAME>>[[ENDIF]]</div>[[IF:1=Y]]</u>[[ENDIF]]</td>[[LOOP,INFORMATION_TYPE_ELEMENT]][[IF:2=TEXT[AND]!8=LIN]]</tr><tr><td colspan="2">[[ELSE]]<td>[[ENDIF]][[IF,ATTRIBUTE:[[**!3=F[AND]!3=R[AND]**]]CHILD(INFORMATION_TYPE_ELEMENT:CHILD(PERMITTED_VALUE))]]<div><select id="Input<<ATTRIBUTE:C>>" type="text">
-	<option value=" " selected> </option>[[LOOP,PERMITTED_VALUE]]
-	<option value="<<PERMITTED_VALUE>>"><<PERMITTED_VALUE1>></option>[[ENDLOOP,PERMITTED_VALUE]]
-</select>[[ELSE]]<div[[IF:!2=TEXT[OR]8=LIN]]<<TEXT,DETAIL_STYLE_MAX-WIDTH>>[[ENDIF]]><[[IF:2=TEXT[AND]!8=LIN]]textarea[[ELSE]]input[[ENDIF]] id="Input<<ATTRIBUTE:C>>" type="text"<<TEXT,DETAIL_MAXLENGTH>>[[IF:2=TEXT[AND]!8=LIN]] rows="[[IF:8=COD]]11[[ELSE]]5[[ENDIF]]"[[ENDIF]] style="[[IF:2=TEXT[AND]!8=LIN]][[IF:8=COD]]overflow:auto;white-space:pre;font-family:courier new;font-size:12px;[[ELSE]]white-space:normal;[[ENDIF]][[ENDIF]]width:100%"<<TEXT,DETAIL_ONCHANGE>>[[IF,ATTRIBUTE:CHILD(DERIVATION)[OR]CHILD(DENORMALIZATION)[OR]CHILD(AGGREGATION)]] disabled[[ENDIF]]></[[IF:2=TEXT[AND]!8=LIN]]textarea[[ELSE]]input[[ENDIF]]>[[ENDIF]]</div></td>[[ENDLOOP,INFORMATION_TYPE_ELEMENT]]</tr>[[ENDLOOP,ATTRIBUTE]][[LOOP,REFERENCE]]
-<tr><td height=6></td></tr><tr id="RowRef[[LOOP,REFERENCE_TYPE]]<<REFERENCE_TYPE:C>>[[ENDLOOP,REFERENCE_TYPE]]<<REFERENCE3>>"><td colspan=2><fieldset><legend[[IF:CHILD(DESCRIPTION_REFERENCE)]] style="cursor:help" oncontextmenu="parent.OpenDescBox('<<TYPE7:L>>','<<TYPE:C>>.[[LOOP,REFERENCE_TYPE]]<<REFERENCE_TYPE:C>> (<<REFERENCE:C>>)','<<TYPE:U>>','<<REFERENCE_TYPE>>[[ENDLOOP,REFERENCE_TYPE]]',<<REFERENCE3>>)"[[ENDIF]]>[[LOOP,REFERENCE_TYPE]]<img style="border:1 solid transparent;" src="icons/<<REFERENCE_TYPE7:L>>.bmp"/> <<REFERENCE_TYPE:C>>[[ENDLOOP,REFERENCE_TYPE]] (<<REFERENCE:C>>)</legend>
-<table style="width:100%">[[LOOP,FKEY]]
-<tr><td>[[IF,REFERENCE:1=Y]]<u>[[ENDIF]]<<TEXT,DETAIL_ROOT_NAME>>[[IF,REFERENCE:1=Y]]</u>[[ENDIF]]</td><td style="width:100%">[[LOOP,INFORMATION_TYPE_ELEMENT]]<div<<TEXT,DETAIL_STYLE_MAX-WIDTH>>><input id="Input<<FKEY:C>>" type="text"<<TEXT,DETAIL_MAXLENGTH>> style="width:100%"<<TEXT,DETAIL_ONCHANGE>> disabled></input></div>[[ENDLOOP,INFORMATION_TYPE_ELEMENT]]</td>[[IF:FIRST]]
-<td><button id="RefSelect<<REFERENCE:S>>" type="button" onclick="StartSelect<<REFERENCE:S>>(event)">Select</button></td>[[ENDIF]]</tr>[[ENDLOOP,FKEY]]
-</table></fieldset></td></tr>[[ENDLOOP,REFERENCE]]
+<table[[IF:CHILD(PAGE_SELECTOR_SWITCH)]] id="TableMain" style="display:none"[[ENDIF]]>[[ENDLOOP,PAGE_HEADER]][[LOOP,PAGE_ROW]]
+<tr id="<<PAGE_ROW>>"><td<<TEXT,DETAIL_DESCRIPTION>>>[[LOOP,PAGE_FIELD]][[IF:2=Y]]<u>[[ENDIF]]<div[[IF,PAGE_ROW:1=area]] style="padding-top:10px"[[ENDIF]]><<PAGE_FIELD1>></div>[[IF:2=Y]]</u>[[ENDIF]]</td>[[IF,PAGE_ROW:1=area]]</tr><tr><td colspan="2">[[ELSE]]<td>[[ENDIF]]<<TEXT,DETAIL_INPUT>>[[ENDLOOP,PAGE_FIELD]]</td></tr>[[ENDLOOP,PAGE_ROW]][[LOOP,GROUP_BOX]]
+<tr><td height=6></td></tr><tr id="<<GROUP_BOX>>"><td colspan=2><fieldset><legend<<TEXT,DETAIL_DESCRIPTION>>><img style="border:1 solid transparent;" src="icons/<<GROUP_BOX2>>.bmp"/> <<GROUP_BOX1>></legend>
+<table style="width:100%">[[LOOP,PAGE_FIELD]]
+<tr><td>[[IF:2=Y]]<u>[[ENDIF]]<<PAGE_FIELD1>>[[IF:2=Y]]</u>[[ENDIF]]</td><td style="width:100%"><<TEXT,DETAIL_INPUT>></td>[[IF:FIRST]][[FORV,GROUP_BOX:N>N]][[LOOP,BUTTON]]
+<td><button id="<<BUTTON>>" type="button" onclick="<<BUTTON2>>"><<BUTTON1>></button></td>[[ENDLOOP,BUTTON]][[ENDFOR]][[ENDIF]]</tr>[[ENDLOOP,PAGE_FIELD]]
+</table></fieldset></td></tr>[[ENDLOOP,GROUP_BOX]]
 <tr><td><br></td><td style="width:100%"></td></tr>
-<tr><td/><td>
-<button id="ButtonCreate" type="button" onclick="Create<<TYPE1:C>>()">Create</button>&nbsp;&nbsp;&nbsp;
-<button id="ButtonUpdate" type="button" onclick="Update<<TYPE1:C>>()">Update</button>&nbsp;&nbsp;&nbsp;
-<button id="ButtonDelete" type="button" onclick="Delete<<TYPE1:C>>()">Delete</button></td></tr>
-</table>[[LOOP,ATTRIBUTE:4=Y]]
-<input id="Input<<ATTRIBUTE:C>>" type="hidden"></input>[[ENDLOOP,ATTRIBUTE]]
+<tr><td/><td>[[LOOP,BUTTON:!CHILD(*GROUP_BOX)]]
+<button id="<<BUTTON>>" type="button" onclick="<<BUTTON2>>"><<BUTTON1>></button>[[IF:!LAST]]&nbsp;&nbsp;&nbsp;[[ENDIF]][[ENDLOOP,BUTTON]]</td></tr>
+</table>[[LOOP,PAGE_FIELD:3=hidden]]
+<input id="Input<<PAGE_FIELD>>" type="hidden"></input>[[ENDLOOP,PAGE_FIELD]]
 </body>
 </html>
-[[REPEAT]][[ENDLOOP,TYPE]][[ENDLOOP,BUSINESS_OBJECT_TYPE]][[ENDLOOP,SYSTEM_BO_TYPE]][[ENDLOOP,SYSTEM]][[FILE,<<2>>\<<1>>DetailInclude.js]]<!--
+[[ENDLOOP,PAGE]][[ENDLOOP,SYSTEM_PAGE]][[ENDLOOP,SYSTEM]][[FILE,<<2>>\<<1>>DetailInclude.js]]<!--
 -->
 [[ENDBODY]]
