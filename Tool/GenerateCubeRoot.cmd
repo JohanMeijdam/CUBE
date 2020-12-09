@@ -15,7 +15,7 @@ echo Start > %logfile%
 ::goto :Application
 ::goto :ModelImport
 ::goto :ModelExport
-::goto :System
+goto :System
 :Models
 echo Generate Models.
 CubeGen.exe %sysdir%\CubeModel.cgm Templates\Model0.cgt %sysdir%\CubeModel0.cgm %sysname% >> %logfile% 2>&1
@@ -31,6 +31,8 @@ echo Generate Database.
 CubeGen.exe %sysdir%\CubeDbModel.cgm Templates\Table.cgt %sysdir%\TableDdl.sql >> %logfile% 2>&1
 CubeGen.exe %sysdir%\CubeDbModel.cgm Templates\AlterTable.cgt %sysdir%\AlterTableDdl.sql >> %logfile% 2>&1
 sqlplus.exe %db_schema%/%db_password%@%db_name% @%sysdir%\TableDdl.sql >> %logfile% 2>&1
+:Views
+echo Generate Database Views.
 CubeGen.exe %sysdir%\CubeBoModel.cgm Templates\View.cgt %sysdir%\ViewDdl.sql %sysname% >> %logfile% 2>&1
 sqlplus.exe %db_schema%/%db_password%@%db_name% @%sysdir%\ViewDdl.sql >> %logfile% 2>&1
 ::goto :end
@@ -50,12 +52,20 @@ sqlplus.exe %db_schema%/%db_password%@%db_name% @%sysdir%\PackageDdl.sql >> %log
 echo Generate Application.
 del /S/Q %sysdir%\php\*.php >> %logfile% 2>&1
 xcopy /Y/E %sysdir%\files %sysroot% >> %logfile% 2>&1
+::CubeGen.exe %sysdir%\CubeBoModel.cgm Templates\CubeDbLogonPhp.cgt %sysdir%\php\CubeDbLogon.php %sysname% >> %logfile% 2>&1
+::CubeGen.exe %sysdir%\CubeBoModel.cgm Templates\IndexPhp.cgt %sysdir%\php\Index.php %sysname% >> %logfile% 2>&1
+::CubeGen.exe %sysdir%\CubeBoModel.cgm Templates\CubeTreePhp.cgt %sysdir%\php\%sysname%Tree.php %sysname% %sysdir%\php >> %logfile% 2>&1
+::CubeGen.exe %sysdir%\CubeBoModel.cgm Templates\CubeMainPhp.cgt %sysdir%\php\%sysname%Main.php %sysname% >> %logfile% 2>&1
+::CubeGen.exe %sysdir%\CubeBoModel.cgm Templates\CubeDetailPhp.cgt %sysdir%\php\%sysname%Detail.php %sysname% %sysdir%\php >> %logfile% 2>&1
+::CubeGen.exe %sysdir%\CubeServerSpecModel.cgm Templates\CubeServerPhp.cgt %sysdir%\php\%sysname%Server.php %sysname% >> %logfile% 2>&1
+
 CubeGen.exe %sysdir%\CubeBoModel.cgm Templates\CubeDbLogonPhp.cgt %sysdir%\php\CubeDbLogon.php %sysname% >> %logfile% 2>&1
-CubeGen.exe %sysdir%\CubeBoModel.cgm Templates\IndexPhp.cgt %sysdir%\php\Index.php %sysname% >> %logfile% 2>&1
+CubeGen.exe %sysdir%\CubeBoModel.cgm Templates\IndexHtml.cgt %sysdir%\php\Index.html %sysname% >> %logfile% 2>&1
 CubeGen.exe %sysdir%\CubeBoModel.cgm Templates\CubeTreePhp.cgt %sysdir%\php\%sysname%Tree.php %sysname% %sysdir%\php >> %logfile% 2>&1
-CubeGen.exe %sysdir%\CubeBoModel.cgm Templates\CubeMainPhp.cgt %sysdir%\php\%sysname%Main.php %sysname% >> %logfile% 2>&1
-CubeGen.exe %sysdir%\CubeBoModel.cgm Templates\CubeDetailPhp.cgt %sysdir%\php\%sysname%Detail.php %sysname% %sysdir%\php >> %logfile% 2>&1
+::::::CubeGen.exe %sysdir%\CubeBoModel.cgm Templates\CubeMainPhp.cgt %sysdir%\php\%sysname%Main.php %sysname% >> %logfile% 2>&1
+CubeGen.exe %sysdir%\CubeServerSpecModel.cgm Templates\CubeDetailPhp.cgt %sysdir%\php\%sysname%Detail.php %sysname% %sysdir%\php >> %logfile% 2>&1
 CubeGen.exe %sysdir%\CubeServerSpecModel.cgm Templates\CubeServerPhp.cgt %sysdir%\php\%sysname%Server.php %sysname% >> %logfile% 2>&1
+
 del /S/Q %sysroot% >> %logfile% 2>&1
 xcopy /Y/E %sysdir%\files %sysroot% >> %logfile% 2>&1
 xcopy /Y/E %sysdir%\php %sysroot% >> %logfile% 2>&1

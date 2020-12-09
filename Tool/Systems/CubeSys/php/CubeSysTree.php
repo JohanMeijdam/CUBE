@@ -29,7 +29,7 @@ g_xmlhttp.onreadystatechange = function() {
 			for (i in l_json_array) {
 				switch (l_json_array[i].ResultName) {
 					case '': break;
-					case 'LIST_CUBE_DSC': AddTreeviewChildren(l_json_array[i].Rows,'TYP_CUBE_DSC','icons/desc.bmp'); break;
+					case 'LIST_CUBE_DSC': AddTreeviewChildren(l_json_array[i].Rows,'TYP_CUBE_DSC','icons/desc.bmp','CubeDescription'); break;
 					case "SELECT_CUBE_DSC":	document.getElementById("CubeDesc").value = l_json_array[i].Rows[0].Data.Value;	break;
 					case "ERROR": alert ('Server error:\n'+l_json_array[i].ErrorText); break;
 					default: alert ('Unknown reply:\n'+g_responseText);
@@ -48,7 +48,7 @@ function InitBody() {
 	l_objBody = document.getElementById('TreeBody');
 	l_objBody._type = 'ROOT';
 	l_objBody.childNodes[0]._index = 0;
-	AddTreeviewNode(l_objBody, 'DIR_CUBE_DSC', null, 'icons/folder.bmp', 'descriptions', 'Y', ' ', null);
+	AddTreeviewNode(l_objBody, 'DIR_CUBE_DSC', null, 'icons/folder.bmp', null, 'descriptions', 'Y', ' ', null);
 }
 
 function DefineTypePosition (p_parentType, p_type, p_switch) {
@@ -99,7 +99,7 @@ function OpenDetail(p_obj) {
 	case 'N':
 		ResetState();
 		if (p_obj.parentNode._type.substr(0,4) == 'TYP_') {
-			OpenDetailPage(p_obj.parentNode._type.substr(4), 'D', p_obj.parentNode.id, null);
+			OpenDetailPage(p_obj.parentNode._name, 'D', p_obj.parentNode.id, null);
 		}
 		break;
 	case 'M':
@@ -152,19 +152,19 @@ function OpenDetail(p_obj) {
 				var l_option = '{"Code":"B","Type":'+g_objNodeDiv.children[g_currentChildIndex].firstChild.id+'}';
 			}
 			ResetState();
-			OpenDetailPage(g_currentObjType.substr(4), g_currentNodeType, g_currentObjId, l_option);
+			OpenDetailPage(g_currentObjName, g_currentNodeType, g_currentObjId, l_option);
 		}
 		break;
 	}
 }
 
-function OpenDetailPage (p_code, p_nodeType, p_objId, p_option) {
+function OpenDetailPage (p_name, p_nodeType, p_objId, p_option) {
 	if (p_option == null) {
 		var l_option = '';
 	} else {
 		var l_option = ',"Option":'+p_option;
 	}
-	document.getElementById('DetailFrame').src='CubeSysDetail'+p_code+'.php?'+encodeURIComponent('{"nodeType":"'+p_nodeType+'","objectId":'+p_objId+l_option+'}');
+	document.getElementById('DetailFrame').src='CubeSysMaintain'+p_name+'.php?'+encodeURIComponent('{"nodeType":"'+p_nodeType+'","objectId":'+p_objId+l_option+'}');
 }
 
 function OpenMenu(p_obj) {
@@ -190,6 +190,7 @@ function OpenMenu(p_obj) {
 	g_objNodeDiv = p_obj.parentNode;
 	g_currentObjId = g_objNodeDiv.id;
 	g_currentObjType = g_objNodeDiv._type;
+	g_currentObjName = g_objNodeDiv._name;
 	g_currentSpanIndex = g_objNodeDiv.parentNode._index;
 	g_currentObjIndex = g_objNodeDiv._index;
 	g_currentParentId = g_objNodeDiv._parentId;
@@ -228,7 +229,7 @@ function OpenMenu(p_obj) {
 
 	switch (l_type_id) {
  	case 'DIR_CUBE_DSC':
-		AddMenuItem(g_objMenuList, 'add cube_description', 'icons/desc.bmp','DetailCUBE_DSC','N','TYP_CUBE_DSC',0,'N',2);
+		AddMenuItem(g_objMenuList, 'add cube_description', 'icons/desc.bmp','DetailCUBE_DSC','N','TYP_CUBE_DSC','CubeDescription',0,'N',2);
 		break;
 	}
 }

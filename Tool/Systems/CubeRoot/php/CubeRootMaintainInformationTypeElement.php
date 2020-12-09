@@ -198,14 +198,10 @@ function DeleteIte() {
 <div><img src="icons/infelem_large.bmp" /><span> INFORMATION_TYPE_ELEMENT</span></div>
 <hr/>
 <table>
-<tr><td><u>InformationType.Name</u></td><td><div style="max-width:30em;">
-<input id="InputFkItpName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td><u>Sequence</u></td><td><div style="max-width:9em;">
-<input id="InputSequence" type="text" maxlength="9" style="width:100%;"></input></div></td></tr>
-<tr><td>Suffix</td><td><div style="max-width:12em;">
-<input id="InputSuffix" type="text" maxlength="12" style="width:100%;" onchange="ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td>Domain</td><td><div>
-<select id="InputDomain" type="text">
+<tr id="RowAtbFkItpName"><td><u><div>InformationType.Name</div></u></td><td><div style="max-width:30em;"><input id="InputFkItpName" type="text" maxlength="30" style="width:100%" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr id="RowAtbSequence"><td><u><div>Sequence</div></u></td><td><div style="max-width:9em;"><input id="InputSequence" type="text" maxlength="9" style="width:100%"></input></div></td></tr>
+<tr id="RowAtbSuffix"><td><div>Suffix</div></td><td><div style="max-width:12em;"><input id="InputSuffix" type="text" maxlength="12" style="width:100%" onchange="ReplaceSpaces(this);"></input></div></td></tr>
+<tr id="RowAtbDomain"><td><div>Domain</div></td><td><div><select id="InputDomain" type="text">
 	<option value=" " selected> </option>
 	<option value="TEXT">Text</option>
 	<option value="NUMBER">Number</option>
@@ -213,32 +209,26 @@ function DeleteIte() {
 	<option value="TIME">Time</option>
 	<option value="DATETIME-LOCAL">Timestamp</option>
 </select></div></td></tr>
-<tr><td>Length</td><td><div style="max-width:9em;">
-<input id="InputLength" type="text" maxlength="9" style="width:100%;"></input></div></td></tr>
-<tr><td>Decimals</td><td><div style="max-width:9em;">
-<input id="InputDecimals" type="text" maxlength="9" style="width:100%;"></input></div></td></tr>
-<tr><td>CaseSensitive</td><td><div>
-<select id="InputCaseSensitive" type="text">
+<tr id="RowAtbLength"><td><div>Length</div></td><td><div style="max-width:9em;"><input id="InputLength" type="text" maxlength="9" style="width:100%"></input></div></td></tr>
+<tr id="RowAtbDecimals"><td><div>Decimals</div></td><td><div style="max-width:9em;"><input id="InputDecimals" type="text" maxlength="9" style="width:100%"></input></div></td></tr>
+<tr id="RowAtbCaseSensitive"><td><div>CaseSensitive</div></td><td><div><select id="InputCaseSensitive" type="text">
 	<option value=" " selected> </option>
 	<option value="Y">Yes</option>
 	<option value="N">No</option>
 </select></div></td></tr>
-<tr><td>DefaultValue</td><td><div style="max-width:32em;">
-<input id="InputDefaultValue" type="text" maxlength="32" style="width:100%;"></input></div></td></tr>
-<tr><td>SpacesAllowed</td><td><div>
-<select id="InputSpacesAllowed" type="text">
+<tr id="RowAtbDefaultValue"><td><div>DefaultValue</div></td><td><div style="max-width:32em;"><input id="InputDefaultValue" type="text" maxlength="32" style="width:100%"></input></div></td></tr>
+<tr id="RowAtbSpacesAllowed"><td><div>SpacesAllowed</div></td><td><div><select id="InputSpacesAllowed" type="text">
 	<option value=" " selected> </option>
 	<option value="Y">Yes</option>
 	<option value="N">No</option>
 </select></div></td></tr>
-<tr><td style="cursor:help;" oncontextmenu="parent.OpenDescBox('INFELEM','InformationTypeElement.Presentation','INFORMATION_TYPE_ELEMENT','PRESENTATION',-1)">Presentation</td><td><div>
-<select id="InputPresentation" type="text">
+<tr id="RowAtbPresentation"><td style="cursor:help" oncontextmenu="parent.OpenDescBox('infelem','InformationTypeElement.Presentation','INFORMATION_TYPE_ELEMENT','PRESENTATION',-1)"><div>Presentation</div></td><td><div><select id="InputPresentation" type="text">
 	<option value=" " selected> </option>
 	<option value="LIN">Line</option>
 	<option value="DES">Description</option>
 	<option value="COD">Code</option>
 </select></div></td></tr>
-<tr><td><br></td><td style="width:100%;"></td></tr>
+<tr><td><br></td><td style="width:100%"></td></tr>
 <tr><td/><td>
 <button id="ButtonCreate" type="button" onclick="CreateIte()">Create</button>&nbsp;&nbsp;&nbsp;
 <button id="ButtonUpdate" type="button" onclick="UpdateIte()">Update</button>&nbsp;&nbsp;&nbsp;

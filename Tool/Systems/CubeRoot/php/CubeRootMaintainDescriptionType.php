@@ -27,40 +27,39 @@ g_xmlhttp.onreadystatechange = function() {
 			}
 			for (i in l_json_array) {
 				switch (l_json_array[i].ResultName) {
-					case "SELECT_ITP":
+					case "SELECT_DCT":
 						var l_json_values = l_json_array[i].Rows[0].Data;
+						document.getElementById("InputFkBotName").value=l_json_values.FkBotName;
+						document.getElementById("InputText").value=l_json_values.Text;
 						break;
-					case "CREATE_ITP":
-						document.getElementById("InputName").disabled=true;
+					case "CREATE_DCT":
+						document.getElementById("InputFkBotName").disabled=true;
+						document.getElementById("InputFkTypName").disabled=true;
 						document.getElementById("ButtonCreate").disabled=true;
+						document.getElementById("ButtonUpdate").disabled=false;
 						document.getElementById("ButtonDelete").disabled=false;
 						var l_objNode = parent.document.getElementById(g_parent_node_id);
-						var l_json_node_id = {Name:document.getElementById("InputName").value};
-						g_node_id = '{"TYP_ITP":'+JSON.stringify(l_json_node_id)+'}';
+						var l_json_node_id = {FkTypName:document.getElementById("InputFkTypName").value};
+						g_node_id = '{"TYP_DCT":'+JSON.stringify(l_json_node_id)+'}';
 						if (l_objNode != null) {
 							if (l_objNode.firstChild._state == 'O') {
-								if (l_json_array[i].Rows.length == 0) {
-									var l_position = 'L';
-									l_objNodePos = null;
-								} else {
-									var l_position = 'B';
-									var l_objNodePos = parent.document.getElementById('{"TYP_ITP":'+JSON.stringify(l_json_array[i].Rows[0].Key)+'}');
-								}
+								var l_position = 'L';
+								l_objNodePos = null;
 								parent.AddTreeviewNode(
 									l_objNode,
-									'TYP_ITP',
+									'TYP_DCT',
 									l_json_node_id,
-									'icons/inftype.bmp', 
-									document.getElementById("InputName").value.toLowerCase(),
+									'icons/desc.bmp', 
+									' ',
 									'N',
 									l_position,
 									l_objNodePos);
 							}
 						}
 						break;
-					case "UPDATE_ITP":
+					case "UPDATE_DCT":
 						break;
-					case "DELETE_ITP":
+					case "DELETE_DCT":
 						document.getElementById("ButtonCreate").disabled=false;
 						document.getElementById("ButtonUpdate").disabled=true;
 						document.getElementById("ButtonDelete").disabled=true;
@@ -71,6 +70,10 @@ g_xmlhttp.onreadystatechange = function() {
 						if (l_objNode != null) {
 							l_objNode.parentNode.removeChild(l_objNode);
 						}
+						break;
+					case "SELECT_FKEY_TYP":
+						var l_json_values = l_json_array[i].Rows[0].Data;
+						document.getElementById("InputFkBotName").value=l_json_values.FkBotName;
 						break;
 					case "ERROR":
 						alert ('Server error:\n'+l_json_array[i].ErrorText);
@@ -94,51 +97,70 @@ function InitBody() {
 	switch (l_json_argument.nodeType) {
 	case "D":
 		g_node_id = JSON.stringify(l_json_argument.objectId);
-		document.getElementById("InputName").value=l_json_objectKey.TYP_ITP.Name;
+		document.getElementById("InputFkTypName").value=l_json_objectKey.TYP_DCT.FkTypName;
 		document.getElementById("ButtonCreate").disabled=true;
-		document.getElementById("ButtonUpdate").disabled=true;
-		document.getElementById("InputName").disabled=true;
+		PerformTrans( {
+			Service: "GetDct",
+			Parameters: {
+				Type: l_json_objectKey.TYP_DCT
+			}
+		} );
+		document.getElementById("InputFkBotName").disabled=true;
+		document.getElementById("InputFkTypName").disabled=true;
 		break;
 	case "N":
 		g_parent_node_id = JSON.stringify(l_json_argument.objectId);
+		document.getElementById("InputFkTypName").value=l_json_objectKey.TYP_TYP.Name;
 		document.getElementById("ButtonUpdate").disabled=true;
 		document.getElementById("ButtonDelete").disabled=true;
+		PerformTrans( {
+			Service: "GetTypFkey",
+			Parameters: {
+				Type: l_json_objectKey.TYP_TYP
+			}
+		} );
+		document.getElementById("InputFkBotName").disabled=true;
+		document.getElementById("InputFkTypName").disabled=true;
 		break;
 	default:
 		alert ('Error InitBody: '+l_argument[1]);
 	}
 }
 
-function CreateItp() {
+function CreateDct() {
 	var Type = {
-		Name: document.getElementById("InputName").value
+		FkBotName: document.getElementById("InputFkBotName").value,
+		FkTypName: document.getElementById("InputFkTypName").value,
+		Text: document.getElementById("InputText").value
 	};
 	PerformTrans( {
-		Service: "CreateItp",
+		Service: "CreateDct",
 		Parameters: {
 			Type
 		}
 	} );
 }
 
-function UpdateItp() {
+function UpdateDct() {
 	var Type = {
-		Name: document.getElementById("InputName").value
+		FkBotName: document.getElementById("InputFkBotName").value,
+		FkTypName: document.getElementById("InputFkTypName").value,
+		Text: document.getElementById("InputText").value
 	};
 	PerformTrans( {
-		Service: "UpdateItp",
+		Service: "UpdateDct",
 		Parameters: {
 			Type
 		}
 	} );
 }
 
-function DeleteItp() {
+function DeleteDct() {
 	var Type = {
-		Name: document.getElementById("InputName").value
+		FkTypName: document.getElementById("InputFkTypName").value
 	};
 	PerformTrans( {
-		Service: "DeleteItp",
+		Service: "DeleteDct",
 		Parameters: {
 			Type
 		}
@@ -147,16 +169,17 @@ function DeleteItp() {
 -->
 </script>
 </head><body oncontextmenu="return false;" onload="InitBody()" ondrop="drop(event)" ondragover="allowDrop(event)">
-<div><img src="icons/inftype_large.bmp" /><span> INFORMATION_TYPE</span></div>
+<div><img src="icons/desc_large.bmp" /><span style="cursor:help" oncontextmenu="parent.OpenDescBox('desc','DescriptionType','DESCRIPTION_TYPE','_',-1)"> DESCRIPTION_TYPE</span></div>
 <hr/>
 <table>
-<tr><td><u>Name</u></td><td><div style="max-width:30em;">
-<input id="InputName" type="text" maxlength="30" style="width:100%;" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr><td><br></td><td style="width:100%;"></td></tr>
+<tr id="RowAtbFkBotName"><td><div>BusinessObjectType.Name</div></td><td><div style="max-width:30em;"><input id="InputFkBotName" type="text" maxlength="30" style="width:100%" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr id="RowAtbFkTypName"><td><u><div>Type.Name</div></u></td><td><div style="max-width:30em;"><input id="InputFkTypName" type="text" maxlength="30" style="width:100%" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr id="RowAtbText"><td><div style="padding-top:10px">Text</div></td></tr><tr><td colspan="2"><div><textarea id="InputText" type="text" maxlength="3999" rows="5" style="white-space:normal;width:100%"></textarea></div></td></tr>
+<tr><td><br></td><td style="width:100%"></td></tr>
 <tr><td/><td>
-<button id="ButtonCreate" type="button" onclick="CreateItp()">Create</button>&nbsp;&nbsp;&nbsp;
-<button id="ButtonUpdate" type="button" onclick="UpdateItp()">Update</button>&nbsp;&nbsp;&nbsp;
-<button id="ButtonDelete" type="button" onclick="DeleteItp()">Delete</button></td></tr>
+<button id="ButtonCreate" type="button" onclick="CreateDct()">Create</button>&nbsp;&nbsp;&nbsp;
+<button id="ButtonUpdate" type="button" onclick="UpdateDct()">Update</button>&nbsp;&nbsp;&nbsp;
+<button id="ButtonDelete" type="button" onclick="DeleteDct()">Delete</button></td></tr>
 </table>
 <input id="InputCubeId" type="hidden"></input>
 </body>

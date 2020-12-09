@@ -28,7 +28,9 @@ CubeGen.exe %c_sysdir%\CubeServerImplModel.cgm Templates\Package.cgt %c_sysdir%\
 echo CubeSys: Generate Application.
 del /S/Q %c_phpdir% >> %c_logfile% 2>&1
 CubeGen.exe %c_sysdir%\CubeBoModel.cgm Templates\CubeTreePhp.cgt %c_phpdir%\%c_sysname%Tree.php %c_sysname% %c_phpdir% >> %c_logfile% 2>&1
-CubeGen.exe %c_sysdir%\CubeBoModel.cgm Templates\CubeDetailPhp.cgt %c_phpdir%\%c_sysname%Detail.php %c_sysname% %c_phpdir% >> %c_logfile% 2>&1
-CubeGen.exe %c_sysdir%\CubeServerSpecModel.cgm Templates\CubeServerPhp.cgt %c_phpdir%\%c_sysname%Server.php %c_sysname% >> %c_logfile% 2>&1
+CubeGen.exe %c_sysdir%\CubeServerSpecModel.cgm Templates\CubeDetailPhp.cgt %c_phpdir%\%c_sysname%Detail.php %c_sysname% %c_sysdir%\php >> %c_logfile% 2>&1
+CubeGen.exe %C_sysdir%\CubeServerSpecModel.cgm Templates\CubeServerPhp.cgt %c_phpdir%\%c_sysname%Server.php %c_sysname% >> %c_logfile% 2>&1
+
+
 :End
 ::pause
