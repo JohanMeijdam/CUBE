@@ -361,7 +361,6 @@ print IMPORT "DELETE v_derivation;\n";
 print IMPORT "DELETE v_description_attribute;\n";
 print IMPORT "DELETE v_restriction_type_spec_atb;\n";
 print IMPORT "DELETE v_reference;\n";
-print IMPORT "DELETE v_reference_part;\n";
 print IMPORT "DELETE v_description_reference;\n";
 print IMPORT "DELETE v_restriction_type_spec_ref;\n";
 print IMPORT "DELETE v_restriction_target_type_spec;\n";
@@ -593,25 +592,6 @@ my (@FkeyValues);
 						$j = $NodeNext[$j];
 					}
 				}
-				case "REFERENCE_PART" {
-					$j = $NodeFirst[$_[0]];
-					$Sequence = 0;
-					while (1) {
-						if ($j == -1) {
-							last;
-						}
-						$Sequence++;
-						if ($NodeString[$NodeParent[$NodeParent[$_[0]]]] eq 'REFERENCE_PART') {
-							$FKeyFlag = 1;
-						} else {
-							$FKeyFlag = 0;
-						}
-						print IMPORT "INSERT INTO v_reference_part (CUBE_SEQUENCE, FK_BOT_NAME, FK_TYP_NAME, FK_REF_SEQUENCE, FK_REF_BOT_NAME, FK_REF_TYP_NAME, FK_RFP_TYP_NAME, FK_RFP_TYP_NAME_1, XK_TYP_NAME, XK_TYP_NAME_1)\n"; 
-						print IMPORT "	VALUES ($Sequence, '$_[1]', '$_[2]', $_[3], '$_[4]', '$_[5]', '".SwitchFlag($FKeyFlag,$_[6])."', '".SwitchFlag($FKeyFlag,$_[7])."', '".ReplX(GetXkey($j,'REFERENCE_PART_TYPE','TYPE',001))."', '".ReplX(GetXkey($j,'REFERENCE_PART_TYPE_IS_TARGET','TYPE',001))."');\n";
-						print IMPORT "\n";
-						$j = $NodeNext[$j];
-					}
-				}
 				case "DESCRIPTION_REFERENCE" {
 					$j = $NodeFirst[$_[0]];
 					while (1) {
@@ -700,8 +680,8 @@ my (@FkeyValues);
 						if ($j == -1) {
 							last;
 						}
-						print IMPORT "INSERT INTO v_system (NAME, CUBE_TSG_TYPE, DATABASE, SCHEMA, PASSWORD, TABLE_PREFIX, DESCRIPTION)\n"; 
-						print IMPORT "	VALUES ('".ReplX($NodeString[$j])."', '".ReplX($NodeValue[$NodeValuePntr[$j]])."', '".ReplX($NodeValue[$NodeValuePntr[$j]+1])."', '".ReplX($NodeValue[$NodeValuePntr[$j]+2])."', '".ReplX($NodeValue[$NodeValuePntr[$j]+3])."', '".ReplX($NodeValue[$NodeValuePntr[$j]+4])."', '".ReplX($NodeValue[$NodeValuePntr[$j]+5])."');\n";
+						print IMPORT "INSERT INTO v_system (NAME, CUBE_TSG_TYPE, DATABASE, SCHEMA, PASSWORD, TABLE_PREFIX)\n"; 
+						print IMPORT "	VALUES ('".ReplX($NodeString[$j])."', '".ReplX($NodeValue[$NodeValuePntr[$j]])."', '".ReplX($NodeValue[$NodeValuePntr[$j]+1])."', '".ReplX($NodeValue[$NodeValuePntr[$j]+2])."', '".ReplX($NodeValue[$NodeValuePntr[$j]+3])."', '".ReplX($NodeValue[$NodeValuePntr[$j]+4])."');\n";
 						print IMPORT "\n";
 						$FkeyValues[0] = ReplX($NodeString[$j]);
 						$i = $NodeFirst[$j];

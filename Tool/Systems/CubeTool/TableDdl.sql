@@ -51,8 +51,6 @@ CREATE SEQUENCE sq_rta START WITH 100000
 /
 CREATE SEQUENCE sq_ref START WITH 100000
 /
-CREATE SEQUENCE sq_rfp START WITH 100000
-/
 CREATE SEQUENCE sq_dcr START WITH 100000
 /
 CREATE SEQUENCE sq_rtr START WITH 100000
@@ -277,30 +275,6 @@ CREATE TABLE t_reference (
 		REFERENCES t_type (name)
 		ON DELETE CASCADE )
 /
-CREATE TABLE t_reference_part (
-	cube_id VARCHAR2(16),
-	cube_sequence NUMBER(8),
-	cube_level NUMBER(8) DEFAULT '1',
-	fk_bot_name VARCHAR2(30),
-	fk_typ_name VARCHAR2(30),
-	fk_ref_sequence NUMBER(1) DEFAULT '0',
-	fk_ref_bot_name VARCHAR2(30),
-	fk_ref_typ_name VARCHAR2(30),
-	fk_rfp_typ_name VARCHAR2(30),
-	fk_rfp_typ_name_1 VARCHAR2(30),
-	xk_typ_name VARCHAR2(30),
-	xk_typ_name_1 VARCHAR2(30),
-	CONSTRAINT rfp_pk
-		PRIMARY KEY (fk_typ_name, fk_ref_sequence, fk_ref_bot_name, fk_ref_typ_name, xk_typ_name, xk_typ_name_1),
-	CONSTRAINT rfp_ref_fk
-		FOREIGN KEY (fk_typ_name, fk_ref_sequence, fk_ref_bot_name, fk_ref_typ_name)
-		REFERENCES t_reference (fk_typ_name, sequence, xk_bot_name, xk_typ_name)
-		ON DELETE CASCADE,
-	CONSTRAINT rfp_rfp_fk
-		FOREIGN KEY (fk_typ_name, fk_ref_sequence, fk_ref_bot_name, fk_ref_typ_name, fk_rfp_typ_name, fk_rfp_typ_name_1)
-		REFERENCES t_reference_part (fk_typ_name, fk_ref_sequence, fk_ref_bot_name, fk_ref_typ_name, xk_typ_name, xk_typ_name_1)
-		ON DELETE CASCADE )
-/
 CREATE TABLE t_description_reference (
 	cube_id VARCHAR2(16),
 	fk_bot_name VARCHAR2(30),
@@ -416,7 +390,6 @@ CREATE TABLE t_system (
 	schema VARCHAR2(30),
 	password VARCHAR2(20),
 	table_prefix VARCHAR2(4),
-	description VARCHAR2(3999),
 	CONSTRAINT sys_pk
 		PRIMARY KEY (name) )
 /

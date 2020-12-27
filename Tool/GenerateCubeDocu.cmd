@@ -11,8 +11,8 @@ set sysroot=%wwwroot%\%sysname%
 
 echo Start > %logfile%
 ::goto Models
-goto Database
-::goto ModelImport
+::goto Database
+goto ModelImport
 ::goto ModelExport
 ::goto Packages
 ::goto Application 
@@ -43,11 +43,12 @@ sqlplus.exe %db_schema%/%db_password%@%db_name% @%sysdir%\AlterTableDdl.sql >> %
 
 CubeGen.exe %sysdir%\CubeBoModel.cgm Templates\View.cgt %sysdir%\ViewDdl.sql %sysname% >> %logfile% 2>&1
 sqlplus.exe %db_schema%/%db_password%@%db_name% @%sysdir%\ViewDdl.sql >> %logfile% 2>&1
+goto End
 :ModelImport 
 echo Import Model.
-::::::perl Systems\CubeRoot\ModelImport.pl %sysdir%\ToolModel.cgm %sysdir%\ToolModelImport.sql >> %logfile% 2>&1
-::::::sqlplus.exe %db_schema%/%db_password%@%db_name% @%sysdir%\ToolModelImport.sql >> %logfile% 2>&1
-::goto End
+perl Systems\CubeRoot\ModelImport.pl %sysdir%\CubeToolModel.cgm %sysdir%\ToolModelImport.sql >> %logfile% 2>&1
+sqlplus.exe %db_schema%/%db_password%@%db_name% @%sysdir%\ToolModelImport.sql >> %logfile% 2>&1
+goto End
 :ModelExport
 echo Extract Tool Model
 sqlplus.exe %db_schema%/%db_password%@%db_name% @%sysdir%\ModelExport.sql %sysdir%\CubeToolModel.cgm ALL REPLACE >> %logfile% 2>&1
@@ -63,8 +64,7 @@ del /S/Q %sysdir%\php\*.php >> %logfile% 2>&1
 CubeGen.exe %sysdir%\CubeBoModel.cgm Templates\CubeDbLogonPhp.cgt %sysdir%\php\CubeDbLogon.php %sysname% >> %logfile% 2>&1
 CubeGen.exe %sysdir%\CubeBoModel.cgm Templates\IndexPhp.cgt %sysdir%\php\Index.php %sysname% >> %logfile% 2>&1
 CubeGen.exe %sysdir%\CubeBoModel.cgm Templates\CubeTreePhp.cgt %sysdir%\php\%sysname%Tree.php %sysname% %sysdir%\php >> %logfile% 2>&1
-CubeGen.exe %sysdir%\CubeBoModel.cgm Templates\CubeMainPhp.cgt %sysdir%\php\%sysname%Main.php %sysname% >> %logfile% 2>&1
-CubeGen.exe %sysdir%\CubeBoModel.cgm Templates\CubeDetailPhp.cgt %sysdir%\php\%sysname%Detail.php %sysname% %sysdir%\php >> %logfile% 2>&1
+CubeGen.exe %sysdir%\CubeServerSpecModel.cgm Templates\CubeDetailPhp.cgt %sysdir%\php\%sysname%Detail.php %sysname% %sysdir%\php >> %logfile% 2>&1
 CubeGen.exe %sysdir%\CubeServerSpecModel.cgm Templates\CubeServerPhp.cgt %sysdir%\php\%sysname%Server.php %sysname% >> %logfile% 2>&1
 del /S/Q %sysroot% >> %logfile% 2>&1
 xcopy /Y/E %sysdir%\files %sysroot% >> %logfile% 2>&1
