@@ -344,6 +344,7 @@ function OpenMenuItem(p_obj) {
 			g_currentChildIndex = p_obj._childIndex;
 			g_currentNodeType = p_obj._nodeType;
 			g_currentObjType = p_obj._type;
+			g_currentObjName = p_obj._name;
 		}
 		break;
 	default:
