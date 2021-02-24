@@ -19,7 +19,7 @@ Change log:
 21-12-2019 - List encapsulated argument fix.
 30-12-2019 - List encapsulated based on starting type key.
 05-02-2020 - Reference scope type ENCAPSULATED removed.
-08-11-2020 - PAGE modeln added.
+08-11-2020 - PAGE model added.
 [[INCLUDE,templates\includes\general.cgt]]
 [[TEXT,SPEC_EXPORT_LIST]]
 			>OPERATION_TYPE:<<TYPE:I>>;
