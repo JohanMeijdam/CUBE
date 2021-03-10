@@ -56,7 +56,8 @@ g_xmlhttp.onreadystatechange = function() {
 									l_objNode,
 									'TYP_RTS',
 									l_json_node_id,
-									'icons/restrtgt.bmp', 
+									'icons/restrtgt.bmp',
+									'RestrictionTargetTypeSpec',
 									document.getElementById("InputIncludeOrExclude").value.toLowerCase()+' '+document.getElementById("InputXfTspTypName").value.toLowerCase()+' '+document.getElementById("InputXfTspTsgCode").value.toLowerCase()+' '+document.getElementById("InputXkTspCode").value.toLowerCase(),
 									'N',
 									l_position,
@@ -82,9 +83,6 @@ g_xmlhttp.onreadystatechange = function() {
 							l_objNode.parentNode.removeChild(l_objNode);
 						}
 						break;
-					case "LIST_TSP":
-						OpenListBox(l_json_array[i].Rows,'typespec','TypeSpecialisation','N');
-						break;
 					case "SELECT_FKEY_REF":
 						var l_json_values = l_json_array[i].Rows[0].Data;
 						document.getElementById("InputFkBotName").value=l_json_values.FkBotName;
@@ -93,7 +91,16 @@ g_xmlhttp.onreadystatechange = function() {
 						alert ('Server error:\n'+l_json_array[i].ErrorText);
 						break;
 					default:
-						alert ('Unknown reply:\n'+g_responseText);
+						if(l_json_array[i].ResultName.substring(0,5) == 'LIST_') {
+							switch (document.body._ListBoxCode){
+								case "Ref001":
+									OpenListBox(l_json_array[i].Rows,'typespec','TypeSpecialisation');
+									break;
+							}
+						} else {
+							alert ('Unknown reply:\n'+g_responseText);
+						}
+						
 				}
 			}
 		} else {
@@ -106,7 +113,8 @@ function InitBody() {
 	var l_json_argument = JSON.parse(decodeURIComponent(location.href.split("?")[1]));
 	document.body._FlagDragging = 0;
 	document.body._DraggingId = ' ';
-	document.body._ListBoxCode="Ref000";
+	document.body._ListBoxCode = "Ref000";
+	document.body._ListBoxOptional = ' ';
 	var l_json_objectKey = l_json_argument.objectId;
 	switch (l_json_argument.nodeType) {
 	case "D":
@@ -252,6 +260,7 @@ function StartSelect001(p_event) {
 	document.body._SelectLeft = p_event.clientX;
 	document.body._SelectTop = p_event.clientY;
 	document.body._ListBoxCode = 'Ref001';
+	document.body._ListBoxOptional = 'N';
 	var Parameters = {
 		Ref: {
 			FkTypName:document.getElementById("InputFkTypName").value,
@@ -277,8 +286,8 @@ function StartSelect001(p_event) {
 <tr id="RowAtbFkBotName"><td><div>BusinessObjectType.Name</div></td><td><div style="max-width:30em;"><input id="InputFkBotName" type="text" maxlength="30" style="width:100%" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
 <tr id="RowAtbFkTypName"><td><u><div>Type.Name</div></u></td><td><div style="max-width:30em;"><input id="InputFkTypName" type="text" maxlength="30" style="width:100%" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
 <tr id="RowAtbFkRefSequence"><td><u><div>Reference.Sequence</div></u></td><td><div style="max-width:2em;"><input id="InputFkRefSequence" type="text" maxlength="2" style="width:100%"></input></div></td></tr>
-<tr id="RowAtbFkRefBotName"><td><u><div>Reference.Name</div></u></td><td><div style="max-width:30em;"><input id="InputFkRefBotName" type="text" maxlength="30" style="width:100%" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr id="RowAtbFkRefTypName"><td><u><div>Reference.Name</div></u></td><td><div style="max-width:30em;"><input id="InputFkRefTypName" type="text" maxlength="30" style="width:100%" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr id="RowAtbFkRefBotName"><td><u><div>BusinessObjectType.Name</div></u></td><td><div style="max-width:30em;"><input id="InputFkRefBotName" type="text" maxlength="30" style="width:100%" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr id="RowAtbFkRefTypName"><td><u><div>Type.Name</div></u></td><td><div style="max-width:30em;"><input id="InputFkRefTypName" type="text" maxlength="30" style="width:100%" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
 <tr id="RowAtbIncludeOrExclude"><td><div>IncludeOrExclude</div></td><td><div><select id="InputIncludeOrExclude" type="text">
 	<option value=" " selected> </option>
 	<option value="IN">Include</option>

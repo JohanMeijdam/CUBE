@@ -1,6 +1,6 @@
 
 <!--
-function OpenListBox(p_json_rows,p_icon,p_header,p_optional) {
+function OpenListBox(p_json_rows,p_icon,p_header) {
 	CloseListBox();
 	if (p_json_rows.length > 0) {
 
@@ -48,7 +48,7 @@ function OpenListBox(p_json_rows,p_icon,p_header,p_optional) {
 		l_objSelect.size = Math.min(p_json_rows.length,16)
 		l_objSelect.onclick = function(){UpdateForeignKey(this)};
 
-		if (p_optional == 'Y') {
+		if (document.body._ListBoxOptional == 'Y') {
 			l_objSelect.size = l_objSelect.size + 1;
 			var l_objOption = document.createElement('OPTION');
 			l_objSelect.appendChild(l_objOption);

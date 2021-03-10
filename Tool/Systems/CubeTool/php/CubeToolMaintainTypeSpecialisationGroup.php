@@ -82,9 +82,6 @@ g_xmlhttp.onreadystatechange = function() {
 							l_objNode.parentNode.removeChild(l_objNode);
 						}
 						break;
-					case "LIST_ATB":
-						OpenListBox(l_json_array[i].Rows,'attrib','Attribute','Y');
-						break;
 					case "SELECT_FKEY_TYP":
 						var l_json_values = l_json_array[i].Rows[0].Data;
 						document.getElementById("InputFkBotName").value=l_json_values.FkBotName;
@@ -97,7 +94,16 @@ g_xmlhttp.onreadystatechange = function() {
 						alert ('Server error:\n'+l_json_array[i].ErrorText);
 						break;
 					default:
-						alert ('Unknown reply:\n'+g_responseText);
+						if(l_json_array[i].ResultName.substring(0,5) == 'LIST_') {
+							switch (document.body._ListBoxCode){
+								case "Ref001":
+									OpenListBox(l_json_array[i].Rows,'attrib','Attribute');
+									break;
+							}
+						} else {
+							alert ('Unknown reply:\n'+g_responseText);
+						}
+						
 				}
 			}
 		} else {
@@ -110,7 +116,8 @@ function InitBody() {
 	var l_json_argument = JSON.parse(decodeURIComponent(location.href.split("?")[1]));
 	document.body._FlagDragging = 0;
 	document.body._DraggingId = ' ';
-	document.body._ListBoxCode="Ref000";
+	document.body._ListBoxCode = "Ref000";
+	document.body._ListBoxOptional = ' ';
 	var l_json_objectKey = l_json_argument.objectId;
 	g_json_option = l_json_argument.Option;
 	switch (l_json_argument.nodeType) {
@@ -264,6 +271,7 @@ function StartSelect001(p_event) {
 	document.body._SelectLeft = p_event.clientX;
 	document.body._SelectTop = p_event.clientY;
 	document.body._ListBoxCode = 'Ref001';
+	document.body._ListBoxOptional = 'Y';
 	var Parameters = {
 		Option: {
 			CubeScopeLevel:0

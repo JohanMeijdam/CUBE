@@ -487,5 +487,5 @@ Treeview</div>
 </div></div>
 <div class="header0" style="overflow:hidden;position:absolute;top:76px;left:40%;right:0;height:30px;">
 Detail</div><div style="overflow:auto;position:absolute;top:106px;bottom:0px;left:40%;right:0;background-color:white;border-left: 2px solid darkslategray;">
-<iframe id="DetailFrame" style="position:absolute;height:100%;width:100%;"></iframe>
+<iframe id="DetailFrame" style="position:absolute;height:100%;width:100%;" onmouseover="ResetState()"></iframe>
 </div></body></html>

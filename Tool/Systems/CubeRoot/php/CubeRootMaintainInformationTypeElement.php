@@ -60,7 +60,8 @@ g_xmlhttp.onreadystatechange = function() {
 									l_objNode,
 									'TYP_ITE',
 									l_json_node_id,
-									'icons/infelem.bmp', 
+									'icons/infelem.bmp',
+									'InformationTypeElement',
 									document.getElementById("InputSuffix").value.toLowerCase()+' ('+document.getElementById("InputDomain").value.toLowerCase()+')',
 									'N',
 									l_position,
@@ -89,8 +90,9 @@ g_xmlhttp.onreadystatechange = function() {
 					case "ERROR":
 						alert ('Server error:\n'+l_json_array[i].ErrorText);
 						break;
-					default:
+					default:	
 						alert ('Unknown reply:\n'+g_responseText);
+						
 				}
 			}
 		} else {
@@ -103,7 +105,8 @@ function InitBody() {
 	var l_json_argument = JSON.parse(decodeURIComponent(location.href.split("?")[1]));
 	document.body._FlagDragging = 0;
 	document.body._DraggingId = ' ';
-	document.body._ListBoxCode="Ref000";
+	document.body._ListBoxCode = "Ref000";
+	document.body._ListBoxOptional = ' ';
 	var l_json_objectKey = l_json_argument.objectId;
 	switch (l_json_argument.nodeType) {
 	case "D":

@@ -92,8 +92,9 @@ g_xmlhttp.onreadystatechange = function() {
 					case "ERROR":
 						alert ('Server error:\n'+l_json_array[i].ErrorText);
 						break;
-					default:
+					default:	
 						alert ('Unknown reply:\n'+g_responseText);
+						
 				}
 			}
 		} else {
@@ -106,7 +107,8 @@ function InitBody() {
 	var l_json_argument = JSON.parse(decodeURIComponent(location.href.split("?")[1]));
 	document.body._FlagDragging = 0;
 	document.body._DraggingId = ' ';
-	document.body._ListBoxCode="Ref000";
+	document.body._ListBoxCode = "Ref000";
+	document.body._ListBoxOptional = ' ';
 	var l_json_objectKey = l_json_argument.objectId;
 	g_json_option = l_json_argument.Option;
 	switch (l_json_argument.nodeType) {

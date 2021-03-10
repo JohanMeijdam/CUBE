@@ -35,6 +35,7 @@ Change log:
 30-12-2019 - List encapsulated based on starting type key.
 05-02-2020 - Reference scope type ENCAPSULATED removed.
 08-11-2020 - Use of PAGE model.
+10-03-2021 - Fix Multiple listboxes
 [[INCLUDE,templates\includes\general.cgt]]
 [[TEXT,DETAIL_RECURSIVE_PARMS]]
 		Option: {[[IF,REFERENCE:4=PRA]]
@@ -83,8 +84,8 @@ var g_parent_node_id = null;
 var g_node_id = null;
 
 g_xmlhttp.onreadystatechange = function() {
-	if(g_xmlhttp.readyState == 4) {
-		if(g_xmlhttp.status == 200) {
+	if (g_xmlhttp.readyState == 4) {
+		if (g_xmlhttp.status == 200) {
 			var g_responseText = g_xmlhttp.responseText;
 			try {
 				var l_json_array = JSON.parse(g_responseText);
@@ -151,10 +152,7 @@ g_xmlhttp.onreadystatechange = function() {
 						if (l_objNode != null) {
 							l_objNode.parentNode.removeChild(l_objNode);
 						}
-						break;[[LOOP,REFERENCE]][[LOOP,REFERENCE_TYPE]]
-					case "LIST_<<REFERENCE_TYPE1:U>>":
-						OpenListBox(l_json_array[i].Rows,'<<REFERENCE_TYPE7:L>>','<<REFERENCE_TYPE:C>>',[[IF,REFERENCE:1=Y]]'N'[[ELSE]]'Y'[[ENDIF]]);
-						break;[[ENDLOOP,REFERENCE_TYPE]][[ENDLOOP,REFERENCE]][[IF:CHILD(ATTRIBUTE:3=F[AND]CHILD(ATTRIBUTE_SOURCE:1=N))]]
+						break;[[IF:CHILD(ATTRIBUTE:3=F[AND]CHILD(ATTRIBUTE_SOURCE:1=N))]]
 					case "SELECT_FKEY_[[LOOP,^TYPE]]<<^TYPE1:U>>[[ENDLOOP,^TYPE]]":
 						var l_json_values = l_json_array[i].Rows[0].Data;[[LOOP,ATTRIBUTE:3=F[AND]CHILD(ATTRIBUTE_SOURCE:1=N)]]
 						document.getElementById("Input<<ATTRIBUTE:C>>").value=l_json_values.<<ATTRIBUTE:C>>;[[ENDLOOP,ATTRIBUTE]]
@@ -166,8 +164,18 @@ g_xmlhttp.onreadystatechange = function() {
 					case "ERROR":
 						alert ('Server error:\n'+l_json_array[i].ErrorText);
 						break;
-					default:
-						alert ('Unknown reply:\n'+g_responseText);
+					default:[[IF:CHILD(REFERENCE)]]
+						if (l_json_array[i].ResultName.substring(0,5) == 'LIST_') {
+							switch (document.body._ListBoxCode){[[LOOP,REFERENCE]][[LOOP,REFERENCE_TYPE]]
+								case "Ref<<REFERENCE:S>>":
+									OpenListBox(l_json_array[i].Rows,'<<REFERENCE_TYPE7:L>>','<<REFERENCE_TYPE:C>>');
+									break;[[ENDLOOP,REFERENCE_TYPE]][[ENDLOOP,REFERENCE]]
+							}
+						} else {
+							alert ('Unknown reply:\n'+g_responseText);
+						}[[ELSE]]	
+						alert ('Unknown reply:\n'+g_responseText);[[ENDIF]]
+						
 				}
 			}
 		} else {
@@ -180,7 +188,8 @@ function InitBody() {
 	var l_json_argument = JSON.parse(decodeURIComponent(location.href.split("?")[1]));
 	document.body._FlagDragging = 0;
 	document.body._DraggingId = ' ';
-	document.body._ListBoxCode="Ref000";
+	document.body._ListBoxCode = "Ref000";
+	document.body._ListBoxOptional = ' ';
 	var l_json_objectKey = l_json_argument.objectId;[[IF:6=P]]
 	g_json_option = l_json_argument.Option;[[ENDIF]]
 	switch (l_json_argument.nodeType) {
@@ -312,7 +321,8 @@ function UpdateForeignKey(p_obj) {
 function StartSelect<<REFERENCE:S>>(p_event) {
 	document.body._SelectLeft = p_event.clientX;
 	document.body._SelectTop = p_event.clientY;
-	document.body._ListBoxCode = 'Ref<<REFERENCE:S>>';[[LOOP,REFERENCE_TYPE]][[IF:3=Y[AND]!8=Y[AND]!REFERENCE.4=ALL[AND]REFERENCE.PARENT(TYPE:0=<<REFERENCE_TYPE>>)]][[EVAL:($myFlag=0)]][[IF,REFERENCE_TYPE:0=<<TYPE>>]]
+	document.body._ListBoxCode = 'Ref<<REFERENCE:S>>';
+	document.body._ListBoxOptional = '[[IF:1=Y]]N[[ELSE]]Y[[ENDIF]]';[[LOOP,REFERENCE_TYPE]][[IF:3=Y[AND]!8=Y[AND]!REFERENCE.4=ALL[AND]REFERENCE.PARENT(TYPE:0=<<REFERENCE_TYPE>>)]][[EVAL:($myFlag=0)]][[IF,REFERENCE_TYPE:0=<<TYPE>>]]
 	var Parameters = {[[EVAL:($myFlag=1)]]<<TEXT,DETAIL_RECURSIVE_PARMS>>
 		Type: {[[LOOP,ATTRIBUTE:1=Y]]
 			<<ATTRIBUTE:C>>:document.getElementById("Input<<ATTRIBUTE:C>>").value[[IF:!LAST]],[[ENDIF]][[ENDLOOP,ATTRIBUTE]]
