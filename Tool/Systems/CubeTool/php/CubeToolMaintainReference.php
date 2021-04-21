@@ -16,8 +16,8 @@ var g_parent_node_id = null;
 var g_node_id = null;
 
 g_xmlhttp.onreadystatechange = function() {
-	if(g_xmlhttp.readyState == 4) {
-		if(g_xmlhttp.status == 200) {
+	if (g_xmlhttp.readyState == 4) {
+		if (g_xmlhttp.status == 200) {
 			var g_responseText = g_xmlhttp.responseText;
 			try {
 				var l_json_array = JSON.parse(g_responseText);
@@ -97,7 +97,7 @@ g_xmlhttp.onreadystatechange = function() {
 						alert ('Server error:\n'+l_json_array[i].ErrorText);
 						break;
 					default:
-						if(l_json_array[i].ResultName.substring(0,5) == 'LIST_') {
+						if (l_json_array[i].ResultName.substring(0,5) == 'LIST_') {
 							switch (document.body._ListBoxCode){
 								case "Ref001":
 									OpenListBox(l_json_array[i].Rows,'botype','BusinessObjectType');
@@ -303,8 +303,14 @@ function StartSelect002(p_event) {
 	document.body._SelectTop = p_event.clientY;
 	document.body._ListBoxCode = 'Ref002';
 	document.body._ListBoxOptional = 'N';
+	var Parameters = {
+		Ref: {
+			FkBotName:document.getElementById("InputFkBotName").value
+		}
+	};
 	PerformTrans( {
-		Service: "GetTypListAll"
+		Service: "GetTypForBotListAll",
+		Parameters
 	} );
 }
 
@@ -366,7 +372,6 @@ function ProcessTypeSpecialisation() {
 <tr id="RowAtbScope"><td style="cursor:help" oncontextmenu="parent.OpenDescBox('ref','Reference.Scope','REFERENCE','SCOPE',-1)"><div>Scope</div></td><td><div><select id="InputScope" type="text">
 	<option value=" " selected> </option>
 	<option value="ALL">All</option>
-	<option value="ENC">Encapsulated</option>
 	<option value="PRA">Parents all</option>
 	<option value="PR1">Parents first level</option>
 	<option value="CHA">Children all</option>
