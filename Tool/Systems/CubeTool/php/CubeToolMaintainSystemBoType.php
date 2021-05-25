@@ -101,7 +101,7 @@ function InitBody() {
 	var l_json_objectKey = l_json_argument.objectId;
 	g_json_option = l_json_argument.Option;
 	switch (l_json_argument.nodeType) {
-	case "D":
+	case "D": // Details of existing object 
 		g_node_id = JSON.stringify(l_json_argument.objectId);
 		document.getElementById("InputFkSysName").value=l_json_objectKey.TYP_SBT.FkSysName;
 		document.getElementById("InputXkBotName").value=l_json_objectKey.TYP_SBT.XkBotName;
@@ -111,7 +111,7 @@ function InitBody() {
 		document.getElementById("InputXkBotName").disabled=true;
 		document.getElementById("RefSelect001").disabled=true;
 		break;
-	case "N":
+	case "N": // New (non recursive) object
 		g_parent_node_id = JSON.stringify(l_json_argument.objectId);
 		document.getElementById("InputFkSysName").value=l_json_objectKey.TYP_SYS.Name;
 		document.getElementById("ButtonUpdate").disabled=true;

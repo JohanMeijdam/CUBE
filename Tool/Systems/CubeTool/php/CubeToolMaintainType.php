@@ -112,7 +112,7 @@ function InitBody() {
 	var l_json_objectKey = l_json_argument.objectId;
 	g_json_option = l_json_argument.Option;
 	switch (l_json_argument.nodeType) {
-	case "D":
+	case "D": // Details of existing object 
 		g_node_id = JSON.stringify(l_json_argument.objectId);
 		document.getElementById("InputName").value=l_json_objectKey.TYP_TYP.Name;
 		document.getElementById("ButtonCreate").disabled=true;
@@ -126,7 +126,7 @@ function InitBody() {
 		document.getElementById("InputFkTypName").disabled=true;
 		document.getElementById("InputName").disabled=true;
 		break;
-	case "N":
+	case "N": // New (non recursive) object
 		g_parent_node_id = JSON.stringify(l_json_argument.objectId);
 		document.getElementById("InputFkBotName").value=l_json_objectKey.TYP_BOT.Name;
 		document.getElementById("ButtonUpdate").disabled=true;
@@ -134,7 +134,7 @@ function InitBody() {
 		document.getElementById("InputFkBotName").disabled=true;
 		document.getElementById("InputFkTypName").disabled=true;
 		break;  
-	case "R":
+	case "R": // New recursive object
 		g_parent_node_id = JSON.stringify(l_json_argument.objectId);
 		document.getElementById("InputFkTypName").value=l_json_objectKey.TYP_TYP.Name;
 		document.getElementById("ButtonUpdate").disabled=true;

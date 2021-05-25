@@ -153,20 +153,20 @@ function Highlight(p_obj) {
 		return;
 	}
 	switch (document.body._state) {
-	case 'N':
+	case 'N': // Normal 
 		document.body.style.cursor = "pointer";
 		break;
-	case 'M':
+	case 'M': // Moving object
 		if ((g_currentParentId != p_obj.parentNode._parentId || g_currentObjIndex < p_obj.parentNode.parentNode._index) && g_currentParentId != p_obj.parentNode.id) {
 			document.body.style.cursor = "url(icons/pointer-pos-nok.cur), default";	
 		}
 		break;
-	case 'P':
+	case 'P': // Changing oject parent
 		if ((g_currentRootId != p_obj.parentNode._rootId || g_currentObjType != p_obj.parentNode._type) && g_currentRootId != p_obj.parentNode.id || IsInHierarchy(g_objNodeDiv, p_obj.parentNode)) {
 			document.body.style.cursor = "url(icons/pointer-par-nok.cur), default";
 		}
 		break;
-	case 'A':
+	case 'A': // Adding object
 		if ((g_currentObjId != p_obj.parentNode._parentId || g_currentChildIndex < p_obj.parentNode.parentNode._index ) && g_currentObjId != p_obj.parentNode.id) {
 			document.body.style.cursor = "url(icons/pointer-pos-nok.cur), default";	
 		}
@@ -181,16 +181,16 @@ function DeHighlight(p_obj) {
 		return;
 	}
 	switch (document.body._state) {
-	case 'N':
+	case 'N': // Normal
 		document.body.style.cursor = "default";
 		break;
-	case 'M':
+	case 'M': // Moving object
 		document.body.style.cursor = "url(icons/pointer-pos.cur), default";	
 		break;
-	case 'P':
+	case 'P': // Changing oject parent
 		document.body.style.cursor = "url(icons/pointer-par.cur), default";	
 		break;
-	case 'A':
+	case 'A': // Adding object
 		document.body.style.cursor = "url(icons/pointer-pos.cur), default";	
 		break;
 	}
@@ -204,7 +204,7 @@ function CloseTreeviewNode(p_obj) {
 }
 
 function OpenCloseMouseOver(p_obj) {
-	if (document.body._state !== "N") return;
+	if (document.body._state !== "N") return; // User interaction in progres
 	if (p_obj._state == 'O') {
 		p_obj.src='icons/open_h.bmp';
 	} else {
@@ -213,7 +213,7 @@ function OpenCloseMouseOver(p_obj) {
 }
 
 function OpenCloseMouseOut(p_obj) {
-	if (document.body._state !== "N") return;
+	if (document.body._state !== "N") return; // User interaction in progres
 	if (p_obj._state == 'O') {
 		p_obj.src='icons/open.bmp';
 	} else {
@@ -325,11 +325,11 @@ function OpenMenuItem(p_obj) {
 	switch (p_obj._code) {
 	case 'CubeMove':
 		document.body.style.cursor = "url(icons/pointer-pos.cur), default";
-		document.body._state = "M";
+		document.body._state = "M"; // Moving object
 		break;
 	case 'CubeChangePar':
 		document.body.style.cursor = "url(icons/pointer-par.cur), default";
-		document.body._state = "P";
+		document.body._state = "P"; // Changing object parent
 		document.body._menuItemType = p_obj._type;
 		document.body._flagPosition = p_obj._flagPosition;
 		break;
@@ -340,7 +340,7 @@ function OpenMenuItem(p_obj) {
 			OpenDetailPage(p_obj._name, p_obj._nodeType, g_currentObjId, '{"Code":"F"}');
 		} else {
 			document.body.style.cursor = "url(icons/pointer-pos.cur), default";
-			document.body._state = "A";
+			document.body._state = "A"; // Adding object
 			g_currentChildIndex = p_obj._childIndex;
 			g_currentNodeType = p_obj._nodeType;
 			g_currentObjType = p_obj._type;
@@ -358,7 +358,7 @@ function CloseMenu() {
 }
 
 function ResetState() {
-	document.body._state="N";
+	document.body._state="N"; // Normal
 	if (g_xmlhttp.readyState == 1) {
 		document.body.style.cursor = "wait";
 		return;

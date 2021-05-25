@@ -106,7 +106,7 @@ function InitBody() {
 	document.body._ListBoxOptional = ' ';
 	var l_json_objectKey = l_json_argument.objectId;
 	switch (l_json_argument.nodeType) {
-	case "D":
+	case "D": // Details of existing object 
 		g_node_id = JSON.stringify(l_json_argument.objectId);
 		document.getElementById("InputName").value=l_json_objectKey.TYP_SYS.Name;
 		document.getElementById("ButtonCreate").disabled=true;
@@ -119,7 +119,7 @@ function InitBody() {
 		document.getElementById("InputName").disabled=true;
 		document.getElementById("InputCubeTsgType").disabled=true;
 		break;
-	case "N":
+	case "N": // New (non recursive) object
 		g_parent_node_id = JSON.stringify(l_json_argument.objectId);
 		document.getElementById("ButtonUpdate").disabled=true;
 		document.getElementById("ButtonDelete").disabled=true;

@@ -92,7 +92,7 @@ function InitBody() {
 	var l_json_objectKey = l_json_argument.objectId;
 	g_json_option = l_json_argument.Option;
 	switch (l_json_argument.nodeType) {
-	case "D":
+	case "D": // Details of existing object 
 		g_node_id = JSON.stringify(l_json_argument.objectId);
 		document.getElementById("InputFkFunName").value=l_json_objectKey.TYP_ARG.FkFunName;
 		document.getElementById("InputName").value=l_json_objectKey.TYP_ARG.Name;
@@ -101,7 +101,7 @@ function InitBody() {
 		document.getElementById("InputFkFunName").disabled=true;
 		document.getElementById("InputName").disabled=true;
 		break;
-	case "N":
+	case "N": // New (non recursive) object
 		g_parent_node_id = JSON.stringify(l_json_argument.objectId);
 		document.getElementById("InputFkFunName").value=l_json_objectKey.TYP_FUN.Name;
 		document.getElementById("ButtonUpdate").disabled=true;

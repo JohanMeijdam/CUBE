@@ -193,7 +193,7 @@ function InitBody() {
 	var l_json_objectKey = l_json_argument.objectId;[[IF:6=P]]
 	g_json_option = l_json_argument.Option;[[ENDIF]]
 	switch (l_json_argument.nodeType) {
-	case "D":
+	case "D": // Details of existing object 
 		g_node_id = JSON.stringify(l_json_argument.objectId);[[LOOP,ATTRIBUTE:1=Y]]
 		document.getElementById("Input<<ATTRIBUTE:C>>").value=l_json_objectKey.TYP_<<TYPE1>>.<<ATTRIBUTE:C>>;[[ENDLOOP,ATTRIBUTE]]
 		document.getElementById("ButtonCreate").disabled=true;[[IF:CHILD(ATTRIBUTE:1=N[AND]4=N)]]
@@ -207,7 +207,7 @@ function InitBody() {
 		document.getElementById("Input<<ATTRIBUTE:C>>").disabled=true;[[ENDLOOP,ATTRIBUTE]][[LOOP,REFERENCE:1=Y[OR]5=Y]]
 		document.getElementById("RefSelect<<REFERENCE:S>>").disabled=true;[[ENDLOOP,REFERENCE]]
 		break;
-	case "N":
+	case "N": // New (non recursive) object
 		g_parent_node_id = JSON.stringify(l_json_argument.objectId);[[LOOP,ATTRIBUTE:3=F[AND]CHILD(ATTRIBUTE_SOURCE:1=Y)]]
 		document.getElementById("Input<<ATTRIBUTE:C>>").value=l_json_objectKey.TYP_[[LOOP,ATTRIBUTE_SOURCE]][[LOOP,^TYPE]]<<^TYPE1>>[[ENDLOOP,^TYPE]].<<ATTRIBUTE_SOURCE:C>>[[ENDLOOP,ATTRIBUTE_SOURCE]];[[ENDLOOP,ATTRIBUTE]]
 		document.getElementById("ButtonUpdate").disabled=true;
@@ -220,7 +220,7 @@ function InitBody() {
 		} );[[ENDIF]][[LOOP,ATTRIBUTE:(3=F[OR]3=R)[AND]4=N]]
 		document.getElementById("Input<<ATTRIBUTE:C>>").disabled=true;[[ENDLOOP,ATTRIBUTE]]
 		break;[[IF,TYPE:3=Y]]  
-	case "R":
+	case "R": // New recursive object
 		g_parent_node_id = JSON.stringify(l_json_argument.objectId);[[IF,TYPE:2=Y]][[LOOP,ATTRIBUTE:3=F[AND]CHILD(ATTRIBUTE_SOURCE:1=Y)[OR]3=R]]
 		document.getElementById("Input<<ATTRIBUTE:C>>").value=l_json_objectKey.TYP_<<TYPE1>>.[[IF:3=F]]<<ATTRIBUTE:C>>[[ELSE]][[LOOP,ATTRIBUTE_SOURCE]]<<ATTRIBUTE_SOURCE:C>>[[ENDLOOP,ATTRIBUTE_SOURCE]][[ENDIF]];[[ENDLOOP,ATTRIBUTE]][[ELSE]][[LOOP,ATTRIBUTE:3=R]]
 		document.getElementById("Input<<ATTRIBUTE:C>>").value=l_json_objectKey.TYP_<<TYPE1>>.[[LOOP,ATTRIBUTE_SOURCE]]<<ATTRIBUTE_SOURCE:C>>[[ENDLOOP,ATTRIBUTE_SOURCE]];[[ENDLOOP,ATTRIBUTE]][[ENDIF]]
