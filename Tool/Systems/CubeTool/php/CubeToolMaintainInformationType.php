@@ -106,6 +106,7 @@ function InitBody() {
 		g_parent_node_id = JSON.stringify(l_json_argument.objectId);
 		document.getElementById("ButtonUpdate").disabled=true;
 		document.getElementById("ButtonDelete").disabled=true;
+		document.getElementById("InputName").value=' ';
 		break;
 	default:
 		alert ('Error InitBody: '+l_argument[1]);

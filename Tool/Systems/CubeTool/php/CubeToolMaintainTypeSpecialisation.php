@@ -148,6 +148,11 @@ function InitBody() {
 		document.getElementById("InputFkBotName").disabled=true;
 		document.getElementById("InputFkTypName").disabled=true;
 		document.getElementById("InputFkTsgCode").disabled=true;
+		document.getElementById("InputCode").value=' ';
+		document.getElementById("InputName").value=' ';
+		document.getElementById("InputXfTspTypName").value=' ';
+		document.getElementById("InputXfTspTsgCode").value=' ';
+		document.getElementById("InputXkTspCode").value=' ';
 		break;
 	default:
 		alert ('Error InitBody: '+l_argument[1]);

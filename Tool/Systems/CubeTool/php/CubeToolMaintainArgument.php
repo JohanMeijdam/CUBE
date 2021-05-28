@@ -107,6 +107,7 @@ function InitBody() {
 		document.getElementById("ButtonUpdate").disabled=true;
 		document.getElementById("ButtonDelete").disabled=true;
 		document.getElementById("InputFkFunName").disabled=true;
+		document.getElementById("InputName").value=' ';
 		break;
 	default:
 		alert ('Error InitBody: '+l_argument[1]);

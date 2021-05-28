@@ -165,14 +165,20 @@ function InitBody() {
 		} );
 		document.getElementById("InputFkBotName").disabled=true;
 		document.getElementById("InputFkTypName").disabled=true;
+		document.getElementById("InputName").value=' ';
+		document.getElementById("InputPrimaryKey").value='N';
+		document.getElementById("InputCodeDisplayKey").value='N';
+		document.getElementById("InputSequence").value='0';
+		document.getElementById("InputScope").value='ALL';
+		document.getElementById("InputUnchangeable").value='N';
+		document.getElementById("InputWithinScopeExtension").value=' ';
+		document.getElementById("InputXkBotName").value=' ';
+		document.getElementById("InputXkTypName").value=' ';
+		document.getElementById("InputXkTypName1").value=' ';
 		break;
 	default:
 		alert ('Error InitBody: '+l_argument[1]);
 	}
-	document.getElementById("InputPrimaryKey").value='N';
-	document.getElementById("InputCodeDisplayKey").value='N';
-	document.getElementById("InputScope").value='ALL';
-	document.getElementById("InputUnchangeable").value='N';
 }
 
 function CreateRef() {

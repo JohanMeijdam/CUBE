@@ -44,7 +44,7 @@
 		
 -	RESTRICTION_SPEC_TYPE_TARGET implementatie  (ORDER is besteld door KLANT alleen voor externe klant).
 	-	Van de bijbehorende REFERENCE van de target de SPECIALISATION_TYPEs kunnen selecteren.
-		-	Bij een REFERENCE WithinScopeSourceOrTarget impelementeren. 
+		-	Bij een REFERENCE WithinScopeSourceOrTarget implementeren. 
 			In case of "within scope of" type that it concerns the source type or the target type of the reference. 
 		
 -	BUG Transfarable type mag niet worden geplaatst op een plaats waar de cardinality wordt overschreden.

@@ -129,16 +129,19 @@ function InitBody() {
 		document.getElementById("ButtonUpdate").disabled=true;
 		document.getElementById("ButtonDelete").disabled=true;
 		document.getElementById("InputFkItpName").disabled=true;
+		document.getElementById("InputSequence").value='0';
+		document.getElementById("InputSuffix").value='#';
+		document.getElementById("InputDomain").value='TEXT';
+		document.getElementById("InputLength").value='0';
+		document.getElementById("InputDecimals").value='0';
+		document.getElementById("InputCaseSensitive").value='N';
+		document.getElementById("InputDefaultValue").value=' ';
+		document.getElementById("InputSpacesAllowed").value='N';
+		document.getElementById("InputPresentation").value='LIN';
 		break;
 	default:
 		alert ('Error InitBody: '+l_argument[1]);
 	}
-	document.getElementById("InputDomain").value='TEXT';
-	document.getElementById("InputLength").value='0';
-	document.getElementById("InputDecimals").value='0';
-	document.getElementById("InputCaseSensitive").value='N';
-	document.getElementById("InputSpacesAllowed").value='N';
-	document.getElementById("InputPresentation").value='LIN';
 }
 
 function CreateIte() {

@@ -36,6 +36,8 @@ Change log:
 05-02-2020 - Reference scope type ENCAPSULATED removed.
 08-11-2020 - Use of PAGE model.
 10-03-2021 - Fix Multiple listboxes
+25-05-2021 - Default value also for primary key
+28-05-2021 - Default value also for primary key including external foreign keys
 [[INCLUDE,templates\includes\general.cgt]]
 [[TEXT,DETAIL_RECURSIVE_PARMS]]
 		Option: {[[IF,REFERENCE:4=PRA]]
@@ -66,6 +68,8 @@ Change log:
 *]][[ELSIF:3=number]]<div style="max-width:[[EVAL:<<PAGE_FIELD4>>+1]]em;"><input id="Input<<PAGE_FIELD>>" type="text"<<TEXT,DETAIL_CHANGE_EVENT>> maxlength="[[EVAL:<<PAGE_FIELD4>>+1]]" style="width:100%"[[IF:5=Y]] disabled[[ENDIF]]></input></div>[[*
 *]][[ELSIF:3=date]]<div style="max-width:12ch;"><input id="Input<<PAGE_FIELD>>" type="text"<<TEXT,DETAIL_CHANGE_EVENT>> maxlength="10" style="width:100%"[[IF:5=Y]] disabled[[ENDIF]]></input></div>[[ENDIF]][[ENDTEXT]]
 [[TEXT,DETAIL_DESCRIPTION]][[LOOP,DESCRIPTION]] style="cursor:help" oncontextmenu="parent.OpenDescBox('<<DESCRIPTION3>>','<<DESCRIPTION4>>','<<DESCRIPTION>>','<<DESCRIPTION1>>',<<DESCRIPTION2>>)"[[ENDLOOP,DESCRIPTION]][[ENDTEXT]]
+[[TEXT,DETAIL_DEFAULT_VALUE]][[LOOP,ATTRIBUTE:(3=N[OR]3=X)[AND]!5=[AND]!CHILD(ATTRIBUTE_TYPE_SPECIALISATION_GROUP)]]
+		document.getElementById("Input<<ATTRIBUTE:C>>").value='<<ATTRIBUTE5>>';[[ENDLOOP,ATTRIBUTE]][[ENDTEXT]]
 [[BODY]][[LOOP,SYSTEM:0=<<1>>]][[LOOP,SYSTEM_PAGE]][[LOOP,PAGE]][[FILE,<<2>>\<<1>><<PAGE>>.php]][[LOOP,TYPE]]<?php
 session_start();
 $_SESSION['views']=0;
@@ -218,7 +222,7 @@ function InitBody() {
 				Type: l_json_objectKey.TYP_[[LOOP,^TYPE]]<<^TYPE1>>[[ENDLOOP,^TYPE]]
 			}
 		} );[[ENDIF]][[LOOP,ATTRIBUTE:(3=F[OR]3=R)[AND]4=N]]
-		document.getElementById("Input<<ATTRIBUTE:C>>").disabled=true;[[ENDLOOP,ATTRIBUTE]]
+		document.getElementById("Input<<ATTRIBUTE:C>>").disabled=true;[[ENDLOOP,ATTRIBUTE]]<<TEXT,DETAIL_DEFAULT_VALUE>>
 		break;[[IF,TYPE:3=Y]]  
 	case "R": // New recursive object
 		g_parent_node_id = JSON.stringify(l_json_argument.objectId);[[IF,TYPE:2=Y]][[LOOP,ATTRIBUTE:3=F[AND]CHILD(ATTRIBUTE_SOURCE:1=Y)[OR]3=R]]
@@ -232,12 +236,11 @@ function InitBody() {
 				Type: l_json_objectKey.TYP_<<TYPE1>>
 			}
 		} );[[ENDIF]][[LOOP,ATTRIBUTE:(3=F[OR]3=R)[AND]4=N]]
-		document.getElementById("Input<<ATTRIBUTE:C>>").disabled=true;[[ENDLOOP,ATTRIBUTE]]
+		document.getElementById("Input<<ATTRIBUTE:C>>").disabled=true;[[ENDLOOP,ATTRIBUTE]]<<TEXT,DETAIL_DEFAULT_VALUE>>
 		break;[[ENDIF]]
 	default:
 		alert ('Error InitBody: '+l_argument[1]);
-	}[[LOOP,ATTRIBUTE:1=N[AND]3=N[AND]!5=[AND]!CHILD(ATTRIBUTE_TYPE_SPECIALISATION_GROUP)]]
-	document.getElementById("Input<<ATTRIBUTE:C>>").value='<<ATTRIBUTE5>>';[[ENDLOOP,ATTRIBUTE]]
+	}
 }
 
 function Create<<TYPE1:C>>() {
@@ -357,7 +360,7 @@ function ProcessTypeSpecialisation() {
 		switch (document.getElementById("Input<<ATTRIBUTE:C>>").value) {[[LOOP,TYPE_SPECIALISATION:CHILD(*RESTRICTION_TYPE_SPEC_ATB)[OR]CHILD(*RESTRICTION_TYPE_SPEC_REF)]]
 		case "<<TYPE_SPECIALISATION>>":[[LOOP,*RESTRICTION_TYPE_SPEC_ATB]][[LOOP,^ATTRIBUTE:4=N]][[IF:!3=X]]
 			document.getElementById("RowAtb<<^ATTRIBUTE:C>>").style.display="none";[[ENDIF]][[IF:1=Y]]
-			document.getElementById("Input<<^ATTRIBUTE:C>>").value="<<TEXT,GEN_NULL_VALUE_TEXT>>";[[ENDIF]][[ENDLOOP,^ATTRIBUTE]][[ENDLOOP,*RESTRICTION_TYPE_SPEC_ATB]][[LOOP,*RESTRICTION_TYPE_SPEC_REF]][[LOOP,^REFERENCE]]
+			document.getElementById("Input<<^ATTRIBUTE:C>>").value="[[LOOP,INFORMATION_TYPE_ELEMENT]]<<TEXT,GEN_NULL_VALUE_TEXT>>[[ENDLOOP,INFORMATION_TYPE_ELEMENT]]";[[ENDIF]][[ENDLOOP,^ATTRIBUTE]][[ENDLOOP,*RESTRICTION_TYPE_SPEC_ATB]][[LOOP,*RESTRICTION_TYPE_SPEC_REF]][[LOOP,^REFERENCE]]
 			document.getElementById("RowRef[[LOOP,REFERENCE_TYPE]]<<REFERENCE_TYPE:C>>[[ENDLOOP,REFERENCE_TYPE]]<<^REFERENCE3>>").style.display="none";[[ENDLOOP,^REFERENCE]][[ENDLOOP,*RESTRICTION_TYPE_SPEC_REF]]
 			break;[[ENDLOOP,TYPE_SPECIALISATION]]
 		}[[ENDLOOP,ATTRIBUTE_TYPE_SPECIALISATION_GROUP]][[ENDLOOP,ATTRIBUTE]]

@@ -162,11 +162,14 @@ function InitBody() {
 		document.getElementById("InputFkRefSequence").disabled=true;
 		document.getElementById("InputFkRefBotName").disabled=true;
 		document.getElementById("InputFkRefTypName").disabled=true;
+		document.getElementById("InputIncludeOrExclude").value='IN';
+		document.getElementById("InputXfTspTypName").value=' ';
+		document.getElementById("InputXfTspTsgCode").value=' ';
+		document.getElementById("InputXkTspCode").value=' ';
 		break;
 	default:
 		alert ('Error InitBody: '+l_argument[1]);
 	}
-	document.getElementById("InputIncludeOrExclude").value='IN';
 }
 
 function CreateRts() {

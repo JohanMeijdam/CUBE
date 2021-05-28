@@ -133,6 +133,16 @@ function InitBody() {
 		document.getElementById("ButtonDelete").disabled=true;
 		document.getElementById("InputFkBotName").disabled=true;
 		document.getElementById("InputFkTypName").disabled=true;
+		document.getElementById("InputCubeLevel").value='1';
+		document.getElementById("InputName").value=' ';
+		document.getElementById("InputCode").value=' ';
+		document.getElementById("InputFlagPartialKey").value='Y';
+		document.getElementById("InputFlagRecursive").value='N';
+		document.getElementById("InputRecursiveCardinality").value='N';
+		document.getElementById("InputCardinality").value='N';
+		document.getElementById("InputSortOrder").value='N';
+		document.getElementById("InputIcon").value=' ';
+		document.getElementById("InputTransferable").value='Y';
 		break;  
 	case "R": // New recursive object
 		g_parent_node_id = JSON.stringify(l_json_argument.objectId);
@@ -147,17 +157,20 @@ function InitBody() {
 		} );
 		document.getElementById("InputFkBotName").disabled=true;
 		document.getElementById("InputFkTypName").disabled=true;
+		document.getElementById("InputCubeLevel").value='1';
+		document.getElementById("InputName").value=' ';
+		document.getElementById("InputCode").value=' ';
+		document.getElementById("InputFlagPartialKey").value='Y';
+		document.getElementById("InputFlagRecursive").value='N';
+		document.getElementById("InputRecursiveCardinality").value='N';
+		document.getElementById("InputCardinality").value='N';
+		document.getElementById("InputSortOrder").value='N';
+		document.getElementById("InputIcon").value=' ';
+		document.getElementById("InputTransferable").value='Y';
 		break;
 	default:
 		alert ('Error InitBody: '+l_argument[1]);
 	}
-	document.getElementById("InputCubeLevel").value='1';
-	document.getElementById("InputFlagPartialKey").value='Y';
-	document.getElementById("InputFlagRecursive").value='N';
-	document.getElementById("InputRecursiveCardinality").value='N';
-	document.getElementById("InputCardinality").value='N';
-	document.getElementById("InputSortOrder").value='N';
-	document.getElementById("InputTransferable").value='Y';
 }
 
 function CreateTyp() {

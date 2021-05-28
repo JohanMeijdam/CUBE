@@ -149,11 +149,13 @@ function InitBody() {
 		document.getElementById("InputFkBotName").disabled=true;
 		document.getElementById("InputFkTypName").disabled=true;
 		document.getElementById("InputFkAtbName").disabled=true;
+		document.getElementById("InputAggregateFunction").value='SUM';
+		document.getElementById("InputXkTypName").value=' ';
+		document.getElementById("InputXkTypName1").value=' ';
 		break;
 	default:
 		alert ('Error InitBody: '+l_argument[1]);
 	}
-	document.getElementById("InputAggregateFunction").value='SUM';
 }
 
 function CreateDer() {

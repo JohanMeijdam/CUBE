@@ -187,6 +187,12 @@ function InitBody() {
 		document.getElementById("InputFkJsnAtbTypName").disabled=true;
 		document.getElementById("InputFkJsnAtbName").disabled=true;
 		document.getElementById("InputFkJsnTypName").disabled=true;
+		document.getElementById("InputCubeLevel").value='1';
+		document.getElementById("InputName").value=' ';
+		document.getElementById("InputLocation").value='0';
+		document.getElementById("InputXfAtbTypName").value=' ';
+		document.getElementById("InputXkAtbName").value=' ';
+		document.getElementById("InputXkTypName").value=' ';
 		break;  
 	case "R": // New recursive object
 		g_parent_node_id = JSON.stringify(l_json_argument.objectId);
@@ -211,11 +217,16 @@ function InitBody() {
 		document.getElementById("InputFkJsnAtbTypName").disabled=true;
 		document.getElementById("InputFkJsnAtbName").disabled=true;
 		document.getElementById("InputFkJsnTypName").disabled=true;
+		document.getElementById("InputCubeLevel").value='1';
+		document.getElementById("InputName").value=' ';
+		document.getElementById("InputLocation").value='0';
+		document.getElementById("InputXfAtbTypName").value=' ';
+		document.getElementById("InputXkAtbName").value=' ';
+		document.getElementById("InputXkTypName").value=' ';
 		break;
 	default:
 		alert ('Error InitBody: '+l_argument[1]);
 	}
-	document.getElementById("InputCubeLevel").value='1';
 }
 
 function CreateJsn() {

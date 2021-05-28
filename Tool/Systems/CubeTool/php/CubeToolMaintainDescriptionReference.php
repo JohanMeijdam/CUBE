@@ -139,6 +139,7 @@ function InitBody() {
 		document.getElementById("InputFkRefSequence").disabled=true;
 		document.getElementById("InputFkRefBotName").disabled=true;
 		document.getElementById("InputFkRefTypName").disabled=true;
+		document.getElementById("InputText").value=' ';
 		break;
 	default:
 		alert ('Error InitBody: '+l_argument[1]);

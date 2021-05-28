@@ -123,6 +123,8 @@ function InitBody() {
 		document.getElementById("ButtonDelete").disabled=true;
 		document.getElementById("InputFkItpName").disabled=true;
 		document.getElementById("InputFkIteSequence").disabled=true;
+		document.getElementById("InputCode").value=' ';
+		document.getElementById("InputPrompt").value=' ';
 		break;
 	default:
 		alert ('Error InitBody: '+l_argument[1]);
