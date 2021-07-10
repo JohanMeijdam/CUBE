@@ -57,9 +57,6 @@ g_xmlhttp.onreadystatechange = function() {
 					case "UPDATE_FUN":
 						break;
 					case "DELETE_FUN":
-						document.getElementById("ButtonCreate").disabled=false;
-						document.getElementById("ButtonUpdate").disabled=true;
-						document.getElementById("ButtonDelete").disabled=true;
 						var l_objNode = parent.document.getElementById(g_node_id);
 						if (g_parent_node_id == null) {
 							g_parent_node_id = l_objNode.parentNode.parentNode.id;
@@ -67,6 +64,7 @@ g_xmlhttp.onreadystatechange = function() {
 						if (l_objNode != null) {
 							l_objNode.parentNode.removeChild(l_objNode);
 						}
+						parent.document.getElementById('DetailFrame').src='about:blank';
 						break;
 					case "ERROR":
 						alert ('Server error:\n'+l_json_array[i].ErrorText);

@@ -16,8 +16,8 @@ var g_parent_node_id = null;
 var g_node_id = null;
 
 g_xmlhttp.onreadystatechange = function() {
-	if(g_xmlhttp.readyState == 4) {
-		if(g_xmlhttp.status == 200) {
+	if (g_xmlhttp.readyState == 4) {
+		if (g_xmlhttp.status == 200) {
 			var g_responseText = g_xmlhttp.responseText;
 			try {
 				var l_json_array = JSON.parse(g_responseText);
@@ -58,7 +58,8 @@ g_xmlhttp.onreadystatechange = function() {
 									l_objNode,
 									'TYP_PRD',
 									l_json_node_id,
-									'icons/produkt.bmp', 
+									'icons/produkt.bmp',
+									'Produkt',
 									'('+document.getElementById("InputCubeTsgType").value.toLowerCase()+')'+' ('+document.getElementById("InputCubeTsgSoort").value.toLowerCase()+')'+' ('+document.getElementById("InputCubeTsgSoort1").value.toLowerCase()+')'+' '+document.getElementById("InputCode").value.toLowerCase(),
 									'N',
 									l_position,
@@ -73,9 +74,6 @@ g_xmlhttp.onreadystatechange = function() {
 					}
 						break;
 					case "DELETE_PRD":
-						document.getElementById("ButtonCreate").disabled=false;
-						document.getElementById("ButtonUpdate").disabled=true;
-						document.getElementById("ButtonDelete").disabled=true;
 						var l_objNode = parent.document.getElementById(g_node_id);
 						if (g_parent_node_id == null) {
 							g_parent_node_id = l_objNode.parentNode.parentNode.id;
@@ -83,12 +81,14 @@ g_xmlhttp.onreadystatechange = function() {
 						if (l_objNode != null) {
 							l_objNode.parentNode.removeChild(l_objNode);
 						}
+						parent.document.getElementById('DetailFrame').src='about:blank';
 						break;
 					case "ERROR":
 						alert ('Server error:\n'+l_json_array[i].ErrorText);
 						break;
-					default:
+					default:	
 						alert ('Unknown reply:\n'+g_responseText);
+						
 				}
 			}
 		} else {
@@ -101,10 +101,11 @@ function InitBody() {
 	var l_json_argument = JSON.parse(decodeURIComponent(location.href.split("?")[1]));
 	document.body._FlagDragging = 0;
 	document.body._DraggingId = ' ';
-	document.body._ListBoxCode="Ref000";
+	document.body._ListBoxCode = "Ref000";
+	document.body._ListBoxOptional = ' ';
 	var l_json_objectKey = l_json_argument.objectId;
 	switch (l_json_argument.nodeType) {
-	case "D":
+	case "D": // Details of existing object 
 		g_node_id = JSON.stringify(l_json_argument.objectId);
 		document.getElementById("InputCubeTsgType").value=l_json_objectKey.TYP_PRD.CubeTsgType;
 		document.getElementById("InputCode").value=l_json_objectKey.TYP_PRD.Code;
@@ -120,10 +121,14 @@ function InitBody() {
 		document.getElementById("InputCubeTsgSoort1").disabled=true;
 		document.getElementById("InputCode").disabled=true;
 		break;
-	case "N":
+	case "N": // New (non recursive) object
 		g_parent_node_id = JSON.stringify(l_json_argument.objectId);
 		document.getElementById("ButtonUpdate").disabled=true;
 		document.getElementById("ButtonDelete").disabled=true;
+		document.getElementById("InputCode").value=' ';
+		document.getElementById("InputPrijs").value='0';
+		document.getElementById("InputMakelaarNaam").value=' ';
+		document.getElementById("InputBedragBtw").value='0';
 		break;
 	default:
 		alert ('Error InitBody: '+l_argument[1]);
@@ -198,9 +203,9 @@ function ProcessTypeSpecialisation() {
 	}
 }
 
-function ResetFieldCubeTsgSoort1(p_field_id) {
+function ResetFieldCubeTsgSoort1(p_obj) {
 	document.getElementById("InputCubeTsgSoort1").value=' ';
-	switch (document.getElementById(p_field_id).value){
+	switch (p_obj.value){
 	case "R":
 		document.getElementById("ValCubeTsgSoort1-GARAGE").style.display="none";
 		document.getElementById("ValCubeTsgSoort1-WOON").style.display="none";
@@ -219,19 +224,19 @@ function ResetFieldCubeTsgSoort1(p_field_id) {
 <div><img src="icons/produkt_large.bmp" /><span style="cursor:help" oncontextmenu="parent.OpenDescBox('produkt','Produkt','PRODUKT','_',-1)"> PRODUKT /
 <select id="InputCubeTsgType" type="text" onchange="ProcessTypeSpecialisation()">
 	<option value=" " selected>&lt;type&gt;</option>
-	<option value="P">PARTICULIER</option>
-	<option value="Z">ZAKELIJK</option>
+	<option id="ValCubeTsgType-P" style="display:inline" value="P">PARTICULIER</option>
+	<option id="ValCubeTsgType-Z" style="display:inline" value="Z">ZAKELIJK</option>
 </select> /
-<select id="InputCubeTsgSoort" type="text" onchange="ResetFieldCubeTsgSoort1('InputCubeTsgSoort')">
+<select id="InputCubeTsgSoort" type="text" onchange="ResetFieldCubeTsgSoort1(this)">
 	<option value=" " selected>&lt;soort&gt;</option>
-	<option value="R">ROEREND_GOED</option>
-	<option value="O">ONROEREND_GOED</option>
+	<option id="ValCubeTsgSoort-R" style="display:inline" value="R">ROEREND_GOED</option>
+	<option id="ValCubeTsgSoort-O" style="display:inline" value="O">ONROEREND_GOED</option>
 </select> <b>.</b>
 <select id="InputCubeTsgSoort1" type="text" onchange="ProcessTypeSpecialisation()">
 	<option value=" " selected>&lt;soort1&gt;</option>
-	<option id="ValCubeTsgSoort1-GARAGE" style="display:none" value="GARAGE">GARAGE</option>
-	<option id="ValCubeTsgSoort1-WOON" style="display:none" value="WOON">WOONHUIS</option>
-	<option id="ValCubeTsgSoort1-VERVOER" style="display:none" value="VERVOER">VERVOERMIDDEL</option>
+	<option id="ValCubeTsgSoort1-GARAGE" style="display:inline" value="GARAGE">GARAGE</option>
+	<option id="ValCubeTsgSoort1-WOON" style="display:inline" value="WOON">WOONHUIS</option>
+	<option id="ValCubeTsgSoort1-VERVOER" style="display:inline" value="VERVOER">VERVOERMIDDEL</option>
 </select></span></div>
 <hr/>
 <table id="TableMain" style="display:none">

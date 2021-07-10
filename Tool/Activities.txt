@@ -52,3 +52,6 @@
 -	Bij een update waarschuwen als er iets is gewijzigd dat de wijziging ongedaan wordt gemaakt als niet op Update is gedrukt.
 
 -	Attribuut voor specialisation group!
+
+
+-	Reference TYPE_SPECIALISATION naar parent TYPE_SPECIALISATION is verwarrend. Bij een REFERENCE optioneel een alternatieve naam voor de targtet opnemen

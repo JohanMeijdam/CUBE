@@ -38,6 +38,9 @@ Change log:
 10-03-2021 - Fix Multiple listboxes
 25-05-2021 - Default value also for primary key
 28-05-2021 - Default value also for primary key including external foreign keys
+05-07-2021 - Close detail by Delete
+05-07-2021 - Element <Option> always an id
+10-07-2021 - Onchange improved
 [[INCLUDE,templates\includes\general.cgt]]
 [[TEXT,DETAIL_RECURSIVE_PARMS]]
 		Option: {[[IF,REFERENCE:4=PRA]]
@@ -56,14 +59,13 @@ Change log:
 [[TEXT,DETAIL_ROOT_NAME]][[LOOP,ATTRIBUTE_ROOT_TYPE]]<<ATTRIBUTE_ROOT_TYPE:C>>[[ENDLOOP,ATTRIBUTE_ROOT_TYPE]].[[LOOP,ATTRIBUTE_ROOT]][[IF:CHILD(ATTRIBUTE_TYPE_SPECIALISATION_GROUP)]][[LOOP,ATTRIBUTE_TYPE_SPECIALISATION_GROUP]]<<ATTRIBUTE_TYPE_SPECIALISATION_GROUP1:C>>[[ENDLOOP,ATTRIBUTE_TYPE_SPECIALISATION_GROUP]][[ELSE]]<<ATTRIBUTE_ROOT:C>>[[ENDIF]][[ENDLOOP,ATTRIBUTE_ROOT]][[ENDTEXT]]
 [[TEXT,DETAIL_MAXLENGTH]] maxlength="[[IF:2=DATE]]10[[ELSIF:2=NUMBER]][[EVAL:<<INFORMATION_TYPE_ELEMENT3>>+1]][[ELSE]]<<INFORMATION_TYPE_ELEMENT3>>[[ENDIF]]"[[ENDTEXT]]
 [[TEXT,DETAIL_STYLE_MAX-WIDTH]] style="max-width:[[IF:2=DATE]]12ch[[ELSIF:2=NUMBER]][[EVAL:<<INFORMATION_TYPE_ELEMENT3>>+1]]em[[ELSE]]<<INFORMATION_TYPE_ELEMENT3>>em[[ENDIF]];"[[ENDTEXT]]
-[[TEXT,DETAIL_ONCHANGE]][[IF:5=N[OR]7=N]] onchange="[[IF:5=N]]ToUpperCase(this);[[ENDIF]][[IF:7=N]]ReplaceSpaces(this);[[ENDIF]]"[[ENDIF]][[ENDTEXT]]
-[[TEXT,DETAIL_CHANGE_EVENT]][[IF:CHILD(CHANGE_EVENT)]] onchange="[[LOOP,CHANGE_EVENT]]<<CHANGE_EVENT>>[[ENDLOOP,CHANGE_EVENT]]"[[ENDIF]][[ENDTEXT]]
+[[TEXT,DETAIL_CHANGE_EVENT]][[IF:CHILD(*PAGE_SELECTOR_SWITCH)]] onchange="[[IF:CHILD(CONTROLLED_PAGE_FIELD)]]ResetField[[LOOP,CONTROLLED_PAGE_FIELD]][[LOOP,PAGE_FIELD_ATTRIBUTE]]<<PAGE_FIELD_ATTRIBUTE:C>>[[ENDLOOP,PAGE_FIELD_ATTRIBUTE]][[ENDLOOP,CONTROLLED_PAGE_FIELD]](this)[[ELSE]]ProcessTypeSpecialisation()[[ENDIF]]"[[ENDIF]][[ENDTEXT]]
 [[TEXT,DETAIL_INPUT]][[*
    *]][[IF:3=text-line]]<div style="max-width:<<PAGE_FIELD4>>em;"><input id="Input<<PAGE_FIELD>>" type="text"<<TEXT,DETAIL_CHANGE_EVENT>> maxlength="<<PAGE_FIELD4>>" style="width:100%"[[IF:6=Y[OR]7=Y]] onchange="[[IF:6=Y]]ToUpperCase(this);[[ENDIF]][[IF:7=Y]]ReplaceSpaces(this);[[ENDIF]]"[[ENDIF]][[IF:5=Y]] disabled[[ENDIF]]></input></div>[[*
 *]][[ELSIF:3=text-desc]]<div><textarea id="Input<<PAGE_FIELD>>" type="text"<<TEXT,DETAIL_CHANGE_EVENT>> maxlength="<<PAGE_FIELD4>>" rows="5" style="white-space:normal;width:100%"[[IF:5=Y]] disabled[[ENDIF]]></textarea></div>[[*
 *]][[ELSIF:3=text-code]]<div><textarea id="Input<<PAGE_FIELD>>" type="text"<<TEXT,DETAIL_CHANGE_EVENT>> maxlength="<<PAGE_FIELD4>>" rows="11" style="overflow:auto;white-space:pre;font-family:courier new;font-size:12px;width:100%"[[IF:5=Y]] disabled[[ENDIF]]></textarea></div>[[*
 *]][[ELSIF:3=selection]][[IF:!CHILD(*PAGE_SELECTOR_SWITCH)]]<div>[[ENDIF]]<select id="Input<<PAGE_FIELD>>" type="text"<<TEXT,DETAIL_CHANGE_EVENT>>[[IF:5=Y]] disabled[[ENDIF]]>[[LOOP,OPTION]]
-	<option[[IF:!FIRST]][[IF,PAGE_FIELD:8=Y]] id="Val<<PAGE_FIELD>>-<<OPTION>>" style="display:none"[[ENDIF]][[ENDIF]] value="<<OPTION>>"[[IF:FIRST]] selected[[ENDIF]]><<OPTION1:HE>></option>[[ENDLOOP,OPTION]]
+	<option[[IF:!0=CUBE_NO_SELECTION]] id="Val<<PAGE_FIELD>>-<<OPTION>>" style="display:inline" value="<<OPTION>>"[[ELSE]] value=" "[[ENDIF]][[IF:FIRST]] selected[[ENDIF]]><<OPTION1:HE>></option>[[ENDLOOP,OPTION]]
 </select>[[IF:!CHILD(*PAGE_SELECTOR_SWITCH)]]</div>[[ENDIF]][[*
 *]][[ELSIF:3=number]]<div style="max-width:[[EVAL:<<PAGE_FIELD4>>+1]]em;"><input id="Input<<PAGE_FIELD>>" type="text"<<TEXT,DETAIL_CHANGE_EVENT>> maxlength="[[EVAL:<<PAGE_FIELD4>>+1]]" style="width:100%"[[IF:5=Y]] disabled[[ENDIF]]></input></div>[[*
 *]][[ELSIF:3=date]]<div style="max-width:12ch;"><input id="Input<<PAGE_FIELD>>" type="text"<<TEXT,DETAIL_CHANGE_EVENT>> maxlength="10" style="width:100%"[[IF:5=Y]] disabled[[ENDIF]]></input></div>[[ENDIF]][[ENDTEXT]]
@@ -146,9 +148,6 @@ g_xmlhttp.onreadystatechange = function() {
 					}[[ENDIF]]
 						break;
 					case "DELETE_<<TYPE1:U>>":
-						document.getElementById("ButtonCreate").disabled=false;
-						document.getElementById("ButtonUpdate").disabled=true;
-						document.getElementById("ButtonDelete").disabled=true;
 						var l_objNode = parent.document.getElementById(g_node_id);
 						if (g_parent_node_id == null) {
 							g_parent_node_id = l_objNode.parentNode.parentNode.id;
@@ -156,6 +155,7 @@ g_xmlhttp.onreadystatechange = function() {
 						if (l_objNode != null) {
 							l_objNode.parentNode.removeChild(l_objNode);
 						}
+						parent.document.getElementById('DetailFrame').src='about:blank';
 						break;[[IF:CHILD(ATTRIBUTE:3=F[AND]CHILD(ATTRIBUTE_SOURCE:1=N))]]
 					case "SELECT_FKEY_[[LOOP,^TYPE]]<<^TYPE1:U>>[[ENDLOOP,^TYPE]]":
 						var l_json_values = l_json_array[i].Rows[0].Data;[[LOOP,ATTRIBUTE:3=F[AND]CHILD(ATTRIBUTE_SOURCE:1=N)]]
@@ -368,11 +368,11 @@ function ProcessTypeSpecialisation() {
 	}
 }[[ENDIF]][[LOOP,ATTRIBUTE:CHILD(ATTRIBUTE_GROUP)]]
 
-function ResetField<<ATTRIBUTE:C>>(p_field_id) {
+function ResetField<<ATTRIBUTE:C>>(p_obj) {
 	document.getElementById("Input<<ATTRIBUTE:C>>").value=' ';
-	switch (document.getElementById(p_field_id).value){[[LOOP,ATTRIBUTE_GROUP]][[LOOP,ATTRIBUTE_GROUP_ATTRIBUTE]][[LOOP,INFORMATION_TYPE_ELEMENT]][[LOOP,PERMITTED_VALUE]]
-	case "<<PERMITTED_VALUE>>":[[FOR,ATTRIBUTE:N>N]][[LOOP,INFORMATION_TYPE_ELEMENT]][[LOOP,PERMITTED_VALUE]][[LOOP,PERMITTED_VALUE_GROUP]]
-		document.getElementById("Val<<ATTRIBUTE:C>>-<<PERMITTED_VALUE>>").style.display="[[IF:0=<<PERMITTED_VALUE(N-1)>>]]inline[[ELSE]]none[[ENDIF]]";[[ENDLOOP,PERMITTED_VALUE_GROUP]][[ENDLOOP,PERMITTED_VALUE]][[ENDLOOP,INFORMATION_TYPE_ELEMENT]][[ENDFOR]]
+	switch (p_obj.value){[[LOOP,ATTRIBUTE_GROUP]][[LOOP,ATTRIBUTE_GROUP_ATTRIBUTE]][[LOOP,INFORMATION_TYPE_ELEMENT]][[LOOP,PERMITTED_VALUE]]
+	case "<<PERMITTED_VALUE>>":[[FOR,ATTRIBUTE:N>N]][[LOOP,INFORMATION_TYPE_ELEMENT]][[LOOP,PERMITTED_VALUE]][[LOOP,PERMITTED_VALUE_TYPE_SPECIALISATION]][[LOOP,TYPE_SPECIALISATION]]
+		document.getElementById("Val<<ATTRIBUTE:C>>-<<PERMITTED_VALUE>>").style.display="[[IF:0=<<PERMITTED_VALUE(N-1)>>]]inline[[ELSE]]none[[ENDIF]]";[[ENDLOOP,TYPE_SPECIALISATION]][[ENDLOOP,PERMITTED_VALUE_TYPE_SPECIALISATION]][[ENDLOOP,PERMITTED_VALUE]][[ENDLOOP,INFORMATION_TYPE_ELEMENT]][[ENDFOR]]
 		break;[[ENDLOOP,PERMITTED_VALUE]][[ENDLOOP,INFORMATION_TYPE_ELEMENT]][[ENDLOOP,ATTRIBUTE_GROUP_ATTRIBUTE]][[ENDLOOP,ATTRIBUTE_GROUP]]
 	}
 }[[ENDLOOP,ATTRIBUTE]][[ENDLOOP,TYPE]]

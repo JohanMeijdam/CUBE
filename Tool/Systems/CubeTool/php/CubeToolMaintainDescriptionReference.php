@@ -64,9 +64,6 @@ g_xmlhttp.onreadystatechange = function() {
 					case "UPDATE_DCR":
 						break;
 					case "DELETE_DCR":
-						document.getElementById("ButtonCreate").disabled=false;
-						document.getElementById("ButtonUpdate").disabled=true;
-						document.getElementById("ButtonDelete").disabled=true;
 						var l_objNode = parent.document.getElementById(g_node_id);
 						if (g_parent_node_id == null) {
 							g_parent_node_id = l_objNode.parentNode.parentNode.id;
@@ -74,6 +71,7 @@ g_xmlhttp.onreadystatechange = function() {
 						if (l_objNode != null) {
 							l_objNode.parentNode.removeChild(l_objNode);
 						}
+						parent.document.getElementById('DetailFrame').src='about:blank';
 						break;
 					case "SELECT_FKEY_REF":
 						var l_json_values = l_json_array[i].Rows[0].Data;

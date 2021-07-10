@@ -83,7 +83,7 @@ function DefineTypePosition (p_parentType, p_type, p_switch) {
 }
 
 function OpenCloseOnClick(p_obj) {
-	if (document.body._state !== "N") return;
+	if (document.body._state !== "N") return;  // User interaction in progres
 	if (g_xmlhttp.readyState == 1) {
 		document.body.style.cursor = "wait";
 		return;
@@ -127,13 +127,13 @@ function OpenDetail(p_obj) {
 	CloseMenu();
 
 	switch (document.body._state) {
-	case 'N':
+	case 'N': // Normal (no user interaction)
 		ResetState();
 		if (p_obj.parentNode._type.substr(0,4) == 'TYP_') {
 			OpenDetailPage(p_obj.parentNode._name, 'D', p_obj.parentNode.id, null);
 		}
 		break;
-	case 'M':
+	case 'M': // Moving object
 		if (g_currentParentId == p_obj.parentNode._parentId && g_currentObjIndex >= p_obj.parentNode.parentNode._index || g_currentParentId == p_obj.parentNode.id) {
 			if (g_currentParentId == p_obj.parentNode.id) {
 				document.body._moveAction = "B";
@@ -162,7 +162,7 @@ function OpenDetail(p_obj) {
 			}
 		}
 		break;
-	case 'P':
+	case 'P': // Changing object parent
 		if ((g_currentRootId == p_obj.parentNode._rootId && g_currentObjType == p_obj.parentNode._type || g_currentRootId == p_obj.parentNode.id) && !IsInHierarchy(g_objNodeDiv, p_obj.parentNode) ) {
 			if (g_currentRootId == p_obj.parentNode.id) {
 				g_currentSpanIndex = 2;
@@ -188,7 +188,7 @@ function OpenDetail(p_obj) {
 			}
 		}
 		break;
-	case 'A':
+	case 'A': // Adding object
 		if (g_currentObjId == p_obj.parentNode._parentId && g_currentChildIndex >= p_obj.parentNode.parentNode._index || g_currentObjId == p_obj.parentNode.id) {
 			if (g_currentObjId == p_obj.parentNode._parentId && g_currentChildIndex == p_obj.parentNode.parentNode._index) {
 				var l_option = '{"Code":"A","Type":'+p_obj.parentNode.id+'}';
@@ -319,5 +319,5 @@ Treeview</div>
 </div></div>
 <div class="header0" style="overflow:hidden;position:absolute;top:76px;left:40%;right:0;height:30px;">
 Detail</div><div style="overflow:auto;position:absolute;top:106px;bottom:0px;left:40%;right:0;background-color:white;border-left: 2px solid darkslategray;">
-<iframe id="DetailFrame" style="position:absolute;height:100%;width:100%;"></iframe>
+<iframe id="DetailFrame" style="position:absolute;height:100%;width:100%;" onmouseover="ResetState()"></iframe>
 </div></body></html>

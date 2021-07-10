@@ -16,8 +16,8 @@ var g_parent_node_id = null;
 var g_node_id = null;
 
 g_xmlhttp.onreadystatechange = function() {
-	if(g_xmlhttp.readyState == 4) {
-		if(g_xmlhttp.status == 200) {
+	if (g_xmlhttp.readyState == 4) {
+		if (g_xmlhttp.status == 200) {
 			var g_responseText = g_xmlhttp.responseText;
 			try {
 				var l_json_array = JSON.parse(g_responseText);
@@ -55,7 +55,8 @@ g_xmlhttp.onreadystatechange = function() {
 									l_objNode,
 									'TYP_DDD',
 									l_json_node_id,
-									'icons/attrib.bmp', 
+									'icons/attrib.bmp',
+									'OnderdeelDeelDeel',
 									document.getElementById("InputCode").value.toLowerCase(),
 									'N',
 									l_position,
@@ -66,9 +67,6 @@ g_xmlhttp.onreadystatechange = function() {
 					case "UPDATE_DDD":
 						break;
 					case "DELETE_DDD":
-						document.getElementById("ButtonCreate").disabled=false;
-						document.getElementById("ButtonUpdate").disabled=true;
-						document.getElementById("ButtonDelete").disabled=true;
 						var l_objNode = parent.document.getElementById(g_node_id);
 						if (g_parent_node_id == null) {
 							g_parent_node_id = l_objNode.parentNode.parentNode.id;
@@ -76,6 +74,7 @@ g_xmlhttp.onreadystatechange = function() {
 						if (l_objNode != null) {
 							l_objNode.parentNode.removeChild(l_objNode);
 						}
+						parent.document.getElementById('DetailFrame').src='about:blank';
 						break;
 					case "SELECT_FKEY_ODD":
 						var l_json_values = l_json_array[i].Rows[0].Data;
@@ -86,8 +85,9 @@ g_xmlhttp.onreadystatechange = function() {
 					case "ERROR":
 						alert ('Server error:\n'+l_json_array[i].ErrorText);
 						break;
-					default:
+					default:	
 						alert ('Unknown reply:\n'+g_responseText);
+						
 				}
 			}
 		} else {
@@ -100,11 +100,12 @@ function InitBody() {
 	var l_json_argument = JSON.parse(decodeURIComponent(location.href.split("?")[1]));
 	document.body._FlagDragging = 0;
 	document.body._DraggingId = ' ';
-	document.body._ListBoxCode="Ref000";
+	document.body._ListBoxCode = "Ref000";
+	document.body._ListBoxOptional = ' ';
 	var l_json_objectKey = l_json_argument.objectId;
 	g_json_option = l_json_argument.Option;
 	switch (l_json_argument.nodeType) {
-	case "D":
+	case "D": // Details of existing object 
 		g_node_id = JSON.stringify(l_json_argument.objectId);
 		document.getElementById("InputCode").value=l_json_objectKey.TYP_DDD.Code;
 		document.getElementById("ButtonCreate").disabled=true;
@@ -120,7 +121,7 @@ function InitBody() {
 		document.getElementById("InputFkOddCode").disabled=true;
 		document.getElementById("InputCode").disabled=true;
 		break;
-	case "N":
+	case "N": // New (non recursive) object
 		g_parent_node_id = JSON.stringify(l_json_argument.objectId);
 		document.getElementById("InputFkOddCode").value=l_json_objectKey.TYP_ODD.Code;
 		document.getElementById("ButtonUpdate").disabled=true;
@@ -135,6 +136,8 @@ function InitBody() {
 		document.getElementById("InputFkPrdCode").disabled=true;
 		document.getElementById("InputFkOndCode").disabled=true;
 		document.getElementById("InputFkOddCode").disabled=true;
+		document.getElementById("InputCode").value=' ';
+		document.getElementById("InputNaam").value=' ';
 		break;
 	default:
 		alert ('Error InitBody: '+l_argument[1]);
@@ -211,8 +214,8 @@ function DeleteDdd() {
 <table>
 <tr id="RowAtbFkPrdCubeTsgType"><td><div>Produkt.Type</div></td><td><div><select id="InputFkPrdCubeTsgType" type="text">
 	<option value=" " selected> </option>
-	<option value="P">PARTICULIER</option>
-	<option value="Z">ZAKELIJK</option>
+	<option id="ValFkPrdCubeTsgType-P" style="display:inline" value="P">PARTICULIER</option>
+	<option id="ValFkPrdCubeTsgType-Z" style="display:inline" value="Z">ZAKELIJK</option>
 </select></div></td></tr>
 <tr id="RowAtbFkPrdCode"><td><div>Produkt.Code</div></td><td><div style="max-width:8em;"><input id="InputFkPrdCode" type="text" maxlength="8" style="width:100%" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
 <tr id="RowAtbFkOndCode"><td><div>Onderdeel.Code</div></td><td><div style="max-width:8em;"><input id="InputFkOndCode" type="text" maxlength="8" style="width:100%" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
