@@ -187,18 +187,18 @@ function DeletePrd() {
 function ProcessTypeSpecialisation() {
 	if (document.getElementById("InputCubeTsgType").value != ' ' && document.getElementById("InputCubeTsgSoort").value != ' ' && document.getElementById("InputCubeTsgSoort1").value != ' ') {
 		document.getElementById("InputCubeTsgType").disabled=true;
-		document.getElementById("InputCubeTsgSoort").disabled=true;
-		document.getElementById("InputCubeTsgSoort1").disabled=true;
 		switch (document.getElementById("InputCubeTsgType").value) {
 		case "P":
 			document.getElementById("RowAtbBedragBtw").style.display="none";
 			break;
 		}
+		document.getElementById("InputCubeTsgSoort").disabled=true;
 		switch (document.getElementById("InputCubeTsgSoort").value) {
 		case "R":
 			document.getElementById("RowAtbMakelaarNaam").style.display="none";
 			break;
 		}
+		document.getElementById("InputCubeTsgSoort1").disabled=true;
 		document.getElementById("TableMain").style.display="inline";
 	}
 }
