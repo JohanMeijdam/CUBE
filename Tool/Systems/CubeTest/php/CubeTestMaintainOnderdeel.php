@@ -211,6 +211,8 @@ function DeleteOnd() {
 		}
 	} );
 }
+
+
 -->
 </script>
 </head><body oncontextmenu="return false;" onload="InitBody()" ondrop="drop(event)" ondragover="allowDrop(event)">
@@ -219,8 +221,8 @@ function DeleteOnd() {
 <table>
 <tr id="RowAtbFkPrdCubeTsgType"><td><u><div>Produkt.Type</div></u></td><td><div><select id="InputFkPrdCubeTsgType" type="text">
 	<option value=" " selected> </option>
-	<option id="ValFkPrdCubeTsgType-P" style="display:inline" value="P">PARTICULIER</option>
-	<option id="ValFkPrdCubeTsgType-Z" style="display:inline" value="Z">ZAKELIJK</option>
+	<option id="OptionFkPrdCubeTsgType-P" style="display:inline" value="P">PARTICULIER</option>
+	<option id="OptionFkPrdCubeTsgType-Z" style="display:inline" value="Z">ZAKELIJK</option>
 </select></div></td></tr>
 <tr id="RowAtbFkPrdCode"><td><u><div>Produkt.Code</div></u></td><td><div style="max-width:8em;"><input id="InputFkPrdCode" type="text" maxlength="8" style="width:100%" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
 <tr id="RowAtbFkOndCode"><td><div>Onderdeel.Code</div></td><td><div style="max-width:8em;"><input id="InputFkOndCode" type="text" maxlength="8" style="width:100%" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>

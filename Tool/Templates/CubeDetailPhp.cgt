@@ -59,16 +59,16 @@ Change log:
 [[TEXT,DETAIL_ROOT_NAME]][[LOOP,ATTRIBUTE_ROOT_TYPE]]<<ATTRIBUTE_ROOT_TYPE:C>>[[ENDLOOP,ATTRIBUTE_ROOT_TYPE]].[[LOOP,ATTRIBUTE_ROOT]][[IF:CHILD(ATTRIBUTE_TYPE_SPECIALISATION_GROUP)]][[LOOP,ATTRIBUTE_TYPE_SPECIALISATION_GROUP]]<<ATTRIBUTE_TYPE_SPECIALISATION_GROUP1:C>>[[ENDLOOP,ATTRIBUTE_TYPE_SPECIALISATION_GROUP]][[ELSE]]<<ATTRIBUTE_ROOT:C>>[[ENDIF]][[ENDLOOP,ATTRIBUTE_ROOT]][[ENDTEXT]]
 [[TEXT,DETAIL_MAXLENGTH]] maxlength="[[IF:2=DATE]]10[[ELSIF:2=NUMBER]][[EVAL:<<INFORMATION_TYPE_ELEMENT3>>+1]][[ELSE]]<<INFORMATION_TYPE_ELEMENT3>>[[ENDIF]]"[[ENDTEXT]]
 [[TEXT,DETAIL_STYLE_MAX-WIDTH]] style="max-width:[[IF:2=DATE]]12ch[[ELSIF:2=NUMBER]][[EVAL:<<INFORMATION_TYPE_ELEMENT3>>+1]]em[[ELSE]]<<INFORMATION_TYPE_ELEMENT3>>em[[ENDIF]];"[[ENDTEXT]]
-[[TEXT,DETAIL_CHANGE_EVENT]][[IF:CHILD(*PAGE_SELECTOR_SWITCH)]] onchange="[[IF:CHILD(CONTROLLED_PAGE_FIELD)]]ResetField[[LOOP,CONTROLLED_PAGE_FIELD]][[LOOP,PAGE_FIELD_ATTRIBUTE]]<<PAGE_FIELD_ATTRIBUTE:C>>[[ENDLOOP,PAGE_FIELD_ATTRIBUTE]][[ENDLOOP,CONTROLLED_PAGE_FIELD]](this)[[ELSE]]ProcessTypeSpecialisation()[[ENDIF]]"[[ENDIF]][[ENDTEXT]]
+[[TEXT,DETAIL_CHANGE_EVENT]][[IF:CHILD(*PAGE_SELECTOR_SWITCH)]] onchange="[[IF:CHILD(CONTROLLED_PAGE_FIELD)]]ProcessChange<<PAGE_FIELD>>(this)[[ELSE]]ProcessTypeSpecialisation()[[ENDIF]]"[[ENDIF]][[ENDTEXT]]
 [[TEXT,DETAIL_INPUT]][[*
-   *]][[IF:3=text-line]]<div style="max-width:<<PAGE_FIELD4>>em;"><input id="Input<<PAGE_FIELD>>" type="text"<<TEXT,DETAIL_CHANGE_EVENT>> maxlength="<<PAGE_FIELD4>>" style="width:100%"[[IF:6=Y[OR]7=Y]] onchange="[[IF:6=Y]]ToUpperCase(this);[[ENDIF]][[IF:7=Y]]ReplaceSpaces(this);[[ENDIF]]"[[ENDIF]][[IF:5=Y]] disabled[[ENDIF]]></input></div>[[*
-*]][[ELSIF:3=text-desc]]<div><textarea id="Input<<PAGE_FIELD>>" type="text"<<TEXT,DETAIL_CHANGE_EVENT>> maxlength="<<PAGE_FIELD4>>" rows="5" style="white-space:normal;width:100%"[[IF:5=Y]] disabled[[ENDIF]]></textarea></div>[[*
-*]][[ELSIF:3=text-code]]<div><textarea id="Input<<PAGE_FIELD>>" type="text"<<TEXT,DETAIL_CHANGE_EVENT>> maxlength="<<PAGE_FIELD4>>" rows="11" style="overflow:auto;white-space:pre;font-family:courier new;font-size:12px;width:100%"[[IF:5=Y]] disabled[[ENDIF]]></textarea></div>[[*
-*]][[ELSIF:3=selection]][[IF:!CHILD(*PAGE_SELECTOR_SWITCH)]]<div>[[ENDIF]]<select id="Input<<PAGE_FIELD>>" type="text"<<TEXT,DETAIL_CHANGE_EVENT>>[[IF:5=Y]] disabled[[ENDIF]]>[[LOOP,OPTION]]
-	<option[[IF:!0=CUBE_NO_SELECTION]] id="Val<<PAGE_FIELD>>-<<OPTION>>" style="display:inline" value="<<OPTION>>"[[ELSE]] value=" "[[ENDIF]][[IF:FIRST]] selected[[ENDIF]]><<OPTION1:HE>></option>[[ENDLOOP,OPTION]]
+   *]][[IF:3=text-line]]<div style="max-width:<<PAGE_FIELD4>>em;"><input id="<<PAGE_FIELD>>" type="text"<<TEXT,DETAIL_CHANGE_EVENT>> maxlength="<<PAGE_FIELD4>>" style="width:100%"[[IF:6=Y[OR]7=Y]] onchange="[[IF:6=Y]]ToUpperCase(this);[[ENDIF]][[IF:7=Y]]ReplaceSpaces(this);[[ENDIF]]"[[ENDIF]][[IF:5=Y]] disabled[[ENDIF]]></input></div>[[*
+*]][[ELSIF:3=text-desc]]<div><textarea id="<<PAGE_FIELD>>" type="text"<<TEXT,DETAIL_CHANGE_EVENT>> maxlength="<<PAGE_FIELD4>>" rows="5" style="white-space:normal;width:100%"[[IF:5=Y]] disabled[[ENDIF]]></textarea></div>[[*
+*]][[ELSIF:3=text-code]]<div><textarea id="<<PAGE_FIELD>>" type="text"<<TEXT,DETAIL_CHANGE_EVENT>> maxlength="<<PAGE_FIELD4>>" rows="11" style="overflow:auto;white-space:pre;font-family:courier new;font-size:12px;width:100%"[[IF:5=Y]] disabled[[ENDIF]]></textarea></div>[[*
+*]][[ELSIF:3=selection]][[IF:!CHILD(*PAGE_SELECTOR_SWITCH)]]<div>[[ENDIF]]<select id="<<PAGE_FIELD>>" type="text"<<TEXT,DETAIL_CHANGE_EVENT>>[[IF:5=Y]] disabled[[ENDIF]]>[[LOOP,OPTION]]
+	<option[[IF:!1=CUBE_NO_SELECTION]] id="<<OPTION>>" style="display:inline" value="<<OPTION1>>"[[ELSE]] value=" "[[ENDIF]][[IF:FIRST]] selected[[ENDIF]]><<OPTION2:HE>></option>[[ENDLOOP,OPTION]]
 </select>[[IF:!CHILD(*PAGE_SELECTOR_SWITCH)]]</div>[[ENDIF]][[*
-*]][[ELSIF:3=number]]<div style="max-width:[[EVAL:<<PAGE_FIELD4>>+1]]em;"><input id="Input<<PAGE_FIELD>>" type="text"<<TEXT,DETAIL_CHANGE_EVENT>> maxlength="[[EVAL:<<PAGE_FIELD4>>+1]]" style="width:100%"[[IF:5=Y]] disabled[[ENDIF]]></input></div>[[*
-*]][[ELSIF:3=date]]<div style="max-width:12ch;"><input id="Input<<PAGE_FIELD>>" type="text"<<TEXT,DETAIL_CHANGE_EVENT>> maxlength="10" style="width:100%"[[IF:5=Y]] disabled[[ENDIF]]></input></div>[[ENDIF]][[ENDTEXT]]
+*]][[ELSIF:3=number]]<div style="max-width:[[EVAL:<<PAGE_FIELD4>>+1]]em;"><input id="<<PAGE_FIELD>>" type="text"<<TEXT,DETAIL_CHANGE_EVENT>> maxlength="[[EVAL:<<PAGE_FIELD4>>+1]]" style="width:100%"[[IF:5=Y]] disabled[[ENDIF]]></input></div>[[*
+*]][[ELSIF:3=date]]<div style="max-width:12ch;"><input id="<<PAGE_FIELD>>" type="text"<<TEXT,DETAIL_CHANGE_EVENT>> maxlength="10" style="width:100%"[[IF:5=Y]] disabled[[ENDIF]]></input></div>[[ENDIF]][[ENDTEXT]]
 [[TEXT,DETAIL_DESCRIPTION]][[LOOP,DESCRIPTION]] style="cursor:help" oncontextmenu="parent.OpenDescBox('<<DESCRIPTION3>>','<<DESCRIPTION4>>','<<DESCRIPTION>>','<<DESCRIPTION1>>',<<DESCRIPTION2>>)"[[ENDLOOP,DESCRIPTION]][[ENDTEXT]]
 [[TEXT,DETAIL_DEFAULT_VALUE]][[LOOP,ATTRIBUTE:(3=N[OR]3=X)[AND]!5=[AND]!CHILD(ATTRIBUTE_TYPE_SPECIALISATION_GROUP)]]
 		document.getElementById("Input<<ATTRIBUTE:C>>").value='<<ATTRIBUTE5>>';[[ENDLOOP,ATTRIBUTE]][[ENDTEXT]]
@@ -366,16 +366,18 @@ function ProcessTypeSpecialisation() {
 		}[[ENDLOOP,ATTRIBUTE_TYPE_SPECIALISATION_GROUP]][[ENDLOOP,ATTRIBUTE]]
 		document.getElementById("TableMain").style.display="inline";
 	}
-}[[ENDIF]][[LOOP,ATTRIBUTE:CHILD(ATTRIBUTE_GROUP)]]
+}[[ENDIF]][[ENDLOOP,TYPE]][[LOOP,PAGE_FIELD:CHILD(CONTROLLED_PAGE_FIELD)]]
 
-function ResetField<<ATTRIBUTE:C>>(p_obj) {
-	document.getElementById("Input<<ATTRIBUTE:C>>").value=' ';
-	switch (p_obj.value){[[LOOP,ATTRIBUTE_GROUP]][[LOOP,ATTRIBUTE_GROUP_ATTRIBUTE]][[LOOP,INFORMATION_TYPE_ELEMENT]][[LOOP,PERMITTED_VALUE]]
-	case "<<PERMITTED_VALUE>>":[[FOR,ATTRIBUTE:N>N]][[LOOP,INFORMATION_TYPE_ELEMENT]][[LOOP,PERMITTED_VALUE]][[LOOP,PERMITTED_VALUE_TYPE_SPECIALISATION]][[LOOP,TYPE_SPECIALISATION]]
-		document.getElementById("Val<<ATTRIBUTE:C>>-<<PERMITTED_VALUE>>").style.display="[[IF:0=<<PERMITTED_VALUE(N-1)>>]]inline[[ELSE]]none[[ENDIF]]";[[ENDLOOP,TYPE_SPECIALISATION]][[ENDLOOP,PERMITTED_VALUE_TYPE_SPECIALISATION]][[ENDLOOP,PERMITTED_VALUE]][[ENDLOOP,INFORMATION_TYPE_ELEMENT]][[ENDFOR]]
-		break;[[ENDLOOP,PERMITTED_VALUE]][[ENDLOOP,INFORMATION_TYPE_ELEMENT]][[ENDLOOP,ATTRIBUTE_GROUP_ATTRIBUTE]][[ENDLOOP,ATTRIBUTE_GROUP]]
+function ProcessChange<<PAGE_FIELD>>(p_obj) {[[LOOP,CONTROLLED_PAGE_FIELD]]
+	document.getElementById("<<CONTROLLED_PAGE_FIELD>>").value=' ';[[ENDLOOP,CONTROLLED_PAGE_FIELD]]
+	switch (p_obj.value){[[LOOP,OPTION]]
+	case "[[IF:1=CUBE_NO_SELECTION]] [[ELSE]]<<OPTION1>>[[ENDIF]]":[[FOR,PAGE_FIELD:N>N]][[LOOP,OPTION]][[LOOP,CONTROLLED_OPTION]]
+		document.getElementById("<<CONTROLLED_OPTION>>").style.display="[[IF,OPTION:0=<<OPTION(N-1)>>]]inline[[ELSE]]none[[ENDIF]]";[[ENDLOOP,CONTROLLED_OPTION]][[ENDLOOP,OPTION]][[ENDFOR]]
+		break;[[ENDLOOP,OPTION]]
 	}
-}[[ENDLOOP,ATTRIBUTE]][[ENDLOOP,TYPE]]
+}[[ENDLOOP,PAGE_FIELD]]
+
+
 -->
 </script>
 </head><body oncontextmenu="return false;" onload="InitBody()" ondrop="drop(event)" ondragover="allowDrop(event)">
@@ -393,7 +395,7 @@ function ResetField<<ATTRIBUTE:C>>(p_obj) {
 <tr><td/><td>[[LOOP,BUTTON:!CHILD(*GROUP_BOX)]]
 <button id="<<BUTTON>>" type="button" onclick="<<BUTTON2>>"><<BUTTON1>></button>[[IF:!LAST]]&nbsp;&nbsp;&nbsp;[[ENDIF]][[ENDLOOP,BUTTON]]</td></tr>
 </table>[[LOOP,PAGE_FIELD:3=hidden]]
-<input id="Input<<PAGE_FIELD>>" type="hidden"></input>[[ENDLOOP,PAGE_FIELD]]
+<input id="<<PAGE_FIELD>>" type="hidden"></input>[[ENDLOOP,PAGE_FIELD]]
 </body>
 </html>
 [[ENDLOOP,PAGE]][[ENDLOOP,SYSTEM_PAGE]][[ENDLOOP,SYSTEM]][[FILE,<<2>>\<<1>>DetailInclude.js]]<!--

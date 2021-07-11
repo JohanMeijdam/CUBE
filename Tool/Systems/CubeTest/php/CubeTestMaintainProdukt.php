@@ -203,40 +203,47 @@ function ProcessTypeSpecialisation() {
 	}
 }
 
-function ResetFieldCubeTsgSoort1(p_obj) {
+function ProcessChangeInputCubeTsgSoort(p_obj) {
 	document.getElementById("InputCubeTsgSoort1").value=' ';
 	switch (p_obj.value){
+	case " ":
+		document.getElementById("OptionCubeTsgSoort1-VERVOER").style.display="none";
+		document.getElementById("OptionCubeTsgSoort1-GARAGE").style.display="none";
+		document.getElementById("OptionCubeTsgSoort1-WOON").style.display="none";
+		break;
 	case "R":
-		document.getElementById("ValCubeTsgSoort1-GARAGE").style.display="none";
-		document.getElementById("ValCubeTsgSoort1-WOON").style.display="none";
-		document.getElementById("ValCubeTsgSoort1-VERVOER").style.display="inline";
+		document.getElementById("OptionCubeTsgSoort1-VERVOER").style.display="inline";
+		document.getElementById("OptionCubeTsgSoort1-GARAGE").style.display="none";
+		document.getElementById("OptionCubeTsgSoort1-WOON").style.display="none";
 		break;
 	case "O":
-		document.getElementById("ValCubeTsgSoort1-GARAGE").style.display="inline";
-		document.getElementById("ValCubeTsgSoort1-WOON").style.display="inline";
-		document.getElementById("ValCubeTsgSoort1-VERVOER").style.display="none";
+		document.getElementById("OptionCubeTsgSoort1-VERVOER").style.display="none";
+		document.getElementById("OptionCubeTsgSoort1-GARAGE").style.display="inline";
+		document.getElementById("OptionCubeTsgSoort1-WOON").style.display="inline";
 		break;
 	}
 }
+
+
 -->
 </script>
 </head><body oncontextmenu="return false;" onload="InitBody()" ondrop="drop(event)" ondragover="allowDrop(event)">
 <div><img src="icons/produkt_large.bmp" /><span style="cursor:help" oncontextmenu="parent.OpenDescBox('produkt','Produkt','PRODUKT','_',-1)"> PRODUKT /
 <select id="InputCubeTsgType" type="text" onchange="ProcessTypeSpecialisation()">
 	<option value=" " selected>&lt;type&gt;</option>
-	<option id="ValCubeTsgType-P" style="display:inline" value="P">PARTICULIER</option>
-	<option id="ValCubeTsgType-Z" style="display:inline" value="Z">ZAKELIJK</option>
+	<option id="OptionCubeTsgType-P" style="display:inline" value="P">PARTICULIER</option>
+	<option id="OptionCubeTsgType-Z" style="display:inline" value="Z">ZAKELIJK</option>
 </select> /
-<select id="InputCubeTsgSoort" type="text" onchange="ResetFieldCubeTsgSoort1(this)">
+<select id="InputCubeTsgSoort" type="text" onchange="ProcessChangeInputCubeTsgSoort(this)">
 	<option value=" " selected>&lt;soort&gt;</option>
-	<option id="ValCubeTsgSoort-R" style="display:inline" value="R">ROEREND_GOED</option>
-	<option id="ValCubeTsgSoort-O" style="display:inline" value="O">ONROEREND_GOED</option>
+	<option id="OptionCubeTsgSoort-R" style="display:inline" value="R">ROEREND_GOED</option>
+	<option id="OptionCubeTsgSoort-O" style="display:inline" value="O">ONROEREND_GOED</option>
 </select> <b>.</b>
 <select id="InputCubeTsgSoort1" type="text" onchange="ProcessTypeSpecialisation()">
 	<option value=" " selected>&lt;soort1&gt;</option>
-	<option id="ValCubeTsgSoort1-GARAGE" style="display:inline" value="GARAGE">GARAGE</option>
-	<option id="ValCubeTsgSoort1-WOON" style="display:inline" value="WOON">WOONHUIS</option>
-	<option id="ValCubeTsgSoort1-VERVOER" style="display:inline" value="VERVOER">VERVOERMIDDEL</option>
+	<option id="OptionCubeTsgSoort1-GARAGE" style="display:inline" value="GARAGE">GARAGE</option>
+	<option id="OptionCubeTsgSoort1-WOON" style="display:inline" value="WOON">WOONHUIS</option>
+	<option id="OptionCubeTsgSoort1-VERVOER" style="display:inline" value="VERVOER">VERVOERMIDDEL</option>
 </select></span></div>
 <hr/>
 <table id="TableMain" style="display:none">
