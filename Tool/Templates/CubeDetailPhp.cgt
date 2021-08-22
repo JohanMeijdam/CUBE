@@ -41,6 +41,8 @@ Change log:
 05-07-2021 - Close detail by Delete
 05-07-2021 - Element <Option> always an id
 10-07-2021 - Onchange improved
+15-07-2021 - Buttons OK and Cancel
+
 [[INCLUDE,templates\includes\general.cgt]]
 [[TEXT,DETAIL_RECURSIVE_PARMS]]
 		Option: {[[IF,REFERENCE:4=PRA]]
@@ -59,16 +61,16 @@ Change log:
 [[TEXT,DETAIL_ROOT_NAME]][[LOOP,ATTRIBUTE_ROOT_TYPE]]<<ATTRIBUTE_ROOT_TYPE:C>>[[ENDLOOP,ATTRIBUTE_ROOT_TYPE]].[[LOOP,ATTRIBUTE_ROOT]][[IF:CHILD(ATTRIBUTE_TYPE_SPECIALISATION_GROUP)]][[LOOP,ATTRIBUTE_TYPE_SPECIALISATION_GROUP]]<<ATTRIBUTE_TYPE_SPECIALISATION_GROUP1:C>>[[ENDLOOP,ATTRIBUTE_TYPE_SPECIALISATION_GROUP]][[ELSE]]<<ATTRIBUTE_ROOT:C>>[[ENDIF]][[ENDLOOP,ATTRIBUTE_ROOT]][[ENDTEXT]]
 [[TEXT,DETAIL_MAXLENGTH]] maxlength="[[IF:2=DATE]]10[[ELSIF:2=NUMBER]][[EVAL:<<INFORMATION_TYPE_ELEMENT3>>+1]][[ELSE]]<<INFORMATION_TYPE_ELEMENT3>>[[ENDIF]]"[[ENDTEXT]]
 [[TEXT,DETAIL_STYLE_MAX-WIDTH]] style="max-width:[[IF:2=DATE]]12ch[[ELSIF:2=NUMBER]][[EVAL:<<INFORMATION_TYPE_ELEMENT3>>+1]]em[[ELSE]]<<INFORMATION_TYPE_ELEMENT3>>em[[ENDIF]];"[[ENDTEXT]]
-[[TEXT,DETAIL_CHANGE_EVENT]][[IF:CHILD(*PAGE_SELECTOR_SWITCH)]] onchange="[[IF:CHILD(CONTROLLED_PAGE_FIELD)]]ProcessChange<<PAGE_FIELD>>(this)[[ELSE]]ProcessTypeSpecialisation()[[ENDIF]]"[[ENDIF]][[ENDTEXT]]
+[[TEXT,DETAIL_CHANGE_EVENT]][[IF:5=Y]] disabled[[ELSE]] onchange="[[IF:CHILD(*PAGE_SELECTOR_SWITCH)]][[IF:CHILD(CONTROLLED_PAGE_FIELD)]]ProcessChange<<PAGE_FIELD>>(this);[[ELSE]]ProcessTypeSpecialisation();[[ENDIF]][[ELSE]]SetChangePending();[[ENDIF]][[IF:6=Y]]ToUpperCase(this);[[ENDIF]][[IF:7=Y]]ReplaceSpaces(this);[[ENDIF]]"[[ENDIF]][[ENDTEXT]]
 [[TEXT,DETAIL_INPUT]][[*
-   *]][[IF:3=text-line]]<div style="max-width:<<PAGE_FIELD4>>em;"><input id="<<PAGE_FIELD>>" type="text"<<TEXT,DETAIL_CHANGE_EVENT>> maxlength="<<PAGE_FIELD4>>" style="width:100%"[[IF:6=Y[OR]7=Y]] onchange="[[IF:6=Y]]ToUpperCase(this);[[ENDIF]][[IF:7=Y]]ReplaceSpaces(this);[[ENDIF]]"[[ENDIF]][[IF:5=Y]] disabled[[ENDIF]]></input></div>[[*
-*]][[ELSIF:3=text-desc]]<div><textarea id="<<PAGE_FIELD>>" type="text"<<TEXT,DETAIL_CHANGE_EVENT>> maxlength="<<PAGE_FIELD4>>" rows="5" style="white-space:normal;width:100%"[[IF:5=Y]] disabled[[ENDIF]]></textarea></div>[[*
-*]][[ELSIF:3=text-code]]<div><textarea id="<<PAGE_FIELD>>" type="text"<<TEXT,DETAIL_CHANGE_EVENT>> maxlength="<<PAGE_FIELD4>>" rows="11" style="overflow:auto;white-space:pre;font-family:courier new;font-size:12px;width:100%"[[IF:5=Y]] disabled[[ENDIF]]></textarea></div>[[*
-*]][[ELSIF:3=selection]][[IF:!CHILD(*PAGE_SELECTOR_SWITCH)]]<div>[[ENDIF]]<select id="<<PAGE_FIELD>>" type="text"<<TEXT,DETAIL_CHANGE_EVENT>>[[IF:5=Y]] disabled[[ENDIF]]>[[LOOP,OPTION]]
+   *]][[IF:3=text-line]]<div style="max-width:<<PAGE_FIELD4>>em;"><input id="<<PAGE_FIELD>>" type="text" maxlength="<<PAGE_FIELD4>>" style="width:100%"<<TEXT,DETAIL_CHANGE_EVENT>>></input></div>[[*
+*]][[ELSIF:3=text-desc]]<div><textarea id="<<PAGE_FIELD>>" type="text" maxlength="<<PAGE_FIELD4>>" rows="5" style="white-space:normal;width:100%"<<TEXT,DETAIL_CHANGE_EVENT>>></textarea></div>[[*
+*]][[ELSIF:3=text-code]]<div><textarea id="<<PAGE_FIELD>>" type="text" maxlength="<<PAGE_FIELD4>>" rows="11" style="overflow:auto;white-space:pre;font-family:courier new;font-size:12px;width:100%"<<TEXT,DETAIL_CHANGE_EVENT>>></textarea></div>[[*
+*]][[ELSIF:3=selection]][[IF:!CHILD(*PAGE_SELECTOR_SWITCH)]]<div>[[ENDIF]]<select id="<<PAGE_FIELD>>" type="text"<<TEXT,DETAIL_CHANGE_EVENT>>>[[LOOP,OPTION]]
 	<option[[IF:!1=CUBE_NO_SELECTION]] id="<<OPTION>>" style="display:inline" value="<<OPTION1>>"[[ELSE]] value=" "[[ENDIF]][[IF:FIRST]] selected[[ENDIF]]><<OPTION2:HE>></option>[[ENDLOOP,OPTION]]
 </select>[[IF:!CHILD(*PAGE_SELECTOR_SWITCH)]]</div>[[ENDIF]][[*
-*]][[ELSIF:3=number]]<div style="max-width:[[EVAL:<<PAGE_FIELD4>>+1]]em;"><input id="<<PAGE_FIELD>>" type="text"<<TEXT,DETAIL_CHANGE_EVENT>> maxlength="[[EVAL:<<PAGE_FIELD4>>+1]]" style="width:100%"[[IF:5=Y]] disabled[[ENDIF]]></input></div>[[*
-*]][[ELSIF:3=date]]<div style="max-width:12ch;"><input id="<<PAGE_FIELD>>" type="text"<<TEXT,DETAIL_CHANGE_EVENT>> maxlength="10" style="width:100%"[[IF:5=Y]] disabled[[ENDIF]]></input></div>[[ENDIF]][[ENDTEXT]]
+*]][[ELSIF:3=number]]<div style="max-width:[[EVAL:<<PAGE_FIELD4>>+1]]em;"><input id="<<PAGE_FIELD>>" type="text" maxlength="[[EVAL:<<PAGE_FIELD4>>+1]]" style="width:100%"<<TEXT,DETAIL_CHANGE_EVENT>>></input></div>[[*
+*]][[ELSIF:3=date]]<div style="max-width:12ch;"><input id="<<PAGE_FIELD>>" type="text" maxlength="10" style="width:100%"<<TEXT,DETAIL_CHANGE_EVENT>>></input></div>[[ENDIF]][[ENDTEXT]]
 [[TEXT,DETAIL_DESCRIPTION]][[LOOP,DESCRIPTION]] style="cursor:help" oncontextmenu="parent.OpenDescBox('<<DESCRIPTION3>>','<<DESCRIPTION4>>','<<DESCRIPTION>>','<<DESCRIPTION1>>',<<DESCRIPTION2>>)"[[ENDLOOP,DESCRIPTION]][[ENDTEXT]]
 [[TEXT,DETAIL_DEFAULT_VALUE]][[LOOP,ATTRIBUTE:(3=N[OR]3=X)[AND]!5=[AND]!CHILD(ATTRIBUTE_TYPE_SPECIALISATION_GROUP)]]
 		document.getElementById("Input<<ATTRIBUTE:C>>").value='<<ATTRIBUTE5>>';[[ENDLOOP,ATTRIBUTE]][[ENDTEXT]]
@@ -78,10 +80,10 @@ $_SESSION['views']=0;
 ?><html>
 <head>
 <link rel="stylesheet" href="base_css.php" />
-<script language="javascript" type="text/javascript" src="..\CubeGeneral\CubeInclude.js"></script>
-<script language="javascript" type="text/javascript" src="..\CubeGeneral\CubeDetailInclude.js"></script>
-<script language="javascript" type="text/javascript" src="<<1>>Include.js"></script>
-<script language="javascript" type="text/javascript" src="<<1>>DetailInclude.js"></script>
+<script language="javascript" type="text/javascript" src="..\CubeGeneral\CubeInclude.js?filever=<?=filemtime('..\CubeGeneral\CubeInclude.js')?>"></script>
+<script language="javascript" type="text/javascript" src="..\CubeGeneral\CubeDetailInclude.js?filever=<?=filemtime('..\CubeGeneral\CubeDetailInclude.js')?>"></script>
+<script language="javascript" type="text/javascript" src="<<1>>Include.js?filever=<?=filemtime('<<1>>Include.js')?>"></script>
+<script language="javascript" type="text/javascript" src="<<1>>DetailInclude.js?filever=<?=filemtime('<<1>>DetailInclude.js')?>"></script>
 <script language="javascript" type="text/javascript">
 <!--
 var g_option = null;
@@ -109,9 +111,8 @@ g_xmlhttp.onreadystatechange = function() {
 					case "CREATE_<<TYPE1:U>>":[[LOOP,ATTRIBUTE:(1=Y[OR]3=F[OR]3=R)[AND]4=N]]
 						document.getElementById("Input<<ATTRIBUTE:C>>").disabled=true;[[ENDLOOP,ATTRIBUTE]][[LOOP,REFERENCE:1=Y]]
 						document.getElementById("RefSelect<<REFERENCE:S>>").disabled=true;[[ENDLOOP,REFERENCE]]
-						document.getElementById("ButtonCreate").disabled=true;[[IF:CHILD(ATTRIBUTE:1=N[AND]!(3=F[OR]3=R)[AND]4=N)]]
-						document.getElementById("ButtonUpdate").disabled=false;[[ENDIF]]
-						document.getElementById("ButtonDelete").disabled=false;
+						document.getElementById("ButtonOK").innerText="Update";[[IF:CHILD(ATTRIBUTE:1=N[AND]!(3=F[OR]3=R)[AND]4=N)]]
+						document.getElementById("ButtonOK").disabled=false;[[ENDIF]]
 						var l_objNode = parent.document.getElementById(g_parent_node_id);
 						var l_json_node_id = {[[LOOP,ATTRIBUTE:1=Y]]<<ATTRIBUTE:C>>:document.getElementById("Input<<ATTRIBUTE:C>>").value[[IF:!LAST]],[[ENDIF]][[ENDLOOP,ATTRIBUTE]]};
 						g_node_id = '{"TYP_<<TYPE1:U>>":'+JSON.stringify(l_json_node_id)+'}';
@@ -140,12 +141,16 @@ g_xmlhttp.onreadystatechange = function() {
 									l_objNodePos);
 							}
 						}
+						document.getElementById("ButtonOK").innerText = "Update";
+						document.getElementById("ButtonOK").onclick = function(){Update<<TYPE1:C>>()};						
+						ResetChangePending();
 						break;
 					case "UPDATE_<<TYPE1:U>>":[[IF:CHILD(ATTRIBUTE:1=N[AND]!2=N)]]
 						var l_objNode = parent.document.getElementById(g_node_id);
 						if (l_objNode != null) {
 							l_objNode.children[1].lastChild.nodeValue = ' '+[[LOOP,ATTRIBUTE:!2=N]][[IF:2=S]][[IF:FIRST]]'('+[[ELSE]]' ('+[[ENDIF]][[ELSE]][[IF:!FIRST]]' '+[[ENDIF]][[ENDIF]]document.getElementById("Input<<ATTRIBUTE:C>>").value.toLowerCase()[[IF:2=S]]+')'[[ENDIF]][[IF:!LAST]]+[[ENDIF]][[ENDLOOP,ATTRIBUTE]];
-					}[[ENDIF]]
+						}[[ENDIF]]
+						ResetChangePending();
 						break;
 					case "DELETE_<<TYPE1:U>>":
 						var l_objNode = parent.document.getElementById(g_node_id);
@@ -155,7 +160,7 @@ g_xmlhttp.onreadystatechange = function() {
 						if (l_objNode != null) {
 							l_objNode.parentNode.removeChild(l_objNode);
 						}
-						parent.document.getElementById('DetailFrame').src='about:blank';
+						CancelChangePending();
 						break;[[IF:CHILD(ATTRIBUTE:3=F[AND]CHILD(ATTRIBUTE_SOURCE:1=N))]]
 					case "SELECT_FKEY_[[LOOP,^TYPE]]<<^TYPE1:U>>[[ENDLOOP,^TYPE]]":
 						var l_json_values = l_json_array[i].Rows[0].Data;[[LOOP,ATTRIBUTE:3=F[AND]CHILD(ATTRIBUTE_SOURCE:1=N)]]
@@ -188,62 +193,11 @@ g_xmlhttp.onreadystatechange = function() {
 	}
 }
 
-function InitBody() {
-	var l_json_argument = JSON.parse(decodeURIComponent(location.href.split("?")[1]));
-	document.body._FlagDragging = 0;
-	document.body._DraggingId = ' ';
-	document.body._ListBoxCode = "Ref000";
-	document.body._ListBoxOptional = ' ';
-	var l_json_objectKey = l_json_argument.objectId;[[IF:6=P]]
-	g_json_option = l_json_argument.Option;[[ENDIF]]
-	switch (l_json_argument.nodeType) {
-	case "D": // Details of existing object 
-		g_node_id = JSON.stringify(l_json_argument.objectId);[[LOOP,ATTRIBUTE:1=Y]]
-		document.getElementById("Input<<ATTRIBUTE:C>>").value=l_json_objectKey.TYP_<<TYPE1>>.<<ATTRIBUTE:C>>;[[ENDLOOP,ATTRIBUTE]]
-		document.getElementById("ButtonCreate").disabled=true;[[IF:CHILD(ATTRIBUTE:1=N[AND]4=N)]]
-		PerformTrans( {
-			Service: "Get<<TYPE1:C>>",
-			Parameters: {
-				Type: l_json_objectKey.TYP_<<TYPE1>>
-			}
-		} );[[ENDIF]][[IF:!CHILD(ATTRIBUTE:1=N[AND]!(3=F[OR]3=R)[AND]4=N)]]
-		document.getElementById("ButtonUpdate").disabled=true;[[ENDIF]][[LOOP,ATTRIBUTE:1=Y[OR]3=F[OR]3=R[OR]6=Y]]
-		document.getElementById("Input<<ATTRIBUTE:C>>").disabled=true;[[ENDLOOP,ATTRIBUTE]][[LOOP,REFERENCE:1=Y[OR]5=Y]]
-		document.getElementById("RefSelect<<REFERENCE:S>>").disabled=true;[[ENDLOOP,REFERENCE]]
-		break;
-	case "N": // New (non recursive) object
-		g_parent_node_id = JSON.stringify(l_json_argument.objectId);[[LOOP,ATTRIBUTE:3=F[AND]CHILD(ATTRIBUTE_SOURCE:1=Y)]]
-		document.getElementById("Input<<ATTRIBUTE:C>>").value=l_json_objectKey.TYP_[[LOOP,ATTRIBUTE_SOURCE]][[LOOP,^TYPE]]<<^TYPE1>>[[ENDLOOP,^TYPE]].<<ATTRIBUTE_SOURCE:C>>[[ENDLOOP,ATTRIBUTE_SOURCE]];[[ENDLOOP,ATTRIBUTE]]
-		document.getElementById("ButtonUpdate").disabled=true;
-		document.getElementById("ButtonDelete").disabled=true;[[IF:CHILD(ATTRIBUTE:3=F[AND]CHILD(ATTRIBUTE_SOURCE:1=N))]]
-		PerformTrans( {
-			Service: "Get[[LOOP,^TYPE]]<<^TYPE1:C>>[[ENDLOOP,^TYPE]]Fkey",
-			Parameters: {
-				Type: l_json_objectKey.TYP_[[LOOP,^TYPE]]<<^TYPE1>>[[ENDLOOP,^TYPE]]
-			}
-		} );[[ENDIF]][[LOOP,ATTRIBUTE:(3=F[OR]3=R)[AND]4=N]]
-		document.getElementById("Input<<ATTRIBUTE:C>>").disabled=true;[[ENDLOOP,ATTRIBUTE]]<<TEXT,DETAIL_DEFAULT_VALUE>>
-		break;[[IF,TYPE:3=Y]]  
-	case "R": // New recursive object
-		g_parent_node_id = JSON.stringify(l_json_argument.objectId);[[IF,TYPE:2=Y]][[LOOP,ATTRIBUTE:3=F[AND]CHILD(ATTRIBUTE_SOURCE:1=Y)[OR]3=R]]
-		document.getElementById("Input<<ATTRIBUTE:C>>").value=l_json_objectKey.TYP_<<TYPE1>>.[[IF:3=F]]<<ATTRIBUTE:C>>[[ELSE]][[LOOP,ATTRIBUTE_SOURCE]]<<ATTRIBUTE_SOURCE:C>>[[ENDLOOP,ATTRIBUTE_SOURCE]][[ENDIF]];[[ENDLOOP,ATTRIBUTE]][[ELSE]][[LOOP,ATTRIBUTE:3=R]]
-		document.getElementById("Input<<ATTRIBUTE:C>>").value=l_json_objectKey.TYP_<<TYPE1>>.[[LOOP,ATTRIBUTE_SOURCE]]<<ATTRIBUTE_SOURCE:C>>[[ENDLOOP,ATTRIBUTE_SOURCE]];[[ENDLOOP,ATTRIBUTE]][[ENDIF]]
-		document.getElementById("ButtonUpdate").disabled=true;
-		document.getElementById("ButtonDelete").disabled=true;[[IF:CHILD(ATTRIBUTE:1=N[AND]3=F)]]
-		PerformTrans( {
-			Service: "Get<<TYPE1:C>>Fkey",
-			Parameters: {
-				Type: l_json_objectKey.TYP_<<TYPE1>>
-			}
-		} );[[ENDIF]][[LOOP,ATTRIBUTE:(3=F[OR]3=R)[AND]4=N]]
-		document.getElementById("Input<<ATTRIBUTE:C>>").disabled=true;[[ENDLOOP,ATTRIBUTE]]<<TEXT,DETAIL_DEFAULT_VALUE>>
-		break;[[ENDIF]]
-	default:
-		alert ('Error InitBody: '+l_argument[1]);
-	}
-}
-
-function Create<<TYPE1:C>>() {
+function Create<<TYPE1:C>>() {[[LOOP,ATTRIBUTE:1=Y[AND]!CHILD(ATTRIBUTE_TYPE_SPECIALISATION_GROUP)]]
+	if (document.getElementById("Input<<ATTRIBUTE:C>>").value == '') {
+		alert ('Error: Primary key <<ATTRIBUTE:C>> not filled');
+		return;
+	}[[ENDLOOP,ATTRIBUTE]]
 	var Type = {[[LOOP,ATTRIBUTE:!CHILD(DERIVATION)]]
 		<<ATTRIBUTE:C>>: document.getElementById("Input<<ATTRIBUTE:C>>").value[[IF:!LAST]],[[ENDIF]][[ENDLOOP,ATTRIBUTE]]
 	};[[IF:6=P]]
@@ -352,31 +306,101 @@ function StartSelect<<REFERENCE:S>>(p_event) {
 		Service: "<<TEXT,DETAIL_GET_LIST_NAME>>[[IF:3=Y]]All[[ENDIF]]"[[IF,REFERENCE:4=ALL[AND]CHILD(REFERENCE_SCOPE_ATTRIBUTE)]],
 		Parameters[[ENDIF]]
 	} );[[ENDIF]][[ENDLOOP,REFERENCE_TYPE]]
-}[[ENDLOOP,REFERENCE]][[ENDLOOP,TYPE]][[IF:CHILD(PAGE_FIELD:CHILD(*PAGE_SELECTOR_SWITCH))]]
+}[[ENDLOOP,REFERENCE]]
+
+function InitBody() {
+	parent.g_change_pending = 'N';
+	var l_json_argument = JSON.parse(decodeURIComponent(location.href.split("?")[1]));
+	document.body._FlagDragging = 0;
+	document.body._DraggingId = ' ';
+	document.body._ListBoxCode = "Ref000";
+	document.body._ListBoxOptional = ' ';
+	var l_json_objectKey = l_json_argument.objectId;[[IF:6=P]]
+	g_json_option = l_json_argument.Option;[[ENDIF]]
+	switch (l_json_argument.nodeType) {
+	case "D": // Details of existing object 
+		g_node_id = JSON.stringify(l_json_argument.objectId);[[LOOP,ATTRIBUTE:1=Y]]
+		document.getElementById("Input<<ATTRIBUTE:C>>").value = l_json_objectKey.TYP_<<TYPE1>>.<<ATTRIBUTE:C>>;[[ENDLOOP,ATTRIBUTE]]
+		document.getElementById("ButtonOK").innerText = "Update";
+		document.getElementById("ButtonOK").onclick = function(){Update<<TYPE1:C>>()};[[IF:CHILD(ATTRIBUTE:1=N[AND]4=N)]]
+		PerformTrans( {
+			Service: "Get<<TYPE1:C>>",
+			Parameters: {
+				Type: l_json_objectKey.TYP_<<TYPE1>>
+			}
+		} );[[ENDIF]][[IF:!CHILD(ATTRIBUTE:1=N[AND]!(3=F[OR]3=R)[AND]4=N)]]
+		document.getElementById("ButtonOK").disabled = true;[[ENDIF]][[LOOP,ATTRIBUTE:1=Y[OR]3=F[OR]3=R[OR]6=Y]]
+		document.getElementById("Input<<ATTRIBUTE:C>>").disabled = true;[[ENDLOOP,ATTRIBUTE]][[LOOP,REFERENCE:1=Y[OR]5=Y]]
+		document.getElementById("RefSelect<<REFERENCE:S>>").disabled = true;[[ENDLOOP,REFERENCE]]
+		break;
+	case "N": // New (non recursive) object
+		g_parent_node_id = JSON.stringify(l_json_argument.objectId);[[LOOP,ATTRIBUTE:3=F[AND]CHILD(ATTRIBUTE_SOURCE:1=Y)]]
+		document.getElementById("Input<<ATTRIBUTE:C>>").value = l_json_objectKey.TYP_[[LOOP,ATTRIBUTE_SOURCE]][[LOOP,^TYPE]]<<^TYPE1>>[[ENDLOOP,^TYPE]].<<ATTRIBUTE_SOURCE:C>>[[ENDLOOP,ATTRIBUTE_SOURCE]];[[ENDLOOP,ATTRIBUTE]]
+		document.getElementById("ButtonOK").innerText = "Create";
+		document.getElementById("ButtonOK").onclick = function(){Create<<TYPE1:C>>()};[[IF:CHILD(ATTRIBUTE:3=F[AND]CHILD(ATTRIBUTE_SOURCE:1=N))]]
+		PerformTrans( {
+			Service: "Get[[LOOP,^TYPE]]<<^TYPE1:C>>[[ENDLOOP,^TYPE]]Fkey",
+			Parameters: {
+				Type: l_json_objectKey.TYP_[[LOOP,^TYPE]]<<^TYPE1>>[[ENDLOOP,^TYPE]]
+			}
+		} );[[ENDIF]][[LOOP,ATTRIBUTE:(3=F[OR]3=R)[AND]4=N]]
+		document.getElementById("Input<<ATTRIBUTE:C>>").disabled = true;[[ENDLOOP,ATTRIBUTE]]<<TEXT,DETAIL_DEFAULT_VALUE>>
+		break;[[IF,TYPE:3=Y]]  
+	case "R": // New recursive object
+		g_parent_node_id = JSON.stringify(l_json_argument.objectId);[[IF,TYPE:2=Y]][[LOOP,ATTRIBUTE:3=F[AND]CHILD(ATTRIBUTE_SOURCE:1=Y)[OR]3=R]]
+		document.getElementById("Input<<ATTRIBUTE:C>>").value = l_json_objectKey.TYP_<<TYPE1>>.[[IF:3=F]]<<ATTRIBUTE:C>>[[ELSE]][[LOOP,ATTRIBUTE_SOURCE]]<<ATTRIBUTE_SOURCE:C>>[[ENDLOOP,ATTRIBUTE_SOURCE]][[ENDIF]];[[ENDLOOP,ATTRIBUTE]][[ELSE]][[LOOP,ATTRIBUTE:3=R]]
+		document.getElementById("Input<<ATTRIBUTE:C>>").value = l_json_objectKey.TYP_<<TYPE1>>.[[LOOP,ATTRIBUTE_SOURCE]]<<ATTRIBUTE_SOURCE:C>>[[ENDLOOP,ATTRIBUTE_SOURCE]];[[ENDLOOP,ATTRIBUTE]][[ENDIF]]
+		document.getElementById("ButtonOK").innerText = "Create";
+		document.getElementById("ButtonOK").onclick = function(){Create<<TYPE1:C>>()};[[IF:CHILD(ATTRIBUTE:1=N[AND]3=F)]]
+		PerformTrans( {
+			Service: "Get<<TYPE1:C>>Fkey",
+			Parameters: {
+				Type: l_json_objectKey.TYP_<<TYPE1>>
+			}
+		} );[[ENDIF]][[LOOP,ATTRIBUTE:(3=F[OR]3=R)[AND]4=N]]
+		document.getElementById("Input<<ATTRIBUTE:C>>").disabled = true;[[ENDLOOP,ATTRIBUTE]]<<TEXT,DETAIL_DEFAULT_VALUE>>
+		break;[[ENDIF]]
+	case "X": // Delete object
+		g_node_id = JSON.stringify(l_json_argument.objectId);[[LOOP,ATTRIBUTE:1=Y]]
+		document.getElementById("Input<<ATTRIBUTE:C>>").value = l_json_objectKey.TYP_<<TYPE1>>.<<ATTRIBUTE:C>>;[[ENDLOOP,ATTRIBUTE]]
+		document.getElementById("ButtonOK").innerText = "Delete";
+		document.getElementById("ButtonOK").onclick = function(){Delete<<TYPE1:C>>()};
+		SetChangePending();[[IF:CHILD(ATTRIBUTE:1=N[AND]4=N)]]
+		PerformTrans( {
+			Service: "Get<<TYPE1:C>>",
+			Parameters: {
+				Type: l_json_objectKey.TYP_<<TYPE1>>
+			}
+		} );[[ENDIF]][[FORV,PAGE:1>1]][[LOOP,PAGE_FIELD]]
+		document.getElementById("<<PAGE_FIELD>>").disabled = true;[[ENDLOOP,PAGE_FIELD]][[ENDFOR]]
+		break;
+	default:
+		alert ('Error InitBody: nodeType='+l_json_argument.nodeType);
+	}
+}[[ENDLOOP,TYPE]][[IF:CHILD(PAGE_FIELD:CHILD(*PAGE_SELECTOR_SWITCH))]]
 
 function ProcessTypeSpecialisation() {
 	if ([[LOOP,PAGE_FIELD:CHILD(*PAGE_SELECTOR_SWITCH)]]document.getElementById("<<PAGE_FIELD>>").value != ' '[[IF:!LAST]] && [[ENDIF]][[ENDLOOP,PAGE_FIELD]]) {[[LOOP,PAGE_FIELD:CHILD(*PAGE_SELECTOR_SWITCH)]]
-		document.getElementById("<<PAGE_FIELD>>").disabled=true;[[LOOP,PAGE_FIELD_ATTRIBUTE]][[LOOP,ATTRIBUTE_TYPE_SPECIALISATION_GROUP:CHILD(TYPE_SPECIALISATION:CHILD(*RESTRICTION_TYPE_SPEC_ATB)[OR]CHILD(*RESTRICTION_TYPE_SPEC_REF))]]
+		document.getElementById("<<PAGE_FIELD>>").disabled = true;[[LOOP,PAGE_FIELD_ATTRIBUTE]][[LOOP,ATTRIBUTE_TYPE_SPECIALISATION_GROUP:CHILD(TYPE_SPECIALISATION:CHILD(*RESTRICTION_TYPE_SPEC_ATB)[OR]CHILD(*RESTRICTION_TYPE_SPEC_REF))]]
 		switch (document.getElementById("<<PAGE_FIELD>>").value) {[[LOOP,TYPE_SPECIALISATION:CHILD(*RESTRICTION_TYPE_SPEC_ATB)[OR]CHILD(*RESTRICTION_TYPE_SPEC_REF)]]
 		case "<<TYPE_SPECIALISATION>>":[[LOOP,*RESTRICTION_TYPE_SPEC_ATB]][[LOOP,^ATTRIBUTE:4=N]][[IF:!3=X]]
-			document.getElementById("RowAtb<<^ATTRIBUTE:C>>").style.display="none";[[ENDIF]][[IF:1=Y]]
-			document.getElementById("Input<<^ATTRIBUTE:C>>").value="[[LOOP,INFORMATION_TYPE_ELEMENT]]<<TEXT,GEN_NULL_VALUE_TEXT>>[[ENDLOOP,INFORMATION_TYPE_ELEMENT]]";[[ENDIF]][[ENDLOOP,^ATTRIBUTE]][[ENDLOOP,*RESTRICTION_TYPE_SPEC_ATB]][[LOOP,*RESTRICTION_TYPE_SPEC_REF]][[LOOP,^REFERENCE]]
-			document.getElementById("RowRef[[LOOP,REFERENCE_TYPE]]<<REFERENCE_TYPE:C>>[[ENDLOOP,REFERENCE_TYPE]]<<^REFERENCE3>>").style.display="none";[[ENDLOOP,^REFERENCE]][[ENDLOOP,*RESTRICTION_TYPE_SPEC_REF]]
+			document.getElementById("RowAtb<<^ATTRIBUTE:C>>").style.display = "none";[[ENDIF]][[IF:1=Y]]
+			document.getElementById("Input<<^ATTRIBUTE:C>>").value = "[[LOOP,INFORMATION_TYPE_ELEMENT]]<<TEXT,GEN_NULL_VALUE_TEXT>>[[ENDLOOP,INFORMATION_TYPE_ELEMENT]]";[[ENDIF]][[ENDLOOP,^ATTRIBUTE]][[ENDLOOP,*RESTRICTION_TYPE_SPEC_ATB]][[LOOP,*RESTRICTION_TYPE_SPEC_REF]][[LOOP,^REFERENCE]]
+			document.getElementById("RowRef[[LOOP,REFERENCE_TYPE]]<<REFERENCE_TYPE:C>>[[ENDLOOP,REFERENCE_TYPE]]<<^REFERENCE3>>").style.display = "none";[[ENDLOOP,^REFERENCE]][[ENDLOOP,*RESTRICTION_TYPE_SPEC_REF]]
 			break;[[ENDLOOP,TYPE_SPECIALISATION]]
 		}[[ENDLOOP,ATTRIBUTE_TYPE_SPECIALISATION_GROUP]][[ENDLOOP,PAGE_FIELD_ATTRIBUTE]][[ENDLOOP,PAGE_FIELD]]
-		document.getElementById("TableMain").style.display="inline";
+		document.getElementById("TableMain").style.display = "inline";
 	}
 }[[ENDIF]][[LOOP,PAGE_FIELD:CHILD(CONTROLLED_PAGE_FIELD)]]
 
 function ProcessChange<<PAGE_FIELD>>(p_obj) {[[LOOP,CONTROLLED_PAGE_FIELD]]
-	document.getElementById("<<CONTROLLED_PAGE_FIELD>>").value=' ';[[ENDLOOP,CONTROLLED_PAGE_FIELD]]
+	document.getElementById("<<CONTROLLED_PAGE_FIELD>>").value = ' ';[[ENDLOOP,CONTROLLED_PAGE_FIELD]]
 	switch (p_obj.value){[[LOOP,OPTION]]
 	case "[[IF:1=CUBE_NO_SELECTION]] [[ELSE]]<<OPTION1>>[[ENDIF]]":[[FOR,PAGE_FIELD:N>N]][[LOOP,OPTION]][[LOOP,CONTROLLED_OPTION]]
-		document.getElementById("<<CONTROLLED_OPTION>>").style.display="[[IF,OPTION:0=<<OPTION(N-1)>>]]inline[[ELSE]]none[[ENDIF]]";[[ENDLOOP,CONTROLLED_OPTION]][[ENDLOOP,OPTION]][[ENDFOR]]
+		document.getElementById("<<CONTROLLED_OPTION>>").style.display = "[[IF,OPTION:0=<<OPTION(N-1)>>]]inline[[ELSE]]none[[ENDIF]]";[[ENDLOOP,CONTROLLED_OPTION]][[ENDLOOP,OPTION]][[ENDFOR]]
 		break;[[ENDLOOP,OPTION]]
 	}
 }[[ENDLOOP,PAGE_FIELD]]
-
 
 -->
 </script>
@@ -393,7 +417,7 @@ function ProcessChange<<PAGE_FIELD>>(p_obj) {[[LOOP,CONTROLLED_PAGE_FIELD]]
 </table></fieldset></td></tr>[[ENDLOOP,GROUP_BOX]]
 <tr><td><br></td><td style="width:100%"></td></tr>
 <tr><td/><td>[[LOOP,BUTTON:!CHILD(*GROUP_BOX)]]
-<button id="<<BUTTON>>" type="button" onclick="<<BUTTON2>>"><<BUTTON1>></button>[[IF:!LAST]]&nbsp;&nbsp;&nbsp;[[ENDIF]][[ENDLOOP,BUTTON]]</td></tr>
+<button id="<<BUTTON>>" type="button" disabled[[IF:!2=#]] onclick="<<BUTTON2>>"[[ENDIF]]><<BUTTON1>></button>[[IF:!LAST]]&nbsp;&nbsp;&nbsp;[[ENDIF]][[ENDLOOP,BUTTON]]</td></tr>
 </table>[[LOOP,PAGE_FIELD:3=hidden]]
 <input id="<<PAGE_FIELD>>" type="hidden"></input>[[ENDLOOP,PAGE_FIELD]]
 </body>

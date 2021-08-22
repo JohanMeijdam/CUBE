@@ -42,10 +42,10 @@ CREATE TABLE t_produkt (
 	cube_tsg_type VARCHAR2(8) DEFAULT 'P',
 	cube_tsg_soort VARCHAR2(8) DEFAULT 'R',
 	cube_tsg_soort1 VARCHAR2(8) DEFAULT 'GARAGE',
-	code VARCHAR2(8) DEFAULT ' ',
-	prijs NUMBER(8,2) DEFAULT '0',
-	makelaar_naam VARCHAR2(40) DEFAULT ' ',
-	bedrag_btw NUMBER(8,2) DEFAULT '0',
+	code VARCHAR2(8),
+	prijs NUMBER(8,2),
+	makelaar_naam VARCHAR2(40),
+	bedrag_btw NUMBER(8,2),
 	CONSTRAINT prd_pk
 		PRIMARY KEY (cube_tsg_type, code) )
 /
@@ -54,11 +54,11 @@ CREATE TABLE t_onderdeel (
 	cube_sequence NUMBER(8),
 	cube_level NUMBER(8) DEFAULT '1',
 	fk_prd_cube_tsg_type VARCHAR2(8) DEFAULT 'P',
-	fk_prd_code VARCHAR2(8) DEFAULT ' ',
-	fk_ond_code VARCHAR2(8) DEFAULT ' ',
-	code VARCHAR2(8) DEFAULT ' ',
-	prijs NUMBER(8,2) DEFAULT '0',
-	omschrijving VARCHAR2(120) DEFAULT ' ',
+	fk_prd_code VARCHAR2(8),
+	fk_ond_code VARCHAR2(8),
+	code VARCHAR2(8),
+	prijs NUMBER(8,2),
+	omschrijving VARCHAR2(120),
 	CONSTRAINT ond_pk
 		PRIMARY KEY (fk_prd_cube_tsg_type, fk_prd_code, code),
 	CONSTRAINT ond_prd_fk
@@ -74,10 +74,10 @@ CREATE TABLE t_onderdeel_deel (
 	cube_id VARCHAR2(16),
 	cube_sequence NUMBER(8),
 	fk_prd_cube_tsg_type VARCHAR2(8) DEFAULT 'P',
-	fk_prd_code VARCHAR2(8) DEFAULT ' ',
-	fk_ond_code VARCHAR2(8) DEFAULT ' ',
-	code VARCHAR2(8) DEFAULT ' ',
-	naam VARCHAR2(40) DEFAULT ' ',
+	fk_prd_code VARCHAR2(8),
+	fk_ond_code VARCHAR2(8),
+	code VARCHAR2(8),
+	naam VARCHAR2(40),
 	CONSTRAINT odd_pk
 		PRIMARY KEY (code),
 	CONSTRAINT odd_ond_fk
@@ -89,11 +89,11 @@ CREATE TABLE t_onderdeel_deel_deel (
 	cube_id VARCHAR2(16),
 	cube_sequence NUMBER(8),
 	fk_prd_cube_tsg_type VARCHAR2(8) DEFAULT 'P',
-	fk_prd_code VARCHAR2(8) DEFAULT ' ',
-	fk_ond_code VARCHAR2(8) DEFAULT ' ',
-	fk_odd_code VARCHAR2(8) DEFAULT ' ',
-	code VARCHAR2(8) DEFAULT ' ',
-	naam VARCHAR2(40) DEFAULT ' ',
+	fk_prd_code VARCHAR2(8),
+	fk_ond_code VARCHAR2(8),
+	fk_odd_code VARCHAR2(8),
+	code VARCHAR2(8),
+	naam VARCHAR2(40),
 	CONSTRAINT ddd_pk
 		PRIMARY KEY (code),
 	CONSTRAINT ddd_odd_fk
@@ -104,12 +104,12 @@ CREATE TABLE t_onderdeel_deel_deel (
 CREATE TABLE t_constructie (
 	cube_id VARCHAR2(16),
 	fk_prd_cube_tsg_type VARCHAR2(8) DEFAULT 'P',
-	fk_prd_code VARCHAR2(8) DEFAULT ' ',
-	fk_ond_code VARCHAR2(8) DEFAULT ' ',
-	code VARCHAR2(8) DEFAULT ' ',
-	omschrijving VARCHAR2(120) DEFAULT ' ',
-	xk_odd_code VARCHAR2(8) DEFAULT ' ',
-	xk_odd_code_1 VARCHAR2(8) DEFAULT ' ',
+	fk_prd_code VARCHAR2(8),
+	fk_ond_code VARCHAR2(8),
+	code VARCHAR2(8),
+	omschrijving VARCHAR2(120),
+	xk_odd_code VARCHAR2(8),
+	xk_odd_code_1 VARCHAR2(8),
 	CONSTRAINT cst_pk
 		PRIMARY KEY (fk_prd_cube_tsg_type, fk_prd_code, fk_ond_code, code),
 	CONSTRAINT cst_ond_fk

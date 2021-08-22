@@ -22,6 +22,7 @@ Change log:
 08-11-2020 - PAGE model added.
 05-07-2021 - PAGE property 8 removed.
 10-07-2021 - CHANGE_EVENT vervangen door PAGE_FIELD_ATTRIBUTE, CONTROLLED_PAGE_FIELD en CONTROLLED_OPTION
+15-07-2021 - Buttons OK and Cancel
 [[INCLUDE,templates\includes\general.cgt]]
 [[TEXT,SPEC_EXPORT_LIST]]
 			>OPERATION_TYPE:<<TYPE:I>>;
@@ -310,9 +311,8 @@ Change log:
 		=DESCRIPTION:<<TYPE>>|[[LOOP,REFERENCE_TYPE]]<<REFERENCE_TYPE>>|<<REFERENCE3>>|<<TYPE7:L>>|<<TYPE:C>>.<<REFERENCE_TYPE:C>> (<<REFERENCE:C>>)[[ENDLOOP,REFERENCE_TYPE]];[[ENDIF]]
 	-GROUP_BOX:;
 	=BUTTON[CUBE-PAG-<<TYPE:N>>-BTN-<<REFERENCE:S>>]:RefSelect<<REFERENCE:S>>|Select|StartSelect<<REFERENCE:S>>(event);[[ENDLOOP,REFERENCE]]
-	=BUTTON:ButtonCreate|Create|Create<<TYPE1:C>>();
-	=BUTTON:ButtonUpdate|Update|Update<<TYPE1:C>>();
-	=BUTTON:ButtonDelete|Delete|Delete<<TYPE1:C>>();[[IF:CHILD(DESCRIPTION_TYPE)]]
+	=BUTTON:ButtonOK|OK|#;
+	=BUTTON:ButtonCancel|Cancel|CancelChangePending();[[IF:CHILD(DESCRIPTION_TYPE)]]
 	=DESCRIPTION:<<TYPE>>|_|-1|<<TYPE7:L>>|<<TYPE:C>>;[[ENDIF]]
 -PAGE:;[[REPEAT]][[ENDLOOP,TYPE]][[ENDLOOP,BUSINESS_OBJECT_TYPE]][[LOOP,SYSTEM]]
 +SYSTEM[<<SYSTEM:I>>]:[[VALUE,SYSTEM:0>N:|]];[[LOOP,*]]

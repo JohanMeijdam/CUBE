@@ -347,6 +347,9 @@ function OpenMenuItem(p_obj) {
 			g_currentObjName = p_obj._name;
 		}
 		break;
+	case 'CubeDelete':
+		OpenDetailPage(p_obj._name, p_obj._nodeType, g_currentObjId, null);
+		break;
 	default:
 		OpenDetailPage(p_obj._name, p_obj._nodeType, g_currentObjId, null);
 	}

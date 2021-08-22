@@ -68,7 +68,7 @@ function OpenListBox(p_json_rows,p_icon,p_header) {
 }
 
 function CloseListBox() {
-	var l_obj = document.getElementById("ListBox");
+	var l_obj = document.getElementById('ListBox');
 	if (l_obj) {l_obj.parentNode.removeChild(l_obj);}
 }
 
@@ -112,5 +112,21 @@ function drop(p_event) {
 		l_obj.style.top = l_y + 'px';
 	}
 }
+
+function SetChangePending() {
+	document.getElementById('ButtonOK').disabled=false;
+	document.getElementById('ButtonCancel').disabled=false;
+	parent.g_change_pending = 'Y';
+}
+
+function CancelChangePending() {
+	parent.document.getElementById('DetailFrame').src='about:blank'; 
+	parent.g_change_pending = 'N';
+}
+
+function ResetChangePending() {
+	document.getElementById('ButtonOK').disabled=true;
+	document.getElementById('ButtonCancel').disabled=true;
+	parent.g_change_pending = 'N';}
 
 -->

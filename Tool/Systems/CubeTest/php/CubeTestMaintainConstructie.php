@@ -4,10 +4,10 @@ $_SESSION['views']=0;
 ?><html>
 <head>
 <link rel="stylesheet" href="base_css.php" />
-<script language="javascript" type="text/javascript" src="..\CubeGeneral\CubeInclude.js"></script>
-<script language="javascript" type="text/javascript" src="..\CubeGeneral\CubeDetailInclude.js"></script>
-<script language="javascript" type="text/javascript" src="CubeTestInclude.js"></script>
-<script language="javascript" type="text/javascript" src="CubeTestDetailInclude.js"></script>
+<script language="javascript" type="text/javascript" src="..\CubeGeneral\CubeInclude.js?filever=<?=filemtime('..\CubeGeneral\CubeInclude.js')?>"></script>
+<script language="javascript" type="text/javascript" src="..\CubeGeneral\CubeDetailInclude.js?filever=<?=filemtime('..\CubeGeneral\CubeDetailInclude.js')?>"></script>
+<script language="javascript" type="text/javascript" src="CubeTestInclude.js?filever=<?=filemtime('CubeTestInclude.js')?>"></script>
+<script language="javascript" type="text/javascript" src="CubeTestDetailInclude.js?filever=<?=filemtime('CubeTestDetailInclude.js')?>"></script>
 <script language="javascript" type="text/javascript">
 <!--
 var g_option = null;
@@ -38,9 +38,8 @@ g_xmlhttp.onreadystatechange = function() {
 						document.getElementById("InputFkPrdCode").disabled=true;
 						document.getElementById("InputFkOndCode").disabled=true;
 						document.getElementById("InputCode").disabled=true;
-						document.getElementById("ButtonCreate").disabled=true;
-						document.getElementById("ButtonUpdate").disabled=false;
-						document.getElementById("ButtonDelete").disabled=false;
+						document.getElementById("ButtonOK").innerText="Update";
+						document.getElementById("ButtonOK").disabled=false;
 						var l_objNode = parent.document.getElementById(g_parent_node_id);
 						var l_json_node_id = {FkPrdCubeTsgType:document.getElementById("InputFkPrdCubeTsgType").value,FkPrdCode:document.getElementById("InputFkPrdCode").value,FkOndCode:document.getElementById("InputFkOndCode").value,Code:document.getElementById("InputCode").value};
 						g_node_id = '{"TYP_CST":'+JSON.stringify(l_json_node_id)+'}';
@@ -60,8 +59,12 @@ g_xmlhttp.onreadystatechange = function() {
 									l_objNodePos);
 							}
 						}
+						document.getElementById("ButtonOK").innerText = "Update";
+						document.getElementById("ButtonOK").onclick = function(){UpdateCst()};						
+						ResetChangePending();
 						break;
 					case "UPDATE_CST":
+						ResetChangePending();
 						break;
 					case "DELETE_CST":
 						var l_objNode = parent.document.getElementById(g_node_id);
@@ -71,7 +74,7 @@ g_xmlhttp.onreadystatechange = function() {
 						if (l_objNode != null) {
 							l_objNode.parentNode.removeChild(l_objNode);
 						}
-						parent.document.getElementById('DetailFrame').src='about:blank';
+						CancelChangePending();
 						break;
 					case "ERROR":
 						alert ('Server error:\n'+l_json_array[i].ErrorText);
@@ -98,53 +101,23 @@ g_xmlhttp.onreadystatechange = function() {
 	}
 }
 
-function InitBody() {
-	var l_json_argument = JSON.parse(decodeURIComponent(location.href.split("?")[1]));
-	document.body._FlagDragging = 0;
-	document.body._DraggingId = ' ';
-	document.body._ListBoxCode = "Ref000";
-	document.body._ListBoxOptional = ' ';
-	var l_json_objectKey = l_json_argument.objectId;
-	switch (l_json_argument.nodeType) {
-	case "D": // Details of existing object 
-		g_node_id = JSON.stringify(l_json_argument.objectId);
-		document.getElementById("InputFkPrdCubeTsgType").value=l_json_objectKey.TYP_CST.FkPrdCubeTsgType;
-		document.getElementById("InputFkPrdCode").value=l_json_objectKey.TYP_CST.FkPrdCode;
-		document.getElementById("InputFkOndCode").value=l_json_objectKey.TYP_CST.FkOndCode;
-		document.getElementById("InputCode").value=l_json_objectKey.TYP_CST.Code;
-		document.getElementById("ButtonCreate").disabled=true;
-		PerformTrans( {
-			Service: "GetCst",
-			Parameters: {
-				Type: l_json_objectKey.TYP_CST
-			}
-		} );
-		document.getElementById("InputFkPrdCubeTsgType").disabled=true;
-		document.getElementById("InputFkPrdCode").disabled=true;
-		document.getElementById("InputFkOndCode").disabled=true;
-		document.getElementById("InputCode").disabled=true;
-		break;
-	case "N": // New (non recursive) object
-		g_parent_node_id = JSON.stringify(l_json_argument.objectId);
-		document.getElementById("InputFkPrdCubeTsgType").value=l_json_objectKey.TYP_OND.FkPrdCubeTsgType;
-		document.getElementById("InputFkPrdCode").value=l_json_objectKey.TYP_OND.FkPrdCode;
-		document.getElementById("InputFkOndCode").value=l_json_objectKey.TYP_OND.Code;
-		document.getElementById("ButtonUpdate").disabled=true;
-		document.getElementById("ButtonDelete").disabled=true;
-		document.getElementById("InputFkPrdCubeTsgType").disabled=true;
-		document.getElementById("InputFkPrdCode").disabled=true;
-		document.getElementById("InputFkOndCode").disabled=true;
-		document.getElementById("InputCode").value=' ';
-		document.getElementById("InputOmschrijving").value=' ';
-		document.getElementById("InputXkOddCode").value=' ';
-		document.getElementById("InputXkOddCode1").value=' ';
-		break;
-	default:
-		alert ('Error InitBody: '+l_argument[1]);
-	}
-}
-
 function CreateCst() {
+	if (document.getElementById("InputFkPrdCubeTsgType").value == '') {
+		alert ('Error: Primary key FkPrdCubeTsgType not filled');
+		return;
+	}
+	if (document.getElementById("InputFkPrdCode").value == '') {
+		alert ('Error: Primary key FkPrdCode not filled');
+		return;
+	}
+	if (document.getElementById("InputFkOndCode").value == '') {
+		alert ('Error: Primary key FkOndCode not filled');
+		return;
+	}
+	if (document.getElementById("InputCode").value == '') {
+		alert ('Error: Primary key Code not filled');
+		return;
+	}
 	var Type = {
 		FkPrdCubeTsgType: document.getElementById("InputFkPrdCubeTsgType").value,
 		FkPrdCode: document.getElementById("InputFkPrdCode").value,
@@ -252,6 +225,73 @@ function StartSelect002(p_event) {
 	} );
 }
 
+function InitBody() {
+	parent.g_change_pending = 'N';
+	var l_json_argument = JSON.parse(decodeURIComponent(location.href.split("?")[1]));
+	document.body._FlagDragging = 0;
+	document.body._DraggingId = ' ';
+	document.body._ListBoxCode = "Ref000";
+	document.body._ListBoxOptional = ' ';
+	var l_json_objectKey = l_json_argument.objectId;
+	switch (l_json_argument.nodeType) {
+	case "D": // Details of existing object 
+		g_node_id = JSON.stringify(l_json_argument.objectId);
+		document.getElementById("InputFkPrdCubeTsgType").value = l_json_objectKey.TYP_CST.FkPrdCubeTsgType;
+		document.getElementById("InputFkPrdCode").value = l_json_objectKey.TYP_CST.FkPrdCode;
+		document.getElementById("InputFkOndCode").value = l_json_objectKey.TYP_CST.FkOndCode;
+		document.getElementById("InputCode").value = l_json_objectKey.TYP_CST.Code;
+		document.getElementById("ButtonOK").innerText = "Update";
+		document.getElementById("ButtonOK").onclick = function(){UpdateCst()};
+		PerformTrans( {
+			Service: "GetCst",
+			Parameters: {
+				Type: l_json_objectKey.TYP_CST
+			}
+		} );
+		document.getElementById("InputFkPrdCubeTsgType").disabled = true;
+		document.getElementById("InputFkPrdCode").disabled = true;
+		document.getElementById("InputFkOndCode").disabled = true;
+		document.getElementById("InputCode").disabled = true;
+		break;
+	case "N": // New (non recursive) object
+		g_parent_node_id = JSON.stringify(l_json_argument.objectId);
+		document.getElementById("InputFkPrdCubeTsgType").value = l_json_objectKey.TYP_OND.FkPrdCubeTsgType;
+		document.getElementById("InputFkPrdCode").value = l_json_objectKey.TYP_OND.FkPrdCode;
+		document.getElementById("InputFkOndCode").value = l_json_objectKey.TYP_OND.Code;
+		document.getElementById("ButtonOK").innerText = "Create";
+		document.getElementById("ButtonOK").onclick = function(){CreateCst()};
+		document.getElementById("InputFkPrdCubeTsgType").disabled = true;
+		document.getElementById("InputFkPrdCode").disabled = true;
+		document.getElementById("InputFkOndCode").disabled = true;
+		break;
+	case "X": // Delete object
+		g_node_id = JSON.stringify(l_json_argument.objectId);
+		document.getElementById("InputFkPrdCubeTsgType").value = l_json_objectKey.TYP_CST.FkPrdCubeTsgType;
+		document.getElementById("InputFkPrdCode").value = l_json_objectKey.TYP_CST.FkPrdCode;
+		document.getElementById("InputFkOndCode").value = l_json_objectKey.TYP_CST.FkOndCode;
+		document.getElementById("InputCode").value = l_json_objectKey.TYP_CST.Code;
+		document.getElementById("ButtonOK").innerText = "Delete";
+		document.getElementById("ButtonOK").onclick = function(){DeleteCst()};
+		SetChangePending();
+		PerformTrans( {
+			Service: "GetCst",
+			Parameters: {
+				Type: l_json_objectKey.TYP_CST
+			}
+		} );
+		document.getElementById("InputCubeId").disabled = true;
+		document.getElementById("InputFkPrdCubeTsgType").disabled = true;
+		document.getElementById("InputFkPrdCode").disabled = true;
+		document.getElementById("InputFkOndCode").disabled = true;
+		document.getElementById("InputCode").disabled = true;
+		document.getElementById("InputOmschrijving").disabled = true;
+		document.getElementById("InputXkOddCode").disabled = true;
+		document.getElementById("InputXkOddCode1").disabled = true;
+		break;
+	default:
+		alert ('Error InitBody: nodeType='+l_json_argument.nodeType);
+	}
+}
 
 -->
 </script>
@@ -259,30 +299,29 @@ function StartSelect002(p_event) {
 <div><img src="icons/type_large.bmp" /><span> CONSTRUCTIE</span></div>
 <hr/>
 <table>
-<tr id="RowAtbFkPrdCubeTsgType"><td><u><div>Produkt.Type</div></u></td><td><div><select id="InputFkPrdCubeTsgType" type="text">
+<tr id="RowAtbFkPrdCubeTsgType"><td><u><div>Produkt.Type</div></u></td><td><div><select id="InputFkPrdCubeTsgType" type="text" onchange="SetChangePending();">
 	<option value=" " selected> </option>
 	<option id="OptionFkPrdCubeTsgType-P" style="display:inline" value="P">PARTICULIER</option>
 	<option id="OptionFkPrdCubeTsgType-Z" style="display:inline" value="Z">ZAKELIJK</option>
 </select></div></td></tr>
-<tr id="RowAtbFkPrdCode"><td><u><div>Produkt.Code</div></u></td><td><div style="max-width:8em;"><input id="InputFkPrdCode" type="text" maxlength="8" style="width:100%" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr id="RowAtbFkOndCode"><td><u><div>Onderdeel.Code</div></u></td><td><div style="max-width:8em;"><input id="InputFkOndCode" type="text" maxlength="8" style="width:100%" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr id="RowAtbCode"><td><u><div>Code</div></u></td><td><div style="max-width:8em;"><input id="InputCode" type="text" maxlength="8" style="width:100%" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr id="RowAtbOmschrijving"><td><div style="padding-top:10px">Omschrijving</div></td></tr><tr><td colspan="2"><div><textarea id="InputOmschrijving" type="text" maxlength="120" rows="5" style="white-space:normal;width:100%"></textarea></div></td></tr>
+<tr id="RowAtbFkPrdCode"><td><u><div>Produkt.Code</div></u></td><td><div style="max-width:8em;"><input id="InputFkPrdCode" type="text" maxlength="8" style="width:100%" onchange="SetChangePending();ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr id="RowAtbFkOndCode"><td><u><div>Onderdeel.Code</div></u></td><td><div style="max-width:8em;"><input id="InputFkOndCode" type="text" maxlength="8" style="width:100%" onchange="SetChangePending();ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr id="RowAtbCode"><td><u><div>Code</div></u></td><td><div style="max-width:8em;"><input id="InputCode" type="text" maxlength="8" style="width:100%" onchange="SetChangePending();ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr id="RowAtbOmschrijving"><td><div style="padding-top:10px">Omschrijving</div></td></tr><tr><td colspan="2"><div><textarea id="InputOmschrijving" type="text" maxlength="120" rows="5" style="white-space:normal;width:100%" onchange="SetChangePending();"></textarea></div></td></tr>
 <tr><td height=6></td></tr><tr id="RowRefOnderdeelDeel0"><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/type.bmp"/> OnderdeelDeel (ZonderScope)</legend>
 <table style="width:100%">
-<tr><td>OnderdeelDeel.Code</td><td style="width:100%"><div style="max-width:8em;"><input id="InputXkOddCode" type="text" maxlength="8" style="width:100%" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td>
+<tr><td>OnderdeelDeel.Code</td><td style="width:100%"><div style="max-width:8em;"><input id="InputXkOddCode" type="text" maxlength="8" style="width:100%" disabled></input></div></td>
 <td><button id="RefSelect001" type="button" onclick="StartSelect001(event)">Select</button></td></tr>
 </table></fieldset></td></tr>
 <tr><td height=6></td></tr><tr id="RowRefOnderdeelDeel1"><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/type.bmp"/> OnderdeelDeel (MetScope)</legend>
 <table style="width:100%">
-<tr><td>OnderdeelDeel.Code</td><td style="width:100%"><div style="max-width:8em;"><input id="InputXkOddCode1" type="text" maxlength="8" style="width:100%" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td>
+<tr><td>OnderdeelDeel.Code</td><td style="width:100%"><div style="max-width:8em;"><input id="InputXkOddCode1" type="text" maxlength="8" style="width:100%" disabled></input></div></td>
 <td><button id="RefSelect002" type="button" onclick="StartSelect002(event)">Select</button></td></tr>
 </table></fieldset></td></tr>
 <tr><td><br></td><td style="width:100%"></td></tr>
 <tr><td/><td>
-<button id="ButtonCreate" type="button" onclick="CreateCst()">Create</button>&nbsp;&nbsp;&nbsp;
-<button id="ButtonUpdate" type="button" onclick="UpdateCst()">Update</button>&nbsp;&nbsp;&nbsp;
-<button id="ButtonDelete" type="button" onclick="DeleteCst()">Delete</button></td></tr>
+<button id="ButtonOK" type="button" disabled>OK</button>&nbsp;&nbsp;&nbsp;
+<button id="ButtonCancel" type="button" disabled onclick="CancelChangePending()">Cancel</button></td></tr>
 </table>
 <input id="InputCubeId" type="hidden"></input>
 </body>

@@ -4,10 +4,10 @@ $_SESSION['views']=0;
 ?><html>
 <head>
 <link rel="stylesheet" href="base_css.php" />
-<script language="javascript" type="text/javascript" src="..\CubeGeneral\CubeInclude.js"></script>
-<script language="javascript" type="text/javascript" src="..\CubeGeneral\CubeDetailInclude.js"></script>
-<script language="javascript" type="text/javascript" src="CubeTestInclude.js"></script>
-<script language="javascript" type="text/javascript" src="CubeTestDetailInclude.js"></script>
+<script language="javascript" type="text/javascript" src="..\CubeGeneral\CubeInclude.js?filever=<?=filemtime('..\CubeGeneral\CubeInclude.js')?>"></script>
+<script language="javascript" type="text/javascript" src="..\CubeGeneral\CubeDetailInclude.js?filever=<?=filemtime('..\CubeGeneral\CubeDetailInclude.js')?>"></script>
+<script language="javascript" type="text/javascript" src="CubeTestInclude.js?filever=<?=filemtime('CubeTestInclude.js')?>"></script>
+<script language="javascript" type="text/javascript" src="CubeTestDetailInclude.js?filever=<?=filemtime('CubeTestDetailInclude.js')?>"></script>
 <script language="javascript" type="text/javascript">
 <!--
 var g_option = null;
@@ -38,9 +38,8 @@ g_xmlhttp.onreadystatechange = function() {
 						document.getElementById("InputFkPrdCode").disabled=true;
 						document.getElementById("InputFkOndCode").disabled=true;
 						document.getElementById("InputCode").disabled=true;
-						document.getElementById("ButtonCreate").disabled=true;
-						document.getElementById("ButtonUpdate").disabled=false;
-						document.getElementById("ButtonDelete").disabled=false;
+						document.getElementById("ButtonOK").innerText="Update";
+						document.getElementById("ButtonOK").disabled=false;
 						var l_objNode = parent.document.getElementById(g_parent_node_id);
 						var l_json_node_id = {FkPrdCubeTsgType:document.getElementById("InputFkPrdCubeTsgType").value,FkPrdCode:document.getElementById("InputFkPrdCode").value,Code:document.getElementById("InputCode").value};
 						g_node_id = '{"TYP_OND":'+JSON.stringify(l_json_node_id)+'}';
@@ -60,8 +59,12 @@ g_xmlhttp.onreadystatechange = function() {
 									l_objNodePos);
 							}
 						}
+						document.getElementById("ButtonOK").innerText = "Update";
+						document.getElementById("ButtonOK").onclick = function(){UpdateOnd()};						
+						ResetChangePending();
 						break;
 					case "UPDATE_OND":
+						ResetChangePending();
 						break;
 					case "DELETE_OND":
 						var l_objNode = parent.document.getElementById(g_node_id);
@@ -71,7 +74,7 @@ g_xmlhttp.onreadystatechange = function() {
 						if (l_objNode != null) {
 							l_objNode.parentNode.removeChild(l_objNode);
 						}
-						parent.document.getElementById('DetailFrame').src='about:blank';
+						CancelChangePending();
 						break;
 					case "ERROR":
 						alert ('Server error:\n'+l_json_array[i].ErrorText);
@@ -87,67 +90,19 @@ g_xmlhttp.onreadystatechange = function() {
 	}
 }
 
-function InitBody() {
-	var l_json_argument = JSON.parse(decodeURIComponent(location.href.split("?")[1]));
-	document.body._FlagDragging = 0;
-	document.body._DraggingId = ' ';
-	document.body._ListBoxCode = "Ref000";
-	document.body._ListBoxOptional = ' ';
-	var l_json_objectKey = l_json_argument.objectId;
-	g_json_option = l_json_argument.Option;
-	switch (l_json_argument.nodeType) {
-	case "D": // Details of existing object 
-		g_node_id = JSON.stringify(l_json_argument.objectId);
-		document.getElementById("InputFkPrdCubeTsgType").value=l_json_objectKey.TYP_OND.FkPrdCubeTsgType;
-		document.getElementById("InputFkPrdCode").value=l_json_objectKey.TYP_OND.FkPrdCode;
-		document.getElementById("InputCode").value=l_json_objectKey.TYP_OND.Code;
-		document.getElementById("ButtonCreate").disabled=true;
-		PerformTrans( {
-			Service: "GetOnd",
-			Parameters: {
-				Type: l_json_objectKey.TYP_OND
-			}
-		} );
-		document.getElementById("InputFkPrdCubeTsgType").disabled=true;
-		document.getElementById("InputFkPrdCode").disabled=true;
-		document.getElementById("InputFkOndCode").disabled=true;
-		document.getElementById("InputCode").disabled=true;
-		break;
-	case "N": // New (non recursive) object
-		g_parent_node_id = JSON.stringify(l_json_argument.objectId);
-		document.getElementById("InputFkPrdCubeTsgType").value=l_json_objectKey.TYP_PRD.CubeTsgType;
-		document.getElementById("InputFkPrdCode").value=l_json_objectKey.TYP_PRD.Code;
-		document.getElementById("ButtonUpdate").disabled=true;
-		document.getElementById("ButtonDelete").disabled=true;
-		document.getElementById("InputFkPrdCubeTsgType").disabled=true;
-		document.getElementById("InputFkPrdCode").disabled=true;
-		document.getElementById("InputFkOndCode").disabled=true;
-		document.getElementById("InputCubeLevel").value='1';
-		document.getElementById("InputCode").value=' ';
-		document.getElementById("InputPrijs").value='0';
-		document.getElementById("InputOmschrijving").value=' ';
-		break;  
-	case "R": // New recursive object
-		g_parent_node_id = JSON.stringify(l_json_argument.objectId);
-		document.getElementById("InputFkPrdCubeTsgType").value=l_json_objectKey.TYP_OND.FkPrdCubeTsgType;
-		document.getElementById("InputFkPrdCode").value=l_json_objectKey.TYP_OND.FkPrdCode;
-		document.getElementById("InputFkOndCode").value=l_json_objectKey.TYP_OND.Code;
-		document.getElementById("ButtonUpdate").disabled=true;
-		document.getElementById("ButtonDelete").disabled=true;
-		document.getElementById("InputFkPrdCubeTsgType").disabled=true;
-		document.getElementById("InputFkPrdCode").disabled=true;
-		document.getElementById("InputFkOndCode").disabled=true;
-		document.getElementById("InputCubeLevel").value='1';
-		document.getElementById("InputCode").value=' ';
-		document.getElementById("InputPrijs").value='0';
-		document.getElementById("InputOmschrijving").value=' ';
-		break;
-	default:
-		alert ('Error InitBody: '+l_argument[1]);
-	}
-}
-
 function CreateOnd() {
+	if (document.getElementById("InputFkPrdCubeTsgType").value == '') {
+		alert ('Error: Primary key FkPrdCubeTsgType not filled');
+		return;
+	}
+	if (document.getElementById("InputFkPrdCode").value == '') {
+		alert ('Error: Primary key FkPrdCode not filled');
+		return;
+	}
+	if (document.getElementById("InputCode").value == '') {
+		alert ('Error: Primary key Code not filled');
+		return;
+	}
 	var Type = {
 		FkPrdCubeTsgType: document.getElementById("InputFkPrdCubeTsgType").value,
 		FkPrdCode: document.getElementById("InputFkPrdCode").value,
@@ -212,6 +167,85 @@ function DeleteOnd() {
 	} );
 }
 
+function InitBody() {
+	parent.g_change_pending = 'N';
+	var l_json_argument = JSON.parse(decodeURIComponent(location.href.split("?")[1]));
+	document.body._FlagDragging = 0;
+	document.body._DraggingId = ' ';
+	document.body._ListBoxCode = "Ref000";
+	document.body._ListBoxOptional = ' ';
+	var l_json_objectKey = l_json_argument.objectId;
+	g_json_option = l_json_argument.Option;
+	switch (l_json_argument.nodeType) {
+	case "D": // Details of existing object 
+		g_node_id = JSON.stringify(l_json_argument.objectId);
+		document.getElementById("InputFkPrdCubeTsgType").value = l_json_objectKey.TYP_OND.FkPrdCubeTsgType;
+		document.getElementById("InputFkPrdCode").value = l_json_objectKey.TYP_OND.FkPrdCode;
+		document.getElementById("InputCode").value = l_json_objectKey.TYP_OND.Code;
+		document.getElementById("ButtonOK").innerText = "Update";
+		document.getElementById("ButtonOK").onclick = function(){UpdateOnd()};
+		PerformTrans( {
+			Service: "GetOnd",
+			Parameters: {
+				Type: l_json_objectKey.TYP_OND
+			}
+		} );
+		document.getElementById("InputFkPrdCubeTsgType").disabled = true;
+		document.getElementById("InputFkPrdCode").disabled = true;
+		document.getElementById("InputFkOndCode").disabled = true;
+		document.getElementById("InputCode").disabled = true;
+		break;
+	case "N": // New (non recursive) object
+		g_parent_node_id = JSON.stringify(l_json_argument.objectId);
+		document.getElementById("InputFkPrdCubeTsgType").value = l_json_objectKey.TYP_PRD.CubeTsgType;
+		document.getElementById("InputFkPrdCode").value = l_json_objectKey.TYP_PRD.Code;
+		document.getElementById("ButtonOK").innerText = "Create";
+		document.getElementById("ButtonOK").onclick = function(){CreateOnd()};
+		document.getElementById("InputFkPrdCubeTsgType").disabled = true;
+		document.getElementById("InputFkPrdCode").disabled = true;
+		document.getElementById("InputFkOndCode").disabled = true;
+		document.getElementById("InputCubeLevel").value='1';
+		break;  
+	case "R": // New recursive object
+		g_parent_node_id = JSON.stringify(l_json_argument.objectId);
+		document.getElementById("InputFkPrdCubeTsgType").value = l_json_objectKey.TYP_OND.FkPrdCubeTsgType;
+		document.getElementById("InputFkPrdCode").value = l_json_objectKey.TYP_OND.FkPrdCode;
+		document.getElementById("InputFkOndCode").value = l_json_objectKey.TYP_OND.Code;
+		document.getElementById("ButtonOK").innerText = "Create";
+		document.getElementById("ButtonOK").onclick = function(){CreateOnd()};
+		document.getElementById("InputFkPrdCubeTsgType").disabled = true;
+		document.getElementById("InputFkPrdCode").disabled = true;
+		document.getElementById("InputFkOndCode").disabled = true;
+		document.getElementById("InputCubeLevel").value='1';
+		break;
+	case "X": // Delete object
+		g_node_id = JSON.stringify(l_json_argument.objectId);
+		document.getElementById("InputFkPrdCubeTsgType").value = l_json_objectKey.TYP_OND.FkPrdCubeTsgType;
+		document.getElementById("InputFkPrdCode").value = l_json_objectKey.TYP_OND.FkPrdCode;
+		document.getElementById("InputCode").value = l_json_objectKey.TYP_OND.Code;
+		document.getElementById("ButtonOK").innerText = "Delete";
+		document.getElementById("ButtonOK").onclick = function(){DeleteOnd()};
+		SetChangePending();
+		PerformTrans( {
+			Service: "GetOnd",
+			Parameters: {
+				Type: l_json_objectKey.TYP_OND
+			}
+		} );
+		document.getElementById("InputCubeId").disabled = true;
+		document.getElementById("InputCubeSequence").disabled = true;
+		document.getElementById("InputCubeLevel").disabled = true;
+		document.getElementById("InputFkPrdCubeTsgType").disabled = true;
+		document.getElementById("InputFkPrdCode").disabled = true;
+		document.getElementById("InputFkOndCode").disabled = true;
+		document.getElementById("InputCode").disabled = true;
+		document.getElementById("InputPrijs").disabled = true;
+		document.getElementById("InputOmschrijving").disabled = true;
+		break;
+	default:
+		alert ('Error InitBody: nodeType='+l_json_argument.nodeType);
+	}
+}
 
 -->
 </script>
@@ -219,21 +253,20 @@ function DeleteOnd() {
 <div><img src="icons/part_large.bmp" /><span style="cursor:help" oncontextmenu="parent.OpenDescBox('part','Onderdeel','ONDERDEEL','_',-1)"> ONDERDEEL</span></div>
 <hr/>
 <table>
-<tr id="RowAtbFkPrdCubeTsgType"><td><u><div>Produkt.Type</div></u></td><td><div><select id="InputFkPrdCubeTsgType" type="text">
+<tr id="RowAtbFkPrdCubeTsgType"><td><u><div>Produkt.Type</div></u></td><td><div><select id="InputFkPrdCubeTsgType" type="text" onchange="SetChangePending();">
 	<option value=" " selected> </option>
 	<option id="OptionFkPrdCubeTsgType-P" style="display:inline" value="P">PARTICULIER</option>
 	<option id="OptionFkPrdCubeTsgType-Z" style="display:inline" value="Z">ZAKELIJK</option>
 </select></div></td></tr>
-<tr id="RowAtbFkPrdCode"><td><u><div>Produkt.Code</div></u></td><td><div style="max-width:8em;"><input id="InputFkPrdCode" type="text" maxlength="8" style="width:100%" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr id="RowAtbFkOndCode"><td><div>Onderdeel.Code</div></td><td><div style="max-width:8em;"><input id="InputFkOndCode" type="text" maxlength="8" style="width:100%" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr id="RowAtbCode"><td><u><div>Code</div></u></td><td><div style="max-width:8em;"><input id="InputCode" type="text" maxlength="8" style="width:100%" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr id="RowAtbPrijs"><td><div>Prijs</div></td><td><div style="max-width:9em;"><input id="InputPrijs" type="text" maxlength="9" style="width:100%"></input></div></td></tr>
-<tr id="RowAtbOmschrijving"><td><div style="padding-top:10px">Omschrijving</div></td></tr><tr><td colspan="2"><div><textarea id="InputOmschrijving" type="text" maxlength="120" rows="5" style="white-space:normal;width:100%"></textarea></div></td></tr>
+<tr id="RowAtbFkPrdCode"><td><u><div>Produkt.Code</div></u></td><td><div style="max-width:8em;"><input id="InputFkPrdCode" type="text" maxlength="8" style="width:100%" onchange="SetChangePending();ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr id="RowAtbFkOndCode"><td><div>Onderdeel.Code</div></td><td><div style="max-width:8em;"><input id="InputFkOndCode" type="text" maxlength="8" style="width:100%" onchange="SetChangePending();ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr id="RowAtbCode"><td><u><div>Code</div></u></td><td><div style="max-width:8em;"><input id="InputCode" type="text" maxlength="8" style="width:100%" onchange="SetChangePending();ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr id="RowAtbPrijs"><td><div>Prijs</div></td><td><div style="max-width:9em;"><input id="InputPrijs" type="text" maxlength="9" style="width:100%" onchange="SetChangePending();ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr id="RowAtbOmschrijving"><td><div style="padding-top:10px">Omschrijving</div></td></tr><tr><td colspan="2"><div><textarea id="InputOmschrijving" type="text" maxlength="120" rows="5" style="white-space:normal;width:100%" onchange="SetChangePending();"></textarea></div></td></tr>
 <tr><td><br></td><td style="width:100%"></td></tr>
 <tr><td/><td>
-<button id="ButtonCreate" type="button" onclick="CreateOnd()">Create</button>&nbsp;&nbsp;&nbsp;
-<button id="ButtonUpdate" type="button" onclick="UpdateOnd()">Update</button>&nbsp;&nbsp;&nbsp;
-<button id="ButtonDelete" type="button" onclick="DeleteOnd()">Delete</button></td></tr>
+<button id="ButtonOK" type="button" disabled>OK</button>&nbsp;&nbsp;&nbsp;
+<button id="ButtonCancel" type="button" disabled onclick="CancelChangePending()">Cancel</button></td></tr>
 </table>
 <input id="InputCubeId" type="hidden"></input>
 <input id="InputCubeSequence" type="hidden"></input>

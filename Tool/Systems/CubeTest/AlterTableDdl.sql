@@ -68,10 +68,10 @@ BEGIN
 			cube_tsg_type VARCHAR2(8) DEFAULT ''P'',
 			cube_tsg_soort VARCHAR2(8) DEFAULT ''R'',
 			cube_tsg_soort1 VARCHAR2(8) DEFAULT ''GARAGE'',
-			code VARCHAR2(8) DEFAULT '' '',
-			prijs NUMBER(8,2) DEFAULT ''0'',
-			makelaar_naam VARCHAR2(40) DEFAULT '' '',
-			bedrag_btw NUMBER(8,2) DEFAULT ''0'')';
+			code VARCHAR2(8),
+			prijs NUMBER(8,2),
+			makelaar_naam VARCHAR2(40),
+			bedrag_btw NUMBER(8,2))';
 		DBMS_OUTPUT.PUT_LINE('Table T_PRODUKT created');
 	ELSE
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_PRODUKT' AND column_name = 'CUBE_ID';
@@ -101,25 +101,25 @@ BEGIN
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_PRODUKT' AND column_name = 'CODE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
-			'ALTER TABLE t_produkt ADD code VARCHAR2(8) DEFAULT '' ''';
+			'ALTER TABLE t_produkt ADD code VARCHAR2(8)';
 			DBMS_OUTPUT.PUT_LINE('Column T_PRODUKT.CODE created');
 		END IF;
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_PRODUKT' AND column_name = 'PRIJS';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
-			'ALTER TABLE t_produkt ADD prijs NUMBER(8,2) DEFAULT ''0''';
+			'ALTER TABLE t_produkt ADD prijs NUMBER(8,2)';
 			DBMS_OUTPUT.PUT_LINE('Column T_PRODUKT.PRIJS created');
 		END IF;
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_PRODUKT' AND column_name = 'MAKELAAR_NAAM';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
-			'ALTER TABLE t_produkt ADD makelaar_naam VARCHAR2(40) DEFAULT '' ''';
+			'ALTER TABLE t_produkt ADD makelaar_naam VARCHAR2(40)';
 			DBMS_OUTPUT.PUT_LINE('Column T_PRODUKT.MAKELAAR_NAAM created');
 		END IF;
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_PRODUKT' AND column_name = 'BEDRAG_BTW';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
-			'ALTER TABLE t_produkt ADD bedrag_btw NUMBER(8,2) DEFAULT ''0''';
+			'ALTER TABLE t_produkt ADD bedrag_btw NUMBER(8,2)';
 			DBMS_OUTPUT.PUT_LINE('Column T_PRODUKT.BEDRAG_BTW created');
 		END IF;
 		FOR r_key IN (SELECT constraint_name FROM all_constraints WHERE owner = 'CUBETEST' AND table_name = 'T_PRODUKT' AND constraint_type IN ('P','U','R') ORDER BY constraint_type DESC)
@@ -149,11 +149,11 @@ BEGIN
 			cube_sequence NUMBER(8),
 			cube_level NUMBER(8) DEFAULT ''1'',
 			fk_prd_cube_tsg_type VARCHAR2(8) DEFAULT ''P'',
-			fk_prd_code VARCHAR2(8) DEFAULT '' '',
-			fk_ond_code VARCHAR2(8) DEFAULT '' '',
-			code VARCHAR2(8) DEFAULT '' '',
-			prijs NUMBER(8,2) DEFAULT ''0'',
-			omschrijving VARCHAR2(120) DEFAULT '' '')';
+			fk_prd_code VARCHAR2(8),
+			fk_ond_code VARCHAR2(8),
+			code VARCHAR2(8),
+			prijs NUMBER(8,2),
+			omschrijving VARCHAR2(120))';
 		DBMS_OUTPUT.PUT_LINE('Table T_ONDERDEEL created');
 	ELSE
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_ONDERDEEL' AND column_name = 'CUBE_ID';
@@ -183,31 +183,31 @@ BEGIN
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_ONDERDEEL' AND column_name = 'FK_PRD_CODE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
-			'ALTER TABLE t_onderdeel ADD fk_prd_code VARCHAR2(8) DEFAULT '' ''';
+			'ALTER TABLE t_onderdeel ADD fk_prd_code VARCHAR2(8)';
 			DBMS_OUTPUT.PUT_LINE('Column T_ONDERDEEL.FK_PRD_CODE created');
 		END IF;
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_ONDERDEEL' AND column_name = 'FK_OND_CODE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
-			'ALTER TABLE t_onderdeel ADD fk_ond_code VARCHAR2(8) DEFAULT '' ''';
+			'ALTER TABLE t_onderdeel ADD fk_ond_code VARCHAR2(8)';
 			DBMS_OUTPUT.PUT_LINE('Column T_ONDERDEEL.FK_OND_CODE created');
 		END IF;
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_ONDERDEEL' AND column_name = 'CODE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
-			'ALTER TABLE t_onderdeel ADD code VARCHAR2(8) DEFAULT '' ''';
+			'ALTER TABLE t_onderdeel ADD code VARCHAR2(8)';
 			DBMS_OUTPUT.PUT_LINE('Column T_ONDERDEEL.CODE created');
 		END IF;
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_ONDERDEEL' AND column_name = 'PRIJS';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
-			'ALTER TABLE t_onderdeel ADD prijs NUMBER(8,2) DEFAULT ''0''';
+			'ALTER TABLE t_onderdeel ADD prijs NUMBER(8,2)';
 			DBMS_OUTPUT.PUT_LINE('Column T_ONDERDEEL.PRIJS created');
 		END IF;
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_ONDERDEEL' AND column_name = 'OMSCHRIJVING';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
-			'ALTER TABLE t_onderdeel ADD omschrijving VARCHAR2(120) DEFAULT '' ''';
+			'ALTER TABLE t_onderdeel ADD omschrijving VARCHAR2(120)';
 			DBMS_OUTPUT.PUT_LINE('Column T_ONDERDEEL.OMSCHRIJVING created');
 		END IF;
 		FOR r_key IN (SELECT constraint_name FROM all_constraints WHERE owner = 'CUBETEST' AND table_name = 'T_ONDERDEEL' AND constraint_type IN ('P','U','R') ORDER BY constraint_type DESC)
@@ -236,10 +236,10 @@ BEGIN
 			cube_id VARCHAR2(16),
 			cube_sequence NUMBER(8),
 			fk_prd_cube_tsg_type VARCHAR2(8) DEFAULT ''P'',
-			fk_prd_code VARCHAR2(8) DEFAULT '' '',
-			fk_ond_code VARCHAR2(8) DEFAULT '' '',
-			code VARCHAR2(8) DEFAULT '' '',
-			naam VARCHAR2(40) DEFAULT '' '')';
+			fk_prd_code VARCHAR2(8),
+			fk_ond_code VARCHAR2(8),
+			code VARCHAR2(8),
+			naam VARCHAR2(40))';
 		DBMS_OUTPUT.PUT_LINE('Table T_ONDERDEEL_DEEL created');
 	ELSE
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_ONDERDEEL_DEEL' AND column_name = 'CUBE_ID';
@@ -263,25 +263,25 @@ BEGIN
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_ONDERDEEL_DEEL' AND column_name = 'FK_PRD_CODE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
-			'ALTER TABLE t_onderdeel_deel ADD fk_prd_code VARCHAR2(8) DEFAULT '' ''';
+			'ALTER TABLE t_onderdeel_deel ADD fk_prd_code VARCHAR2(8)';
 			DBMS_OUTPUT.PUT_LINE('Column T_ONDERDEEL_DEEL.FK_PRD_CODE created');
 		END IF;
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_ONDERDEEL_DEEL' AND column_name = 'FK_OND_CODE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
-			'ALTER TABLE t_onderdeel_deel ADD fk_ond_code VARCHAR2(8) DEFAULT '' ''';
+			'ALTER TABLE t_onderdeel_deel ADD fk_ond_code VARCHAR2(8)';
 			DBMS_OUTPUT.PUT_LINE('Column T_ONDERDEEL_DEEL.FK_OND_CODE created');
 		END IF;
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_ONDERDEEL_DEEL' AND column_name = 'CODE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
-			'ALTER TABLE t_onderdeel_deel ADD code VARCHAR2(8) DEFAULT '' ''';
+			'ALTER TABLE t_onderdeel_deel ADD code VARCHAR2(8)';
 			DBMS_OUTPUT.PUT_LINE('Column T_ONDERDEEL_DEEL.CODE created');
 		END IF;
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_ONDERDEEL_DEEL' AND column_name = 'NAAM';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
-			'ALTER TABLE t_onderdeel_deel ADD naam VARCHAR2(40) DEFAULT '' ''';
+			'ALTER TABLE t_onderdeel_deel ADD naam VARCHAR2(40)';
 			DBMS_OUTPUT.PUT_LINE('Column T_ONDERDEEL_DEEL.NAAM created');
 		END IF;
 		FOR r_key IN (SELECT constraint_name FROM all_constraints WHERE owner = 'CUBETEST' AND table_name = 'T_ONDERDEEL_DEEL' AND constraint_type IN ('P','U','R') ORDER BY constraint_type DESC)
@@ -310,11 +310,11 @@ BEGIN
 			cube_id VARCHAR2(16),
 			cube_sequence NUMBER(8),
 			fk_prd_cube_tsg_type VARCHAR2(8) DEFAULT ''P'',
-			fk_prd_code VARCHAR2(8) DEFAULT '' '',
-			fk_ond_code VARCHAR2(8) DEFAULT '' '',
-			fk_odd_code VARCHAR2(8) DEFAULT '' '',
-			code VARCHAR2(8) DEFAULT '' '',
-			naam VARCHAR2(40) DEFAULT '' '')';
+			fk_prd_code VARCHAR2(8),
+			fk_ond_code VARCHAR2(8),
+			fk_odd_code VARCHAR2(8),
+			code VARCHAR2(8),
+			naam VARCHAR2(40))';
 		DBMS_OUTPUT.PUT_LINE('Table T_ONDERDEEL_DEEL_DEEL created');
 	ELSE
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_ONDERDEEL_DEEL_DEEL' AND column_name = 'CUBE_ID';
@@ -338,31 +338,31 @@ BEGIN
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_ONDERDEEL_DEEL_DEEL' AND column_name = 'FK_PRD_CODE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
-			'ALTER TABLE t_onderdeel_deel_deel ADD fk_prd_code VARCHAR2(8) DEFAULT '' ''';
+			'ALTER TABLE t_onderdeel_deel_deel ADD fk_prd_code VARCHAR2(8)';
 			DBMS_OUTPUT.PUT_LINE('Column T_ONDERDEEL_DEEL_DEEL.FK_PRD_CODE created');
 		END IF;
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_ONDERDEEL_DEEL_DEEL' AND column_name = 'FK_OND_CODE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
-			'ALTER TABLE t_onderdeel_deel_deel ADD fk_ond_code VARCHAR2(8) DEFAULT '' ''';
+			'ALTER TABLE t_onderdeel_deel_deel ADD fk_ond_code VARCHAR2(8)';
 			DBMS_OUTPUT.PUT_LINE('Column T_ONDERDEEL_DEEL_DEEL.FK_OND_CODE created');
 		END IF;
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_ONDERDEEL_DEEL_DEEL' AND column_name = 'FK_ODD_CODE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
-			'ALTER TABLE t_onderdeel_deel_deel ADD fk_odd_code VARCHAR2(8) DEFAULT '' ''';
+			'ALTER TABLE t_onderdeel_deel_deel ADD fk_odd_code VARCHAR2(8)';
 			DBMS_OUTPUT.PUT_LINE('Column T_ONDERDEEL_DEEL_DEEL.FK_ODD_CODE created');
 		END IF;
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_ONDERDEEL_DEEL_DEEL' AND column_name = 'CODE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
-			'ALTER TABLE t_onderdeel_deel_deel ADD code VARCHAR2(8) DEFAULT '' ''';
+			'ALTER TABLE t_onderdeel_deel_deel ADD code VARCHAR2(8)';
 			DBMS_OUTPUT.PUT_LINE('Column T_ONDERDEEL_DEEL_DEEL.CODE created');
 		END IF;
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_ONDERDEEL_DEEL_DEEL' AND column_name = 'NAAM';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
-			'ALTER TABLE t_onderdeel_deel_deel ADD naam VARCHAR2(40) DEFAULT '' ''';
+			'ALTER TABLE t_onderdeel_deel_deel ADD naam VARCHAR2(40)';
 			DBMS_OUTPUT.PUT_LINE('Column T_ONDERDEEL_DEEL_DEEL.NAAM created');
 		END IF;
 		FOR r_key IN (SELECT constraint_name FROM all_constraints WHERE owner = 'CUBETEST' AND table_name = 'T_ONDERDEEL_DEEL_DEEL' AND constraint_type IN ('P','U','R') ORDER BY constraint_type DESC)
@@ -390,12 +390,12 @@ BEGIN
 		'CREATE TABLE t_constructie (
 			cube_id VARCHAR2(16),
 			fk_prd_cube_tsg_type VARCHAR2(8) DEFAULT ''P'',
-			fk_prd_code VARCHAR2(8) DEFAULT '' '',
-			fk_ond_code VARCHAR2(8) DEFAULT '' '',
-			code VARCHAR2(8) DEFAULT '' '',
-			omschrijving VARCHAR2(120) DEFAULT '' '',
-			xk_odd_code VARCHAR2(8) DEFAULT '' '',
-			xk_odd_code_1 VARCHAR2(8) DEFAULT '' '')';
+			fk_prd_code VARCHAR2(8),
+			fk_ond_code VARCHAR2(8),
+			code VARCHAR2(8),
+			omschrijving VARCHAR2(120),
+			xk_odd_code VARCHAR2(8),
+			xk_odd_code_1 VARCHAR2(8))';
 		DBMS_OUTPUT.PUT_LINE('Table T_CONSTRUCTIE created');
 	ELSE
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_CONSTRUCTIE' AND column_name = 'CUBE_ID';
@@ -413,37 +413,37 @@ BEGIN
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_CONSTRUCTIE' AND column_name = 'FK_PRD_CODE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
-			'ALTER TABLE t_constructie ADD fk_prd_code VARCHAR2(8) DEFAULT '' ''';
+			'ALTER TABLE t_constructie ADD fk_prd_code VARCHAR2(8)';
 			DBMS_OUTPUT.PUT_LINE('Column T_CONSTRUCTIE.FK_PRD_CODE created');
 		END IF;
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_CONSTRUCTIE' AND column_name = 'FK_OND_CODE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
-			'ALTER TABLE t_constructie ADD fk_ond_code VARCHAR2(8) DEFAULT '' ''';
+			'ALTER TABLE t_constructie ADD fk_ond_code VARCHAR2(8)';
 			DBMS_OUTPUT.PUT_LINE('Column T_CONSTRUCTIE.FK_OND_CODE created');
 		END IF;
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_CONSTRUCTIE' AND column_name = 'CODE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
-			'ALTER TABLE t_constructie ADD code VARCHAR2(8) DEFAULT '' ''';
+			'ALTER TABLE t_constructie ADD code VARCHAR2(8)';
 			DBMS_OUTPUT.PUT_LINE('Column T_CONSTRUCTIE.CODE created');
 		END IF;
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_CONSTRUCTIE' AND column_name = 'OMSCHRIJVING';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
-			'ALTER TABLE t_constructie ADD omschrijving VARCHAR2(120) DEFAULT '' ''';
+			'ALTER TABLE t_constructie ADD omschrijving VARCHAR2(120)';
 			DBMS_OUTPUT.PUT_LINE('Column T_CONSTRUCTIE.OMSCHRIJVING created');
 		END IF;
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_CONSTRUCTIE' AND column_name = 'XK_ODD_CODE';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
-			'ALTER TABLE t_constructie ADD xk_odd_code VARCHAR2(8) DEFAULT '' ''';
+			'ALTER TABLE t_constructie ADD xk_odd_code VARCHAR2(8)';
 			DBMS_OUTPUT.PUT_LINE('Column T_CONSTRUCTIE.XK_ODD_CODE created');
 		END IF;
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_CONSTRUCTIE' AND column_name = 'XK_ODD_CODE_1';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
-			'ALTER TABLE t_constructie ADD xk_odd_code_1 VARCHAR2(8) DEFAULT '' ''';
+			'ALTER TABLE t_constructie ADD xk_odd_code_1 VARCHAR2(8)';
 			DBMS_OUTPUT.PUT_LINE('Column T_CONSTRUCTIE.XK_ODD_CODE_1 created');
 		END IF;
 		FOR r_key IN (SELECT constraint_name FROM all_constraints WHERE owner = 'CUBETEST' AND table_name = 'T_CONSTRUCTIE' AND constraint_type IN ('P','U','R') ORDER BY constraint_type DESC)
@@ -480,10 +480,10 @@ BEGIN
 			'CUBE_TSG_TYPE','''P''',
 			'CUBE_TSG_SOORT','''R''',
 			'CUBE_TSG_SOORT1','''GARAGE''',
-			'CODE',''' ''',
-			'PRIJS','''0''',
-			'MAKELAAR_NAAM',''' ''',
-			'BEDRAG_BTW','''0''',NULL) new_default_value
+			'CODE',NULL,
+			'PRIJS',NULL,
+			'MAKELAAR_NAAM',NULL,
+			'BEDRAG_BTW',NULL,NULL) new_default_value
   		FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_PRODUKT')
 	LOOP
 		IF r_field.old_domain <> r_field.new_domain THEN
@@ -550,11 +550,11 @@ BEGIN
 			'CUBE_SEQUENCE',NULL,
 			'CUBE_LEVEL','''1''',
 			'FK_PRD_CUBE_TSG_TYPE','''P''',
-			'FK_PRD_CODE',''' ''',
-			'FK_OND_CODE',''' ''',
-			'CODE',''' ''',
-			'PRIJS','''0''',
-			'OMSCHRIJVING',''' ''',NULL) new_default_value
+			'FK_PRD_CODE',NULL,
+			'FK_OND_CODE',NULL,
+			'CODE',NULL,
+			'PRIJS',NULL,
+			'OMSCHRIJVING',NULL,NULL) new_default_value
   		FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_ONDERDEEL')
 	LOOP
 		IF r_field.old_domain <> r_field.new_domain THEN
@@ -630,10 +630,10 @@ BEGIN
 			'CUBE_ID',NULL,
 			'CUBE_SEQUENCE',NULL,
 			'FK_PRD_CUBE_TSG_TYPE','''P''',
-			'FK_PRD_CODE',''' ''',
-			'FK_OND_CODE',''' ''',
-			'CODE',''' ''',
-			'NAAM',''' ''',NULL) new_default_value
+			'FK_PRD_CODE',NULL,
+			'FK_OND_CODE',NULL,
+			'CODE',NULL,
+			'NAAM',NULL,NULL) new_default_value
   		FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_ONDERDEEL_DEEL')
 	LOOP
 		IF r_field.old_domain <> r_field.new_domain THEN
@@ -701,11 +701,11 @@ BEGIN
 			'CUBE_ID',NULL,
 			'CUBE_SEQUENCE',NULL,
 			'FK_PRD_CUBE_TSG_TYPE','''P''',
-			'FK_PRD_CODE',''' ''',
-			'FK_OND_CODE',''' ''',
-			'FK_ODD_CODE',''' ''',
-			'CODE',''' ''',
-			'NAAM',''' ''',NULL) new_default_value
+			'FK_PRD_CODE',NULL,
+			'FK_OND_CODE',NULL,
+			'FK_ODD_CODE',NULL,
+			'CODE',NULL,
+			'NAAM',NULL,NULL) new_default_value
   		FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_ONDERDEEL_DEEL_DEEL')
 	LOOP
 		IF r_field.old_domain <> r_field.new_domain THEN
@@ -773,12 +773,12 @@ BEGIN
 		DECODE(column_name,
 			'CUBE_ID',NULL,
 			'FK_PRD_CUBE_TSG_TYPE','''P''',
-			'FK_PRD_CODE',''' ''',
-			'FK_OND_CODE',''' ''',
-			'CODE',''' ''',
-			'OMSCHRIJVING',''' ''',
-			'XK_ODD_CODE',''' ''',
-			'XK_ODD_CODE_1',''' ''',NULL) new_default_value
+			'FK_PRD_CODE',NULL,
+			'FK_OND_CODE',NULL,
+			'CODE',NULL,
+			'OMSCHRIJVING',NULL,
+			'XK_ODD_CODE',NULL,
+			'XK_ODD_CODE_1',NULL,NULL) new_default_value
   		FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_CONSTRUCTIE')
 	LOOP
 		IF r_field.old_domain <> r_field.new_domain THEN

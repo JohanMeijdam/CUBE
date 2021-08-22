@@ -9,11 +9,12 @@ $_SESSION['views']=0;
 <link rel="stylesheet" href="base_css.php" />
 <style type="text/css">
 </style>
-<script language="javascript" type="text/javascript" src="..\CubeGeneral\CubeInclude.js"></script>
-<script language="javascript" type="text/javascript" src="..\CubeGeneral\CubeTreeInclude.js"></script>
-<script language="javascript" type="text/javascript" src="CubeTestInclude.js"></script>
+<script language="javascript" type="text/javascript" src="..\CubeGeneral\CubeInclude.js?filever=<?=filemtime('..\CubeGeneral\CubeInclude.js')?>"></script>
+<script language="javascript" type="text/javascript" src="..\CubeGeneral\CubeTreeInclude.js?filever=<?=filemtime('..\CubeGeneral\CubeTreeInclude.js')?>"></script>
+<script language="javascript" type="text/javascript" src="CubeTestInclude.js?filever=<?=filemtime('CubeTestInclude.js')?>"></script>
 <script language="javascript" type="text/javascript">
 <!--
+var g_change_pending = 'N';
 
 g_xmlhttp.onreadystatechange = function() {
 	if(g_xmlhttp.readyState == 4) {
@@ -203,6 +204,7 @@ function OpenDetail(p_obj) {
 }
 
 function OpenDetailPage (p_name, p_nodeType, p_objId, p_option) {
+	alert ('DEBUG:'+g_change_pending);
 	if (p_option == null) {
 		var l_option = '';
 	} else {
@@ -278,6 +280,7 @@ function OpenMenu(p_obj) {
 		break;
  	case 'TYP_PRD':
 		AddMenuItem(g_objMenuList, 'add onderdeel', 'icons/part.bmp','CubeAdd','N','TYP_OND','Onderdeel',3,'N',2);
+		AddMenuItem(g_objMenuList, 'delete', 'icons/cube_delete.bmp','CubeDelete','X','','Produkt',0,'N',0);
 		var l_json_id = l_json_node_id[l_type_id];
 		PerformTrans( {Service:"CountPrdRestrictedItems",Parameters:{Type:l_json_id}} );
 		break;
@@ -288,6 +291,7 @@ function OpenMenu(p_obj) {
 		AddMenuItem(g_objMenuList, 'add onderdeel_deel', 'icons/type.bmp','CubeAdd','N','TYP_ODD','OnderdeelDeel',2,'N',2);
 		AddMenuItem(g_objMenuList, 'add constructie', 'icons/type.bmp','DetailCST','N','TYP_CST','Constructie',0,'N',3);
 		AddMenuItem(g_objMenuList, 'add onderdeel', 'icons/part.bmp','CubeAdd','R','TYP_OND','Onderdeel',2,'N',4);
+		AddMenuItem(g_objMenuList, 'delete', 'icons/cube_delete.bmp','CubeDelete','X','','Onderdeel',0,'N',0);
 		var l_json_id = l_json_node_id[l_type_id];
 		PerformTrans( {Service:"CountOndRestrictedItems",Parameters:{Type:l_json_id}} );
 		break;
@@ -296,11 +300,13 @@ function OpenMenu(p_obj) {
 			AddMenuItem(g_objMenuList, 'move', 'icons/cube_move.bmp','CubeMove','','CUBE_M_ODD','',0,'N',0);
 		}
 		AddMenuItem(g_objMenuList, 'add onderdeel_deel_deel', 'icons/attrib.bmp','CubeAdd','N','TYP_DDD','OnderdeelDeelDeel',0,'N',2);
+		AddMenuItem(g_objMenuList, 'delete', 'icons/cube_delete.bmp','CubeDelete','X','','OnderdeelDeel',0,'N',0);
 		break;
  	case 'TYP_DDD':
 		if (l_childCount > 1) {
 			AddMenuItem(g_objMenuList, 'move', 'icons/cube_move.bmp','CubeMove','','CUBE_M_DDD','',0,'N',0);
 		}
+		AddMenuItem(g_objMenuList, 'delete', 'icons/cube_delete.bmp','CubeDelete','X','','OnderdeelDeelDeel',0,'N',0);
 		break;
 	}
 }
