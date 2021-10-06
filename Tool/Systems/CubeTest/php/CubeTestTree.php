@@ -204,7 +204,6 @@ function OpenDetail(p_obj) {
 }
 
 function OpenDetailPage (p_name, p_nodeType, p_objId, p_option) {
-	alert ('DEBUG:'+g_change_pending);
 	if (p_option == null) {
 		var l_option = '';
 	} else {
@@ -314,7 +313,7 @@ function OpenMenu(p_obj) {
 -->
 </script>
 </head>
-<body lang="en" oncontextmenu="ResetState(); return false;" onload="InitBody()" ondrop="drop(event)" ondragover="allowDrop(event)">
+<body lang="en" oncontextmenu="ResetState(); return false;" onload="InitBody()" onbeforeunload="return CheckChangePending()" ondrop="Drop(event)" ondragover="AllowDrop(event)">
 <div style="position:fixed;top:8px;left:8px;right:8px;bottom:8px;">
 <iframe src="composys_header.html" style="position:absolute;height:76px;width:100%;"></iframe>
 <div class="header0" style="position:absolute;top:76px;left:0px;width:40%;height:30px;">

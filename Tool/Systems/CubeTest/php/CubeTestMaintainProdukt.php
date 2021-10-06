@@ -253,7 +253,7 @@ function ProcessChangeInputCubeTsgSoort(p_obj) {
 
 -->
 </script>
-</head><body oncontextmenu="return false;" onload="InitBody()" ondrop="drop(event)" ondragover="allowDrop(event)">
+</head><body oncontextmenu="return false;" onload="InitBody()" onbeforeunload="return parent.CheckChangePending()" ondrop="Drop(event)" ondragover="AllowDrop(event)">
 <div><img src="icons/produkt_large.bmp" /><span style="cursor:help" oncontextmenu="parent.OpenDescBox('produkt','Produkt','PRODUKT','_',-1)"> PRODUKT /
 <select id="InputCubeTsgType" type="text" onchange="ProcessTypeSpecialisation();">
 	<option value=" " selected>&lt;type&gt;</option>

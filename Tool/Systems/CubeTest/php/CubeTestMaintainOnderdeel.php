@@ -249,7 +249,7 @@ function InitBody() {
 
 -->
 </script>
-</head><body oncontextmenu="return false;" onload="InitBody()" ondrop="drop(event)" ondragover="allowDrop(event)">
+</head><body oncontextmenu="return false;" onload="InitBody()" onbeforeunload="return parent.CheckChangePending()" ondrop="Drop(event)" ondragover="AllowDrop(event)">
 <div><img src="icons/part_large.bmp" /><span style="cursor:help" oncontextmenu="parent.OpenDescBox('part','Onderdeel','ONDERDEEL','_',-1)"> ONDERDEEL</span></div>
 <hr/>
 <table>

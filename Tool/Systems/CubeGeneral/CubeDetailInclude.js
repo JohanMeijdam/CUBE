@@ -114,19 +114,18 @@ function drop(p_event) {
 }
 
 function SetChangePending() {
+	parent.g_change_pending = 'Y';
 	document.getElementById('ButtonOK').disabled=false;
 	document.getElementById('ButtonCancel').disabled=false;
-	parent.g_change_pending = 'Y';
 }
 
 function CancelChangePending() {
-	parent.document.getElementById('DetailFrame').src='about:blank'; 
 	parent.g_change_pending = 'N';
+	parent.document.getElementById('DetailFrame').src='about:blank'; 
 }
 
 function ResetChangePending() {
+	parent.g_change_pending = 'N';
 	document.getElementById('ButtonOK').disabled=true;
-	document.getElementById('ButtonCancel').disabled=true;
-	parent.g_change_pending = 'N';}
-
+	document.getElementById('ButtonCancel').disabled=true;}
 -->

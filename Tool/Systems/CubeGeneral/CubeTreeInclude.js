@@ -10,6 +10,14 @@ var g_currentObjId;
 var g_currentObjType;
 var g_currentNodeType;
 
+var g_change_pending = 'N';
+
+function CheckChangePending() {
+	if (g_change_pending == 'Y') {
+		return 1;
+	}
+}
+
 function AddTreeviewChildren(p_json_rows, p_type, p_icon, p_name) {
 	for (i in p_json_rows) {
 		AddTreeviewNode(g_objNodeDiv, p_type, p_json_rows[i].Key, p_icon, p_name, p_json_rows[i].Display.toLowerCase(), 'N', ' ', null);
@@ -382,13 +390,13 @@ function EndMove(p_event) {
 	document.body._DraggingId = ' ';
 }
 
-function allowDrop(p_event) {
+function AllowDrop(p_event) {
 	if (document.body._FlagDragging) {
 		p_event.preventDefault();
 	}
 }
 
-function drop(p_event) {
+function Drop(p_event) {
 	if (document.body._FlagDragging) {
 		var l_obj = document.getElementById(document.body._DraggingId);
 		var l_x = p_event.screenX - l_obj._x;
@@ -397,5 +405,4 @@ function drop(p_event) {
 		l_obj.style.top = l_y + 'px';
 	}
 }
-
 -->

@@ -295,7 +295,7 @@ function InitBody() {
 
 -->
 </script>
-</head><body oncontextmenu="return false;" onload="InitBody()" ondrop="drop(event)" ondragover="allowDrop(event)">
+</head><body oncontextmenu="return false;" onload="InitBody()" onbeforeunload="return parent.CheckChangePending()" ondrop="Drop(event)" ondragover="AllowDrop(event)">
 <div><img src="icons/type_large.bmp" /><span> CONSTRUCTIE</span></div>
 <hr/>
 <table>

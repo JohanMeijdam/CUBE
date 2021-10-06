@@ -42,6 +42,7 @@ Change log:
 05-07-2021 - Element <Option> always an id
 10-07-2021 - Onchange improved
 15-07-2021 - Buttons OK and Cancel
+06-10-2021 - CheckChangePending
 
 [[INCLUDE,templates\includes\general.cgt]]
 [[TEXT,DETAIL_RECURSIVE_PARMS]]
@@ -404,7 +405,7 @@ function ProcessChange<<PAGE_FIELD>>(p_obj) {[[LOOP,CONTROLLED_PAGE_FIELD]]
 
 -->
 </script>
-</head><body oncontextmenu="return false;" onload="InitBody()" ondrop="drop(event)" ondragover="allowDrop(event)">
+</head><body oncontextmenu="return false;" onload="InitBody()" onbeforeunload="return parent.CheckChangePending()" ondrop="Drop(event)" ondragover="AllowDrop(event)">
 <div><img src="icons/<<PAGE3>>.bmp" /><span<<TEXT,DETAIL_DESCRIPTION>>> <<PAGE2>>[[LOOP,PAGE_HEADER]][[LOOP,PAGE_SELECTOR_SWITCH]] /[[LOOP,PAGE_FIELD]][[IF:!FIRST]] <b>.</b>[[ENDIF]]
 <<TEXT,DETAIL_INPUT>>[[ENDLOOP,PAGE_FIELD]][[ENDLOOP,PAGE_SELECTOR_SWITCH]]</span></div>
 <hr/>
