@@ -716,7 +716,7 @@ BEGIN
 	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:1|PrimaryKey|'||REPLACE('Indication%20that%20reference%20is%20part%20of%20the%20unique%20identification%20of%20the%20type.','%20',' ')||' Values: Y(Yes), N(No);');
 	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:2|CodeDisplayKey| Values: Y(Yes), S(Sub), N(No);');
 	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:3|Sequence|;');
-	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:4|Scope|'||REPLACE('In%20case%20of%20a%20recursive%20target%2C%20the%20definition%20of%20the%20collection%20of%20the%20types%20to%20select.','%20',' ')||' Values: ALL(All), ENC(Encapsulated), PRA(Parents all), PR1(Parents first level), CHA(Children all), CH1(Children first level);');
+	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:4|Scope|'||REPLACE('In%20case%20of%20a%20recursive%20target%2C%20the%20definition%20of%20the%20collection%20of%20the%20types%20to%20select.','%20',' ')||' Values: ALL(All), PRA(Parents all), PR1(Parents first level), CHA(Children all), CH1(Children first level);');
 	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:5|Unchangeable|'||REPLACE('Indication%20that%20after%20the%20creation%20of%20the%20type%20the%20reference%20can%20not%20be%20changed.%20So%20in%20case%20of%20a%20recursive%20reference%20the%20indication%20too%20that%20the%20relation%20is%20used%20to%20select%20the%20parents%20or%20children%20in%20the%20hierarchy.','%20',' ')||' Values: Y(Yes), N(No);');
 	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:6|WithinScopeExtension| Values: PAR(Recursive parent), REF(Referenced type);');
 	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:7|CubeTsgIntExt| Values: INT(INTERNAL), EXT(EXTERNAL);');

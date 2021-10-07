@@ -4,10 +4,10 @@ $_SESSION['views']=0;
 ?><html>
 <head>
 <link rel="stylesheet" href="base_css.php" />
-<script language="javascript" type="text/javascript" src="..\CubeGeneral\CubeInclude.js"></script>
-<script language="javascript" type="text/javascript" src="..\CubeGeneral\CubeDetailInclude.js"></script>
-<script language="javascript" type="text/javascript" src="CubeRootInclude.js"></script>
-<script language="javascript" type="text/javascript" src="CubeRootDetailInclude.js"></script>
+<script language="javascript" type="text/javascript" src="..\CubeGeneral\CubeInclude.js?filever=<?=filemtime('..\CubeGeneral\CubeInclude.js')?>"></script>
+<script language="javascript" type="text/javascript" src="..\CubeGeneral\CubeDetailInclude.js?filever=<?=filemtime('..\CubeGeneral\CubeDetailInclude.js')?>"></script>
+<script language="javascript" type="text/javascript" src="CubeRootInclude.js?filever=<?=filemtime('CubeRootInclude.js')?>"></script>
+<script language="javascript" type="text/javascript" src="CubeRootDetailInclude.js?filever=<?=filemtime('CubeRootDetailInclude.js')?>"></script>
 <script language="javascript" type="text/javascript">
 <!--
 var g_option = null;
@@ -16,8 +16,8 @@ var g_parent_node_id = null;
 var g_node_id = null;
 
 g_xmlhttp.onreadystatechange = function() {
-	if(g_xmlhttp.readyState == 4) {
-		if(g_xmlhttp.status == 200) {
+	if (g_xmlhttp.readyState == 4) {
+		if (g_xmlhttp.status == 200) {
 			var g_responseText = g_xmlhttp.responseText;
 			try {
 				var l_json_array = JSON.parse(g_responseText);
@@ -42,9 +42,8 @@ g_xmlhttp.onreadystatechange = function() {
 						document.getElementById("InputXfTspTsgCode").disabled=true;
 						document.getElementById("InputXkTspCode").disabled=true;
 						document.getElementById("RefSelect001").disabled=true;
-						document.getElementById("ButtonCreate").disabled=true;
-						document.getElementById("ButtonUpdate").disabled=false;
-						document.getElementById("ButtonDelete").disabled=false;
+						document.getElementById("ButtonOK").innerText="Update";
+						document.getElementById("ButtonOK").disabled=false;
 						var l_objNode = parent.document.getElementById(g_parent_node_id);
 						var l_json_node_id = {FkTypName:document.getElementById("InputFkTypName").value,FkRefSequence:document.getElementById("InputFkRefSequence").value,FkRefBotName:document.getElementById("InputFkRefBotName").value,FkRefTypName:document.getElementById("InputFkRefTypName").value,XfTspTypName:document.getElementById("InputXfTspTypName").value,XfTspTsgCode:document.getElementById("InputXfTspTsgCode").value,XkTspCode:document.getElementById("InputXkTspCode").value};
 						g_node_id = '{"TYP_RTS":'+JSON.stringify(l_json_node_id)+'}';
@@ -64,17 +63,18 @@ g_xmlhttp.onreadystatechange = function() {
 									l_objNodePos);
 							}
 						}
+						document.getElementById("ButtonOK").innerText = "Update";
+						document.getElementById("ButtonOK").onclick = function(){UpdateRts()};						
+						ResetChangePending();
 						break;
 					case "UPDATE_RTS":
 						var l_objNode = parent.document.getElementById(g_node_id);
 						if (l_objNode != null) {
 							l_objNode.children[1].lastChild.nodeValue = ' '+document.getElementById("InputIncludeOrExclude").value.toLowerCase()+' '+document.getElementById("InputXfTspTypName").value.toLowerCase()+' '+document.getElementById("InputXfTspTsgCode").value.toLowerCase()+' '+document.getElementById("InputXkTspCode").value.toLowerCase();
-					}
+						}
+						ResetChangePending();
 						break;
 					case "DELETE_RTS":
-						document.getElementById("ButtonCreate").disabled=false;
-						document.getElementById("ButtonUpdate").disabled=true;
-						document.getElementById("ButtonDelete").disabled=true;
 						var l_objNode = parent.document.getElementById(g_node_id);
 						if (g_parent_node_id == null) {
 							g_parent_node_id = l_objNode.parentNode.parentNode.id;
@@ -82,6 +82,7 @@ g_xmlhttp.onreadystatechange = function() {
 						if (l_objNode != null) {
 							l_objNode.parentNode.removeChild(l_objNode);
 						}
+						CancelChangePending();
 						break;
 					case "SELECT_FKEY_REF":
 						var l_json_values = l_json_array[i].Rows[0].Data;
@@ -91,7 +92,7 @@ g_xmlhttp.onreadystatechange = function() {
 						alert ('Server error:\n'+l_json_array[i].ErrorText);
 						break;
 					default:
-						if(l_json_array[i].ResultName.substring(0,5) == 'LIST_') {
+						if (l_json_array[i].ResultName.substring(0,5) == 'LIST_') {
 							switch (document.body._ListBoxCode){
 								case "Ref001":
 									OpenListBox(l_json_array[i].Rows,'typespec','TypeSpecialisation');
@@ -109,67 +110,35 @@ g_xmlhttp.onreadystatechange = function() {
 	}
 }
 
-function InitBody() {
-	var l_json_argument = JSON.parse(decodeURIComponent(location.href.split("?")[1]));
-	document.body._FlagDragging = 0;
-	document.body._DraggingId = ' ';
-	document.body._ListBoxCode = "Ref000";
-	document.body._ListBoxOptional = ' ';
-	var l_json_objectKey = l_json_argument.objectId;
-	switch (l_json_argument.nodeType) {
-	case "D":
-		g_node_id = JSON.stringify(l_json_argument.objectId);
-		document.getElementById("InputFkTypName").value=l_json_objectKey.TYP_RTS.FkTypName;
-		document.getElementById("InputFkRefSequence").value=l_json_objectKey.TYP_RTS.FkRefSequence;
-		document.getElementById("InputFkRefBotName").value=l_json_objectKey.TYP_RTS.FkRefBotName;
-		document.getElementById("InputFkRefTypName").value=l_json_objectKey.TYP_RTS.FkRefTypName;
-		document.getElementById("InputXfTspTypName").value=l_json_objectKey.TYP_RTS.XfTspTypName;
-		document.getElementById("InputXfTspTsgCode").value=l_json_objectKey.TYP_RTS.XfTspTsgCode;
-		document.getElementById("InputXkTspCode").value=l_json_objectKey.TYP_RTS.XkTspCode;
-		document.getElementById("ButtonCreate").disabled=true;
-		PerformTrans( {
-			Service: "GetRts",
-			Parameters: {
-				Type: l_json_objectKey.TYP_RTS
-			}
-		} );
-		document.getElementById("InputFkBotName").disabled=true;
-		document.getElementById("InputFkTypName").disabled=true;
-		document.getElementById("InputFkRefSequence").disabled=true;
-		document.getElementById("InputFkRefBotName").disabled=true;
-		document.getElementById("InputFkRefTypName").disabled=true;
-		document.getElementById("InputXfTspTypName").disabled=true;
-		document.getElementById("InputXfTspTsgCode").disabled=true;
-		document.getElementById("InputXkTspCode").disabled=true;
-		document.getElementById("RefSelect001").disabled=true;
-		break;
-	case "N":
-		g_parent_node_id = JSON.stringify(l_json_argument.objectId);
-		document.getElementById("InputFkTypName").value=l_json_objectKey.TYP_REF.FkTypName;
-		document.getElementById("InputFkRefSequence").value=l_json_objectKey.TYP_REF.Sequence;
-		document.getElementById("InputFkRefBotName").value=l_json_objectKey.TYP_REF.XkBotName;
-		document.getElementById("InputFkRefTypName").value=l_json_objectKey.TYP_REF.XkTypName;
-		document.getElementById("ButtonUpdate").disabled=true;
-		document.getElementById("ButtonDelete").disabled=true;
-		PerformTrans( {
-			Service: "GetRefFkey",
-			Parameters: {
-				Type: l_json_objectKey.TYP_REF
-			}
-		} );
-		document.getElementById("InputFkBotName").disabled=true;
-		document.getElementById("InputFkTypName").disabled=true;
-		document.getElementById("InputFkRefSequence").disabled=true;
-		document.getElementById("InputFkRefBotName").disabled=true;
-		document.getElementById("InputFkRefTypName").disabled=true;
-		break;
-	default:
-		alert ('Error InitBody: '+l_argument[1]);
-	}
-	document.getElementById("InputIncludeOrExclude").value='IN';
-}
-
 function CreateRts() {
+	if (document.getElementById("InputFkTypName").value == '') {
+		alert ('Error: Primary key FkTypName not filled');
+		return;
+	}
+	if (document.getElementById("InputFkRefSequence").value == '') {
+		alert ('Error: Primary key FkRefSequence not filled');
+		return;
+	}
+	if (document.getElementById("InputFkRefBotName").value == '') {
+		alert ('Error: Primary key FkRefBotName not filled');
+		return;
+	}
+	if (document.getElementById("InputFkRefTypName").value == '') {
+		alert ('Error: Primary key FkRefTypName not filled');
+		return;
+	}
+	if (document.getElementById("InputXfTspTypName").value == '') {
+		alert ('Error: Primary key XfTspTypName not filled');
+		return;
+	}
+	if (document.getElementById("InputXfTspTsgCode").value == '') {
+		alert ('Error: Primary key XfTspTsgCode not filled');
+		return;
+	}
+	if (document.getElementById("InputXkTspCode").value == '') {
+		alert ('Error: Primary key XkTspCode not filled');
+		return;
+	}
 	var Type = {
 		FkBotName: document.getElementById("InputFkBotName").value,
 		FkTypName: document.getElementById("InputFkTypName").value,
@@ -277,34 +246,125 @@ function StartSelect001(p_event) {
 		Parameters
 	} );
 }
+
+function InitBody() {
+	parent.g_change_pending = 'N';
+	var l_json_argument = JSON.parse(decodeURIComponent(location.href.split("?")[1]));
+	document.body._FlagDragging = 0;
+	document.body._DraggingId = ' ';
+	document.body._ListBoxCode = "Ref000";
+	document.body._ListBoxOptional = ' ';
+	var l_json_objectKey = l_json_argument.objectId;
+	switch (l_json_argument.nodeType) {
+	case "D": // Details of existing object 
+		g_node_id = JSON.stringify(l_json_argument.objectId);
+		document.getElementById("InputFkTypName").value = l_json_objectKey.TYP_RTS.FkTypName;
+		document.getElementById("InputFkRefSequence").value = l_json_objectKey.TYP_RTS.FkRefSequence;
+		document.getElementById("InputFkRefBotName").value = l_json_objectKey.TYP_RTS.FkRefBotName;
+		document.getElementById("InputFkRefTypName").value = l_json_objectKey.TYP_RTS.FkRefTypName;
+		document.getElementById("InputXfTspTypName").value = l_json_objectKey.TYP_RTS.XfTspTypName;
+		document.getElementById("InputXfTspTsgCode").value = l_json_objectKey.TYP_RTS.XfTspTsgCode;
+		document.getElementById("InputXkTspCode").value = l_json_objectKey.TYP_RTS.XkTspCode;
+		document.getElementById("ButtonOK").innerText = "Update";
+		document.getElementById("ButtonOK").onclick = function(){UpdateRts()};
+		PerformTrans( {
+			Service: "GetRts",
+			Parameters: {
+				Type: l_json_objectKey.TYP_RTS
+			}
+		} );
+		document.getElementById("InputFkBotName").disabled = true;
+		document.getElementById("InputFkTypName").disabled = true;
+		document.getElementById("InputFkRefSequence").disabled = true;
+		document.getElementById("InputFkRefBotName").disabled = true;
+		document.getElementById("InputFkRefTypName").disabled = true;
+		document.getElementById("InputXfTspTypName").disabled = true;
+		document.getElementById("InputXfTspTsgCode").disabled = true;
+		document.getElementById("InputXkTspCode").disabled = true;
+		document.getElementById("RefSelect001").disabled = true;
+		break;
+	case "N": // New (non recursive) object
+		g_parent_node_id = JSON.stringify(l_json_argument.objectId);
+		document.getElementById("InputFkTypName").value = l_json_objectKey.TYP_REF.FkTypName;
+		document.getElementById("InputFkRefSequence").value = l_json_objectKey.TYP_REF.Sequence;
+		document.getElementById("InputFkRefBotName").value = l_json_objectKey.TYP_REF.XkBotName;
+		document.getElementById("InputFkRefTypName").value = l_json_objectKey.TYP_REF.XkTypName;
+		document.getElementById("ButtonOK").innerText = "Create";
+		document.getElementById("ButtonOK").onclick = function(){CreateRts()};
+		PerformTrans( {
+			Service: "GetRefFkey",
+			Parameters: {
+				Type: l_json_objectKey.TYP_REF
+			}
+		} );
+		document.getElementById("InputFkBotName").disabled = true;
+		document.getElementById("InputFkTypName").disabled = true;
+		document.getElementById("InputFkRefSequence").disabled = true;
+		document.getElementById("InputFkRefBotName").disabled = true;
+		document.getElementById("InputFkRefTypName").disabled = true;
+		document.getElementById("InputIncludeOrExclude").value='IN';
+		break;
+	case "X": // Delete object
+		g_node_id = JSON.stringify(l_json_argument.objectId);
+		document.getElementById("InputFkTypName").value = l_json_objectKey.TYP_RTS.FkTypName;
+		document.getElementById("InputFkRefSequence").value = l_json_objectKey.TYP_RTS.FkRefSequence;
+		document.getElementById("InputFkRefBotName").value = l_json_objectKey.TYP_RTS.FkRefBotName;
+		document.getElementById("InputFkRefTypName").value = l_json_objectKey.TYP_RTS.FkRefTypName;
+		document.getElementById("InputXfTspTypName").value = l_json_objectKey.TYP_RTS.XfTspTypName;
+		document.getElementById("InputXfTspTsgCode").value = l_json_objectKey.TYP_RTS.XfTspTsgCode;
+		document.getElementById("InputXkTspCode").value = l_json_objectKey.TYP_RTS.XkTspCode;
+		document.getElementById("ButtonOK").innerText = "Delete";
+		document.getElementById("ButtonOK").onclick = function(){DeleteRts()};
+		SetChangePending();
+		PerformTrans( {
+			Service: "GetRts",
+			Parameters: {
+				Type: l_json_objectKey.TYP_RTS
+			}
+		} );
+		document.getElementById("InputCubeId").disabled = true;
+		document.getElementById("InputFkBotName").disabled = true;
+		document.getElementById("InputFkTypName").disabled = true;
+		document.getElementById("InputFkRefSequence").disabled = true;
+		document.getElementById("InputFkRefBotName").disabled = true;
+		document.getElementById("InputFkRefTypName").disabled = true;
+		document.getElementById("InputIncludeOrExclude").disabled = true;
+		document.getElementById("InputXfTspTypName").disabled = true;
+		document.getElementById("InputXfTspTsgCode").disabled = true;
+		document.getElementById("InputXkTspCode").disabled = true;
+		break;
+	default:
+		alert ('Error InitBody: nodeType='+l_json_argument.nodeType);
+	}
+}
+
 -->
 </script>
-</head><body oncontextmenu="return false;" onload="InitBody()" ondrop="drop(event)" ondragover="allowDrop(event)">
+</head><body oncontextmenu="return false;" onload="InitBody()" onbeforeunload="return parent.CheckChangePending()" ondrop="Drop(event)" ondragover="AllowDrop(event)">
 <div><img src="icons/restrtgt_large.bmp" /><span> RESTRICTION_TARGET_TYPE_SPEC</span></div>
 <hr/>
 <table>
-<tr id="RowAtbFkBotName"><td><div>BusinessObjectType.Name</div></td><td><div style="max-width:30em;"><input id="InputFkBotName" type="text" maxlength="30" style="width:100%" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr id="RowAtbFkTypName"><td><u><div>Type.Name</div></u></td><td><div style="max-width:30em;"><input id="InputFkTypName" type="text" maxlength="30" style="width:100%" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr id="RowAtbFkRefSequence"><td><u><div>Reference.Sequence</div></u></td><td><div style="max-width:2em;"><input id="InputFkRefSequence" type="text" maxlength="2" style="width:100%"></input></div></td></tr>
-<tr id="RowAtbFkRefBotName"><td><u><div>BusinessObjectType.Name</div></u></td><td><div style="max-width:30em;"><input id="InputFkRefBotName" type="text" maxlength="30" style="width:100%" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr id="RowAtbFkRefTypName"><td><u><div>Type.Name</div></u></td><td><div style="max-width:30em;"><input id="InputFkRefTypName" type="text" maxlength="30" style="width:100%" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr id="RowAtbIncludeOrExclude"><td><div>IncludeOrExclude</div></td><td><div><select id="InputIncludeOrExclude" type="text">
+<tr id="RowAtbFkBotName"><td><div>BusinessObjectType.Name</div></td><td><div style="max-width:30em;"><input id="InputFkBotName" type="text" maxlength="30" style="width:100%" onchange="SetChangePending();ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr id="RowAtbFkTypName"><td><u><div>Type.Name</div></u></td><td><div style="max-width:30em;"><input id="InputFkTypName" type="text" maxlength="30" style="width:100%" onchange="SetChangePending();ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr id="RowAtbFkRefSequence"><td><u><div>Reference.Sequence</div></u></td><td><div style="max-width:2em;"><input id="InputFkRefSequence" type="text" maxlength="2" style="width:100%" onchange="SetChangePending();"></input></div></td></tr>
+<tr id="RowAtbFkRefBotName"><td><u><div>BusinessObjectType.Name</div></u></td><td><div style="max-width:30em;"><input id="InputFkRefBotName" type="text" maxlength="30" style="width:100%" onchange="SetChangePending();ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr id="RowAtbFkRefTypName"><td><u><div>Type.Name</div></u></td><td><div style="max-width:30em;"><input id="InputFkRefTypName" type="text" maxlength="30" style="width:100%" onchange="SetChangePending();ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr id="RowAtbIncludeOrExclude"><td><div>IncludeOrExclude</div></td><td><div><select id="InputIncludeOrExclude" type="text" onchange="SetChangePending();">
 	<option value=" " selected> </option>
-	<option value="IN">Include</option>
-	<option value="EX">Exclude</option>
+	<option id="OptionIncludeOrExclude-IN" style="display:inline" value="IN">Include</option>
+	<option id="OptionIncludeOrExclude-EX" style="display:inline" value="EX">Exclude</option>
 </select></div></td></tr>
 <tr><td height=6></td></tr><tr id="RowRefTypeSpecialisation0"><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/typespec.bmp"/> TypeSpecialisation (IsValidFor)</legend>
 <table style="width:100%">
-<tr><td><u>Type.Name</u></td><td style="width:100%"><div style="max-width:30em;"><input id="InputXfTspTypName" type="text" maxlength="30" style="width:100%" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td>
+<tr><td><u>Type.Name</u></td><td style="width:100%"><div style="max-width:30em;"><input id="InputXfTspTypName" type="text" maxlength="30" style="width:100%" disabled></input></div></td>
 <td><button id="RefSelect001" type="button" onclick="StartSelect001(event)">Select</button></td></tr>
-<tr><td><u>TypeSpecialisationGroup.Code</u></td><td style="width:100%"><div style="max-width:16em;"><input id="InputXfTspTsgCode" type="text" maxlength="16" style="width:100%" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td></tr>
-<tr><td><u>TypeSpecialisation.Code</u></td><td style="width:100%"><div style="max-width:16em;"><input id="InputXkTspCode" type="text" maxlength="16" style="width:100%" onchange="ToUpperCase(this);ReplaceSpaces(this);" disabled></input></div></td></tr>
+<tr><td><u>TypeSpecialisationGroup.Code</u></td><td style="width:100%"><div style="max-width:16em;"><input id="InputXfTspTsgCode" type="text" maxlength="16" style="width:100%" disabled></input></div></td></tr>
+<tr><td><u>TypeSpecialisation.Code</u></td><td style="width:100%"><div style="max-width:16em;"><input id="InputXkTspCode" type="text" maxlength="16" style="width:100%" disabled></input></div></td></tr>
 </table></fieldset></td></tr>
 <tr><td><br></td><td style="width:100%"></td></tr>
 <tr><td/><td>
-<button id="ButtonCreate" type="button" onclick="CreateRts()">Create</button>&nbsp;&nbsp;&nbsp;
-<button id="ButtonUpdate" type="button" onclick="UpdateRts()">Update</button>&nbsp;&nbsp;&nbsp;
-<button id="ButtonDelete" type="button" onclick="DeleteRts()">Delete</button></td></tr>
+<button id="ButtonOK" type="button" disabled>OK</button>&nbsp;&nbsp;&nbsp;
+<button id="ButtonCancel" type="button" disabled onclick="CancelChangePending()">Cancel</button></td></tr>
 </table>
 <input id="InputCubeId" type="hidden"></input>
 </body>

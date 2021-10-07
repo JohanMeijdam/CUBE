@@ -12,7 +12,7 @@ set sysroot=%wwwroot%\%sysname%
 echo Start > %logfile%
 ::goto :Database
 ::goto :Packages
-goto :Application
+::goto :Application
 ::goto :ModelImport
 ::goto :ModelExport
 ::goto :System
@@ -60,7 +60,7 @@ CubeGen.exe %sysdir%\CubeServerSpecModel.cgm Templates\CubeServerPhp.cgt %sysdir
 del /S/Q %sysroot% >> %logfile% 2>&1
 xcopy /Y/E %sysdir%\files %sysroot% >> %logfile% 2>&1
 xcopy /Y/E %sysdir%\php %sysroot% >> %logfile% 2>&1
-goto :end
+::goto :end
 :ModelExport
 echo Generate Model Export.
 CubeGen.exe %sysdir%\CubeBoModel.cgm Templates\ModelExport.cgt %sysdir%\ModelExport.sql %sysname% >> %logfile% 2>&1

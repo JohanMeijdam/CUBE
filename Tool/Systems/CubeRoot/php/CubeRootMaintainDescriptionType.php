@@ -4,10 +4,10 @@ $_SESSION['views']=0;
 ?><html>
 <head>
 <link rel="stylesheet" href="base_css.php" />
-<script language="javascript" type="text/javascript" src="..\CubeGeneral\CubeInclude.js"></script>
-<script language="javascript" type="text/javascript" src="..\CubeGeneral\CubeDetailInclude.js"></script>
-<script language="javascript" type="text/javascript" src="CubeRootInclude.js"></script>
-<script language="javascript" type="text/javascript" src="CubeRootDetailInclude.js"></script>
+<script language="javascript" type="text/javascript" src="..\CubeGeneral\CubeInclude.js?filever=<?=filemtime('..\CubeGeneral\CubeInclude.js')?>"></script>
+<script language="javascript" type="text/javascript" src="..\CubeGeneral\CubeDetailInclude.js?filever=<?=filemtime('..\CubeGeneral\CubeDetailInclude.js')?>"></script>
+<script language="javascript" type="text/javascript" src="CubeRootInclude.js?filever=<?=filemtime('CubeRootInclude.js')?>"></script>
+<script language="javascript" type="text/javascript" src="CubeRootDetailInclude.js?filever=<?=filemtime('CubeRootDetailInclude.js')?>"></script>
 <script language="javascript" type="text/javascript">
 <!--
 var g_option = null;
@@ -16,8 +16,8 @@ var g_parent_node_id = null;
 var g_node_id = null;
 
 g_xmlhttp.onreadystatechange = function() {
-	if(g_xmlhttp.readyState == 4) {
-		if(g_xmlhttp.status == 200) {
+	if (g_xmlhttp.readyState == 4) {
+		if (g_xmlhttp.status == 200) {
 			var g_responseText = g_xmlhttp.responseText;
 			try {
 				var l_json_array = JSON.parse(g_responseText);
@@ -35,9 +35,8 @@ g_xmlhttp.onreadystatechange = function() {
 					case "CREATE_DCT":
 						document.getElementById("InputFkBotName").disabled=true;
 						document.getElementById("InputFkTypName").disabled=true;
-						document.getElementById("ButtonCreate").disabled=true;
-						document.getElementById("ButtonUpdate").disabled=false;
-						document.getElementById("ButtonDelete").disabled=false;
+						document.getElementById("ButtonOK").innerText="Update";
+						document.getElementById("ButtonOK").disabled=false;
 						var l_objNode = parent.document.getElementById(g_parent_node_id);
 						var l_json_node_id = {FkTypName:document.getElementById("InputFkTypName").value};
 						g_node_id = '{"TYP_DCT":'+JSON.stringify(l_json_node_id)+'}';
@@ -57,13 +56,14 @@ g_xmlhttp.onreadystatechange = function() {
 									l_objNodePos);
 							}
 						}
+						document.getElementById("ButtonOK").innerText = "Update";
+						document.getElementById("ButtonOK").onclick = function(){UpdateDct()};						
+						ResetChangePending();
 						break;
 					case "UPDATE_DCT":
+						ResetChangePending();
 						break;
 					case "DELETE_DCT":
-						document.getElementById("ButtonCreate").disabled=false;
-						document.getElementById("ButtonUpdate").disabled=true;
-						document.getElementById("ButtonDelete").disabled=true;
 						var l_objNode = parent.document.getElementById(g_node_id);
 						if (g_parent_node_id == null) {
 							g_parent_node_id = l_objNode.parentNode.parentNode.id;
@@ -71,6 +71,7 @@ g_xmlhttp.onreadystatechange = function() {
 						if (l_objNode != null) {
 							l_objNode.parentNode.removeChild(l_objNode);
 						}
+						CancelChangePending();
 						break;
 					case "SELECT_FKEY_TYP":
 						var l_json_values = l_json_array[i].Rows[0].Data;
@@ -90,47 +91,11 @@ g_xmlhttp.onreadystatechange = function() {
 	}
 }
 
-function InitBody() {
-	var l_json_argument = JSON.parse(decodeURIComponent(location.href.split("?")[1]));
-	document.body._FlagDragging = 0;
-	document.body._DraggingId = ' ';
-	document.body._ListBoxCode = "Ref000";
-	document.body._ListBoxOptional = ' ';
-	var l_json_objectKey = l_json_argument.objectId;
-	switch (l_json_argument.nodeType) {
-	case "D":
-		g_node_id = JSON.stringify(l_json_argument.objectId);
-		document.getElementById("InputFkTypName").value=l_json_objectKey.TYP_DCT.FkTypName;
-		document.getElementById("ButtonCreate").disabled=true;
-		PerformTrans( {
-			Service: "GetDct",
-			Parameters: {
-				Type: l_json_objectKey.TYP_DCT
-			}
-		} );
-		document.getElementById("InputFkBotName").disabled=true;
-		document.getElementById("InputFkTypName").disabled=true;
-		break;
-	case "N":
-		g_parent_node_id = JSON.stringify(l_json_argument.objectId);
-		document.getElementById("InputFkTypName").value=l_json_objectKey.TYP_TYP.Name;
-		document.getElementById("ButtonUpdate").disabled=true;
-		document.getElementById("ButtonDelete").disabled=true;
-		PerformTrans( {
-			Service: "GetTypFkey",
-			Parameters: {
-				Type: l_json_objectKey.TYP_TYP
-			}
-		} );
-		document.getElementById("InputFkBotName").disabled=true;
-		document.getElementById("InputFkTypName").disabled=true;
-		break;
-	default:
-		alert ('Error InitBody: '+l_argument[1]);
-	}
-}
-
 function CreateDct() {
+	if (document.getElementById("InputFkTypName").value == '') {
+		alert ('Error: Primary key FkTypName not filled');
+		return;
+	}
 	var Type = {
 		FkBotName: document.getElementById("InputFkBotName").value,
 		FkTypName: document.getElementById("InputFkTypName").value,
@@ -169,20 +134,79 @@ function DeleteDct() {
 		}
 	} );
 }
+
+function InitBody() {
+	parent.g_change_pending = 'N';
+	var l_json_argument = JSON.parse(decodeURIComponent(location.href.split("?")[1]));
+	document.body._FlagDragging = 0;
+	document.body._DraggingId = ' ';
+	document.body._ListBoxCode = "Ref000";
+	document.body._ListBoxOptional = ' ';
+	var l_json_objectKey = l_json_argument.objectId;
+	switch (l_json_argument.nodeType) {
+	case "D": // Details of existing object 
+		g_node_id = JSON.stringify(l_json_argument.objectId);
+		document.getElementById("InputFkTypName").value = l_json_objectKey.TYP_DCT.FkTypName;
+		document.getElementById("ButtonOK").innerText = "Update";
+		document.getElementById("ButtonOK").onclick = function(){UpdateDct()};
+		PerformTrans( {
+			Service: "GetDct",
+			Parameters: {
+				Type: l_json_objectKey.TYP_DCT
+			}
+		} );
+		document.getElementById("InputFkBotName").disabled = true;
+		document.getElementById("InputFkTypName").disabled = true;
+		break;
+	case "N": // New (non recursive) object
+		g_parent_node_id = JSON.stringify(l_json_argument.objectId);
+		document.getElementById("InputFkTypName").value = l_json_objectKey.TYP_TYP.Name;
+		document.getElementById("ButtonOK").innerText = "Create";
+		document.getElementById("ButtonOK").onclick = function(){CreateDct()};
+		PerformTrans( {
+			Service: "GetTypFkey",
+			Parameters: {
+				Type: l_json_objectKey.TYP_TYP
+			}
+		} );
+		document.getElementById("InputFkBotName").disabled = true;
+		document.getElementById("InputFkTypName").disabled = true;
+		break;
+	case "X": // Delete object
+		g_node_id = JSON.stringify(l_json_argument.objectId);
+		document.getElementById("InputFkTypName").value = l_json_objectKey.TYP_DCT.FkTypName;
+		document.getElementById("ButtonOK").innerText = "Delete";
+		document.getElementById("ButtonOK").onclick = function(){DeleteDct()};
+		SetChangePending();
+		PerformTrans( {
+			Service: "GetDct",
+			Parameters: {
+				Type: l_json_objectKey.TYP_DCT
+			}
+		} );
+		document.getElementById("InputCubeId").disabled = true;
+		document.getElementById("InputFkBotName").disabled = true;
+		document.getElementById("InputFkTypName").disabled = true;
+		document.getElementById("InputText").disabled = true;
+		break;
+	default:
+		alert ('Error InitBody: nodeType='+l_json_argument.nodeType);
+	}
+}
+
 -->
 </script>
-</head><body oncontextmenu="return false;" onload="InitBody()" ondrop="drop(event)" ondragover="allowDrop(event)">
+</head><body oncontextmenu="return false;" onload="InitBody()" onbeforeunload="return parent.CheckChangePending()" ondrop="Drop(event)" ondragover="AllowDrop(event)">
 <div><img src="icons/desc_large.bmp" /><span style="cursor:help" oncontextmenu="parent.OpenDescBox('desc','DescriptionType','DESCRIPTION_TYPE','_',-1)"> DESCRIPTION_TYPE</span></div>
 <hr/>
 <table>
-<tr id="RowAtbFkBotName"><td><div>BusinessObjectType.Name</div></td><td><div style="max-width:30em;"><input id="InputFkBotName" type="text" maxlength="30" style="width:100%" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr id="RowAtbFkTypName"><td><u><div>Type.Name</div></u></td><td><div style="max-width:30em;"><input id="InputFkTypName" type="text" maxlength="30" style="width:100%" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr id="RowAtbText"><td><div style="padding-top:10px">Text</div></td></tr><tr><td colspan="2"><div><textarea id="InputText" type="text" maxlength="3999" rows="5" style="white-space:normal;width:100%"></textarea></div></td></tr>
+<tr id="RowAtbFkBotName"><td><div>BusinessObjectType.Name</div></td><td><div style="max-width:30em;"><input id="InputFkBotName" type="text" maxlength="30" style="width:100%" onchange="SetChangePending();ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr id="RowAtbFkTypName"><td><u><div>Type.Name</div></u></td><td><div style="max-width:30em;"><input id="InputFkTypName" type="text" maxlength="30" style="width:100%" onchange="SetChangePending();ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr id="RowAtbText"><td><div style="padding-top:10px">Text</div></td></tr><tr><td colspan="2"><div><textarea id="InputText" type="text" maxlength="3999" rows="5" style="white-space:normal;width:100%" onchange="SetChangePending();"></textarea></div></td></tr>
 <tr><td><br></td><td style="width:100%"></td></tr>
 <tr><td/><td>
-<button id="ButtonCreate" type="button" onclick="CreateDct()">Create</button>&nbsp;&nbsp;&nbsp;
-<button id="ButtonUpdate" type="button" onclick="UpdateDct()">Update</button>&nbsp;&nbsp;&nbsp;
-<button id="ButtonDelete" type="button" onclick="DeleteDct()">Delete</button></td></tr>
+<button id="ButtonOK" type="button" disabled>OK</button>&nbsp;&nbsp;&nbsp;
+<button id="ButtonCancel" type="button" disabled onclick="CancelChangePending()">Cancel</button></td></tr>
 </table>
 <input id="InputCubeId" type="hidden"></input>
 </body>

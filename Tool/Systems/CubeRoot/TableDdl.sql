@@ -80,7 +80,7 @@ CREATE TABLE t_information_type_element (
 	cube_id VARCHAR2(16),
 	fk_itp_name VARCHAR2(30),
 	sequence NUMBER(8) DEFAULT '0',
-	suffix VARCHAR2(12),
+	suffix VARCHAR2(12) DEFAULT '#',
 	domain VARCHAR2(16) DEFAULT 'TEXT',
 	length NUMBER(8) DEFAULT '0',
 	decimals NUMBER(8) DEFAULT '0',

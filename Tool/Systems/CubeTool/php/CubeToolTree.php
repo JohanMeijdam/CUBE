@@ -9,11 +9,12 @@ $_SESSION['views']=0;
 <link rel="stylesheet" href="base_css.php" />
 <style type="text/css">
 </style>
-<script language="javascript" type="text/javascript" src="..\CubeGeneral\CubeInclude.js"></script>
-<script language="javascript" type="text/javascript" src="..\CubeGeneral\CubeTreeInclude.js"></script>
-<script language="javascript" type="text/javascript" src="CubeToolInclude.js"></script>
+<script language="javascript" type="text/javascript" src="..\CubeGeneral\CubeInclude.js?filever=<?=filemtime('..\CubeGeneral\CubeInclude.js')?>"></script>
+<script language="javascript" type="text/javascript" src="..\CubeGeneral\CubeTreeInclude.js?filever=<?=filemtime('..\CubeGeneral\CubeTreeInclude.js')?>"></script>
+<script language="javascript" type="text/javascript" src="CubeToolInclude.js?filever=<?=filemtime('CubeToolInclude.js')?>"></script>
 <script language="javascript" type="text/javascript">
 <!--
+var g_change_pending = 'N';
 
 g_xmlhttp.onreadystatechange = function() {
 	if(g_xmlhttp.readyState == 4) {
@@ -393,14 +394,17 @@ function OpenMenu(p_obj) {
 		break;
  	case 'TYP_ITP':
 		AddMenuItem(g_objMenuList, 'add information_type_element', 'icons/infelem.bmp','DetailITE','N','TYP_ITE','InformationTypeElement',0,'N',2);
+		AddMenuItem(g_objMenuList, 'delete', 'icons/cube_delete.bmp','CubeDelete','X','','InformationType',0,'N',0);
 		break;
  	case 'TYP_ITE':
 		AddMenuItem(g_objMenuList, 'add permitted_value', 'icons/value.bmp','CubeAdd','N','TYP_VAL','PermittedValue',0,'N',2);
+		AddMenuItem(g_objMenuList, 'delete', 'icons/cube_delete.bmp','CubeDelete','X','','InformationTypeElement',0,'N',0);
 		break;
  	case 'TYP_VAL':
 		if (l_childCount > 1) {
 			AddMenuItem(g_objMenuList, 'move', 'icons/cube_move.bmp','CubeMove','','CUBE_M_VAL','',0,'N',0);
 		}
+		AddMenuItem(g_objMenuList, 'delete', 'icons/cube_delete.bmp','CubeDelete','X','','PermittedValue',0,'N',0);
 		break;
  	case 'DIR_BOT':
 		AddMenuItem(g_objMenuList, 'add business_object_type', 'icons/botype.bmp','CubeAdd','N','TYP_BOT','BusinessObjectType',0,'N',2);
@@ -410,6 +414,7 @@ function OpenMenu(p_obj) {
 			AddMenuItem(g_objMenuList, 'move', 'icons/cube_move.bmp','CubeMove','','CUBE_M_BOT','',0,'N',0);
 		}
 		AddMenuItem(g_objMenuList, 'add type', 'icons/type.bmp','CubeAdd','N','TYP_TYP','Type',1,'N',2);
+		AddMenuItem(g_objMenuList, 'delete', 'icons/cube_delete.bmp','CubeDelete','X','','BusinessObjectType',0,'N',0);
 		var l_json_id = l_json_node_id[l_type_id];
 		PerformTrans( {Service:"CountBotRestrictedItems",Parameters:{Type:l_json_id}} );
 		break;
@@ -429,6 +434,7 @@ function OpenMenu(p_obj) {
 		AddMenuItem(g_objMenuList, 'add json_path', 'icons/braces.bmp','CubeAdd','N','TYP_JSN','JsonPath',1,'N',6);
 		AddMenuItem(g_objMenuList, 'add description_type', 'icons/desc.bmp','DetailDCT','N','TYP_DCT','DescriptionType',1,'N',7);
 		AddMenuItem(g_objMenuList, 'add type', 'icons/type.bmp','CubeAdd','R','TYP_TYP','Type',0,'N',8);
+		AddMenuItem(g_objMenuList, 'delete', 'icons/cube_delete.bmp','CubeDelete','X','','Type',0,'N',0);
 		var l_json_id = l_json_node_id[l_type_id];
 		PerformTrans( {Service:"CountTypRestrictedItems",Parameters:{Type:l_json_id}} );
 		break;
@@ -438,6 +444,7 @@ function OpenMenu(p_obj) {
 		}
 		AddMenuItem(g_objMenuList, 'add type_specialisation', 'icons/typespec.bmp','CubeAdd','N','TYP_TSP','TypeSpecialisation',0,'N',2);
 		AddMenuItem(g_objMenuList, 'add type_specialisation_group', 'icons/tspgroup.bmp','CubeAdd','R','TYP_TSG','TypeSpecialisationGroup',1,'N',3);
+		AddMenuItem(g_objMenuList, 'delete', 'icons/cube_delete.bmp','CubeDelete','X','','TypeSpecialisationGroup',0,'N',0);
 		var l_json_id = l_json_node_id[l_type_id];
 		PerformTrans( {Service:"CountTsgRestrictedItems",Parameters:{Type:l_json_id}} );
 		break;
@@ -445,6 +452,7 @@ function OpenMenu(p_obj) {
 		if (l_childCount > 1) {
 			AddMenuItem(g_objMenuList, 'move', 'icons/cube_move.bmp','CubeMove','','CUBE_M_TSP','',0,'N',0);
 		}
+		AddMenuItem(g_objMenuList, 'delete', 'icons/cube_delete.bmp','CubeDelete','X','','TypeSpecialisation',0,'N',0);
 		break;
  	case 'TYP_ATB':
 		if (l_childCount > 1) {
@@ -453,6 +461,7 @@ function OpenMenu(p_obj) {
 		AddMenuItem(g_objMenuList, 'add derivation', 'icons/deriv.bmp','DetailDER','N','TYP_DER','Derivation',1,'N',2);
 		AddMenuItem(g_objMenuList, 'add description_attribute', 'icons/desc.bmp','DetailDCA','N','TYP_DCA','DescriptionAttribute',1,'N',3);
 		AddMenuItem(g_objMenuList, 'add restriction_type_spec_atb', 'icons/restrict.bmp','DetailRTA','N','TYP_RTA','RestrictionTypeSpecAtb',0,'N',4);
+		AddMenuItem(g_objMenuList, 'delete', 'icons/cube_delete.bmp','CubeDelete','X','','Attribute',0,'N',0);
 		var l_json_id = l_json_node_id[l_type_id];
 		PerformTrans( {Service:"CountAtbRestrictedItems",Parameters:{Type:l_json_id}} );
 		break;
@@ -463,6 +472,7 @@ function OpenMenu(p_obj) {
 		AddMenuItem(g_objMenuList, 'add description_reference', 'icons/desc.bmp','DetailDCR','N','TYP_DCR','DescriptionReference',1,'N',2);
 		AddMenuItem(g_objMenuList, 'add restriction_type_spec_ref', 'icons/restrict.bmp','DetailRTR','N','TYP_RTR','RestrictionTypeSpecRef',0,'N',3);
 		AddMenuItem(g_objMenuList, 'add restriction_target_type_spec', 'icons/restrtgt.bmp','DetailRTS','N','TYP_RTS','RestrictionTargetTypeSpec',1,'N',4);
+		AddMenuItem(g_objMenuList, 'delete', 'icons/cube_delete.bmp','CubeDelete','X','','Reference',0,'N',0);
 		var l_json_id = l_json_node_id[l_type_id];
 		PerformTrans( {Service:"CountRefRestrictedItems",Parameters:{Type:l_json_id}} );
 		break;
@@ -476,17 +486,20 @@ function OpenMenu(p_obj) {
 			AddMenuItem(g_objMenuList, 'change parent', 'icons/cube_change_par.bmp','CubeChangePar','','CUBE_P_JSN','',0,'Y',0);
 		}
 		AddMenuItem(g_objMenuList, 'add json_path', 'icons/braces.bmp','CubeAdd','R','TYP_JSN','JsonPath',0,'N',2);
+		AddMenuItem(g_objMenuList, 'delete', 'icons/cube_delete.bmp','CubeDelete','X','','JsonPath',0,'N',0);
 		break;
  	case 'DIR_SYS':
 		AddMenuItem(g_objMenuList, 'add system', 'icons/system.bmp','DetailSYS','N','TYP_SYS','System',0,'N',2);
 		break;
  	case 'TYP_SYS':
 		AddMenuItem(g_objMenuList, 'add system_bo_type', 'icons/sysbot.bmp','CubeAdd','N','TYP_SBT','SystemBoType',0,'N',2);
+		AddMenuItem(g_objMenuList, 'delete', 'icons/cube_delete.bmp','CubeDelete','X','','System',0,'N',0);
 		break;
  	case 'TYP_SBT':
 		if (l_childCount > 1) {
 			AddMenuItem(g_objMenuList, 'move', 'icons/cube_move.bmp','CubeMove','','CUBE_M_SBT','',0,'N',0);
 		}
+		AddMenuItem(g_objMenuList, 'delete', 'icons/cube_delete.bmp','CubeDelete','X','','SystemBoType',0,'N',0);
 		break;
  	case 'DIR_FUN':
 		AddMenuItem(g_objMenuList, 'add function', 'icons/function.bmp','DetailFUN','N','TYP_FUN','Function',1,'N',2);
@@ -494,11 +507,13 @@ function OpenMenu(p_obj) {
 		break;
  	case 'TYP_FUN':
 		AddMenuItem(g_objMenuList, 'add argument', 'icons/funcatb.bmp','CubeAdd','N','TYP_ARG','Argument',0,'N',2);
+		AddMenuItem(g_objMenuList, 'delete', 'icons/cube_delete.bmp','CubeDelete','X','','Function',0,'N',0);
 		break;
  	case 'TYP_ARG':
 		if (l_childCount > 1) {
 			AddMenuItem(g_objMenuList, 'move', 'icons/cube_move.bmp','CubeMove','','CUBE_M_ARG','',0,'N',0);
 		}
+		AddMenuItem(g_objMenuList, 'delete', 'icons/cube_delete.bmp','CubeDelete','X','','Argument',0,'N',0);
 		break;
 	}
 }
@@ -506,7 +521,7 @@ function OpenMenu(p_obj) {
 -->
 </script>
 </head>
-<body lang="en" oncontextmenu="ResetState(); return false;" onload="InitBody()" ondrop="drop(event)" ondragover="allowDrop(event)">
+<body lang="en" oncontextmenu="ResetState(); return false;" onload="InitBody()" onbeforeunload="return CheckChangePending()" ondrop="Drop(event)" ondragover="AllowDrop(event)">
 <div style="position:fixed;top:8px;left:8px;right:8px;bottom:8px;">
 <iframe src="composys_header.html" style="position:absolute;height:76px;width:100%;"></iframe>
 <div class="header0" style="position:absolute;top:76px;left:0px;width:40%;height:30px;">

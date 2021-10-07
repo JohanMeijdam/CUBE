@@ -755,6 +755,36 @@ case 'GetTypListAll':
 
 	break;
 
+case 'GetTypForBotListAll':
+	echo '[';
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.get_typ_for_bot_list_all (
+		:p_cube_row,
+		:x_fk_bot_name);
+	END;");
+	oci_bind_by_name($stid,":x_fk_bot_name",$RequestObj->Parameters->Ref->FkBotName);
+
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'LIST_TYP';
+	$r = perform_db_request();
+	if (!$r) { 
+		echo ']';
+		return;
+	}
+	$ResponseObj->Rows = array();
+	while ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Key = new \stdClass();
+		$RowObj->Key->Name = $row["NAME"];
+		$RowObj->Display = $row["NAME"].' ('.$row["CODE"].')';
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
+	break;
+
 case 'GetTypForTypListAll':
 	echo '[';
 

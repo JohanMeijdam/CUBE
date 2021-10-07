@@ -18,9 +18,7 @@
 			+META_TYPE:PERMITTED_VALUE|;
 				=PROPERTY:0|Code|;
 				=PROPERTY:1|Prompt|;
-				+META_TYPE:PERMITTED_VALUE_GROUP;
-					=PROPERTY:0|CODE|;
-				-META_TYPE:;
+				=ASSOCIATION:PERMITTED_VALUE_TYPE_SPECIALISATION|IsImplementationOf|TYPE_SPECIALISATION;
 			-META_TYPE:;
 		-META_TYPE:;
 	-META_TYPE:;
@@ -52,14 +50,11 @@
 				=PROPERTY:5|DefaultValue|Defaut value that overules the default value specified by the information type element.;
 				=PROPERTY:6|Unchangeable|Indication that after the creation of the type the value of the atrribute can not be changed. Values: Y(Yes), N(No);
 				=ASSOCIATION:INFORMATION_TYPE_ELEMENT|HasDomain|INFORMATION_TYPE_ELEMENT|;
-				=ASSOCIATION:ATTRIBUTE_TYPE_SPECIALISATION_GROUP|IsImplementationOf|TYPE_SPECIALISATION_GROUP|;
+				=ASSOCIATION:ATTRIBUTE_TYPE_SPECIALISATION_GROUP|IsImplementationOf|TYPE_SPECIALISATION_GROUP;
 				=ASSOCIATION:ATTRIBUTE_ROOT|Reference|ATTRIBUTE|;
 				=ASSOCIATION:ATTRIBUTE_SOURCE|Reference|ATTRIBUTE|;
 				+META_TYPE:ATTRIBUTE_NUMBER|Property number for normal attributes as used in model file;
 					=PROPERTY:0|Number|;
-				-META_TYPE:;
-				+META_TYPE:ATTRIBUTE_GROUP;
-					=ASSOCIATION:ATTRIBUTE_GROUP_ATTRIBUTE|HasValueGroupDefinedBy|ATTRIBUTE|;
 				-META_TYPE:;
 				+META_TYPE:DERIVATION|;
 					=PROPERTY:0|CubeTsgType| Values: DN(DENORMALIZATION), IN(INTERNAL), AG(AGGREGATION);

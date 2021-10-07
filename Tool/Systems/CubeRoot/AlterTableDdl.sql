@@ -271,7 +271,7 @@ BEGIN
 			cube_id VARCHAR2(16),
 			fk_itp_name VARCHAR2(30),
 			sequence NUMBER(8) DEFAULT ''0'',
-			suffix VARCHAR2(12),
+			suffix VARCHAR2(12) DEFAULT ''#'',
 			domain VARCHAR2(16) DEFAULT ''TEXT'',
 			length NUMBER(8) DEFAULT ''0'',
 			decimals NUMBER(8) DEFAULT ''0'',
@@ -302,7 +302,7 @@ BEGIN
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_INFORMATION_TYPE_ELEMENT' AND column_name = 'SUFFIX';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
-			'ALTER TABLE t_information_type_element ADD suffix VARCHAR2(12)';
+			'ALTER TABLE t_information_type_element ADD suffix VARCHAR2(12) DEFAULT ''#''';
 			DBMS_OUTPUT.PUT_LINE('Column T_INFORMATION_TYPE_ELEMENT.SUFFIX created');
 		END IF;
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_INFORMATION_TYPE_ELEMENT' AND column_name = 'DOMAIN';
@@ -2010,7 +2010,7 @@ BEGIN
 			'CUBE_ID',NULL,
 			'FK_ITP_NAME',NULL,
 			'SEQUENCE','''0''',
-			'SUFFIX',NULL,
+			'SUFFIX','''#''',
 			'DOMAIN','''TEXT''',
 			'LENGTH','''0''',
 			'DECIMALS','''0''',

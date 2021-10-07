@@ -4,10 +4,10 @@ $_SESSION['views']=0;
 ?><html>
 <head>
 <link rel="stylesheet" href="base_css.php" />
-<script language="javascript" type="text/javascript" src="..\CubeGeneral\CubeInclude.js"></script>
-<script language="javascript" type="text/javascript" src="..\CubeGeneral\CubeDetailInclude.js"></script>
-<script language="javascript" type="text/javascript" src="CubeToolInclude.js"></script>
-<script language="javascript" type="text/javascript" src="CubeToolDetailInclude.js"></script>
+<script language="javascript" type="text/javascript" src="..\CubeGeneral\CubeInclude.js?filever=<?=filemtime('..\CubeGeneral\CubeInclude.js')?>"></script>
+<script language="javascript" type="text/javascript" src="..\CubeGeneral\CubeDetailInclude.js?filever=<?=filemtime('..\CubeGeneral\CubeDetailInclude.js')?>"></script>
+<script language="javascript" type="text/javascript" src="CubeToolInclude.js?filever=<?=filemtime('CubeToolInclude.js')?>"></script>
+<script language="javascript" type="text/javascript" src="CubeToolDetailInclude.js?filever=<?=filemtime('CubeToolDetailInclude.js')?>"></script>
 <script language="javascript" type="text/javascript">
 <!--
 var g_option = null;
@@ -41,9 +41,8 @@ g_xmlhttp.onreadystatechange = function() {
 					case "CREATE_ITE":
 						document.getElementById("InputFkItpName").disabled=true;
 						document.getElementById("InputSequence").disabled=true;
-						document.getElementById("ButtonCreate").disabled=true;
-						document.getElementById("ButtonUpdate").disabled=false;
-						document.getElementById("ButtonDelete").disabled=false;
+						document.getElementById("ButtonOK").innerText="Update";
+						document.getElementById("ButtonOK").disabled=false;
 						var l_objNode = parent.document.getElementById(g_parent_node_id);
 						var l_json_node_id = {FkItpName:document.getElementById("InputFkItpName").value,Sequence:document.getElementById("InputSequence").value};
 						g_node_id = '{"TYP_ITE":'+JSON.stringify(l_json_node_id)+'}';
@@ -68,12 +67,16 @@ g_xmlhttp.onreadystatechange = function() {
 									l_objNodePos);
 							}
 						}
+						document.getElementById("ButtonOK").innerText = "Update";
+						document.getElementById("ButtonOK").onclick = function(){UpdateIte()};						
+						ResetChangePending();
 						break;
 					case "UPDATE_ITE":
 						var l_objNode = parent.document.getElementById(g_node_id);
 						if (l_objNode != null) {
 							l_objNode.children[1].lastChild.nodeValue = ' '+document.getElementById("InputSuffix").value.toLowerCase()+' ('+document.getElementById("InputDomain").value.toLowerCase()+')';
-					}
+						}
+						ResetChangePending();
 						break;
 					case "DELETE_ITE":
 						var l_objNode = parent.document.getElementById(g_node_id);
@@ -83,7 +86,7 @@ g_xmlhttp.onreadystatechange = function() {
 						if (l_objNode != null) {
 							l_objNode.parentNode.removeChild(l_objNode);
 						}
-						parent.document.getElementById('DetailFrame').src='about:blank';
+						CancelChangePending();
 						break;
 					case "ERROR":
 						alert ('Server error:\n'+l_json_array[i].ErrorText);
@@ -99,50 +102,15 @@ g_xmlhttp.onreadystatechange = function() {
 	}
 }
 
-function InitBody() {
-	var l_json_argument = JSON.parse(decodeURIComponent(location.href.split("?")[1]));
-	document.body._FlagDragging = 0;
-	document.body._DraggingId = ' ';
-	document.body._ListBoxCode = "Ref000";
-	document.body._ListBoxOptional = ' ';
-	var l_json_objectKey = l_json_argument.objectId;
-	switch (l_json_argument.nodeType) {
-	case "D": // Details of existing object 
-		g_node_id = JSON.stringify(l_json_argument.objectId);
-		document.getElementById("InputFkItpName").value=l_json_objectKey.TYP_ITE.FkItpName;
-		document.getElementById("InputSequence").value=l_json_objectKey.TYP_ITE.Sequence;
-		document.getElementById("ButtonCreate").disabled=true;
-		PerformTrans( {
-			Service: "GetIte",
-			Parameters: {
-				Type: l_json_objectKey.TYP_ITE
-			}
-		} );
-		document.getElementById("InputFkItpName").disabled=true;
-		document.getElementById("InputSequence").disabled=true;
-		break;
-	case "N": // New (non recursive) object
-		g_parent_node_id = JSON.stringify(l_json_argument.objectId);
-		document.getElementById("InputFkItpName").value=l_json_objectKey.TYP_ITP.Name;
-		document.getElementById("ButtonUpdate").disabled=true;
-		document.getElementById("ButtonDelete").disabled=true;
-		document.getElementById("InputFkItpName").disabled=true;
-		document.getElementById("InputSequence").value='0';
-		document.getElementById("InputSuffix").value='#';
-		document.getElementById("InputDomain").value='TEXT';
-		document.getElementById("InputLength").value='0';
-		document.getElementById("InputDecimals").value='0';
-		document.getElementById("InputCaseSensitive").value='N';
-		document.getElementById("InputDefaultValue").value=' ';
-		document.getElementById("InputSpacesAllowed").value='N';
-		document.getElementById("InputPresentation").value='LIN';
-		break;
-	default:
-		alert ('Error InitBody: '+l_argument[1]);
-	}
-}
-
 function CreateIte() {
+	if (document.getElementById("InputFkItpName").value == '') {
+		alert ('Error: Primary key FkItpName not filled');
+		return;
+	}
+	if (document.getElementById("InputSequence").value == '') {
+		alert ('Error: Primary key Sequence not filled');
+		return;
+	}
 	var Type = {
 		FkItpName: document.getElementById("InputFkItpName").value,
 		Sequence: document.getElementById("InputSequence").value,
@@ -196,47 +164,116 @@ function DeleteIte() {
 		}
 	} );
 }
+
+function InitBody() {
+	parent.g_change_pending = 'N';
+	var l_json_argument = JSON.parse(decodeURIComponent(location.href.split("?")[1]));
+	document.body._FlagDragging = 0;
+	document.body._DraggingId = ' ';
+	document.body._ListBoxCode = "Ref000";
+	document.body._ListBoxOptional = ' ';
+	var l_json_objectKey = l_json_argument.objectId;
+	switch (l_json_argument.nodeType) {
+	case "D": // Details of existing object 
+		g_node_id = JSON.stringify(l_json_argument.objectId);
+		document.getElementById("InputFkItpName").value = l_json_objectKey.TYP_ITE.FkItpName;
+		document.getElementById("InputSequence").value = l_json_objectKey.TYP_ITE.Sequence;
+		document.getElementById("ButtonOK").innerText = "Update";
+		document.getElementById("ButtonOK").onclick = function(){UpdateIte()};
+		PerformTrans( {
+			Service: "GetIte",
+			Parameters: {
+				Type: l_json_objectKey.TYP_ITE
+			}
+		} );
+		document.getElementById("InputFkItpName").disabled = true;
+		document.getElementById("InputSequence").disabled = true;
+		break;
+	case "N": // New (non recursive) object
+		g_parent_node_id = JSON.stringify(l_json_argument.objectId);
+		document.getElementById("InputFkItpName").value = l_json_objectKey.TYP_ITP.Name;
+		document.getElementById("ButtonOK").innerText = "Create";
+		document.getElementById("ButtonOK").onclick = function(){CreateIte()};
+		document.getElementById("InputFkItpName").disabled = true;
+		document.getElementById("InputSequence").value='0';
+		document.getElementById("InputSuffix").value='#';
+		document.getElementById("InputDomain").value='TEXT';
+		document.getElementById("InputLength").value='0';
+		document.getElementById("InputDecimals").value='0';
+		document.getElementById("InputCaseSensitive").value='N';
+		document.getElementById("InputSpacesAllowed").value='N';
+		document.getElementById("InputPresentation").value='LIN';
+		break;
+	case "X": // Delete object
+		g_node_id = JSON.stringify(l_json_argument.objectId);
+		document.getElementById("InputFkItpName").value = l_json_objectKey.TYP_ITE.FkItpName;
+		document.getElementById("InputSequence").value = l_json_objectKey.TYP_ITE.Sequence;
+		document.getElementById("ButtonOK").innerText = "Delete";
+		document.getElementById("ButtonOK").onclick = function(){DeleteIte()};
+		SetChangePending();
+		PerformTrans( {
+			Service: "GetIte",
+			Parameters: {
+				Type: l_json_objectKey.TYP_ITE
+			}
+		} );
+		document.getElementById("InputCubeId").disabled = true;
+		document.getElementById("InputFkItpName").disabled = true;
+		document.getElementById("InputSequence").disabled = true;
+		document.getElementById("InputSuffix").disabled = true;
+		document.getElementById("InputDomain").disabled = true;
+		document.getElementById("InputLength").disabled = true;
+		document.getElementById("InputDecimals").disabled = true;
+		document.getElementById("InputCaseSensitive").disabled = true;
+		document.getElementById("InputDefaultValue").disabled = true;
+		document.getElementById("InputSpacesAllowed").disabled = true;
+		document.getElementById("InputPresentation").disabled = true;
+		break;
+	default:
+		alert ('Error InitBody: nodeType='+l_json_argument.nodeType);
+	}
+}
+
 -->
 </script>
-</head><body oncontextmenu="return false;" onload="InitBody()" ondrop="drop(event)" ondragover="allowDrop(event)">
+</head><body oncontextmenu="return false;" onload="InitBody()" onbeforeunload="return parent.CheckChangePending()" ondrop="Drop(event)" ondragover="AllowDrop(event)">
 <div><img src="icons/infelem_large.bmp" /><span> INFORMATION_TYPE_ELEMENT</span></div>
 <hr/>
 <table>
-<tr id="RowAtbFkItpName"><td><u><div>InformationType.Name</div></u></td><td><div style="max-width:30em;"><input id="InputFkItpName" type="text" maxlength="30" style="width:100%" onchange="ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr id="RowAtbSequence"><td><u><div>Sequence</div></u></td><td><div style="max-width:9em;"><input id="InputSequence" type="text" maxlength="9" style="width:100%"></input></div></td></tr>
-<tr id="RowAtbSuffix"><td><div>Suffix</div></td><td><div style="max-width:12em;"><input id="InputSuffix" type="text" maxlength="12" style="width:100%" onchange="ReplaceSpaces(this);"></input></div></td></tr>
-<tr id="RowAtbDomain"><td><div>Domain</div></td><td><div><select id="InputDomain" type="text">
+<tr id="RowAtbFkItpName"><td><u><div>InformationType.Name</div></u></td><td><div style="max-width:30em;"><input id="InputFkItpName" type="text" maxlength="30" style="width:100%" onchange="SetChangePending();ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr id="RowAtbSequence"><td><u><div>Sequence</div></u></td><td><div style="max-width:9em;"><input id="InputSequence" type="text" maxlength="9" style="width:100%" onchange="SetChangePending();"></input></div></td></tr>
+<tr id="RowAtbSuffix"><td><div>Suffix</div></td><td><div style="max-width:12em;"><input id="InputSuffix" type="text" maxlength="12" style="width:100%" onchange="SetChangePending();ReplaceSpaces(this);"></input></div></td></tr>
+<tr id="RowAtbDomain"><td><div>Domain</div></td><td><div><select id="InputDomain" type="text" onchange="SetChangePending();">
 	<option value=" " selected> </option>
-	<option value="TEXT">Text</option>
-	<option value="NUMBER">Number</option>
-	<option value="DATE">Date</option>
-	<option value="TIME">Time</option>
-	<option value="DATETIME-LOCAL">Timestamp</option>
+	<option id="OptionDomain-TEXT" style="display:inline" value="TEXT">Text</option>
+	<option id="OptionDomain-NUMBER" style="display:inline" value="NUMBER">Number</option>
+	<option id="OptionDomain-DATE" style="display:inline" value="DATE">Date</option>
+	<option id="OptionDomain-TIME" style="display:inline" value="TIME">Time</option>
+	<option id="OptionDomain-DATETIME-LOCAL" style="display:inline" value="DATETIME-LOCAL">Timestamp</option>
 </select></div></td></tr>
-<tr id="RowAtbLength"><td><div>Length</div></td><td><div style="max-width:9em;"><input id="InputLength" type="text" maxlength="9" style="width:100%"></input></div></td></tr>
-<tr id="RowAtbDecimals"><td><div>Decimals</div></td><td><div style="max-width:9em;"><input id="InputDecimals" type="text" maxlength="9" style="width:100%"></input></div></td></tr>
-<tr id="RowAtbCaseSensitive"><td><div>CaseSensitive</div></td><td><div><select id="InputCaseSensitive" type="text">
+<tr id="RowAtbLength"><td><div>Length</div></td><td><div style="max-width:9em;"><input id="InputLength" type="text" maxlength="9" style="width:100%" onchange="SetChangePending();"></input></div></td></tr>
+<tr id="RowAtbDecimals"><td><div>Decimals</div></td><td><div style="max-width:9em;"><input id="InputDecimals" type="text" maxlength="9" style="width:100%" onchange="SetChangePending();"></input></div></td></tr>
+<tr id="RowAtbCaseSensitive"><td><div>CaseSensitive</div></td><td><div><select id="InputCaseSensitive" type="text" onchange="SetChangePending();">
 	<option value=" " selected> </option>
-	<option value="Y">Yes</option>
-	<option value="N">No</option>
+	<option id="OptionCaseSensitive-Y" style="display:inline" value="Y">Yes</option>
+	<option id="OptionCaseSensitive-N" style="display:inline" value="N">No</option>
 </select></div></td></tr>
-<tr id="RowAtbDefaultValue"><td><div>DefaultValue</div></td><td><div style="max-width:32em;"><input id="InputDefaultValue" type="text" maxlength="32" style="width:100%"></input></div></td></tr>
-<tr id="RowAtbSpacesAllowed"><td><div>SpacesAllowed</div></td><td><div><select id="InputSpacesAllowed" type="text">
+<tr id="RowAtbDefaultValue"><td><div>DefaultValue</div></td><td><div style="max-width:32em;"><input id="InputDefaultValue" type="text" maxlength="32" style="width:100%" onchange="SetChangePending();"></input></div></td></tr>
+<tr id="RowAtbSpacesAllowed"><td><div>SpacesAllowed</div></td><td><div><select id="InputSpacesAllowed" type="text" onchange="SetChangePending();">
 	<option value=" " selected> </option>
-	<option value="Y">Yes</option>
-	<option value="N">No</option>
+	<option id="OptionSpacesAllowed-Y" style="display:inline" value="Y">Yes</option>
+	<option id="OptionSpacesAllowed-N" style="display:inline" value="N">No</option>
 </select></div></td></tr>
-<tr id="RowAtbPresentation"><td style="cursor:help" oncontextmenu="parent.OpenDescBox('infelem','InformationTypeElement.Presentation','INFORMATION_TYPE_ELEMENT','PRESENTATION',-1)"><div>Presentation</div></td><td><div><select id="InputPresentation" type="text">
+<tr id="RowAtbPresentation"><td style="cursor:help" oncontextmenu="parent.OpenDescBox('infelem','InformationTypeElement.Presentation','INFORMATION_TYPE_ELEMENT','PRESENTATION',-1)"><div>Presentation</div></td><td><div><select id="InputPresentation" type="text" onchange="SetChangePending();">
 	<option value=" " selected> </option>
-	<option value="LIN">Line</option>
-	<option value="DES">Description</option>
-	<option value="COD">Code</option>
+	<option id="OptionPresentation-LIN" style="display:inline" value="LIN">Line</option>
+	<option id="OptionPresentation-DES" style="display:inline" value="DES">Description</option>
+	<option id="OptionPresentation-COD" style="display:inline" value="COD">Code</option>
 </select></div></td></tr>
 <tr><td><br></td><td style="width:100%"></td></tr>
 <tr><td/><td>
-<button id="ButtonCreate" type="button" onclick="CreateIte()">Create</button>&nbsp;&nbsp;&nbsp;
-<button id="ButtonUpdate" type="button" onclick="UpdateIte()">Update</button>&nbsp;&nbsp;&nbsp;
-<button id="ButtonDelete" type="button" onclick="DeleteIte()">Delete</button></td></tr>
+<button id="ButtonOK" type="button" disabled>OK</button>&nbsp;&nbsp;&nbsp;
+<button id="ButtonCancel" type="button" disabled onclick="CancelChangePending()">Cancel</button></td></tr>
 </table>
 <input id="InputCubeId" type="hidden"></input>
 </body>
