@@ -6,7 +6,7 @@
 20-10-2017 - Operation / ResultNameExtension in result name.
 28-02-2018 - TYPE CODE not from BUSINESS_OBJECT_TYPE but from TYPE;
 23-09-2018 - JSON in stead of <|> structure.
-[[INCLUDE,templates\includes\general.cgt]]
+[[INCLUDE,Includes/general.cgt]]
 [[TEXT,SERVER_ARGUMENT_NAME]]<<ARGUMENT:L>>[[LOOP,ARGUMENT_ATTRIBUTE]]<<ARGUMENT_ATTRIBUTE:L>>[[ENDLOOP,ARGUMENT_ATTRIBUTE]][[ENDTEXT]]
 [[BODY]]<?php
 session_start();

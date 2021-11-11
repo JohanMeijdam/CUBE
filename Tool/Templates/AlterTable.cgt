@@ -1,6 +1,8 @@
-[[* Change log:
+Change log:
 30-11-2016 - Fix in logged sequence name	
-*]]-- ALTER TABLE DDL
+10-11-2021 - DBMS independent
+[[INCLUDE,Includes/general.cgt]]
+[[BODY]]-- ALTER TABLE DDL
 --[[LOOP,DATABASE]]
 SET SERVEROUTPUT ON;[[LOOP,SEQUENCE]]
 DECLARE
@@ -21,16 +23,16 @@ BEGIN
 	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = '<<DATABASE1:U>>' AND table_name = '<<TABLE:U>>';
 	IF l_count = 0 THEN
 		EXECUTE IMMEDIATE
-		'CREATE TABLE <<TABLE:L>> ([[LOOP,FIELD]]
-			<<FIELD:L>> <<FIELD2:U>>[[IF:!3=]] DEFAULT ''<<FIELD3>>''[[ENDIF]][[IF:!LAST]],[[ENDIF]][[ENDLOOP,FIELD]])';
+		'CREATE TABLE <<TABLE:L>> ([[LOOP,COLUMN]]
+			<<COLUMN:L>> <<TEXT,GEN_DOMAIN_ORA>>[[IF:!5=]] DEFAULT ''<<COLUMN5>>''[[ENDIF]][[IF:!LAST]],[[ENDIF]][[ENDLOOP,COLUMN]])';
 		DBMS_OUTPUT.PUT_LINE('Table <<TABLE:U>> created');
-	ELSE[[LOOP,FIELD]]
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = '<<DATABASE1:U>>' AND table_name = '<<TABLE:U>>' AND column_name = '<<FIELD:U>>';
+	ELSE[[LOOP,COLUMN]]
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = '<<DATABASE1:U>>' AND table_name = '<<TABLE:U>>' AND column_name = '<<COLUMN:U>>';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
-			'ALTER TABLE <<TABLE:L>> ADD <<FIELD:L>> <<FIELD2:U>>[[IF:!3=]] DEFAULT ''<<FIELD3>>''[[ENDIF]]';
-			DBMS_OUTPUT.PUT_LINE('Column <<TABLE:U>>.<<FIELD:U>> created');
-		END IF;[[ENDLOOP,FIELD]]
+			'ALTER TABLE <<TABLE:L>> ADD <<COLUMN:L>> <<TEXT,GEN_DOMAIN_ORA>>[[IF:!5=]] DEFAULT ''<<COLUMN5>>''[[ENDIF]]';
+			DBMS_OUTPUT.PUT_LINE('Column <<TABLE:U>>.<<COLUMN:U>> created');
+		END IF;[[ENDLOOP,COLUMN]]
 		FOR r_key IN (SELECT constraint_name FROM all_constraints WHERE owner = '<<DATABASE1:U>>' AND table_name = '<<TABLE:U>>' AND constraint_type IN ('P','U','R') ORDER BY constraint_type DESC)
 		LOOP
 			EXECUTE IMMEDIATE
@@ -65,10 +67,10 @@ BEGIN
 	FOR r_field IN (SELECT column_name,
 		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
 		data_default old_default_value,
-  		DECODE(column_name,[[LOOP,FIELD]]
-			'<<FIELD:U>>','<<FIELD2>>',[[ENDLOOP,FIELD]]NULL) new_domain,
-		DECODE(column_name,[[LOOP,FIELD]]
-			'<<FIELD:U>>',[[IF:!3=]]'''<<FIELD3>>'''[[ELSE]]NULL[[ENDIF]],[[ENDLOOP,FIELD]]NULL) new_default_value
+  		DECODE(column_name,[[LOOP,COLUMN]]
+			'<<COLUMN:U>>','<<TEXT,GEN_DOMAIN_ORA>>',[[ENDLOOP,COLUMN]]NULL) new_domain,
+		DECODE(column_name,[[LOOP,COLUMN]]
+			'<<COLUMN:U>>',[[IF:!5=]]'''<<COLUMN5>>'''[[ELSE]]NULL[[ENDIF]],[[ENDLOOP,COLUMN]]NULL) new_default_value
   		FROM all_tab_columns WHERE owner = '<<DATABASE1:U>>' AND table_name = '<<TABLE:U>>')
 	LOOP
 		IF r_field.old_domain <> r_field.new_domain THEN
@@ -95,16 +97,16 @@ BEGIN
 	END LOOP;
 	EXECUTE IMMEDIATE
 	'ALTER TABLE <<TABLE:L>> ADD CONSTRAINT <<TABLE1:L>>
-		PRIMARY KEY ([[LOOP,FIELD:1=Y]]
-			<<FIELD:L>>[[IF:!LAST]],[[ENDIF]][[ENDLOOP,FIELD]] )';
+		PRIMARY KEY ([[LOOP,COLUMN:1=Y]]
+			<<COLUMN:L>>[[IF:!LAST]],[[ENDIF]][[ENDLOOP,COLUMN]] )';
 	DBMS_OUTPUT.PUT_LINE('Primary Key <<TABLE:U>>.<<TABLE1:U>> created');[[LOOP,FOREIGN_KEY]]
 	EXECUTE IMMEDIATE
 	'ALTER TABLE <<TABLE:L>> ADD CONSTRAINT <<FOREIGN_KEY:L>>
-		FOREIGN KEY ([[LOOP,FIELD]]<<FIELD:L>>[[IF:!LAST]], [[ENDIF]][[ENDLOOP,FIELD]])
-		REFERENCES <<FOREIGN_KEY1:L>> ([[LOOP,FIELD]]<<FIELD1:L>>[[IF:!LAST]], [[ENDIF]][[ENDLOOP,FIELD]])[[IF:2=Y]]
+		FOREIGN KEY ([[LOOP,COLUMN]]<<COLUMN:L>>[[IF:!LAST]], [[ENDIF]][[ENDLOOP,COLUMN]])
+		REFERENCES <<FOREIGN_KEY1:L>> ([[LOOP,COLUMN]]<<COLUMN1:L>>[[IF:!LAST]], [[ENDIF]][[ENDLOOP,COLUMN]])[[IF:2=Y]]
 		ON DELETE CASCADE[[ENDIF]]';[[ENDLOOP,FOREIGN_KEY]]
-	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = '<<DATABASE1:U>>' AND table_name = '<<TABLE:U>>' AND column_name NOT IN ([[LOOP,FIELD]]
-							'<<FIELD:U>>'[[IF:!LAST]],[[ENDIF]][[ENDLOOP,FIELD]]))
+	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = '<<DATABASE1:U>>' AND table_name = '<<TABLE:U>>' AND column_name NOT IN ([[LOOP,COLUMN]]
+							'<<COLUMN:U>>'[[IF:!LAST]],[[ENDIF]][[ENDLOOP,COLUMN]]))
 	LOOP
 		EXECUTE IMMEDIATE
 		'ALTER TABLE <<TABLE:L>> DROP COLUMN ' || r_field.column_name;
@@ -113,3 +115,4 @@ BEGIN
 END;
 /[[ENDLOOP,TABLE]][[ENDLOOP,DATABASE]]
 EXIT;
+[[ENDBODY]]

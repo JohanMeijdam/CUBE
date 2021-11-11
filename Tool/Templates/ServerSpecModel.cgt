@@ -23,7 +23,7 @@ Change log:
 05-07-2021 - PAGE property 8 removed.
 10-07-2021 - CHANGE_EVENT vervangen door PAGE_FIELD_ATTRIBUTE, CONTROLLED_PAGE_FIELD en CONTROLLED_OPTION
 15-07-2021 - Buttons OK and Cancel
-[[INCLUDE,templates\includes\general.cgt]]
+[[INCLUDE,Includes/general.cgt]]
 [[TEXT,SPEC_EXPORT_LIST]]
 			>OPERATION_TYPE:<<TYPE:I>>;
 			+EXPORT:key|Y;[[LOOP,ATTRIBUTE:1=Y]]

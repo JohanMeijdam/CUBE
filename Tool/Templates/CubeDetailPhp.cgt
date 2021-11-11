@@ -44,7 +44,7 @@ Change log:
 15-07-2021 - Buttons OK and Cancel
 06-10-2021 - CheckChangePending
 
-[[INCLUDE,templates\includes\general.cgt]]
+[[INCLUDE,Includes/general.cgt]]
 [[TEXT,DETAIL_RECURSIVE_PARMS]]
 		Option: {[[IF,REFERENCE:4=PRA]]
 			CubeUpOrDown:"U",

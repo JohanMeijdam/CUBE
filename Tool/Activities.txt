@@ -55,3 +55,8 @@
 
 
 -	Reference TYPE_SPECIALISATION naar parent TYPE_SPECIALISATION is verwarrend. Bij een REFERENCE optioneel een alternatieve naam voor de targtet opnemen
+
+
+
+
+

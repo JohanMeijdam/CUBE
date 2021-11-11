@@ -3,8 +3,8 @@ Change log:
 24-11-2017 Aliasses in READ_TABLE 
 26-11-2017 Aliasses in READ_TABLE_RECURSIVE added
 29-11-2017 Housekeepig (drop) added.
-[[INCLUDE,templates\includes\general.cgt]]
-[[INCLUDE,templates\includes\expression.cgt]]
+[[INCLUDE,Includes/general.cgt]]
+[[INCLUDE,Includes/expression.cgt]]
 [[TEXT,PACKAGE_PROC_SIGNATURE]]
 	PROCEDURE <<PROCEDURE:L>> ([[LOOP,ARGUMENT]]
 			<<ARGUMENT>> <<ARGUMENT1>> <<ARGUMENT2>>[[IF:!LAST]],[[ENDIF]][[ENDLOOP,ARGUMENT]])[[ENDTEXT]]

@@ -11,8 +11,8 @@ Change log:
 04-09-2019 - Sequence name to SQ_name
 04-09-2019 - Drop Views and Packages
 02-02-2020 - In case of create NVL for all primary keys.
-[[INCLUDE,templates\includes\general.cgt]]
-[[INCLUDE,templates\includes\expression.cgt]]
+[[INCLUDE,Includes/general.cgt]]
+[[INCLUDE,Includes/expression.cgt]]
 [[TEXT,VIEW_CHANGEABLE_ATTRIBUTE]]!CHILD(DERIVATION:0=ID)[AND]!1=Y[AND]!6=Y[[ENDTEXT]]
 [[TEXT,VIEW_SELECT_PARENT_FKEYS]]
 		SELECT [[LOOP,ATTRIBUTE:3=F[AND]CHILD(ATTRIBUTE_SOURCE:1=N)]]<<ATTRIBUTE:L>>[[IF:!LAST]], [[ENDIF]][[ENDLOOP,ATTRIBUTE]]
