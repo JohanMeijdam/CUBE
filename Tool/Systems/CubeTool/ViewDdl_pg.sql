@@ -1,37 +1,93 @@
 -- DB VIEW DDL
 --
-DO $$
+DO $BODY$
 	DECLARE
 		rec_view RECORD;
 		rec_proc RECORD;
 	BEGIN
-		FOR rec_view IN 
-			SELECT viewname 
-			FROM pg_catalog.pg_views
-			WHERE schemaname = 'cubetool'
-		LOOP
-			EXECUTE 'DROP VIEW cubetool.' || rec_view.viewname;
-		END LOOP;
-	
+
 		FOR rec_proc IN
 			SELECT proname
 			FROM pg_catalog.pg_proc, pg_catalog.pg_namespace
 			WHERE pronamespace = pg_namespace.oid			
-			  AND nspname = 'cubetool'
+			  AND nspname = 'itp'
 			  AND proname LIKE 'trg_%'
 		LOOP
-			EXECUTE 'DROP PROCEDURE ' || rec_package.proname;
+			EXECUTE 'DROP PROCEDURE itp.' || rec_proc.proname;
+		END LOOP;
+
+		FOR rec_proc IN
+			SELECT proname
+			FROM pg_catalog.pg_proc, pg_catalog.pg_namespace
+			WHERE pronamespace = pg_namespace.oid			
+			  AND nspname = 'bot'
+			  AND proname LIKE 'trg_%'
+		LOOP
+			EXECUTE 'DROP PROCEDURE bot.' || rec_proc.proname;
+		END LOOP;
+
+		FOR rec_proc IN
+			SELECT proname
+			FROM pg_catalog.pg_proc, pg_catalog.pg_namespace
+			WHERE pronamespace = pg_namespace.oid			
+			  AND nspname = 'sys'
+			  AND proname LIKE 'trg_%'
+		LOOP
+			EXECUTE 'DROP PROCEDURE sys.' || rec_proc.proname;
+		END LOOP;
+
+		FOR rec_proc IN
+			SELECT proname
+			FROM pg_catalog.pg_proc, pg_catalog.pg_namespace
+			WHERE pronamespace = pg_namespace.oid			
+			  AND nspname = 'fun'
+			  AND proname LIKE 'trg_%'
+		LOOP
+			EXECUTE 'DROP PROCEDURE fun.' || rec_proc.proname;
+		END LOOP;
+
+		FOR rec_view IN 
+			SELECT viewname 
+			FROM pg_catalog.pg_views
+			WHERE schemaname = 'itp'
+		LOOP
+			EXECUTE 'DROP VIEW itp.' || rec_view.viewname;
+		END LOOP;
+
+		FOR rec_view IN 
+			SELECT viewname 
+			FROM pg_catalog.pg_views
+			WHERE schemaname = 'bot'
+		LOOP
+			EXECUTE 'DROP VIEW bot.' || rec_view.viewname;
+		END LOOP;
+
+		FOR rec_view IN 
+			SELECT viewname 
+			FROM pg_catalog.pg_views
+			WHERE schemaname = 'sys'
+		LOOP
+			EXECUTE 'DROP VIEW sys.' || rec_view.viewname;
+		END LOOP;
+
+		FOR rec_view IN 
+			SELECT viewname 
+			FROM pg_catalog.pg_views
+			WHERE schemaname = 'fun'
+		LOOP
+			EXECUTE 'DROP VIEW fun.' || rec_view.viewname;
 		END LOOP;
 	END;
-$$;
+$BODY$;
 
-CREATE VIEW v_information_type AS 
+CREATE VIEW itp.v_information_type AS 
 	SELECT
 		cube_id,
 		name
-	FROM t_information_type;
+	FROM itp.t_information_type;
 
-CREATE VIEW v_information_type_element AS 
+
+CREATE VIEW itp.v_information_type_element AS 
 	SELECT
 		cube_id,
 		fk_itp_name,
@@ -44,9 +100,10 @@ CREATE VIEW v_information_type_element AS
 		default_value,
 		spaces_allowed,
 		presentation
-	FROM t_information_type_element;
+	FROM itp.t_information_type_element;
 
-CREATE VIEW v_permitted_value AS 
+
+CREATE VIEW itp.v_permitted_value AS 
 	SELECT
 		cube_id,
 		cube_sequence,
@@ -54,33 +111,12 @@ CREATE VIEW v_permitted_value AS
 		fk_ite_sequence,
 		code,
 		prompt
-	FROM t_permitted_value;
+	FROM itp.t_permitted_value;
 
 
-/*
-CREATE OR REPLACE PACKAGE pkg_itp_trg IS
-	FUNCTION cube_trg_cubetool RETURN VARCHAR2;
-	PROCEDURE insert_itp (p_itp IN OUT NOCOPY v_information_type%ROWTYPE);
-	PROCEDURE update_itp (p_cube_rowid IN UROWID, p_itp_old IN OUT NOCOPY v_information_type%ROWTYPE, p_itp_new IN OUT NOCOPY v_information_type%ROWTYPE);
-	PROCEDURE delete_itp (p_cube_rowid IN UROWID, p_itp IN OUT NOCOPY v_information_type%ROWTYPE);
-	PROCEDURE insert_ite (p_ite IN OUT NOCOPY v_information_type_element%ROWTYPE);
-	PROCEDURE update_ite (p_cube_rowid IN UROWID, p_ite_old IN OUT NOCOPY v_information_type_element%ROWTYPE, p_ite_new IN OUT NOCOPY v_information_type_element%ROWTYPE);
-	PROCEDURE delete_ite (p_cube_rowid IN UROWID, p_ite IN OUT NOCOPY v_information_type_element%ROWTYPE);
-	PROCEDURE insert_val (p_val IN OUT NOCOPY v_permitted_value%ROWTYPE);
-	PROCEDURE update_val (p_cube_rowid IN UROWID, p_val_old IN OUT NOCOPY v_permitted_value%ROWTYPE, p_val_new IN OUT NOCOPY v_permitted_value%ROWTYPE);
-	PROCEDURE delete_val (p_cube_rowid IN UROWID, p_val IN OUT NOCOPY v_permitted_value%ROWTYPE);
-END;
-/
-SHOW ERRORS;
-
-CREATE OR REPLACE PACKAGE BODY pkg_itp_trg IS
-
-	FUNCTION cube_trg_cubetool RETURN VARCHAR2 IS
-	BEGIN
-		RETURN 'cube_trg_cubetool';
-	END;
-
-	PROCEDURE insert_itp (p_itp IN OUT NOCOPY v_information_type%ROWTYPE) IS
+CREATE PROCEDURE itp.trg_insert_itp (p_itp itp.v_information_type)
+LANGUAGE plpgsql 
+AS $BODY$
 	BEGIN
 		p_itp.cube_id := 'ITP-' || TO_CHAR(sq_itp.NEXTVAL,'FM000000000000');
 		p_itp.name := NVL(p_itp.name,' ');
@@ -91,19 +127,30 @@ CREATE OR REPLACE PACKAGE BODY pkg_itp_trg IS
 			p_itp.cube_id,
 			p_itp.name);
 	END;
+$BODY$;
 
-	PROCEDURE update_itp (p_cube_rowid UROWID, p_itp_old IN OUT NOCOPY v_information_type%ROWTYPE, p_itp_new IN OUT NOCOPY v_information_type%ROWTYPE) IS
+CREATE PROCEDURE itp.trg_update_itp (p_cube_ctid TID, p_itp_old itp.v_information_type, p_itp_new itp.v_information_type)
+LANGUAGE plpgsql
+AS $BODY$
 	BEGIN
 		NULL;
 	END;
-
-	PROCEDURE delete_itp (p_cube_rowid UROWID, p_itp IN OUT NOCOPY v_information_type%ROWTYPE) IS
+$BODY$;
+/*
+CREATE PROCEDURE trg_delete_itp (p_cube_rowid UROWID, p_itp IN OUT NOCOPY v_information_type%ROWTYPE)
+LANGUAGE plpgsql 
+AS $BODY$
 	BEGIN
 		DELETE t_information_type 
 		WHERE rowid = p_cube_rowid;
 	END;
+$BODY$;
+*/
 
-	PROCEDURE insert_ite (p_ite IN OUT NOCOPY v_information_type_element%ROWTYPE) IS
+
+CREATE PROCEDURE itp.trg_insert_ite (p_ite itp.v_information_type_element)
+LANGUAGE plpgsql 
+AS $BODY$
 	BEGIN
 		p_ite.cube_id := 'ITE-' || TO_CHAR(sq_ite.NEXTVAL,'FM000000000000');
 		p_ite.fk_itp_name := NVL(p_ite.fk_itp_name,' ');
@@ -133,8 +180,11 @@ CREATE OR REPLACE PACKAGE BODY pkg_itp_trg IS
 			p_ite.spaces_allowed,
 			p_ite.presentation);
 	END;
+$BODY$;
 
-	PROCEDURE update_ite (p_cube_rowid UROWID, p_ite_old IN OUT NOCOPY v_information_type_element%ROWTYPE, p_ite_new IN OUT NOCOPY v_information_type_element%ROWTYPE) IS
+CREATE PROCEDURE itp.trg_update_ite (p_cube_ctid TID, p_ite_old itp.v_information_type_element, p_ite_new itp.v_information_type_element)
+LANGUAGE plpgsql
+AS $BODY$
 	BEGIN
 		UPDATE t_information_type_element SET 
 			suffix = p_ite_new.suffix,
@@ -145,16 +195,24 @@ CREATE OR REPLACE PACKAGE BODY pkg_itp_trg IS
 			default_value = p_ite_new.default_value,
 			spaces_allowed = p_ite_new.spaces_allowed,
 			presentation = p_ite_new.presentation
-		WHERE rowid = p_cube_rowid;
+		WHERE rowid = p_cube_ctid;
 	END;
-
-	PROCEDURE delete_ite (p_cube_rowid UROWID, p_ite IN OUT NOCOPY v_information_type_element%ROWTYPE) IS
+$BODY$;
+/*
+CREATE PROCEDURE trg_delete_ite (p_cube_rowid UROWID, p_ite IN OUT NOCOPY v_information_type_element%ROWTYPE)
+LANGUAGE plpgsql 
+AS $BODY$
 	BEGIN
 		DELETE t_information_type_element 
 		WHERE rowid = p_cube_rowid;
 	END;
+$BODY$;
+*/
 
-	PROCEDURE insert_val (p_val IN OUT NOCOPY v_permitted_value%ROWTYPE) IS
+
+CREATE PROCEDURE itp.trg_insert_val (p_val itp.v_permitted_value)
+LANGUAGE plpgsql 
+AS $BODY$
 	BEGIN
 		p_val.cube_id := 'VAL-' || TO_CHAR(sq_val.NEXTVAL,'FM000000000000');
 		p_val.fk_itp_name := NVL(p_val.fk_itp_name,' ');
@@ -175,23 +233,31 @@ CREATE OR REPLACE PACKAGE BODY pkg_itp_trg IS
 			p_val.code,
 			p_val.prompt);
 	END;
+$BODY$;
 
-	PROCEDURE update_val (p_cube_rowid UROWID, p_val_old IN OUT NOCOPY v_permitted_value%ROWTYPE, p_val_new IN OUT NOCOPY v_permitted_value%ROWTYPE) IS
+CREATE PROCEDURE itp.trg_update_val (p_cube_ctid TID, p_val_old itp.v_permitted_value, p_val_new itp.v_permitted_value)
+LANGUAGE plpgsql
+AS $BODY$
 	BEGIN
 		UPDATE t_permitted_value SET 
 			cube_sequence = p_val_new.cube_sequence,
 			prompt = p_val_new.prompt
-		WHERE rowid = p_cube_rowid;
+		WHERE rowid = p_cube_ctid;
 	END;
-
-	PROCEDURE delete_val (p_cube_rowid UROWID, p_val IN OUT NOCOPY v_permitted_value%ROWTYPE) IS
+$BODY$;
+/*
+CREATE PROCEDURE trg_delete_val (p_cube_rowid UROWID, p_val IN OUT NOCOPY v_permitted_value%ROWTYPE)
+LANGUAGE plpgsql 
+AS $BODY$
 	BEGIN
 		DELETE t_permitted_value 
 		WHERE rowid = p_cube_rowid;
 	END;
-END;
-/
-SHOW ERRORS;
+$BODY$;
+*/
+
+
+/*
 
 CREATE OR REPLACE TRIGGER trg_itp
 INSTEAD OF INSERT OR DELETE OR UPDATE ON v_information_type
@@ -344,7 +410,8 @@ END;
 SHOW ERRORS
 
 */
-CREATE VIEW v_business_object_type AS 
+
+CREATE VIEW bot.v_business_object_type AS 
 	SELECT
 		cube_id,
 		cube_sequence,
@@ -352,9 +419,10 @@ CREATE VIEW v_business_object_type AS
 		cube_tsg_type,
 		directory,
 		api_url
-	FROM t_business_object_type;
+	FROM bot.t_business_object_type;
 
-CREATE VIEW v_type AS 
+
+CREATE VIEW bot.v_type AS 
 	SELECT
 		cube_id,
 		cube_sequence,
@@ -370,9 +438,10 @@ CREATE VIEW v_type AS
 		sort_order,
 		icon,
 		transferable
-	FROM t_type;
+	FROM bot.t_type;
 
-CREATE VIEW v_type_specialisation_group AS 
+
+CREATE VIEW bot.v_type_specialisation_group AS 
 	SELECT
 		cube_id,
 		cube_sequence,
@@ -385,9 +454,10 @@ CREATE VIEW v_type_specialisation_group AS
 		primary_key,
 		xf_atb_typ_name,
 		xk_atb_name
-	FROM t_type_specialisation_group;
+	FROM bot.t_type_specialisation_group;
 
-CREATE VIEW v_type_specialisation AS 
+
+CREATE VIEW bot.v_type_specialisation AS 
 	SELECT
 		cube_id,
 		cube_sequence,
@@ -399,9 +469,10 @@ CREATE VIEW v_type_specialisation AS
 		xf_tsp_typ_name,
 		xf_tsp_tsg_code,
 		xk_tsp_code
-	FROM t_type_specialisation;
+	FROM bot.t_type_specialisation;
 
-CREATE VIEW v_attribute AS 
+
+CREATE VIEW bot.v_attribute AS 
 	SELECT
 		cube_id,
 		cube_sequence,
@@ -415,9 +486,10 @@ CREATE VIEW v_attribute AS
 		default_value,
 		unchangeable,
 		xk_itp_name
-	FROM t_attribute;
+	FROM bot.t_attribute;
 
-CREATE VIEW v_derivation AS 
+
+CREATE VIEW bot.v_derivation AS 
 	SELECT
 		cube_id,
 		fk_bot_name,
@@ -427,18 +499,20 @@ CREATE VIEW v_derivation AS
 		aggregate_function,
 		xk_typ_name,
 		xk_typ_name_1
-	FROM t_derivation;
+	FROM bot.t_derivation;
 
-CREATE VIEW v_description_attribute AS 
+
+CREATE VIEW bot.v_description_attribute AS 
 	SELECT
 		cube_id,
 		fk_bot_name,
 		fk_typ_name,
 		fk_atb_name,
 		text
-	FROM t_description_attribute;
+	FROM bot.t_description_attribute;
 
-CREATE VIEW v_restriction_type_spec_atb AS 
+
+CREATE VIEW bot.v_restriction_type_spec_atb AS 
 	SELECT
 		cube_id,
 		fk_bot_name,
@@ -448,9 +522,10 @@ CREATE VIEW v_restriction_type_spec_atb AS
 		xf_tsp_typ_name,
 		xf_tsp_tsg_code,
 		xk_tsp_code
-	FROM t_restriction_type_spec_atb;
+	FROM bot.t_restriction_type_spec_atb;
 
-CREATE VIEW v_reference AS 
+
+CREATE VIEW bot.v_reference AS 
 	SELECT
 		cube_id,
 		cube_sequence,
@@ -467,9 +542,10 @@ CREATE VIEW v_reference AS
 		xk_bot_name,
 		xk_typ_name,
 		xk_typ_name_1
-	FROM t_reference;
+	FROM bot.t_reference;
 
-CREATE VIEW v_description_reference AS 
+
+CREATE VIEW bot.v_description_reference AS 
 	SELECT
 		cube_id,
 		fk_bot_name,
@@ -478,9 +554,10 @@ CREATE VIEW v_description_reference AS
 		fk_ref_bot_name,
 		fk_ref_typ_name,
 		text
-	FROM t_description_reference;
+	FROM bot.t_description_reference;
 
-CREATE VIEW v_restriction_type_spec_ref AS 
+
+CREATE VIEW bot.v_restriction_type_spec_ref AS 
 	SELECT
 		cube_id,
 		fk_bot_name,
@@ -492,9 +569,10 @@ CREATE VIEW v_restriction_type_spec_ref AS
 		xf_tsp_typ_name,
 		xf_tsp_tsg_code,
 		xk_tsp_code
-	FROM t_restriction_type_spec_ref;
+	FROM bot.t_restriction_type_spec_ref;
 
-CREATE VIEW v_restriction_target_type_spec AS 
+
+CREATE VIEW bot.v_restriction_target_type_spec AS 
 	SELECT
 		cube_id,
 		fk_bot_name,
@@ -506,9 +584,10 @@ CREATE VIEW v_restriction_target_type_spec AS
 		xf_tsp_typ_name,
 		xf_tsp_tsg_code,
 		xk_tsp_code
-	FROM t_restriction_target_type_spec;
+	FROM bot.t_restriction_target_type_spec;
 
-CREATE VIEW v_restriction_type_spec_typ AS 
+
+CREATE VIEW bot.v_restriction_type_spec_typ AS 
 	SELECT
 		cube_id,
 		fk_bot_name,
@@ -517,9 +596,10 @@ CREATE VIEW v_restriction_type_spec_typ AS
 		xf_tsp_typ_name,
 		xf_tsp_tsg_code,
 		xk_tsp_code
-	FROM t_restriction_type_spec_typ;
+	FROM bot.t_restriction_type_spec_typ;
 
-CREATE VIEW v_json_path AS 
+
+CREATE VIEW bot.v_json_path AS 
 	SELECT
 		cube_id,
 		cube_sequence,
@@ -538,83 +618,21 @@ CREATE VIEW v_json_path AS
 		xf_atb_typ_name,
 		xk_atb_name,
 		xk_typ_name
-	FROM t_json_path;
+	FROM bot.t_json_path;
 
-CREATE VIEW v_description_type AS 
+
+CREATE VIEW bot.v_description_type AS 
 	SELECT
 		cube_id,
 		fk_bot_name,
 		fk_typ_name,
 		text
-	FROM t_description_type;
+	FROM bot.t_description_type;
 
 
-/*
-CREATE OR REPLACE PACKAGE pkg_bot_trg IS
-	FUNCTION cube_trg_cubetool RETURN VARCHAR2;
-	PROCEDURE insert_bot (p_bot IN OUT NOCOPY v_business_object_type%ROWTYPE);
-	PROCEDURE update_bot (p_cube_rowid IN UROWID, p_bot_old IN OUT NOCOPY v_business_object_type%ROWTYPE, p_bot_new IN OUT NOCOPY v_business_object_type%ROWTYPE);
-	PROCEDURE delete_bot (p_cube_rowid IN UROWID, p_bot IN OUT NOCOPY v_business_object_type%ROWTYPE);
-	PROCEDURE insert_typ (p_typ IN OUT NOCOPY v_type%ROWTYPE);
-	PROCEDURE update_typ (p_cube_rowid IN UROWID, p_typ_old IN OUT NOCOPY v_type%ROWTYPE, p_typ_new IN OUT NOCOPY v_type%ROWTYPE);
-	PROCEDURE delete_typ (p_cube_rowid IN UROWID, p_typ IN OUT NOCOPY v_type%ROWTYPE);
-	PROCEDURE denorm_typ_typ (p_typ IN OUT NOCOPY v_type%ROWTYPE, p_typ_in IN v_type%ROWTYPE);
-	PROCEDURE get_denorm_typ_typ (p_typ IN OUT NOCOPY v_type%ROWTYPE);
-	PROCEDURE insert_tsg (p_tsg IN OUT NOCOPY v_type_specialisation_group%ROWTYPE);
-	PROCEDURE update_tsg (p_cube_rowid IN UROWID, p_tsg_old IN OUT NOCOPY v_type_specialisation_group%ROWTYPE, p_tsg_new IN OUT NOCOPY v_type_specialisation_group%ROWTYPE);
-	PROCEDURE delete_tsg (p_cube_rowid IN UROWID, p_tsg IN OUT NOCOPY v_type_specialisation_group%ROWTYPE);
-	PROCEDURE denorm_tsg_tsg (p_tsg IN OUT NOCOPY v_type_specialisation_group%ROWTYPE, p_tsg_in IN v_type_specialisation_group%ROWTYPE);
-	PROCEDURE get_denorm_tsg_tsg (p_tsg IN OUT NOCOPY v_type_specialisation_group%ROWTYPE);
-	PROCEDURE insert_tsp (p_tsp IN OUT NOCOPY v_type_specialisation%ROWTYPE);
-	PROCEDURE update_tsp (p_cube_rowid IN UROWID, p_tsp_old IN OUT NOCOPY v_type_specialisation%ROWTYPE, p_tsp_new IN OUT NOCOPY v_type_specialisation%ROWTYPE);
-	PROCEDURE delete_tsp (p_cube_rowid IN UROWID, p_tsp IN OUT NOCOPY v_type_specialisation%ROWTYPE);
-	PROCEDURE insert_atb (p_atb IN OUT NOCOPY v_attribute%ROWTYPE);
-	PROCEDURE update_atb (p_cube_rowid IN UROWID, p_atb_old IN OUT NOCOPY v_attribute%ROWTYPE, p_atb_new IN OUT NOCOPY v_attribute%ROWTYPE);
-	PROCEDURE delete_atb (p_cube_rowid IN UROWID, p_atb IN OUT NOCOPY v_attribute%ROWTYPE);
-	PROCEDURE insert_der (p_der IN OUT NOCOPY v_derivation%ROWTYPE);
-	PROCEDURE update_der (p_cube_rowid IN UROWID, p_der_old IN OUT NOCOPY v_derivation%ROWTYPE, p_der_new IN OUT NOCOPY v_derivation%ROWTYPE);
-	PROCEDURE delete_der (p_cube_rowid IN UROWID, p_der IN OUT NOCOPY v_derivation%ROWTYPE);
-	PROCEDURE insert_dca (p_dca IN OUT NOCOPY v_description_attribute%ROWTYPE);
-	PROCEDURE update_dca (p_cube_rowid IN UROWID, p_dca_old IN OUT NOCOPY v_description_attribute%ROWTYPE, p_dca_new IN OUT NOCOPY v_description_attribute%ROWTYPE);
-	PROCEDURE delete_dca (p_cube_rowid IN UROWID, p_dca IN OUT NOCOPY v_description_attribute%ROWTYPE);
-	PROCEDURE insert_rta (p_rta IN OUT NOCOPY v_restriction_type_spec_atb%ROWTYPE);
-	PROCEDURE update_rta (p_cube_rowid IN UROWID, p_rta_old IN OUT NOCOPY v_restriction_type_spec_atb%ROWTYPE, p_rta_new IN OUT NOCOPY v_restriction_type_spec_atb%ROWTYPE);
-	PROCEDURE delete_rta (p_cube_rowid IN UROWID, p_rta IN OUT NOCOPY v_restriction_type_spec_atb%ROWTYPE);
-	PROCEDURE insert_ref (p_ref IN OUT NOCOPY v_reference%ROWTYPE);
-	PROCEDURE update_ref (p_cube_rowid IN UROWID, p_ref_old IN OUT NOCOPY v_reference%ROWTYPE, p_ref_new IN OUT NOCOPY v_reference%ROWTYPE);
-	PROCEDURE delete_ref (p_cube_rowid IN UROWID, p_ref IN OUT NOCOPY v_reference%ROWTYPE);
-	PROCEDURE insert_dcr (p_dcr IN OUT NOCOPY v_description_reference%ROWTYPE);
-	PROCEDURE update_dcr (p_cube_rowid IN UROWID, p_dcr_old IN OUT NOCOPY v_description_reference%ROWTYPE, p_dcr_new IN OUT NOCOPY v_description_reference%ROWTYPE);
-	PROCEDURE delete_dcr (p_cube_rowid IN UROWID, p_dcr IN OUT NOCOPY v_description_reference%ROWTYPE);
-	PROCEDURE insert_rtr (p_rtr IN OUT NOCOPY v_restriction_type_spec_ref%ROWTYPE);
-	PROCEDURE update_rtr (p_cube_rowid IN UROWID, p_rtr_old IN OUT NOCOPY v_restriction_type_spec_ref%ROWTYPE, p_rtr_new IN OUT NOCOPY v_restriction_type_spec_ref%ROWTYPE);
-	PROCEDURE delete_rtr (p_cube_rowid IN UROWID, p_rtr IN OUT NOCOPY v_restriction_type_spec_ref%ROWTYPE);
-	PROCEDURE insert_rts (p_rts IN OUT NOCOPY v_restriction_target_type_spec%ROWTYPE);
-	PROCEDURE update_rts (p_cube_rowid IN UROWID, p_rts_old IN OUT NOCOPY v_restriction_target_type_spec%ROWTYPE, p_rts_new IN OUT NOCOPY v_restriction_target_type_spec%ROWTYPE);
-	PROCEDURE delete_rts (p_cube_rowid IN UROWID, p_rts IN OUT NOCOPY v_restriction_target_type_spec%ROWTYPE);
-	PROCEDURE insert_rtt (p_rtt IN OUT NOCOPY v_restriction_type_spec_typ%ROWTYPE);
-	PROCEDURE update_rtt (p_cube_rowid IN UROWID, p_rtt_old IN OUT NOCOPY v_restriction_type_spec_typ%ROWTYPE, p_rtt_new IN OUT NOCOPY v_restriction_type_spec_typ%ROWTYPE);
-	PROCEDURE delete_rtt (p_cube_rowid IN UROWID, p_rtt IN OUT NOCOPY v_restriction_type_spec_typ%ROWTYPE);
-	PROCEDURE insert_jsn (p_jsn IN OUT NOCOPY v_json_path%ROWTYPE);
-	PROCEDURE update_jsn (p_cube_rowid IN UROWID, p_jsn_old IN OUT NOCOPY v_json_path%ROWTYPE, p_jsn_new IN OUT NOCOPY v_json_path%ROWTYPE);
-	PROCEDURE delete_jsn (p_cube_rowid IN UROWID, p_jsn IN OUT NOCOPY v_json_path%ROWTYPE);
-	PROCEDURE denorm_jsn_jsn (p_jsn IN OUT NOCOPY v_json_path%ROWTYPE, p_jsn_in IN v_json_path%ROWTYPE);
-	PROCEDURE get_denorm_jsn_jsn (p_jsn IN OUT NOCOPY v_json_path%ROWTYPE);
-	PROCEDURE insert_dct (p_dct IN OUT NOCOPY v_description_type%ROWTYPE);
-	PROCEDURE update_dct (p_cube_rowid IN UROWID, p_dct_old IN OUT NOCOPY v_description_type%ROWTYPE, p_dct_new IN OUT NOCOPY v_description_type%ROWTYPE);
-	PROCEDURE delete_dct (p_cube_rowid IN UROWID, p_dct IN OUT NOCOPY v_description_type%ROWTYPE);
-END;
-/
-SHOW ERRORS;
-
-CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
-
-	FUNCTION cube_trg_cubetool RETURN VARCHAR2 IS
-	BEGIN
-		RETURN 'cube_trg_cubetool';
-	END;
-
-	PROCEDURE insert_bot (p_bot IN OUT NOCOPY v_business_object_type%ROWTYPE) IS
+CREATE PROCEDURE bot.trg_insert_bot (p_bot bot.v_business_object_type)
+LANGUAGE plpgsql 
+AS $BODY$
 	BEGIN
 		p_bot.cube_id := 'BOT-' || TO_CHAR(sq_bot.NEXTVAL,'FM000000000000');
 		p_bot.name := NVL(p_bot.name,' ');
@@ -633,23 +651,34 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			p_bot.directory,
 			p_bot.api_url);
 	END;
+$BODY$;
 
-	PROCEDURE update_bot (p_cube_rowid UROWID, p_bot_old IN OUT NOCOPY v_business_object_type%ROWTYPE, p_bot_new IN OUT NOCOPY v_business_object_type%ROWTYPE) IS
+CREATE PROCEDURE bot.trg_update_bot (p_cube_ctid TID, p_bot_old bot.v_business_object_type, p_bot_new bot.v_business_object_type)
+LANGUAGE plpgsql
+AS $BODY$
 	BEGIN
 		UPDATE t_business_object_type SET 
 			cube_sequence = p_bot_new.cube_sequence,
 			directory = p_bot_new.directory,
 			api_url = p_bot_new.api_url
-		WHERE rowid = p_cube_rowid;
+		WHERE rowid = p_cube_ctid;
 	END;
-
-	PROCEDURE delete_bot (p_cube_rowid UROWID, p_bot IN OUT NOCOPY v_business_object_type%ROWTYPE) IS
+$BODY$;
+/*
+CREATE PROCEDURE trg_delete_bot (p_cube_rowid UROWID, p_bot IN OUT NOCOPY v_business_object_type%ROWTYPE)
+LANGUAGE plpgsql 
+AS $BODY$
 	BEGIN
 		DELETE t_business_object_type 
 		WHERE rowid = p_cube_rowid;
 	END;
+$BODY$;
+*/
 
-	PROCEDURE insert_typ (p_typ IN OUT NOCOPY v_type%ROWTYPE) IS
+
+CREATE PROCEDURE bot.trg_insert_typ (p_typ bot.v_type)
+LANGUAGE plpgsql 
+AS $BODY$
 	BEGIN
 		p_typ.cube_id := 'TYP-' || TO_CHAR(sq_typ.NEXTVAL,'FM000000000000');
 		p_typ.fk_bot_name := NVL(p_typ.fk_bot_name,' ');
@@ -662,7 +691,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			WHERE fk_bot_name = p_typ.fk_bot_name
 			  AND name = p_typ.fk_typ_name;
 		END IF;
-		get_denorm_typ_typ (p_typ);
+		CALL get_denorm_typ_typ (p_typ);
 		INSERT INTO t_type (
 			cube_id,
 			cube_sequence,
@@ -694,8 +723,12 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			p_typ.icon,
 			p_typ.transferable);
 	END;
+$BODY$;
 
-	PROCEDURE update_typ (p_cube_rowid UROWID, p_typ_old IN OUT NOCOPY v_type%ROWTYPE, p_typ_new IN OUT NOCOPY v_type%ROWTYPE) IS
+CREATE PROCEDURE bot.trg_update_typ (p_cube_ctid TID, p_typ_old bot.v_type, p_typ_new bot.v_type)
+LANGUAGE plpgsql
+AS $BODY$
+	DECLARE
 
 		CURSOR c_typ IS
 			SELECT ROWID cube_row_id, typ.* FROM v_type typ
@@ -706,7 +739,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 		r_typ_new v_type%ROWTYPE;
 	BEGIN
 		IF NVL(p_typ_old.fk_typ_name,' ') <> NVL(p_typ_new.fk_typ_name,' ')  THEN
-			get_denorm_typ_typ (p_typ_new);
+			CALL get_denorm_typ_typ (p_typ_new);
 		END IF;
 		UPDATE t_type SET 
 			cube_sequence = p_typ_new.cube_sequence,
@@ -720,7 +753,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			sort_order = p_typ_new.sort_order,
 			icon = p_typ_new.icon,
 			transferable = p_typ_new.transferable
-		WHERE rowid = p_cube_rowid;
+		WHERE rowid = p_cube_ctid;
 		IF NVL(p_typ_old.cube_level,0) <> NVL(p_typ_new.cube_level,0) THEN
 			OPEN c_typ;
 			LOOP
@@ -742,26 +775,35 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 					r_typ_old.transferable;
 				EXIT WHEN c_typ%NOTFOUND;
 				r_typ_new := r_typ_old;
-				denorm_typ_typ (r_typ_new, p_typ_new);
-				update_typ (l_typ_rowid, r_typ_old, r_typ_new);
+				CALL denorm_typ_typ (r_typ_new, p_typ_new);
+				CALL update_typ (l_typ_rowid, r_typ_old, r_typ_new);
 			END LOOP;
 			CLOSE c_typ;
 		END IF;
 	END;
-
-	PROCEDURE delete_typ (p_cube_rowid UROWID, p_typ IN OUT NOCOPY v_type%ROWTYPE) IS
+$BODY$;
+/*
+CREATE PROCEDURE trg_delete_typ (p_cube_rowid UROWID, p_typ IN OUT NOCOPY v_type%ROWTYPE)
+LANGUAGE plpgsql 
+AS $BODY$
 	BEGIN
 		DELETE t_type 
 		WHERE rowid = p_cube_rowid;
 	END;
+$BODY$;
 
-	PROCEDURE denorm_typ_typ (p_typ IN OUT NOCOPY v_type%ROWTYPE, p_typ_in IN v_type%ROWTYPE) IS
+CREATE PROCEDURE denorm_typ_typ (p_typ IN OUT NOCOPY v_type%ROWTYPE, p_typ_in IN v_type%ROWTYPE)
+LANGUAGE plpgsql 
+AS $BODY$
 	BEGIN
 		p_typ.cube_level := NVL (p_typ_in.cube_level, 0) + 1;
 	END;
+$BODY$;
 
-	PROCEDURE get_denorm_typ_typ (p_typ IN OUT NOCOPY v_type%ROWTYPE) IS
-
+CREATE PROCEDURE trg_get_denorm_typ_typ (p_typ IN OUT NOCOPY v_type%ROWTYPE)
+LANGUAGE plpgsql 
+AS $BODY$
+	DECLARE
 		CURSOR c_typ IS 
 			SELECT * FROM v_type
 			WHERE name = p_typ.fk_typ_name;
@@ -780,8 +822,13 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 		END IF;
 		denorm_typ_typ (p_typ, r_typ);
 	END;
+$BODY$;
+*/
 
-	PROCEDURE insert_tsg (p_tsg IN OUT NOCOPY v_type_specialisation_group%ROWTYPE) IS
+
+CREATE PROCEDURE bot.trg_insert_tsg (p_tsg bot.v_type_specialisation_group)
+LANGUAGE plpgsql 
+AS $BODY$
 	BEGIN
 		p_tsg.cube_id := 'TSG-' || TO_CHAR(sq_tsg.NEXTVAL,'FM000000000000');
 		p_tsg.fk_bot_name := NVL(p_tsg.fk_bot_name,' ');
@@ -796,7 +843,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			FROM t_type_specialisation_group
 			WHERE fk_typ_name = p_tsg.fk_typ_name
 			  AND code = p_tsg.fk_tsg_code;
-		ELSE
+			ELSE
 			-- Parent
 			SELECT fk_bot_name
 			  INTO p_tsg.fk_bot_name
@@ -804,7 +851,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			WHERE name = p_tsg.fk_typ_name;
 			
 		END IF;
-		get_denorm_tsg_tsg (p_tsg);
+		CALL get_denorm_tsg_tsg (p_tsg);
 		INSERT INTO t_type_specialisation_group (
 			cube_id,
 			cube_sequence,
@@ -830,8 +877,12 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			p_tsg.xf_atb_typ_name,
 			p_tsg.xk_atb_name);
 	END;
+$BODY$;
 
-	PROCEDURE update_tsg (p_cube_rowid UROWID, p_tsg_old IN OUT NOCOPY v_type_specialisation_group%ROWTYPE, p_tsg_new IN OUT NOCOPY v_type_specialisation_group%ROWTYPE) IS
+CREATE PROCEDURE bot.trg_update_tsg (p_cube_ctid TID, p_tsg_old bot.v_type_specialisation_group, p_tsg_new bot.v_type_specialisation_group)
+LANGUAGE plpgsql
+AS $BODY$
+	DECLARE
 
 		CURSOR c_tsg IS
 			SELECT ROWID cube_row_id, tsg.* FROM v_type_specialisation_group tsg
@@ -843,7 +894,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 		r_tsg_new v_type_specialisation_group%ROWTYPE;
 	BEGIN
 		IF NVL(p_tsg_old.fk_tsg_code,' ') <> NVL(p_tsg_new.fk_tsg_code,' ')  THEN
-			get_denorm_tsg_tsg (p_tsg_new);
+			CALL get_denorm_tsg_tsg (p_tsg_new);
 		END IF;
 		UPDATE t_type_specialisation_group SET 
 			cube_sequence = p_tsg_new.cube_sequence,
@@ -853,7 +904,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			primary_key = p_tsg_new.primary_key,
 			xf_atb_typ_name = p_tsg_new.xf_atb_typ_name,
 			xk_atb_name = p_tsg_new.xk_atb_name
-		WHERE rowid = p_cube_rowid;
+		WHERE rowid = p_cube_ctid;
 		IF NVL(p_tsg_old.cube_level,0) <> NVL(p_tsg_new.cube_level,0) THEN
 			OPEN c_tsg;
 			LOOP
@@ -872,26 +923,35 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 					r_tsg_old.xk_atb_name;
 				EXIT WHEN c_tsg%NOTFOUND;
 				r_tsg_new := r_tsg_old;
-				denorm_tsg_tsg (r_tsg_new, p_tsg_new);
-				update_tsg (l_tsg_rowid, r_tsg_old, r_tsg_new);
+				CALL denorm_tsg_tsg (r_tsg_new, p_tsg_new);
+				CALL update_tsg (l_tsg_rowid, r_tsg_old, r_tsg_new);
 			END LOOP;
 			CLOSE c_tsg;
 		END IF;
 	END;
-
-	PROCEDURE delete_tsg (p_cube_rowid UROWID, p_tsg IN OUT NOCOPY v_type_specialisation_group%ROWTYPE) IS
+$BODY$;
+/*
+CREATE PROCEDURE trg_delete_tsg (p_cube_rowid UROWID, p_tsg IN OUT NOCOPY v_type_specialisation_group%ROWTYPE)
+LANGUAGE plpgsql 
+AS $BODY$
 	BEGIN
 		DELETE t_type_specialisation_group 
 		WHERE rowid = p_cube_rowid;
 	END;
+$BODY$;
 
-	PROCEDURE denorm_tsg_tsg (p_tsg IN OUT NOCOPY v_type_specialisation_group%ROWTYPE, p_tsg_in IN v_type_specialisation_group%ROWTYPE) IS
+CREATE PROCEDURE denorm_tsg_tsg (p_tsg IN OUT NOCOPY v_type_specialisation_group%ROWTYPE, p_tsg_in IN v_type_specialisation_group%ROWTYPE)
+LANGUAGE plpgsql 
+AS $BODY$
 	BEGIN
 		p_tsg.cube_level := NVL (p_tsg_in.cube_level, 0) + 1;
 	END;
+$BODY$;
 
-	PROCEDURE get_denorm_tsg_tsg (p_tsg IN OUT NOCOPY v_type_specialisation_group%ROWTYPE) IS
-
+CREATE PROCEDURE trg_get_denorm_tsg_tsg (p_tsg IN OUT NOCOPY v_type_specialisation_group%ROWTYPE)
+LANGUAGE plpgsql 
+AS $BODY$
+	DECLARE
 		CURSOR c_tsg IS 
 			SELECT * FROM v_type_specialisation_group
 			WHERE fk_typ_name = p_tsg.fk_typ_name
@@ -911,8 +971,13 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 		END IF;
 		denorm_tsg_tsg (p_tsg, r_tsg);
 	END;
+$BODY$;
+*/
 
-	PROCEDURE insert_tsp (p_tsp IN OUT NOCOPY v_type_specialisation%ROWTYPE) IS
+
+CREATE PROCEDURE bot.trg_insert_tsp (p_tsp bot.v_type_specialisation)
+LANGUAGE plpgsql 
+AS $BODY$
 	BEGIN
 		p_tsp.cube_id := 'TSP-' || TO_CHAR(sq_tsp.NEXTVAL,'FM000000000000');
 		p_tsp.fk_bot_name := NVL(p_tsp.fk_bot_name,' ');
@@ -950,8 +1015,11 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			p_tsp.xf_tsp_tsg_code,
 			p_tsp.xk_tsp_code);
 	END;
+$BODY$;
 
-	PROCEDURE update_tsp (p_cube_rowid UROWID, p_tsp_old IN OUT NOCOPY v_type_specialisation%ROWTYPE, p_tsp_new IN OUT NOCOPY v_type_specialisation%ROWTYPE) IS
+CREATE PROCEDURE bot.trg_update_tsp (p_cube_ctid TID, p_tsp_old bot.v_type_specialisation, p_tsp_new bot.v_type_specialisation)
+LANGUAGE plpgsql
+AS $BODY$
 	BEGIN
 		UPDATE t_type_specialisation SET 
 			cube_sequence = p_tsp_new.cube_sequence,
@@ -959,16 +1027,24 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			xf_tsp_typ_name = p_tsp_new.xf_tsp_typ_name,
 			xf_tsp_tsg_code = p_tsp_new.xf_tsp_tsg_code,
 			xk_tsp_code = p_tsp_new.xk_tsp_code
-		WHERE rowid = p_cube_rowid;
+		WHERE rowid = p_cube_ctid;
 	END;
-
-	PROCEDURE delete_tsp (p_cube_rowid UROWID, p_tsp IN OUT NOCOPY v_type_specialisation%ROWTYPE) IS
+$BODY$;
+/*
+CREATE PROCEDURE trg_delete_tsp (p_cube_rowid UROWID, p_tsp IN OUT NOCOPY v_type_specialisation%ROWTYPE)
+LANGUAGE plpgsql 
+AS $BODY$
 	BEGIN
 		DELETE t_type_specialisation 
 		WHERE rowid = p_cube_rowid;
 	END;
+$BODY$;
+*/
 
-	PROCEDURE insert_atb (p_atb IN OUT NOCOPY v_attribute%ROWTYPE) IS
+
+CREATE PROCEDURE bot.trg_insert_atb (p_atb bot.v_attribute)
+LANGUAGE plpgsql 
+AS $BODY$
 	BEGIN
 		p_atb.cube_id := 'ATB-' || TO_CHAR(sq_atb.NEXTVAL,'FM000000000000');
 		p_atb.fk_bot_name := NVL(p_atb.fk_bot_name,' ');
@@ -1006,8 +1082,11 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			p_atb.unchangeable,
 			p_atb.xk_itp_name);
 	END;
+$BODY$;
 
-	PROCEDURE update_atb (p_cube_rowid UROWID, p_atb_old IN OUT NOCOPY v_attribute%ROWTYPE, p_atb_new IN OUT NOCOPY v_attribute%ROWTYPE) IS
+CREATE PROCEDURE bot.trg_update_atb (p_cube_ctid TID, p_atb_old bot.v_attribute, p_atb_new bot.v_attribute)
+LANGUAGE plpgsql
+AS $BODY$
 	BEGIN
 		UPDATE t_attribute SET 
 			cube_sequence = p_atb_new.cube_sequence,
@@ -1018,16 +1097,24 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			default_value = p_atb_new.default_value,
 			unchangeable = p_atb_new.unchangeable,
 			xk_itp_name = p_atb_new.xk_itp_name
-		WHERE rowid = p_cube_rowid;
+		WHERE rowid = p_cube_ctid;
 	END;
-
-	PROCEDURE delete_atb (p_cube_rowid UROWID, p_atb IN OUT NOCOPY v_attribute%ROWTYPE) IS
+$BODY$;
+/*
+CREATE PROCEDURE trg_delete_atb (p_cube_rowid UROWID, p_atb IN OUT NOCOPY v_attribute%ROWTYPE)
+LANGUAGE plpgsql 
+AS $BODY$
 	BEGIN
 		DELETE t_attribute 
 		WHERE rowid = p_cube_rowid;
 	END;
+$BODY$;
+*/
 
-	PROCEDURE insert_der (p_der IN OUT NOCOPY v_derivation%ROWTYPE) IS
+
+CREATE PROCEDURE bot.trg_insert_der (p_der bot.v_derivation)
+LANGUAGE plpgsql 
+AS $BODY$
 	BEGIN
 		p_der.cube_id := 'DER-' || TO_CHAR(sq_der.NEXTVAL,'FM000000000000');
 		p_der.fk_bot_name := NVL(p_der.fk_bot_name,' ');
@@ -1059,23 +1146,34 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			p_der.xk_typ_name,
 			p_der.xk_typ_name_1);
 	END;
+$BODY$;
 
-	PROCEDURE update_der (p_cube_rowid UROWID, p_der_old IN OUT NOCOPY v_derivation%ROWTYPE, p_der_new IN OUT NOCOPY v_derivation%ROWTYPE) IS
+CREATE PROCEDURE bot.trg_update_der (p_cube_ctid TID, p_der_old bot.v_derivation, p_der_new bot.v_derivation)
+LANGUAGE plpgsql
+AS $BODY$
 	BEGIN
 		UPDATE t_derivation SET 
 			aggregate_function = p_der_new.aggregate_function,
 			xk_typ_name = p_der_new.xk_typ_name,
 			xk_typ_name_1 = p_der_new.xk_typ_name_1
-		WHERE rowid = p_cube_rowid;
+		WHERE rowid = p_cube_ctid;
 	END;
-
-	PROCEDURE delete_der (p_cube_rowid UROWID, p_der IN OUT NOCOPY v_derivation%ROWTYPE) IS
+$BODY$;
+/*
+CREATE PROCEDURE trg_delete_der (p_cube_rowid UROWID, p_der IN OUT NOCOPY v_derivation%ROWTYPE)
+LANGUAGE plpgsql 
+AS $BODY$
 	BEGIN
 		DELETE t_derivation 
 		WHERE rowid = p_cube_rowid;
 	END;
+$BODY$;
+*/
 
-	PROCEDURE insert_dca (p_dca IN OUT NOCOPY v_description_attribute%ROWTYPE) IS
+
+CREATE PROCEDURE bot.trg_insert_dca (p_dca bot.v_description_attribute)
+LANGUAGE plpgsql 
+AS $BODY$
 	BEGIN
 		p_dca.cube_id := 'DCA-' || TO_CHAR(sq_dca.NEXTVAL,'FM000000000000');
 		p_dca.fk_bot_name := NVL(p_dca.fk_bot_name,' ');
@@ -1099,21 +1197,32 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			p_dca.fk_atb_name,
 			p_dca.text);
 	END;
+$BODY$;
 
-	PROCEDURE update_dca (p_cube_rowid UROWID, p_dca_old IN OUT NOCOPY v_description_attribute%ROWTYPE, p_dca_new IN OUT NOCOPY v_description_attribute%ROWTYPE) IS
+CREATE PROCEDURE bot.trg_update_dca (p_cube_ctid TID, p_dca_old bot.v_description_attribute, p_dca_new bot.v_description_attribute)
+LANGUAGE plpgsql
+AS $BODY$
 	BEGIN
 		UPDATE t_description_attribute SET 
 			text = p_dca_new.text
-		WHERE rowid = p_cube_rowid;
+		WHERE rowid = p_cube_ctid;
 	END;
-
-	PROCEDURE delete_dca (p_cube_rowid UROWID, p_dca IN OUT NOCOPY v_description_attribute%ROWTYPE) IS
+$BODY$;
+/*
+CREATE PROCEDURE trg_delete_dca (p_cube_rowid UROWID, p_dca IN OUT NOCOPY v_description_attribute%ROWTYPE)
+LANGUAGE plpgsql 
+AS $BODY$
 	BEGIN
 		DELETE t_description_attribute 
 		WHERE rowid = p_cube_rowid;
 	END;
+$BODY$;
+*/
 
-	PROCEDURE insert_rta (p_rta IN OUT NOCOPY v_restriction_type_spec_atb%ROWTYPE) IS
+
+CREATE PROCEDURE bot.trg_insert_rta (p_rta bot.v_restriction_type_spec_atb)
+LANGUAGE plpgsql 
+AS $BODY$
 	BEGIN
 		p_rta.cube_id := 'RTA-' || TO_CHAR(sq_rta.NEXTVAL,'FM000000000000');
 		p_rta.fk_bot_name := NVL(p_rta.fk_bot_name,' ');
@@ -1146,21 +1255,32 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			p_rta.xf_tsp_tsg_code,
 			p_rta.xk_tsp_code);
 	END;
+$BODY$;
 
-	PROCEDURE update_rta (p_cube_rowid UROWID, p_rta_old IN OUT NOCOPY v_restriction_type_spec_atb%ROWTYPE, p_rta_new IN OUT NOCOPY v_restriction_type_spec_atb%ROWTYPE) IS
+CREATE PROCEDURE bot.trg_update_rta (p_cube_ctid TID, p_rta_old bot.v_restriction_type_spec_atb, p_rta_new bot.v_restriction_type_spec_atb)
+LANGUAGE plpgsql
+AS $BODY$
 	BEGIN
 		UPDATE t_restriction_type_spec_atb SET 
 			include_or_exclude = p_rta_new.include_or_exclude
-		WHERE rowid = p_cube_rowid;
+		WHERE rowid = p_cube_ctid;
 	END;
-
-	PROCEDURE delete_rta (p_cube_rowid UROWID, p_rta IN OUT NOCOPY v_restriction_type_spec_atb%ROWTYPE) IS
+$BODY$;
+/*
+CREATE PROCEDURE trg_delete_rta (p_cube_rowid UROWID, p_rta IN OUT NOCOPY v_restriction_type_spec_atb%ROWTYPE)
+LANGUAGE plpgsql 
+AS $BODY$
 	BEGIN
 		DELETE t_restriction_type_spec_atb 
 		WHERE rowid = p_cube_rowid;
 	END;
+$BODY$;
+*/
 
-	PROCEDURE insert_ref (p_ref IN OUT NOCOPY v_reference%ROWTYPE) IS
+
+CREATE PROCEDURE bot.trg_insert_ref (p_ref bot.v_reference)
+LANGUAGE plpgsql 
+AS $BODY$
 	BEGIN
 		p_ref.cube_id := 'REF-' || TO_CHAR(sq_ref.NEXTVAL,'FM000000000000');
 		p_ref.fk_bot_name := NVL(p_ref.fk_bot_name,' ');
@@ -1206,8 +1326,11 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			p_ref.xk_typ_name,
 			p_ref.xk_typ_name_1);
 	END;
+$BODY$;
 
-	PROCEDURE update_ref (p_cube_rowid UROWID, p_ref_old IN OUT NOCOPY v_reference%ROWTYPE, p_ref_new IN OUT NOCOPY v_reference%ROWTYPE) IS
+CREATE PROCEDURE bot.trg_update_ref (p_cube_ctid TID, p_ref_old bot.v_reference, p_ref_new bot.v_reference)
+LANGUAGE plpgsql
+AS $BODY$
 	BEGIN
 		UPDATE t_reference SET 
 			cube_sequence = p_ref_new.cube_sequence,
@@ -1218,16 +1341,24 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			unchangeable = p_ref_new.unchangeable,
 			within_scope_extension = p_ref_new.within_scope_extension,
 			xk_typ_name_1 = p_ref_new.xk_typ_name_1
-		WHERE rowid = p_cube_rowid;
+		WHERE rowid = p_cube_ctid;
 	END;
-
-	PROCEDURE delete_ref (p_cube_rowid UROWID, p_ref IN OUT NOCOPY v_reference%ROWTYPE) IS
+$BODY$;
+/*
+CREATE PROCEDURE trg_delete_ref (p_cube_rowid UROWID, p_ref IN OUT NOCOPY v_reference%ROWTYPE)
+LANGUAGE plpgsql 
+AS $BODY$
 	BEGIN
 		DELETE t_reference 
 		WHERE rowid = p_cube_rowid;
 	END;
+$BODY$;
+*/
 
-	PROCEDURE insert_dcr (p_dcr IN OUT NOCOPY v_description_reference%ROWTYPE) IS
+
+CREATE PROCEDURE bot.trg_insert_dcr (p_dcr bot.v_description_reference)
+LANGUAGE plpgsql 
+AS $BODY$
 	BEGIN
 		p_dcr.cube_id := 'DCR-' || TO_CHAR(sq_dcr.NEXTVAL,'FM000000000000');
 		p_dcr.fk_bot_name := NVL(p_dcr.fk_bot_name,' ');
@@ -1259,21 +1390,32 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			p_dcr.fk_ref_typ_name,
 			p_dcr.text);
 	END;
+$BODY$;
 
-	PROCEDURE update_dcr (p_cube_rowid UROWID, p_dcr_old IN OUT NOCOPY v_description_reference%ROWTYPE, p_dcr_new IN OUT NOCOPY v_description_reference%ROWTYPE) IS
+CREATE PROCEDURE bot.trg_update_dcr (p_cube_ctid TID, p_dcr_old bot.v_description_reference, p_dcr_new bot.v_description_reference)
+LANGUAGE plpgsql
+AS $BODY$
 	BEGIN
 		UPDATE t_description_reference SET 
 			text = p_dcr_new.text
-		WHERE rowid = p_cube_rowid;
+		WHERE rowid = p_cube_ctid;
 	END;
-
-	PROCEDURE delete_dcr (p_cube_rowid UROWID, p_dcr IN OUT NOCOPY v_description_reference%ROWTYPE) IS
+$BODY$;
+/*
+CREATE PROCEDURE trg_delete_dcr (p_cube_rowid UROWID, p_dcr IN OUT NOCOPY v_description_reference%ROWTYPE)
+LANGUAGE plpgsql 
+AS $BODY$
 	BEGIN
 		DELETE t_description_reference 
 		WHERE rowid = p_cube_rowid;
 	END;
+$BODY$;
+*/
 
-	PROCEDURE insert_rtr (p_rtr IN OUT NOCOPY v_restriction_type_spec_ref%ROWTYPE) IS
+
+CREATE PROCEDURE bot.trg_insert_rtr (p_rtr bot.v_restriction_type_spec_ref)
+LANGUAGE plpgsql 
+AS $BODY$
 	BEGIN
 		p_rtr.cube_id := 'RTR-' || TO_CHAR(sq_rtr.NEXTVAL,'FM000000000000');
 		p_rtr.fk_bot_name := NVL(p_rtr.fk_bot_name,' ');
@@ -1314,21 +1456,32 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			p_rtr.xf_tsp_tsg_code,
 			p_rtr.xk_tsp_code);
 	END;
+$BODY$;
 
-	PROCEDURE update_rtr (p_cube_rowid UROWID, p_rtr_old IN OUT NOCOPY v_restriction_type_spec_ref%ROWTYPE, p_rtr_new IN OUT NOCOPY v_restriction_type_spec_ref%ROWTYPE) IS
+CREATE PROCEDURE bot.trg_update_rtr (p_cube_ctid TID, p_rtr_old bot.v_restriction_type_spec_ref, p_rtr_new bot.v_restriction_type_spec_ref)
+LANGUAGE plpgsql
+AS $BODY$
 	BEGIN
 		UPDATE t_restriction_type_spec_ref SET 
 			include_or_exclude = p_rtr_new.include_or_exclude
-		WHERE rowid = p_cube_rowid;
+		WHERE rowid = p_cube_ctid;
 	END;
-
-	PROCEDURE delete_rtr (p_cube_rowid UROWID, p_rtr IN OUT NOCOPY v_restriction_type_spec_ref%ROWTYPE) IS
+$BODY$;
+/*
+CREATE PROCEDURE trg_delete_rtr (p_cube_rowid UROWID, p_rtr IN OUT NOCOPY v_restriction_type_spec_ref%ROWTYPE)
+LANGUAGE plpgsql 
+AS $BODY$
 	BEGIN
 		DELETE t_restriction_type_spec_ref 
 		WHERE rowid = p_cube_rowid;
 	END;
+$BODY$;
+*/
 
-	PROCEDURE insert_rts (p_rts IN OUT NOCOPY v_restriction_target_type_spec%ROWTYPE) IS
+
+CREATE PROCEDURE bot.trg_insert_rts (p_rts bot.v_restriction_target_type_spec)
+LANGUAGE plpgsql 
+AS $BODY$
 	BEGIN
 		p_rts.cube_id := 'RTS-' || TO_CHAR(sq_rts.NEXTVAL,'FM000000000000');
 		p_rts.fk_bot_name := NVL(p_rts.fk_bot_name,' ');
@@ -1369,21 +1522,32 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			p_rts.xf_tsp_tsg_code,
 			p_rts.xk_tsp_code);
 	END;
+$BODY$;
 
-	PROCEDURE update_rts (p_cube_rowid UROWID, p_rts_old IN OUT NOCOPY v_restriction_target_type_spec%ROWTYPE, p_rts_new IN OUT NOCOPY v_restriction_target_type_spec%ROWTYPE) IS
+CREATE PROCEDURE bot.trg_update_rts (p_cube_ctid TID, p_rts_old bot.v_restriction_target_type_spec, p_rts_new bot.v_restriction_target_type_spec)
+LANGUAGE plpgsql
+AS $BODY$
 	BEGIN
 		UPDATE t_restriction_target_type_spec SET 
 			include_or_exclude = p_rts_new.include_or_exclude
-		WHERE rowid = p_cube_rowid;
+		WHERE rowid = p_cube_ctid;
 	END;
-
-	PROCEDURE delete_rts (p_cube_rowid UROWID, p_rts IN OUT NOCOPY v_restriction_target_type_spec%ROWTYPE) IS
+$BODY$;
+/*
+CREATE PROCEDURE trg_delete_rts (p_cube_rowid UROWID, p_rts IN OUT NOCOPY v_restriction_target_type_spec%ROWTYPE)
+LANGUAGE plpgsql 
+AS $BODY$
 	BEGIN
 		DELETE t_restriction_target_type_spec 
 		WHERE rowid = p_cube_rowid;
 	END;
+$BODY$;
+*/
 
-	PROCEDURE insert_rtt (p_rtt IN OUT NOCOPY v_restriction_type_spec_typ%ROWTYPE) IS
+
+CREATE PROCEDURE bot.trg_insert_rtt (p_rtt bot.v_restriction_type_spec_typ)
+LANGUAGE plpgsql 
+AS $BODY$
 	BEGIN
 		p_rtt.cube_id := 'RTT-' || TO_CHAR(sq_rtt.NEXTVAL,'FM000000000000');
 		p_rtt.fk_bot_name := NVL(p_rtt.fk_bot_name,' ');
@@ -1412,21 +1576,32 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			p_rtt.xf_tsp_tsg_code,
 			p_rtt.xk_tsp_code);
 	END;
+$BODY$;
 
-	PROCEDURE update_rtt (p_cube_rowid UROWID, p_rtt_old IN OUT NOCOPY v_restriction_type_spec_typ%ROWTYPE, p_rtt_new IN OUT NOCOPY v_restriction_type_spec_typ%ROWTYPE) IS
+CREATE PROCEDURE bot.trg_update_rtt (p_cube_ctid TID, p_rtt_old bot.v_restriction_type_spec_typ, p_rtt_new bot.v_restriction_type_spec_typ)
+LANGUAGE plpgsql
+AS $BODY$
 	BEGIN
 		UPDATE t_restriction_type_spec_typ SET 
 			include_or_exclude = p_rtt_new.include_or_exclude
-		WHERE rowid = p_cube_rowid;
+		WHERE rowid = p_cube_ctid;
 	END;
-
-	PROCEDURE delete_rtt (p_cube_rowid UROWID, p_rtt IN OUT NOCOPY v_restriction_type_spec_typ%ROWTYPE) IS
+$BODY$;
+/*
+CREATE PROCEDURE trg_delete_rtt (p_cube_rowid UROWID, p_rtt IN OUT NOCOPY v_restriction_type_spec_typ%ROWTYPE)
+LANGUAGE plpgsql 
+AS $BODY$
 	BEGIN
 		DELETE t_restriction_type_spec_typ 
 		WHERE rowid = p_cube_rowid;
 	END;
+$BODY$;
+*/
 
-	PROCEDURE insert_jsn (p_jsn IN OUT NOCOPY v_json_path%ROWTYPE) IS
+
+CREATE PROCEDURE bot.trg_insert_jsn (p_jsn bot.v_json_path)
+LANGUAGE plpgsql 
+AS $BODY$
 	BEGIN
 		p_jsn.cube_id := 'JSN-' || TO_CHAR(sq_jsn.NEXTVAL,'FM000000000000');
 		p_jsn.fk_bot_name := NVL(p_jsn.fk_bot_name,' ');
@@ -1447,7 +1622,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			  AND xf_atb_typ_name = p_jsn.fk_jsn_atb_typ_name
 			  AND xk_atb_name = p_jsn.fk_jsn_atb_name
 			  AND xk_typ_name = p_jsn.fk_jsn_typ_name;
-		ELSE
+			ELSE
 			-- Parent
 			SELECT fk_bot_name
 			  INTO p_jsn.fk_bot_name
@@ -1455,7 +1630,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			WHERE name = p_jsn.fk_typ_name;
 			
 		END IF;
-		get_denorm_jsn_jsn (p_jsn);
+		CALL get_denorm_jsn_jsn (p_jsn);
 		INSERT INTO t_json_path (
 			cube_id,
 			cube_sequence,
@@ -1493,8 +1668,12 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			p_jsn.xk_atb_name,
 			p_jsn.xk_typ_name);
 	END;
+$BODY$;
 
-	PROCEDURE update_jsn (p_cube_rowid UROWID, p_jsn_old IN OUT NOCOPY v_json_path%ROWTYPE, p_jsn_new IN OUT NOCOPY v_json_path%ROWTYPE) IS
+CREATE PROCEDURE bot.trg_update_jsn (p_cube_ctid TID, p_jsn_old bot.v_json_path, p_jsn_new bot.v_json_path)
+LANGUAGE plpgsql
+AS $BODY$
+	DECLARE
 
 		CURSOR c_jsn IS
 			SELECT ROWID cube_row_id, jsn.* FROM v_json_path jsn
@@ -1514,7 +1693,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 		OR NVL(p_jsn_old.fk_jsn_atb_typ_name,' ') <> NVL(p_jsn_new.fk_jsn_atb_typ_name,' ') 
 		OR NVL(p_jsn_old.fk_jsn_atb_name,' ') <> NVL(p_jsn_new.fk_jsn_atb_name,' ') 
 		OR NVL(p_jsn_old.fk_jsn_typ_name,' ') <> NVL(p_jsn_new.fk_jsn_typ_name,' ')  THEN
-			get_denorm_jsn_jsn (p_jsn_new);
+			CALL get_denorm_jsn_jsn (p_jsn_new);
 		END IF;
 		UPDATE t_json_path SET 
 			cube_sequence = p_jsn_new.cube_sequence,
@@ -1524,7 +1703,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			fk_jsn_atb_typ_name = p_jsn_new.fk_jsn_atb_typ_name,
 			fk_jsn_atb_name = p_jsn_new.fk_jsn_atb_name,
 			fk_jsn_typ_name = p_jsn_new.fk_jsn_typ_name
-		WHERE rowid = p_cube_rowid;
+		WHERE rowid = p_cube_ctid;
 		IF NVL(p_jsn_old.cube_level,0) <> NVL(p_jsn_new.cube_level,0) THEN
 			OPEN c_jsn;
 			LOOP
@@ -1549,26 +1728,35 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 					r_jsn_old.xk_typ_name;
 				EXIT WHEN c_jsn%NOTFOUND;
 				r_jsn_new := r_jsn_old;
-				denorm_jsn_jsn (r_jsn_new, p_jsn_new);
-				update_jsn (l_jsn_rowid, r_jsn_old, r_jsn_new);
+				CALL denorm_jsn_jsn (r_jsn_new, p_jsn_new);
+				CALL update_jsn (l_jsn_rowid, r_jsn_old, r_jsn_new);
 			END LOOP;
 			CLOSE c_jsn;
 		END IF;
 	END;
-
-	PROCEDURE delete_jsn (p_cube_rowid UROWID, p_jsn IN OUT NOCOPY v_json_path%ROWTYPE) IS
+$BODY$;
+/*
+CREATE PROCEDURE trg_delete_jsn (p_cube_rowid UROWID, p_jsn IN OUT NOCOPY v_json_path%ROWTYPE)
+LANGUAGE plpgsql 
+AS $BODY$
 	BEGIN
 		DELETE t_json_path 
 		WHERE rowid = p_cube_rowid;
 	END;
+$BODY$;
 
-	PROCEDURE denorm_jsn_jsn (p_jsn IN OUT NOCOPY v_json_path%ROWTYPE, p_jsn_in IN v_json_path%ROWTYPE) IS
+CREATE PROCEDURE denorm_jsn_jsn (p_jsn IN OUT NOCOPY v_json_path%ROWTYPE, p_jsn_in IN v_json_path%ROWTYPE)
+LANGUAGE plpgsql 
+AS $BODY$
 	BEGIN
 		p_jsn.cube_level := NVL (p_jsn_in.cube_level, 0) + 1;
 	END;
+$BODY$;
 
-	PROCEDURE get_denorm_jsn_jsn (p_jsn IN OUT NOCOPY v_json_path%ROWTYPE) IS
-
+CREATE PROCEDURE trg_get_denorm_jsn_jsn (p_jsn IN OUT NOCOPY v_json_path%ROWTYPE)
+LANGUAGE plpgsql 
+AS $BODY$
+	DECLARE
 		CURSOR c_jsn IS 
 			SELECT * FROM v_json_path
 			WHERE fk_typ_name = p_jsn.fk_typ_name
@@ -1592,8 +1780,13 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 		END IF;
 		denorm_jsn_jsn (p_jsn, r_jsn);
 	END;
+$BODY$;
+*/
 
-	PROCEDURE insert_dct (p_dct IN OUT NOCOPY v_description_type%ROWTYPE) IS
+
+CREATE PROCEDURE bot.trg_insert_dct (p_dct bot.v_description_type)
+LANGUAGE plpgsql 
+AS $BODY$
 	BEGIN
 		p_dct.cube_id := 'DCT-' || TO_CHAR(sq_dct.NEXTVAL,'FM000000000000');
 		p_dct.fk_bot_name := NVL(p_dct.fk_bot_name,' ');
@@ -1613,22 +1806,30 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			p_dct.fk_typ_name,
 			p_dct.text);
 	END;
+$BODY$;
 
-	PROCEDURE update_dct (p_cube_rowid UROWID, p_dct_old IN OUT NOCOPY v_description_type%ROWTYPE, p_dct_new IN OUT NOCOPY v_description_type%ROWTYPE) IS
+CREATE PROCEDURE bot.trg_update_dct (p_cube_ctid TID, p_dct_old bot.v_description_type, p_dct_new bot.v_description_type)
+LANGUAGE plpgsql
+AS $BODY$
 	BEGIN
 		UPDATE t_description_type SET 
 			text = p_dct_new.text
-		WHERE rowid = p_cube_rowid;
+		WHERE rowid = p_cube_ctid;
 	END;
-
-	PROCEDURE delete_dct (p_cube_rowid UROWID, p_dct IN OUT NOCOPY v_description_type%ROWTYPE) IS
+$BODY$;
+/*
+CREATE PROCEDURE trg_delete_dct (p_cube_rowid UROWID, p_dct IN OUT NOCOPY v_description_type%ROWTYPE)
+LANGUAGE plpgsql 
+AS $BODY$
 	BEGIN
 		DELETE t_description_type 
 		WHERE rowid = p_cube_rowid;
 	END;
-END;
-/
-SHOW ERRORS;
+$BODY$;
+*/
+
+
+/*
 
 CREATE OR REPLACE TRIGGER trg_bot
 INSTEAD OF INSERT OR DELETE OR UPDATE ON v_business_object_type
@@ -2733,7 +2934,8 @@ END;
 SHOW ERRORS
 
 */
-CREATE VIEW v_system AS 
+
+CREATE VIEW sys.v_system AS 
 	SELECT
 		cube_id,
 		name,
@@ -2742,38 +2944,21 @@ CREATE VIEW v_system AS
 		schema,
 		password,
 		table_prefix
-	FROM t_system;
+	FROM sys.t_system;
 
-CREATE VIEW v_system_bo_type AS 
+
+CREATE VIEW sys.v_system_bo_type AS 
 	SELECT
 		cube_id,
 		cube_sequence,
 		fk_sys_name,
 		xk_bot_name
-	FROM t_system_bo_type;
+	FROM sys.t_system_bo_type;
 
 
-/*
-CREATE OR REPLACE PACKAGE pkg_sys_trg IS
-	FUNCTION cube_trg_cubetool RETURN VARCHAR2;
-	PROCEDURE insert_sys (p_sys IN OUT NOCOPY v_system%ROWTYPE);
-	PROCEDURE update_sys (p_cube_rowid IN UROWID, p_sys_old IN OUT NOCOPY v_system%ROWTYPE, p_sys_new IN OUT NOCOPY v_system%ROWTYPE);
-	PROCEDURE delete_sys (p_cube_rowid IN UROWID, p_sys IN OUT NOCOPY v_system%ROWTYPE);
-	PROCEDURE insert_sbt (p_sbt IN OUT NOCOPY v_system_bo_type%ROWTYPE);
-	PROCEDURE update_sbt (p_cube_rowid IN UROWID, p_sbt_old IN OUT NOCOPY v_system_bo_type%ROWTYPE, p_sbt_new IN OUT NOCOPY v_system_bo_type%ROWTYPE);
-	PROCEDURE delete_sbt (p_cube_rowid IN UROWID, p_sbt IN OUT NOCOPY v_system_bo_type%ROWTYPE);
-END;
-/
-SHOW ERRORS;
-
-CREATE OR REPLACE PACKAGE BODY pkg_sys_trg IS
-
-	FUNCTION cube_trg_cubetool RETURN VARCHAR2 IS
-	BEGIN
-		RETURN 'cube_trg_cubetool';
-	END;
-
-	PROCEDURE insert_sys (p_sys IN OUT NOCOPY v_system%ROWTYPE) IS
+CREATE PROCEDURE sys.trg_insert_sys (p_sys sys.v_system)
+LANGUAGE plpgsql 
+AS $BODY$
 	BEGIN
 		p_sys.cube_id := 'SYS-' || TO_CHAR(sq_sys.NEXTVAL,'FM000000000000');
 		p_sys.name := NVL(p_sys.name,' ');
@@ -2794,24 +2979,35 @@ CREATE OR REPLACE PACKAGE BODY pkg_sys_trg IS
 			p_sys.password,
 			p_sys.table_prefix);
 	END;
+$BODY$;
 
-	PROCEDURE update_sys (p_cube_rowid UROWID, p_sys_old IN OUT NOCOPY v_system%ROWTYPE, p_sys_new IN OUT NOCOPY v_system%ROWTYPE) IS
+CREATE PROCEDURE sys.trg_update_sys (p_cube_ctid TID, p_sys_old sys.v_system, p_sys_new sys.v_system)
+LANGUAGE plpgsql
+AS $BODY$
 	BEGIN
 		UPDATE t_system SET 
 			database = p_sys_new.database,
 			schema = p_sys_new.schema,
 			password = p_sys_new.password,
 			table_prefix = p_sys_new.table_prefix
-		WHERE rowid = p_cube_rowid;
+		WHERE rowid = p_cube_ctid;
 	END;
-
-	PROCEDURE delete_sys (p_cube_rowid UROWID, p_sys IN OUT NOCOPY v_system%ROWTYPE) IS
+$BODY$;
+/*
+CREATE PROCEDURE trg_delete_sys (p_cube_rowid UROWID, p_sys IN OUT NOCOPY v_system%ROWTYPE)
+LANGUAGE plpgsql 
+AS $BODY$
 	BEGIN
 		DELETE t_system 
 		WHERE rowid = p_cube_rowid;
 	END;
+$BODY$;
+*/
 
-	PROCEDURE insert_sbt (p_sbt IN OUT NOCOPY v_system_bo_type%ROWTYPE) IS
+
+CREATE PROCEDURE sys.trg_insert_sbt (p_sbt sys.v_system_bo_type)
+LANGUAGE plpgsql 
+AS $BODY$
 	BEGIN
 		p_sbt.cube_id := 'SBT-' || TO_CHAR(sq_sbt.NEXTVAL,'FM000000000000');
 		p_sbt.fk_sys_name := NVL(p_sbt.fk_sys_name,' ');
@@ -2827,22 +3023,30 @@ CREATE OR REPLACE PACKAGE BODY pkg_sys_trg IS
 			p_sbt.fk_sys_name,
 			p_sbt.xk_bot_name);
 	END;
+$BODY$;
 
-	PROCEDURE update_sbt (p_cube_rowid UROWID, p_sbt_old IN OUT NOCOPY v_system_bo_type%ROWTYPE, p_sbt_new IN OUT NOCOPY v_system_bo_type%ROWTYPE) IS
+CREATE PROCEDURE sys.trg_update_sbt (p_cube_ctid TID, p_sbt_old sys.v_system_bo_type, p_sbt_new sys.v_system_bo_type)
+LANGUAGE plpgsql
+AS $BODY$
 	BEGIN
 		UPDATE t_system_bo_type SET 
 			cube_sequence = p_sbt_new.cube_sequence
-		WHERE rowid = p_cube_rowid;
+		WHERE rowid = p_cube_ctid;
 	END;
-
-	PROCEDURE delete_sbt (p_cube_rowid UROWID, p_sbt IN OUT NOCOPY v_system_bo_type%ROWTYPE) IS
+$BODY$;
+/*
+CREATE PROCEDURE trg_delete_sbt (p_cube_rowid UROWID, p_sbt IN OUT NOCOPY v_system_bo_type%ROWTYPE)
+LANGUAGE plpgsql 
+AS $BODY$
 	BEGIN
 		DELETE t_system_bo_type 
 		WHERE rowid = p_cube_rowid;
 	END;
-END;
-/
-SHOW ERRORS;
+$BODY$;
+*/
+
+
+/*
 
 CREATE OR REPLACE TRIGGER trg_sys
 INSTEAD OF INSERT OR DELETE OR UPDATE ON v_system
@@ -2954,42 +3158,26 @@ END;
 SHOW ERRORS
 
 */
-CREATE VIEW v_function AS 
+
+CREATE VIEW fun.v_function AS 
 	SELECT
 		cube_id,
 		name
-	FROM t_function;
+	FROM fun.t_function;
 
-CREATE VIEW v_argument AS 
+
+CREATE VIEW fun.v_argument AS 
 	SELECT
 		cube_id,
 		cube_sequence,
 		fk_fun_name,
 		name
-	FROM t_argument;
+	FROM fun.t_argument;
 
 
-/*
-CREATE OR REPLACE PACKAGE pkg_fun_trg IS
-	FUNCTION cube_trg_cubetool RETURN VARCHAR2;
-	PROCEDURE insert_fun (p_fun IN OUT NOCOPY v_function%ROWTYPE);
-	PROCEDURE update_fun (p_cube_rowid IN UROWID, p_fun_old IN OUT NOCOPY v_function%ROWTYPE, p_fun_new IN OUT NOCOPY v_function%ROWTYPE);
-	PROCEDURE delete_fun (p_cube_rowid IN UROWID, p_fun IN OUT NOCOPY v_function%ROWTYPE);
-	PROCEDURE insert_arg (p_arg IN OUT NOCOPY v_argument%ROWTYPE);
-	PROCEDURE update_arg (p_cube_rowid IN UROWID, p_arg_old IN OUT NOCOPY v_argument%ROWTYPE, p_arg_new IN OUT NOCOPY v_argument%ROWTYPE);
-	PROCEDURE delete_arg (p_cube_rowid IN UROWID, p_arg IN OUT NOCOPY v_argument%ROWTYPE);
-END;
-/
-SHOW ERRORS;
-
-CREATE OR REPLACE PACKAGE BODY pkg_fun_trg IS
-
-	FUNCTION cube_trg_cubetool RETURN VARCHAR2 IS
-	BEGIN
-		RETURN 'cube_trg_cubetool';
-	END;
-
-	PROCEDURE insert_fun (p_fun IN OUT NOCOPY v_function%ROWTYPE) IS
+CREATE PROCEDURE fun.trg_insert_fun (p_fun fun.v_function)
+LANGUAGE plpgsql 
+AS $BODY$
 	BEGIN
 		p_fun.cube_id := 'FUN-' || TO_CHAR(sq_fun.NEXTVAL,'FM000000000000');
 		p_fun.name := NVL(p_fun.name,' ');
@@ -3000,19 +3188,30 @@ CREATE OR REPLACE PACKAGE BODY pkg_fun_trg IS
 			p_fun.cube_id,
 			p_fun.name);
 	END;
+$BODY$;
 
-	PROCEDURE update_fun (p_cube_rowid UROWID, p_fun_old IN OUT NOCOPY v_function%ROWTYPE, p_fun_new IN OUT NOCOPY v_function%ROWTYPE) IS
+CREATE PROCEDURE fun.trg_update_fun (p_cube_ctid TID, p_fun_old fun.v_function, p_fun_new fun.v_function)
+LANGUAGE plpgsql
+AS $BODY$
 	BEGIN
 		NULL;
 	END;
-
-	PROCEDURE delete_fun (p_cube_rowid UROWID, p_fun IN OUT NOCOPY v_function%ROWTYPE) IS
+$BODY$;
+/*
+CREATE PROCEDURE trg_delete_fun (p_cube_rowid UROWID, p_fun IN OUT NOCOPY v_function%ROWTYPE)
+LANGUAGE plpgsql 
+AS $BODY$
 	BEGIN
 		DELETE t_function 
 		WHERE rowid = p_cube_rowid;
 	END;
+$BODY$;
+*/
 
-	PROCEDURE insert_arg (p_arg IN OUT NOCOPY v_argument%ROWTYPE) IS
+
+CREATE PROCEDURE fun.trg_insert_arg (p_arg fun.v_argument)
+LANGUAGE plpgsql 
+AS $BODY$
 	BEGIN
 		p_arg.cube_id := 'ARG-' || TO_CHAR(sq_arg.NEXTVAL,'FM000000000000');
 		p_arg.fk_fun_name := NVL(p_arg.fk_fun_name,' ');
@@ -3028,22 +3227,30 @@ CREATE OR REPLACE PACKAGE BODY pkg_fun_trg IS
 			p_arg.fk_fun_name,
 			p_arg.name);
 	END;
+$BODY$;
 
-	PROCEDURE update_arg (p_cube_rowid UROWID, p_arg_old IN OUT NOCOPY v_argument%ROWTYPE, p_arg_new IN OUT NOCOPY v_argument%ROWTYPE) IS
+CREATE PROCEDURE fun.trg_update_arg (p_cube_ctid TID, p_arg_old fun.v_argument, p_arg_new fun.v_argument)
+LANGUAGE plpgsql
+AS $BODY$
 	BEGIN
 		UPDATE t_argument SET 
 			cube_sequence = p_arg_new.cube_sequence
-		WHERE rowid = p_cube_rowid;
+		WHERE rowid = p_cube_ctid;
 	END;
-
-	PROCEDURE delete_arg (p_cube_rowid UROWID, p_arg IN OUT NOCOPY v_argument%ROWTYPE) IS
+$BODY$;
+/*
+CREATE PROCEDURE trg_delete_arg (p_cube_rowid UROWID, p_arg IN OUT NOCOPY v_argument%ROWTYPE)
+LANGUAGE plpgsql 
+AS $BODY$
 	BEGIN
 		DELETE t_argument 
 		WHERE rowid = p_cube_rowid;
 	END;
-END;
-/
-SHOW ERRORS;
+$BODY$;
+*/
+
+
+/*
 
 CREATE OR REPLACE TRIGGER trg_fun
 INSTEAD OF INSERT OR DELETE OR UPDATE ON v_function
