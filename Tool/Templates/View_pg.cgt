@@ -29,16 +29,6 @@ DO $BODY$
 		rec_proc RECORD;
 	BEGIN[[LOOP,SYSTEM_BO_TYPE]][[LOOP,BUSINESS_OBJECT_TYPE]][[LOOP,TYPE]]
 
-		FOR rec_proc IN
-			SELECT proname
-			FROM pg_catalog.pg_proc, pg_catalog.pg_namespace
-			WHERE pronamespace = pg_namespace.oid			
-			  AND nspname = '<<TYPE1:L>>'
-			  AND proname LIKE 'trg_%'
-		LOOP
-			EXECUTE 'DROP PROCEDURE <<TYPE1:L>>.' || rec_proc.proname;
-		END LOOP;[[ENDLOOP,TYPE]][[ENDLOOP,BUSINESS_OBJECT_TYPE]][[ENDLOOP,SYSTEM_BO_TYPE]][[LOOP,SYSTEM_BO_TYPE]][[LOOP,BUSINESS_OBJECT_TYPE]][[LOOP,TYPE]]
-
 		FOR rec_view IN 
 			SELECT viewname 
 			FROM pg_catalog.pg_views
@@ -46,7 +36,20 @@ DO $BODY$
 			AND SUBSTR(viewname,1,INSTR(viewname,'_',3)) = 'V_<<SYSTEM5:U>>_'[[ELSE]][[FOR,ROOT]][[IF:CHILD(SYSTEM:1=SUPPORT)]]
 			AND NVL(SUBSTR(viewname,1,INSTR(viewname,'_',3)),' ') NOT IN ([[LOOP,SYSTEM:1=SUPPORT]]'V_<<SYSTEM5:U>>_'[[IF:!LAST]], [[ENDIF]][[ENDLOOP,SYSTEM]])[[ENDIF]][[ENDFOR]][[ENDIF]]
 		LOOP
-			EXECUTE 'DROP VIEW <<TYPE1:L>>.' || rec_view.viewname;
+			EXECUTE 'DROP VIEW <<TYPE1:L>>.' || rec_view.viewname || ' CASCADE';
+		END LOOP;[[ENDLOOP,TYPE]][[ENDLOOP,BUSINESS_OBJECT_TYPE]][[ENDLOOP,SYSTEM_BO_TYPE]][[LOOP,SYSTEM_BO_TYPE]][[LOOP,BUSINESS_OBJECT_TYPE]][[LOOP,TYPE]]
+
+		FOR rec_proc IN
+			SELECT proname, prokind
+			FROM pg_catalog.pg_proc, pg_catalog.pg_namespace
+			WHERE pronamespace = pg_namespace.oid			
+			  AND nspname = '<<TYPE1:L>>'
+			  AND proname LIKE 'trg_%'
+		LOOP
+			CASE rec_proc.prokind
+			WHEN 'p' THEN EXECUTE 'DROP PROCEDURE <<TYPE1:L>>.' || rec_proc.proname;
+			WHEN 'f' THEN EXECUTE 'DROP FUNCTION <<TYPE1:L>>.' || rec_proc.proname;
+			END CASE;
 		END LOOP;[[ENDLOOP,TYPE]][[ENDLOOP,BUSINESS_OBJECT_TYPE]][[ENDLOOP,SYSTEM_BO_TYPE]]
 	END;
 $BODY$;[[LOOP,SYSTEM_BO_TYPE]][[LOOP,BUSINESS_OBJECT_TYPE]][[LOOP,TYPE]]
@@ -74,7 +77,7 @@ AS $BODY$
 		-- Parent[[TABS:+1]]<<TEXT,VIEW_SELECT_PARENT_FKEYS>>[[TABS:-1]]
 			[[ENDIF]]
 		END IF;[[ENDIF]][[ELSIF:CHILD(ATTRIBUTE:3=F[AND]CHILD(ATTRIBUTE_SOURCE:1=N))]]<<TEXT,VIEW_SELECT_PARENT_FKEYS>>[[ENDIF]][[IF:CHILD(ATTRIBUTE:CHILD(DERIVATION:0=DN[AND]CHILD(DERIVATION_TYPE:0=<<TYPE>>)[AND]CHILD(DERIVATION_TYPE_DESTINATION:0=<<TYPE>>)))]]
-		CALL get_denorm_<<TYPE1:L>>_<<TYPE1:L>> (p_<<TYPE1:L>>);[[ENDIF]]
+		CALL trg_get_denorm_<<TYPE1:L>>_<<TYPE1:L>> (p_<<TYPE1:L>>);[[ENDIF]]
 		INSERT INTO t_<<TYPE:L>> ([[LOOP,ATTRIBUTE]]
 			<<ATTRIBUTE:L>>[[IF:!LAST]],[[ENDIF]][[ENDLOOP,ATTRIBUTE]])
 		VALUES ([[LOOP,ATTRIBUTE]]
@@ -85,53 +88,52 @@ $BODY$;
 CREATE PROCEDURE <<TYPE(1)1:L>>.trg_update_<<TYPE1:L>> (p_cube_ctid TID, p_<<TYPE1:L>>_old <<TYPE(1)1:L>>.v_<<TYPE:L>>, p_<<TYPE1:L>>_new <<TYPE(1)1:L>>.v_<<TYPE:L>>)
 LANGUAGE plpgsql
 AS $BODY$[[IF:CHILD(ATTRIBUTE:CHILD(ATTRIBUTE_DERIVATION_SOURCE:0=DN[AND]CHILD(DERIVATION_TYPE:0=<<TYPE>>)[AND]CHILD(DERIVATION_TYPE_DESTINATION:0=<<TYPE>>)))]]
-	DECLARE
-[[* Nu nog even voor recursief childs dit ook doen voor alle child records intern en extern *]]
-		CURSOR c_<<TYPE1:L>> IS
-			SELECT ROWID cube_row_id, <<TYPE1:L>>.* FROM v_<<TYPE:L>> <<TYPE1:L>>
+	DECLARE[[* Nu nog even voor recursief childs dit ook doen voor alle child records intern en extern *]]
+		c_<<TYPE1:L>> CURSOR FOR
+			SELECT CTID cube_ctid, <<TYPE1:L>>.* FROM <<TYPE(1)1:L>>.v_<<TYPE:L>> <<TYPE1:L>>
 			WHERE [[LOOP,ATTRIBUTE:1=Y[AND]3=F]]<<ATTRIBUTE:L>> = p_<<TYPE1:L>>_old.<<ATTRIBUTE:L>>
 			  AND [[ENDLOOP,ATTRIBUTE]][[LOOP,ATTRIBUTE:3=R]]<<ATTRIBUTE:L>> = p_<<TYPE1:L>>_old.[[LOOP,ATTRIBUTE_SOURCE]]<<ATTRIBUTE_SOURCE:L>>[[ENDLOOP,ATTRIBUTE_SOURCE]][[IF:!LAST]]
 			  AND [[ENDIF]][[ENDLOOP,ATTRIBUTE]];
 		
-		l_<<TYPE1:L>>_rowid UROWID;
-		r_<<TYPE1:L>>_old v_<<TYPE:L>>%ROWTYPE;
-		r_<<TYPE1:L>>_new v_<<TYPE:L>>%ROWTYPE;[[ENDIF]]
+		l_<<TYPE1:L>>_ctid TID;
+		r_<<TYPE1:L>>_old <<TYPE(1)1:L>>.v_<<TYPE:L>>%ROWTYPE;
+		r_<<TYPE1:L>>_new <<TYPE(1)1:L>>.v_<<TYPE:L>>%ROWTYPE;[[ENDIF]]
 	BEGIN[[IF:CHILD(ATTRIBUTE:<<TEXT,VIEW_CHANGEABLE_ATTRIBUTE>>)]][[IF:CHILD(ATTRIBUTE:CHILD(DERIVATION:0=DN[AND]CHILD(DERIVATION_TYPE:0=<<TYPE>>)[AND]CHILD(DERIVATION_TYPE_DESTINATION:0=<<TYPE>>)))]]
 		IF [[LOOP,ATTRIBUTE:3=R]]NVL(p_<<TYPE1:L>>_old.<<ATTRIBUTE:L>>,<<TEXT,GEN_NULL_VALUE>>) <> NVL(p_<<TYPE1:L>>_new.<<ATTRIBUTE:L>>,<<TEXT,GEN_NULL_VALUE>>) [[IF:!LAST]]
 		OR [[ENDIF]][[ENDLOOP,ATTRIBUTE]] THEN
-			CALL get_denorm_<<TYPE1:L>>_<<TYPE1:L>> (p_<<TYPE1:L>>_new);
+			CALL trg_get_denorm_<<TYPE1:L>>_<<TYPE1:L>> (p_<<TYPE1:L>>_new);
 		END IF;[[ENDIF]]
 		UPDATE t_<<TYPE:L>> SET [[LOOP,ATTRIBUTE:<<TEXT,VIEW_CHANGEABLE_ATTRIBUTE>>]]
 			<<ATTRIBUTE:L>> = p_<<TYPE1:L>>_new.<<ATTRIBUTE:L>>[[IF:!LAST]],[[ENDIF]][[ENDLOOP,ATTRIBUTE]]
-		WHERE rowid = p_cube_ctid;[[ELSE]]
+		WHERE ctid = p_cube_ctid;[[ELSE]]
 		NULL;[[ENDIF]][[IF:CHILD(ATTRIBUTE:CHILD(ATTRIBUTE_DERIVATION_SOURCE:0=DN[AND]CHILD(DERIVATION_TYPE:0=<<TYPE>>)[AND]CHILD(DERIVATION_TYPE_DESTINATION:0=<<TYPE>>)))]]
 		IF [[LOOP,ATTRIBUTE:CHILD(ATTRIBUTE_DERIVATION_SOURCE:0=DN[AND]CHILD(DERIVATION_TYPE:0=<<TYPE>>)[AND]CHILD(DERIVATION_TYPE_DESTINATION:0=<<TYPE>>))]]NVL(p_<<TYPE1:L>>_old.<<ATTRIBUTE:L>>,<<TEXT,GEN_NULL_VALUE>>) <> NVL(p_<<TYPE1:L>>_new.<<ATTRIBUTE:L>>,<<TEXT,GEN_NULL_VALUE>>)[[IF:!LAST]]
 		OR [[ENDIF]][[ENDLOOP,ATTRIBUTE]] THEN
 			OPEN c_<<TYPE1:L>>;
 			LOOP
 				FETCH c_<<TYPE1:L>> INTO
-					l_<<TYPE1:L>>_rowid[[LOOP,ATTRIBUTE]],
+					l_<<TYPE1:L>>_ctid[[LOOP,ATTRIBUTE]],
 					r_<<TYPE1:L>>_old.<<ATTRIBUTE:L>>[[ENDLOOP,ATTRIBUTE]];
 				EXIT WHEN c_<<TYPE1:L>>%NOTFOUND;
 				r_<<TYPE1:L>>_new := r_<<TYPE1:L>>_old;
-				CALL denorm_<<TYPE1:L>>_<<TYPE1:L>> (r_<<TYPE1:L>>_new, p_<<TYPE1:L>>_new);
-				CALL update_<<TYPE1:L>> (l_<<TYPE1:L>>_rowid, r_<<TYPE1:L>>_old, r_<<TYPE1:L>>_new);
+				CALL trg_denorm_<<TYPE1:L>>_<<TYPE1:L>> (r_<<TYPE1:L>>_new, p_<<TYPE1:L>>_new);
+				CALL trg_update_<<TYPE1:L>> (l_<<TYPE1:L>>_ctid, r_<<TYPE1:L>>_old, r_<<TYPE1:L>>_new);
 			END LOOP;
 			CLOSE c_<<TYPE1:L>>;
 		END IF;[[ENDIF]]
 	END;
 $BODY$;
-/*
-CREATE PROCEDURE trg_delete_<<TYPE1:L>> (p_cube_rowid UROWID, p_<<TYPE1:L>> IN OUT NOCOPY v_<<TYPE:L>>%ROWTYPE)
+
+CREATE PROCEDURE <<TYPE(1)1:L>>.trg_delete_<<TYPE1:L>> (p_cube_ctid TID, p_<<TYPE1:L>> <<TYPE(1)1:L>>.v_<<TYPE:L>>)
 LANGUAGE plpgsql 
 AS $BODY$
 	BEGIN
-		DELETE t_<<TYPE:L>> 
-		WHERE rowid = p_cube_rowid;
+		DELETE FROM <<TYPE(1)1:L>>.t_<<TYPE:L>> 
+		WHERE ctid = p_cube_ctid;
 	END;
 $BODY$;[[IF:CHILD(ATTRIBUTE:CHILD(DERIVATION:0=DN[AND]CHILD(DERIVATION_TYPE:0=<<TYPE>>)[AND]CHILD(DERIVATION_TYPE_DESTINATION:0=<<TYPE>>)))]]
 [[* Nu nog even voor recursief parent dit ook doen voor alle parent records intern en extern *]]
-CREATE PROCEDURE denorm_<<TYPE1:L>>_<<TYPE1:L>> (p_<<TYPE1:L>> IN OUT NOCOPY v_<<TYPE:L>>%ROWTYPE, p_<<TYPE1:L>>_in IN v_<<TYPE:L>>%ROWTYPE)
+CREATE PROCEDURE <<TYPE(1)1:L>>.trg_denorm_<<TYPE1:L>>_<<TYPE1:L>> (p_<<TYPE1:L>> <<TYPE(1)1:L>>.v_<<TYPE:L>>, p_<<TYPE1:L>>_in <<TYPE(1)1:L>>.v_<<TYPE:L>>)
 LANGUAGE plpgsql 
 AS $BODY$
 	BEGIN[[LOOP,ATTRIBUTE:CHILD(DERIVATION:0=DN[AND]CHILD(DERIVATION_TYPE:0=<<TYPE>>)[AND]CHILD(DERIVATION_TYPE_DESTINATION:0=<<TYPE>>))]]
@@ -139,17 +141,17 @@ AS $BODY$
 	END;
 $BODY$;
 
-CREATE PROCEDURE trg_get_denorm_<<TYPE1:L>>_<<TYPE1:L>> (p_<<TYPE1:L>> IN OUT NOCOPY v_<<TYPE:L>>%ROWTYPE)
+CREATE PROCEDURE <<TYPE(1)1:L>>.trg_get_denorm_<<TYPE1:L>>_<<TYPE1:L>> (p_<<TYPE1:L>> <<TYPE(1)1:L>>.v_<<TYPE:L>>)
 LANGUAGE plpgsql 
 AS $BODY$
 	DECLARE
-		CURSOR c_<<TYPE1:L>> IS 
-			SELECT * FROM v_<<TYPE:L>>
+		c_<<TYPE1:L>> CURSOR FOR 
+			SELECT * FROM <<TYPE(1)1:L>>.v_<<TYPE:L>>
 			WHERE [[LOOP,ATTRIBUTE:1=Y[AND]3=F]]<<ATTRIBUTE:L>> = p_<<TYPE1:L>>.<<ATTRIBUTE:L>>
 			  AND [[ENDLOOP,ATTRIBUTE]][[LOOP,ATTRIBUTE:3=R]][[LOOP,ATTRIBUTE_SOURCE]]<<ATTRIBUTE_SOURCE:L>>[[ENDLOOP,ATTRIBUTE_SOURCE]] = p_<<TYPE1:L>>.<<ATTRIBUTE:L>>[[IF:!LAST]]
 			  AND [[ENDIF]][[ENDLOOP,ATTRIBUTE]];
 		
-		r_<<TYPE1:L>> v_<<TYPE:L>>%ROWTYPE;
+		r_<<TYPE1:L>> <<TYPE(1)1:L>>.v_<<TYPE:L>>%ROWTYPE;
 	BEGIN
 		IF [[LOOP,ATTRIBUTE:3=R]]p_<<TYPE1:L>>.<<ATTRIBUTE:L>> IS NOT NULL[[IF:!LAST]] AND [[ENDIF]][[ENDLOOP,ATTRIBUTE]] THEN
 			OPEN c_<<TYPE1:L>>;
@@ -161,52 +163,50 @@ AS $BODY$
 		ELSE
 			r_<<TYPE1:L>> := NULL;
 		END IF;
-		denorm_<<TYPE1:L>>_<<TYPE1:L>> (p_<<TYPE1:L>>, r_<<TYPE1:L>>);
+		CALL trg_denorm_<<TYPE1:L>>_<<TYPE1:L>> (p_<<TYPE1:L>>, r_<<TYPE1:L>>);
 	END;
-$BODY$;[[ENDIF]]
-*/
-[[REPEAT]][[ENDLOOP,TYPE]]
+$BODY$;[[ENDIF]][[REPEAT]][[ENDLOOP,TYPE]][[LOOP,TYPE]]
 
-/*
-[[LOOP,TYPE]]
-CREATE OR REPLACE TRIGGER trg_<<TYPE1:L>>
-INSTEAD OF INSERT OR DELETE OR UPDATE ON v_<<TYPE:L>>
+CREATE FUNCTION <<TYPE(1)1:L>>.trg_<<TYPE1:L>>() RETURNS trigger
+LANGUAGE plpgsql 
+AS $BODY$
+	DECLARE
+		l_cube_ctid TID;
+		r_<<TYPE1:L>>_new <<TYPE(1)1:L>>.v_<<TYPE:L>>%ROWTYPE;
+		r_<<TYPE1:L>>_old <<TYPE(1)1:L>>.v_<<TYPE:L>>%ROWTYPE;
+	BEGIN
+		IF INSERTING OR UPDATING THEN[[LOOP,ATTRIBUTE:!CHILD(DERIVATION:!0=SQ)]][[IF:CHILD(INFORMATION_TYPE_ELEMENT:2=TEXT[AND]7=N)]]
+			IF NEW.<<ATTRIBUTE:L>> = ' ' THEN
+				r_<<TYPE1:L>>_new.<<ATTRIBUTE:L>> := ' ';
+			ELSE
+				r_<<TYPE1:L>>_new.<<ATTRIBUTE:L>> := REPLACE(NEW.<<ATTRIBUTE:L>>,' ','_');
+			END IF;[[ELSE]]
+			r_<<TYPE1:L>>_new.<<ATTRIBUTE:L>> := NEW.<<ATTRIBUTE:L>>;[[ENDIF]][[ENDLOOP,ATTRIBUTE]]
+		END IF;[[IF:CHILD(ATTRIBUTE:CHILD(DERIVATION:!0=SQ))]][[* In case of a derivation the old value is taken by default *]]
+		IF UPDATING THEN[[LOOP,ATTRIBUTE:CHILD(DERIVATION:!0=SQ)]]
+			r_<<TYPE1:L>>_new.<<ATTRIBUTE:L>> := OLD.<<ATTRIBUTE:L>>;[[ENDLOOP,ATTRIBUTE]]
+		END IF;[[ENDIF]]
+		IF UPDATING OR DELETING THEN
+			SELECT ctid INTO l_cube_ctid FROM t_<<TYPE:L>>
+			WHERE [[LOOP,ATTRIBUTE:1=Y]]<<ATTRIBUTE:L>> = OLD.<<ATTRIBUTE:L>>[[IF:!LAST]]
+			AND [[ENDIF]][[ENDLOOP,ATTRIBUTE]];[[LOOP,ATTRIBUTE:!CHILD(DERIVATION:!0=SQ)]]
+			r_<<TYPE1:L>>_old.<<ATTRIBUTE:L>> := OLD.<<ATTRIBUTE:L>>;[[ENDLOOP,ATTRIBUTE]]
+		END IF;
+
+		IF INSERTING THEN 
+			CALL <<TYPE(1)1:L>>.trg_insert_<<TYPE1:L>> (r_<<TYPE1:L>>_new);
+		ELSIF UPDATING THEN
+			CALL <<TYPE(1)1:L>>.trg_update_<<TYPE1:L>> (l_cube_ctid, r_<<TYPE1:L>>_old, r_<<TYPE1:L>>_new);
+		ELSIF DELETING THEN
+			CALL <<TYPE(1)1:L>>.trg_delete_<<TYPE1:L>> (l_cube_ctid, r_<<TYPE1:L>>_old);
+		END IF;
+	END;
+$BODY$;
+
+CREATE TRIGGER trg_<<TYPE1:L>>
+INSTEAD OF INSERT OR DELETE OR UPDATE ON <<TYPE(1)1:L>>.v_<<TYPE:L>>
 FOR EACH ROW
-DECLARE
-	l_cube_rowid UROWID;
-	r_<<TYPE1:L>>_new v_<<TYPE:L>>%ROWTYPE;
-	r_<<TYPE1:L>>_old v_<<TYPE:L>>%ROWTYPE;
-BEGIN
-	IF INSERTING OR UPDATING THEN[[LOOP,ATTRIBUTE:!CHILD(DERIVATION:!0=SQ)]][[IF:CHILD(INFORMATION_TYPE_ELEMENT:2=TEXT[AND]7=N)]]
-		IF :NEW.<<ATTRIBUTE:L>> = ' ' THEN
-			r_<<TYPE1:L>>_new.<<ATTRIBUTE:L>> := ' ';
-		ELSE
-			r_<<TYPE1:L>>_new.<<ATTRIBUTE:L>> := REPLACE(:NEW.<<ATTRIBUTE:L>>,' ','_');
-		END IF;[[ELSE]]
-		r_<<TYPE1:L>>_new.<<ATTRIBUTE:L>> := :NEW.<<ATTRIBUTE:L>>;[[ENDIF]][[ENDLOOP,ATTRIBUTE]]
-	END IF;[[IF:CHILD(ATTRIBUTE:CHILD(DERIVATION:!0=SQ))]][[* In case of a derivation the old value is taken by default *]]
-	IF UPDATING THEN[[LOOP,ATTRIBUTE:CHILD(DERIVATION:!0=SQ)]]
-		r_<<TYPE1:L>>_new.<<ATTRIBUTE:L>> := :OLD.<<ATTRIBUTE:L>>;[[ENDLOOP,ATTRIBUTE]]
-	END IF;[[ENDIF]]
-	IF UPDATING OR DELETING THEN
-		SELECT rowid INTO l_cube_rowid FROM t_<<TYPE:L>>
-		WHERE [[LOOP,ATTRIBUTE:1=Y]]<<ATTRIBUTE:L>> = :OLD.<<ATTRIBUTE:L>>[[IF:!LAST]]
-		  AND [[ENDIF]][[ENDLOOP,ATTRIBUTE]];[[LOOP,ATTRIBUTE:!CHILD(DERIVATION:!0=SQ)]]
-		r_<<TYPE1:L>>_old.<<ATTRIBUTE:L>> := :OLD.<<ATTRIBUTE:L>>;[[ENDLOOP,ATTRIBUTE]]
-	END IF;
-
-	IF INSERTING THEN 
-		pkg_<<TYPE(1)1:L>>_trg.insert_<<TYPE1:L>> (r_<<TYPE1:L>>_new);
-	ELSIF UPDATING THEN
-		pkg_<<TYPE(1)1:L>>_trg.update_<<TYPE1:L>> (l_cube_rowid, r_<<TYPE1:L>>_old, r_<<TYPE1:L>>_new);
-	ELSIF DELETING THEN
-		pkg_<<TYPE(1)1:L>>_trg.delete_<<TYPE1:L>> (l_cube_rowid, r_<<TYPE1:L>>_old);
-	END IF;
-END;
-/
-SHOW ERRORS
-[[REPEAT]][[ENDLOOP,TYPE]]
-*/[[ENDLOOP,BUSINESS_OBJECT_TYPE]][[ENDLOOP,SYSTEM_BO_TYPE]][[ENDLOOP,SYSTEM]]
+EXECUTE PROCEDURE <<TYPE(1)1:L>>.trg_<<TYPE1:L>>();[[REPEAT]][[ENDLOOP,TYPE]][[ENDLOOP,BUSINESS_OBJECT_TYPE]][[ENDLOOP,SYSTEM_BO_TYPE]][[ENDLOOP,SYSTEM]]
 
 \q
 [[ENDBODY]]

@@ -6,52 +6,12 @@ DO $BODY$
 		rec_proc RECORD;
 	BEGIN
 
-		FOR rec_proc IN
-			SELECT proname
-			FROM pg_catalog.pg_proc, pg_catalog.pg_namespace
-			WHERE pronamespace = pg_namespace.oid			
-			  AND nspname = 'itp'
-			  AND proname LIKE 'trg_%'
-		LOOP
-			EXECUTE 'DROP PROCEDURE itp.' || rec_proc.proname;
-		END LOOP;
-
-		FOR rec_proc IN
-			SELECT proname
-			FROM pg_catalog.pg_proc, pg_catalog.pg_namespace
-			WHERE pronamespace = pg_namespace.oid			
-			  AND nspname = 'bot'
-			  AND proname LIKE 'trg_%'
-		LOOP
-			EXECUTE 'DROP PROCEDURE bot.' || rec_proc.proname;
-		END LOOP;
-
-		FOR rec_proc IN
-			SELECT proname
-			FROM pg_catalog.pg_proc, pg_catalog.pg_namespace
-			WHERE pronamespace = pg_namespace.oid			
-			  AND nspname = 'sys'
-			  AND proname LIKE 'trg_%'
-		LOOP
-			EXECUTE 'DROP PROCEDURE sys.' || rec_proc.proname;
-		END LOOP;
-
-		FOR rec_proc IN
-			SELECT proname
-			FROM pg_catalog.pg_proc, pg_catalog.pg_namespace
-			WHERE pronamespace = pg_namespace.oid			
-			  AND nspname = 'fun'
-			  AND proname LIKE 'trg_%'
-		LOOP
-			EXECUTE 'DROP PROCEDURE fun.' || rec_proc.proname;
-		END LOOP;
-
 		FOR rec_view IN 
 			SELECT viewname 
 			FROM pg_catalog.pg_views
 			WHERE schemaname = 'itp'
 		LOOP
-			EXECUTE 'DROP VIEW itp.' || rec_view.viewname;
+			EXECUTE 'DROP VIEW itp.' || rec_view.viewname || ' CASCADE';
 		END LOOP;
 
 		FOR rec_view IN 
@@ -59,7 +19,7 @@ DO $BODY$
 			FROM pg_catalog.pg_views
 			WHERE schemaname = 'bot'
 		LOOP
-			EXECUTE 'DROP VIEW bot.' || rec_view.viewname;
+			EXECUTE 'DROP VIEW bot.' || rec_view.viewname || ' CASCADE';
 		END LOOP;
 
 		FOR rec_view IN 
@@ -67,7 +27,7 @@ DO $BODY$
 			FROM pg_catalog.pg_views
 			WHERE schemaname = 'sys'
 		LOOP
-			EXECUTE 'DROP VIEW sys.' || rec_view.viewname;
+			EXECUTE 'DROP VIEW sys.' || rec_view.viewname || ' CASCADE';
 		END LOOP;
 
 		FOR rec_view IN 
@@ -75,7 +35,59 @@ DO $BODY$
 			FROM pg_catalog.pg_views
 			WHERE schemaname = 'fun'
 		LOOP
-			EXECUTE 'DROP VIEW fun.' || rec_view.viewname;
+			EXECUTE 'DROP VIEW fun.' || rec_view.viewname || ' CASCADE';
+		END LOOP;
+
+		FOR rec_proc IN
+			SELECT proname, prokind
+			FROM pg_catalog.pg_proc, pg_catalog.pg_namespace
+			WHERE pronamespace = pg_namespace.oid			
+			  AND nspname = 'itp'
+			  AND proname LIKE 'trg_%'
+		LOOP
+			CASE rec_proc.prokind
+			WHEN 'p' THEN EXECUTE 'DROP PROCEDURE itp.' || rec_proc.proname;
+			WHEN 'f' THEN EXECUTE 'DROP FUNCTION itp.' || rec_proc.proname;
+			END CASE;
+		END LOOP;
+
+		FOR rec_proc IN
+			SELECT proname, prokind
+			FROM pg_catalog.pg_proc, pg_catalog.pg_namespace
+			WHERE pronamespace = pg_namespace.oid			
+			  AND nspname = 'bot'
+			  AND proname LIKE 'trg_%'
+		LOOP
+			CASE rec_proc.prokind
+			WHEN 'p' THEN EXECUTE 'DROP PROCEDURE bot.' || rec_proc.proname;
+			WHEN 'f' THEN EXECUTE 'DROP FUNCTION bot.' || rec_proc.proname;
+			END CASE;
+		END LOOP;
+
+		FOR rec_proc IN
+			SELECT proname, prokind
+			FROM pg_catalog.pg_proc, pg_catalog.pg_namespace
+			WHERE pronamespace = pg_namespace.oid			
+			  AND nspname = 'sys'
+			  AND proname LIKE 'trg_%'
+		LOOP
+			CASE rec_proc.prokind
+			WHEN 'p' THEN EXECUTE 'DROP PROCEDURE sys.' || rec_proc.proname;
+			WHEN 'f' THEN EXECUTE 'DROP FUNCTION sys.' || rec_proc.proname;
+			END CASE;
+		END LOOP;
+
+		FOR rec_proc IN
+			SELECT proname, prokind
+			FROM pg_catalog.pg_proc, pg_catalog.pg_namespace
+			WHERE pronamespace = pg_namespace.oid			
+			  AND nspname = 'fun'
+			  AND proname LIKE 'trg_%'
+		LOOP
+			CASE rec_proc.prokind
+			WHEN 'p' THEN EXECUTE 'DROP PROCEDURE fun.' || rec_proc.proname;
+			WHEN 'f' THEN EXECUTE 'DROP FUNCTION fun.' || rec_proc.proname;
+			END CASE;
 		END LOOP;
 	END;
 $BODY$;
@@ -136,17 +148,15 @@ AS $BODY$
 		NULL;
 	END;
 $BODY$;
-/*
-CREATE PROCEDURE trg_delete_itp (p_cube_rowid UROWID, p_itp IN OUT NOCOPY v_information_type%ROWTYPE)
+
+CREATE PROCEDURE itp.trg_delete_itp (p_cube_ctid TID, p_itp itp.v_information_type)
 LANGUAGE plpgsql 
 AS $BODY$
 	BEGIN
-		DELETE t_information_type 
-		WHERE rowid = p_cube_rowid;
+		DELETE FROM itp.t_information_type 
+		WHERE ctid = p_cube_ctid;
 	END;
 $BODY$;
-*/
-
 
 CREATE PROCEDURE itp.trg_insert_ite (p_ite itp.v_information_type_element)
 LANGUAGE plpgsql 
@@ -195,20 +205,18 @@ AS $BODY$
 			default_value = p_ite_new.default_value,
 			spaces_allowed = p_ite_new.spaces_allowed,
 			presentation = p_ite_new.presentation
-		WHERE rowid = p_cube_ctid;
+		WHERE ctid = p_cube_ctid;
 	END;
 $BODY$;
-/*
-CREATE PROCEDURE trg_delete_ite (p_cube_rowid UROWID, p_ite IN OUT NOCOPY v_information_type_element%ROWTYPE)
+
+CREATE PROCEDURE itp.trg_delete_ite (p_cube_ctid TID, p_ite itp.v_information_type_element)
 LANGUAGE plpgsql 
 AS $BODY$
 	BEGIN
-		DELETE t_information_type_element 
-		WHERE rowid = p_cube_rowid;
+		DELETE FROM itp.t_information_type_element 
+		WHERE ctid = p_cube_ctid;
 	END;
 $BODY$;
-*/
-
 
 CREATE PROCEDURE itp.trg_insert_val (p_val itp.v_permitted_value)
 LANGUAGE plpgsql 
@@ -242,174 +250,180 @@ AS $BODY$
 		UPDATE t_permitted_value SET 
 			cube_sequence = p_val_new.cube_sequence,
 			prompt = p_val_new.prompt
-		WHERE rowid = p_cube_ctid;
+		WHERE ctid = p_cube_ctid;
 	END;
 $BODY$;
-/*
-CREATE PROCEDURE trg_delete_val (p_cube_rowid UROWID, p_val IN OUT NOCOPY v_permitted_value%ROWTYPE)
+
+CREATE PROCEDURE itp.trg_delete_val (p_cube_ctid TID, p_val itp.v_permitted_value)
 LANGUAGE plpgsql 
 AS $BODY$
 	BEGIN
-		DELETE t_permitted_value 
-		WHERE rowid = p_cube_rowid;
+		DELETE FROM itp.t_permitted_value 
+		WHERE ctid = p_cube_ctid;
 	END;
 $BODY$;
-*/
 
+CREATE FUNCTION itp.trg_itp() RETURNS trigger
+LANGUAGE plpgsql 
+AS $BODY$
+	DECLARE
+		l_cube_ctid TID;
+		r_itp_new itp.v_information_type%ROWTYPE;
+		r_itp_old itp.v_information_type%ROWTYPE;
+	BEGIN
+		IF INSERTING OR UPDATING THEN
+			IF NEW.name = ' ' THEN
+				r_itp_new.name := ' ';
+			ELSE
+				r_itp_new.name := REPLACE(NEW.name,' ','_');
+			END IF;
+		END IF;
+		IF UPDATING THEN
+			r_itp_new.cube_id := OLD.cube_id;
+		END IF;
+		IF UPDATING OR DELETING THEN
+			SELECT ctid INTO l_cube_ctid FROM t_information_type
+			WHERE name = OLD.name;
+			r_itp_old.name := OLD.name;
+		END IF;
 
-/*
+		IF INSERTING THEN 
+			CALL itp.trg_insert_itp (r_itp_new);
+		ELSIF UPDATING THEN
+			CALL itp.trg_update_itp (l_cube_ctid, r_itp_old, r_itp_new);
+		ELSIF DELETING THEN
+			CALL itp.trg_delete_itp (l_cube_ctid, r_itp_old);
+		END IF;
+	END;
+$BODY$;
 
-CREATE OR REPLACE TRIGGER trg_itp
-INSTEAD OF INSERT OR DELETE OR UPDATE ON v_information_type
+CREATE TRIGGER trg_itp
+INSTEAD OF INSERT OR DELETE OR UPDATE ON itp.v_information_type
 FOR EACH ROW
-DECLARE
-	l_cube_rowid UROWID;
-	r_itp_new v_information_type%ROWTYPE;
-	r_itp_old v_information_type%ROWTYPE;
-BEGIN
-	IF INSERTING OR UPDATING THEN
-		IF :NEW.name = ' ' THEN
-			r_itp_new.name := ' ';
-		ELSE
-			r_itp_new.name := REPLACE(:NEW.name,' ','_');
+EXECUTE PROCEDURE itp.trg_itp();
+
+CREATE FUNCTION itp.trg_ite() RETURNS trigger
+LANGUAGE plpgsql 
+AS $BODY$
+	DECLARE
+		l_cube_ctid TID;
+		r_ite_new itp.v_information_type_element%ROWTYPE;
+		r_ite_old itp.v_information_type_element%ROWTYPE;
+	BEGIN
+		IF INSERTING OR UPDATING THEN
+			IF NEW.fk_itp_name = ' ' THEN
+				r_ite_new.fk_itp_name := ' ';
+			ELSE
+				r_ite_new.fk_itp_name := REPLACE(NEW.fk_itp_name,' ','_');
+			END IF;
+			r_ite_new.sequence := NEW.sequence;
+			IF NEW.suffix = ' ' THEN
+				r_ite_new.suffix := ' ';
+			ELSE
+				r_ite_new.suffix := REPLACE(NEW.suffix,' ','_');
+			END IF;
+			IF NEW.domain = ' ' THEN
+				r_ite_new.domain := ' ';
+			ELSE
+				r_ite_new.domain := REPLACE(NEW.domain,' ','_');
+			END IF;
+			r_ite_new.length := NEW.length;
+			r_ite_new.decimals := NEW.decimals;
+			r_ite_new.case_sensitive := NEW.case_sensitive;
+			r_ite_new.default_value := NEW.default_value;
+			r_ite_new.spaces_allowed := NEW.spaces_allowed;
+			IF NEW.presentation = ' ' THEN
+				r_ite_new.presentation := ' ';
+			ELSE
+				r_ite_new.presentation := REPLACE(NEW.presentation,' ','_');
+			END IF;
 		END IF;
-	END IF;
-	IF UPDATING THEN
-		r_itp_new.cube_id := :OLD.cube_id;
-	END IF;
-	IF UPDATING OR DELETING THEN
-		SELECT rowid INTO l_cube_rowid FROM t_information_type
-		WHERE name = :OLD.name;
-		r_itp_old.name := :OLD.name;
-	END IF;
+		IF UPDATING THEN
+			r_ite_new.cube_id := OLD.cube_id;
+		END IF;
+		IF UPDATING OR DELETING THEN
+			SELECT ctid INTO l_cube_ctid FROM t_information_type_element
+			WHERE fk_itp_name = OLD.fk_itp_name
+			AND sequence = OLD.sequence;
+			r_ite_old.fk_itp_name := OLD.fk_itp_name;
+			r_ite_old.sequence := OLD.sequence;
+			r_ite_old.suffix := OLD.suffix;
+			r_ite_old.domain := OLD.domain;
+			r_ite_old.length := OLD.length;
+			r_ite_old.decimals := OLD.decimals;
+			r_ite_old.case_sensitive := OLD.case_sensitive;
+			r_ite_old.default_value := OLD.default_value;
+			r_ite_old.spaces_allowed := OLD.spaces_allowed;
+			r_ite_old.presentation := OLD.presentation;
+		END IF;
 
-	IF INSERTING THEN 
-		pkg_itp_trg.insert_itp (r_itp_new);
-	ELSIF UPDATING THEN
-		pkg_itp_trg.update_itp (l_cube_rowid, r_itp_old, r_itp_new);
-	ELSIF DELETING THEN
-		pkg_itp_trg.delete_itp (l_cube_rowid, r_itp_old);
-	END IF;
-END;
-/
-SHOW ERRORS
+		IF INSERTING THEN 
+			CALL itp.trg_insert_ite (r_ite_new);
+		ELSIF UPDATING THEN
+			CALL itp.trg_update_ite (l_cube_ctid, r_ite_old, r_ite_new);
+		ELSIF DELETING THEN
+			CALL itp.trg_delete_ite (l_cube_ctid, r_ite_old);
+		END IF;
+	END;
+$BODY$;
 
-CREATE OR REPLACE TRIGGER trg_ite
-INSTEAD OF INSERT OR DELETE OR UPDATE ON v_information_type_element
+CREATE TRIGGER trg_ite
+INSTEAD OF INSERT OR DELETE OR UPDATE ON itp.v_information_type_element
 FOR EACH ROW
-DECLARE
-	l_cube_rowid UROWID;
-	r_ite_new v_information_type_element%ROWTYPE;
-	r_ite_old v_information_type_element%ROWTYPE;
-BEGIN
-	IF INSERTING OR UPDATING THEN
-		IF :NEW.fk_itp_name = ' ' THEN
-			r_ite_new.fk_itp_name := ' ';
-		ELSE
-			r_ite_new.fk_itp_name := REPLACE(:NEW.fk_itp_name,' ','_');
-		END IF;
-		r_ite_new.sequence := :NEW.sequence;
-		IF :NEW.suffix = ' ' THEN
-			r_ite_new.suffix := ' ';
-		ELSE
-			r_ite_new.suffix := REPLACE(:NEW.suffix,' ','_');
-		END IF;
-		IF :NEW.domain = ' ' THEN
-			r_ite_new.domain := ' ';
-		ELSE
-			r_ite_new.domain := REPLACE(:NEW.domain,' ','_');
-		END IF;
-		r_ite_new.length := :NEW.length;
-		r_ite_new.decimals := :NEW.decimals;
-		r_ite_new.case_sensitive := :NEW.case_sensitive;
-		r_ite_new.default_value := :NEW.default_value;
-		r_ite_new.spaces_allowed := :NEW.spaces_allowed;
-		IF :NEW.presentation = ' ' THEN
-			r_ite_new.presentation := ' ';
-		ELSE
-			r_ite_new.presentation := REPLACE(:NEW.presentation,' ','_');
-		END IF;
-	END IF;
-	IF UPDATING THEN
-		r_ite_new.cube_id := :OLD.cube_id;
-	END IF;
-	IF UPDATING OR DELETING THEN
-		SELECT rowid INTO l_cube_rowid FROM t_information_type_element
-		WHERE fk_itp_name = :OLD.fk_itp_name
-		  AND sequence = :OLD.sequence;
-		r_ite_old.fk_itp_name := :OLD.fk_itp_name;
-		r_ite_old.sequence := :OLD.sequence;
-		r_ite_old.suffix := :OLD.suffix;
-		r_ite_old.domain := :OLD.domain;
-		r_ite_old.length := :OLD.length;
-		r_ite_old.decimals := :OLD.decimals;
-		r_ite_old.case_sensitive := :OLD.case_sensitive;
-		r_ite_old.default_value := :OLD.default_value;
-		r_ite_old.spaces_allowed := :OLD.spaces_allowed;
-		r_ite_old.presentation := :OLD.presentation;
-	END IF;
+EXECUTE PROCEDURE itp.trg_ite();
 
-	IF INSERTING THEN 
-		pkg_itp_trg.insert_ite (r_ite_new);
-	ELSIF UPDATING THEN
-		pkg_itp_trg.update_ite (l_cube_rowid, r_ite_old, r_ite_new);
-	ELSIF DELETING THEN
-		pkg_itp_trg.delete_ite (l_cube_rowid, r_ite_old);
-	END IF;
-END;
-/
-SHOW ERRORS
+CREATE FUNCTION itp.trg_val() RETURNS trigger
+LANGUAGE plpgsql 
+AS $BODY$
+	DECLARE
+		l_cube_ctid TID;
+		r_val_new itp.v_permitted_value%ROWTYPE;
+		r_val_old itp.v_permitted_value%ROWTYPE;
+	BEGIN
+		IF INSERTING OR UPDATING THEN
+			r_val_new.cube_sequence := NEW.cube_sequence;
+			IF NEW.fk_itp_name = ' ' THEN
+				r_val_new.fk_itp_name := ' ';
+			ELSE
+				r_val_new.fk_itp_name := REPLACE(NEW.fk_itp_name,' ','_');
+			END IF;
+			r_val_new.fk_ite_sequence := NEW.fk_ite_sequence;
+			IF NEW.code = ' ' THEN
+				r_val_new.code := ' ';
+			ELSE
+				r_val_new.code := REPLACE(NEW.code,' ','_');
+			END IF;
+			r_val_new.prompt := NEW.prompt;
+		END IF;
+		IF UPDATING THEN
+			r_val_new.cube_id := OLD.cube_id;
+		END IF;
+		IF UPDATING OR DELETING THEN
+			SELECT ctid INTO l_cube_ctid FROM t_permitted_value
+			WHERE fk_itp_name = OLD.fk_itp_name
+			AND fk_ite_sequence = OLD.fk_ite_sequence
+			AND code = OLD.code;
+			r_val_old.cube_sequence := OLD.cube_sequence;
+			r_val_old.fk_itp_name := OLD.fk_itp_name;
+			r_val_old.fk_ite_sequence := OLD.fk_ite_sequence;
+			r_val_old.code := OLD.code;
+			r_val_old.prompt := OLD.prompt;
+		END IF;
 
-CREATE OR REPLACE TRIGGER trg_val
-INSTEAD OF INSERT OR DELETE OR UPDATE ON v_permitted_value
+		IF INSERTING THEN 
+			CALL itp.trg_insert_val (r_val_new);
+		ELSIF UPDATING THEN
+			CALL itp.trg_update_val (l_cube_ctid, r_val_old, r_val_new);
+		ELSIF DELETING THEN
+			CALL itp.trg_delete_val (l_cube_ctid, r_val_old);
+		END IF;
+	END;
+$BODY$;
+
+CREATE TRIGGER trg_val
+INSTEAD OF INSERT OR DELETE OR UPDATE ON itp.v_permitted_value
 FOR EACH ROW
-DECLARE
-	l_cube_rowid UROWID;
-	r_val_new v_permitted_value%ROWTYPE;
-	r_val_old v_permitted_value%ROWTYPE;
-BEGIN
-	IF INSERTING OR UPDATING THEN
-		r_val_new.cube_sequence := :NEW.cube_sequence;
-		IF :NEW.fk_itp_name = ' ' THEN
-			r_val_new.fk_itp_name := ' ';
-		ELSE
-			r_val_new.fk_itp_name := REPLACE(:NEW.fk_itp_name,' ','_');
-		END IF;
-		r_val_new.fk_ite_sequence := :NEW.fk_ite_sequence;
-		IF :NEW.code = ' ' THEN
-			r_val_new.code := ' ';
-		ELSE
-			r_val_new.code := REPLACE(:NEW.code,' ','_');
-		END IF;
-		r_val_new.prompt := :NEW.prompt;
-	END IF;
-	IF UPDATING THEN
-		r_val_new.cube_id := :OLD.cube_id;
-	END IF;
-	IF UPDATING OR DELETING THEN
-		SELECT rowid INTO l_cube_rowid FROM t_permitted_value
-		WHERE fk_itp_name = :OLD.fk_itp_name
-		  AND fk_ite_sequence = :OLD.fk_ite_sequence
-		  AND code = :OLD.code;
-		r_val_old.cube_sequence := :OLD.cube_sequence;
-		r_val_old.fk_itp_name := :OLD.fk_itp_name;
-		r_val_old.fk_ite_sequence := :OLD.fk_ite_sequence;
-		r_val_old.code := :OLD.code;
-		r_val_old.prompt := :OLD.prompt;
-	END IF;
-
-	IF INSERTING THEN 
-		pkg_itp_trg.insert_val (r_val_new);
-	ELSIF UPDATING THEN
-		pkg_itp_trg.update_val (l_cube_rowid, r_val_old, r_val_new);
-	ELSIF DELETING THEN
-		pkg_itp_trg.delete_val (l_cube_rowid, r_val_old);
-	END IF;
-END;
-/
-SHOW ERRORS
-
-*/
+EXECUTE PROCEDURE itp.trg_val();
 
 CREATE VIEW bot.v_business_object_type AS 
 	SELECT
@@ -661,20 +675,18 @@ AS $BODY$
 			cube_sequence = p_bot_new.cube_sequence,
 			directory = p_bot_new.directory,
 			api_url = p_bot_new.api_url
-		WHERE rowid = p_cube_ctid;
+		WHERE ctid = p_cube_ctid;
 	END;
 $BODY$;
-/*
-CREATE PROCEDURE trg_delete_bot (p_cube_rowid UROWID, p_bot IN OUT NOCOPY v_business_object_type%ROWTYPE)
+
+CREATE PROCEDURE bot.trg_delete_bot (p_cube_ctid TID, p_bot bot.v_business_object_type)
 LANGUAGE plpgsql 
 AS $BODY$
 	BEGIN
-		DELETE t_business_object_type 
-		WHERE rowid = p_cube_rowid;
+		DELETE FROM bot.t_business_object_type 
+		WHERE ctid = p_cube_ctid;
 	END;
 $BODY$;
-*/
-
 
 CREATE PROCEDURE bot.trg_insert_typ (p_typ bot.v_type)
 LANGUAGE plpgsql 
@@ -691,7 +703,7 @@ AS $BODY$
 			WHERE fk_bot_name = p_typ.fk_bot_name
 			  AND name = p_typ.fk_typ_name;
 		END IF;
-		CALL get_denorm_typ_typ (p_typ);
+		CALL trg_get_denorm_typ_typ (p_typ);
 		INSERT INTO t_type (
 			cube_id,
 			cube_sequence,
@@ -729,17 +741,16 @@ CREATE PROCEDURE bot.trg_update_typ (p_cube_ctid TID, p_typ_old bot.v_type, p_ty
 LANGUAGE plpgsql
 AS $BODY$
 	DECLARE
-
-		CURSOR c_typ IS
-			SELECT ROWID cube_row_id, typ.* FROM v_type typ
+		c_typ CURSOR FOR
+			SELECT CTID cube_ctid, typ.* FROM bot.v_type typ
 			WHERE fk_typ_name = p_typ_old.name;
 		
-		l_typ_rowid UROWID;
-		r_typ_old v_type%ROWTYPE;
-		r_typ_new v_type%ROWTYPE;
+		l_typ_ctid TID;
+		r_typ_old bot.v_type%ROWTYPE;
+		r_typ_new bot.v_type%ROWTYPE;
 	BEGIN
 		IF NVL(p_typ_old.fk_typ_name,' ') <> NVL(p_typ_new.fk_typ_name,' ')  THEN
-			CALL get_denorm_typ_typ (p_typ_new);
+			CALL trg_get_denorm_typ_typ (p_typ_new);
 		END IF;
 		UPDATE t_type SET 
 			cube_sequence = p_typ_new.cube_sequence,
@@ -753,12 +764,12 @@ AS $BODY$
 			sort_order = p_typ_new.sort_order,
 			icon = p_typ_new.icon,
 			transferable = p_typ_new.transferable
-		WHERE rowid = p_cube_ctid;
+		WHERE ctid = p_cube_ctid;
 		IF NVL(p_typ_old.cube_level,0) <> NVL(p_typ_new.cube_level,0) THEN
 			OPEN c_typ;
 			LOOP
 				FETCH c_typ INTO
-					l_typ_rowid,
+					l_typ_ctid,
 					r_typ_old.cube_id,
 					r_typ_old.cube_sequence,
 					r_typ_old.cube_level,
@@ -775,24 +786,24 @@ AS $BODY$
 					r_typ_old.transferable;
 				EXIT WHEN c_typ%NOTFOUND;
 				r_typ_new := r_typ_old;
-				CALL denorm_typ_typ (r_typ_new, p_typ_new);
-				CALL update_typ (l_typ_rowid, r_typ_old, r_typ_new);
+				CALL trg_denorm_typ_typ (r_typ_new, p_typ_new);
+				CALL trg_update_typ (l_typ_ctid, r_typ_old, r_typ_new);
 			END LOOP;
 			CLOSE c_typ;
 		END IF;
 	END;
 $BODY$;
-/*
-CREATE PROCEDURE trg_delete_typ (p_cube_rowid UROWID, p_typ IN OUT NOCOPY v_type%ROWTYPE)
+
+CREATE PROCEDURE bot.trg_delete_typ (p_cube_ctid TID, p_typ bot.v_type)
 LANGUAGE plpgsql 
 AS $BODY$
 	BEGIN
-		DELETE t_type 
-		WHERE rowid = p_cube_rowid;
+		DELETE FROM bot.t_type 
+		WHERE ctid = p_cube_ctid;
 	END;
 $BODY$;
 
-CREATE PROCEDURE denorm_typ_typ (p_typ IN OUT NOCOPY v_type%ROWTYPE, p_typ_in IN v_type%ROWTYPE)
+CREATE PROCEDURE bot.trg_denorm_typ_typ (p_typ bot.v_type, p_typ_in bot.v_type)
 LANGUAGE plpgsql 
 AS $BODY$
 	BEGIN
@@ -800,15 +811,15 @@ AS $BODY$
 	END;
 $BODY$;
 
-CREATE PROCEDURE trg_get_denorm_typ_typ (p_typ IN OUT NOCOPY v_type%ROWTYPE)
+CREATE PROCEDURE bot.trg_get_denorm_typ_typ (p_typ bot.v_type)
 LANGUAGE plpgsql 
 AS $BODY$
 	DECLARE
-		CURSOR c_typ IS 
-			SELECT * FROM v_type
+		c_typ CURSOR FOR 
+			SELECT * FROM bot.v_type
 			WHERE name = p_typ.fk_typ_name;
 		
-		r_typ v_type%ROWTYPE;
+		r_typ bot.v_type%ROWTYPE;
 	BEGIN
 		IF p_typ.fk_typ_name IS NOT NULL THEN
 			OPEN c_typ;
@@ -820,11 +831,9 @@ AS $BODY$
 		ELSE
 			r_typ := NULL;
 		END IF;
-		denorm_typ_typ (p_typ, r_typ);
+		CALL trg_denorm_typ_typ (p_typ, r_typ);
 	END;
 $BODY$;
-*/
-
 
 CREATE PROCEDURE bot.trg_insert_tsg (p_tsg bot.v_type_specialisation_group)
 LANGUAGE plpgsql 
@@ -851,7 +860,7 @@ AS $BODY$
 			WHERE name = p_tsg.fk_typ_name;
 			
 		END IF;
-		CALL get_denorm_tsg_tsg (p_tsg);
+		CALL trg_get_denorm_tsg_tsg (p_tsg);
 		INSERT INTO t_type_specialisation_group (
 			cube_id,
 			cube_sequence,
@@ -883,18 +892,17 @@ CREATE PROCEDURE bot.trg_update_tsg (p_cube_ctid TID, p_tsg_old bot.v_type_speci
 LANGUAGE plpgsql
 AS $BODY$
 	DECLARE
-
-		CURSOR c_tsg IS
-			SELECT ROWID cube_row_id, tsg.* FROM v_type_specialisation_group tsg
+		c_tsg CURSOR FOR
+			SELECT CTID cube_ctid, tsg.* FROM bot.v_type_specialisation_group tsg
 			WHERE fk_typ_name = p_tsg_old.fk_typ_name
 			  AND fk_tsg_code = p_tsg_old.code;
 		
-		l_tsg_rowid UROWID;
-		r_tsg_old v_type_specialisation_group%ROWTYPE;
-		r_tsg_new v_type_specialisation_group%ROWTYPE;
+		l_tsg_ctid TID;
+		r_tsg_old bot.v_type_specialisation_group%ROWTYPE;
+		r_tsg_new bot.v_type_specialisation_group%ROWTYPE;
 	BEGIN
 		IF NVL(p_tsg_old.fk_tsg_code,' ') <> NVL(p_tsg_new.fk_tsg_code,' ')  THEN
-			CALL get_denorm_tsg_tsg (p_tsg_new);
+			CALL trg_get_denorm_tsg_tsg (p_tsg_new);
 		END IF;
 		UPDATE t_type_specialisation_group SET 
 			cube_sequence = p_tsg_new.cube_sequence,
@@ -904,12 +912,12 @@ AS $BODY$
 			primary_key = p_tsg_new.primary_key,
 			xf_atb_typ_name = p_tsg_new.xf_atb_typ_name,
 			xk_atb_name = p_tsg_new.xk_atb_name
-		WHERE rowid = p_cube_ctid;
+		WHERE ctid = p_cube_ctid;
 		IF NVL(p_tsg_old.cube_level,0) <> NVL(p_tsg_new.cube_level,0) THEN
 			OPEN c_tsg;
 			LOOP
 				FETCH c_tsg INTO
-					l_tsg_rowid,
+					l_tsg_ctid,
 					r_tsg_old.cube_id,
 					r_tsg_old.cube_sequence,
 					r_tsg_old.cube_level,
@@ -923,24 +931,24 @@ AS $BODY$
 					r_tsg_old.xk_atb_name;
 				EXIT WHEN c_tsg%NOTFOUND;
 				r_tsg_new := r_tsg_old;
-				CALL denorm_tsg_tsg (r_tsg_new, p_tsg_new);
-				CALL update_tsg (l_tsg_rowid, r_tsg_old, r_tsg_new);
+				CALL trg_denorm_tsg_tsg (r_tsg_new, p_tsg_new);
+				CALL trg_update_tsg (l_tsg_ctid, r_tsg_old, r_tsg_new);
 			END LOOP;
 			CLOSE c_tsg;
 		END IF;
 	END;
 $BODY$;
-/*
-CREATE PROCEDURE trg_delete_tsg (p_cube_rowid UROWID, p_tsg IN OUT NOCOPY v_type_specialisation_group%ROWTYPE)
+
+CREATE PROCEDURE bot.trg_delete_tsg (p_cube_ctid TID, p_tsg bot.v_type_specialisation_group)
 LANGUAGE plpgsql 
 AS $BODY$
 	BEGIN
-		DELETE t_type_specialisation_group 
-		WHERE rowid = p_cube_rowid;
+		DELETE FROM bot.t_type_specialisation_group 
+		WHERE ctid = p_cube_ctid;
 	END;
 $BODY$;
 
-CREATE PROCEDURE denorm_tsg_tsg (p_tsg IN OUT NOCOPY v_type_specialisation_group%ROWTYPE, p_tsg_in IN v_type_specialisation_group%ROWTYPE)
+CREATE PROCEDURE bot.trg_denorm_tsg_tsg (p_tsg bot.v_type_specialisation_group, p_tsg_in bot.v_type_specialisation_group)
 LANGUAGE plpgsql 
 AS $BODY$
 	BEGIN
@@ -948,16 +956,16 @@ AS $BODY$
 	END;
 $BODY$;
 
-CREATE PROCEDURE trg_get_denorm_tsg_tsg (p_tsg IN OUT NOCOPY v_type_specialisation_group%ROWTYPE)
+CREATE PROCEDURE bot.trg_get_denorm_tsg_tsg (p_tsg bot.v_type_specialisation_group)
 LANGUAGE plpgsql 
 AS $BODY$
 	DECLARE
-		CURSOR c_tsg IS 
-			SELECT * FROM v_type_specialisation_group
+		c_tsg CURSOR FOR 
+			SELECT * FROM bot.v_type_specialisation_group
 			WHERE fk_typ_name = p_tsg.fk_typ_name
 			  AND code = p_tsg.fk_tsg_code;
 		
-		r_tsg v_type_specialisation_group%ROWTYPE;
+		r_tsg bot.v_type_specialisation_group%ROWTYPE;
 	BEGIN
 		IF p_tsg.fk_tsg_code IS NOT NULL THEN
 			OPEN c_tsg;
@@ -969,11 +977,9 @@ AS $BODY$
 		ELSE
 			r_tsg := NULL;
 		END IF;
-		denorm_tsg_tsg (p_tsg, r_tsg);
+		CALL trg_denorm_tsg_tsg (p_tsg, r_tsg);
 	END;
 $BODY$;
-*/
-
 
 CREATE PROCEDURE bot.trg_insert_tsp (p_tsp bot.v_type_specialisation)
 LANGUAGE plpgsql 
@@ -1027,20 +1033,18 @@ AS $BODY$
 			xf_tsp_typ_name = p_tsp_new.xf_tsp_typ_name,
 			xf_tsp_tsg_code = p_tsp_new.xf_tsp_tsg_code,
 			xk_tsp_code = p_tsp_new.xk_tsp_code
-		WHERE rowid = p_cube_ctid;
+		WHERE ctid = p_cube_ctid;
 	END;
 $BODY$;
-/*
-CREATE PROCEDURE trg_delete_tsp (p_cube_rowid UROWID, p_tsp IN OUT NOCOPY v_type_specialisation%ROWTYPE)
+
+CREATE PROCEDURE bot.trg_delete_tsp (p_cube_ctid TID, p_tsp bot.v_type_specialisation)
 LANGUAGE plpgsql 
 AS $BODY$
 	BEGIN
-		DELETE t_type_specialisation 
-		WHERE rowid = p_cube_rowid;
+		DELETE FROM bot.t_type_specialisation 
+		WHERE ctid = p_cube_ctid;
 	END;
 $BODY$;
-*/
-
 
 CREATE PROCEDURE bot.trg_insert_atb (p_atb bot.v_attribute)
 LANGUAGE plpgsql 
@@ -1097,20 +1101,18 @@ AS $BODY$
 			default_value = p_atb_new.default_value,
 			unchangeable = p_atb_new.unchangeable,
 			xk_itp_name = p_atb_new.xk_itp_name
-		WHERE rowid = p_cube_ctid;
+		WHERE ctid = p_cube_ctid;
 	END;
 $BODY$;
-/*
-CREATE PROCEDURE trg_delete_atb (p_cube_rowid UROWID, p_atb IN OUT NOCOPY v_attribute%ROWTYPE)
+
+CREATE PROCEDURE bot.trg_delete_atb (p_cube_ctid TID, p_atb bot.v_attribute)
 LANGUAGE plpgsql 
 AS $BODY$
 	BEGIN
-		DELETE t_attribute 
-		WHERE rowid = p_cube_rowid;
+		DELETE FROM bot.t_attribute 
+		WHERE ctid = p_cube_ctid;
 	END;
 $BODY$;
-*/
-
 
 CREATE PROCEDURE bot.trg_insert_der (p_der bot.v_derivation)
 LANGUAGE plpgsql 
@@ -1156,20 +1158,18 @@ AS $BODY$
 			aggregate_function = p_der_new.aggregate_function,
 			xk_typ_name = p_der_new.xk_typ_name,
 			xk_typ_name_1 = p_der_new.xk_typ_name_1
-		WHERE rowid = p_cube_ctid;
+		WHERE ctid = p_cube_ctid;
 	END;
 $BODY$;
-/*
-CREATE PROCEDURE trg_delete_der (p_cube_rowid UROWID, p_der IN OUT NOCOPY v_derivation%ROWTYPE)
+
+CREATE PROCEDURE bot.trg_delete_der (p_cube_ctid TID, p_der bot.v_derivation)
 LANGUAGE plpgsql 
 AS $BODY$
 	BEGIN
-		DELETE t_derivation 
-		WHERE rowid = p_cube_rowid;
+		DELETE FROM bot.t_derivation 
+		WHERE ctid = p_cube_ctid;
 	END;
 $BODY$;
-*/
-
 
 CREATE PROCEDURE bot.trg_insert_dca (p_dca bot.v_description_attribute)
 LANGUAGE plpgsql 
@@ -1205,20 +1205,18 @@ AS $BODY$
 	BEGIN
 		UPDATE t_description_attribute SET 
 			text = p_dca_new.text
-		WHERE rowid = p_cube_ctid;
+		WHERE ctid = p_cube_ctid;
 	END;
 $BODY$;
-/*
-CREATE PROCEDURE trg_delete_dca (p_cube_rowid UROWID, p_dca IN OUT NOCOPY v_description_attribute%ROWTYPE)
+
+CREATE PROCEDURE bot.trg_delete_dca (p_cube_ctid TID, p_dca bot.v_description_attribute)
 LANGUAGE plpgsql 
 AS $BODY$
 	BEGIN
-		DELETE t_description_attribute 
-		WHERE rowid = p_cube_rowid;
+		DELETE FROM bot.t_description_attribute 
+		WHERE ctid = p_cube_ctid;
 	END;
 $BODY$;
-*/
-
 
 CREATE PROCEDURE bot.trg_insert_rta (p_rta bot.v_restriction_type_spec_atb)
 LANGUAGE plpgsql 
@@ -1263,20 +1261,18 @@ AS $BODY$
 	BEGIN
 		UPDATE t_restriction_type_spec_atb SET 
 			include_or_exclude = p_rta_new.include_or_exclude
-		WHERE rowid = p_cube_ctid;
+		WHERE ctid = p_cube_ctid;
 	END;
 $BODY$;
-/*
-CREATE PROCEDURE trg_delete_rta (p_cube_rowid UROWID, p_rta IN OUT NOCOPY v_restriction_type_spec_atb%ROWTYPE)
+
+CREATE PROCEDURE bot.trg_delete_rta (p_cube_ctid TID, p_rta bot.v_restriction_type_spec_atb)
 LANGUAGE plpgsql 
 AS $BODY$
 	BEGIN
-		DELETE t_restriction_type_spec_atb 
-		WHERE rowid = p_cube_rowid;
+		DELETE FROM bot.t_restriction_type_spec_atb 
+		WHERE ctid = p_cube_ctid;
 	END;
 $BODY$;
-*/
-
 
 CREATE PROCEDURE bot.trg_insert_ref (p_ref bot.v_reference)
 LANGUAGE plpgsql 
@@ -1341,20 +1337,18 @@ AS $BODY$
 			unchangeable = p_ref_new.unchangeable,
 			within_scope_extension = p_ref_new.within_scope_extension,
 			xk_typ_name_1 = p_ref_new.xk_typ_name_1
-		WHERE rowid = p_cube_ctid;
+		WHERE ctid = p_cube_ctid;
 	END;
 $BODY$;
-/*
-CREATE PROCEDURE trg_delete_ref (p_cube_rowid UROWID, p_ref IN OUT NOCOPY v_reference%ROWTYPE)
+
+CREATE PROCEDURE bot.trg_delete_ref (p_cube_ctid TID, p_ref bot.v_reference)
 LANGUAGE plpgsql 
 AS $BODY$
 	BEGIN
-		DELETE t_reference 
-		WHERE rowid = p_cube_rowid;
+		DELETE FROM bot.t_reference 
+		WHERE ctid = p_cube_ctid;
 	END;
 $BODY$;
-*/
-
 
 CREATE PROCEDURE bot.trg_insert_dcr (p_dcr bot.v_description_reference)
 LANGUAGE plpgsql 
@@ -1398,20 +1392,18 @@ AS $BODY$
 	BEGIN
 		UPDATE t_description_reference SET 
 			text = p_dcr_new.text
-		WHERE rowid = p_cube_ctid;
+		WHERE ctid = p_cube_ctid;
 	END;
 $BODY$;
-/*
-CREATE PROCEDURE trg_delete_dcr (p_cube_rowid UROWID, p_dcr IN OUT NOCOPY v_description_reference%ROWTYPE)
+
+CREATE PROCEDURE bot.trg_delete_dcr (p_cube_ctid TID, p_dcr bot.v_description_reference)
 LANGUAGE plpgsql 
 AS $BODY$
 	BEGIN
-		DELETE t_description_reference 
-		WHERE rowid = p_cube_rowid;
+		DELETE FROM bot.t_description_reference 
+		WHERE ctid = p_cube_ctid;
 	END;
 $BODY$;
-*/
-
 
 CREATE PROCEDURE bot.trg_insert_rtr (p_rtr bot.v_restriction_type_spec_ref)
 LANGUAGE plpgsql 
@@ -1464,20 +1456,18 @@ AS $BODY$
 	BEGIN
 		UPDATE t_restriction_type_spec_ref SET 
 			include_or_exclude = p_rtr_new.include_or_exclude
-		WHERE rowid = p_cube_ctid;
+		WHERE ctid = p_cube_ctid;
 	END;
 $BODY$;
-/*
-CREATE PROCEDURE trg_delete_rtr (p_cube_rowid UROWID, p_rtr IN OUT NOCOPY v_restriction_type_spec_ref%ROWTYPE)
+
+CREATE PROCEDURE bot.trg_delete_rtr (p_cube_ctid TID, p_rtr bot.v_restriction_type_spec_ref)
 LANGUAGE plpgsql 
 AS $BODY$
 	BEGIN
-		DELETE t_restriction_type_spec_ref 
-		WHERE rowid = p_cube_rowid;
+		DELETE FROM bot.t_restriction_type_spec_ref 
+		WHERE ctid = p_cube_ctid;
 	END;
 $BODY$;
-*/
-
 
 CREATE PROCEDURE bot.trg_insert_rts (p_rts bot.v_restriction_target_type_spec)
 LANGUAGE plpgsql 
@@ -1530,20 +1520,18 @@ AS $BODY$
 	BEGIN
 		UPDATE t_restriction_target_type_spec SET 
 			include_or_exclude = p_rts_new.include_or_exclude
-		WHERE rowid = p_cube_ctid;
+		WHERE ctid = p_cube_ctid;
 	END;
 $BODY$;
-/*
-CREATE PROCEDURE trg_delete_rts (p_cube_rowid UROWID, p_rts IN OUT NOCOPY v_restriction_target_type_spec%ROWTYPE)
+
+CREATE PROCEDURE bot.trg_delete_rts (p_cube_ctid TID, p_rts bot.v_restriction_target_type_spec)
 LANGUAGE plpgsql 
 AS $BODY$
 	BEGIN
-		DELETE t_restriction_target_type_spec 
-		WHERE rowid = p_cube_rowid;
+		DELETE FROM bot.t_restriction_target_type_spec 
+		WHERE ctid = p_cube_ctid;
 	END;
 $BODY$;
-*/
-
 
 CREATE PROCEDURE bot.trg_insert_rtt (p_rtt bot.v_restriction_type_spec_typ)
 LANGUAGE plpgsql 
@@ -1584,20 +1572,18 @@ AS $BODY$
 	BEGIN
 		UPDATE t_restriction_type_spec_typ SET 
 			include_or_exclude = p_rtt_new.include_or_exclude
-		WHERE rowid = p_cube_ctid;
+		WHERE ctid = p_cube_ctid;
 	END;
 $BODY$;
-/*
-CREATE PROCEDURE trg_delete_rtt (p_cube_rowid UROWID, p_rtt IN OUT NOCOPY v_restriction_type_spec_typ%ROWTYPE)
+
+CREATE PROCEDURE bot.trg_delete_rtt (p_cube_ctid TID, p_rtt bot.v_restriction_type_spec_typ)
 LANGUAGE plpgsql 
 AS $BODY$
 	BEGIN
-		DELETE t_restriction_type_spec_typ 
-		WHERE rowid = p_cube_rowid;
+		DELETE FROM bot.t_restriction_type_spec_typ 
+		WHERE ctid = p_cube_ctid;
 	END;
 $BODY$;
-*/
-
 
 CREATE PROCEDURE bot.trg_insert_jsn (p_jsn bot.v_json_path)
 LANGUAGE plpgsql 
@@ -1630,7 +1616,7 @@ AS $BODY$
 			WHERE name = p_jsn.fk_typ_name;
 			
 		END IF;
-		CALL get_denorm_jsn_jsn (p_jsn);
+		CALL trg_get_denorm_jsn_jsn (p_jsn);
 		INSERT INTO t_json_path (
 			cube_id,
 			cube_sequence,
@@ -1674,9 +1660,8 @@ CREATE PROCEDURE bot.trg_update_jsn (p_cube_ctid TID, p_jsn_old bot.v_json_path,
 LANGUAGE plpgsql
 AS $BODY$
 	DECLARE
-
-		CURSOR c_jsn IS
-			SELECT ROWID cube_row_id, jsn.* FROM v_json_path jsn
+		c_jsn CURSOR FOR
+			SELECT CTID cube_ctid, jsn.* FROM bot.v_json_path jsn
 			WHERE fk_typ_name = p_jsn_old.fk_typ_name
 			  AND fk_jsn_name = p_jsn_old.name
 			  AND fk_jsn_location = p_jsn_old.location
@@ -1684,16 +1669,16 @@ AS $BODY$
 			  AND fk_jsn_atb_name = p_jsn_old.xk_atb_name
 			  AND fk_jsn_typ_name = p_jsn_old.xk_typ_name;
 		
-		l_jsn_rowid UROWID;
-		r_jsn_old v_json_path%ROWTYPE;
-		r_jsn_new v_json_path%ROWTYPE;
+		l_jsn_ctid TID;
+		r_jsn_old bot.v_json_path%ROWTYPE;
+		r_jsn_new bot.v_json_path%ROWTYPE;
 	BEGIN
 		IF NVL(p_jsn_old.fk_jsn_name,' ') <> NVL(p_jsn_new.fk_jsn_name,' ') 
 		OR NVL(p_jsn_old.fk_jsn_location,0) <> NVL(p_jsn_new.fk_jsn_location,0) 
 		OR NVL(p_jsn_old.fk_jsn_atb_typ_name,' ') <> NVL(p_jsn_new.fk_jsn_atb_typ_name,' ') 
 		OR NVL(p_jsn_old.fk_jsn_atb_name,' ') <> NVL(p_jsn_new.fk_jsn_atb_name,' ') 
 		OR NVL(p_jsn_old.fk_jsn_typ_name,' ') <> NVL(p_jsn_new.fk_jsn_typ_name,' ')  THEN
-			CALL get_denorm_jsn_jsn (p_jsn_new);
+			CALL trg_get_denorm_jsn_jsn (p_jsn_new);
 		END IF;
 		UPDATE t_json_path SET 
 			cube_sequence = p_jsn_new.cube_sequence,
@@ -1703,12 +1688,12 @@ AS $BODY$
 			fk_jsn_atb_typ_name = p_jsn_new.fk_jsn_atb_typ_name,
 			fk_jsn_atb_name = p_jsn_new.fk_jsn_atb_name,
 			fk_jsn_typ_name = p_jsn_new.fk_jsn_typ_name
-		WHERE rowid = p_cube_ctid;
+		WHERE ctid = p_cube_ctid;
 		IF NVL(p_jsn_old.cube_level,0) <> NVL(p_jsn_new.cube_level,0) THEN
 			OPEN c_jsn;
 			LOOP
 				FETCH c_jsn INTO
-					l_jsn_rowid,
+					l_jsn_ctid,
 					r_jsn_old.cube_id,
 					r_jsn_old.cube_sequence,
 					r_jsn_old.cube_level,
@@ -1728,24 +1713,24 @@ AS $BODY$
 					r_jsn_old.xk_typ_name;
 				EXIT WHEN c_jsn%NOTFOUND;
 				r_jsn_new := r_jsn_old;
-				CALL denorm_jsn_jsn (r_jsn_new, p_jsn_new);
-				CALL update_jsn (l_jsn_rowid, r_jsn_old, r_jsn_new);
+				CALL trg_denorm_jsn_jsn (r_jsn_new, p_jsn_new);
+				CALL trg_update_jsn (l_jsn_ctid, r_jsn_old, r_jsn_new);
 			END LOOP;
 			CLOSE c_jsn;
 		END IF;
 	END;
 $BODY$;
-/*
-CREATE PROCEDURE trg_delete_jsn (p_cube_rowid UROWID, p_jsn IN OUT NOCOPY v_json_path%ROWTYPE)
+
+CREATE PROCEDURE bot.trg_delete_jsn (p_cube_ctid TID, p_jsn bot.v_json_path)
 LANGUAGE plpgsql 
 AS $BODY$
 	BEGIN
-		DELETE t_json_path 
-		WHERE rowid = p_cube_rowid;
+		DELETE FROM bot.t_json_path 
+		WHERE ctid = p_cube_ctid;
 	END;
 $BODY$;
 
-CREATE PROCEDURE denorm_jsn_jsn (p_jsn IN OUT NOCOPY v_json_path%ROWTYPE, p_jsn_in IN v_json_path%ROWTYPE)
+CREATE PROCEDURE bot.trg_denorm_jsn_jsn (p_jsn bot.v_json_path, p_jsn_in bot.v_json_path)
 LANGUAGE plpgsql 
 AS $BODY$
 	BEGIN
@@ -1753,12 +1738,12 @@ AS $BODY$
 	END;
 $BODY$;
 
-CREATE PROCEDURE trg_get_denorm_jsn_jsn (p_jsn IN OUT NOCOPY v_json_path%ROWTYPE)
+CREATE PROCEDURE bot.trg_get_denorm_jsn_jsn (p_jsn bot.v_json_path)
 LANGUAGE plpgsql 
 AS $BODY$
 	DECLARE
-		CURSOR c_jsn IS 
-			SELECT * FROM v_json_path
+		c_jsn CURSOR FOR 
+			SELECT * FROM bot.v_json_path
 			WHERE fk_typ_name = p_jsn.fk_typ_name
 			  AND name = p_jsn.fk_jsn_name
 			  AND location = p_jsn.fk_jsn_location
@@ -1766,7 +1751,7 @@ AS $BODY$
 			  AND xk_atb_name = p_jsn.fk_jsn_atb_name
 			  AND xk_typ_name = p_jsn.fk_jsn_typ_name;
 		
-		r_jsn v_json_path%ROWTYPE;
+		r_jsn bot.v_json_path%ROWTYPE;
 	BEGIN
 		IF p_jsn.fk_jsn_name IS NOT NULL AND p_jsn.fk_jsn_location IS NOT NULL AND p_jsn.fk_jsn_atb_typ_name IS NOT NULL AND p_jsn.fk_jsn_atb_name IS NOT NULL AND p_jsn.fk_jsn_typ_name IS NOT NULL THEN
 			OPEN c_jsn;
@@ -1778,11 +1763,9 @@ AS $BODY$
 		ELSE
 			r_jsn := NULL;
 		END IF;
-		denorm_jsn_jsn (p_jsn, r_jsn);
+		CALL trg_denorm_jsn_jsn (p_jsn, r_jsn);
 	END;
 $BODY$;
-*/
-
 
 CREATE PROCEDURE bot.trg_insert_dct (p_dct bot.v_description_type)
 LANGUAGE plpgsql 
@@ -1814,1126 +1797,1180 @@ AS $BODY$
 	BEGIN
 		UPDATE t_description_type SET 
 			text = p_dct_new.text
-		WHERE rowid = p_cube_ctid;
+		WHERE ctid = p_cube_ctid;
 	END;
 $BODY$;
-/*
-CREATE PROCEDURE trg_delete_dct (p_cube_rowid UROWID, p_dct IN OUT NOCOPY v_description_type%ROWTYPE)
+
+CREATE PROCEDURE bot.trg_delete_dct (p_cube_ctid TID, p_dct bot.v_description_type)
 LANGUAGE plpgsql 
 AS $BODY$
 	BEGIN
-		DELETE t_description_type 
-		WHERE rowid = p_cube_rowid;
+		DELETE FROM bot.t_description_type 
+		WHERE ctid = p_cube_ctid;
 	END;
 $BODY$;
-*/
 
+CREATE FUNCTION bot.trg_bot() RETURNS trigger
+LANGUAGE plpgsql 
+AS $BODY$
+	DECLARE
+		l_cube_ctid TID;
+		r_bot_new bot.v_business_object_type%ROWTYPE;
+		r_bot_old bot.v_business_object_type%ROWTYPE;
+	BEGIN
+		IF INSERTING OR UPDATING THEN
+			r_bot_new.cube_sequence := NEW.cube_sequence;
+			IF NEW.name = ' ' THEN
+				r_bot_new.name := ' ';
+			ELSE
+				r_bot_new.name := REPLACE(NEW.name,' ','_');
+			END IF;
+			IF NEW.cube_tsg_type = ' ' THEN
+				r_bot_new.cube_tsg_type := ' ';
+			ELSE
+				r_bot_new.cube_tsg_type := REPLACE(NEW.cube_tsg_type,' ','_');
+			END IF;
+			IF NEW.directory = ' ' THEN
+				r_bot_new.directory := ' ';
+			ELSE
+				r_bot_new.directory := REPLACE(NEW.directory,' ','_');
+			END IF;
+			IF NEW.api_url = ' ' THEN
+				r_bot_new.api_url := ' ';
+			ELSE
+				r_bot_new.api_url := REPLACE(NEW.api_url,' ','_');
+			END IF;
+		END IF;
+		IF UPDATING THEN
+			r_bot_new.cube_id := OLD.cube_id;
+		END IF;
+		IF UPDATING OR DELETING THEN
+			SELECT ctid INTO l_cube_ctid FROM t_business_object_type
+			WHERE name = OLD.name;
+			r_bot_old.cube_sequence := OLD.cube_sequence;
+			r_bot_old.name := OLD.name;
+			r_bot_old.cube_tsg_type := OLD.cube_tsg_type;
+			r_bot_old.directory := OLD.directory;
+			r_bot_old.api_url := OLD.api_url;
+		END IF;
 
-/*
+		IF INSERTING THEN 
+			CALL bot.trg_insert_bot (r_bot_new);
+		ELSIF UPDATING THEN
+			CALL bot.trg_update_bot (l_cube_ctid, r_bot_old, r_bot_new);
+		ELSIF DELETING THEN
+			CALL bot.trg_delete_bot (l_cube_ctid, r_bot_old);
+		END IF;
+	END;
+$BODY$;
 
-CREATE OR REPLACE TRIGGER trg_bot
-INSTEAD OF INSERT OR DELETE OR UPDATE ON v_business_object_type
+CREATE TRIGGER trg_bot
+INSTEAD OF INSERT OR DELETE OR UPDATE ON bot.v_business_object_type
 FOR EACH ROW
-DECLARE
-	l_cube_rowid UROWID;
-	r_bot_new v_business_object_type%ROWTYPE;
-	r_bot_old v_business_object_type%ROWTYPE;
-BEGIN
-	IF INSERTING OR UPDATING THEN
-		r_bot_new.cube_sequence := :NEW.cube_sequence;
-		IF :NEW.name = ' ' THEN
-			r_bot_new.name := ' ';
-		ELSE
-			r_bot_new.name := REPLACE(:NEW.name,' ','_');
-		END IF;
-		IF :NEW.cube_tsg_type = ' ' THEN
-			r_bot_new.cube_tsg_type := ' ';
-		ELSE
-			r_bot_new.cube_tsg_type := REPLACE(:NEW.cube_tsg_type,' ','_');
-		END IF;
-		IF :NEW.directory = ' ' THEN
-			r_bot_new.directory := ' ';
-		ELSE
-			r_bot_new.directory := REPLACE(:NEW.directory,' ','_');
-		END IF;
-		IF :NEW.api_url = ' ' THEN
-			r_bot_new.api_url := ' ';
-		ELSE
-			r_bot_new.api_url := REPLACE(:NEW.api_url,' ','_');
-		END IF;
-	END IF;
-	IF UPDATING THEN
-		r_bot_new.cube_id := :OLD.cube_id;
-	END IF;
-	IF UPDATING OR DELETING THEN
-		SELECT rowid INTO l_cube_rowid FROM t_business_object_type
-		WHERE name = :OLD.name;
-		r_bot_old.cube_sequence := :OLD.cube_sequence;
-		r_bot_old.name := :OLD.name;
-		r_bot_old.cube_tsg_type := :OLD.cube_tsg_type;
-		r_bot_old.directory := :OLD.directory;
-		r_bot_old.api_url := :OLD.api_url;
-	END IF;
+EXECUTE PROCEDURE bot.trg_bot();
 
-	IF INSERTING THEN 
-		pkg_bot_trg.insert_bot (r_bot_new);
-	ELSIF UPDATING THEN
-		pkg_bot_trg.update_bot (l_cube_rowid, r_bot_old, r_bot_new);
-	ELSIF DELETING THEN
-		pkg_bot_trg.delete_bot (l_cube_rowid, r_bot_old);
-	END IF;
-END;
-/
-SHOW ERRORS
+CREATE FUNCTION bot.trg_typ() RETURNS trigger
+LANGUAGE plpgsql 
+AS $BODY$
+	DECLARE
+		l_cube_ctid TID;
+		r_typ_new bot.v_type%ROWTYPE;
+		r_typ_old bot.v_type%ROWTYPE;
+	BEGIN
+		IF INSERTING OR UPDATING THEN
+			r_typ_new.cube_sequence := NEW.cube_sequence;
+			IF NEW.fk_bot_name = ' ' THEN
+				r_typ_new.fk_bot_name := ' ';
+			ELSE
+				r_typ_new.fk_bot_name := REPLACE(NEW.fk_bot_name,' ','_');
+			END IF;
+			IF NEW.fk_typ_name = ' ' THEN
+				r_typ_new.fk_typ_name := ' ';
+			ELSE
+				r_typ_new.fk_typ_name := REPLACE(NEW.fk_typ_name,' ','_');
+			END IF;
+			IF NEW.name = ' ' THEN
+				r_typ_new.name := ' ';
+			ELSE
+				r_typ_new.name := REPLACE(NEW.name,' ','_');
+			END IF;
+			IF NEW.code = ' ' THEN
+				r_typ_new.code := ' ';
+			ELSE
+				r_typ_new.code := REPLACE(NEW.code,' ','_');
+			END IF;
+			r_typ_new.flag_partial_key := NEW.flag_partial_key;
+			r_typ_new.flag_recursive := NEW.flag_recursive;
+			r_typ_new.recursive_cardinality := NEW.recursive_cardinality;
+			r_typ_new.cardinality := NEW.cardinality;
+			r_typ_new.sort_order := NEW.sort_order;
+			IF NEW.icon = ' ' THEN
+				r_typ_new.icon := ' ';
+			ELSE
+				r_typ_new.icon := REPLACE(NEW.icon,' ','_');
+			END IF;
+			r_typ_new.transferable := NEW.transferable;
+		END IF;
+		IF UPDATING THEN
+			r_typ_new.cube_id := OLD.cube_id;
+			r_typ_new.cube_level := OLD.cube_level;
+		END IF;
+		IF UPDATING OR DELETING THEN
+			SELECT ctid INTO l_cube_ctid FROM t_type
+			WHERE name = OLD.name;
+			r_typ_old.cube_sequence := OLD.cube_sequence;
+			r_typ_old.fk_bot_name := OLD.fk_bot_name;
+			r_typ_old.fk_typ_name := OLD.fk_typ_name;
+			r_typ_old.name := OLD.name;
+			r_typ_old.code := OLD.code;
+			r_typ_old.flag_partial_key := OLD.flag_partial_key;
+			r_typ_old.flag_recursive := OLD.flag_recursive;
+			r_typ_old.recursive_cardinality := OLD.recursive_cardinality;
+			r_typ_old.cardinality := OLD.cardinality;
+			r_typ_old.sort_order := OLD.sort_order;
+			r_typ_old.icon := OLD.icon;
+			r_typ_old.transferable := OLD.transferable;
+		END IF;
 
-CREATE OR REPLACE TRIGGER trg_typ
-INSTEAD OF INSERT OR DELETE OR UPDATE ON v_type
+		IF INSERTING THEN 
+			CALL bot.trg_insert_typ (r_typ_new);
+		ELSIF UPDATING THEN
+			CALL bot.trg_update_typ (l_cube_ctid, r_typ_old, r_typ_new);
+		ELSIF DELETING THEN
+			CALL bot.trg_delete_typ (l_cube_ctid, r_typ_old);
+		END IF;
+	END;
+$BODY$;
+
+CREATE TRIGGER trg_typ
+INSTEAD OF INSERT OR DELETE OR UPDATE ON bot.v_type
 FOR EACH ROW
-DECLARE
-	l_cube_rowid UROWID;
-	r_typ_new v_type%ROWTYPE;
-	r_typ_old v_type%ROWTYPE;
-BEGIN
-	IF INSERTING OR UPDATING THEN
-		r_typ_new.cube_sequence := :NEW.cube_sequence;
-		IF :NEW.fk_bot_name = ' ' THEN
-			r_typ_new.fk_bot_name := ' ';
-		ELSE
-			r_typ_new.fk_bot_name := REPLACE(:NEW.fk_bot_name,' ','_');
-		END IF;
-		IF :NEW.fk_typ_name = ' ' THEN
-			r_typ_new.fk_typ_name := ' ';
-		ELSE
-			r_typ_new.fk_typ_name := REPLACE(:NEW.fk_typ_name,' ','_');
-		END IF;
-		IF :NEW.name = ' ' THEN
-			r_typ_new.name := ' ';
-		ELSE
-			r_typ_new.name := REPLACE(:NEW.name,' ','_');
-		END IF;
-		IF :NEW.code = ' ' THEN
-			r_typ_new.code := ' ';
-		ELSE
-			r_typ_new.code := REPLACE(:NEW.code,' ','_');
-		END IF;
-		r_typ_new.flag_partial_key := :NEW.flag_partial_key;
-		r_typ_new.flag_recursive := :NEW.flag_recursive;
-		r_typ_new.recursive_cardinality := :NEW.recursive_cardinality;
-		r_typ_new.cardinality := :NEW.cardinality;
-		r_typ_new.sort_order := :NEW.sort_order;
-		IF :NEW.icon = ' ' THEN
-			r_typ_new.icon := ' ';
-		ELSE
-			r_typ_new.icon := REPLACE(:NEW.icon,' ','_');
-		END IF;
-		r_typ_new.transferable := :NEW.transferable;
-	END IF;
-	IF UPDATING THEN
-		r_typ_new.cube_id := :OLD.cube_id;
-		r_typ_new.cube_level := :OLD.cube_level;
-	END IF;
-	IF UPDATING OR DELETING THEN
-		SELECT rowid INTO l_cube_rowid FROM t_type
-		WHERE name = :OLD.name;
-		r_typ_old.cube_sequence := :OLD.cube_sequence;
-		r_typ_old.fk_bot_name := :OLD.fk_bot_name;
-		r_typ_old.fk_typ_name := :OLD.fk_typ_name;
-		r_typ_old.name := :OLD.name;
-		r_typ_old.code := :OLD.code;
-		r_typ_old.flag_partial_key := :OLD.flag_partial_key;
-		r_typ_old.flag_recursive := :OLD.flag_recursive;
-		r_typ_old.recursive_cardinality := :OLD.recursive_cardinality;
-		r_typ_old.cardinality := :OLD.cardinality;
-		r_typ_old.sort_order := :OLD.sort_order;
-		r_typ_old.icon := :OLD.icon;
-		r_typ_old.transferable := :OLD.transferable;
-	END IF;
+EXECUTE PROCEDURE bot.trg_typ();
 
-	IF INSERTING THEN 
-		pkg_bot_trg.insert_typ (r_typ_new);
-	ELSIF UPDATING THEN
-		pkg_bot_trg.update_typ (l_cube_rowid, r_typ_old, r_typ_new);
-	ELSIF DELETING THEN
-		pkg_bot_trg.delete_typ (l_cube_rowid, r_typ_old);
-	END IF;
-END;
-/
-SHOW ERRORS
+CREATE FUNCTION bot.trg_tsg() RETURNS trigger
+LANGUAGE plpgsql 
+AS $BODY$
+	DECLARE
+		l_cube_ctid TID;
+		r_tsg_new bot.v_type_specialisation_group%ROWTYPE;
+		r_tsg_old bot.v_type_specialisation_group%ROWTYPE;
+	BEGIN
+		IF INSERTING OR UPDATING THEN
+			r_tsg_new.cube_sequence := NEW.cube_sequence;
+			IF NEW.fk_bot_name = ' ' THEN
+				r_tsg_new.fk_bot_name := ' ';
+			ELSE
+				r_tsg_new.fk_bot_name := REPLACE(NEW.fk_bot_name,' ','_');
+			END IF;
+			IF NEW.fk_typ_name = ' ' THEN
+				r_tsg_new.fk_typ_name := ' ';
+			ELSE
+				r_tsg_new.fk_typ_name := REPLACE(NEW.fk_typ_name,' ','_');
+			END IF;
+			IF NEW.fk_tsg_code = ' ' THEN
+				r_tsg_new.fk_tsg_code := ' ';
+			ELSE
+				r_tsg_new.fk_tsg_code := REPLACE(NEW.fk_tsg_code,' ','_');
+			END IF;
+			IF NEW.code = ' ' THEN
+				r_tsg_new.code := ' ';
+			ELSE
+				r_tsg_new.code := REPLACE(NEW.code,' ','_');
+			END IF;
+			IF NEW.name = ' ' THEN
+				r_tsg_new.name := ' ';
+			ELSE
+				r_tsg_new.name := REPLACE(NEW.name,' ','_');
+			END IF;
+			r_tsg_new.primary_key := NEW.primary_key;
+			IF NEW.xf_atb_typ_name = ' ' THEN
+				r_tsg_new.xf_atb_typ_name := ' ';
+			ELSE
+				r_tsg_new.xf_atb_typ_name := REPLACE(NEW.xf_atb_typ_name,' ','_');
+			END IF;
+			IF NEW.xk_atb_name = ' ' THEN
+				r_tsg_new.xk_atb_name := ' ';
+			ELSE
+				r_tsg_new.xk_atb_name := REPLACE(NEW.xk_atb_name,' ','_');
+			END IF;
+		END IF;
+		IF UPDATING THEN
+			r_tsg_new.cube_id := OLD.cube_id;
+			r_tsg_new.cube_level := OLD.cube_level;
+		END IF;
+		IF UPDATING OR DELETING THEN
+			SELECT ctid INTO l_cube_ctid FROM t_type_specialisation_group
+			WHERE fk_typ_name = OLD.fk_typ_name
+			AND code = OLD.code;
+			r_tsg_old.cube_sequence := OLD.cube_sequence;
+			r_tsg_old.fk_bot_name := OLD.fk_bot_name;
+			r_tsg_old.fk_typ_name := OLD.fk_typ_name;
+			r_tsg_old.fk_tsg_code := OLD.fk_tsg_code;
+			r_tsg_old.code := OLD.code;
+			r_tsg_old.name := OLD.name;
+			r_tsg_old.primary_key := OLD.primary_key;
+			r_tsg_old.xf_atb_typ_name := OLD.xf_atb_typ_name;
+			r_tsg_old.xk_atb_name := OLD.xk_atb_name;
+		END IF;
 
-CREATE OR REPLACE TRIGGER trg_tsg
-INSTEAD OF INSERT OR DELETE OR UPDATE ON v_type_specialisation_group
+		IF INSERTING THEN 
+			CALL bot.trg_insert_tsg (r_tsg_new);
+		ELSIF UPDATING THEN
+			CALL bot.trg_update_tsg (l_cube_ctid, r_tsg_old, r_tsg_new);
+		ELSIF DELETING THEN
+			CALL bot.trg_delete_tsg (l_cube_ctid, r_tsg_old);
+		END IF;
+	END;
+$BODY$;
+
+CREATE TRIGGER trg_tsg
+INSTEAD OF INSERT OR DELETE OR UPDATE ON bot.v_type_specialisation_group
 FOR EACH ROW
-DECLARE
-	l_cube_rowid UROWID;
-	r_tsg_new v_type_specialisation_group%ROWTYPE;
-	r_tsg_old v_type_specialisation_group%ROWTYPE;
-BEGIN
-	IF INSERTING OR UPDATING THEN
-		r_tsg_new.cube_sequence := :NEW.cube_sequence;
-		IF :NEW.fk_bot_name = ' ' THEN
-			r_tsg_new.fk_bot_name := ' ';
-		ELSE
-			r_tsg_new.fk_bot_name := REPLACE(:NEW.fk_bot_name,' ','_');
-		END IF;
-		IF :NEW.fk_typ_name = ' ' THEN
-			r_tsg_new.fk_typ_name := ' ';
-		ELSE
-			r_tsg_new.fk_typ_name := REPLACE(:NEW.fk_typ_name,' ','_');
-		END IF;
-		IF :NEW.fk_tsg_code = ' ' THEN
-			r_tsg_new.fk_tsg_code := ' ';
-		ELSE
-			r_tsg_new.fk_tsg_code := REPLACE(:NEW.fk_tsg_code,' ','_');
-		END IF;
-		IF :NEW.code = ' ' THEN
-			r_tsg_new.code := ' ';
-		ELSE
-			r_tsg_new.code := REPLACE(:NEW.code,' ','_');
-		END IF;
-		IF :NEW.name = ' ' THEN
-			r_tsg_new.name := ' ';
-		ELSE
-			r_tsg_new.name := REPLACE(:NEW.name,' ','_');
-		END IF;
-		r_tsg_new.primary_key := :NEW.primary_key;
-		IF :NEW.xf_atb_typ_name = ' ' THEN
-			r_tsg_new.xf_atb_typ_name := ' ';
-		ELSE
-			r_tsg_new.xf_atb_typ_name := REPLACE(:NEW.xf_atb_typ_name,' ','_');
-		END IF;
-		IF :NEW.xk_atb_name = ' ' THEN
-			r_tsg_new.xk_atb_name := ' ';
-		ELSE
-			r_tsg_new.xk_atb_name := REPLACE(:NEW.xk_atb_name,' ','_');
-		END IF;
-	END IF;
-	IF UPDATING THEN
-		r_tsg_new.cube_id := :OLD.cube_id;
-		r_tsg_new.cube_level := :OLD.cube_level;
-	END IF;
-	IF UPDATING OR DELETING THEN
-		SELECT rowid INTO l_cube_rowid FROM t_type_specialisation_group
-		WHERE fk_typ_name = :OLD.fk_typ_name
-		  AND code = :OLD.code;
-		r_tsg_old.cube_sequence := :OLD.cube_sequence;
-		r_tsg_old.fk_bot_name := :OLD.fk_bot_name;
-		r_tsg_old.fk_typ_name := :OLD.fk_typ_name;
-		r_tsg_old.fk_tsg_code := :OLD.fk_tsg_code;
-		r_tsg_old.code := :OLD.code;
-		r_tsg_old.name := :OLD.name;
-		r_tsg_old.primary_key := :OLD.primary_key;
-		r_tsg_old.xf_atb_typ_name := :OLD.xf_atb_typ_name;
-		r_tsg_old.xk_atb_name := :OLD.xk_atb_name;
-	END IF;
+EXECUTE PROCEDURE bot.trg_tsg();
 
-	IF INSERTING THEN 
-		pkg_bot_trg.insert_tsg (r_tsg_new);
-	ELSIF UPDATING THEN
-		pkg_bot_trg.update_tsg (l_cube_rowid, r_tsg_old, r_tsg_new);
-	ELSIF DELETING THEN
-		pkg_bot_trg.delete_tsg (l_cube_rowid, r_tsg_old);
-	END IF;
-END;
-/
-SHOW ERRORS
+CREATE FUNCTION bot.trg_tsp() RETURNS trigger
+LANGUAGE plpgsql 
+AS $BODY$
+	DECLARE
+		l_cube_ctid TID;
+		r_tsp_new bot.v_type_specialisation%ROWTYPE;
+		r_tsp_old bot.v_type_specialisation%ROWTYPE;
+	BEGIN
+		IF INSERTING OR UPDATING THEN
+			r_tsp_new.cube_sequence := NEW.cube_sequence;
+			IF NEW.fk_bot_name = ' ' THEN
+				r_tsp_new.fk_bot_name := ' ';
+			ELSE
+				r_tsp_new.fk_bot_name := REPLACE(NEW.fk_bot_name,' ','_');
+			END IF;
+			IF NEW.fk_typ_name = ' ' THEN
+				r_tsp_new.fk_typ_name := ' ';
+			ELSE
+				r_tsp_new.fk_typ_name := REPLACE(NEW.fk_typ_name,' ','_');
+			END IF;
+			IF NEW.fk_tsg_code = ' ' THEN
+				r_tsp_new.fk_tsg_code := ' ';
+			ELSE
+				r_tsp_new.fk_tsg_code := REPLACE(NEW.fk_tsg_code,' ','_');
+			END IF;
+			IF NEW.code = ' ' THEN
+				r_tsp_new.code := ' ';
+			ELSE
+				r_tsp_new.code := REPLACE(NEW.code,' ','_');
+			END IF;
+			IF NEW.name = ' ' THEN
+				r_tsp_new.name := ' ';
+			ELSE
+				r_tsp_new.name := REPLACE(NEW.name,' ','_');
+			END IF;
+			IF NEW.xf_tsp_typ_name = ' ' THEN
+				r_tsp_new.xf_tsp_typ_name := ' ';
+			ELSE
+				r_tsp_new.xf_tsp_typ_name := REPLACE(NEW.xf_tsp_typ_name,' ','_');
+			END IF;
+			IF NEW.xf_tsp_tsg_code = ' ' THEN
+				r_tsp_new.xf_tsp_tsg_code := ' ';
+			ELSE
+				r_tsp_new.xf_tsp_tsg_code := REPLACE(NEW.xf_tsp_tsg_code,' ','_');
+			END IF;
+			IF NEW.xk_tsp_code = ' ' THEN
+				r_tsp_new.xk_tsp_code := ' ';
+			ELSE
+				r_tsp_new.xk_tsp_code := REPLACE(NEW.xk_tsp_code,' ','_');
+			END IF;
+		END IF;
+		IF UPDATING THEN
+			r_tsp_new.cube_id := OLD.cube_id;
+		END IF;
+		IF UPDATING OR DELETING THEN
+			SELECT ctid INTO l_cube_ctid FROM t_type_specialisation
+			WHERE fk_typ_name = OLD.fk_typ_name
+			AND fk_tsg_code = OLD.fk_tsg_code
+			AND code = OLD.code;
+			r_tsp_old.cube_sequence := OLD.cube_sequence;
+			r_tsp_old.fk_bot_name := OLD.fk_bot_name;
+			r_tsp_old.fk_typ_name := OLD.fk_typ_name;
+			r_tsp_old.fk_tsg_code := OLD.fk_tsg_code;
+			r_tsp_old.code := OLD.code;
+			r_tsp_old.name := OLD.name;
+			r_tsp_old.xf_tsp_typ_name := OLD.xf_tsp_typ_name;
+			r_tsp_old.xf_tsp_tsg_code := OLD.xf_tsp_tsg_code;
+			r_tsp_old.xk_tsp_code := OLD.xk_tsp_code;
+		END IF;
 
-CREATE OR REPLACE TRIGGER trg_tsp
-INSTEAD OF INSERT OR DELETE OR UPDATE ON v_type_specialisation
+		IF INSERTING THEN 
+			CALL bot.trg_insert_tsp (r_tsp_new);
+		ELSIF UPDATING THEN
+			CALL bot.trg_update_tsp (l_cube_ctid, r_tsp_old, r_tsp_new);
+		ELSIF DELETING THEN
+			CALL bot.trg_delete_tsp (l_cube_ctid, r_tsp_old);
+		END IF;
+	END;
+$BODY$;
+
+CREATE TRIGGER trg_tsp
+INSTEAD OF INSERT OR DELETE OR UPDATE ON bot.v_type_specialisation
 FOR EACH ROW
-DECLARE
-	l_cube_rowid UROWID;
-	r_tsp_new v_type_specialisation%ROWTYPE;
-	r_tsp_old v_type_specialisation%ROWTYPE;
-BEGIN
-	IF INSERTING OR UPDATING THEN
-		r_tsp_new.cube_sequence := :NEW.cube_sequence;
-		IF :NEW.fk_bot_name = ' ' THEN
-			r_tsp_new.fk_bot_name := ' ';
-		ELSE
-			r_tsp_new.fk_bot_name := REPLACE(:NEW.fk_bot_name,' ','_');
-		END IF;
-		IF :NEW.fk_typ_name = ' ' THEN
-			r_tsp_new.fk_typ_name := ' ';
-		ELSE
-			r_tsp_new.fk_typ_name := REPLACE(:NEW.fk_typ_name,' ','_');
-		END IF;
-		IF :NEW.fk_tsg_code = ' ' THEN
-			r_tsp_new.fk_tsg_code := ' ';
-		ELSE
-			r_tsp_new.fk_tsg_code := REPLACE(:NEW.fk_tsg_code,' ','_');
-		END IF;
-		IF :NEW.code = ' ' THEN
-			r_tsp_new.code := ' ';
-		ELSE
-			r_tsp_new.code := REPLACE(:NEW.code,' ','_');
-		END IF;
-		IF :NEW.name = ' ' THEN
-			r_tsp_new.name := ' ';
-		ELSE
-			r_tsp_new.name := REPLACE(:NEW.name,' ','_');
-		END IF;
-		IF :NEW.xf_tsp_typ_name = ' ' THEN
-			r_tsp_new.xf_tsp_typ_name := ' ';
-		ELSE
-			r_tsp_new.xf_tsp_typ_name := REPLACE(:NEW.xf_tsp_typ_name,' ','_');
-		END IF;
-		IF :NEW.xf_tsp_tsg_code = ' ' THEN
-			r_tsp_new.xf_tsp_tsg_code := ' ';
-		ELSE
-			r_tsp_new.xf_tsp_tsg_code := REPLACE(:NEW.xf_tsp_tsg_code,' ','_');
-		END IF;
-		IF :NEW.xk_tsp_code = ' ' THEN
-			r_tsp_new.xk_tsp_code := ' ';
-		ELSE
-			r_tsp_new.xk_tsp_code := REPLACE(:NEW.xk_tsp_code,' ','_');
-		END IF;
-	END IF;
-	IF UPDATING THEN
-		r_tsp_new.cube_id := :OLD.cube_id;
-	END IF;
-	IF UPDATING OR DELETING THEN
-		SELECT rowid INTO l_cube_rowid FROM t_type_specialisation
-		WHERE fk_typ_name = :OLD.fk_typ_name
-		  AND fk_tsg_code = :OLD.fk_tsg_code
-		  AND code = :OLD.code;
-		r_tsp_old.cube_sequence := :OLD.cube_sequence;
-		r_tsp_old.fk_bot_name := :OLD.fk_bot_name;
-		r_tsp_old.fk_typ_name := :OLD.fk_typ_name;
-		r_tsp_old.fk_tsg_code := :OLD.fk_tsg_code;
-		r_tsp_old.code := :OLD.code;
-		r_tsp_old.name := :OLD.name;
-		r_tsp_old.xf_tsp_typ_name := :OLD.xf_tsp_typ_name;
-		r_tsp_old.xf_tsp_tsg_code := :OLD.xf_tsp_tsg_code;
-		r_tsp_old.xk_tsp_code := :OLD.xk_tsp_code;
-	END IF;
+EXECUTE PROCEDURE bot.trg_tsp();
 
-	IF INSERTING THEN 
-		pkg_bot_trg.insert_tsp (r_tsp_new);
-	ELSIF UPDATING THEN
-		pkg_bot_trg.update_tsp (l_cube_rowid, r_tsp_old, r_tsp_new);
-	ELSIF DELETING THEN
-		pkg_bot_trg.delete_tsp (l_cube_rowid, r_tsp_old);
-	END IF;
-END;
-/
-SHOW ERRORS
+CREATE FUNCTION bot.trg_atb() RETURNS trigger
+LANGUAGE plpgsql 
+AS $BODY$
+	DECLARE
+		l_cube_ctid TID;
+		r_atb_new bot.v_attribute%ROWTYPE;
+		r_atb_old bot.v_attribute%ROWTYPE;
+	BEGIN
+		IF INSERTING OR UPDATING THEN
+			r_atb_new.cube_sequence := NEW.cube_sequence;
+			IF NEW.fk_bot_name = ' ' THEN
+				r_atb_new.fk_bot_name := ' ';
+			ELSE
+				r_atb_new.fk_bot_name := REPLACE(NEW.fk_bot_name,' ','_');
+			END IF;
+			IF NEW.fk_typ_name = ' ' THEN
+				r_atb_new.fk_typ_name := ' ';
+			ELSE
+				r_atb_new.fk_typ_name := REPLACE(NEW.fk_typ_name,' ','_');
+			END IF;
+			IF NEW.name = ' ' THEN
+				r_atb_new.name := ' ';
+			ELSE
+				r_atb_new.name := REPLACE(NEW.name,' ','_');
+			END IF;
+			r_atb_new.primary_key := NEW.primary_key;
+			IF NEW.code_display_key = ' ' THEN
+				r_atb_new.code_display_key := ' ';
+			ELSE
+				r_atb_new.code_display_key := REPLACE(NEW.code_display_key,' ','_');
+			END IF;
+			r_atb_new.code_foreign_key := NEW.code_foreign_key;
+			r_atb_new.flag_hidden := NEW.flag_hidden;
+			r_atb_new.default_value := NEW.default_value;
+			r_atb_new.unchangeable := NEW.unchangeable;
+			IF NEW.xk_itp_name = ' ' THEN
+				r_atb_new.xk_itp_name := ' ';
+			ELSE
+				r_atb_new.xk_itp_name := REPLACE(NEW.xk_itp_name,' ','_');
+			END IF;
+		END IF;
+		IF UPDATING THEN
+			r_atb_new.cube_id := OLD.cube_id;
+		END IF;
+		IF UPDATING OR DELETING THEN
+			SELECT ctid INTO l_cube_ctid FROM t_attribute
+			WHERE fk_typ_name = OLD.fk_typ_name
+			AND name = OLD.name;
+			r_atb_old.cube_sequence := OLD.cube_sequence;
+			r_atb_old.fk_bot_name := OLD.fk_bot_name;
+			r_atb_old.fk_typ_name := OLD.fk_typ_name;
+			r_atb_old.name := OLD.name;
+			r_atb_old.primary_key := OLD.primary_key;
+			r_atb_old.code_display_key := OLD.code_display_key;
+			r_atb_old.code_foreign_key := OLD.code_foreign_key;
+			r_atb_old.flag_hidden := OLD.flag_hidden;
+			r_atb_old.default_value := OLD.default_value;
+			r_atb_old.unchangeable := OLD.unchangeable;
+			r_atb_old.xk_itp_name := OLD.xk_itp_name;
+		END IF;
 
-CREATE OR REPLACE TRIGGER trg_atb
-INSTEAD OF INSERT OR DELETE OR UPDATE ON v_attribute
+		IF INSERTING THEN 
+			CALL bot.trg_insert_atb (r_atb_new);
+		ELSIF UPDATING THEN
+			CALL bot.trg_update_atb (l_cube_ctid, r_atb_old, r_atb_new);
+		ELSIF DELETING THEN
+			CALL bot.trg_delete_atb (l_cube_ctid, r_atb_old);
+		END IF;
+	END;
+$BODY$;
+
+CREATE TRIGGER trg_atb
+INSTEAD OF INSERT OR DELETE OR UPDATE ON bot.v_attribute
 FOR EACH ROW
-DECLARE
-	l_cube_rowid UROWID;
-	r_atb_new v_attribute%ROWTYPE;
-	r_atb_old v_attribute%ROWTYPE;
-BEGIN
-	IF INSERTING OR UPDATING THEN
-		r_atb_new.cube_sequence := :NEW.cube_sequence;
-		IF :NEW.fk_bot_name = ' ' THEN
-			r_atb_new.fk_bot_name := ' ';
-		ELSE
-			r_atb_new.fk_bot_name := REPLACE(:NEW.fk_bot_name,' ','_');
-		END IF;
-		IF :NEW.fk_typ_name = ' ' THEN
-			r_atb_new.fk_typ_name := ' ';
-		ELSE
-			r_atb_new.fk_typ_name := REPLACE(:NEW.fk_typ_name,' ','_');
-		END IF;
-		IF :NEW.name = ' ' THEN
-			r_atb_new.name := ' ';
-		ELSE
-			r_atb_new.name := REPLACE(:NEW.name,' ','_');
-		END IF;
-		r_atb_new.primary_key := :NEW.primary_key;
-		IF :NEW.code_display_key = ' ' THEN
-			r_atb_new.code_display_key := ' ';
-		ELSE
-			r_atb_new.code_display_key := REPLACE(:NEW.code_display_key,' ','_');
-		END IF;
-		r_atb_new.code_foreign_key := :NEW.code_foreign_key;
-		r_atb_new.flag_hidden := :NEW.flag_hidden;
-		r_atb_new.default_value := :NEW.default_value;
-		r_atb_new.unchangeable := :NEW.unchangeable;
-		IF :NEW.xk_itp_name = ' ' THEN
-			r_atb_new.xk_itp_name := ' ';
-		ELSE
-			r_atb_new.xk_itp_name := REPLACE(:NEW.xk_itp_name,' ','_');
-		END IF;
-	END IF;
-	IF UPDATING THEN
-		r_atb_new.cube_id := :OLD.cube_id;
-	END IF;
-	IF UPDATING OR DELETING THEN
-		SELECT rowid INTO l_cube_rowid FROM t_attribute
-		WHERE fk_typ_name = :OLD.fk_typ_name
-		  AND name = :OLD.name;
-		r_atb_old.cube_sequence := :OLD.cube_sequence;
-		r_atb_old.fk_bot_name := :OLD.fk_bot_name;
-		r_atb_old.fk_typ_name := :OLD.fk_typ_name;
-		r_atb_old.name := :OLD.name;
-		r_atb_old.primary_key := :OLD.primary_key;
-		r_atb_old.code_display_key := :OLD.code_display_key;
-		r_atb_old.code_foreign_key := :OLD.code_foreign_key;
-		r_atb_old.flag_hidden := :OLD.flag_hidden;
-		r_atb_old.default_value := :OLD.default_value;
-		r_atb_old.unchangeable := :OLD.unchangeable;
-		r_atb_old.xk_itp_name := :OLD.xk_itp_name;
-	END IF;
+EXECUTE PROCEDURE bot.trg_atb();
 
-	IF INSERTING THEN 
-		pkg_bot_trg.insert_atb (r_atb_new);
-	ELSIF UPDATING THEN
-		pkg_bot_trg.update_atb (l_cube_rowid, r_atb_old, r_atb_new);
-	ELSIF DELETING THEN
-		pkg_bot_trg.delete_atb (l_cube_rowid, r_atb_old);
-	END IF;
-END;
-/
-SHOW ERRORS
+CREATE FUNCTION bot.trg_der() RETURNS trigger
+LANGUAGE plpgsql 
+AS $BODY$
+	DECLARE
+		l_cube_ctid TID;
+		r_der_new bot.v_derivation%ROWTYPE;
+		r_der_old bot.v_derivation%ROWTYPE;
+	BEGIN
+		IF INSERTING OR UPDATING THEN
+			IF NEW.fk_bot_name = ' ' THEN
+				r_der_new.fk_bot_name := ' ';
+			ELSE
+				r_der_new.fk_bot_name := REPLACE(NEW.fk_bot_name,' ','_');
+			END IF;
+			IF NEW.fk_typ_name = ' ' THEN
+				r_der_new.fk_typ_name := ' ';
+			ELSE
+				r_der_new.fk_typ_name := REPLACE(NEW.fk_typ_name,' ','_');
+			END IF;
+			IF NEW.fk_atb_name = ' ' THEN
+				r_der_new.fk_atb_name := ' ';
+			ELSE
+				r_der_new.fk_atb_name := REPLACE(NEW.fk_atb_name,' ','_');
+			END IF;
+			IF NEW.cube_tsg_type = ' ' THEN
+				r_der_new.cube_tsg_type := ' ';
+			ELSE
+				r_der_new.cube_tsg_type := REPLACE(NEW.cube_tsg_type,' ','_');
+			END IF;
+			IF NEW.aggregate_function = ' ' THEN
+				r_der_new.aggregate_function := ' ';
+			ELSE
+				r_der_new.aggregate_function := REPLACE(NEW.aggregate_function,' ','_');
+			END IF;
+			IF NEW.xk_typ_name = ' ' THEN
+				r_der_new.xk_typ_name := ' ';
+			ELSE
+				r_der_new.xk_typ_name := REPLACE(NEW.xk_typ_name,' ','_');
+			END IF;
+			IF NEW.xk_typ_name_1 = ' ' THEN
+				r_der_new.xk_typ_name_1 := ' ';
+			ELSE
+				r_der_new.xk_typ_name_1 := REPLACE(NEW.xk_typ_name_1,' ','_');
+			END IF;
+		END IF;
+		IF UPDATING THEN
+			r_der_new.cube_id := OLD.cube_id;
+		END IF;
+		IF UPDATING OR DELETING THEN
+			SELECT ctid INTO l_cube_ctid FROM t_derivation
+			WHERE fk_typ_name = OLD.fk_typ_name
+			AND fk_atb_name = OLD.fk_atb_name;
+			r_der_old.fk_bot_name := OLD.fk_bot_name;
+			r_der_old.fk_typ_name := OLD.fk_typ_name;
+			r_der_old.fk_atb_name := OLD.fk_atb_name;
+			r_der_old.cube_tsg_type := OLD.cube_tsg_type;
+			r_der_old.aggregate_function := OLD.aggregate_function;
+			r_der_old.xk_typ_name := OLD.xk_typ_name;
+			r_der_old.xk_typ_name_1 := OLD.xk_typ_name_1;
+		END IF;
 
-CREATE OR REPLACE TRIGGER trg_der
-INSTEAD OF INSERT OR DELETE OR UPDATE ON v_derivation
+		IF INSERTING THEN 
+			CALL bot.trg_insert_der (r_der_new);
+		ELSIF UPDATING THEN
+			CALL bot.trg_update_der (l_cube_ctid, r_der_old, r_der_new);
+		ELSIF DELETING THEN
+			CALL bot.trg_delete_der (l_cube_ctid, r_der_old);
+		END IF;
+	END;
+$BODY$;
+
+CREATE TRIGGER trg_der
+INSTEAD OF INSERT OR DELETE OR UPDATE ON bot.v_derivation
 FOR EACH ROW
-DECLARE
-	l_cube_rowid UROWID;
-	r_der_new v_derivation%ROWTYPE;
-	r_der_old v_derivation%ROWTYPE;
-BEGIN
-	IF INSERTING OR UPDATING THEN
-		IF :NEW.fk_bot_name = ' ' THEN
-			r_der_new.fk_bot_name := ' ';
-		ELSE
-			r_der_new.fk_bot_name := REPLACE(:NEW.fk_bot_name,' ','_');
-		END IF;
-		IF :NEW.fk_typ_name = ' ' THEN
-			r_der_new.fk_typ_name := ' ';
-		ELSE
-			r_der_new.fk_typ_name := REPLACE(:NEW.fk_typ_name,' ','_');
-		END IF;
-		IF :NEW.fk_atb_name = ' ' THEN
-			r_der_new.fk_atb_name := ' ';
-		ELSE
-			r_der_new.fk_atb_name := REPLACE(:NEW.fk_atb_name,' ','_');
-		END IF;
-		IF :NEW.cube_tsg_type = ' ' THEN
-			r_der_new.cube_tsg_type := ' ';
-		ELSE
-			r_der_new.cube_tsg_type := REPLACE(:NEW.cube_tsg_type,' ','_');
-		END IF;
-		IF :NEW.aggregate_function = ' ' THEN
-			r_der_new.aggregate_function := ' ';
-		ELSE
-			r_der_new.aggregate_function := REPLACE(:NEW.aggregate_function,' ','_');
-		END IF;
-		IF :NEW.xk_typ_name = ' ' THEN
-			r_der_new.xk_typ_name := ' ';
-		ELSE
-			r_der_new.xk_typ_name := REPLACE(:NEW.xk_typ_name,' ','_');
-		END IF;
-		IF :NEW.xk_typ_name_1 = ' ' THEN
-			r_der_new.xk_typ_name_1 := ' ';
-		ELSE
-			r_der_new.xk_typ_name_1 := REPLACE(:NEW.xk_typ_name_1,' ','_');
-		END IF;
-	END IF;
-	IF UPDATING THEN
-		r_der_new.cube_id := :OLD.cube_id;
-	END IF;
-	IF UPDATING OR DELETING THEN
-		SELECT rowid INTO l_cube_rowid FROM t_derivation
-		WHERE fk_typ_name = :OLD.fk_typ_name
-		  AND fk_atb_name = :OLD.fk_atb_name;
-		r_der_old.fk_bot_name := :OLD.fk_bot_name;
-		r_der_old.fk_typ_name := :OLD.fk_typ_name;
-		r_der_old.fk_atb_name := :OLD.fk_atb_name;
-		r_der_old.cube_tsg_type := :OLD.cube_tsg_type;
-		r_der_old.aggregate_function := :OLD.aggregate_function;
-		r_der_old.xk_typ_name := :OLD.xk_typ_name;
-		r_der_old.xk_typ_name_1 := :OLD.xk_typ_name_1;
-	END IF;
+EXECUTE PROCEDURE bot.trg_der();
 
-	IF INSERTING THEN 
-		pkg_bot_trg.insert_der (r_der_new);
-	ELSIF UPDATING THEN
-		pkg_bot_trg.update_der (l_cube_rowid, r_der_old, r_der_new);
-	ELSIF DELETING THEN
-		pkg_bot_trg.delete_der (l_cube_rowid, r_der_old);
-	END IF;
-END;
-/
-SHOW ERRORS
+CREATE FUNCTION bot.trg_dca() RETURNS trigger
+LANGUAGE plpgsql 
+AS $BODY$
+	DECLARE
+		l_cube_ctid TID;
+		r_dca_new bot.v_description_attribute%ROWTYPE;
+		r_dca_old bot.v_description_attribute%ROWTYPE;
+	BEGIN
+		IF INSERTING OR UPDATING THEN
+			IF NEW.fk_bot_name = ' ' THEN
+				r_dca_new.fk_bot_name := ' ';
+			ELSE
+				r_dca_new.fk_bot_name := REPLACE(NEW.fk_bot_name,' ','_');
+			END IF;
+			IF NEW.fk_typ_name = ' ' THEN
+				r_dca_new.fk_typ_name := ' ';
+			ELSE
+				r_dca_new.fk_typ_name := REPLACE(NEW.fk_typ_name,' ','_');
+			END IF;
+			IF NEW.fk_atb_name = ' ' THEN
+				r_dca_new.fk_atb_name := ' ';
+			ELSE
+				r_dca_new.fk_atb_name := REPLACE(NEW.fk_atb_name,' ','_');
+			END IF;
+			r_dca_new.text := NEW.text;
+		END IF;
+		IF UPDATING THEN
+			r_dca_new.cube_id := OLD.cube_id;
+		END IF;
+		IF UPDATING OR DELETING THEN
+			SELECT ctid INTO l_cube_ctid FROM t_description_attribute
+			WHERE fk_typ_name = OLD.fk_typ_name
+			AND fk_atb_name = OLD.fk_atb_name;
+			r_dca_old.fk_bot_name := OLD.fk_bot_name;
+			r_dca_old.fk_typ_name := OLD.fk_typ_name;
+			r_dca_old.fk_atb_name := OLD.fk_atb_name;
+			r_dca_old.text := OLD.text;
+		END IF;
 
-CREATE OR REPLACE TRIGGER trg_dca
-INSTEAD OF INSERT OR DELETE OR UPDATE ON v_description_attribute
+		IF INSERTING THEN 
+			CALL bot.trg_insert_dca (r_dca_new);
+		ELSIF UPDATING THEN
+			CALL bot.trg_update_dca (l_cube_ctid, r_dca_old, r_dca_new);
+		ELSIF DELETING THEN
+			CALL bot.trg_delete_dca (l_cube_ctid, r_dca_old);
+		END IF;
+	END;
+$BODY$;
+
+CREATE TRIGGER trg_dca
+INSTEAD OF INSERT OR DELETE OR UPDATE ON bot.v_description_attribute
 FOR EACH ROW
-DECLARE
-	l_cube_rowid UROWID;
-	r_dca_new v_description_attribute%ROWTYPE;
-	r_dca_old v_description_attribute%ROWTYPE;
-BEGIN
-	IF INSERTING OR UPDATING THEN
-		IF :NEW.fk_bot_name = ' ' THEN
-			r_dca_new.fk_bot_name := ' ';
-		ELSE
-			r_dca_new.fk_bot_name := REPLACE(:NEW.fk_bot_name,' ','_');
-		END IF;
-		IF :NEW.fk_typ_name = ' ' THEN
-			r_dca_new.fk_typ_name := ' ';
-		ELSE
-			r_dca_new.fk_typ_name := REPLACE(:NEW.fk_typ_name,' ','_');
-		END IF;
-		IF :NEW.fk_atb_name = ' ' THEN
-			r_dca_new.fk_atb_name := ' ';
-		ELSE
-			r_dca_new.fk_atb_name := REPLACE(:NEW.fk_atb_name,' ','_');
-		END IF;
-		r_dca_new.text := :NEW.text;
-	END IF;
-	IF UPDATING THEN
-		r_dca_new.cube_id := :OLD.cube_id;
-	END IF;
-	IF UPDATING OR DELETING THEN
-		SELECT rowid INTO l_cube_rowid FROM t_description_attribute
-		WHERE fk_typ_name = :OLD.fk_typ_name
-		  AND fk_atb_name = :OLD.fk_atb_name;
-		r_dca_old.fk_bot_name := :OLD.fk_bot_name;
-		r_dca_old.fk_typ_name := :OLD.fk_typ_name;
-		r_dca_old.fk_atb_name := :OLD.fk_atb_name;
-		r_dca_old.text := :OLD.text;
-	END IF;
+EXECUTE PROCEDURE bot.trg_dca();
 
-	IF INSERTING THEN 
-		pkg_bot_trg.insert_dca (r_dca_new);
-	ELSIF UPDATING THEN
-		pkg_bot_trg.update_dca (l_cube_rowid, r_dca_old, r_dca_new);
-	ELSIF DELETING THEN
-		pkg_bot_trg.delete_dca (l_cube_rowid, r_dca_old);
-	END IF;
-END;
-/
-SHOW ERRORS
+CREATE FUNCTION bot.trg_rta() RETURNS trigger
+LANGUAGE plpgsql 
+AS $BODY$
+	DECLARE
+		l_cube_ctid TID;
+		r_rta_new bot.v_restriction_type_spec_atb%ROWTYPE;
+		r_rta_old bot.v_restriction_type_spec_atb%ROWTYPE;
+	BEGIN
+		IF INSERTING OR UPDATING THEN
+			IF NEW.fk_bot_name = ' ' THEN
+				r_rta_new.fk_bot_name := ' ';
+			ELSE
+				r_rta_new.fk_bot_name := REPLACE(NEW.fk_bot_name,' ','_');
+			END IF;
+			IF NEW.fk_typ_name = ' ' THEN
+				r_rta_new.fk_typ_name := ' ';
+			ELSE
+				r_rta_new.fk_typ_name := REPLACE(NEW.fk_typ_name,' ','_');
+			END IF;
+			IF NEW.fk_atb_name = ' ' THEN
+				r_rta_new.fk_atb_name := ' ';
+			ELSE
+				r_rta_new.fk_atb_name := REPLACE(NEW.fk_atb_name,' ','_');
+			END IF;
+			IF NEW.include_or_exclude = ' ' THEN
+				r_rta_new.include_or_exclude := ' ';
+			ELSE
+				r_rta_new.include_or_exclude := REPLACE(NEW.include_or_exclude,' ','_');
+			END IF;
+			IF NEW.xf_tsp_typ_name = ' ' THEN
+				r_rta_new.xf_tsp_typ_name := ' ';
+			ELSE
+				r_rta_new.xf_tsp_typ_name := REPLACE(NEW.xf_tsp_typ_name,' ','_');
+			END IF;
+			IF NEW.xf_tsp_tsg_code = ' ' THEN
+				r_rta_new.xf_tsp_tsg_code := ' ';
+			ELSE
+				r_rta_new.xf_tsp_tsg_code := REPLACE(NEW.xf_tsp_tsg_code,' ','_');
+			END IF;
+			IF NEW.xk_tsp_code = ' ' THEN
+				r_rta_new.xk_tsp_code := ' ';
+			ELSE
+				r_rta_new.xk_tsp_code := REPLACE(NEW.xk_tsp_code,' ','_');
+			END IF;
+		END IF;
+		IF UPDATING THEN
+			r_rta_new.cube_id := OLD.cube_id;
+		END IF;
+		IF UPDATING OR DELETING THEN
+			SELECT ctid INTO l_cube_ctid FROM t_restriction_type_spec_atb
+			WHERE fk_typ_name = OLD.fk_typ_name
+			AND fk_atb_name = OLD.fk_atb_name
+			AND xf_tsp_typ_name = OLD.xf_tsp_typ_name
+			AND xf_tsp_tsg_code = OLD.xf_tsp_tsg_code
+			AND xk_tsp_code = OLD.xk_tsp_code;
+			r_rta_old.fk_bot_name := OLD.fk_bot_name;
+			r_rta_old.fk_typ_name := OLD.fk_typ_name;
+			r_rta_old.fk_atb_name := OLD.fk_atb_name;
+			r_rta_old.include_or_exclude := OLD.include_or_exclude;
+			r_rta_old.xf_tsp_typ_name := OLD.xf_tsp_typ_name;
+			r_rta_old.xf_tsp_tsg_code := OLD.xf_tsp_tsg_code;
+			r_rta_old.xk_tsp_code := OLD.xk_tsp_code;
+		END IF;
 
-CREATE OR REPLACE TRIGGER trg_rta
-INSTEAD OF INSERT OR DELETE OR UPDATE ON v_restriction_type_spec_atb
+		IF INSERTING THEN 
+			CALL bot.trg_insert_rta (r_rta_new);
+		ELSIF UPDATING THEN
+			CALL bot.trg_update_rta (l_cube_ctid, r_rta_old, r_rta_new);
+		ELSIF DELETING THEN
+			CALL bot.trg_delete_rta (l_cube_ctid, r_rta_old);
+		END IF;
+	END;
+$BODY$;
+
+CREATE TRIGGER trg_rta
+INSTEAD OF INSERT OR DELETE OR UPDATE ON bot.v_restriction_type_spec_atb
 FOR EACH ROW
-DECLARE
-	l_cube_rowid UROWID;
-	r_rta_new v_restriction_type_spec_atb%ROWTYPE;
-	r_rta_old v_restriction_type_spec_atb%ROWTYPE;
-BEGIN
-	IF INSERTING OR UPDATING THEN
-		IF :NEW.fk_bot_name = ' ' THEN
-			r_rta_new.fk_bot_name := ' ';
-		ELSE
-			r_rta_new.fk_bot_name := REPLACE(:NEW.fk_bot_name,' ','_');
-		END IF;
-		IF :NEW.fk_typ_name = ' ' THEN
-			r_rta_new.fk_typ_name := ' ';
-		ELSE
-			r_rta_new.fk_typ_name := REPLACE(:NEW.fk_typ_name,' ','_');
-		END IF;
-		IF :NEW.fk_atb_name = ' ' THEN
-			r_rta_new.fk_atb_name := ' ';
-		ELSE
-			r_rta_new.fk_atb_name := REPLACE(:NEW.fk_atb_name,' ','_');
-		END IF;
-		IF :NEW.include_or_exclude = ' ' THEN
-			r_rta_new.include_or_exclude := ' ';
-		ELSE
-			r_rta_new.include_or_exclude := REPLACE(:NEW.include_or_exclude,' ','_');
-		END IF;
-		IF :NEW.xf_tsp_typ_name = ' ' THEN
-			r_rta_new.xf_tsp_typ_name := ' ';
-		ELSE
-			r_rta_new.xf_tsp_typ_name := REPLACE(:NEW.xf_tsp_typ_name,' ','_');
-		END IF;
-		IF :NEW.xf_tsp_tsg_code = ' ' THEN
-			r_rta_new.xf_tsp_tsg_code := ' ';
-		ELSE
-			r_rta_new.xf_tsp_tsg_code := REPLACE(:NEW.xf_tsp_tsg_code,' ','_');
-		END IF;
-		IF :NEW.xk_tsp_code = ' ' THEN
-			r_rta_new.xk_tsp_code := ' ';
-		ELSE
-			r_rta_new.xk_tsp_code := REPLACE(:NEW.xk_tsp_code,' ','_');
-		END IF;
-	END IF;
-	IF UPDATING THEN
-		r_rta_new.cube_id := :OLD.cube_id;
-	END IF;
-	IF UPDATING OR DELETING THEN
-		SELECT rowid INTO l_cube_rowid FROM t_restriction_type_spec_atb
-		WHERE fk_typ_name = :OLD.fk_typ_name
-		  AND fk_atb_name = :OLD.fk_atb_name
-		  AND xf_tsp_typ_name = :OLD.xf_tsp_typ_name
-		  AND xf_tsp_tsg_code = :OLD.xf_tsp_tsg_code
-		  AND xk_tsp_code = :OLD.xk_tsp_code;
-		r_rta_old.fk_bot_name := :OLD.fk_bot_name;
-		r_rta_old.fk_typ_name := :OLD.fk_typ_name;
-		r_rta_old.fk_atb_name := :OLD.fk_atb_name;
-		r_rta_old.include_or_exclude := :OLD.include_or_exclude;
-		r_rta_old.xf_tsp_typ_name := :OLD.xf_tsp_typ_name;
-		r_rta_old.xf_tsp_tsg_code := :OLD.xf_tsp_tsg_code;
-		r_rta_old.xk_tsp_code := :OLD.xk_tsp_code;
-	END IF;
+EXECUTE PROCEDURE bot.trg_rta();
 
-	IF INSERTING THEN 
-		pkg_bot_trg.insert_rta (r_rta_new);
-	ELSIF UPDATING THEN
-		pkg_bot_trg.update_rta (l_cube_rowid, r_rta_old, r_rta_new);
-	ELSIF DELETING THEN
-		pkg_bot_trg.delete_rta (l_cube_rowid, r_rta_old);
-	END IF;
-END;
-/
-SHOW ERRORS
+CREATE FUNCTION bot.trg_ref() RETURNS trigger
+LANGUAGE plpgsql 
+AS $BODY$
+	DECLARE
+		l_cube_ctid TID;
+		r_ref_new bot.v_reference%ROWTYPE;
+		r_ref_old bot.v_reference%ROWTYPE;
+	BEGIN
+		IF INSERTING OR UPDATING THEN
+			r_ref_new.cube_sequence := NEW.cube_sequence;
+			IF NEW.fk_bot_name = ' ' THEN
+				r_ref_new.fk_bot_name := ' ';
+			ELSE
+				r_ref_new.fk_bot_name := REPLACE(NEW.fk_bot_name,' ','_');
+			END IF;
+			IF NEW.fk_typ_name = ' ' THEN
+				r_ref_new.fk_typ_name := ' ';
+			ELSE
+				r_ref_new.fk_typ_name := REPLACE(NEW.fk_typ_name,' ','_');
+			END IF;
+			IF NEW.name = ' ' THEN
+				r_ref_new.name := ' ';
+			ELSE
+				r_ref_new.name := REPLACE(NEW.name,' ','_');
+			END IF;
+			r_ref_new.primary_key := NEW.primary_key;
+			IF NEW.code_display_key = ' ' THEN
+				r_ref_new.code_display_key := ' ';
+			ELSE
+				r_ref_new.code_display_key := REPLACE(NEW.code_display_key,' ','_');
+			END IF;
+			r_ref_new.sequence := NEW.sequence;
+			IF NEW.scope = ' ' THEN
+				r_ref_new.scope := ' ';
+			ELSE
+				r_ref_new.scope := REPLACE(NEW.scope,' ','_');
+			END IF;
+			r_ref_new.unchangeable := NEW.unchangeable;
+			IF NEW.within_scope_extension = ' ' THEN
+				r_ref_new.within_scope_extension := ' ';
+			ELSE
+				r_ref_new.within_scope_extension := REPLACE(NEW.within_scope_extension,' ','_');
+			END IF;
+			IF NEW.cube_tsg_int_ext = ' ' THEN
+				r_ref_new.cube_tsg_int_ext := ' ';
+			ELSE
+				r_ref_new.cube_tsg_int_ext := REPLACE(NEW.cube_tsg_int_ext,' ','_');
+			END IF;
+			IF NEW.xk_bot_name = ' ' THEN
+				r_ref_new.xk_bot_name := ' ';
+			ELSE
+				r_ref_new.xk_bot_name := REPLACE(NEW.xk_bot_name,' ','_');
+			END IF;
+			IF NEW.xk_typ_name = ' ' THEN
+				r_ref_new.xk_typ_name := ' ';
+			ELSE
+				r_ref_new.xk_typ_name := REPLACE(NEW.xk_typ_name,' ','_');
+			END IF;
+			IF NEW.xk_typ_name_1 = ' ' THEN
+				r_ref_new.xk_typ_name_1 := ' ';
+			ELSE
+				r_ref_new.xk_typ_name_1 := REPLACE(NEW.xk_typ_name_1,' ','_');
+			END IF;
+		END IF;
+		IF UPDATING THEN
+			r_ref_new.cube_id := OLD.cube_id;
+		END IF;
+		IF UPDATING OR DELETING THEN
+			SELECT ctid INTO l_cube_ctid FROM t_reference
+			WHERE fk_typ_name = OLD.fk_typ_name
+			AND sequence = OLD.sequence
+			AND xk_bot_name = OLD.xk_bot_name
+			AND xk_typ_name = OLD.xk_typ_name;
+			r_ref_old.cube_sequence := OLD.cube_sequence;
+			r_ref_old.fk_bot_name := OLD.fk_bot_name;
+			r_ref_old.fk_typ_name := OLD.fk_typ_name;
+			r_ref_old.name := OLD.name;
+			r_ref_old.primary_key := OLD.primary_key;
+			r_ref_old.code_display_key := OLD.code_display_key;
+			r_ref_old.sequence := OLD.sequence;
+			r_ref_old.scope := OLD.scope;
+			r_ref_old.unchangeable := OLD.unchangeable;
+			r_ref_old.within_scope_extension := OLD.within_scope_extension;
+			r_ref_old.cube_tsg_int_ext := OLD.cube_tsg_int_ext;
+			r_ref_old.xk_bot_name := OLD.xk_bot_name;
+			r_ref_old.xk_typ_name := OLD.xk_typ_name;
+			r_ref_old.xk_typ_name_1 := OLD.xk_typ_name_1;
+		END IF;
 
-CREATE OR REPLACE TRIGGER trg_ref
-INSTEAD OF INSERT OR DELETE OR UPDATE ON v_reference
+		IF INSERTING THEN 
+			CALL bot.trg_insert_ref (r_ref_new);
+		ELSIF UPDATING THEN
+			CALL bot.trg_update_ref (l_cube_ctid, r_ref_old, r_ref_new);
+		ELSIF DELETING THEN
+			CALL bot.trg_delete_ref (l_cube_ctid, r_ref_old);
+		END IF;
+	END;
+$BODY$;
+
+CREATE TRIGGER trg_ref
+INSTEAD OF INSERT OR DELETE OR UPDATE ON bot.v_reference
 FOR EACH ROW
-DECLARE
-	l_cube_rowid UROWID;
-	r_ref_new v_reference%ROWTYPE;
-	r_ref_old v_reference%ROWTYPE;
-BEGIN
-	IF INSERTING OR UPDATING THEN
-		r_ref_new.cube_sequence := :NEW.cube_sequence;
-		IF :NEW.fk_bot_name = ' ' THEN
-			r_ref_new.fk_bot_name := ' ';
-		ELSE
-			r_ref_new.fk_bot_name := REPLACE(:NEW.fk_bot_name,' ','_');
-		END IF;
-		IF :NEW.fk_typ_name = ' ' THEN
-			r_ref_new.fk_typ_name := ' ';
-		ELSE
-			r_ref_new.fk_typ_name := REPLACE(:NEW.fk_typ_name,' ','_');
-		END IF;
-		IF :NEW.name = ' ' THEN
-			r_ref_new.name := ' ';
-		ELSE
-			r_ref_new.name := REPLACE(:NEW.name,' ','_');
-		END IF;
-		r_ref_new.primary_key := :NEW.primary_key;
-		IF :NEW.code_display_key = ' ' THEN
-			r_ref_new.code_display_key := ' ';
-		ELSE
-			r_ref_new.code_display_key := REPLACE(:NEW.code_display_key,' ','_');
-		END IF;
-		r_ref_new.sequence := :NEW.sequence;
-		IF :NEW.scope = ' ' THEN
-			r_ref_new.scope := ' ';
-		ELSE
-			r_ref_new.scope := REPLACE(:NEW.scope,' ','_');
-		END IF;
-		r_ref_new.unchangeable := :NEW.unchangeable;
-		IF :NEW.within_scope_extension = ' ' THEN
-			r_ref_new.within_scope_extension := ' ';
-		ELSE
-			r_ref_new.within_scope_extension := REPLACE(:NEW.within_scope_extension,' ','_');
-		END IF;
-		IF :NEW.cube_tsg_int_ext = ' ' THEN
-			r_ref_new.cube_tsg_int_ext := ' ';
-		ELSE
-			r_ref_new.cube_tsg_int_ext := REPLACE(:NEW.cube_tsg_int_ext,' ','_');
-		END IF;
-		IF :NEW.xk_bot_name = ' ' THEN
-			r_ref_new.xk_bot_name := ' ';
-		ELSE
-			r_ref_new.xk_bot_name := REPLACE(:NEW.xk_bot_name,' ','_');
-		END IF;
-		IF :NEW.xk_typ_name = ' ' THEN
-			r_ref_new.xk_typ_name := ' ';
-		ELSE
-			r_ref_new.xk_typ_name := REPLACE(:NEW.xk_typ_name,' ','_');
-		END IF;
-		IF :NEW.xk_typ_name_1 = ' ' THEN
-			r_ref_new.xk_typ_name_1 := ' ';
-		ELSE
-			r_ref_new.xk_typ_name_1 := REPLACE(:NEW.xk_typ_name_1,' ','_');
-		END IF;
-	END IF;
-	IF UPDATING THEN
-		r_ref_new.cube_id := :OLD.cube_id;
-	END IF;
-	IF UPDATING OR DELETING THEN
-		SELECT rowid INTO l_cube_rowid FROM t_reference
-		WHERE fk_typ_name = :OLD.fk_typ_name
-		  AND sequence = :OLD.sequence
-		  AND xk_bot_name = :OLD.xk_bot_name
-		  AND xk_typ_name = :OLD.xk_typ_name;
-		r_ref_old.cube_sequence := :OLD.cube_sequence;
-		r_ref_old.fk_bot_name := :OLD.fk_bot_name;
-		r_ref_old.fk_typ_name := :OLD.fk_typ_name;
-		r_ref_old.name := :OLD.name;
-		r_ref_old.primary_key := :OLD.primary_key;
-		r_ref_old.code_display_key := :OLD.code_display_key;
-		r_ref_old.sequence := :OLD.sequence;
-		r_ref_old.scope := :OLD.scope;
-		r_ref_old.unchangeable := :OLD.unchangeable;
-		r_ref_old.within_scope_extension := :OLD.within_scope_extension;
-		r_ref_old.cube_tsg_int_ext := :OLD.cube_tsg_int_ext;
-		r_ref_old.xk_bot_name := :OLD.xk_bot_name;
-		r_ref_old.xk_typ_name := :OLD.xk_typ_name;
-		r_ref_old.xk_typ_name_1 := :OLD.xk_typ_name_1;
-	END IF;
+EXECUTE PROCEDURE bot.trg_ref();
 
-	IF INSERTING THEN 
-		pkg_bot_trg.insert_ref (r_ref_new);
-	ELSIF UPDATING THEN
-		pkg_bot_trg.update_ref (l_cube_rowid, r_ref_old, r_ref_new);
-	ELSIF DELETING THEN
-		pkg_bot_trg.delete_ref (l_cube_rowid, r_ref_old);
-	END IF;
-END;
-/
-SHOW ERRORS
+CREATE FUNCTION bot.trg_dcr() RETURNS trigger
+LANGUAGE plpgsql 
+AS $BODY$
+	DECLARE
+		l_cube_ctid TID;
+		r_dcr_new bot.v_description_reference%ROWTYPE;
+		r_dcr_old bot.v_description_reference%ROWTYPE;
+	BEGIN
+		IF INSERTING OR UPDATING THEN
+			IF NEW.fk_bot_name = ' ' THEN
+				r_dcr_new.fk_bot_name := ' ';
+			ELSE
+				r_dcr_new.fk_bot_name := REPLACE(NEW.fk_bot_name,' ','_');
+			END IF;
+			IF NEW.fk_typ_name = ' ' THEN
+				r_dcr_new.fk_typ_name := ' ';
+			ELSE
+				r_dcr_new.fk_typ_name := REPLACE(NEW.fk_typ_name,' ','_');
+			END IF;
+			r_dcr_new.fk_ref_sequence := NEW.fk_ref_sequence;
+			IF NEW.fk_ref_bot_name = ' ' THEN
+				r_dcr_new.fk_ref_bot_name := ' ';
+			ELSE
+				r_dcr_new.fk_ref_bot_name := REPLACE(NEW.fk_ref_bot_name,' ','_');
+			END IF;
+			IF NEW.fk_ref_typ_name = ' ' THEN
+				r_dcr_new.fk_ref_typ_name := ' ';
+			ELSE
+				r_dcr_new.fk_ref_typ_name := REPLACE(NEW.fk_ref_typ_name,' ','_');
+			END IF;
+			r_dcr_new.text := NEW.text;
+		END IF;
+		IF UPDATING THEN
+			r_dcr_new.cube_id := OLD.cube_id;
+		END IF;
+		IF UPDATING OR DELETING THEN
+			SELECT ctid INTO l_cube_ctid FROM t_description_reference
+			WHERE fk_typ_name = OLD.fk_typ_name
+			AND fk_ref_sequence = OLD.fk_ref_sequence
+			AND fk_ref_bot_name = OLD.fk_ref_bot_name
+			AND fk_ref_typ_name = OLD.fk_ref_typ_name;
+			r_dcr_old.fk_bot_name := OLD.fk_bot_name;
+			r_dcr_old.fk_typ_name := OLD.fk_typ_name;
+			r_dcr_old.fk_ref_sequence := OLD.fk_ref_sequence;
+			r_dcr_old.fk_ref_bot_name := OLD.fk_ref_bot_name;
+			r_dcr_old.fk_ref_typ_name := OLD.fk_ref_typ_name;
+			r_dcr_old.text := OLD.text;
+		END IF;
 
-CREATE OR REPLACE TRIGGER trg_dcr
-INSTEAD OF INSERT OR DELETE OR UPDATE ON v_description_reference
+		IF INSERTING THEN 
+			CALL bot.trg_insert_dcr (r_dcr_new);
+		ELSIF UPDATING THEN
+			CALL bot.trg_update_dcr (l_cube_ctid, r_dcr_old, r_dcr_new);
+		ELSIF DELETING THEN
+			CALL bot.trg_delete_dcr (l_cube_ctid, r_dcr_old);
+		END IF;
+	END;
+$BODY$;
+
+CREATE TRIGGER trg_dcr
+INSTEAD OF INSERT OR DELETE OR UPDATE ON bot.v_description_reference
 FOR EACH ROW
-DECLARE
-	l_cube_rowid UROWID;
-	r_dcr_new v_description_reference%ROWTYPE;
-	r_dcr_old v_description_reference%ROWTYPE;
-BEGIN
-	IF INSERTING OR UPDATING THEN
-		IF :NEW.fk_bot_name = ' ' THEN
-			r_dcr_new.fk_bot_name := ' ';
-		ELSE
-			r_dcr_new.fk_bot_name := REPLACE(:NEW.fk_bot_name,' ','_');
-		END IF;
-		IF :NEW.fk_typ_name = ' ' THEN
-			r_dcr_new.fk_typ_name := ' ';
-		ELSE
-			r_dcr_new.fk_typ_name := REPLACE(:NEW.fk_typ_name,' ','_');
-		END IF;
-		r_dcr_new.fk_ref_sequence := :NEW.fk_ref_sequence;
-		IF :NEW.fk_ref_bot_name = ' ' THEN
-			r_dcr_new.fk_ref_bot_name := ' ';
-		ELSE
-			r_dcr_new.fk_ref_bot_name := REPLACE(:NEW.fk_ref_bot_name,' ','_');
-		END IF;
-		IF :NEW.fk_ref_typ_name = ' ' THEN
-			r_dcr_new.fk_ref_typ_name := ' ';
-		ELSE
-			r_dcr_new.fk_ref_typ_name := REPLACE(:NEW.fk_ref_typ_name,' ','_');
-		END IF;
-		r_dcr_new.text := :NEW.text;
-	END IF;
-	IF UPDATING THEN
-		r_dcr_new.cube_id := :OLD.cube_id;
-	END IF;
-	IF UPDATING OR DELETING THEN
-		SELECT rowid INTO l_cube_rowid FROM t_description_reference
-		WHERE fk_typ_name = :OLD.fk_typ_name
-		  AND fk_ref_sequence = :OLD.fk_ref_sequence
-		  AND fk_ref_bot_name = :OLD.fk_ref_bot_name
-		  AND fk_ref_typ_name = :OLD.fk_ref_typ_name;
-		r_dcr_old.fk_bot_name := :OLD.fk_bot_name;
-		r_dcr_old.fk_typ_name := :OLD.fk_typ_name;
-		r_dcr_old.fk_ref_sequence := :OLD.fk_ref_sequence;
-		r_dcr_old.fk_ref_bot_name := :OLD.fk_ref_bot_name;
-		r_dcr_old.fk_ref_typ_name := :OLD.fk_ref_typ_name;
-		r_dcr_old.text := :OLD.text;
-	END IF;
+EXECUTE PROCEDURE bot.trg_dcr();
 
-	IF INSERTING THEN 
-		pkg_bot_trg.insert_dcr (r_dcr_new);
-	ELSIF UPDATING THEN
-		pkg_bot_trg.update_dcr (l_cube_rowid, r_dcr_old, r_dcr_new);
-	ELSIF DELETING THEN
-		pkg_bot_trg.delete_dcr (l_cube_rowid, r_dcr_old);
-	END IF;
-END;
-/
-SHOW ERRORS
+CREATE FUNCTION bot.trg_rtr() RETURNS trigger
+LANGUAGE plpgsql 
+AS $BODY$
+	DECLARE
+		l_cube_ctid TID;
+		r_rtr_new bot.v_restriction_type_spec_ref%ROWTYPE;
+		r_rtr_old bot.v_restriction_type_spec_ref%ROWTYPE;
+	BEGIN
+		IF INSERTING OR UPDATING THEN
+			IF NEW.fk_bot_name = ' ' THEN
+				r_rtr_new.fk_bot_name := ' ';
+			ELSE
+				r_rtr_new.fk_bot_name := REPLACE(NEW.fk_bot_name,' ','_');
+			END IF;
+			IF NEW.fk_typ_name = ' ' THEN
+				r_rtr_new.fk_typ_name := ' ';
+			ELSE
+				r_rtr_new.fk_typ_name := REPLACE(NEW.fk_typ_name,' ','_');
+			END IF;
+			r_rtr_new.fk_ref_sequence := NEW.fk_ref_sequence;
+			IF NEW.fk_ref_bot_name = ' ' THEN
+				r_rtr_new.fk_ref_bot_name := ' ';
+			ELSE
+				r_rtr_new.fk_ref_bot_name := REPLACE(NEW.fk_ref_bot_name,' ','_');
+			END IF;
+			IF NEW.fk_ref_typ_name = ' ' THEN
+				r_rtr_new.fk_ref_typ_name := ' ';
+			ELSE
+				r_rtr_new.fk_ref_typ_name := REPLACE(NEW.fk_ref_typ_name,' ','_');
+			END IF;
+			IF NEW.include_or_exclude = ' ' THEN
+				r_rtr_new.include_or_exclude := ' ';
+			ELSE
+				r_rtr_new.include_or_exclude := REPLACE(NEW.include_or_exclude,' ','_');
+			END IF;
+			IF NEW.xf_tsp_typ_name = ' ' THEN
+				r_rtr_new.xf_tsp_typ_name := ' ';
+			ELSE
+				r_rtr_new.xf_tsp_typ_name := REPLACE(NEW.xf_tsp_typ_name,' ','_');
+			END IF;
+			IF NEW.xf_tsp_tsg_code = ' ' THEN
+				r_rtr_new.xf_tsp_tsg_code := ' ';
+			ELSE
+				r_rtr_new.xf_tsp_tsg_code := REPLACE(NEW.xf_tsp_tsg_code,' ','_');
+			END IF;
+			IF NEW.xk_tsp_code = ' ' THEN
+				r_rtr_new.xk_tsp_code := ' ';
+			ELSE
+				r_rtr_new.xk_tsp_code := REPLACE(NEW.xk_tsp_code,' ','_');
+			END IF;
+		END IF;
+		IF UPDATING THEN
+			r_rtr_new.cube_id := OLD.cube_id;
+		END IF;
+		IF UPDATING OR DELETING THEN
+			SELECT ctid INTO l_cube_ctid FROM t_restriction_type_spec_ref
+			WHERE fk_typ_name = OLD.fk_typ_name
+			AND fk_ref_sequence = OLD.fk_ref_sequence
+			AND fk_ref_bot_name = OLD.fk_ref_bot_name
+			AND fk_ref_typ_name = OLD.fk_ref_typ_name
+			AND xf_tsp_typ_name = OLD.xf_tsp_typ_name
+			AND xf_tsp_tsg_code = OLD.xf_tsp_tsg_code
+			AND xk_tsp_code = OLD.xk_tsp_code;
+			r_rtr_old.fk_bot_name := OLD.fk_bot_name;
+			r_rtr_old.fk_typ_name := OLD.fk_typ_name;
+			r_rtr_old.fk_ref_sequence := OLD.fk_ref_sequence;
+			r_rtr_old.fk_ref_bot_name := OLD.fk_ref_bot_name;
+			r_rtr_old.fk_ref_typ_name := OLD.fk_ref_typ_name;
+			r_rtr_old.include_or_exclude := OLD.include_or_exclude;
+			r_rtr_old.xf_tsp_typ_name := OLD.xf_tsp_typ_name;
+			r_rtr_old.xf_tsp_tsg_code := OLD.xf_tsp_tsg_code;
+			r_rtr_old.xk_tsp_code := OLD.xk_tsp_code;
+		END IF;
 
-CREATE OR REPLACE TRIGGER trg_rtr
-INSTEAD OF INSERT OR DELETE OR UPDATE ON v_restriction_type_spec_ref
+		IF INSERTING THEN 
+			CALL bot.trg_insert_rtr (r_rtr_new);
+		ELSIF UPDATING THEN
+			CALL bot.trg_update_rtr (l_cube_ctid, r_rtr_old, r_rtr_new);
+		ELSIF DELETING THEN
+			CALL bot.trg_delete_rtr (l_cube_ctid, r_rtr_old);
+		END IF;
+	END;
+$BODY$;
+
+CREATE TRIGGER trg_rtr
+INSTEAD OF INSERT OR DELETE OR UPDATE ON bot.v_restriction_type_spec_ref
 FOR EACH ROW
-DECLARE
-	l_cube_rowid UROWID;
-	r_rtr_new v_restriction_type_spec_ref%ROWTYPE;
-	r_rtr_old v_restriction_type_spec_ref%ROWTYPE;
-BEGIN
-	IF INSERTING OR UPDATING THEN
-		IF :NEW.fk_bot_name = ' ' THEN
-			r_rtr_new.fk_bot_name := ' ';
-		ELSE
-			r_rtr_new.fk_bot_name := REPLACE(:NEW.fk_bot_name,' ','_');
-		END IF;
-		IF :NEW.fk_typ_name = ' ' THEN
-			r_rtr_new.fk_typ_name := ' ';
-		ELSE
-			r_rtr_new.fk_typ_name := REPLACE(:NEW.fk_typ_name,' ','_');
-		END IF;
-		r_rtr_new.fk_ref_sequence := :NEW.fk_ref_sequence;
-		IF :NEW.fk_ref_bot_name = ' ' THEN
-			r_rtr_new.fk_ref_bot_name := ' ';
-		ELSE
-			r_rtr_new.fk_ref_bot_name := REPLACE(:NEW.fk_ref_bot_name,' ','_');
-		END IF;
-		IF :NEW.fk_ref_typ_name = ' ' THEN
-			r_rtr_new.fk_ref_typ_name := ' ';
-		ELSE
-			r_rtr_new.fk_ref_typ_name := REPLACE(:NEW.fk_ref_typ_name,' ','_');
-		END IF;
-		IF :NEW.include_or_exclude = ' ' THEN
-			r_rtr_new.include_or_exclude := ' ';
-		ELSE
-			r_rtr_new.include_or_exclude := REPLACE(:NEW.include_or_exclude,' ','_');
-		END IF;
-		IF :NEW.xf_tsp_typ_name = ' ' THEN
-			r_rtr_new.xf_tsp_typ_name := ' ';
-		ELSE
-			r_rtr_new.xf_tsp_typ_name := REPLACE(:NEW.xf_tsp_typ_name,' ','_');
-		END IF;
-		IF :NEW.xf_tsp_tsg_code = ' ' THEN
-			r_rtr_new.xf_tsp_tsg_code := ' ';
-		ELSE
-			r_rtr_new.xf_tsp_tsg_code := REPLACE(:NEW.xf_tsp_tsg_code,' ','_');
-		END IF;
-		IF :NEW.xk_tsp_code = ' ' THEN
-			r_rtr_new.xk_tsp_code := ' ';
-		ELSE
-			r_rtr_new.xk_tsp_code := REPLACE(:NEW.xk_tsp_code,' ','_');
-		END IF;
-	END IF;
-	IF UPDATING THEN
-		r_rtr_new.cube_id := :OLD.cube_id;
-	END IF;
-	IF UPDATING OR DELETING THEN
-		SELECT rowid INTO l_cube_rowid FROM t_restriction_type_spec_ref
-		WHERE fk_typ_name = :OLD.fk_typ_name
-		  AND fk_ref_sequence = :OLD.fk_ref_sequence
-		  AND fk_ref_bot_name = :OLD.fk_ref_bot_name
-		  AND fk_ref_typ_name = :OLD.fk_ref_typ_name
-		  AND xf_tsp_typ_name = :OLD.xf_tsp_typ_name
-		  AND xf_tsp_tsg_code = :OLD.xf_tsp_tsg_code
-		  AND xk_tsp_code = :OLD.xk_tsp_code;
-		r_rtr_old.fk_bot_name := :OLD.fk_bot_name;
-		r_rtr_old.fk_typ_name := :OLD.fk_typ_name;
-		r_rtr_old.fk_ref_sequence := :OLD.fk_ref_sequence;
-		r_rtr_old.fk_ref_bot_name := :OLD.fk_ref_bot_name;
-		r_rtr_old.fk_ref_typ_name := :OLD.fk_ref_typ_name;
-		r_rtr_old.include_or_exclude := :OLD.include_or_exclude;
-		r_rtr_old.xf_tsp_typ_name := :OLD.xf_tsp_typ_name;
-		r_rtr_old.xf_tsp_tsg_code := :OLD.xf_tsp_tsg_code;
-		r_rtr_old.xk_tsp_code := :OLD.xk_tsp_code;
-	END IF;
+EXECUTE PROCEDURE bot.trg_rtr();
 
-	IF INSERTING THEN 
-		pkg_bot_trg.insert_rtr (r_rtr_new);
-	ELSIF UPDATING THEN
-		pkg_bot_trg.update_rtr (l_cube_rowid, r_rtr_old, r_rtr_new);
-	ELSIF DELETING THEN
-		pkg_bot_trg.delete_rtr (l_cube_rowid, r_rtr_old);
-	END IF;
-END;
-/
-SHOW ERRORS
+CREATE FUNCTION bot.trg_rts() RETURNS trigger
+LANGUAGE plpgsql 
+AS $BODY$
+	DECLARE
+		l_cube_ctid TID;
+		r_rts_new bot.v_restriction_target_type_spec%ROWTYPE;
+		r_rts_old bot.v_restriction_target_type_spec%ROWTYPE;
+	BEGIN
+		IF INSERTING OR UPDATING THEN
+			IF NEW.fk_bot_name = ' ' THEN
+				r_rts_new.fk_bot_name := ' ';
+			ELSE
+				r_rts_new.fk_bot_name := REPLACE(NEW.fk_bot_name,' ','_');
+			END IF;
+			IF NEW.fk_typ_name = ' ' THEN
+				r_rts_new.fk_typ_name := ' ';
+			ELSE
+				r_rts_new.fk_typ_name := REPLACE(NEW.fk_typ_name,' ','_');
+			END IF;
+			r_rts_new.fk_ref_sequence := NEW.fk_ref_sequence;
+			IF NEW.fk_ref_bot_name = ' ' THEN
+				r_rts_new.fk_ref_bot_name := ' ';
+			ELSE
+				r_rts_new.fk_ref_bot_name := REPLACE(NEW.fk_ref_bot_name,' ','_');
+			END IF;
+			IF NEW.fk_ref_typ_name = ' ' THEN
+				r_rts_new.fk_ref_typ_name := ' ';
+			ELSE
+				r_rts_new.fk_ref_typ_name := REPLACE(NEW.fk_ref_typ_name,' ','_');
+			END IF;
+			IF NEW.include_or_exclude = ' ' THEN
+				r_rts_new.include_or_exclude := ' ';
+			ELSE
+				r_rts_new.include_or_exclude := REPLACE(NEW.include_or_exclude,' ','_');
+			END IF;
+			IF NEW.xf_tsp_typ_name = ' ' THEN
+				r_rts_new.xf_tsp_typ_name := ' ';
+			ELSE
+				r_rts_new.xf_tsp_typ_name := REPLACE(NEW.xf_tsp_typ_name,' ','_');
+			END IF;
+			IF NEW.xf_tsp_tsg_code = ' ' THEN
+				r_rts_new.xf_tsp_tsg_code := ' ';
+			ELSE
+				r_rts_new.xf_tsp_tsg_code := REPLACE(NEW.xf_tsp_tsg_code,' ','_');
+			END IF;
+			IF NEW.xk_tsp_code = ' ' THEN
+				r_rts_new.xk_tsp_code := ' ';
+			ELSE
+				r_rts_new.xk_tsp_code := REPLACE(NEW.xk_tsp_code,' ','_');
+			END IF;
+		END IF;
+		IF UPDATING THEN
+			r_rts_new.cube_id := OLD.cube_id;
+		END IF;
+		IF UPDATING OR DELETING THEN
+			SELECT ctid INTO l_cube_ctid FROM t_restriction_target_type_spec
+			WHERE fk_typ_name = OLD.fk_typ_name
+			AND fk_ref_sequence = OLD.fk_ref_sequence
+			AND fk_ref_bot_name = OLD.fk_ref_bot_name
+			AND fk_ref_typ_name = OLD.fk_ref_typ_name
+			AND xf_tsp_typ_name = OLD.xf_tsp_typ_name
+			AND xf_tsp_tsg_code = OLD.xf_tsp_tsg_code
+			AND xk_tsp_code = OLD.xk_tsp_code;
+			r_rts_old.fk_bot_name := OLD.fk_bot_name;
+			r_rts_old.fk_typ_name := OLD.fk_typ_name;
+			r_rts_old.fk_ref_sequence := OLD.fk_ref_sequence;
+			r_rts_old.fk_ref_bot_name := OLD.fk_ref_bot_name;
+			r_rts_old.fk_ref_typ_name := OLD.fk_ref_typ_name;
+			r_rts_old.include_or_exclude := OLD.include_or_exclude;
+			r_rts_old.xf_tsp_typ_name := OLD.xf_tsp_typ_name;
+			r_rts_old.xf_tsp_tsg_code := OLD.xf_tsp_tsg_code;
+			r_rts_old.xk_tsp_code := OLD.xk_tsp_code;
+		END IF;
 
-CREATE OR REPLACE TRIGGER trg_rts
-INSTEAD OF INSERT OR DELETE OR UPDATE ON v_restriction_target_type_spec
+		IF INSERTING THEN 
+			CALL bot.trg_insert_rts (r_rts_new);
+		ELSIF UPDATING THEN
+			CALL bot.trg_update_rts (l_cube_ctid, r_rts_old, r_rts_new);
+		ELSIF DELETING THEN
+			CALL bot.trg_delete_rts (l_cube_ctid, r_rts_old);
+		END IF;
+	END;
+$BODY$;
+
+CREATE TRIGGER trg_rts
+INSTEAD OF INSERT OR DELETE OR UPDATE ON bot.v_restriction_target_type_spec
 FOR EACH ROW
-DECLARE
-	l_cube_rowid UROWID;
-	r_rts_new v_restriction_target_type_spec%ROWTYPE;
-	r_rts_old v_restriction_target_type_spec%ROWTYPE;
-BEGIN
-	IF INSERTING OR UPDATING THEN
-		IF :NEW.fk_bot_name = ' ' THEN
-			r_rts_new.fk_bot_name := ' ';
-		ELSE
-			r_rts_new.fk_bot_name := REPLACE(:NEW.fk_bot_name,' ','_');
-		END IF;
-		IF :NEW.fk_typ_name = ' ' THEN
-			r_rts_new.fk_typ_name := ' ';
-		ELSE
-			r_rts_new.fk_typ_name := REPLACE(:NEW.fk_typ_name,' ','_');
-		END IF;
-		r_rts_new.fk_ref_sequence := :NEW.fk_ref_sequence;
-		IF :NEW.fk_ref_bot_name = ' ' THEN
-			r_rts_new.fk_ref_bot_name := ' ';
-		ELSE
-			r_rts_new.fk_ref_bot_name := REPLACE(:NEW.fk_ref_bot_name,' ','_');
-		END IF;
-		IF :NEW.fk_ref_typ_name = ' ' THEN
-			r_rts_new.fk_ref_typ_name := ' ';
-		ELSE
-			r_rts_new.fk_ref_typ_name := REPLACE(:NEW.fk_ref_typ_name,' ','_');
-		END IF;
-		IF :NEW.include_or_exclude = ' ' THEN
-			r_rts_new.include_or_exclude := ' ';
-		ELSE
-			r_rts_new.include_or_exclude := REPLACE(:NEW.include_or_exclude,' ','_');
-		END IF;
-		IF :NEW.xf_tsp_typ_name = ' ' THEN
-			r_rts_new.xf_tsp_typ_name := ' ';
-		ELSE
-			r_rts_new.xf_tsp_typ_name := REPLACE(:NEW.xf_tsp_typ_name,' ','_');
-		END IF;
-		IF :NEW.xf_tsp_tsg_code = ' ' THEN
-			r_rts_new.xf_tsp_tsg_code := ' ';
-		ELSE
-			r_rts_new.xf_tsp_tsg_code := REPLACE(:NEW.xf_tsp_tsg_code,' ','_');
-		END IF;
-		IF :NEW.xk_tsp_code = ' ' THEN
-			r_rts_new.xk_tsp_code := ' ';
-		ELSE
-			r_rts_new.xk_tsp_code := REPLACE(:NEW.xk_tsp_code,' ','_');
-		END IF;
-	END IF;
-	IF UPDATING THEN
-		r_rts_new.cube_id := :OLD.cube_id;
-	END IF;
-	IF UPDATING OR DELETING THEN
-		SELECT rowid INTO l_cube_rowid FROM t_restriction_target_type_spec
-		WHERE fk_typ_name = :OLD.fk_typ_name
-		  AND fk_ref_sequence = :OLD.fk_ref_sequence
-		  AND fk_ref_bot_name = :OLD.fk_ref_bot_name
-		  AND fk_ref_typ_name = :OLD.fk_ref_typ_name
-		  AND xf_tsp_typ_name = :OLD.xf_tsp_typ_name
-		  AND xf_tsp_tsg_code = :OLD.xf_tsp_tsg_code
-		  AND xk_tsp_code = :OLD.xk_tsp_code;
-		r_rts_old.fk_bot_name := :OLD.fk_bot_name;
-		r_rts_old.fk_typ_name := :OLD.fk_typ_name;
-		r_rts_old.fk_ref_sequence := :OLD.fk_ref_sequence;
-		r_rts_old.fk_ref_bot_name := :OLD.fk_ref_bot_name;
-		r_rts_old.fk_ref_typ_name := :OLD.fk_ref_typ_name;
-		r_rts_old.include_or_exclude := :OLD.include_or_exclude;
-		r_rts_old.xf_tsp_typ_name := :OLD.xf_tsp_typ_name;
-		r_rts_old.xf_tsp_tsg_code := :OLD.xf_tsp_tsg_code;
-		r_rts_old.xk_tsp_code := :OLD.xk_tsp_code;
-	END IF;
+EXECUTE PROCEDURE bot.trg_rts();
 
-	IF INSERTING THEN 
-		pkg_bot_trg.insert_rts (r_rts_new);
-	ELSIF UPDATING THEN
-		pkg_bot_trg.update_rts (l_cube_rowid, r_rts_old, r_rts_new);
-	ELSIF DELETING THEN
-		pkg_bot_trg.delete_rts (l_cube_rowid, r_rts_old);
-	END IF;
-END;
-/
-SHOW ERRORS
+CREATE FUNCTION bot.trg_rtt() RETURNS trigger
+LANGUAGE plpgsql 
+AS $BODY$
+	DECLARE
+		l_cube_ctid TID;
+		r_rtt_new bot.v_restriction_type_spec_typ%ROWTYPE;
+		r_rtt_old bot.v_restriction_type_spec_typ%ROWTYPE;
+	BEGIN
+		IF INSERTING OR UPDATING THEN
+			IF NEW.fk_bot_name = ' ' THEN
+				r_rtt_new.fk_bot_name := ' ';
+			ELSE
+				r_rtt_new.fk_bot_name := REPLACE(NEW.fk_bot_name,' ','_');
+			END IF;
+			IF NEW.fk_typ_name = ' ' THEN
+				r_rtt_new.fk_typ_name := ' ';
+			ELSE
+				r_rtt_new.fk_typ_name := REPLACE(NEW.fk_typ_name,' ','_');
+			END IF;
+			IF NEW.include_or_exclude = ' ' THEN
+				r_rtt_new.include_or_exclude := ' ';
+			ELSE
+				r_rtt_new.include_or_exclude := REPLACE(NEW.include_or_exclude,' ','_');
+			END IF;
+			IF NEW.xf_tsp_typ_name = ' ' THEN
+				r_rtt_new.xf_tsp_typ_name := ' ';
+			ELSE
+				r_rtt_new.xf_tsp_typ_name := REPLACE(NEW.xf_tsp_typ_name,' ','_');
+			END IF;
+			IF NEW.xf_tsp_tsg_code = ' ' THEN
+				r_rtt_new.xf_tsp_tsg_code := ' ';
+			ELSE
+				r_rtt_new.xf_tsp_tsg_code := REPLACE(NEW.xf_tsp_tsg_code,' ','_');
+			END IF;
+			IF NEW.xk_tsp_code = ' ' THEN
+				r_rtt_new.xk_tsp_code := ' ';
+			ELSE
+				r_rtt_new.xk_tsp_code := REPLACE(NEW.xk_tsp_code,' ','_');
+			END IF;
+		END IF;
+		IF UPDATING THEN
+			r_rtt_new.cube_id := OLD.cube_id;
+		END IF;
+		IF UPDATING OR DELETING THEN
+			SELECT ctid INTO l_cube_ctid FROM t_restriction_type_spec_typ
+			WHERE fk_typ_name = OLD.fk_typ_name
+			AND xf_tsp_typ_name = OLD.xf_tsp_typ_name
+			AND xf_tsp_tsg_code = OLD.xf_tsp_tsg_code
+			AND xk_tsp_code = OLD.xk_tsp_code;
+			r_rtt_old.fk_bot_name := OLD.fk_bot_name;
+			r_rtt_old.fk_typ_name := OLD.fk_typ_name;
+			r_rtt_old.include_or_exclude := OLD.include_or_exclude;
+			r_rtt_old.xf_tsp_typ_name := OLD.xf_tsp_typ_name;
+			r_rtt_old.xf_tsp_tsg_code := OLD.xf_tsp_tsg_code;
+			r_rtt_old.xk_tsp_code := OLD.xk_tsp_code;
+		END IF;
 
-CREATE OR REPLACE TRIGGER trg_rtt
-INSTEAD OF INSERT OR DELETE OR UPDATE ON v_restriction_type_spec_typ
+		IF INSERTING THEN 
+			CALL bot.trg_insert_rtt (r_rtt_new);
+		ELSIF UPDATING THEN
+			CALL bot.trg_update_rtt (l_cube_ctid, r_rtt_old, r_rtt_new);
+		ELSIF DELETING THEN
+			CALL bot.trg_delete_rtt (l_cube_ctid, r_rtt_old);
+		END IF;
+	END;
+$BODY$;
+
+CREATE TRIGGER trg_rtt
+INSTEAD OF INSERT OR DELETE OR UPDATE ON bot.v_restriction_type_spec_typ
 FOR EACH ROW
-DECLARE
-	l_cube_rowid UROWID;
-	r_rtt_new v_restriction_type_spec_typ%ROWTYPE;
-	r_rtt_old v_restriction_type_spec_typ%ROWTYPE;
-BEGIN
-	IF INSERTING OR UPDATING THEN
-		IF :NEW.fk_bot_name = ' ' THEN
-			r_rtt_new.fk_bot_name := ' ';
-		ELSE
-			r_rtt_new.fk_bot_name := REPLACE(:NEW.fk_bot_name,' ','_');
-		END IF;
-		IF :NEW.fk_typ_name = ' ' THEN
-			r_rtt_new.fk_typ_name := ' ';
-		ELSE
-			r_rtt_new.fk_typ_name := REPLACE(:NEW.fk_typ_name,' ','_');
-		END IF;
-		IF :NEW.include_or_exclude = ' ' THEN
-			r_rtt_new.include_or_exclude := ' ';
-		ELSE
-			r_rtt_new.include_or_exclude := REPLACE(:NEW.include_or_exclude,' ','_');
-		END IF;
-		IF :NEW.xf_tsp_typ_name = ' ' THEN
-			r_rtt_new.xf_tsp_typ_name := ' ';
-		ELSE
-			r_rtt_new.xf_tsp_typ_name := REPLACE(:NEW.xf_tsp_typ_name,' ','_');
-		END IF;
-		IF :NEW.xf_tsp_tsg_code = ' ' THEN
-			r_rtt_new.xf_tsp_tsg_code := ' ';
-		ELSE
-			r_rtt_new.xf_tsp_tsg_code := REPLACE(:NEW.xf_tsp_tsg_code,' ','_');
-		END IF;
-		IF :NEW.xk_tsp_code = ' ' THEN
-			r_rtt_new.xk_tsp_code := ' ';
-		ELSE
-			r_rtt_new.xk_tsp_code := REPLACE(:NEW.xk_tsp_code,' ','_');
-		END IF;
-	END IF;
-	IF UPDATING THEN
-		r_rtt_new.cube_id := :OLD.cube_id;
-	END IF;
-	IF UPDATING OR DELETING THEN
-		SELECT rowid INTO l_cube_rowid FROM t_restriction_type_spec_typ
-		WHERE fk_typ_name = :OLD.fk_typ_name
-		  AND xf_tsp_typ_name = :OLD.xf_tsp_typ_name
-		  AND xf_tsp_tsg_code = :OLD.xf_tsp_tsg_code
-		  AND xk_tsp_code = :OLD.xk_tsp_code;
-		r_rtt_old.fk_bot_name := :OLD.fk_bot_name;
-		r_rtt_old.fk_typ_name := :OLD.fk_typ_name;
-		r_rtt_old.include_or_exclude := :OLD.include_or_exclude;
-		r_rtt_old.xf_tsp_typ_name := :OLD.xf_tsp_typ_name;
-		r_rtt_old.xf_tsp_tsg_code := :OLD.xf_tsp_tsg_code;
-		r_rtt_old.xk_tsp_code := :OLD.xk_tsp_code;
-	END IF;
+EXECUTE PROCEDURE bot.trg_rtt();
 
-	IF INSERTING THEN 
-		pkg_bot_trg.insert_rtt (r_rtt_new);
-	ELSIF UPDATING THEN
-		pkg_bot_trg.update_rtt (l_cube_rowid, r_rtt_old, r_rtt_new);
-	ELSIF DELETING THEN
-		pkg_bot_trg.delete_rtt (l_cube_rowid, r_rtt_old);
-	END IF;
-END;
-/
-SHOW ERRORS
+CREATE FUNCTION bot.trg_jsn() RETURNS trigger
+LANGUAGE plpgsql 
+AS $BODY$
+	DECLARE
+		l_cube_ctid TID;
+		r_jsn_new bot.v_json_path%ROWTYPE;
+		r_jsn_old bot.v_json_path%ROWTYPE;
+	BEGIN
+		IF INSERTING OR UPDATING THEN
+			r_jsn_new.cube_sequence := NEW.cube_sequence;
+			IF NEW.fk_bot_name = ' ' THEN
+				r_jsn_new.fk_bot_name := ' ';
+			ELSE
+				r_jsn_new.fk_bot_name := REPLACE(NEW.fk_bot_name,' ','_');
+			END IF;
+			IF NEW.fk_typ_name = ' ' THEN
+				r_jsn_new.fk_typ_name := ' ';
+			ELSE
+				r_jsn_new.fk_typ_name := REPLACE(NEW.fk_typ_name,' ','_');
+			END IF;
+			r_jsn_new.fk_jsn_name := NEW.fk_jsn_name;
+			r_jsn_new.fk_jsn_location := NEW.fk_jsn_location;
+			IF NEW.fk_jsn_atb_typ_name = ' ' THEN
+				r_jsn_new.fk_jsn_atb_typ_name := ' ';
+			ELSE
+				r_jsn_new.fk_jsn_atb_typ_name := REPLACE(NEW.fk_jsn_atb_typ_name,' ','_');
+			END IF;
+			IF NEW.fk_jsn_atb_name = ' ' THEN
+				r_jsn_new.fk_jsn_atb_name := ' ';
+			ELSE
+				r_jsn_new.fk_jsn_atb_name := REPLACE(NEW.fk_jsn_atb_name,' ','_');
+			END IF;
+			IF NEW.fk_jsn_typ_name = ' ' THEN
+				r_jsn_new.fk_jsn_typ_name := ' ';
+			ELSE
+				r_jsn_new.fk_jsn_typ_name := REPLACE(NEW.fk_jsn_typ_name,' ','_');
+			END IF;
+			IF NEW.cube_tsg_obj_arr = ' ' THEN
+				r_jsn_new.cube_tsg_obj_arr := ' ';
+			ELSE
+				r_jsn_new.cube_tsg_obj_arr := REPLACE(NEW.cube_tsg_obj_arr,' ','_');
+			END IF;
+			IF NEW.cube_tsg_type = ' ' THEN
+				r_jsn_new.cube_tsg_type := ' ';
+			ELSE
+				r_jsn_new.cube_tsg_type := REPLACE(NEW.cube_tsg_type,' ','_');
+			END IF;
+			r_jsn_new.name := NEW.name;
+			r_jsn_new.location := NEW.location;
+			IF NEW.xf_atb_typ_name = ' ' THEN
+				r_jsn_new.xf_atb_typ_name := ' ';
+			ELSE
+				r_jsn_new.xf_atb_typ_name := REPLACE(NEW.xf_atb_typ_name,' ','_');
+			END IF;
+			IF NEW.xk_atb_name = ' ' THEN
+				r_jsn_new.xk_atb_name := ' ';
+			ELSE
+				r_jsn_new.xk_atb_name := REPLACE(NEW.xk_atb_name,' ','_');
+			END IF;
+			IF NEW.xk_typ_name = ' ' THEN
+				r_jsn_new.xk_typ_name := ' ';
+			ELSE
+				r_jsn_new.xk_typ_name := REPLACE(NEW.xk_typ_name,' ','_');
+			END IF;
+		END IF;
+		IF UPDATING THEN
+			r_jsn_new.cube_id := OLD.cube_id;
+			r_jsn_new.cube_level := OLD.cube_level;
+		END IF;
+		IF UPDATING OR DELETING THEN
+			SELECT ctid INTO l_cube_ctid FROM t_json_path
+			WHERE fk_typ_name = OLD.fk_typ_name
+			AND name = OLD.name
+			AND location = OLD.location
+			AND xf_atb_typ_name = OLD.xf_atb_typ_name
+			AND xk_atb_name = OLD.xk_atb_name
+			AND xk_typ_name = OLD.xk_typ_name;
+			r_jsn_old.cube_sequence := OLD.cube_sequence;
+			r_jsn_old.fk_bot_name := OLD.fk_bot_name;
+			r_jsn_old.fk_typ_name := OLD.fk_typ_name;
+			r_jsn_old.fk_jsn_name := OLD.fk_jsn_name;
+			r_jsn_old.fk_jsn_location := OLD.fk_jsn_location;
+			r_jsn_old.fk_jsn_atb_typ_name := OLD.fk_jsn_atb_typ_name;
+			r_jsn_old.fk_jsn_atb_name := OLD.fk_jsn_atb_name;
+			r_jsn_old.fk_jsn_typ_name := OLD.fk_jsn_typ_name;
+			r_jsn_old.cube_tsg_obj_arr := OLD.cube_tsg_obj_arr;
+			r_jsn_old.cube_tsg_type := OLD.cube_tsg_type;
+			r_jsn_old.name := OLD.name;
+			r_jsn_old.location := OLD.location;
+			r_jsn_old.xf_atb_typ_name := OLD.xf_atb_typ_name;
+			r_jsn_old.xk_atb_name := OLD.xk_atb_name;
+			r_jsn_old.xk_typ_name := OLD.xk_typ_name;
+		END IF;
 
-CREATE OR REPLACE TRIGGER trg_jsn
-INSTEAD OF INSERT OR DELETE OR UPDATE ON v_json_path
+		IF INSERTING THEN 
+			CALL bot.trg_insert_jsn (r_jsn_new);
+		ELSIF UPDATING THEN
+			CALL bot.trg_update_jsn (l_cube_ctid, r_jsn_old, r_jsn_new);
+		ELSIF DELETING THEN
+			CALL bot.trg_delete_jsn (l_cube_ctid, r_jsn_old);
+		END IF;
+	END;
+$BODY$;
+
+CREATE TRIGGER trg_jsn
+INSTEAD OF INSERT OR DELETE OR UPDATE ON bot.v_json_path
 FOR EACH ROW
-DECLARE
-	l_cube_rowid UROWID;
-	r_jsn_new v_json_path%ROWTYPE;
-	r_jsn_old v_json_path%ROWTYPE;
-BEGIN
-	IF INSERTING OR UPDATING THEN
-		r_jsn_new.cube_sequence := :NEW.cube_sequence;
-		IF :NEW.fk_bot_name = ' ' THEN
-			r_jsn_new.fk_bot_name := ' ';
-		ELSE
-			r_jsn_new.fk_bot_name := REPLACE(:NEW.fk_bot_name,' ','_');
-		END IF;
-		IF :NEW.fk_typ_name = ' ' THEN
-			r_jsn_new.fk_typ_name := ' ';
-		ELSE
-			r_jsn_new.fk_typ_name := REPLACE(:NEW.fk_typ_name,' ','_');
-		END IF;
-		r_jsn_new.fk_jsn_name := :NEW.fk_jsn_name;
-		r_jsn_new.fk_jsn_location := :NEW.fk_jsn_location;
-		IF :NEW.fk_jsn_atb_typ_name = ' ' THEN
-			r_jsn_new.fk_jsn_atb_typ_name := ' ';
-		ELSE
-			r_jsn_new.fk_jsn_atb_typ_name := REPLACE(:NEW.fk_jsn_atb_typ_name,' ','_');
-		END IF;
-		IF :NEW.fk_jsn_atb_name = ' ' THEN
-			r_jsn_new.fk_jsn_atb_name := ' ';
-		ELSE
-			r_jsn_new.fk_jsn_atb_name := REPLACE(:NEW.fk_jsn_atb_name,' ','_');
-		END IF;
-		IF :NEW.fk_jsn_typ_name = ' ' THEN
-			r_jsn_new.fk_jsn_typ_name := ' ';
-		ELSE
-			r_jsn_new.fk_jsn_typ_name := REPLACE(:NEW.fk_jsn_typ_name,' ','_');
-		END IF;
-		IF :NEW.cube_tsg_obj_arr = ' ' THEN
-			r_jsn_new.cube_tsg_obj_arr := ' ';
-		ELSE
-			r_jsn_new.cube_tsg_obj_arr := REPLACE(:NEW.cube_tsg_obj_arr,' ','_');
-		END IF;
-		IF :NEW.cube_tsg_type = ' ' THEN
-			r_jsn_new.cube_tsg_type := ' ';
-		ELSE
-			r_jsn_new.cube_tsg_type := REPLACE(:NEW.cube_tsg_type,' ','_');
-		END IF;
-		r_jsn_new.name := :NEW.name;
-		r_jsn_new.location := :NEW.location;
-		IF :NEW.xf_atb_typ_name = ' ' THEN
-			r_jsn_new.xf_atb_typ_name := ' ';
-		ELSE
-			r_jsn_new.xf_atb_typ_name := REPLACE(:NEW.xf_atb_typ_name,' ','_');
-		END IF;
-		IF :NEW.xk_atb_name = ' ' THEN
-			r_jsn_new.xk_atb_name := ' ';
-		ELSE
-			r_jsn_new.xk_atb_name := REPLACE(:NEW.xk_atb_name,' ','_');
-		END IF;
-		IF :NEW.xk_typ_name = ' ' THEN
-			r_jsn_new.xk_typ_name := ' ';
-		ELSE
-			r_jsn_new.xk_typ_name := REPLACE(:NEW.xk_typ_name,' ','_');
-		END IF;
-	END IF;
-	IF UPDATING THEN
-		r_jsn_new.cube_id := :OLD.cube_id;
-		r_jsn_new.cube_level := :OLD.cube_level;
-	END IF;
-	IF UPDATING OR DELETING THEN
-		SELECT rowid INTO l_cube_rowid FROM t_json_path
-		WHERE fk_typ_name = :OLD.fk_typ_name
-		  AND name = :OLD.name
-		  AND location = :OLD.location
-		  AND xf_atb_typ_name = :OLD.xf_atb_typ_name
-		  AND xk_atb_name = :OLD.xk_atb_name
-		  AND xk_typ_name = :OLD.xk_typ_name;
-		r_jsn_old.cube_sequence := :OLD.cube_sequence;
-		r_jsn_old.fk_bot_name := :OLD.fk_bot_name;
-		r_jsn_old.fk_typ_name := :OLD.fk_typ_name;
-		r_jsn_old.fk_jsn_name := :OLD.fk_jsn_name;
-		r_jsn_old.fk_jsn_location := :OLD.fk_jsn_location;
-		r_jsn_old.fk_jsn_atb_typ_name := :OLD.fk_jsn_atb_typ_name;
-		r_jsn_old.fk_jsn_atb_name := :OLD.fk_jsn_atb_name;
-		r_jsn_old.fk_jsn_typ_name := :OLD.fk_jsn_typ_name;
-		r_jsn_old.cube_tsg_obj_arr := :OLD.cube_tsg_obj_arr;
-		r_jsn_old.cube_tsg_type := :OLD.cube_tsg_type;
-		r_jsn_old.name := :OLD.name;
-		r_jsn_old.location := :OLD.location;
-		r_jsn_old.xf_atb_typ_name := :OLD.xf_atb_typ_name;
-		r_jsn_old.xk_atb_name := :OLD.xk_atb_name;
-		r_jsn_old.xk_typ_name := :OLD.xk_typ_name;
-	END IF;
+EXECUTE PROCEDURE bot.trg_jsn();
 
-	IF INSERTING THEN 
-		pkg_bot_trg.insert_jsn (r_jsn_new);
-	ELSIF UPDATING THEN
-		pkg_bot_trg.update_jsn (l_cube_rowid, r_jsn_old, r_jsn_new);
-	ELSIF DELETING THEN
-		pkg_bot_trg.delete_jsn (l_cube_rowid, r_jsn_old);
-	END IF;
-END;
-/
-SHOW ERRORS
+CREATE FUNCTION bot.trg_dct() RETURNS trigger
+LANGUAGE plpgsql 
+AS $BODY$
+	DECLARE
+		l_cube_ctid TID;
+		r_dct_new bot.v_description_type%ROWTYPE;
+		r_dct_old bot.v_description_type%ROWTYPE;
+	BEGIN
+		IF INSERTING OR UPDATING THEN
+			IF NEW.fk_bot_name = ' ' THEN
+				r_dct_new.fk_bot_name := ' ';
+			ELSE
+				r_dct_new.fk_bot_name := REPLACE(NEW.fk_bot_name,' ','_');
+			END IF;
+			IF NEW.fk_typ_name = ' ' THEN
+				r_dct_new.fk_typ_name := ' ';
+			ELSE
+				r_dct_new.fk_typ_name := REPLACE(NEW.fk_typ_name,' ','_');
+			END IF;
+			r_dct_new.text := NEW.text;
+		END IF;
+		IF UPDATING THEN
+			r_dct_new.cube_id := OLD.cube_id;
+		END IF;
+		IF UPDATING OR DELETING THEN
+			SELECT ctid INTO l_cube_ctid FROM t_description_type
+			WHERE fk_typ_name = OLD.fk_typ_name;
+			r_dct_old.fk_bot_name := OLD.fk_bot_name;
+			r_dct_old.fk_typ_name := OLD.fk_typ_name;
+			r_dct_old.text := OLD.text;
+		END IF;
 
-CREATE OR REPLACE TRIGGER trg_dct
-INSTEAD OF INSERT OR DELETE OR UPDATE ON v_description_type
+		IF INSERTING THEN 
+			CALL bot.trg_insert_dct (r_dct_new);
+		ELSIF UPDATING THEN
+			CALL bot.trg_update_dct (l_cube_ctid, r_dct_old, r_dct_new);
+		ELSIF DELETING THEN
+			CALL bot.trg_delete_dct (l_cube_ctid, r_dct_old);
+		END IF;
+	END;
+$BODY$;
+
+CREATE TRIGGER trg_dct
+INSTEAD OF INSERT OR DELETE OR UPDATE ON bot.v_description_type
 FOR EACH ROW
-DECLARE
-	l_cube_rowid UROWID;
-	r_dct_new v_description_type%ROWTYPE;
-	r_dct_old v_description_type%ROWTYPE;
-BEGIN
-	IF INSERTING OR UPDATING THEN
-		IF :NEW.fk_bot_name = ' ' THEN
-			r_dct_new.fk_bot_name := ' ';
-		ELSE
-			r_dct_new.fk_bot_name := REPLACE(:NEW.fk_bot_name,' ','_');
-		END IF;
-		IF :NEW.fk_typ_name = ' ' THEN
-			r_dct_new.fk_typ_name := ' ';
-		ELSE
-			r_dct_new.fk_typ_name := REPLACE(:NEW.fk_typ_name,' ','_');
-		END IF;
-		r_dct_new.text := :NEW.text;
-	END IF;
-	IF UPDATING THEN
-		r_dct_new.cube_id := :OLD.cube_id;
-	END IF;
-	IF UPDATING OR DELETING THEN
-		SELECT rowid INTO l_cube_rowid FROM t_description_type
-		WHERE fk_typ_name = :OLD.fk_typ_name;
-		r_dct_old.fk_bot_name := :OLD.fk_bot_name;
-		r_dct_old.fk_typ_name := :OLD.fk_typ_name;
-		r_dct_old.text := :OLD.text;
-	END IF;
-
-	IF INSERTING THEN 
-		pkg_bot_trg.insert_dct (r_dct_new);
-	ELSIF UPDATING THEN
-		pkg_bot_trg.update_dct (l_cube_rowid, r_dct_old, r_dct_new);
-	ELSIF DELETING THEN
-		pkg_bot_trg.delete_dct (l_cube_rowid, r_dct_old);
-	END IF;
-END;
-/
-SHOW ERRORS
-
-*/
+EXECUTE PROCEDURE bot.trg_dct();
 
 CREATE VIEW sys.v_system AS 
 	SELECT
@@ -2990,20 +3027,18 @@ AS $BODY$
 			schema = p_sys_new.schema,
 			password = p_sys_new.password,
 			table_prefix = p_sys_new.table_prefix
-		WHERE rowid = p_cube_ctid;
+		WHERE ctid = p_cube_ctid;
 	END;
 $BODY$;
-/*
-CREATE PROCEDURE trg_delete_sys (p_cube_rowid UROWID, p_sys IN OUT NOCOPY v_system%ROWTYPE)
+
+CREATE PROCEDURE sys.trg_delete_sys (p_cube_ctid TID, p_sys sys.v_system)
 LANGUAGE plpgsql 
 AS $BODY$
 	BEGIN
-		DELETE t_system 
-		WHERE rowid = p_cube_rowid;
+		DELETE FROM sys.t_system 
+		WHERE ctid = p_cube_ctid;
 	END;
 $BODY$;
-*/
-
 
 CREATE PROCEDURE sys.trg_insert_sbt (p_sbt sys.v_system_bo_type)
 LANGUAGE plpgsql 
@@ -3031,133 +3066,135 @@ AS $BODY$
 	BEGIN
 		UPDATE t_system_bo_type SET 
 			cube_sequence = p_sbt_new.cube_sequence
-		WHERE rowid = p_cube_ctid;
+		WHERE ctid = p_cube_ctid;
 	END;
 $BODY$;
-/*
-CREATE PROCEDURE trg_delete_sbt (p_cube_rowid UROWID, p_sbt IN OUT NOCOPY v_system_bo_type%ROWTYPE)
+
+CREATE PROCEDURE sys.trg_delete_sbt (p_cube_ctid TID, p_sbt sys.v_system_bo_type)
 LANGUAGE plpgsql 
 AS $BODY$
 	BEGIN
-		DELETE t_system_bo_type 
-		WHERE rowid = p_cube_rowid;
+		DELETE FROM sys.t_system_bo_type 
+		WHERE ctid = p_cube_ctid;
 	END;
 $BODY$;
-*/
 
+CREATE FUNCTION sys.trg_sys() RETURNS trigger
+LANGUAGE plpgsql 
+AS $BODY$
+	DECLARE
+		l_cube_ctid TID;
+		r_sys_new sys.v_system%ROWTYPE;
+		r_sys_old sys.v_system%ROWTYPE;
+	BEGIN
+		IF INSERTING OR UPDATING THEN
+			IF NEW.name = ' ' THEN
+				r_sys_new.name := ' ';
+			ELSE
+				r_sys_new.name := REPLACE(NEW.name,' ','_');
+			END IF;
+			IF NEW.cube_tsg_type = ' ' THEN
+				r_sys_new.cube_tsg_type := ' ';
+			ELSE
+				r_sys_new.cube_tsg_type := REPLACE(NEW.cube_tsg_type,' ','_');
+			END IF;
+			IF NEW.database = ' ' THEN
+				r_sys_new.database := ' ';
+			ELSE
+				r_sys_new.database := REPLACE(NEW.database,' ','_');
+			END IF;
+			IF NEW.schema = ' ' THEN
+				r_sys_new.schema := ' ';
+			ELSE
+				r_sys_new.schema := REPLACE(NEW.schema,' ','_');
+			END IF;
+			IF NEW.password = ' ' THEN
+				r_sys_new.password := ' ';
+			ELSE
+				r_sys_new.password := REPLACE(NEW.password,' ','_');
+			END IF;
+			IF NEW.table_prefix = ' ' THEN
+				r_sys_new.table_prefix := ' ';
+			ELSE
+				r_sys_new.table_prefix := REPLACE(NEW.table_prefix,' ','_');
+			END IF;
+		END IF;
+		IF UPDATING THEN
+			r_sys_new.cube_id := OLD.cube_id;
+		END IF;
+		IF UPDATING OR DELETING THEN
+			SELECT ctid INTO l_cube_ctid FROM t_system
+			WHERE name = OLD.name;
+			r_sys_old.name := OLD.name;
+			r_sys_old.cube_tsg_type := OLD.cube_tsg_type;
+			r_sys_old.database := OLD.database;
+			r_sys_old.schema := OLD.schema;
+			r_sys_old.password := OLD.password;
+			r_sys_old.table_prefix := OLD.table_prefix;
+		END IF;
 
-/*
+		IF INSERTING THEN 
+			CALL sys.trg_insert_sys (r_sys_new);
+		ELSIF UPDATING THEN
+			CALL sys.trg_update_sys (l_cube_ctid, r_sys_old, r_sys_new);
+		ELSIF DELETING THEN
+			CALL sys.trg_delete_sys (l_cube_ctid, r_sys_old);
+		END IF;
+	END;
+$BODY$;
 
-CREATE OR REPLACE TRIGGER trg_sys
-INSTEAD OF INSERT OR DELETE OR UPDATE ON v_system
+CREATE TRIGGER trg_sys
+INSTEAD OF INSERT OR DELETE OR UPDATE ON sys.v_system
 FOR EACH ROW
-DECLARE
-	l_cube_rowid UROWID;
-	r_sys_new v_system%ROWTYPE;
-	r_sys_old v_system%ROWTYPE;
-BEGIN
-	IF INSERTING OR UPDATING THEN
-		IF :NEW.name = ' ' THEN
-			r_sys_new.name := ' ';
-		ELSE
-			r_sys_new.name := REPLACE(:NEW.name,' ','_');
-		END IF;
-		IF :NEW.cube_tsg_type = ' ' THEN
-			r_sys_new.cube_tsg_type := ' ';
-		ELSE
-			r_sys_new.cube_tsg_type := REPLACE(:NEW.cube_tsg_type,' ','_');
-		END IF;
-		IF :NEW.database = ' ' THEN
-			r_sys_new.database := ' ';
-		ELSE
-			r_sys_new.database := REPLACE(:NEW.database,' ','_');
-		END IF;
-		IF :NEW.schema = ' ' THEN
-			r_sys_new.schema := ' ';
-		ELSE
-			r_sys_new.schema := REPLACE(:NEW.schema,' ','_');
-		END IF;
-		IF :NEW.password = ' ' THEN
-			r_sys_new.password := ' ';
-		ELSE
-			r_sys_new.password := REPLACE(:NEW.password,' ','_');
-		END IF;
-		IF :NEW.table_prefix = ' ' THEN
-			r_sys_new.table_prefix := ' ';
-		ELSE
-			r_sys_new.table_prefix := REPLACE(:NEW.table_prefix,' ','_');
-		END IF;
-	END IF;
-	IF UPDATING THEN
-		r_sys_new.cube_id := :OLD.cube_id;
-	END IF;
-	IF UPDATING OR DELETING THEN
-		SELECT rowid INTO l_cube_rowid FROM t_system
-		WHERE name = :OLD.name;
-		r_sys_old.name := :OLD.name;
-		r_sys_old.cube_tsg_type := :OLD.cube_tsg_type;
-		r_sys_old.database := :OLD.database;
-		r_sys_old.schema := :OLD.schema;
-		r_sys_old.password := :OLD.password;
-		r_sys_old.table_prefix := :OLD.table_prefix;
-	END IF;
+EXECUTE PROCEDURE sys.trg_sys();
 
-	IF INSERTING THEN 
-		pkg_sys_trg.insert_sys (r_sys_new);
-	ELSIF UPDATING THEN
-		pkg_sys_trg.update_sys (l_cube_rowid, r_sys_old, r_sys_new);
-	ELSIF DELETING THEN
-		pkg_sys_trg.delete_sys (l_cube_rowid, r_sys_old);
-	END IF;
-END;
-/
-SHOW ERRORS
+CREATE FUNCTION sys.trg_sbt() RETURNS trigger
+LANGUAGE plpgsql 
+AS $BODY$
+	DECLARE
+		l_cube_ctid TID;
+		r_sbt_new sys.v_system_bo_type%ROWTYPE;
+		r_sbt_old sys.v_system_bo_type%ROWTYPE;
+	BEGIN
+		IF INSERTING OR UPDATING THEN
+			r_sbt_new.cube_sequence := NEW.cube_sequence;
+			IF NEW.fk_sys_name = ' ' THEN
+				r_sbt_new.fk_sys_name := ' ';
+			ELSE
+				r_sbt_new.fk_sys_name := REPLACE(NEW.fk_sys_name,' ','_');
+			END IF;
+			IF NEW.xk_bot_name = ' ' THEN
+				r_sbt_new.xk_bot_name := ' ';
+			ELSE
+				r_sbt_new.xk_bot_name := REPLACE(NEW.xk_bot_name,' ','_');
+			END IF;
+		END IF;
+		IF UPDATING THEN
+			r_sbt_new.cube_id := OLD.cube_id;
+		END IF;
+		IF UPDATING OR DELETING THEN
+			SELECT ctid INTO l_cube_ctid FROM t_system_bo_type
+			WHERE fk_sys_name = OLD.fk_sys_name
+			AND xk_bot_name = OLD.xk_bot_name;
+			r_sbt_old.cube_sequence := OLD.cube_sequence;
+			r_sbt_old.fk_sys_name := OLD.fk_sys_name;
+			r_sbt_old.xk_bot_name := OLD.xk_bot_name;
+		END IF;
 
-CREATE OR REPLACE TRIGGER trg_sbt
-INSTEAD OF INSERT OR DELETE OR UPDATE ON v_system_bo_type
+		IF INSERTING THEN 
+			CALL sys.trg_insert_sbt (r_sbt_new);
+		ELSIF UPDATING THEN
+			CALL sys.trg_update_sbt (l_cube_ctid, r_sbt_old, r_sbt_new);
+		ELSIF DELETING THEN
+			CALL sys.trg_delete_sbt (l_cube_ctid, r_sbt_old);
+		END IF;
+	END;
+$BODY$;
+
+CREATE TRIGGER trg_sbt
+INSTEAD OF INSERT OR DELETE OR UPDATE ON sys.v_system_bo_type
 FOR EACH ROW
-DECLARE
-	l_cube_rowid UROWID;
-	r_sbt_new v_system_bo_type%ROWTYPE;
-	r_sbt_old v_system_bo_type%ROWTYPE;
-BEGIN
-	IF INSERTING OR UPDATING THEN
-		r_sbt_new.cube_sequence := :NEW.cube_sequence;
-		IF :NEW.fk_sys_name = ' ' THEN
-			r_sbt_new.fk_sys_name := ' ';
-		ELSE
-			r_sbt_new.fk_sys_name := REPLACE(:NEW.fk_sys_name,' ','_');
-		END IF;
-		IF :NEW.xk_bot_name = ' ' THEN
-			r_sbt_new.xk_bot_name := ' ';
-		ELSE
-			r_sbt_new.xk_bot_name := REPLACE(:NEW.xk_bot_name,' ','_');
-		END IF;
-	END IF;
-	IF UPDATING THEN
-		r_sbt_new.cube_id := :OLD.cube_id;
-	END IF;
-	IF UPDATING OR DELETING THEN
-		SELECT rowid INTO l_cube_rowid FROM t_system_bo_type
-		WHERE fk_sys_name = :OLD.fk_sys_name
-		  AND xk_bot_name = :OLD.xk_bot_name;
-		r_sbt_old.cube_sequence := :OLD.cube_sequence;
-		r_sbt_old.fk_sys_name := :OLD.fk_sys_name;
-		r_sbt_old.xk_bot_name := :OLD.xk_bot_name;
-	END IF;
-
-	IF INSERTING THEN 
-		pkg_sys_trg.insert_sbt (r_sbt_new);
-	ELSIF UPDATING THEN
-		pkg_sys_trg.update_sbt (l_cube_rowid, r_sbt_old, r_sbt_new);
-	ELSIF DELETING THEN
-		pkg_sys_trg.delete_sbt (l_cube_rowid, r_sbt_old);
-	END IF;
-END;
-/
-SHOW ERRORS
-
-*/
+EXECUTE PROCEDURE sys.trg_sbt();
 
 CREATE VIEW fun.v_function AS 
 	SELECT
@@ -3197,17 +3234,15 @@ AS $BODY$
 		NULL;
 	END;
 $BODY$;
-/*
-CREATE PROCEDURE trg_delete_fun (p_cube_rowid UROWID, p_fun IN OUT NOCOPY v_function%ROWTYPE)
+
+CREATE PROCEDURE fun.trg_delete_fun (p_cube_ctid TID, p_fun fun.v_function)
 LANGUAGE plpgsql 
 AS $BODY$
 	BEGIN
-		DELETE t_function 
-		WHERE rowid = p_cube_rowid;
+		DELETE FROM fun.t_function 
+		WHERE ctid = p_cube_ctid;
 	END;
 $BODY$;
-*/
-
 
 CREATE PROCEDURE fun.trg_insert_arg (p_arg fun.v_argument)
 LANGUAGE plpgsql 
@@ -3235,102 +3270,104 @@ AS $BODY$
 	BEGIN
 		UPDATE t_argument SET 
 			cube_sequence = p_arg_new.cube_sequence
-		WHERE rowid = p_cube_ctid;
+		WHERE ctid = p_cube_ctid;
 	END;
 $BODY$;
-/*
-CREATE PROCEDURE trg_delete_arg (p_cube_rowid UROWID, p_arg IN OUT NOCOPY v_argument%ROWTYPE)
+
+CREATE PROCEDURE fun.trg_delete_arg (p_cube_ctid TID, p_arg fun.v_argument)
 LANGUAGE plpgsql 
 AS $BODY$
 	BEGIN
-		DELETE t_argument 
-		WHERE rowid = p_cube_rowid;
+		DELETE FROM fun.t_argument 
+		WHERE ctid = p_cube_ctid;
 	END;
 $BODY$;
-*/
 
+CREATE FUNCTION fun.trg_fun() RETURNS trigger
+LANGUAGE plpgsql 
+AS $BODY$
+	DECLARE
+		l_cube_ctid TID;
+		r_fun_new fun.v_function%ROWTYPE;
+		r_fun_old fun.v_function%ROWTYPE;
+	BEGIN
+		IF INSERTING OR UPDATING THEN
+			IF NEW.name = ' ' THEN
+				r_fun_new.name := ' ';
+			ELSE
+				r_fun_new.name := REPLACE(NEW.name,' ','_');
+			END IF;
+		END IF;
+		IF UPDATING THEN
+			r_fun_new.cube_id := OLD.cube_id;
+		END IF;
+		IF UPDATING OR DELETING THEN
+			SELECT ctid INTO l_cube_ctid FROM t_function
+			WHERE name = OLD.name;
+			r_fun_old.name := OLD.name;
+		END IF;
 
-/*
+		IF INSERTING THEN 
+			CALL fun.trg_insert_fun (r_fun_new);
+		ELSIF UPDATING THEN
+			CALL fun.trg_update_fun (l_cube_ctid, r_fun_old, r_fun_new);
+		ELSIF DELETING THEN
+			CALL fun.trg_delete_fun (l_cube_ctid, r_fun_old);
+		END IF;
+	END;
+$BODY$;
 
-CREATE OR REPLACE TRIGGER trg_fun
-INSTEAD OF INSERT OR DELETE OR UPDATE ON v_function
+CREATE TRIGGER trg_fun
+INSTEAD OF INSERT OR DELETE OR UPDATE ON fun.v_function
 FOR EACH ROW
-DECLARE
-	l_cube_rowid UROWID;
-	r_fun_new v_function%ROWTYPE;
-	r_fun_old v_function%ROWTYPE;
-BEGIN
-	IF INSERTING OR UPDATING THEN
-		IF :NEW.name = ' ' THEN
-			r_fun_new.name := ' ';
-		ELSE
-			r_fun_new.name := REPLACE(:NEW.name,' ','_');
+EXECUTE PROCEDURE fun.trg_fun();
+
+CREATE FUNCTION fun.trg_arg() RETURNS trigger
+LANGUAGE plpgsql 
+AS $BODY$
+	DECLARE
+		l_cube_ctid TID;
+		r_arg_new fun.v_argument%ROWTYPE;
+		r_arg_old fun.v_argument%ROWTYPE;
+	BEGIN
+		IF INSERTING OR UPDATING THEN
+			r_arg_new.cube_sequence := NEW.cube_sequence;
+			IF NEW.fk_fun_name = ' ' THEN
+				r_arg_new.fk_fun_name := ' ';
+			ELSE
+				r_arg_new.fk_fun_name := REPLACE(NEW.fk_fun_name,' ','_');
+			END IF;
+			IF NEW.name = ' ' THEN
+				r_arg_new.name := ' ';
+			ELSE
+				r_arg_new.name := REPLACE(NEW.name,' ','_');
+			END IF;
 		END IF;
-	END IF;
-	IF UPDATING THEN
-		r_fun_new.cube_id := :OLD.cube_id;
-	END IF;
-	IF UPDATING OR DELETING THEN
-		SELECT rowid INTO l_cube_rowid FROM t_function
-		WHERE name = :OLD.name;
-		r_fun_old.name := :OLD.name;
-	END IF;
+		IF UPDATING THEN
+			r_arg_new.cube_id := OLD.cube_id;
+		END IF;
+		IF UPDATING OR DELETING THEN
+			SELECT ctid INTO l_cube_ctid FROM t_argument
+			WHERE fk_fun_name = OLD.fk_fun_name
+			AND name = OLD.name;
+			r_arg_old.cube_sequence := OLD.cube_sequence;
+			r_arg_old.fk_fun_name := OLD.fk_fun_name;
+			r_arg_old.name := OLD.name;
+		END IF;
 
-	IF INSERTING THEN 
-		pkg_fun_trg.insert_fun (r_fun_new);
-	ELSIF UPDATING THEN
-		pkg_fun_trg.update_fun (l_cube_rowid, r_fun_old, r_fun_new);
-	ELSIF DELETING THEN
-		pkg_fun_trg.delete_fun (l_cube_rowid, r_fun_old);
-	END IF;
-END;
-/
-SHOW ERRORS
+		IF INSERTING THEN 
+			CALL fun.trg_insert_arg (r_arg_new);
+		ELSIF UPDATING THEN
+			CALL fun.trg_update_arg (l_cube_ctid, r_arg_old, r_arg_new);
+		ELSIF DELETING THEN
+			CALL fun.trg_delete_arg (l_cube_ctid, r_arg_old);
+		END IF;
+	END;
+$BODY$;
 
-CREATE OR REPLACE TRIGGER trg_arg
-INSTEAD OF INSERT OR DELETE OR UPDATE ON v_argument
+CREATE TRIGGER trg_arg
+INSTEAD OF INSERT OR DELETE OR UPDATE ON fun.v_argument
 FOR EACH ROW
-DECLARE
-	l_cube_rowid UROWID;
-	r_arg_new v_argument%ROWTYPE;
-	r_arg_old v_argument%ROWTYPE;
-BEGIN
-	IF INSERTING OR UPDATING THEN
-		r_arg_new.cube_sequence := :NEW.cube_sequence;
-		IF :NEW.fk_fun_name = ' ' THEN
-			r_arg_new.fk_fun_name := ' ';
-		ELSE
-			r_arg_new.fk_fun_name := REPLACE(:NEW.fk_fun_name,' ','_');
-		END IF;
-		IF :NEW.name = ' ' THEN
-			r_arg_new.name := ' ';
-		ELSE
-			r_arg_new.name := REPLACE(:NEW.name,' ','_');
-		END IF;
-	END IF;
-	IF UPDATING THEN
-		r_arg_new.cube_id := :OLD.cube_id;
-	END IF;
-	IF UPDATING OR DELETING THEN
-		SELECT rowid INTO l_cube_rowid FROM t_argument
-		WHERE fk_fun_name = :OLD.fk_fun_name
-		  AND name = :OLD.name;
-		r_arg_old.cube_sequence := :OLD.cube_sequence;
-		r_arg_old.fk_fun_name := :OLD.fk_fun_name;
-		r_arg_old.name := :OLD.name;
-	END IF;
-
-	IF INSERTING THEN 
-		pkg_fun_trg.insert_arg (r_arg_new);
-	ELSIF UPDATING THEN
-		pkg_fun_trg.update_arg (l_cube_rowid, r_arg_old, r_arg_new);
-	ELSIF DELETING THEN
-		pkg_fun_trg.delete_arg (l_cube_rowid, r_arg_old);
-	END IF;
-END;
-/
-SHOW ERRORS
-
-*/
+EXECUTE PROCEDURE fun.trg_arg();
 
 \q
