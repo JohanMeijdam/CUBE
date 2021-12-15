@@ -14,7 +14,6 @@ $_SESSION['views']=0;
 <script language="javascript" type="text/javascript" src="CubeRootInclude.js?filever=<?=filemtime('CubeRootInclude.js')?>"></script>
 <script language="javascript" type="text/javascript">
 <!--
-var g_change_pending = 'N';
 
 g_xmlhttp.onreadystatechange = function() {
 	if(g_xmlhttp.readyState == 4) {

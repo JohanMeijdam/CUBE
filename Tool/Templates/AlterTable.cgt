@@ -4,7 +4,7 @@ Change log:
 [[INCLUDE,Includes/general.cgt]]
 [[BODY]]-- ALTER TABLE DDL
 --[[LOOP,DATABASE]]
-SET SERVEROUTPUT ON;[[LOOP,SEQUENCE]]
+SET SERVEROUTPUT ON;[[LOOP,SCHEMA]][[LOOP,SEQUENCE]]
 DECLARE
 	l_count NUMBER(4);
 BEGIN
@@ -15,7 +15,7 @@ BEGIN
 		DBMS_OUTPUT.PUT_LINE('Sequence <<SEQUENCE:U>> created');
 	END IF;
 END;
-/[[ENDLOOP,SEQUENCE]][[LOOP,TABLE]]
+/[[ENDLOOP,SEQUENCE]][[ENDLOOP,SCHEMA]][[LOOP,SCHEMA]][[LOOP,TABLE]]
 DECLARE
 	l_count NUMBER(4);
 BEGIN
@@ -47,13 +47,13 @@ BEGIN
 		END LOOP;
 	END IF;
 END;
-/[[ENDLOOP,TABLE]][[******** DROP TABLE MANUAL
+/[[ENDLOOP,TABLE]][[ENDLOOP,SCHEMA]][[******** DROP TABLE MANUAL
 BEGIN
 	FOR r_table IN (SELECT t.table_name FROM all_tables t, all_tab_comments c
 				WHERE t.table_name = c.table_name
-				  AND t.owner = '<<DATABASE1:U>>'[[LOOP,TABLE]][[IF:FIRST]]
+				  AND t.owner = '<<DATABASE1:U>>'[[LOOP,SCHEMA]][[LOOP,TABLE]][[IF:FIRST]]
 				  AND t.table_name NOT IN ([[ENDIF]]
-							'<<TABLE:U>>'[[IF:!LAST]],[[ELSE]])[[ENDIF]][[ENDLOOP,TABLE]]
+							'<<TABLE:U>>'[[IF:!LAST]],[[ELSE]])[[ENDIF]][[ENDLOOP,TABLE]][[ENDLOOP,SCHEMA]]
 				  AND SUBSTR(t.table_name,1,7) <> 'T_CUBE_')
 	LOOP
 		EXECUTE IMMEDIATE
@@ -61,7 +61,7 @@ BEGIN
 		DBMS_OUTPUT.PUT_LINE('Table ' || UPPER(r_table.table_name) || ' dropped');
 	END LOOP;
 END;
-/******]][[LOOP,TABLE]]
+/******]][[LOOP,SCHEMA]][[LOOP,TABLE]]
 BEGIN
 	DBMS_OUTPUT.PUT_LINE('Maintain table <<TABLE:U>>');
 	FOR r_field IN (SELECT column_name,
@@ -113,6 +113,6 @@ BEGIN
 		DBMS_OUTPUT.PUT_LINE('Field <<TABLE:U>>.' || UPPER(r_field.column_name) || ' dropped');
 	END LOOP;
 END;
-/[[ENDLOOP,TABLE]][[ENDLOOP,DATABASE]]
+/[[ENDLOOP,TABLE]][[ENDLOOP,SCHEMA]][[ENDLOOP,DATABASE]]
 EXIT;
 [[ENDBODY]]
