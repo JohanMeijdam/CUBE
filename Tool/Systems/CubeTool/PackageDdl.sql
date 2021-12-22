@@ -67,9 +67,9 @@ CREATE OR REPLACE PACKAGE pkg_itp IS
 			p_domain IN VARCHAR2,
 			p_length IN NUMBER,
 			p_decimals IN NUMBER,
-			p_case_sensitive IN CHAR,
+			p_case_sensitive IN VARCHAR2,
 			p_default_value IN VARCHAR2,
-			p_spaces_allowed IN CHAR,
+			p_spaces_allowed IN VARCHAR2,
 			p_presentation IN VARCHAR2,
 			p_cube_row IN OUT c_cube_row);
 	PROCEDURE update_ite (
@@ -79,9 +79,9 @@ CREATE OR REPLACE PACKAGE pkg_itp IS
 			p_domain IN VARCHAR2,
 			p_length IN NUMBER,
 			p_decimals IN NUMBER,
-			p_case_sensitive IN CHAR,
+			p_case_sensitive IN VARCHAR2,
 			p_default_value IN VARCHAR2,
-			p_spaces_allowed IN CHAR,
+			p_spaces_allowed IN VARCHAR2,
 			p_presentation IN VARCHAR2);
 	PROCEDURE delete_ite (
 			p_fk_itp_name IN VARCHAR2,
@@ -259,9 +259,9 @@ CREATE OR REPLACE PACKAGE BODY pkg_itp IS
 			p_domain IN VARCHAR2,
 			p_length IN NUMBER,
 			p_decimals IN NUMBER,
-			p_case_sensitive IN CHAR,
+			p_case_sensitive IN VARCHAR2,
 			p_default_value IN VARCHAR2,
-			p_spaces_allowed IN CHAR,
+			p_spaces_allowed IN VARCHAR2,
 			p_presentation IN VARCHAR2,
 			p_cube_row IN OUT c_cube_row) IS
 	BEGIN
@@ -303,9 +303,9 @@ CREATE OR REPLACE PACKAGE BODY pkg_itp IS
 			p_domain IN VARCHAR2,
 			p_length IN NUMBER,
 			p_decimals IN NUMBER,
-			p_case_sensitive IN CHAR,
+			p_case_sensitive IN VARCHAR2,
 			p_default_value IN VARCHAR2,
-			p_spaces_allowed IN CHAR,
+			p_spaces_allowed IN VARCHAR2,
 			p_presentation IN VARCHAR2) IS
 	BEGIN
 		UPDATE v_information_type_element SET
@@ -351,7 +351,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_itp IS
 			p_fk_itp_name IN VARCHAR2,
 			p_fk_ite_sequence IN NUMBER,
 			p_code IN VARCHAR2) IS
-		l_cube_pos_action VARCHAR2(1);
+		l_cube_pos_action CHAR(1);
 		l_cube_position_sequ NUMBER(8);
 		l_cube_near_sequ NUMBER(8);
 		l_cube_count NUMBER(8) := 1024;
@@ -583,26 +583,26 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_fk_typ_name IN VARCHAR2,
 			p_name IN VARCHAR2,
 			p_code IN VARCHAR2,
-			p_flag_partial_key IN CHAR,
-			p_flag_recursive IN CHAR,
-			p_recursive_cardinality IN CHAR,
-			p_cardinality IN CHAR,
-			p_sort_order IN CHAR,
+			p_flag_partial_key IN VARCHAR2,
+			p_flag_recursive IN VARCHAR2,
+			p_recursive_cardinality IN VARCHAR2,
+			p_cardinality IN VARCHAR2,
+			p_sort_order IN VARCHAR2,
 			p_icon IN VARCHAR2,
-			p_transferable IN CHAR,
+			p_transferable IN VARCHAR2,
 			x_name IN VARCHAR2);
 	PROCEDURE update_typ (
 			p_fk_bot_name IN VARCHAR2,
 			p_fk_typ_name IN VARCHAR2,
 			p_name IN VARCHAR2,
 			p_code IN VARCHAR2,
-			p_flag_partial_key IN CHAR,
-			p_flag_recursive IN CHAR,
-			p_recursive_cardinality IN CHAR,
-			p_cardinality IN CHAR,
-			p_sort_order IN CHAR,
+			p_flag_partial_key IN VARCHAR2,
+			p_flag_recursive IN VARCHAR2,
+			p_recursive_cardinality IN VARCHAR2,
+			p_cardinality IN VARCHAR2,
+			p_sort_order IN VARCHAR2,
 			p_icon IN VARCHAR2,
-			p_transferable IN CHAR);
+			p_transferable IN VARCHAR2);
 	PROCEDURE delete_typ (
 			p_name IN VARCHAR2);
 	PROCEDURE get_tsg (
@@ -638,7 +638,7 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_fk_tsg_code IN VARCHAR2,
 			p_code IN VARCHAR2,
 			p_name IN VARCHAR2,
-			p_primary_key IN CHAR,
+			p_primary_key IN VARCHAR2,
 			p_xf_atb_typ_name IN VARCHAR2,
 			p_xk_atb_name IN VARCHAR2,
 			x_fk_typ_name IN VARCHAR2,
@@ -649,7 +649,7 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_fk_tsg_code IN VARCHAR2,
 			p_code IN VARCHAR2,
 			p_name IN VARCHAR2,
-			p_primary_key IN CHAR,
+			p_primary_key IN VARCHAR2,
 			p_xf_atb_typ_name IN VARCHAR2,
 			p_xk_atb_name IN VARCHAR2);
 	PROCEDURE delete_tsg (
@@ -746,12 +746,12 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_fk_bot_name IN VARCHAR2,
 			p_fk_typ_name IN VARCHAR2,
 			p_name IN VARCHAR2,
-			p_primary_key IN CHAR,
-			p_code_display_key IN CHAR,
-			p_code_foreign_key IN CHAR,
-			p_flag_hidden IN CHAR,
+			p_primary_key IN VARCHAR2,
+			p_code_display_key IN VARCHAR2,
+			p_code_foreign_key IN VARCHAR2,
+			p_flag_hidden IN VARCHAR2,
 			p_default_value IN VARCHAR2,
-			p_unchangeable IN CHAR,
+			p_unchangeable IN VARCHAR2,
 			p_xk_itp_name IN VARCHAR2,
 			x_fk_typ_name IN VARCHAR2,
 			x_name IN VARCHAR2);
@@ -759,12 +759,12 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_fk_bot_name IN VARCHAR2,
 			p_fk_typ_name IN VARCHAR2,
 			p_name IN VARCHAR2,
-			p_primary_key IN CHAR,
-			p_code_display_key IN CHAR,
-			p_code_foreign_key IN CHAR,
-			p_flag_hidden IN CHAR,
+			p_primary_key IN VARCHAR2,
+			p_code_display_key IN VARCHAR2,
+			p_code_foreign_key IN VARCHAR2,
+			p_flag_hidden IN VARCHAR2,
 			p_default_value IN VARCHAR2,
-			p_unchangeable IN CHAR,
+			p_unchangeable IN VARCHAR2,
 			p_xk_itp_name IN VARCHAR2);
 	PROCEDURE delete_atb (
 			p_fk_typ_name IN VARCHAR2,
@@ -820,7 +820,7 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_fk_bot_name IN VARCHAR2,
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_atb_name IN VARCHAR2,
-			p_include_or_exclude IN CHAR,
+			p_include_or_exclude IN VARCHAR2,
 			p_xf_tsp_typ_name IN VARCHAR2,
 			p_xf_tsp_tsg_code IN VARCHAR2,
 			p_xk_tsp_code IN VARCHAR2,
@@ -829,7 +829,7 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_fk_bot_name IN VARCHAR2,
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_atb_name IN VARCHAR2,
-			p_include_or_exclude IN CHAR,
+			p_include_or_exclude IN VARCHAR2,
 			p_xf_tsp_typ_name IN VARCHAR2,
 			p_xf_tsp_tsg_code IN VARCHAR2,
 			p_xk_tsp_code IN VARCHAR2);
@@ -896,11 +896,11 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_fk_bot_name IN VARCHAR2,
 			p_fk_typ_name IN VARCHAR2,
 			p_name IN VARCHAR2,
-			p_primary_key IN CHAR,
-			p_code_display_key IN CHAR,
+			p_primary_key IN VARCHAR2,
+			p_code_display_key IN VARCHAR2,
 			p_sequence IN NUMBER,
 			p_scope IN VARCHAR2,
-			p_unchangeable IN CHAR,
+			p_unchangeable IN VARCHAR2,
 			p_within_scope_extension IN VARCHAR2,
 			p_cube_tsg_int_ext IN VARCHAR2,
 			p_xk_bot_name IN VARCHAR2,
@@ -914,11 +914,11 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_fk_bot_name IN VARCHAR2,
 			p_fk_typ_name IN VARCHAR2,
 			p_name IN VARCHAR2,
-			p_primary_key IN CHAR,
-			p_code_display_key IN CHAR,
+			p_primary_key IN VARCHAR2,
+			p_code_display_key IN VARCHAR2,
 			p_sequence IN NUMBER,
 			p_scope IN VARCHAR2,
-			p_unchangeable IN CHAR,
+			p_unchangeable IN VARCHAR2,
 			p_within_scope_extension IN VARCHAR2,
 			p_cube_tsg_int_ext IN VARCHAR2,
 			p_xk_bot_name IN VARCHAR2,
@@ -969,7 +969,7 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_fk_ref_sequence IN NUMBER,
 			p_fk_ref_bot_name IN VARCHAR2,
 			p_fk_ref_typ_name IN VARCHAR2,
-			p_include_or_exclude IN CHAR,
+			p_include_or_exclude IN VARCHAR2,
 			p_xf_tsp_typ_name IN VARCHAR2,
 			p_xf_tsp_tsg_code IN VARCHAR2,
 			p_xk_tsp_code IN VARCHAR2,
@@ -980,7 +980,7 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_fk_ref_sequence IN NUMBER,
 			p_fk_ref_bot_name IN VARCHAR2,
 			p_fk_ref_typ_name IN VARCHAR2,
-			p_include_or_exclude IN CHAR,
+			p_include_or_exclude IN VARCHAR2,
 			p_xf_tsp_typ_name IN VARCHAR2,
 			p_xf_tsp_tsg_code IN VARCHAR2,
 			p_xk_tsp_code IN VARCHAR2);
@@ -1007,7 +1007,7 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_fk_ref_sequence IN NUMBER,
 			p_fk_ref_bot_name IN VARCHAR2,
 			p_fk_ref_typ_name IN VARCHAR2,
-			p_include_or_exclude IN CHAR,
+			p_include_or_exclude IN VARCHAR2,
 			p_xf_tsp_typ_name IN VARCHAR2,
 			p_xf_tsp_tsg_code IN VARCHAR2,
 			p_xk_tsp_code IN VARCHAR2);
@@ -1017,7 +1017,7 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_fk_ref_sequence IN NUMBER,
 			p_fk_ref_bot_name IN VARCHAR2,
 			p_fk_ref_typ_name IN VARCHAR2,
-			p_include_or_exclude IN CHAR,
+			p_include_or_exclude IN VARCHAR2,
 			p_xf_tsp_typ_name IN VARCHAR2,
 			p_xf_tsp_tsg_code IN VARCHAR2,
 			p_xk_tsp_code IN VARCHAR2);
@@ -1038,7 +1038,7 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 	PROCEDURE insert_rtt (
 			p_fk_bot_name IN VARCHAR2,
 			p_fk_typ_name IN VARCHAR2,
-			p_include_or_exclude IN CHAR,
+			p_include_or_exclude IN VARCHAR2,
 			p_xf_tsp_typ_name IN VARCHAR2,
 			p_xf_tsp_tsg_code IN VARCHAR2,
 			p_xk_tsp_code IN VARCHAR2,
@@ -1046,7 +1046,7 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 	PROCEDURE update_rtt (
 			p_fk_bot_name IN VARCHAR2,
 			p_fk_typ_name IN VARCHAR2,
-			p_include_or_exclude IN CHAR,
+			p_include_or_exclude IN VARCHAR2,
 			p_xf_tsp_typ_name IN VARCHAR2,
 			p_xf_tsp_tsg_code IN VARCHAR2,
 			p_xk_tsp_code IN VARCHAR2);
@@ -1228,7 +1228,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_cube_sequence OUT NUMBER,
 			p_cube_pos_action IN VARCHAR2,
 			p_name IN VARCHAR2) IS
-		l_cube_pos_action VARCHAR2(1);
+		l_cube_pos_action CHAR(1);
 		l_cube_position_sequ NUMBER(8);
 		l_cube_near_sequ NUMBER(8);
 		l_cube_count NUMBER(8) := 1024;
@@ -1617,7 +1617,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_fk_bot_name IN VARCHAR2,
 			p_fk_typ_name IN VARCHAR2,
 			p_name IN VARCHAR2) IS
-		l_cube_pos_action VARCHAR2(1);
+		l_cube_pos_action CHAR(1);
 		l_cube_position_sequ NUMBER(8);
 		l_cube_near_sequ NUMBER(8);
 		l_cube_count NUMBER(8) := 1024;
@@ -1720,13 +1720,13 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_fk_typ_name IN VARCHAR2,
 			p_name IN VARCHAR2,
 			p_code IN VARCHAR2,
-			p_flag_partial_key IN CHAR,
-			p_flag_recursive IN CHAR,
-			p_recursive_cardinality IN CHAR,
-			p_cardinality IN CHAR,
-			p_sort_order IN CHAR,
+			p_flag_partial_key IN VARCHAR2,
+			p_flag_recursive IN VARCHAR2,
+			p_recursive_cardinality IN VARCHAR2,
+			p_cardinality IN VARCHAR2,
+			p_sort_order IN VARCHAR2,
 			p_icon IN VARCHAR2,
-			p_transferable IN CHAR,
+			p_transferable IN VARCHAR2,
 			x_name IN VARCHAR2) IS
 		l_cube_sequence NUMBER(8);
 	BEGIN
@@ -1775,13 +1775,13 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_fk_typ_name IN VARCHAR2,
 			p_name IN VARCHAR2,
 			p_code IN VARCHAR2,
-			p_flag_partial_key IN CHAR,
-			p_flag_recursive IN CHAR,
-			p_recursive_cardinality IN CHAR,
-			p_cardinality IN CHAR,
-			p_sort_order IN CHAR,
+			p_flag_partial_key IN VARCHAR2,
+			p_flag_recursive IN VARCHAR2,
+			p_recursive_cardinality IN VARCHAR2,
+			p_cardinality IN VARCHAR2,
+			p_sort_order IN VARCHAR2,
 			p_icon IN VARCHAR2,
-			p_transferable IN CHAR) IS
+			p_transferable IN VARCHAR2) IS
 	BEGIN
 		UPDATE v_type SET
 			fk_bot_name = p_fk_bot_name,
@@ -1912,7 +1912,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_tsg_code IN VARCHAR2,
 			p_code IN VARCHAR2) IS
-		l_cube_pos_action VARCHAR2(1);
+		l_cube_pos_action CHAR(1);
 		l_cube_position_sequ NUMBER(8);
 		l_cube_near_sequ NUMBER(8);
 		l_cube_count NUMBER(8) := 1024;
@@ -2015,7 +2015,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_fk_tsg_code IN VARCHAR2,
 			p_code IN VARCHAR2,
 			p_name IN VARCHAR2,
-			p_primary_key IN CHAR,
+			p_primary_key IN VARCHAR2,
 			p_xf_atb_typ_name IN VARCHAR2,
 			p_xk_atb_name IN VARCHAR2,
 			x_fk_typ_name IN VARCHAR2,
@@ -2062,7 +2062,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_fk_tsg_code IN VARCHAR2,
 			p_code IN VARCHAR2,
 			p_name IN VARCHAR2,
-			p_primary_key IN CHAR,
+			p_primary_key IN VARCHAR2,
 			p_xf_atb_typ_name IN VARCHAR2,
 			p_xk_atb_name IN VARCHAR2) IS
 	BEGIN
@@ -2201,7 +2201,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_tsg_code IN VARCHAR2,
 			p_code IN VARCHAR2) IS
-		l_cube_pos_action VARCHAR2(1);
+		l_cube_pos_action CHAR(1);
 		l_cube_position_sequ NUMBER(8);
 		l_cube_near_sequ NUMBER(8);
 		l_cube_count NUMBER(8) := 1024;
@@ -2517,7 +2517,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_cube_pos_action IN VARCHAR2,
 			p_fk_typ_name IN VARCHAR2,
 			p_name IN VARCHAR2) IS
-		l_cube_pos_action VARCHAR2(1);
+		l_cube_pos_action CHAR(1);
 		l_cube_position_sequ NUMBER(8);
 		l_cube_near_sequ NUMBER(8);
 		l_cube_count NUMBER(8) := 1024;
@@ -2599,12 +2599,12 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_fk_bot_name IN VARCHAR2,
 			p_fk_typ_name IN VARCHAR2,
 			p_name IN VARCHAR2,
-			p_primary_key IN CHAR,
-			p_code_display_key IN CHAR,
-			p_code_foreign_key IN CHAR,
-			p_flag_hidden IN CHAR,
+			p_primary_key IN VARCHAR2,
+			p_code_display_key IN VARCHAR2,
+			p_code_foreign_key IN VARCHAR2,
+			p_flag_hidden IN VARCHAR2,
 			p_default_value IN VARCHAR2,
-			p_unchangeable IN CHAR,
+			p_unchangeable IN VARCHAR2,
 			p_xk_itp_name IN VARCHAR2,
 			x_fk_typ_name IN VARCHAR2,
 			x_name IN VARCHAR2) IS
@@ -2650,12 +2650,12 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_fk_bot_name IN VARCHAR2,
 			p_fk_typ_name IN VARCHAR2,
 			p_name IN VARCHAR2,
-			p_primary_key IN CHAR,
-			p_code_display_key IN CHAR,
-			p_code_foreign_key IN CHAR,
-			p_flag_hidden IN CHAR,
+			p_primary_key IN VARCHAR2,
+			p_code_display_key IN VARCHAR2,
+			p_code_foreign_key IN VARCHAR2,
+			p_flag_hidden IN VARCHAR2,
 			p_default_value IN VARCHAR2,
-			p_unchangeable IN CHAR,
+			p_unchangeable IN VARCHAR2,
 			p_xk_itp_name IN VARCHAR2) IS
 	BEGIN
 		UPDATE v_attribute SET
@@ -2874,7 +2874,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_fk_bot_name IN VARCHAR2,
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_atb_name IN VARCHAR2,
-			p_include_or_exclude IN CHAR,
+			p_include_or_exclude IN VARCHAR2,
 			p_xf_tsp_typ_name IN VARCHAR2,
 			p_xf_tsp_tsg_code IN VARCHAR2,
 			p_xk_tsp_code IN VARCHAR2,
@@ -2909,7 +2909,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_fk_bot_name IN VARCHAR2,
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_atb_name IN VARCHAR2,
-			p_include_or_exclude IN CHAR,
+			p_include_or_exclude IN VARCHAR2,
 			p_xf_tsp_typ_name IN VARCHAR2,
 			p_xf_tsp_tsg_code IN VARCHAR2,
 			p_xk_tsp_code IN VARCHAR2) IS
@@ -3092,7 +3092,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_sequence IN NUMBER,
 			p_xk_bot_name IN VARCHAR2,
 			p_xk_typ_name IN VARCHAR2) IS
-		l_cube_pos_action VARCHAR2(1);
+		l_cube_pos_action CHAR(1);
 		l_cube_position_sequ NUMBER(8);
 		l_cube_near_sequ NUMBER(8);
 		l_cube_count NUMBER(8) := 1024;
@@ -3182,11 +3182,11 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_fk_bot_name IN VARCHAR2,
 			p_fk_typ_name IN VARCHAR2,
 			p_name IN VARCHAR2,
-			p_primary_key IN CHAR,
-			p_code_display_key IN CHAR,
+			p_primary_key IN VARCHAR2,
+			p_code_display_key IN VARCHAR2,
 			p_sequence IN NUMBER,
 			p_scope IN VARCHAR2,
-			p_unchangeable IN CHAR,
+			p_unchangeable IN VARCHAR2,
 			p_within_scope_extension IN VARCHAR2,
 			p_cube_tsg_int_ext IN VARCHAR2,
 			p_xk_bot_name IN VARCHAR2,
@@ -3244,11 +3244,11 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_fk_bot_name IN VARCHAR2,
 			p_fk_typ_name IN VARCHAR2,
 			p_name IN VARCHAR2,
-			p_primary_key IN CHAR,
-			p_code_display_key IN CHAR,
+			p_primary_key IN VARCHAR2,
+			p_code_display_key IN VARCHAR2,
 			p_sequence IN NUMBER,
 			p_scope IN VARCHAR2,
-			p_unchangeable IN CHAR,
+			p_unchangeable IN VARCHAR2,
 			p_within_scope_extension IN VARCHAR2,
 			p_cube_tsg_int_ext IN VARCHAR2,
 			p_xk_bot_name IN VARCHAR2,
@@ -3442,7 +3442,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_fk_ref_sequence IN NUMBER,
 			p_fk_ref_bot_name IN VARCHAR2,
 			p_fk_ref_typ_name IN VARCHAR2,
-			p_include_or_exclude IN CHAR,
+			p_include_or_exclude IN VARCHAR2,
 			p_xf_tsp_typ_name IN VARCHAR2,
 			p_xf_tsp_tsg_code IN VARCHAR2,
 			p_xk_tsp_code IN VARCHAR2,
@@ -3483,7 +3483,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_fk_ref_sequence IN NUMBER,
 			p_fk_ref_bot_name IN VARCHAR2,
 			p_fk_ref_typ_name IN VARCHAR2,
-			p_include_or_exclude IN CHAR,
+			p_include_or_exclude IN VARCHAR2,
 			p_xf_tsp_typ_name IN VARCHAR2,
 			p_xf_tsp_tsg_code IN VARCHAR2,
 			p_xk_tsp_code IN VARCHAR2) IS
@@ -3549,7 +3549,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_fk_ref_sequence IN NUMBER,
 			p_fk_ref_bot_name IN VARCHAR2,
 			p_fk_ref_typ_name IN VARCHAR2,
-			p_include_or_exclude IN CHAR,
+			p_include_or_exclude IN VARCHAR2,
 			p_xf_tsp_typ_name IN VARCHAR2,
 			p_xf_tsp_tsg_code IN VARCHAR2,
 			p_xk_tsp_code IN VARCHAR2) IS
@@ -3587,7 +3587,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_fk_ref_sequence IN NUMBER,
 			p_fk_ref_bot_name IN VARCHAR2,
 			p_fk_ref_typ_name IN VARCHAR2,
-			p_include_or_exclude IN CHAR,
+			p_include_or_exclude IN VARCHAR2,
 			p_xf_tsp_typ_name IN VARCHAR2,
 			p_xf_tsp_tsg_code IN VARCHAR2,
 			p_xk_tsp_code IN VARCHAR2) IS
@@ -3671,7 +3671,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 	PROCEDURE insert_rtt (
 			p_fk_bot_name IN VARCHAR2,
 			p_fk_typ_name IN VARCHAR2,
-			p_include_or_exclude IN CHAR,
+			p_include_or_exclude IN VARCHAR2,
 			p_xf_tsp_typ_name IN VARCHAR2,
 			p_xf_tsp_tsg_code IN VARCHAR2,
 			p_xk_tsp_code IN VARCHAR2,
@@ -3703,7 +3703,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 	PROCEDURE update_rtt (
 			p_fk_bot_name IN VARCHAR2,
 			p_fk_typ_name IN VARCHAR2,
-			p_include_or_exclude IN CHAR,
+			p_include_or_exclude IN VARCHAR2,
 			p_xf_tsp_typ_name IN VARCHAR2,
 			p_xf_tsp_tsg_code IN VARCHAR2,
 			p_xk_tsp_code IN VARCHAR2) IS
@@ -3873,7 +3873,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_xf_atb_typ_name IN VARCHAR2,
 			p_xk_atb_name IN VARCHAR2,
 			p_xk_typ_name IN VARCHAR2) IS
-		l_cube_pos_action VARCHAR2(1);
+		l_cube_pos_action CHAR(1);
 		l_cube_position_sequ NUMBER(8);
 		l_cube_near_sequ NUMBER(8);
 		l_cube_count NUMBER(8) := 1024;
@@ -4365,7 +4365,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_sys IS
 			p_cube_pos_action IN VARCHAR2,
 			p_fk_sys_name IN VARCHAR2,
 			p_xk_bot_name IN VARCHAR2) IS
-		l_cube_pos_action VARCHAR2(1);
+		l_cube_pos_action CHAR(1);
 		l_cube_position_sequ NUMBER(8);
 		l_cube_near_sequ NUMBER(8);
 		l_cube_count NUMBER(8) := 1024;
@@ -4581,7 +4581,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_fun IS
 			p_cube_pos_action IN VARCHAR2,
 			p_fk_fun_name IN VARCHAR2,
 			p_name IN VARCHAR2) IS
-		l_cube_pos_action VARCHAR2(1);
+		l_cube_pos_action CHAR(1);
 		l_cube_position_sequ NUMBER(8);
 		l_cube_near_sequ NUMBER(8);
 		l_cube_count NUMBER(8) := 1024;

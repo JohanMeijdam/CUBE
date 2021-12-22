@@ -24,13 +24,13 @@ BEGIN
 	IF l_count = 0 THEN
 		EXECUTE IMMEDIATE
 		'CREATE TABLE <<TABLE:L>> ([[LOOP,COLUMN]]
-			<<COLUMN:L>> <<TEXT,GEN_DOMAIN_ORA>>[[IF:!5=]] DEFAULT ''<<COLUMN5>>''[[ENDIF]][[IF:!LAST]],[[ENDIF]][[ENDLOOP,COLUMN]])';
+			<<COLUMN:L>> <<TEXT,GEN_DOMAIN_ORA[|]<<COLUMN3>>[|]<<COLUMN4>>[|]>>[[IF:!5=]] DEFAULT ''<<COLUMN5>>''[[ENDIF]][[IF:!LAST]],[[ENDIF]][[ENDLOOP,COLUMN]])';
 		DBMS_OUTPUT.PUT_LINE('Table <<TABLE:U>> created');
 	ELSE[[LOOP,COLUMN]]
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = '<<DATABASE1:U>>' AND table_name = '<<TABLE:U>>' AND column_name = '<<COLUMN:U>>';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
-			'ALTER TABLE <<TABLE:L>> ADD <<COLUMN:L>> <<TEXT,GEN_DOMAIN_ORA>>[[IF:!5=]] DEFAULT ''<<COLUMN5>>''[[ENDIF]]';
+			'ALTER TABLE <<TABLE:L>> ADD <<COLUMN:L>> <<TEXT,GEN_DOMAIN_ORA[|]<<COLUMN3>>[|]<<COLUMN4>>[|]>>[[IF:!5=]] DEFAULT ''<<COLUMN5>>''[[ENDIF]]';
 			DBMS_OUTPUT.PUT_LINE('Column <<TABLE:U>>.<<COLUMN:U>> created');
 		END IF;[[ENDLOOP,COLUMN]]
 		FOR r_key IN (SELECT constraint_name FROM all_constraints WHERE owner = '<<DATABASE1:U>>' AND table_name = '<<TABLE:U>>' AND constraint_type IN ('P','U','R') ORDER BY constraint_type DESC)
@@ -68,7 +68,7 @@ BEGIN
 		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
 		data_default old_default_value,
   		DECODE(column_name,[[LOOP,COLUMN]]
-			'<<COLUMN:U>>','<<TEXT,GEN_DOMAIN_ORA>>',[[ENDLOOP,COLUMN]]NULL) new_domain,
+			'<<COLUMN:U>>','<<TEXT,GEN_DOMAIN_ORA[|]<<COLUMN3>>[|]<<COLUMN4>>[|]>>',[[ENDLOOP,COLUMN]]NULL) new_domain,
 		DECODE(column_name,[[LOOP,COLUMN]]
 			'<<COLUMN:U>>',[[IF:!5=]]'''<<COLUMN5>>'''[[ELSE]]NULL[[ENDIF]],[[ENDLOOP,COLUMN]]NULL) new_default_value
   		FROM all_tab_columns WHERE owner = '<<DATABASE1:U>>' AND table_name = '<<TABLE:U>>')
