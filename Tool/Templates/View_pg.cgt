@@ -32,17 +32,20 @@ DO $BODY$
 		FOR rec_view IN 
 			SELECT viewname 
 			FROM pg_catalog.pg_views
-			WHERE schemaname = '<<TYPE1:L>>'[[IF,SYSTEM:1=SUPPORT]]
-			AND SUBSTR(viewname,1,INSTR(viewname,'_',3)) = 'V_<<SYSTEM5:U>>_'[[ELSE]][[FOR,ROOT]][[IF:CHILD(SYSTEM:1=SUPPORT)]]
-			AND COALESCE(SUBSTR(viewname,1,INSTR(viewname,'_',3)),' ') NOT IN ([[LOOP,SYSTEM:1=SUPPORT]]'V_<<SYSTEM5:U>>_'[[IF:!LAST]], [[ENDIF]][[ENDLOOP,SYSTEM]])[[ENDIF]][[ENDFOR]][[ENDIF]]
+			WHERE schemaname = '<<TYPE1:L>>'
+			  AND viewowner = '<<SYSTEM3>>'[[IF,SYSTEM:1=SUPPORT]]
+			  AND SUBSTR(viewname,1,INSTR(viewname,'_',3)) = 'V_<<SYSTEM5:U>>_'[[ELSE]][[FOR,ROOT]][[IF:CHILD(SYSTEM:1=SUPPORT)]]
+			  AND COALESCE(SUBSTR(viewname,1,INSTR(viewname,'_',3)),' ') NOT IN ([[LOOP,SYSTEM:1=SUPPORT]]'V_<<SYSTEM5:U>>_'[[IF:!LAST]], [[ENDIF]][[ENDLOOP,SYSTEM]])[[ENDIF]][[ENDFOR]][[ENDIF]]
 		LOOP
 			EXECUTE 'DROP VIEW <<TYPE1:L>>.' || rec_view.viewname || ' CASCADE';
 		END LOOP;[[ENDLOOP,TYPE]][[ENDLOOP,BUSINESS_OBJECT_TYPE]][[ENDLOOP,SYSTEM_BO_TYPE]][[LOOP,SYSTEM_BO_TYPE]][[LOOP,BUSINESS_OBJECT_TYPE]][[LOOP,TYPE]]
 
 		FOR rec_proc IN
 			SELECT proname, prokind
-			FROM pg_catalog.pg_proc, pg_catalog.pg_namespace
-			WHERE pronamespace = pg_namespace.oid			
+			FROM pg_catalog.pg_proc, pg_catalog.pg_namespace, pg_catalog.pg_user
+			WHERE pronamespace = pg_namespace.oid
+			  AND nspowner = usesysid
+			  AND usename = '<<SYSTEM3>>'
 			  AND nspname = '<<TYPE1:L>>'
 			  AND proname LIKE 'trg_%'
 		LOOP

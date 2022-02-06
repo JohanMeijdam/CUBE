@@ -10,6 +10,7 @@ DO $BODY$
 			SELECT viewname 
 			FROM pg_catalog.pg_views
 			WHERE schemaname = 'itp'
+			  AND viewowner = 'cubetool'
 		LOOP
 			EXECUTE 'DROP VIEW itp.' || rec_view.viewname || ' CASCADE';
 		END LOOP;
@@ -18,6 +19,7 @@ DO $BODY$
 			SELECT viewname 
 			FROM pg_catalog.pg_views
 			WHERE schemaname = 'bot'
+			  AND viewowner = 'cubetool'
 		LOOP
 			EXECUTE 'DROP VIEW bot.' || rec_view.viewname || ' CASCADE';
 		END LOOP;
@@ -26,6 +28,7 @@ DO $BODY$
 			SELECT viewname 
 			FROM pg_catalog.pg_views
 			WHERE schemaname = 'sys'
+			  AND viewowner = 'cubetool'
 		LOOP
 			EXECUTE 'DROP VIEW sys.' || rec_view.viewname || ' CASCADE';
 		END LOOP;
@@ -34,14 +37,17 @@ DO $BODY$
 			SELECT viewname 
 			FROM pg_catalog.pg_views
 			WHERE schemaname = 'fun'
+			  AND viewowner = 'cubetool'
 		LOOP
 			EXECUTE 'DROP VIEW fun.' || rec_view.viewname || ' CASCADE';
 		END LOOP;
 
 		FOR rec_proc IN
 			SELECT proname, prokind
-			FROM pg_catalog.pg_proc, pg_catalog.pg_namespace
-			WHERE pronamespace = pg_namespace.oid			
+			FROM pg_catalog.pg_proc, pg_catalog.pg_namespace, pg_catalog.pg_user
+			WHERE pronamespace = pg_namespace.oid
+			  AND nspowner = usesysid
+			  AND usename = 'cubetool'
 			  AND nspname = 'itp'
 			  AND proname LIKE 'trg_%'
 		LOOP
@@ -53,8 +59,10 @@ DO $BODY$
 
 		FOR rec_proc IN
 			SELECT proname, prokind
-			FROM pg_catalog.pg_proc, pg_catalog.pg_namespace
-			WHERE pronamespace = pg_namespace.oid			
+			FROM pg_catalog.pg_proc, pg_catalog.pg_namespace, pg_catalog.pg_user
+			WHERE pronamespace = pg_namespace.oid
+			  AND nspowner = usesysid
+			  AND usename = 'cubetool'
 			  AND nspname = 'bot'
 			  AND proname LIKE 'trg_%'
 		LOOP
@@ -66,8 +74,10 @@ DO $BODY$
 
 		FOR rec_proc IN
 			SELECT proname, prokind
-			FROM pg_catalog.pg_proc, pg_catalog.pg_namespace
-			WHERE pronamespace = pg_namespace.oid			
+			FROM pg_catalog.pg_proc, pg_catalog.pg_namespace, pg_catalog.pg_user
+			WHERE pronamespace = pg_namespace.oid
+			  AND nspowner = usesysid
+			  AND usename = 'cubetool'
 			  AND nspname = 'sys'
 			  AND proname LIKE 'trg_%'
 		LOOP
@@ -79,8 +89,10 @@ DO $BODY$
 
 		FOR rec_proc IN
 			SELECT proname, prokind
-			FROM pg_catalog.pg_proc, pg_catalog.pg_namespace
-			WHERE pronamespace = pg_namespace.oid			
+			FROM pg_catalog.pg_proc, pg_catalog.pg_namespace, pg_catalog.pg_user
+			WHERE pronamespace = pg_namespace.oid
+			  AND nspowner = usesysid
+			  AND usename = 'cubetool'
 			  AND nspname = 'fun'
 			  AND proname LIKE 'trg_%'
 		LOOP

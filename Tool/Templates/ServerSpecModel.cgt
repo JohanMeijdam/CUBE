@@ -23,6 +23,7 @@ Change log:
 05-07-2021 - PAGE property 8 removed.
 10-07-2021 - CHANGE_EVENT vervangen door PAGE_FIELD_ATTRIBUTE, CONTROLLED_PAGE_FIELD en CONTROLLED_OPTION
 15-07-2021 - Buttons OK and Cancel
+06-02-2022 - Service FlagNoSelect inverted to FlagCursor
 [[INCLUDE,Includes/general.cgt]]
 [[TEXT,SPEC_EXPORT_LIST]]
 			>OPERATION_TYPE:<<TYPE:I>>;
@@ -123,7 +124,7 @@ Change log:
 -META_MODEL:;[[ENDLOOP,META_MODEL]]
 ! Structure (nog vertalen naar meta model):
 !	BUSINESS_OBJECT_TYPE: 0=Name 1=Code
-!		SERVICE: 0=Name 1=Class 2=FlagNoSelect 3=InternalOrExternal
+!		SERVICE: 0=Name 1=Class 2=FlagCursor 3=InternalOrExternal
 !			>SERVICE_TYPE: TYPE
 !			>SERVICE_TYPE_LIST: TYPE_LIST
 !			ARGUMENT: 0=Prefix 1=InputOutput 2=JsonGroup
@@ -157,12 +158,12 @@ Change log:
 	+<<*TAG>>[[IF:EVAL:'<<*:I>>'ne'']][<<*:I>>][[ENDIF]]:[[VALUE,*:0>N:|]];[[REPEAT:TAB]][[LOOP,>*]]
 		><<*TAG>>:<<*:I>>;[[ENDLOOP,>*]]
 	-<<*TAG>>:;[[ENDLOOP,*]][[LOOP,TYPE]][[IF:ROOT]]
-	+SERVICE[CUBE-SRV-[[EVAL:$mySrvCount++]]]:get_dir_<<TYPE1:L>>_items|list|N|E;
+	+SERVICE[CUBE-SRV-[[EVAL:$mySrvCount++]]]:get_dir_<<TYPE1:L>>_items|list|Y|E;
 		>SERVICE_TYPE:<<TYPE:I>>;
 		+OPERATION:get_<<TYPE1:L>>_root_items|[[IF:3=Y]]root[[ELSE]]all[[ENDIF]]|#|Y|N|N;<<TEXT,SPEC_EXPORT_LIST[|]!2=N[OR](3=F[AND]1=Y)[|]>>
 		-OPERATION:;
 	-SERVICE:;[[ENDIF]][[LOOP,TYPE_LIST]]
-	+SERVICE[CUBE-SRV-[[EVAL:$mySrvCount++]]]:get_<<TYPE1:L>>_[[LOOP,TYPE_LIST_SCOPE]]for_<<TYPE_LIST_SCOPE1:L>>_[[ENDLOOP,TYPE_LIST_SCOPE]]list[[IF,TYPE:3=Y]]_<<TYPE_LIST:L>>[[ENDIF]]|list|N|E;
+	+SERVICE[CUBE-SRV-[[EVAL:$mySrvCount++]]]:get_<<TYPE1:L>>_[[LOOP,TYPE_LIST_SCOPE]]for_<<TYPE_LIST_SCOPE1:L>>_[[ENDLOOP,TYPE_LIST_SCOPE]]list[[IF,TYPE:3=Y]]_<<TYPE_LIST:L>>[[ENDIF]]|list|Y|E;
 		>SERVICE_TYPE:<<TYPE:I>>;
 		>SERVICE_TYPE_LIST:<<TYPE_LIST:I>>;[[IF:CHILD(TYPE_LIST_SCOPE:3=Y)]]
 		=ARGUMENT[CUBE-IMP-[[EVAL:$mySrvCount]]-UP_DOWN]|ARGUMENT_ATTRIBUTE,CUBE_SCOPE_LEVEL:p_|I|Option;[[ENDIF]][[IF:0=recursive]]
@@ -173,7 +174,7 @@ Change log:
 		+OPERATION:get_<<TYPE1:L>>_[[LOOP,TYPE_LIST_SCOPE]]for_<<TYPE_LIST_SCOPE1:L>>_[[ENDLOOP,TYPE_LIST_SCOPE]]list[[IF,TYPE:3=Y]]_<<TYPE_LIST:L>>[[ENDIF]]|<<TYPE_LIST:L>>|#|Y|N|N;[[FOR,TYPE:N>N]]<<TEXT,SPEC_EXPORT_LIST[|]!2=N[OR](3=F[AND]1=Y)[|]>>[[ENDFOR]]
 		-OPERATION:;
 	-SERVICE:;[[ENDLOOP,TYPE_LIST]][[IF:ROOT[AND]!5=N]]
-	+SERVICE[CUBE-SRV-[[EVAL:$mySrvCount++]]]:count_<<TYPE1:L>>|count|N|E;
+	+SERVICE[CUBE-SRV-[[EVAL:$mySrvCount++]]]:count_<<TYPE1:L>>|count|Y|E;
 		>SERVICE_TYPE:<<TYPE:I>>;
 		+OPERATION:count_<<TYPE1:L>>|[[IF:3=Y]]root[[ELSE]]all[[ENDIF]]|#|N|N|N;
 			>OPERATION_TYPE:<<TYPE:I>>;
@@ -182,7 +183,7 @@ Change log:
 			-EXPORT:;
 		-OPERATION:;
 	-SERVICE:;[[ENDIF]][[IF:CHILD(ATTRIBUTE:1=N[AND]4=N)]]
-	+SERVICE[CUBE-SRV-[[EVAL:$mySrvCount++]]]:get_<<TYPE1:L>>|select|N|E;
+	+SERVICE[CUBE-SRV-[[EVAL:$mySrvCount++]]]:get_<<TYPE1:L>>|select|Y|E;
 		>SERVICE_TYPE:<<TYPE:I>>;[[LOOP,ATTRIBUTE:1=Y]]
 		=ARGUMENT[CUBE-IMP-[[EVAL:$mySrvCount]]-P-<<ATTRIBUTE:N>>]|ARGUMENT_ATTRIBUTE,<<ATTRIBUTE:I>>:p_|I|Type;[[ENDLOOP,ATTRIBUTE]]
 		+OPERATION:get_<<TYPE1:L>>||#|N|N|N;
@@ -192,7 +193,7 @@ Change log:
 			-EXPORT:;
 		-OPERATION:;
 	-SERVICE:;[[ENDIF]][[IF:CHILD(TYPE)[OR]3=Y]][[IF:CHILD(ATTRIBUTE:1=N[AND]3=F)]]
-	+SERVICE[CUBE-SRV-[[EVAL:$mySrvCount++]]]:get_<<TYPE1:L>>_fkey|select|N|E;
+	+SERVICE[CUBE-SRV-[[EVAL:$mySrvCount++]]]:get_<<TYPE1:L>>_fkey|select|Y|E;
 		>SERVICE_TYPE:<<TYPE:I>>;[[LOOP,ATTRIBUTE:1=Y]]
 		=ARGUMENT[CUBE-IMP-[[EVAL:$mySrvCount]]-P-<<ATTRIBUTE:N>>]|ARGUMENT_ATTRIBUTE,<<ATTRIBUTE:I>>:p_|I|Type;[[ENDLOOP,ATTRIBUTE]]
 		+OPERATION:get_<<TYPE1:L>>_fkey||fkey|N|N|N;
@@ -202,7 +203,7 @@ Change log:
 			-EXPORT:;
 		-OPERATION:;
 	-SERVICE:;[[ENDIF]]
-	+SERVICE[CUBE-SRV-[[EVAL:$mySrvCount++]]]:get_<<TYPE1:L>>_items|list|N|E;
+	+SERVICE[CUBE-SRV-[[EVAL:$mySrvCount++]]]:get_<<TYPE1:L>>_items|list|Y|E;
 		>SERVICE_TYPE:<<TYPE:I>>;[[LOOP,ATTRIBUTE:1=Y]]
 		=ARGUMENT[CUBE-IMP-[[EVAL:$mySrvCount]]-P-<<ATTRIBUTE:N>>]|ARGUMENT_ATTRIBUTE,<<ATTRIBUTE:I>>:p_|I|Type;[[ENDLOOP,ATTRIBUTE]][[LOOP,TYPE]]
 		+OPERATION:get_<<TYPE(N-1)1:L>>_<<TYPE1:L>>_items|part|#|Y|Y|N;<<TEXT,SPEC_EXPORT_LIST[|]!2=N[|]>>
@@ -210,7 +211,7 @@ Change log:
 		+OPERATION:get_<<TYPE1:L>>_<<TYPE1:L>>_items|part_recursive|#|Y|Y|Y;<<TEXT,SPEC_EXPORT_LIST[|]!2=N[|]>>
 		-OPERATION:;[[ENDIF]]
 	-SERVICE:;[[IF:(3=Y[AND]!4=N)[OR]CHILD(TYPE:!5=N)]]
-	+SERVICE[CUBE-SRV-[[EVAL:$mySrvCount++]]]:count_<<TYPE1:L>>_restricted_items|count|N|E;
+	+SERVICE[CUBE-SRV-[[EVAL:$mySrvCount++]]]:count_<<TYPE1:L>>_restricted_items|count|Y|E;
 		>SERVICE_TYPE:<<TYPE:I>>;[[LOOP,ATTRIBUTE:1=Y]]
 		=ARGUMENT[CUBE-IMP-[[EVAL:$mySrvCount]]-P-<<ATTRIBUTE:N>>]|ARGUMENT_ATTRIBUTE,<<ATTRIBUTE:I>>:p_|I|Type;[[ENDLOOP,ATTRIBUTE]][[IF:3=Y[AND]!4=N]]
 		+OPERATION:count_<<TYPE1:L>>_<<TYPE1:L>>|part_recursive|#|N|N|Y;
@@ -226,32 +227,32 @@ Change log:
 			-EXPORT:;
 		-OPERATION:;[[ENDLOOP,TYPE]]
 	-SERVICE:;[[ENDIF]][[ENDIF]][[IF:3=Y]]
-	+SERVICE[CUBE-SRV-[[EVAL:$mySrvCount++]]]:check_no_part_<<TYPE1:L>>|check_no_part|Y|I;
+	+SERVICE[CUBE-SRV-[[EVAL:$mySrvCount++]]]:check_no_part_<<TYPE1:L>>|check_no_part|N|I;
 		>SERVICE_TYPE:<<TYPE:I>>;[[LOOP,ATTRIBUTE:1=Y]]
 		=ARGUMENT[CUBE-IMP-[[EVAL:$mySrvCount]]-P-<<ATTRIBUTE:N>>]|ARGUMENT_ATTRIBUTE,<<ATTRIBUTE:I>>:p_|I|Type;[[ENDLOOP,ATTRIBUTE]][[LOOP,ATTRIBUTE:<<TEXT,GEN_IS_OWN_KEY>>]]
 		=ARGUMENT[CUBE-IMP-[[EVAL:$mySrvCount]]-X-<<ATTRIBUTE:N>>]|ARGUMENT_ATTRIBUTE,<<ATTRIBUTE:I>>:x_|I|Ref;[[ENDLOOP,ATTRIBUTE]]
 		=OPERATION|OPERATION_TYPE,<<TYPE:I>>:check_no_part_<<TYPE1:L>>||#||N|N;
 	-SERVICE:;[[ENDIF]][[IF:6=P[AND]CHILD(ATTRIBUTE:<<TEXT,GEN_IS_OWN_KEY>>)]]
-	+SERVICE[CUBE-SRV-[[EVAL:$mySrvCount++]]]:determine_position_<<TYPE1:L>>|determine_position|Y|I;
+	+SERVICE[CUBE-SRV-[[EVAL:$mySrvCount++]]]:determine_position_<<TYPE1:L>>|determine_position|N|I;
 		>SERVICE_TYPE:<<TYPE:I>>;[[LOOP,ATTRIBUTE:0=CUBE_SEQUENCE]]
 		=ARGUMENT[CUBE-IMP-[[EVAL:$mySrvCount]]-SEQU]|ARGUMENT_ATTRIBUTE,<<ATTRIBUTE:I>>:p_|O|Result;[[ENDLOOP,ATTRIBUTE]]
 		=ARGUMENT[CUBE-IMP-[[EVAL:$mySrvCount]]-ACTION]|ARGUMENT_ATTRIBUTE,CUBE_POS_ACTION:p_|I|Option;[[LOOP,ATTRIBUTE:1=Y[OR]<<TEXT,GEN_IS_FKEY_F>>[OR]3=R]]
 		=ARGUMENT[CUBE-IMP-[[EVAL:$mySrvCount]]-P-<<ATTRIBUTE:N>>]|ARGUMENT_ATTRIBUTE,<<ATTRIBUTE:I>>:p_|I|Type;[[ENDLOOP,ATTRIBUTE]]
 		=OPERATION|OPERATION_TYPE,<<TYPE:I>>:determine_position_<<TYPE1:L>>||#||N|N;
 	-SERVICE:;
-	+SERVICE[CUBE-SRV-[[EVAL:$mySrvCount++]]]:move_<<TYPE1:L>>|move|Y|E;
+	+SERVICE[CUBE-SRV-[[EVAL:$mySrvCount++]]]:move_<<TYPE1:L>>|move|N|E;
 		>SERVICE_TYPE:<<TYPE:I>>;
 		=ARGUMENT[CUBE-IMP-[[EVAL:$mySrvCount]]-ACTION]|ARGUMENT_ATTRIBUTE,CUBE_POS_ACTION:p_|I|Option;[[LOOP,ATTRIBUTE:1=Y]]
 		=ARGUMENT[CUBE-IMP-[[EVAL:$mySrvCount]]-P-<<ATTRIBUTE:N>>]|ARGUMENT_ATTRIBUTE,<<ATTRIBUTE:I>>:p_|I|Type;[[ENDLOOP,ATTRIBUTE]][[LOOP,ATTRIBUTE:1=Y]]
 		=ARGUMENT[CUBE-IMP-[[EVAL:$mySrvCount]]-X-<<ATTRIBUTE:N>>]|ARGUMENT_ATTRIBUTE,<<ATTRIBUTE:I>>:x_|I|Ref;[[ENDLOOP,ATTRIBUTE]]
 		=OPERATION|OPERATION_TYPE,<<TYPE:I>>:move_<<TYPE1:L>>||#|Y|N|N;
 	-SERVICE:;[[ENDIF]][[IF:6=K]]
-	+SERVICE[CUBE-SRV-[[EVAL:$mySrvCount++]]]:get_next_<<TYPE1:L>>|get_next|N|I;
+	+SERVICE[CUBE-SRV-[[EVAL:$mySrvCount++]]]:get_next_<<TYPE1:L>>|get_next|Y|I;
 		>SERVICE_TYPE:<<TYPE:I>>;[[LOOP,ATTRIBUTE:1=Y[OR]3=R]]
 		=ARGUMENT[CUBE-IMP-[[EVAL:$mySrvCount]]-P-<<ATTRIBUTE:N>>]|ARGUMENT_ATTRIBUTE,<<ATTRIBUTE:I>>:p_|I|Type;[[ENDLOOP,ATTRIBUTE]]
 		=OPERATION|OPERATION_TYPE,<<TYPE:I>>:get_next_<<TYPE1:L>>||#|N|N|N;
 	-SERVICE:;[[ENDIF]][[IF:3=Y[AND]!4=1[AND]!6=P[AND]CHILD(ATTRIBUTE:<<TEXT,GEN_IS_OWN_KEY>>)]]
-	+SERVICE[CUBE-SRV-[[EVAL:$mySrvCount++]]]:change_parent_<<TYPE1:L>>|change_parent|Y|E;
+	+SERVICE[CUBE-SRV-[[EVAL:$mySrvCount++]]]:change_parent_<<TYPE1:L>>|change_parent|N|E;
 		>SERVICE_TYPE:<<TYPE:I>>;
 		=ARGUMENT[CUBE-IMP-[[EVAL:$mySrvCount]]-FLAG_ROOT]|ARGUMENT_ATTRIBUTE,CUBE_FLAG_ROOT:p_|I|Option;[[LOOP,ATTRIBUTE:1=Y]]
 		=ARGUMENT[CUBE-IMP-[[EVAL:$mySrvCount]]-P-<<ATTRIBUTE:N>>]|ARGUMENT_ATTRIBUTE,<<ATTRIBUTE:I>>:p_|I|Type;[[ENDLOOP,ATTRIBUTE]][[LOOP,ATTRIBUTE:1=Y]]
@@ -263,7 +264,7 @@ Change log:
 			-EXPORT:;[[ENDIF]]
 		-OPERATION:;
 	-SERVICE:;[[ENDIF]]
-	+SERVICE[CUBE-SRV-<<TYPE1>>-CRE]:create_<<TYPE1:L>>|create|Y|E;
+	+SERVICE[CUBE-SRV-<<TYPE1>>-CRE]:create_<<TYPE1:L>>|create|N|E;
 		>SERVICE_TYPE:<<TYPE:I>>;[[IF:6=P]]
 		=ARGUMENT[CUBE-IMP-<<TYPE1>>-CRE-POS_ACTION]|ARGUMENT_ATTRIBUTE,CUBE_POS_ACTION:p_|I|Option;[[ENDIF]][[LOOP,ATTRIBUTE:!CHILD(DERIVATION)]]
 		=ARGUMENT[CUBE-IMP-<<TYPE1>>-CRE-P-<<ATTRIBUTE:N>>]|ARGUMENT_ATTRIBUTE,<<ATTRIBUTE:I>>:p_|I|Type;[[ENDLOOP,ATTRIBUTE]][[IF:6=P]][[LOOP,ATTRIBUTE:1=Y]]
@@ -275,12 +276,12 @@ Change log:
 			-EXPORT:;[[ENDIF]]
 		-OPERATION:;
 	-SERVICE:;[[IF:CHILD(ATTRIBUTE:1=N[AND]4=N)]]
-	+SERVICE[CUBE-SRV-<<TYPE1>>-UPD]:update_<<TYPE1:L>>|update|Y|E;
+	+SERVICE[CUBE-SRV-<<TYPE1>>-UPD]:update_<<TYPE1:L>>|update|N|E;
 		>SERVICE_TYPE:<<TYPE:I>>;[[LOOP,ATTRIBUTE:!CHILD(DERIVATION)]]
 		=ARGUMENT[CUBE-IMP-<<TYPE1>>-UPD-P-<<ATTRIBUTE:N>>]|ARGUMENT_ATTRIBUTE,<<ATTRIBUTE:I>>:p_|I|Type;[[ENDLOOP,ATTRIBUTE]]
 		=OPERATION|OPERATION_TYPE,<<TYPE:I>>:update_<<TYPE1:L>>||#|N|N|N;
 	-SERVICE:;[[ENDIF]]
-	+SERVICE[CUBE-SRV-<<TYPE1>>-DEL]:delete_<<TYPE1:L>>|delete|Y|E;
+	+SERVICE[CUBE-SRV-<<TYPE1>>-DEL]:delete_<<TYPE1:L>>|delete|N|E;
 		>SERVICE_TYPE:<<TYPE:I>>;[[LOOP,ATTRIBUTE:1=Y]]
 		=ARGUMENT[CUBE-IMP-<<TYPE1>>-DEL-P-<<ATTRIBUTE:N>>]|ARGUMENT_ATTRIBUTE,<<ATTRIBUTE:I>>:p_|I|Type;[[ENDLOOP,ATTRIBUTE]]
 		=OPERATION|OPERATION_TYPE,<<TYPE:I>>:delete_<<TYPE1:L>>||#|N|N|N;
