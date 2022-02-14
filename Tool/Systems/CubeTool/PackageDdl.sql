@@ -53,8 +53,8 @@ CREATE OR REPLACE PACKAGE pkg_itp IS
 			p_cube_row IN OUT c_cube_row,
 			p_name IN VARCHAR2);
 	PROCEDURE insert_itp (
-			p_name IN VARCHAR2,
-			p_cube_row IN OUT c_cube_row);
+			p_cube_row IN OUT c_cube_row,
+			p_name IN VARCHAR2);
 	PROCEDURE delete_itp (
 			p_name IN VARCHAR2);
 	PROCEDURE get_ite (
@@ -66,6 +66,7 @@ CREATE OR REPLACE PACKAGE pkg_itp IS
 			p_fk_itp_name IN VARCHAR2,
 			p_sequence IN NUMBER);
 	PROCEDURE insert_ite (
+			p_cube_row IN OUT c_cube_row,
 			p_fk_itp_name IN VARCHAR2,
 			p_sequence IN NUMBER,
 			p_suffix IN VARCHAR2,
@@ -75,8 +76,7 @@ CREATE OR REPLACE PACKAGE pkg_itp IS
 			p_case_sensitive IN VARCHAR2,
 			p_default_value IN VARCHAR2,
 			p_spaces_allowed IN VARCHAR2,
-			p_presentation IN VARCHAR2,
-			p_cube_row IN OUT c_cube_row);
+			p_presentation IN VARCHAR2);
 	PROCEDURE update_ite (
 			p_fk_itp_name IN VARCHAR2,
 			p_sequence IN NUMBER,
@@ -180,8 +180,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_itp IS
 	END;
 
 	PROCEDURE insert_itp (
-			p_name IN VARCHAR2,
-			p_cube_row IN OUT c_cube_row) IS
+			p_cube_row IN OUT c_cube_row,
+			p_name IN VARCHAR2) IS
 	BEGIN
 		INSERT INTO v_information_type (
 			cube_id,
@@ -258,6 +258,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_itp IS
 	END;
 
 	PROCEDURE insert_ite (
+			p_cube_row IN OUT c_cube_row,
 			p_fk_itp_name IN VARCHAR2,
 			p_sequence IN NUMBER,
 			p_suffix IN VARCHAR2,
@@ -267,8 +268,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_itp IS
 			p_case_sensitive IN VARCHAR2,
 			p_default_value IN VARCHAR2,
 			p_spaces_allowed IN VARCHAR2,
-			p_presentation IN VARCHAR2,
-			p_cube_row IN OUT c_cube_row) IS
+			p_presentation IN VARCHAR2) IS
 	BEGIN
 		INSERT INTO v_information_type_element (
 			cube_id,
@@ -822,14 +822,14 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_xf_tsp_tsg_code IN VARCHAR2,
 			p_xk_tsp_code IN VARCHAR2);
 	PROCEDURE insert_rta (
+			p_cube_row IN OUT c_cube_row,
 			p_fk_bot_name IN VARCHAR2,
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_atb_name IN VARCHAR2,
 			p_include_or_exclude IN VARCHAR2,
 			p_xf_tsp_typ_name IN VARCHAR2,
 			p_xf_tsp_tsg_code IN VARCHAR2,
-			p_xk_tsp_code IN VARCHAR2,
-			p_cube_row IN OUT c_cube_row);
+			p_xk_tsp_code IN VARCHAR2);
 	PROCEDURE update_rta (
 			p_fk_bot_name IN VARCHAR2,
 			p_fk_typ_name IN VARCHAR2,
@@ -969,6 +969,7 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_xf_tsp_tsg_code IN VARCHAR2,
 			p_xk_tsp_code IN VARCHAR2);
 	PROCEDURE insert_rtr (
+			p_cube_row IN OUT c_cube_row,
 			p_fk_bot_name IN VARCHAR2,
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_ref_sequence IN NUMBER,
@@ -977,8 +978,7 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_include_or_exclude IN VARCHAR2,
 			p_xf_tsp_typ_name IN VARCHAR2,
 			p_xf_tsp_tsg_code IN VARCHAR2,
-			p_xk_tsp_code IN VARCHAR2,
-			p_cube_row IN OUT c_cube_row);
+			p_xk_tsp_code IN VARCHAR2);
 	PROCEDURE update_rtr (
 			p_fk_bot_name IN VARCHAR2,
 			p_fk_typ_name IN VARCHAR2,
@@ -1041,13 +1041,13 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_xf_tsp_tsg_code IN VARCHAR2,
 			p_xk_tsp_code IN VARCHAR2);
 	PROCEDURE insert_rtt (
+			p_cube_row IN OUT c_cube_row,
 			p_fk_bot_name IN VARCHAR2,
 			p_fk_typ_name IN VARCHAR2,
 			p_include_or_exclude IN VARCHAR2,
 			p_xf_tsp_typ_name IN VARCHAR2,
 			p_xf_tsp_tsg_code IN VARCHAR2,
-			p_xk_tsp_code IN VARCHAR2,
-			p_cube_row IN OUT c_cube_row);
+			p_xk_tsp_code IN VARCHAR2);
 	PROCEDURE update_rtt (
 			p_fk_bot_name IN VARCHAR2,
 			p_fk_typ_name IN VARCHAR2,
@@ -2876,14 +2876,14 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 	END;
 
 	PROCEDURE insert_rta (
+			p_cube_row IN OUT c_cube_row,
 			p_fk_bot_name IN VARCHAR2,
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_atb_name IN VARCHAR2,
 			p_include_or_exclude IN VARCHAR2,
 			p_xf_tsp_typ_name IN VARCHAR2,
 			p_xf_tsp_tsg_code IN VARCHAR2,
-			p_xk_tsp_code IN VARCHAR2,
-			p_cube_row IN OUT c_cube_row) IS
+			p_xk_tsp_code IN VARCHAR2) IS
 	BEGIN
 		INSERT INTO v_restriction_type_spec_atb (
 			cube_id,
@@ -3442,6 +3442,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 	END;
 
 	PROCEDURE insert_rtr (
+			p_cube_row IN OUT c_cube_row,
 			p_fk_bot_name IN VARCHAR2,
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_ref_sequence IN NUMBER,
@@ -3450,8 +3451,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_include_or_exclude IN VARCHAR2,
 			p_xf_tsp_typ_name IN VARCHAR2,
 			p_xf_tsp_tsg_code IN VARCHAR2,
-			p_xk_tsp_code IN VARCHAR2,
-			p_cube_row IN OUT c_cube_row) IS
+			p_xk_tsp_code IN VARCHAR2) IS
 	BEGIN
 		INSERT INTO v_restriction_type_spec_ref (
 			cube_id,
@@ -3674,13 +3674,13 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 	END;
 
 	PROCEDURE insert_rtt (
+			p_cube_row IN OUT c_cube_row,
 			p_fk_bot_name IN VARCHAR2,
 			p_fk_typ_name IN VARCHAR2,
 			p_include_or_exclude IN VARCHAR2,
 			p_xf_tsp_typ_name IN VARCHAR2,
 			p_xf_tsp_tsg_code IN VARCHAR2,
-			p_xk_tsp_code IN VARCHAR2,
-			p_cube_row IN OUT c_cube_row) IS
+			p_xk_tsp_code IN VARCHAR2) IS
 	BEGIN
 		INSERT INTO v_restriction_type_spec_typ (
 			cube_id,
@@ -4216,13 +4216,13 @@ CREATE OR REPLACE PACKAGE pkg_sys IS
 			p_cube_row IN OUT c_cube_row,
 			p_name IN VARCHAR2);
 	PROCEDURE insert_sys (
+			p_cube_row IN OUT c_cube_row,
 			p_name IN VARCHAR2,
 			p_cube_tsg_type IN VARCHAR2,
 			p_database IN VARCHAR2,
 			p_schema IN VARCHAR2,
 			p_password IN VARCHAR2,
-			p_table_prefix IN VARCHAR2,
-			p_cube_row IN OUT c_cube_row);
+			p_table_prefix IN VARCHAR2);
 	PROCEDURE update_sys (
 			p_name IN VARCHAR2,
 			p_cube_tsg_type IN VARCHAR2,
@@ -4310,13 +4310,13 @@ CREATE OR REPLACE PACKAGE BODY pkg_sys IS
 	END;
 
 	PROCEDURE insert_sys (
+			p_cube_row IN OUT c_cube_row,
 			p_name IN VARCHAR2,
 			p_cube_tsg_type IN VARCHAR2,
 			p_database IN VARCHAR2,
 			p_schema IN VARCHAR2,
 			p_password IN VARCHAR2,
-			p_table_prefix IN VARCHAR2,
-			p_cube_row IN OUT c_cube_row) IS
+			p_table_prefix IN VARCHAR2) IS
 	BEGIN
 		INSERT INTO v_system (
 			cube_id,

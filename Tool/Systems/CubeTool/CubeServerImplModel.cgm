@@ -9,6 +9,7 @@
 		+META_TYPE:PROCEDURE|;
 			=PROPERTY:0|Name|;
 			=PROPERTY:1|FlagPublic|;
+			=PROPERTY:2|FlagCursor|;
 			+META_TYPE:ARGUMENT|;
 				=PROPERTY:0|Name|;
 				=PROPERTY:1|CodeImportExport|;
@@ -49,7 +50,7 @@
 -META_MODEL:CUBE;
 =PACKAGE:cube|cubetool;
 +PACKAGE:itp|cubetool;
-	+PROCEDURE:get_itp_root_items|Y;
+	+PROCEDURE:get_itp_root_items|Y|Y;
 		=ARGUMENT:p_cube_row|B|c_cube_row;
 		+STATEMENT:READ_EXPORT;
 			=READ_TABLE:v_information_type|#;
@@ -61,7 +62,7 @@
 			-SORT_ORDER:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:get_itp_list|Y;
+	+PROCEDURE:get_itp_list|Y|Y;
 		=ARGUMENT:p_cube_row|B|c_cube_row;
 		+STATEMENT:READ_EXPORT;
 			=READ_TABLE:v_information_type|#;
@@ -73,7 +74,7 @@
 			-SORT_ORDER:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:get_itp_ite_items|Y;
+	+PROCEDURE:get_itp_ite_items|Y|Y;
 		=ARGUMENT:p_cube_row|B|c_cube_row;
 		=ARGUMENT:p_name|I|TEXT;
 		+STATEMENT:READ_EXPORT;
@@ -106,7 +107,7 @@
 			-SORT_ORDER:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:get_next_itp|N;
+	+PROCEDURE:get_next_itp|N|Y;
 		=ARGUMENT:p_cube_row|B|c_cube_row;
 		=ARGUMENT:p_name|I|TEXT;
 		+STATEMENT:READ_EXPORT;
@@ -129,9 +130,9 @@
 			-SORT_ORDER:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:insert_itp|Y;
-		=ARGUMENT:p_name|I|TEXT;
+	+PROCEDURE:insert_itp|Y|N;
 		=ARGUMENT:p_cube_row|B|c_cube_row;
+		=ARGUMENT:p_name|I|TEXT;
 		+STATEMENT:CREATE|v_information_type;
 			+SET:cube_id;
 				=EXPRESSION:NULL;
@@ -156,7 +157,7 @@
 			-STATEMENT:;
 		-EXCEPTION:;
 	-PROCEDURE:;
-	+PROCEDURE:delete_itp|Y;
+	+PROCEDURE:delete_itp|Y|N;
 		=ARGUMENT:p_name|I|TEXT;
 		+STATEMENT:DELETE|v_information_type;
 			+SELECTION:;
@@ -169,7 +170,7 @@
 			-SELECTION:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:get_ite|Y;
+	+PROCEDURE:get_ite|Y|Y;
 		=ARGUMENT:p_cube_row|B|c_cube_row;
 		=ARGUMENT:p_fk_itp_name|I|TEXT;
 		=ARGUMENT:p_sequence|I|NUMBER;
@@ -213,7 +214,7 @@
 			-SELECTION:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:get_ite_val_items|Y;
+	+PROCEDURE:get_ite_val_items|Y|Y;
 		=ARGUMENT:p_cube_row|B|c_cube_row;
 		=ARGUMENT:p_fk_itp_name|I|TEXT;
 		=ARGUMENT:p_sequence|I|NUMBER;
@@ -253,7 +254,7 @@
 			-SORT_ORDER:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:get_next_ite|N;
+	+PROCEDURE:get_next_ite|N|Y;
 		=ARGUMENT:p_cube_row|B|c_cube_row;
 		=ARGUMENT:p_fk_itp_name|I|TEXT;
 		=ARGUMENT:p_sequence|I|NUMBER;
@@ -291,7 +292,8 @@
 			-SORT_ORDER:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:insert_ite|Y;
+	+PROCEDURE:insert_ite|Y|N;
+		=ARGUMENT:p_cube_row|B|c_cube_row;
 		=ARGUMENT:p_fk_itp_name|I|TEXT;
 		=ARGUMENT:p_sequence|I|NUMBER;
 		=ARGUMENT:p_suffix|I|TEXT;
@@ -302,7 +304,6 @@
 		=ARGUMENT:p_default_value|I|TEXT;
 		=ARGUMENT:p_spaces_allowed|I|TEXT;
 		=ARGUMENT:p_presentation|I|TEXT;
-		=ARGUMENT:p_cube_row|B|c_cube_row;
 		+STATEMENT:CREATE|v_information_type_element;
 			+SET:cube_id;
 				=EXPRESSION:NULL;
@@ -355,7 +356,7 @@
 			-STATEMENT:;
 		-EXCEPTION:;
 	-PROCEDURE:;
-	+PROCEDURE:update_ite|Y;
+	+PROCEDURE:update_ite|Y|N;
 		=ARGUMENT:p_fk_itp_name|I|TEXT;
 		=ARGUMENT:p_sequence|I|NUMBER;
 		=ARGUMENT:p_suffix|I|TEXT;
@@ -405,7 +406,7 @@
 			-SELECTION:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:delete_ite|Y;
+	+PROCEDURE:delete_ite|Y|N;
 		=ARGUMENT:p_fk_itp_name|I|TEXT;
 		=ARGUMENT:p_sequence|I|NUMBER;
 		+STATEMENT:DELETE|v_information_type_element;
@@ -423,7 +424,7 @@
 			-SELECTION:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:get_val|Y;
+	+PROCEDURE:get_val|Y|Y;
 		=ARGUMENT:p_cube_row|B|c_cube_row;
 		=ARGUMENT:p_fk_itp_name|I|TEXT;
 		=ARGUMENT:p_fk_ite_sequence|I|NUMBER;
@@ -451,7 +452,7 @@
 			-SELECTION:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:determine_position_val|N;
+	+PROCEDURE:determine_position_val|N|N;
 		=ARGUMENT:p_cube_sequence|O|NUMBER;
 		=ARGUMENT:p_cube_pos_action|I|TEXT;
 		=ARGUMENT:p_fk_itp_name|I|TEXT;
@@ -677,7 +678,7 @@
 			-STATEMENT:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:move_val|Y;
+	+PROCEDURE:move_val|Y|N;
 		=ARGUMENT:p_cube_pos_action|I|TEXT;
 		=ARGUMENT:p_fk_itp_name|I|TEXT;
 		=ARGUMENT:p_fk_ite_sequence|I|NUMBER;
@@ -758,7 +759,7 @@
 			-STATEMENT_GROUP:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:insert_val|Y;
+	+PROCEDURE:insert_val|Y|N;
 		=ARGUMENT:p_cube_pos_action|I|TEXT;
 		=ARGUMENT:p_fk_itp_name|I|TEXT;
 		=ARGUMENT:p_fk_ite_sequence|I|NUMBER;
@@ -833,7 +834,7 @@
 			-STATEMENT:;
 		-EXCEPTION:;
 	-PROCEDURE:;
-	+PROCEDURE:update_val|Y;
+	+PROCEDURE:update_val|Y|N;
 		=ARGUMENT:p_fk_itp_name|I|TEXT;
 		=ARGUMENT:p_fk_ite_sequence|I|NUMBER;
 		=ARGUMENT:p_code|I|TEXT;
@@ -860,7 +861,7 @@
 			-SELECTION:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:delete_val|Y;
+	+PROCEDURE:delete_val|Y|N;
 		=ARGUMENT:p_fk_itp_name|I|TEXT;
 		=ARGUMENT:p_fk_ite_sequence|I|NUMBER;
 		=ARGUMENT:p_code|I|TEXT;
@@ -885,7 +886,7 @@
 	-PROCEDURE:;
 -PACKAGE:;
 +PACKAGE:bot|cubetool;
-	+PROCEDURE:get_bot_root_items|Y;
+	+PROCEDURE:get_bot_root_items|Y|Y;
 		=ARGUMENT:p_cube_row|B|c_cube_row;
 		+STATEMENT:READ_EXPORT;
 			=READ_TABLE:v_business_object_type|#;
@@ -903,7 +904,7 @@
 			-SORT_ORDER:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:get_bot_list|Y;
+	+PROCEDURE:get_bot_list|Y|Y;
 		=ARGUMENT:p_cube_row|B|c_cube_row;
 		+STATEMENT:READ_EXPORT;
 			=READ_TABLE:v_business_object_type|#;
@@ -921,7 +922,7 @@
 			-SORT_ORDER:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:get_bot|Y;
+	+PROCEDURE:get_bot|Y|Y;
 		=ARGUMENT:p_cube_row|B|c_cube_row;
 		=ARGUMENT:p_name|I|TEXT;
 		+STATEMENT:READ_EXPORT;
@@ -945,7 +946,7 @@
 			-SELECTION:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:get_bot_typ_items|Y;
+	+PROCEDURE:get_bot_typ_items|Y|Y;
 		=ARGUMENT:p_cube_row|B|c_cube_row;
 		=ARGUMENT:p_name|I|TEXT;
 		+STATEMENT:READ_EXPORT;
@@ -975,7 +976,7 @@
 			-SORT_ORDER:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:count_bot_typ|Y;
+	+PROCEDURE:count_bot_typ|Y|Y;
 		=ARGUMENT:p_cube_row|B|c_cube_row;
 		=ARGUMENT:p_name|I|TEXT;
 		+STATEMENT:READ_EXPORT;
@@ -996,7 +997,7 @@
 			-SELECTION:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:determine_position_bot|N;
+	+PROCEDURE:determine_position_bot|N|N;
 		=ARGUMENT:p_cube_sequence|O|NUMBER;
 		=ARGUMENT:p_cube_pos_action|I|TEXT;
 		=ARGUMENT:p_name|I|TEXT;
@@ -1192,7 +1193,7 @@
 			-STATEMENT:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:move_bot|Y;
+	+PROCEDURE:move_bot|Y|N;
 		=ARGUMENT:p_cube_pos_action|I|TEXT;
 		=ARGUMENT:p_name|I|TEXT;
 		=ARGUMENT:x_name|I|TEXT;
@@ -1259,7 +1260,7 @@
 			-STATEMENT_GROUP:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:insert_bot|Y;
+	+PROCEDURE:insert_bot|Y|N;
 		=ARGUMENT:p_cube_pos_action|I|TEXT;
 		=ARGUMENT:p_name|I|TEXT;
 		=ARGUMENT:p_cube_tsg_type|I|TEXT;
@@ -1330,7 +1331,7 @@
 			-STATEMENT:;
 		-EXCEPTION:;
 	-PROCEDURE:;
-	+PROCEDURE:update_bot|Y;
+	+PROCEDURE:update_bot|Y|N;
 		=ARGUMENT:p_name|I|TEXT;
 		=ARGUMENT:p_cube_tsg_type|I|TEXT;
 		=ARGUMENT:p_directory|I|TEXT;
@@ -1355,7 +1356,7 @@
 			-SELECTION:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:delete_bot|Y;
+	+PROCEDURE:delete_bot|Y|N;
 		=ARGUMENT:p_name|I|TEXT;
 		+STATEMENT:DELETE|v_business_object_type;
 			+SELECTION:;
@@ -1368,7 +1369,7 @@
 			-SELECTION:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:get_typ_list_all|Y;
+	+PROCEDURE:get_typ_list_all|Y|Y;
 		=ARGUMENT:p_cube_row|B|c_cube_row;
 		+STATEMENT:READ_EXPORT;
 			=READ_TABLE:v_type|#;
@@ -1386,7 +1387,7 @@
 			-SORT_ORDER:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:get_typ_for_bot_list_all|Y;
+	+PROCEDURE:get_typ_for_bot_list_all|Y|Y;
 		=ARGUMENT:p_cube_row|B|c_cube_row;
 		=ARGUMENT:x_fk_bot_name|I|TEXT;
 		+STATEMENT:READ_EXPORT;
@@ -1413,7 +1414,7 @@
 			-SORT_ORDER:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:get_typ_for_typ_list_all|Y;
+	+PROCEDURE:get_typ_for_typ_list_all|Y|Y;
 		=ARGUMENT:p_cube_row|B|c_cube_row;
 		=ARGUMENT:p_cube_scope_level|I|NUMBER;
 		=ARGUMENT:x_fk_typ_name|I|TEXT;
@@ -1532,7 +1533,7 @@
 			-SORT_ORDER:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:get_typ|Y;
+	+PROCEDURE:get_typ|Y|Y;
 		=ARGUMENT:p_cube_row|B|c_cube_row;
 		=ARGUMENT:p_name|I|TEXT;
 		+STATEMENT:READ_EXPORT;
@@ -1577,7 +1578,7 @@
 			-SELECTION:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:get_typ_fkey|Y;
+	+PROCEDURE:get_typ_fkey|Y|Y;
 		=ARGUMENT:p_cube_row|B|c_cube_row;
 		=ARGUMENT:p_name|I|TEXT;
 		+STATEMENT:READ_EXPORT;
@@ -1595,7 +1596,7 @@
 			-SELECTION:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:get_typ_tsg_items|Y;
+	+PROCEDURE:get_typ_tsg_items|Y|Y;
 		=ARGUMENT:p_cube_row|B|c_cube_row;
 		=ARGUMENT:p_name|I|TEXT;
 		+STATEMENT:READ_EXPORT;
@@ -1629,7 +1630,7 @@
 			-SORT_ORDER:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:get_typ_atb_items|Y;
+	+PROCEDURE:get_typ_atb_items|Y|Y;
 		=ARGUMENT:p_cube_row|B|c_cube_row;
 		=ARGUMENT:p_name|I|TEXT;
 		+STATEMENT:READ_EXPORT;
@@ -1657,7 +1658,7 @@
 			-SORT_ORDER:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:get_typ_ref_items|Y;
+	+PROCEDURE:get_typ_ref_items|Y|Y;
 		=ARGUMENT:p_cube_row|B|c_cube_row;
 		=ARGUMENT:p_name|I|TEXT;
 		+STATEMENT:READ_EXPORT;
@@ -1697,7 +1698,7 @@
 			-SORT_ORDER:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:get_typ_rtt_items|Y;
+	+PROCEDURE:get_typ_rtt_items|Y|Y;
 		=ARGUMENT:p_cube_row|B|c_cube_row;
 		=ARGUMENT:p_name|I|TEXT;
 		+STATEMENT:READ_EXPORT;
@@ -1730,7 +1731,7 @@
 			-SORT_ORDER:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:get_typ_jsn_items|Y;
+	+PROCEDURE:get_typ_jsn_items|Y|Y;
 		=ARGUMENT:p_cube_row|B|c_cube_row;
 		=ARGUMENT:p_name|I|TEXT;
 		+STATEMENT:READ_EXPORT;
@@ -1791,7 +1792,7 @@
 			-SORT_ORDER:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:get_typ_dct_items|Y;
+	+PROCEDURE:get_typ_dct_items|Y|Y;
 		=ARGUMENT:p_cube_row|B|c_cube_row;
 		=ARGUMENT:p_name|I|TEXT;
 		+STATEMENT:READ_EXPORT;
@@ -1812,7 +1813,7 @@
 			-SORT_ORDER:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:get_typ_typ_items|Y;
+	+PROCEDURE:get_typ_typ_items|Y|Y;
 		=ARGUMENT:p_cube_row|B|c_cube_row;
 		=ARGUMENT:p_name|I|TEXT;
 		+STATEMENT:READ_EXPORT;
@@ -1839,7 +1840,7 @@
 			-SORT_ORDER:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:count_typ_jsn|Y;
+	+PROCEDURE:count_typ_jsn|Y|Y;
 		=ARGUMENT:p_cube_row|B|c_cube_row;
 		=ARGUMENT:p_name|I|TEXT;
 		+STATEMENT:READ_EXPORT;
@@ -1872,7 +1873,7 @@
 			-SELECTION:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:count_typ_dct|Y;
+	+PROCEDURE:count_typ_dct|Y|Y;
 		=ARGUMENT:p_cube_row|B|c_cube_row;
 		=ARGUMENT:p_name|I|TEXT;
 		+STATEMENT:READ_EXPORT;
@@ -1890,7 +1891,7 @@
 			-SELECTION:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:check_no_part_typ|N;
+	+PROCEDURE:check_no_part_typ|N|N;
 		=ARGUMENT:p_name|I|TEXT;
 		=ARGUMENT:x_name|I|TEXT;
 		=VARIABLE:l_name||v_type.name||;
@@ -1942,7 +1943,7 @@
 			-STATEMENT:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:determine_position_typ|N;
+	+PROCEDURE:determine_position_typ|N|N;
 		=ARGUMENT:p_cube_sequence|O|NUMBER;
 		=ARGUMENT:p_cube_pos_action|I|TEXT;
 		=ARGUMENT:p_fk_bot_name|I|TEXT;
@@ -2184,7 +2185,7 @@
 			-STATEMENT:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:move_typ|Y;
+	+PROCEDURE:move_typ|Y|N;
 		=ARGUMENT:p_cube_pos_action|I|TEXT;
 		=ARGUMENT:p_name|I|TEXT;
 		=ARGUMENT:x_name|I|TEXT;
@@ -2315,7 +2316,7 @@
 			-STATEMENT_GROUP:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:insert_typ|Y;
+	+PROCEDURE:insert_typ|Y|N;
 		=ARGUMENT:p_cube_pos_action|I|TEXT;
 		=ARGUMENT:p_fk_bot_name|I|TEXT;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
@@ -2419,7 +2420,7 @@
 			-STATEMENT:;
 		-EXCEPTION:;
 	-PROCEDURE:;
-	+PROCEDURE:update_typ|Y;
+	+PROCEDURE:update_typ|Y|N;
 		=ARGUMENT:p_fk_bot_name|I|TEXT;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
 		=ARGUMENT:p_name|I|TEXT;
@@ -2472,7 +2473,7 @@
 			-SELECTION:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:delete_typ|Y;
+	+PROCEDURE:delete_typ|Y|N;
 		=ARGUMENT:p_name|I|TEXT;
 		+STATEMENT:DELETE|v_type;
 			+SELECTION:;
@@ -2485,7 +2486,7 @@
 			-SELECTION:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:get_tsg|Y;
+	+PROCEDURE:get_tsg|Y|Y;
 		=ARGUMENT:p_cube_row|B|c_cube_row;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
 		=ARGUMENT:p_code|I|TEXT;
@@ -2523,7 +2524,7 @@
 			-SELECTION:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:get_tsg_fkey|Y;
+	+PROCEDURE:get_tsg_fkey|Y|Y;
 		=ARGUMENT:p_cube_row|B|c_cube_row;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
 		=ARGUMENT:p_code|I|TEXT;
@@ -2546,7 +2547,7 @@
 			-SELECTION:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:get_tsg_tsp_items|Y;
+	+PROCEDURE:get_tsg_tsp_items|Y|Y;
 		=ARGUMENT:p_cube_row|B|c_cube_row;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
 		=ARGUMENT:p_code|I|TEXT;
@@ -2586,7 +2587,7 @@
 			-SORT_ORDER:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:get_tsg_tsg_items|Y;
+	+PROCEDURE:get_tsg_tsg_items|Y|Y;
 		=ARGUMENT:p_cube_row|B|c_cube_row;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
 		=ARGUMENT:p_code|I|TEXT;
@@ -2622,7 +2623,7 @@
 			-SORT_ORDER:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:count_tsg_tsg|Y;
+	+PROCEDURE:count_tsg_tsg|Y|Y;
 		=ARGUMENT:p_cube_row|B|c_cube_row;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
 		=ARGUMENT:p_code|I|TEXT;
@@ -2648,7 +2649,7 @@
 			-SELECTION:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:check_no_part_tsg|N;
+	+PROCEDURE:check_no_part_tsg|N|N;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
 		=ARGUMENT:p_code|I|TEXT;
 		=ARGUMENT:x_code|I|TEXT;
@@ -2705,7 +2706,7 @@
 			-STATEMENT:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:determine_position_tsg|N;
+	+PROCEDURE:determine_position_tsg|N|N;
 		=ARGUMENT:p_cube_sequence|O|NUMBER;
 		=ARGUMENT:p_cube_pos_action|I|TEXT;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
@@ -2951,7 +2952,7 @@
 			-STATEMENT:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:move_tsg|Y;
+	+PROCEDURE:move_tsg|Y|N;
 		=ARGUMENT:p_cube_pos_action|I|TEXT;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
 		=ARGUMENT:p_code|I|TEXT;
@@ -3072,7 +3073,7 @@
 			-STATEMENT_GROUP:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:insert_tsg|Y;
+	+PROCEDURE:insert_tsg|Y|N;
 		=ARGUMENT:p_cube_pos_action|I|TEXT;
 		=ARGUMENT:p_fk_bot_name|I|TEXT;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
@@ -3165,7 +3166,7 @@
 			-STATEMENT:;
 		-EXCEPTION:;
 	-PROCEDURE:;
-	+PROCEDURE:update_tsg|Y;
+	+PROCEDURE:update_tsg|Y|N;
 		=ARGUMENT:p_fk_bot_name|I|TEXT;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
 		=ARGUMENT:p_fk_tsg_code|I|TEXT;
@@ -3207,7 +3208,7 @@
 			-SELECTION:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:delete_tsg|Y;
+	+PROCEDURE:delete_tsg|Y|N;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
 		=ARGUMENT:p_code|I|TEXT;
 		+STATEMENT:DELETE|v_type_specialisation_group;
@@ -3225,7 +3226,7 @@
 			-SELECTION:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:get_tsp_for_typ_list|Y;
+	+PROCEDURE:get_tsp_for_typ_list|Y|Y;
 		=ARGUMENT:p_cube_row|B|c_cube_row;
 		=ARGUMENT:p_cube_scope_level|I|NUMBER;
 		=ARGUMENT:x_fk_typ_name|I|TEXT;
@@ -3352,7 +3353,7 @@
 			-SORT_ORDER:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:get_tsp_for_tsg_list|Y;
+	+PROCEDURE:get_tsp_for_tsg_list|Y|Y;
 		=ARGUMENT:p_cube_row|B|c_cube_row;
 		=ARGUMENT:p_cube_scope_level|I|NUMBER;
 		=ARGUMENT:x_fk_typ_name|I|TEXT;
@@ -3492,7 +3493,7 @@
 			-SORT_ORDER:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:get_tsp|Y;
+	+PROCEDURE:get_tsp|Y|Y;
 		=ARGUMENT:p_cube_row|B|c_cube_row;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
 		=ARGUMENT:p_fk_tsg_code|I|TEXT;
@@ -3532,7 +3533,7 @@
 			-SELECTION:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:determine_position_tsp|N;
+	+PROCEDURE:determine_position_tsp|N|N;
 		=ARGUMENT:p_cube_sequence|O|NUMBER;
 		=ARGUMENT:p_cube_pos_action|I|TEXT;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
@@ -3758,7 +3759,7 @@
 			-STATEMENT:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:move_tsp|Y;
+	+PROCEDURE:move_tsp|Y|N;
 		=ARGUMENT:p_cube_pos_action|I|TEXT;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
 		=ARGUMENT:p_fk_tsg_code|I|TEXT;
@@ -3839,7 +3840,7 @@
 			-STATEMENT_GROUP:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:insert_tsp|Y;
+	+PROCEDURE:insert_tsp|Y|N;
 		=ARGUMENT:p_cube_pos_action|I|TEXT;
 		=ARGUMENT:p_fk_bot_name|I|TEXT;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
@@ -3930,7 +3931,7 @@
 			-STATEMENT:;
 		-EXCEPTION:;
 	-PROCEDURE:;
-	+PROCEDURE:update_tsp|Y;
+	+PROCEDURE:update_tsp|Y|N;
 		=ARGUMENT:p_fk_bot_name|I|TEXT;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
 		=ARGUMENT:p_fk_tsg_code|I|TEXT;
@@ -3973,7 +3974,7 @@
 			-SELECTION:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:delete_tsp|Y;
+	+PROCEDURE:delete_tsp|Y|N;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
 		=ARGUMENT:p_fk_tsg_code|I|TEXT;
 		=ARGUMENT:p_code|I|TEXT;
@@ -3996,7 +3997,7 @@
 			-SELECTION:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:get_atb_for_typ_list|Y;
+	+PROCEDURE:get_atb_for_typ_list|Y|Y;
 		=ARGUMENT:p_cube_row|B|c_cube_row;
 		=ARGUMENT:p_cube_scope_level|I|NUMBER;
 		=ARGUMENT:x_fk_typ_name|I|TEXT;
@@ -4116,7 +4117,7 @@
 			-SORT_ORDER:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:get_atb|Y;
+	+PROCEDURE:get_atb|Y|Y;
 		=ARGUMENT:p_cube_row|B|c_cube_row;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
 		=ARGUMENT:p_name|I|TEXT;
@@ -4160,7 +4161,7 @@
 			-SELECTION:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:get_atb_fkey|Y;
+	+PROCEDURE:get_atb_fkey|Y|Y;
 		=ARGUMENT:p_cube_row|B|c_cube_row;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
 		=ARGUMENT:p_name|I|TEXT;
@@ -4183,7 +4184,7 @@
 			-SELECTION:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:get_atb_der_items|Y;
+	+PROCEDURE:get_atb_der_items|Y|Y;
 		=ARGUMENT:p_cube_row|B|c_cube_row;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
 		=ARGUMENT:p_name|I|TEXT;
@@ -4217,7 +4218,7 @@
 			-SORT_ORDER:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:get_atb_dca_items|Y;
+	+PROCEDURE:get_atb_dca_items|Y|Y;
 		=ARGUMENT:p_cube_row|B|c_cube_row;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
 		=ARGUMENT:p_name|I|TEXT;
@@ -4247,7 +4248,7 @@
 			-SORT_ORDER:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:get_atb_rta_items|Y;
+	+PROCEDURE:get_atb_rta_items|Y|Y;
 		=ARGUMENT:p_cube_row|B|c_cube_row;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
 		=ARGUMENT:p_name|I|TEXT;
@@ -4289,7 +4290,7 @@
 			-SORT_ORDER:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:count_atb_der|Y;
+	+PROCEDURE:count_atb_der|Y|Y;
 		=ARGUMENT:p_cube_row|B|c_cube_row;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
 		=ARGUMENT:p_name|I|TEXT;
@@ -4312,7 +4313,7 @@
 			-SELECTION:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:count_atb_dca|Y;
+	+PROCEDURE:count_atb_dca|Y|Y;
 		=ARGUMENT:p_cube_row|B|c_cube_row;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
 		=ARGUMENT:p_name|I|TEXT;
@@ -4335,7 +4336,7 @@
 			-SELECTION:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:determine_position_atb|N;
+	+PROCEDURE:determine_position_atb|N|N;
 		=ARGUMENT:p_cube_sequence|O|NUMBER;
 		=ARGUMENT:p_cube_pos_action|I|TEXT;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
@@ -4548,7 +4549,7 @@
 			-STATEMENT:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:move_atb|Y;
+	+PROCEDURE:move_atb|Y|N;
 		=ARGUMENT:p_cube_pos_action|I|TEXT;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
 		=ARGUMENT:p_name|I|TEXT;
@@ -4622,7 +4623,7 @@
 			-STATEMENT_GROUP:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:insert_atb|Y;
+	+PROCEDURE:insert_atb|Y|N;
 		=ARGUMENT:p_cube_pos_action|I|TEXT;
 		=ARGUMENT:p_fk_bot_name|I|TEXT;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
@@ -4719,7 +4720,7 @@
 			-STATEMENT:;
 		-EXCEPTION:;
 	-PROCEDURE:;
-	+PROCEDURE:update_atb|Y;
+	+PROCEDURE:update_atb|Y|N;
 		=ARGUMENT:p_fk_bot_name|I|TEXT;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
 		=ARGUMENT:p_name|I|TEXT;
@@ -4769,7 +4770,7 @@
 			-SELECTION:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:delete_atb|Y;
+	+PROCEDURE:delete_atb|Y|N;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
 		=ARGUMENT:p_name|I|TEXT;
 		+STATEMENT:DELETE|v_attribute;
@@ -4787,7 +4788,7 @@
 			-SELECTION:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:get_der|Y;
+	+PROCEDURE:get_der|Y|Y;
 		=ARGUMENT:p_cube_row|B|c_cube_row;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
 		=ARGUMENT:p_fk_atb_name|I|TEXT;
@@ -4822,7 +4823,7 @@
 			-SELECTION:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:insert_der|Y;
+	+PROCEDURE:insert_der|Y|N;
 		=ARGUMENT:p_fk_bot_name|I|TEXT;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
 		=ARGUMENT:p_fk_atb_name|I|TEXT;
@@ -4865,7 +4866,7 @@
 			-STATEMENT:;
 		-EXCEPTION:;
 	-PROCEDURE:;
-	+PROCEDURE:update_der|Y;
+	+PROCEDURE:update_der|Y|N;
 		=ARGUMENT:p_fk_bot_name|I|TEXT;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
 		=ARGUMENT:p_fk_atb_name|I|TEXT;
@@ -4903,7 +4904,7 @@
 			-SELECTION:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:delete_der|Y;
+	+PROCEDURE:delete_der|Y|N;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
 		=ARGUMENT:p_fk_atb_name|I|TEXT;
 		+STATEMENT:DELETE|v_derivation;
@@ -4921,7 +4922,7 @@
 			-SELECTION:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:get_dca|Y;
+	+PROCEDURE:get_dca|Y|Y;
 		=ARGUMENT:p_cube_row|B|c_cube_row;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
 		=ARGUMENT:p_fk_atb_name|I|TEXT;
@@ -4947,7 +4948,7 @@
 			-SELECTION:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:insert_dca|Y;
+	+PROCEDURE:insert_dca|Y|N;
 		=ARGUMENT:p_fk_bot_name|I|TEXT;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
 		=ARGUMENT:p_fk_atb_name|I|TEXT;
@@ -4978,7 +4979,7 @@
 			-STATEMENT:;
 		-EXCEPTION:;
 	-PROCEDURE:;
-	+PROCEDURE:update_dca|Y;
+	+PROCEDURE:update_dca|Y|N;
 		=ARGUMENT:p_fk_bot_name|I|TEXT;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
 		=ARGUMENT:p_fk_atb_name|I|TEXT;
@@ -5004,7 +5005,7 @@
 			-SELECTION:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:delete_dca|Y;
+	+PROCEDURE:delete_dca|Y|N;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
 		=ARGUMENT:p_fk_atb_name|I|TEXT;
 		+STATEMENT:DELETE|v_description_attribute;
@@ -5022,7 +5023,7 @@
 			-SELECTION:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:get_rta|Y;
+	+PROCEDURE:get_rta|Y|Y;
 		=ARGUMENT:p_cube_row|B|c_cube_row;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
 		=ARGUMENT:p_fk_atb_name|I|TEXT;
@@ -5063,7 +5064,7 @@
 			-SELECTION:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:get_next_rta|N;
+	+PROCEDURE:get_next_rta|N|Y;
 		=ARGUMENT:p_cube_row|B|c_cube_row;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
 		=ARGUMENT:p_fk_atb_name|I|TEXT;
@@ -5170,7 +5171,8 @@
 			-SORT_ORDER:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:insert_rta|Y;
+	+PROCEDURE:insert_rta|Y|N;
+		=ARGUMENT:p_cube_row|B|c_cube_row;
 		=ARGUMENT:p_fk_bot_name|I|TEXT;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
 		=ARGUMENT:p_fk_atb_name|I|TEXT;
@@ -5178,7 +5180,6 @@
 		=ARGUMENT:p_xf_tsp_typ_name|I|TEXT;
 		=ARGUMENT:p_xf_tsp_tsg_code|I|TEXT;
 		=ARGUMENT:p_xk_tsp_code|I|TEXT;
-		=ARGUMENT:p_cube_row|B|c_cube_row;
 		+STATEMENT:CREATE|v_restriction_type_spec_atb;
 			+SET:cube_id;
 				=EXPRESSION:NULL;
@@ -5225,7 +5226,7 @@
 			-STATEMENT:;
 		-EXCEPTION:;
 	-PROCEDURE:;
-	+PROCEDURE:update_rta|Y;
+	+PROCEDURE:update_rta|Y|N;
 		=ARGUMENT:p_fk_bot_name|I|TEXT;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
 		=ARGUMENT:p_fk_atb_name|I|TEXT;
@@ -5266,7 +5267,7 @@
 			-SELECTION:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:delete_rta|Y;
+	+PROCEDURE:delete_rta|Y|N;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
 		=ARGUMENT:p_fk_atb_name|I|TEXT;
 		=ARGUMENT:p_xf_tsp_typ_name|I|TEXT;
@@ -5299,7 +5300,7 @@
 			-SELECTION:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:get_ref|Y;
+	+PROCEDURE:get_ref|Y|Y;
 		=ARGUMENT:p_cube_row|B|c_cube_row;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
 		=ARGUMENT:p_sequence|I|NUMBER;
@@ -5356,7 +5357,7 @@
 			-SELECTION:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:get_ref_fkey|Y;
+	+PROCEDURE:get_ref_fkey|Y|Y;
 		=ARGUMENT:p_cube_row|B|c_cube_row;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
 		=ARGUMENT:p_sequence|I|NUMBER;
@@ -5389,7 +5390,7 @@
 			-SELECTION:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:get_ref_dcr_items|Y;
+	+PROCEDURE:get_ref_dcr_items|Y|Y;
 		=ARGUMENT:p_cube_row|B|c_cube_row;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
 		=ARGUMENT:p_sequence|I|NUMBER;
@@ -5437,7 +5438,7 @@
 			-SORT_ORDER:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:get_ref_rtr_items|Y;
+	+PROCEDURE:get_ref_rtr_items|Y|Y;
 		=ARGUMENT:p_cube_row|B|c_cube_row;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
 		=ARGUMENT:p_sequence|I|NUMBER;
@@ -5497,7 +5498,7 @@
 			-SORT_ORDER:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:get_ref_rts_items|Y;
+	+PROCEDURE:get_ref_rts_items|Y|Y;
 		=ARGUMENT:p_cube_row|B|c_cube_row;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
 		=ARGUMENT:p_sequence|I|NUMBER;
@@ -5561,7 +5562,7 @@
 			-SORT_ORDER:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:count_ref_dcr|Y;
+	+PROCEDURE:count_ref_dcr|Y|Y;
 		=ARGUMENT:p_cube_row|B|c_cube_row;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
 		=ARGUMENT:p_sequence|I|NUMBER;
@@ -5594,7 +5595,7 @@
 			-SELECTION:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:count_ref_rts|Y;
+	+PROCEDURE:count_ref_rts|Y|Y;
 		=ARGUMENT:p_cube_row|B|c_cube_row;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
 		=ARGUMENT:p_sequence|I|NUMBER;
@@ -5627,7 +5628,7 @@
 			-SELECTION:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:determine_position_ref|N;
+	+PROCEDURE:determine_position_ref|N|N;
 		=ARGUMENT:p_cube_sequence|O|NUMBER;
 		=ARGUMENT:p_cube_pos_action|I|TEXT;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
@@ -5850,7 +5851,7 @@
 			-STATEMENT:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:move_ref|Y;
+	+PROCEDURE:move_ref|Y|N;
 		=ARGUMENT:p_cube_pos_action|I|TEXT;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
 		=ARGUMENT:p_sequence|I|NUMBER;
@@ -5938,7 +5939,7 @@
 			-STATEMENT_GROUP:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:insert_ref|Y;
+	+PROCEDURE:insert_ref|Y|N;
 		=ARGUMENT:p_cube_pos_action|I|TEXT;
 		=ARGUMENT:p_fk_bot_name|I|TEXT;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
@@ -6051,7 +6052,7 @@
 			-STATEMENT:;
 		-EXCEPTION:;
 	-PROCEDURE:;
-	+PROCEDURE:update_ref|Y;
+	+PROCEDURE:update_ref|Y|N;
 		=ARGUMENT:p_fk_bot_name|I|TEXT;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
 		=ARGUMENT:p_name|I|TEXT;
@@ -6115,7 +6116,7 @@
 			-SELECTION:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:delete_ref|Y;
+	+PROCEDURE:delete_ref|Y|N;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
 		=ARGUMENT:p_sequence|I|NUMBER;
 		=ARGUMENT:p_xk_bot_name|I|TEXT;
@@ -6143,7 +6144,7 @@
 			-SELECTION:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:get_dcr|Y;
+	+PROCEDURE:get_dcr|Y|Y;
 		=ARGUMENT:p_cube_row|B|c_cube_row;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
 		=ARGUMENT:p_fk_ref_sequence|I|NUMBER;
@@ -6179,7 +6180,7 @@
 			-SELECTION:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:insert_dcr|Y;
+	+PROCEDURE:insert_dcr|Y|N;
 		=ARGUMENT:p_fk_bot_name|I|TEXT;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
 		=ARGUMENT:p_fk_ref_sequence|I|NUMBER;
@@ -6218,7 +6219,7 @@
 			-STATEMENT:;
 		-EXCEPTION:;
 	-PROCEDURE:;
-	+PROCEDURE:update_dcr|Y;
+	+PROCEDURE:update_dcr|Y|N;
 		=ARGUMENT:p_fk_bot_name|I|TEXT;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
 		=ARGUMENT:p_fk_ref_sequence|I|NUMBER;
@@ -6254,7 +6255,7 @@
 			-SELECTION:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:delete_dcr|Y;
+	+PROCEDURE:delete_dcr|Y|N;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
 		=ARGUMENT:p_fk_ref_sequence|I|NUMBER;
 		=ARGUMENT:p_fk_ref_bot_name|I|TEXT;
@@ -6282,7 +6283,7 @@
 			-SELECTION:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:get_rtr|Y;
+	+PROCEDURE:get_rtr|Y|Y;
 		=ARGUMENT:p_cube_row|B|c_cube_row;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
 		=ARGUMENT:p_fk_ref_sequence|I|NUMBER;
@@ -6333,7 +6334,7 @@
 			-SELECTION:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:get_next_rtr|N;
+	+PROCEDURE:get_next_rtr|N|Y;
 		=ARGUMENT:p_cube_row|B|c_cube_row;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
 		=ARGUMENT:p_fk_ref_sequence|I|NUMBER;
@@ -6506,7 +6507,8 @@
 			-SORT_ORDER:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:insert_rtr|Y;
+	+PROCEDURE:insert_rtr|Y|N;
+		=ARGUMENT:p_cube_row|B|c_cube_row;
 		=ARGUMENT:p_fk_bot_name|I|TEXT;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
 		=ARGUMENT:p_fk_ref_sequence|I|NUMBER;
@@ -6516,7 +6518,6 @@
 		=ARGUMENT:p_xf_tsp_typ_name|I|TEXT;
 		=ARGUMENT:p_xf_tsp_tsg_code|I|TEXT;
 		=ARGUMENT:p_xk_tsp_code|I|TEXT;
-		=ARGUMENT:p_cube_row|B|c_cube_row;
 		+STATEMENT:CREATE|v_restriction_type_spec_ref;
 			+SET:cube_id;
 				=EXPRESSION:NULL;
@@ -6571,7 +6572,7 @@
 			-STATEMENT:;
 		-EXCEPTION:;
 	-PROCEDURE:;
-	+PROCEDURE:update_rtr|Y;
+	+PROCEDURE:update_rtr|Y|N;
 		=ARGUMENT:p_fk_bot_name|I|TEXT;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
 		=ARGUMENT:p_fk_ref_sequence|I|NUMBER;
@@ -6622,7 +6623,7 @@
 			-SELECTION:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:delete_rtr|Y;
+	+PROCEDURE:delete_rtr|Y|N;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
 		=ARGUMENT:p_fk_ref_sequence|I|NUMBER;
 		=ARGUMENT:p_fk_ref_bot_name|I|TEXT;
@@ -6665,7 +6666,7 @@
 			-SELECTION:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:get_rts|Y;
+	+PROCEDURE:get_rts|Y|Y;
 		=ARGUMENT:p_cube_row|B|c_cube_row;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
 		=ARGUMENT:p_fk_ref_sequence|I|NUMBER;
@@ -6716,7 +6717,7 @@
 			-SELECTION:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:insert_rts|Y;
+	+PROCEDURE:insert_rts|Y|N;
 		=ARGUMENT:p_fk_bot_name|I|TEXT;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
 		=ARGUMENT:p_fk_ref_sequence|I|NUMBER;
@@ -6767,7 +6768,7 @@
 			-STATEMENT:;
 		-EXCEPTION:;
 	-PROCEDURE:;
-	+PROCEDURE:update_rts|Y;
+	+PROCEDURE:update_rts|Y|N;
 		=ARGUMENT:p_fk_bot_name|I|TEXT;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
 		=ARGUMENT:p_fk_ref_sequence|I|NUMBER;
@@ -6818,7 +6819,7 @@
 			-SELECTION:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:delete_rts|Y;
+	+PROCEDURE:delete_rts|Y|N;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
 		=ARGUMENT:p_fk_ref_sequence|I|NUMBER;
 		=ARGUMENT:p_fk_ref_bot_name|I|TEXT;
@@ -6861,7 +6862,7 @@
 			-SELECTION:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:get_rtt|Y;
+	+PROCEDURE:get_rtt|Y|Y;
 		=ARGUMENT:p_cube_row|B|c_cube_row;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
 		=ARGUMENT:p_xf_tsp_typ_name|I|TEXT;
@@ -6897,7 +6898,7 @@
 			-SELECTION:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:get_next_rtt|N;
+	+PROCEDURE:get_next_rtt|N|Y;
 		=ARGUMENT:p_cube_row|B|c_cube_row;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
 		=ARGUMENT:p_xf_tsp_typ_name|I|TEXT;
@@ -6977,14 +6978,14 @@
 			-SORT_ORDER:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:insert_rtt|Y;
+	+PROCEDURE:insert_rtt|Y|N;
+		=ARGUMENT:p_cube_row|B|c_cube_row;
 		=ARGUMENT:p_fk_bot_name|I|TEXT;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
 		=ARGUMENT:p_include_or_exclude|I|TEXT;
 		=ARGUMENT:p_xf_tsp_typ_name|I|TEXT;
 		=ARGUMENT:p_xf_tsp_tsg_code|I|TEXT;
 		=ARGUMENT:p_xk_tsp_code|I|TEXT;
-		=ARGUMENT:p_cube_row|B|c_cube_row;
 		+STATEMENT:CREATE|v_restriction_type_spec_typ;
 			+SET:cube_id;
 				=EXPRESSION:NULL;
@@ -7027,7 +7028,7 @@
 			-STATEMENT:;
 		-EXCEPTION:;
 	-PROCEDURE:;
-	+PROCEDURE:update_rtt|Y;
+	+PROCEDURE:update_rtt|Y|N;
 		=ARGUMENT:p_fk_bot_name|I|TEXT;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
 		=ARGUMENT:p_include_or_exclude|I|TEXT;
@@ -7063,7 +7064,7 @@
 			-SELECTION:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:delete_rtt|Y;
+	+PROCEDURE:delete_rtt|Y|N;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
 		=ARGUMENT:p_xf_tsp_typ_name|I|TEXT;
 		=ARGUMENT:p_xf_tsp_tsg_code|I|TEXT;
@@ -7091,7 +7092,7 @@
 			-SELECTION:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:get_jsn|Y;
+	+PROCEDURE:get_jsn|Y|Y;
 		=ARGUMENT:p_cube_row|B|c_cube_row;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
 		=ARGUMENT:p_name|I|TEXT;
@@ -7155,7 +7156,7 @@
 			-SELECTION:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:get_jsn_fkey|Y;
+	+PROCEDURE:get_jsn_fkey|Y|Y;
 		=ARGUMENT:p_cube_row|B|c_cube_row;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
 		=ARGUMENT:p_name|I|TEXT;
@@ -7198,7 +7199,7 @@
 			-SELECTION:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:get_jsn_jsn_items|Y;
+	+PROCEDURE:get_jsn_jsn_items|Y|Y;
 		=ARGUMENT:p_cube_row|B|c_cube_row;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
 		=ARGUMENT:p_name|I|TEXT;
@@ -7269,7 +7270,7 @@
 			-SORT_ORDER:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:check_no_part_jsn|N;
+	+PROCEDURE:check_no_part_jsn|N|N;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
 		=ARGUMENT:p_name|I|TEXT;
 		=ARGUMENT:p_location|I|NUMBER;
@@ -7406,7 +7407,7 @@
 			-STATEMENT:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:determine_position_jsn|N;
+	+PROCEDURE:determine_position_jsn|N|N;
 		=ARGUMENT:p_cube_sequence|O|NUMBER;
 		=ARGUMENT:p_cube_pos_action|I|TEXT;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
@@ -7788,7 +7789,7 @@
 			-STATEMENT:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:move_jsn|Y;
+	+PROCEDURE:move_jsn|Y|N;
 		=ARGUMENT:p_cube_pos_action|I|TEXT;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
 		=ARGUMENT:p_name|I|TEXT;
@@ -8005,7 +8006,7 @@
 			-STATEMENT_GROUP:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:insert_jsn|Y;
+	+PROCEDURE:insert_jsn|Y|N;
 		=ARGUMENT:p_cube_pos_action|I|TEXT;
 		=ARGUMENT:p_fk_bot_name|I|TEXT;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
@@ -8134,7 +8135,7 @@
 			-STATEMENT:;
 		-EXCEPTION:;
 	-PROCEDURE:;
-	+PROCEDURE:update_jsn|Y;
+	+PROCEDURE:update_jsn|Y|N;
 		=ARGUMENT:p_fk_bot_name|I|TEXT;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
 		=ARGUMENT:p_fk_jsn_name|I|TEXT;
@@ -8204,7 +8205,7 @@
 			-SELECTION:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:delete_jsn|Y;
+	+PROCEDURE:delete_jsn|Y|N;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
 		=ARGUMENT:p_name|I|TEXT;
 		=ARGUMENT:p_location|I|NUMBER;
@@ -8242,7 +8243,7 @@
 			-SELECTION:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:get_dct|Y;
+	+PROCEDURE:get_dct|Y|Y;
 		=ARGUMENT:p_cube_row|B|c_cube_row;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
 		+STATEMENT:READ_EXPORT;
@@ -8263,7 +8264,7 @@
 			-SELECTION:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:insert_dct|Y;
+	+PROCEDURE:insert_dct|Y|N;
 		=ARGUMENT:p_fk_bot_name|I|TEXT;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
 		=ARGUMENT:p_text|I|TEXT;
@@ -8290,7 +8291,7 @@
 			-STATEMENT:;
 		-EXCEPTION:;
 	-PROCEDURE:;
-	+PROCEDURE:update_dct|Y;
+	+PROCEDURE:update_dct|Y|N;
 		=ARGUMENT:p_fk_bot_name|I|TEXT;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
 		=ARGUMENT:p_text|I|TEXT;
@@ -8311,7 +8312,7 @@
 			-SELECTION:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:delete_dct|Y;
+	+PROCEDURE:delete_dct|Y|N;
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
 		+STATEMENT:DELETE|v_description_type;
 			+SELECTION:;
@@ -8326,7 +8327,7 @@
 	-PROCEDURE:;
 -PACKAGE:;
 +PACKAGE:sys|cubetool;
-	+PROCEDURE:get_sys_root_items|Y;
+	+PROCEDURE:get_sys_root_items|Y|Y;
 		=ARGUMENT:p_cube_row|B|c_cube_row;
 		+STATEMENT:READ_EXPORT;
 			=READ_TABLE:v_system|#;
@@ -8342,7 +8343,7 @@
 			-SORT_ORDER:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:get_sys|Y;
+	+PROCEDURE:get_sys|Y|Y;
 		=ARGUMENT:p_cube_row|B|c_cube_row;
 		=ARGUMENT:p_name|I|TEXT;
 		+STATEMENT:READ_EXPORT;
@@ -8372,7 +8373,7 @@
 			-SELECTION:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:get_sys_sbt_items|Y;
+	+PROCEDURE:get_sys_sbt_items|Y|Y;
 		=ARGUMENT:p_cube_row|B|c_cube_row;
 		=ARGUMENT:p_name|I|TEXT;
 		+STATEMENT:READ_EXPORT;
@@ -8400,7 +8401,7 @@
 			-SORT_ORDER:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:get_next_sys|N;
+	+PROCEDURE:get_next_sys|N|Y;
 		=ARGUMENT:p_cube_row|B|c_cube_row;
 		=ARGUMENT:p_name|I|TEXT;
 		+STATEMENT:READ_EXPORT;
@@ -8423,14 +8424,14 @@
 			-SORT_ORDER:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:insert_sys|Y;
+	+PROCEDURE:insert_sys|Y|N;
+		=ARGUMENT:p_cube_row|B|c_cube_row;
 		=ARGUMENT:p_name|I|TEXT;
 		=ARGUMENT:p_cube_tsg_type|I|TEXT;
 		=ARGUMENT:p_database|I|TEXT;
 		=ARGUMENT:p_schema|I|TEXT;
 		=ARGUMENT:p_password|I|TEXT;
 		=ARGUMENT:p_table_prefix|I|TEXT;
-		=ARGUMENT:p_cube_row|B|c_cube_row;
 		+STATEMENT:CREATE|v_system;
 			+SET:cube_id;
 				=EXPRESSION:NULL;
@@ -8470,7 +8471,7 @@
 			-STATEMENT:;
 		-EXCEPTION:;
 	-PROCEDURE:;
-	+PROCEDURE:update_sys|Y;
+	+PROCEDURE:update_sys|Y|N;
 		=ARGUMENT:p_name|I|TEXT;
 		=ARGUMENT:p_cube_tsg_type|I|TEXT;
 		=ARGUMENT:p_database|I|TEXT;
@@ -8503,7 +8504,7 @@
 			-SELECTION:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:delete_sys|Y;
+	+PROCEDURE:delete_sys|Y|N;
 		=ARGUMENT:p_name|I|TEXT;
 		+STATEMENT:DELETE|v_system;
 			+SELECTION:;
@@ -8516,7 +8517,7 @@
 			-SELECTION:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:determine_position_sbt|N;
+	+PROCEDURE:determine_position_sbt|N|N;
 		=ARGUMENT:p_cube_sequence|O|NUMBER;
 		=ARGUMENT:p_cube_pos_action|I|TEXT;
 		=ARGUMENT:p_fk_sys_name|I|TEXT;
@@ -8729,7 +8730,7 @@
 			-STATEMENT:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:move_sbt|Y;
+	+PROCEDURE:move_sbt|Y|N;
 		=ARGUMENT:p_cube_pos_action|I|TEXT;
 		=ARGUMENT:p_fk_sys_name|I|TEXT;
 		=ARGUMENT:p_xk_bot_name|I|TEXT;
@@ -8803,7 +8804,7 @@
 			-STATEMENT_GROUP:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:insert_sbt|Y;
+	+PROCEDURE:insert_sbt|Y|N;
 		=ARGUMENT:p_cube_pos_action|I|TEXT;
 		=ARGUMENT:p_fk_sys_name|I|TEXT;
 		=ARGUMENT:p_xk_bot_name|I|TEXT;
@@ -8868,7 +8869,7 @@
 			-STATEMENT:;
 		-EXCEPTION:;
 	-PROCEDURE:;
-	+PROCEDURE:delete_sbt|Y;
+	+PROCEDURE:delete_sbt|Y|N;
 		=ARGUMENT:p_fk_sys_name|I|TEXT;
 		=ARGUMENT:p_xk_bot_name|I|TEXT;
 		+STATEMENT:DELETE|v_system_bo_type;
@@ -8888,7 +8889,7 @@
 	-PROCEDURE:;
 -PACKAGE:;
 +PACKAGE:fun|cubetool;
-	+PROCEDURE:get_fun_root_items|Y;
+	+PROCEDURE:get_fun_root_items|Y|Y;
 		=ARGUMENT:p_cube_row|B|c_cube_row;
 		+STATEMENT:READ_EXPORT;
 			=READ_TABLE:v_function|#;
@@ -8900,7 +8901,7 @@
 			-SORT_ORDER:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:count_fun|Y;
+	+PROCEDURE:count_fun|Y|Y;
 		=ARGUMENT:p_cube_row|B|c_cube_row;
 		+STATEMENT:READ_EXPORT;
 			=READ_TABLE:v_function|#;
@@ -8909,7 +8910,7 @@
 			-GET:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:get_fun_arg_items|Y;
+	+PROCEDURE:get_fun_arg_items|Y|Y;
 		=ARGUMENT:p_cube_row|B|c_cube_row;
 		=ARGUMENT:p_name|I|TEXT;
 		+STATEMENT:READ_EXPORT;
@@ -8937,7 +8938,7 @@
 			-SORT_ORDER:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:insert_fun|Y;
+	+PROCEDURE:insert_fun|Y|N;
 		=ARGUMENT:p_name|I|TEXT;
 		+STATEMENT:CREATE|v_function;
 			+SET:cube_id;
@@ -8956,7 +8957,7 @@
 			-STATEMENT:;
 		-EXCEPTION:;
 	-PROCEDURE:;
-	+PROCEDURE:delete_fun|Y;
+	+PROCEDURE:delete_fun|Y|N;
 		=ARGUMENT:p_name|I|TEXT;
 		+STATEMENT:DELETE|v_function;
 			+SELECTION:;
@@ -8969,7 +8970,7 @@
 			-SELECTION:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:determine_position_arg|N;
+	+PROCEDURE:determine_position_arg|N|N;
 		=ARGUMENT:p_cube_sequence|O|NUMBER;
 		=ARGUMENT:p_cube_pos_action|I|TEXT;
 		=ARGUMENT:p_fk_fun_name|I|TEXT;
@@ -9182,7 +9183,7 @@
 			-STATEMENT:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:move_arg|Y;
+	+PROCEDURE:move_arg|Y|N;
 		=ARGUMENT:p_cube_pos_action|I|TEXT;
 		=ARGUMENT:p_fk_fun_name|I|TEXT;
 		=ARGUMENT:p_name|I|TEXT;
@@ -9256,7 +9257,7 @@
 			-STATEMENT_GROUP:;
 		-STATEMENT:;
 	-PROCEDURE:;
-	+PROCEDURE:insert_arg|Y;
+	+PROCEDURE:insert_arg|Y|N;
 		=ARGUMENT:p_cube_pos_action|I|TEXT;
 		=ARGUMENT:p_fk_fun_name|I|TEXT;
 		=ARGUMENT:p_name|I|TEXT;
@@ -9321,7 +9322,7 @@
 			-STATEMENT:;
 		-EXCEPTION:;
 	-PROCEDURE:;
-	+PROCEDURE:delete_arg|Y;
+	+PROCEDURE:delete_arg|Y|N;
 		=ARGUMENT:p_fk_fun_name|I|TEXT;
 		=ARGUMENT:p_name|I|TEXT;
 		+STATEMENT:DELETE|v_argument;
