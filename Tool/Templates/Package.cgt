@@ -5,10 +5,12 @@ Change log:
 29-11-2017 Housekeepig (drop) added.
 15-12-2021 pkg prefix added.
 18-12-2021 use of GEN_DOMAIN_TEXT_ORA
+16-02-2022 Cursor definition based on FlagCursorExport
 [[INCLUDE,Includes/general.cgt]]
 [[INCLUDE,Includes/expression.cgt]]
 [[TEXT,PACKAGE_PROC_SIGNATURE]]
-	PROCEDURE <<PROCEDURE:L>> ([[LOOP,ARGUMENT]]
+	PROCEDURE <<PROCEDURE:L>> ([[IF:2=Y]]
+			p_cube_row IN OUT c_cube_row[[IF:CHILD(ARGUMENT)]],[[ENDIF]][[ENDIF]][[LOOP,ARGUMENT]]
 			<<ARGUMENT>> [[IF:1=I]]IN[[ELSIF:1=O]]OUT[[ELSIF:1=B]]IN OUT[[ENDIF]] <<TEXT,GEN_DOMAIN_TEXT_ORA>>[[IF:!LAST]],[[ENDIF]][[ENDLOOP,ARGUMENT]])[[ENDTEXT]]
 [[TEXT,PACKAGE_SELECT]]
 		SELECT[[IF:EVAL:'<<T1>>' eq 'SINGLE']] [[LOOP,GET]]<<TEXT,EXPRESSION>>[[IF:!LAST]], [[ENDIF]][[ENDLOOP,GET]]
