@@ -20,6 +20,7 @@
 06-02-2022 - Service FlagNoSelect inverted to FlagCursor
 13-02-2022 - p_cube_row always as first argument
 16-02-2022 - FlagCursor to FlagCursorExport.
+06-04-2002 - Exception with code
 [[INCLUDE,Includes/general.cgt]]
 [[TEXT,IMPL_SQL_NOT_FOUND]][[*No arguments*]]
 		+STATEMENT:SELECTION|IF;
@@ -150,6 +151,11 @@
 						-META_TYPE:;
 					-META_TYPE:;
 				-META_TYPE_SPEC:;
+			-META_TYPE:;
+			+META_TYPE:EXCEPTION|;
+				=PROPERTY:0|Code|Values: E001(Unique Constraint);
+				+META_TYPE:STATEMENT|;
+				-META_TYPE:;
 			-META_TYPE:;
 		-META_TYPE:;
 	-META_TYPE:;
@@ -853,7 +859,7 @@
 				=EXPRESSION:REF_NAME|p_<<ATTRIBUTE:L>>;[[ENDLOOP,ATTRIBUTE]]
 			-EXPRESSION:;
 		-STATEMENT:;[[ENDIF]]
-		+EXCEPTION:DUP_VAL_ON_INDEX;
+		+EXCEPTION:E001;
 			+STATEMENT:USE|RAISE_APPLICATION_ERROR;
 				+EXPRESSION:LIST;
 					=EXPRESSION:NUMBER|-20001;

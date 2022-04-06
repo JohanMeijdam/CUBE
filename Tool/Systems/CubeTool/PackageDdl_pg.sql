@@ -142,7 +142,7 @@ AS $BODY$
 
 		CALL itp.get_next_itp (p_cube_row, p_name);
 	EXCEPTION
-		WHEN DUP_VAL_ON_INDEX THEN
+	WHEN unique_violation THEN
 			CALL itp.RAISE_APPLICATION_ERROR (-20001, 'Type information_type already exists');
 	END;
 $BODY$;
@@ -267,7 +267,7 @@ AS $BODY$
 
 		CALL itp.get_next_ite (p_cube_row, p_fk_itp_name, p_sequence);
 	EXCEPTION
-		WHEN DUP_VAL_ON_INDEX THEN
+	WHEN unique_violation THEN
 			CALL itp.RAISE_APPLICATION_ERROR (-20001, 'Type information_type_element already exists');
 	END;
 $BODY$;
@@ -464,7 +464,7 @@ AS $BODY$
 			p_code,
 			p_prompt);
 	EXCEPTION
-		WHEN DUP_VAL_ON_INDEX THEN
+	WHEN unique_violation THEN
 			CALL itp.RAISE_APPLICATION_ERROR (-20001, 'Type permitted_value already exists');
 	END;
 $BODY$;
@@ -721,7 +721,7 @@ AS $BODY$
 			p_directory,
 			p_api_url);
 	EXCEPTION
-		WHEN DUP_VAL_ON_INDEX THEN
+	WHEN unique_violation THEN
 			CALL bot.RAISE_APPLICATION_ERROR (-20001, 'Type business_object_type already exists');
 	END;
 $BODY$;
@@ -1239,7 +1239,7 @@ AS $BODY$
 			p_icon,
 			p_transferable);
 	EXCEPTION
-		WHEN DUP_VAL_ON_INDEX THEN
+	WHEN unique_violation THEN
 			CALL bot.RAISE_APPLICATION_ERROR (-20001, 'Type type already exists');
 	END;
 $BODY$;
@@ -1569,7 +1569,7 @@ AS $BODY$
 			p_xf_atb_typ_name,
 			p_xk_atb_name);
 	EXCEPTION
-		WHEN DUP_VAL_ON_INDEX THEN
+	WHEN unique_violation THEN
 			CALL bot.RAISE_APPLICATION_ERROR (-20001, 'Type type_specialisation_group already exists');
 	END;
 $BODY$;
@@ -1876,7 +1876,7 @@ AS $BODY$
 			p_xf_tsp_tsg_code,
 			p_xk_tsp_code);
 	EXCEPTION
-		WHEN DUP_VAL_ON_INDEX THEN
+	WHEN unique_violation THEN
 			CALL bot.RAISE_APPLICATION_ERROR (-20001, 'Type type_specialisation already exists');
 	END;
 $BODY$;
@@ -2243,7 +2243,7 @@ AS $BODY$
 			p_unchangeable,
 			p_xk_itp_name);
 	EXCEPTION
-		WHEN DUP_VAL_ON_INDEX THEN
+	WHEN unique_violation THEN
 			CALL bot.RAISE_APPLICATION_ERROR (-20001, 'Type attribute already exists');
 	END;
 $BODY$;
@@ -2342,7 +2342,7 @@ AS $BODY$
 			p_xk_typ_name,
 			p_xk_typ_name_1);
 	EXCEPTION
-		WHEN DUP_VAL_ON_INDEX THEN
+	WHEN unique_violation THEN
 			CALL bot.RAISE_APPLICATION_ERROR (-20001, 'Type derivation already exists');
 	END;
 $BODY$;
@@ -2423,7 +2423,7 @@ AS $BODY$
 			p_fk_atb_name,
 			p_text);
 	EXCEPTION
-		WHEN DUP_VAL_ON_INDEX THEN
+	WHEN unique_violation THEN
 			CALL bot.RAISE_APPLICATION_ERROR (-20001, 'Type description_attribute already exists');
 	END;
 $BODY$;
@@ -2554,7 +2554,7 @@ AS $BODY$
 
 		CALL bot.get_next_rta (p_cube_row, p_fk_typ_name, p_fk_atb_name, p_xf_tsp_typ_name, p_xf_tsp_tsg_code, p_xk_tsp_code);
 	EXCEPTION
-		WHEN DUP_VAL_ON_INDEX THEN
+	WHEN unique_violation THEN
 			CALL bot.RAISE_APPLICATION_ERROR (-20001, 'Type restriction_type_spec_atb already exists');
 	END;
 $BODY$;
@@ -2937,7 +2937,7 @@ AS $BODY$
 			p_xk_typ_name,
 			p_xk_typ_name_1);
 	EXCEPTION
-		WHEN DUP_VAL_ON_INDEX THEN
+	WHEN unique_violation THEN
 			CALL bot.RAISE_APPLICATION_ERROR (-20001, 'Type reference already exists');
 	END;
 $BODY$;
@@ -3044,7 +3044,7 @@ AS $BODY$
 			p_fk_ref_typ_name,
 			p_text);
 	EXCEPTION
-		WHEN DUP_VAL_ON_INDEX THEN
+	WHEN unique_violation THEN
 			CALL bot.RAISE_APPLICATION_ERROR (-20001, 'Type description_reference already exists');
 	END;
 $BODY$;
@@ -3210,7 +3210,7 @@ AS $BODY$
 
 		CALL bot.get_next_rtr (p_cube_row, p_fk_typ_name, p_fk_ref_sequence, p_fk_ref_bot_name, p_fk_ref_typ_name, p_xf_tsp_typ_name, p_xf_tsp_tsg_code, p_xk_tsp_code);
 	EXCEPTION
-		WHEN DUP_VAL_ON_INDEX THEN
+	WHEN unique_violation THEN
 			CALL bot.RAISE_APPLICATION_ERROR (-20001, 'Type restriction_type_spec_ref already exists');
 	END;
 $BODY$;
@@ -3330,7 +3330,7 @@ AS $BODY$
 			p_xf_tsp_tsg_code,
 			p_xk_tsp_code);
 	EXCEPTION
-		WHEN DUP_VAL_ON_INDEX THEN
+	WHEN unique_violation THEN
 			CALL bot.RAISE_APPLICATION_ERROR (-20001, 'Type restriction_target_type_spec already exists');
 	END;
 $BODY$;
@@ -3469,7 +3469,7 @@ AS $BODY$
 
 		CALL bot.get_next_rtt (p_cube_row, p_fk_typ_name, p_xf_tsp_typ_name, p_xf_tsp_tsg_code, p_xk_tsp_code);
 	EXCEPTION
-		WHEN DUP_VAL_ON_INDEX THEN
+	WHEN unique_violation THEN
 			CALL bot.RAISE_APPLICATION_ERROR (-20001, 'Type restriction_type_spec_typ already exists');
 	END;
 $BODY$;
@@ -3900,7 +3900,7 @@ AS $BODY$
 			p_xk_atb_name,
 			p_xk_typ_name);
 	EXCEPTION
-		WHEN DUP_VAL_ON_INDEX THEN
+	WHEN unique_violation THEN
 			CALL bot.RAISE_APPLICATION_ERROR (-20001, 'Type json_path already exists');
 	END;
 $BODY$;
@@ -3998,7 +3998,7 @@ AS $BODY$
 			p_fk_typ_name,
 			p_text);
 	EXCEPTION
-		WHEN DUP_VAL_ON_INDEX THEN
+	WHEN unique_violation THEN
 			CALL bot.RAISE_APPLICATION_ERROR (-20001, 'Type description_type already exists');
 	END;
 $BODY$;
@@ -4149,7 +4149,7 @@ AS $BODY$
 
 		CALL sys.get_next_sys (p_cube_row, p_name);
 	EXCEPTION
-		WHEN DUP_VAL_ON_INDEX THEN
+	WHEN unique_violation THEN
 			CALL sys.RAISE_APPLICATION_ERROR (-20001, 'Type system already exists');
 	END;
 $BODY$;
@@ -4303,7 +4303,7 @@ AS $BODY$
 			p_fk_sys_name,
 			p_xk_bot_name);
 	EXCEPTION
-		WHEN DUP_VAL_ON_INDEX THEN
+	WHEN unique_violation THEN
 			CALL sys.RAISE_APPLICATION_ERROR (-20001, 'Type system_bo_type already exists');
 	END;
 $BODY$;
@@ -4400,7 +4400,7 @@ AS $BODY$
 			NULL,
 			p_name);
 	EXCEPTION
-		WHEN DUP_VAL_ON_INDEX THEN
+	WHEN unique_violation THEN
 			CALL fun.RAISE_APPLICATION_ERROR (-20001, 'Type function already exists');
 	END;
 $BODY$;
@@ -4533,7 +4533,7 @@ AS $BODY$
 			p_fk_fun_name,
 			p_name);
 	EXCEPTION
-		WHEN DUP_VAL_ON_INDEX THEN
+	WHEN unique_violation THEN
 			CALL fun.RAISE_APPLICATION_ERROR (-20001, 'Type argument already exists');
 	END;
 $BODY$;
