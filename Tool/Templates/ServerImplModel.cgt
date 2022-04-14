@@ -129,6 +129,9 @@
 				=PROPERTY:2|Length|;
 				=PROPERTY:2|Decimals|;
 			-META_TYPE:;
+			+META_TYPE:CURSOR|;
+				=PROPERTY:0|Name|;
+			-META_TYPE:;
 			+META_TYPE:STATEMENT|;
 				=PROPERTY:0|Type|;
 				+META_TYPE_SPEC:READ_EXPORT|;
@@ -150,6 +153,8 @@
 							-META_TYPE:;
 						-META_TYPE:;
 					-META_TYPE:;
+				-META_TYPE_SPEC:;
+				+META_TYPE_SPEC:ITERATION|;
 				-META_TYPE_SPEC:;
 			-META_TYPE:;
 			+META_TYPE:EXCEPTION|;
@@ -598,6 +603,7 @@
 		+VARIABLE:l_cube_count||NUMBER|8|0;
 			=EXPRESSION:NUMBER|1024;
 		-VARIABLE:;
+		=CURSOR:r_<<OPERATION_TYPE1:L>>;
 		=STATEMENT:NOTE|A=After B=Before F=First L=Last;
 		+STATEMENT:SELECTION|CASE;
 			=EXPRESSION:REF_NAME|p_cube_pos_action;

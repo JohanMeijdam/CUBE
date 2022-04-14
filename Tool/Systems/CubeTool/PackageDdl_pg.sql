@@ -67,7 +67,7 @@ CREATE PROCEDURE itp.get_itp_root_items ()
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_cursor REFCURSOR := 'cube_cursor';	
+		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
 		OPEN l_cube_cursor FOR
 			SELECT
@@ -81,7 +81,7 @@ CREATE PROCEDURE itp.get_itp_list ()
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_cursor REFCURSOR := 'cube_cursor';	
+		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
 		OPEN l_cube_cursor FOR
 			SELECT
@@ -96,7 +96,7 @@ CREATE PROCEDURE itp.get_itp_ite_items (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_cursor REFCURSOR := 'cube_cursor';	
+		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
 		OPEN l_cube_cursor FOR
 			SELECT
@@ -115,7 +115,7 @@ CREATE PROCEDURE itp.get_next_itp (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_cursor REFCURSOR := 'cube_cursor';	
+		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
 		OPEN l_cube_cursor FOR
 			SELECT
@@ -131,7 +131,7 @@ CREATE PROCEDURE itp.insert_itp (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_cursor REFCURSOR := 'cube_cursor';	
+		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
 		INSERT INTO itp.v_information_type (
 			cube_id,
@@ -151,7 +151,7 @@ CREATE PROCEDURE itp.delete_itp (
 			p_name IN VARCHAR)
 LANGUAGE 'plpgsql'
 AS $BODY$
-	DECLARE	
+	DECLARE
 	BEGIN
 		DELETE FROM itp.v_information_type
 		WHERE name = p_name;
@@ -164,7 +164,7 @@ CREATE PROCEDURE itp.get_ite (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_cursor REFCURSOR := 'cube_cursor';	
+		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
 		OPEN l_cube_cursor FOR
 			SELECT
@@ -188,7 +188,7 @@ CREATE PROCEDURE itp.get_ite_val_items (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_cursor REFCURSOR := 'cube_cursor';	
+		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
 		OPEN l_cube_cursor FOR
 			SELECT
@@ -210,7 +210,7 @@ CREATE PROCEDURE itp.get_next_ite (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_cursor REFCURSOR := 'cube_cursor';	
+		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
 		OPEN l_cube_cursor FOR
 			SELECT
@@ -238,7 +238,7 @@ CREATE PROCEDURE itp.insert_ite (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_cursor REFCURSOR := 'cube_cursor';	
+		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
 		INSERT INTO itp.v_information_type_element (
 			cube_id,
@@ -285,7 +285,7 @@ CREATE PROCEDURE itp.update_ite (
 			p_presentation IN VARCHAR)
 LANGUAGE 'plpgsql'
 AS $BODY$
-	DECLARE	
+	DECLARE
 	BEGIN
 		UPDATE itp.v_information_type_element SET
 			suffix = p_suffix,
@@ -306,7 +306,7 @@ CREATE PROCEDURE itp.delete_ite (
 			p_sequence IN NUMERIC)
 LANGUAGE 'plpgsql'
 AS $BODY$
-	DECLARE	
+	DECLARE
 	BEGIN
 		DELETE FROM itp.v_information_type_element
 		WHERE fk_itp_name = p_fk_itp_name
@@ -321,7 +321,7 @@ CREATE PROCEDURE itp.get_val (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_cursor REFCURSOR := 'cube_cursor';	
+		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
 		OPEN l_cube_cursor FOR
 			SELECT
@@ -345,7 +345,8 @@ AS $BODY$
 		l_cube_pos_action VARCHAR(1);
 		l_cube_position_sequ NUMERIC(8);
 		l_cube_near_sequ NUMERIC(8);
-		l_cube_count NUMERIC(8) := 1024;	
+		l_cube_count NUMERIC(8) := 1024;
+		r_val RECORD;
 	BEGIN
 		-- A=After B=Before F=First L=Last
 		CASE p_cube_pos_action
@@ -383,13 +384,13 @@ AS $BODY$
 				EXIT;
 			ELSE
 				-- renumber.
-				FOR r_val IN (
+				FOR r_val IN 
 					SELECT
 					  rowid row_id
 					FROM itp.v_permitted_value
 					WHERE fk_itp_name = p_fk_itp_name
 					  AND fk_ite_sequence = p_fk_ite_sequence
-					ORDER BY cube_sequence)
+					ORDER BY cube_sequence
 				LOOP
 					UPDATE itp.v_permitted_value SET
 						cube_sequence = l_cube_count
@@ -412,7 +413,7 @@ CREATE PROCEDURE itp.move_val (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_sequence NUMERIC(8);	
+		l_cube_sequence NUMERIC(8);
 	BEGIN
 		-- A=After B=Before F=First L=Last
 		IF NVL (p_cube_pos_action, ' ') NOT IN ('A', 'B', 'F', 'L') THEN
@@ -442,7 +443,7 @@ CREATE PROCEDURE itp.insert_val (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_sequence NUMERIC(8);	
+		l_cube_sequence NUMERIC(8);
 	BEGIN
 		-- A=After B=Before F=First L=Last
 		IF NVL (p_cube_pos_action, ' ') NOT IN ('A', 'B', 'F', 'L') THEN
@@ -476,7 +477,7 @@ CREATE PROCEDURE itp.update_val (
 			p_prompt IN VARCHAR)
 LANGUAGE 'plpgsql'
 AS $BODY$
-	DECLARE	
+	DECLARE
 	BEGIN
 		UPDATE itp.v_permitted_value SET
 			prompt = p_prompt
@@ -492,7 +493,7 @@ CREATE PROCEDURE itp.delete_val (
 			p_code IN VARCHAR)
 LANGUAGE 'plpgsql'
 AS $BODY$
-	DECLARE	
+	DECLARE
 	BEGIN
 		DELETE FROM itp.v_permitted_value
 		WHERE fk_itp_name = p_fk_itp_name
@@ -526,7 +527,7 @@ CREATE PROCEDURE bot.get_bot_root_items ()
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_cursor REFCURSOR := 'cube_cursor';	
+		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
 		OPEN l_cube_cursor FOR
 			SELECT
@@ -542,7 +543,7 @@ CREATE PROCEDURE bot.get_bot_list ()
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_cursor REFCURSOR := 'cube_cursor';	
+		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
 		OPEN l_cube_cursor FOR
 			SELECT
@@ -559,7 +560,7 @@ CREATE PROCEDURE bot.get_bot (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_cursor REFCURSOR := 'cube_cursor';	
+		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
 		OPEN l_cube_cursor FOR
 			SELECT
@@ -576,7 +577,7 @@ CREATE PROCEDURE bot.get_bot_typ_items (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_cursor REFCURSOR := 'cube_cursor';	
+		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
 		OPEN l_cube_cursor FOR
 			SELECT
@@ -595,7 +596,7 @@ CREATE PROCEDURE bot.count_bot_typ (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_cursor REFCURSOR := 'cube_cursor';	
+		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
 		OPEN l_cube_cursor FOR
 			SELECT
@@ -616,7 +617,8 @@ AS $BODY$
 		l_cube_pos_action VARCHAR(1);
 		l_cube_position_sequ NUMERIC(8);
 		l_cube_near_sequ NUMERIC(8);
-		l_cube_count NUMERIC(8) := 1024;	
+		l_cube_count NUMERIC(8) := 1024;
+		r_bot RECORD;
 	BEGIN
 		-- A=After B=Before F=First L=Last
 		CASE p_cube_pos_action
@@ -650,11 +652,11 @@ AS $BODY$
 				EXIT;
 			ELSE
 				-- renumber.
-				FOR r_bot IN (
+				FOR r_bot IN 
 					SELECT
 					  rowid row_id
 					FROM bot.v_business_object_type
-					ORDER BY cube_sequence)
+					ORDER BY cube_sequence
 				LOOP
 					UPDATE bot.v_business_object_type SET
 						cube_sequence = l_cube_count
@@ -673,7 +675,7 @@ CREATE PROCEDURE bot.move_bot (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_sequence NUMERIC(8);	
+		l_cube_sequence NUMERIC(8);
 	BEGIN
 		-- A=After B=Before F=First L=Last
 		IF NVL (p_cube_pos_action, ' ') NOT IN ('A', 'B', 'F', 'L') THEN
@@ -699,7 +701,7 @@ CREATE PROCEDURE bot.insert_bot (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_sequence NUMERIC(8);	
+		l_cube_sequence NUMERIC(8);
 	BEGIN
 		-- A=After B=Before F=First L=Last
 		IF NVL (p_cube_pos_action, ' ') NOT IN ('A', 'B', 'F', 'L') THEN
@@ -733,7 +735,7 @@ CREATE PROCEDURE bot.update_bot (
 			p_api_url IN VARCHAR)
 LANGUAGE 'plpgsql'
 AS $BODY$
-	DECLARE	
+	DECLARE
 	BEGIN
 		UPDATE bot.v_business_object_type SET
 			cube_tsg_type = p_cube_tsg_type,
@@ -747,7 +749,7 @@ CREATE PROCEDURE bot.delete_bot (
 			p_name IN VARCHAR)
 LANGUAGE 'plpgsql'
 AS $BODY$
-	DECLARE	
+	DECLARE
 	BEGIN
 		DELETE FROM bot.v_business_object_type
 		WHERE name = p_name;
@@ -758,7 +760,7 @@ CREATE PROCEDURE bot.get_typ_list_all ()
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_cursor REFCURSOR := 'cube_cursor';	
+		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
 		OPEN l_cube_cursor FOR
 			SELECT
@@ -775,7 +777,7 @@ CREATE PROCEDURE bot.get_typ_for_bot_list_all (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_cursor REFCURSOR := 'cube_cursor';	
+		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
 		OPEN l_cube_cursor FOR
 			SELECT
@@ -796,7 +798,7 @@ AS $BODY$
 	DECLARE
 		l_cube_cursor REFCURSOR := 'cube_cursor';
 		l_cube_scope_level NUMERIC(1) := 0;
-		l_name v_type.name%TYPE;	
+		l_name v_type.name%TYPE;
 	BEGIN
 		l_name := x_fk_typ_name;
 		IF p_cube_scope_level > 0 THEN
@@ -838,7 +840,7 @@ CREATE PROCEDURE bot.get_typ (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_cursor REFCURSOR := 'cube_cursor';	
+		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
 		OPEN l_cube_cursor FOR
 			SELECT
@@ -862,7 +864,7 @@ CREATE PROCEDURE bot.get_typ_fkey (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_cursor REFCURSOR := 'cube_cursor';	
+		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
 		OPEN l_cube_cursor FOR
 			SELECT
@@ -877,7 +879,7 @@ CREATE PROCEDURE bot.get_typ_tsg_items (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_cursor REFCURSOR := 'cube_cursor';	
+		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
 		OPEN l_cube_cursor FOR
 			SELECT
@@ -897,7 +899,7 @@ CREATE PROCEDURE bot.get_typ_atb_items (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_cursor REFCURSOR := 'cube_cursor';	
+		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
 		OPEN l_cube_cursor FOR
 			SELECT
@@ -915,7 +917,7 @@ CREATE PROCEDURE bot.get_typ_ref_items (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_cursor REFCURSOR := 'cube_cursor';	
+		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
 		OPEN l_cube_cursor FOR
 			SELECT
@@ -937,7 +939,7 @@ CREATE PROCEDURE bot.get_typ_rtt_items (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_cursor REFCURSOR := 'cube_cursor';	
+		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
 		OPEN l_cube_cursor FOR
 			SELECT
@@ -956,7 +958,7 @@ CREATE PROCEDURE bot.get_typ_jsn_items (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_cursor REFCURSOR := 'cube_cursor';	
+		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
 		OPEN l_cube_cursor FOR
 			SELECT
@@ -985,7 +987,7 @@ CREATE PROCEDURE bot.get_typ_dct_items (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_cursor REFCURSOR := 'cube_cursor';	
+		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
 		OPEN l_cube_cursor FOR
 			SELECT
@@ -1001,7 +1003,7 @@ CREATE PROCEDURE bot.get_typ_typ_items (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_cursor REFCURSOR := 'cube_cursor';	
+		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
 		OPEN l_cube_cursor FOR
 			SELECT
@@ -1019,7 +1021,7 @@ CREATE PROCEDURE bot.count_typ_jsn (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_cursor REFCURSOR := 'cube_cursor';	
+		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
 		OPEN l_cube_cursor FOR
 			SELECT
@@ -1039,7 +1041,7 @@ CREATE PROCEDURE bot.count_typ_dct (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_cursor REFCURSOR := 'cube_cursor';	
+		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
 		OPEN l_cube_cursor FOR
 			SELECT
@@ -1055,7 +1057,7 @@ CREATE PROCEDURE bot.check_no_part_typ (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_name v_type.name%TYPE;	
+		l_name v_type.name%TYPE;
 	BEGIN
 		l_name := x_name;
 		LOOP
@@ -1085,7 +1087,8 @@ AS $BODY$
 		l_cube_pos_action VARCHAR(1);
 		l_cube_position_sequ NUMERIC(8);
 		l_cube_near_sequ NUMERIC(8);
-		l_cube_count NUMERIC(8) := 1024;	
+		l_cube_count NUMERIC(8) := 1024;
+		r_typ RECORD;
 	BEGIN
 		-- A=After B=Before F=First L=Last
 		CASE p_cube_pos_action
@@ -1123,7 +1126,7 @@ AS $BODY$
 				EXIT;
 			ELSE
 				-- renumber.
-				FOR r_typ IN (
+				FOR r_typ IN 
 					SELECT
 					  rowid row_id
 					FROM bot.v_type
@@ -1131,7 +1134,7 @@ AS $BODY$
 					  AND 	    ( 	    ( fk_typ_name IS NULL
 							  AND p_fk_typ_name IS NULL )
 						   OR fk_typ_name = p_fk_typ_name )
-					ORDER BY cube_sequence)
+					ORDER BY cube_sequence
 				LOOP
 					UPDATE bot.v_type SET
 						cube_sequence = l_cube_count
@@ -1152,7 +1155,7 @@ AS $BODY$
 	DECLARE
 		l_cube_sequence NUMERIC(8);
 		l_fk_bot_name v_type.fk_bot_name%TYPE;
-		l_fk_typ_name v_type.fk_typ_name%TYPE;	
+		l_fk_typ_name v_type.fk_typ_name%TYPE;
 	BEGIN
 		-- A=After B=Before F=First L=Last
 		IF NVL (p_cube_pos_action, ' ') NOT IN ('A', 'B', 'F', 'L') THEN
@@ -1201,7 +1204,7 @@ CREATE PROCEDURE bot.insert_typ (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_sequence NUMERIC(8);	
+		l_cube_sequence NUMERIC(8);
 	BEGIN
 		-- A=After B=Before F=First L=Last
 		IF NVL (p_cube_pos_action, ' ') NOT IN ('A', 'B', 'F', 'L') THEN
@@ -1258,7 +1261,7 @@ CREATE PROCEDURE bot.update_typ (
 			p_transferable IN VARCHAR)
 LANGUAGE 'plpgsql'
 AS $BODY$
-	DECLARE	
+	DECLARE
 	BEGIN
 		UPDATE bot.v_type SET
 			fk_bot_name = p_fk_bot_name,
@@ -1279,7 +1282,7 @@ CREATE PROCEDURE bot.delete_typ (
 			p_name IN VARCHAR)
 LANGUAGE 'plpgsql'
 AS $BODY$
-	DECLARE	
+	DECLARE
 	BEGIN
 		DELETE FROM bot.v_type
 		WHERE name = p_name;
@@ -1292,7 +1295,7 @@ CREATE PROCEDURE bot.get_tsg (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_cursor REFCURSOR := 'cube_cursor';	
+		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
 		OPEN l_cube_cursor FOR
 			SELECT
@@ -1314,7 +1317,7 @@ CREATE PROCEDURE bot.get_tsg_fkey (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_cursor REFCURSOR := 'cube_cursor';	
+		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
 		OPEN l_cube_cursor FOR
 			SELECT
@@ -1331,7 +1334,7 @@ CREATE PROCEDURE bot.get_tsg_tsp_items (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_cursor REFCURSOR := 'cube_cursor';	
+		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
 		OPEN l_cube_cursor FOR
 			SELECT
@@ -1353,7 +1356,7 @@ CREATE PROCEDURE bot.get_tsg_tsg_items (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_cursor REFCURSOR := 'cube_cursor';	
+		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
 		OPEN l_cube_cursor FOR
 			SELECT
@@ -1374,7 +1377,7 @@ CREATE PROCEDURE bot.count_tsg_tsg (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_cursor REFCURSOR := 'cube_cursor';	
+		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
 		OPEN l_cube_cursor FOR
 			SELECT
@@ -1393,7 +1396,7 @@ CREATE PROCEDURE bot.check_no_part_tsg (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_code v_type_specialisation_group.code%TYPE;	
+		l_code v_type_specialisation_group.code%TYPE;
 	BEGIN
 		l_code := x_code;
 		LOOP
@@ -1424,7 +1427,8 @@ AS $BODY$
 		l_cube_pos_action VARCHAR(1);
 		l_cube_position_sequ NUMERIC(8);
 		l_cube_near_sequ NUMERIC(8);
-		l_cube_count NUMERIC(8) := 1024;	
+		l_cube_count NUMERIC(8) := 1024;
+		r_tsg RECORD;
 	BEGIN
 		-- A=After B=Before F=First L=Last
 		CASE p_cube_pos_action
@@ -1463,7 +1467,7 @@ AS $BODY$
 				EXIT;
 			ELSE
 				-- renumber.
-				FOR r_tsg IN (
+				FOR r_tsg IN 
 					SELECT
 					  rowid row_id
 					FROM bot.v_type_specialisation_group
@@ -1471,7 +1475,7 @@ AS $BODY$
 					  AND 	    ( 	    ( fk_tsg_code IS NULL
 							  AND p_fk_tsg_code IS NULL )
 						   OR fk_tsg_code = p_fk_tsg_code )
-					ORDER BY cube_sequence)
+					ORDER BY cube_sequence
 				LOOP
 					UPDATE bot.v_type_specialisation_group SET
 						cube_sequence = l_cube_count
@@ -1493,7 +1497,7 @@ LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
 		l_cube_sequence NUMERIC(8);
-		l_fk_tsg_code v_type_specialisation_group.fk_tsg_code%TYPE;	
+		l_fk_tsg_code v_type_specialisation_group.fk_tsg_code%TYPE;
 	BEGIN
 		-- A=After B=Before F=First L=Last
 		IF NVL (p_cube_pos_action, ' ') NOT IN ('A', 'B', 'F', 'L') THEN
@@ -1537,7 +1541,7 @@ CREATE PROCEDURE bot.insert_tsg (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_sequence NUMERIC(8);	
+		l_cube_sequence NUMERIC(8);
 	BEGIN
 		-- A=After B=Before F=First L=Last
 		IF NVL (p_cube_pos_action, ' ') NOT IN ('A', 'B', 'F', 'L') THEN
@@ -1585,7 +1589,7 @@ CREATE PROCEDURE bot.update_tsg (
 			p_xk_atb_name IN VARCHAR)
 LANGUAGE 'plpgsql'
 AS $BODY$
-	DECLARE	
+	DECLARE
 	BEGIN
 		UPDATE bot.v_type_specialisation_group SET
 			fk_bot_name = p_fk_bot_name,
@@ -1604,7 +1608,7 @@ CREATE PROCEDURE bot.delete_tsg (
 			p_code IN VARCHAR)
 LANGUAGE 'plpgsql'
 AS $BODY$
-	DECLARE	
+	DECLARE
 	BEGIN
 		DELETE FROM bot.v_type_specialisation_group
 		WHERE fk_typ_name = p_fk_typ_name
@@ -1620,7 +1624,7 @@ AS $BODY$
 	DECLARE
 		l_cube_cursor REFCURSOR := 'cube_cursor';
 		l_cube_scope_level NUMERIC(1) := 0;
-		l_name v_type.name%TYPE;	
+		l_name v_type.name%TYPE;
 	BEGIN
 		l_name := x_fk_typ_name;
 		IF p_cube_scope_level > 0 THEN
@@ -1668,7 +1672,7 @@ AS $BODY$
 	DECLARE
 		l_cube_cursor REFCURSOR := 'cube_cursor';
 		l_cube_scope_level NUMERIC(1) := 0;
-		l_code v_type_specialisation_group.code%TYPE;	
+		l_code v_type_specialisation_group.code%TYPE;
 	BEGIN
 		l_code := x_fk_tsg_code;
 		IF p_cube_scope_level > 0 THEN
@@ -1717,7 +1721,7 @@ CREATE PROCEDURE bot.get_tsp (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_cursor REFCURSOR := 'cube_cursor';	
+		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
 		OPEN l_cube_cursor FOR
 			SELECT
@@ -1745,7 +1749,8 @@ AS $BODY$
 		l_cube_pos_action VARCHAR(1);
 		l_cube_position_sequ NUMERIC(8);
 		l_cube_near_sequ NUMERIC(8);
-		l_cube_count NUMERIC(8) := 1024;	
+		l_cube_count NUMERIC(8) := 1024;
+		r_tsp RECORD;
 	BEGIN
 		-- A=After B=Before F=First L=Last
 		CASE p_cube_pos_action
@@ -1783,13 +1788,13 @@ AS $BODY$
 				EXIT;
 			ELSE
 				-- renumber.
-				FOR r_tsp IN (
+				FOR r_tsp IN 
 					SELECT
 					  rowid row_id
 					FROM bot.v_type_specialisation
 					WHERE fk_typ_name = p_fk_typ_name
 					  AND fk_tsg_code = p_fk_tsg_code
-					ORDER BY cube_sequence)
+					ORDER BY cube_sequence
 				LOOP
 					UPDATE bot.v_type_specialisation SET
 						cube_sequence = l_cube_count
@@ -1812,7 +1817,7 @@ CREATE PROCEDURE bot.move_tsp (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_sequence NUMERIC(8);	
+		l_cube_sequence NUMERIC(8);
 	BEGIN
 		-- A=After B=Before F=First L=Last
 		IF NVL (p_cube_pos_action, ' ') NOT IN ('A', 'B', 'F', 'L') THEN
@@ -1846,7 +1851,7 @@ CREATE PROCEDURE bot.insert_tsp (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_sequence NUMERIC(8);	
+		l_cube_sequence NUMERIC(8);
 	BEGIN
 		-- A=After B=Before F=First L=Last
 		IF NVL (p_cube_pos_action, ' ') NOT IN ('A', 'B', 'F', 'L') THEN
@@ -1892,7 +1897,7 @@ CREATE PROCEDURE bot.update_tsp (
 			p_xk_tsp_code IN VARCHAR)
 LANGUAGE 'plpgsql'
 AS $BODY$
-	DECLARE	
+	DECLARE
 	BEGIN
 		UPDATE bot.v_type_specialisation SET
 			fk_bot_name = p_fk_bot_name,
@@ -1912,7 +1917,7 @@ CREATE PROCEDURE bot.delete_tsp (
 			p_code IN VARCHAR)
 LANGUAGE 'plpgsql'
 AS $BODY$
-	DECLARE	
+	DECLARE
 	BEGIN
 		DELETE FROM bot.v_type_specialisation
 		WHERE fk_typ_name = p_fk_typ_name
@@ -1929,7 +1934,7 @@ AS $BODY$
 	DECLARE
 		l_cube_cursor REFCURSOR := 'cube_cursor';
 		l_cube_scope_level NUMERIC(1) := 0;
-		l_name v_type.name%TYPE;	
+		l_name v_type.name%TYPE;
 	BEGIN
 		l_name := x_fk_typ_name;
 		IF p_cube_scope_level > 0 THEN
@@ -1972,7 +1977,7 @@ CREATE PROCEDURE bot.get_atb (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_cursor REFCURSOR := 'cube_cursor';	
+		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
 		OPEN l_cube_cursor FOR
 			SELECT
@@ -1996,7 +2001,7 @@ CREATE PROCEDURE bot.get_atb_fkey (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_cursor REFCURSOR := 'cube_cursor';	
+		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
 		OPEN l_cube_cursor FOR
 			SELECT
@@ -2013,7 +2018,7 @@ CREATE PROCEDURE bot.get_atb_der_items (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_cursor REFCURSOR := 'cube_cursor';	
+		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
 		OPEN l_cube_cursor FOR
 			SELECT
@@ -2033,7 +2038,7 @@ CREATE PROCEDURE bot.get_atb_dca_items (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_cursor REFCURSOR := 'cube_cursor';	
+		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
 		OPEN l_cube_cursor FOR
 			SELECT
@@ -2052,7 +2057,7 @@ CREATE PROCEDURE bot.get_atb_rta_items (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_cursor REFCURSOR := 'cube_cursor';	
+		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
 		OPEN l_cube_cursor FOR
 			SELECT
@@ -2074,7 +2079,7 @@ CREATE PROCEDURE bot.count_atb_der (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_cursor REFCURSOR := 'cube_cursor';	
+		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
 		OPEN l_cube_cursor FOR
 			SELECT
@@ -2091,7 +2096,7 @@ CREATE PROCEDURE bot.count_atb_dca (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_cursor REFCURSOR := 'cube_cursor';	
+		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
 		OPEN l_cube_cursor FOR
 			SELECT
@@ -2113,7 +2118,8 @@ AS $BODY$
 		l_cube_pos_action VARCHAR(1);
 		l_cube_position_sequ NUMERIC(8);
 		l_cube_near_sequ NUMERIC(8);
-		l_cube_count NUMERIC(8) := 1024;	
+		l_cube_count NUMERIC(8) := 1024;
+		r_atb RECORD;
 	BEGIN
 		-- A=After B=Before F=First L=Last
 		CASE p_cube_pos_action
@@ -2149,12 +2155,12 @@ AS $BODY$
 				EXIT;
 			ELSE
 				-- renumber.
-				FOR r_atb IN (
+				FOR r_atb IN 
 					SELECT
 					  rowid row_id
 					FROM bot.v_attribute
 					WHERE fk_typ_name = p_fk_typ_name
-					ORDER BY cube_sequence)
+					ORDER BY cube_sequence
 				LOOP
 					UPDATE bot.v_attribute SET
 						cube_sequence = l_cube_count
@@ -2175,7 +2181,7 @@ CREATE PROCEDURE bot.move_atb (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_sequence NUMERIC(8);	
+		l_cube_sequence NUMERIC(8);
 	BEGIN
 		-- A=After B=Before F=First L=Last
 		IF NVL (p_cube_pos_action, ' ') NOT IN ('A', 'B', 'F', 'L') THEN
@@ -2209,7 +2215,7 @@ CREATE PROCEDURE bot.insert_atb (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_sequence NUMERIC(8);	
+		l_cube_sequence NUMERIC(8);
 	BEGIN
 		-- A=After B=Before F=First L=Last
 		IF NVL (p_cube_pos_action, ' ') NOT IN ('A', 'B', 'F', 'L') THEN
@@ -2261,7 +2267,7 @@ CREATE PROCEDURE bot.update_atb (
 			p_xk_itp_name IN VARCHAR)
 LANGUAGE 'plpgsql'
 AS $BODY$
-	DECLARE	
+	DECLARE
 	BEGIN
 		UPDATE bot.v_attribute SET
 			fk_bot_name = p_fk_bot_name,
@@ -2282,7 +2288,7 @@ CREATE PROCEDURE bot.delete_atb (
 			p_name IN VARCHAR)
 LANGUAGE 'plpgsql'
 AS $BODY$
-	DECLARE	
+	DECLARE
 	BEGIN
 		DELETE FROM bot.v_attribute
 		WHERE fk_typ_name = p_fk_typ_name
@@ -2296,7 +2302,7 @@ CREATE PROCEDURE bot.get_der (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_cursor REFCURSOR := 'cube_cursor';	
+		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
 		OPEN l_cube_cursor FOR
 			SELECT
@@ -2321,7 +2327,7 @@ CREATE PROCEDURE bot.insert_der (
 			p_xk_typ_name_1 IN VARCHAR)
 LANGUAGE 'plpgsql'
 AS $BODY$
-	DECLARE	
+	DECLARE
 	BEGIN
 		INSERT INTO bot.v_derivation (
 			cube_id,
@@ -2357,7 +2363,7 @@ CREATE PROCEDURE bot.update_der (
 			p_xk_typ_name_1 IN VARCHAR)
 LANGUAGE 'plpgsql'
 AS $BODY$
-	DECLARE	
+	DECLARE
 	BEGIN
 		UPDATE bot.v_derivation SET
 			fk_bot_name = p_fk_bot_name,
@@ -2375,7 +2381,7 @@ CREATE PROCEDURE bot.delete_der (
 			p_fk_atb_name IN VARCHAR)
 LANGUAGE 'plpgsql'
 AS $BODY$
-	DECLARE	
+	DECLARE
 	BEGIN
 		DELETE FROM bot.v_derivation
 		WHERE fk_typ_name = p_fk_typ_name
@@ -2389,7 +2395,7 @@ CREATE PROCEDURE bot.get_dca (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_cursor REFCURSOR := 'cube_cursor';	
+		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
 		OPEN l_cube_cursor FOR
 			SELECT
@@ -2408,7 +2414,7 @@ CREATE PROCEDURE bot.insert_dca (
 			p_text IN VARCHAR)
 LANGUAGE 'plpgsql'
 AS $BODY$
-	DECLARE	
+	DECLARE
 	BEGIN
 		INSERT INTO bot.v_description_attribute (
 			cube_id,
@@ -2435,7 +2441,7 @@ CREATE PROCEDURE bot.update_dca (
 			p_text IN VARCHAR)
 LANGUAGE 'plpgsql'
 AS $BODY$
-	DECLARE	
+	DECLARE
 	BEGIN
 		UPDATE bot.v_description_attribute SET
 			fk_bot_name = p_fk_bot_name,
@@ -2450,7 +2456,7 @@ CREATE PROCEDURE bot.delete_dca (
 			p_fk_atb_name IN VARCHAR)
 LANGUAGE 'plpgsql'
 AS $BODY$
-	DECLARE	
+	DECLARE
 	BEGIN
 		DELETE FROM bot.v_description_attribute
 		WHERE fk_typ_name = p_fk_typ_name
@@ -2467,7 +2473,7 @@ CREATE PROCEDURE bot.get_rta (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_cursor REFCURSOR := 'cube_cursor';	
+		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
 		OPEN l_cube_cursor FOR
 			SELECT
@@ -2491,7 +2497,7 @@ CREATE PROCEDURE bot.get_next_rta (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_cursor REFCURSOR := 'cube_cursor';	
+		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
 		OPEN l_cube_cursor FOR
 			SELECT
@@ -2531,7 +2537,7 @@ CREATE PROCEDURE bot.insert_rta (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_cursor REFCURSOR := 'cube_cursor';	
+		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
 		INSERT INTO bot.v_restriction_type_spec_atb (
 			cube_id,
@@ -2569,7 +2575,7 @@ CREATE PROCEDURE bot.update_rta (
 			p_xk_tsp_code IN VARCHAR)
 LANGUAGE 'plpgsql'
 AS $BODY$
-	DECLARE	
+	DECLARE
 	BEGIN
 		UPDATE bot.v_restriction_type_spec_atb SET
 			fk_bot_name = p_fk_bot_name,
@@ -2590,7 +2596,7 @@ CREATE PROCEDURE bot.delete_rta (
 			p_xk_tsp_code IN VARCHAR)
 LANGUAGE 'plpgsql'
 AS $BODY$
-	DECLARE	
+	DECLARE
 	BEGIN
 		DELETE FROM bot.v_restriction_type_spec_atb
 		WHERE fk_typ_name = p_fk_typ_name
@@ -2609,7 +2615,7 @@ CREATE PROCEDURE bot.get_ref (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_cursor REFCURSOR := 'cube_cursor';	
+		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
 		OPEN l_cube_cursor FOR
 			SELECT
@@ -2638,7 +2644,7 @@ CREATE PROCEDURE bot.get_ref_fkey (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_cursor REFCURSOR := 'cube_cursor';	
+		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
 		OPEN l_cube_cursor FOR
 			SELECT
@@ -2659,7 +2665,7 @@ CREATE PROCEDURE bot.get_ref_dcr_items (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_cursor REFCURSOR := 'cube_cursor';	
+		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
 		OPEN l_cube_cursor FOR
 			SELECT
@@ -2684,7 +2690,7 @@ CREATE PROCEDURE bot.get_ref_rtr_items (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_cursor REFCURSOR := 'cube_cursor';	
+		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
 		OPEN l_cube_cursor FOR
 			SELECT
@@ -2712,7 +2718,7 @@ CREATE PROCEDURE bot.get_ref_rts_items (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_cursor REFCURSOR := 'cube_cursor';	
+		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
 		OPEN l_cube_cursor FOR
 			SELECT
@@ -2741,7 +2747,7 @@ CREATE PROCEDURE bot.count_ref_dcr (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_cursor REFCURSOR := 'cube_cursor';	
+		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
 		OPEN l_cube_cursor FOR
 			SELECT
@@ -2762,7 +2768,7 @@ CREATE PROCEDURE bot.count_ref_rts (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_cursor REFCURSOR := 'cube_cursor';	
+		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
 		OPEN l_cube_cursor FOR
 			SELECT
@@ -2788,7 +2794,8 @@ AS $BODY$
 		l_cube_pos_action VARCHAR(1);
 		l_cube_position_sequ NUMERIC(8);
 		l_cube_near_sequ NUMERIC(8);
-		l_cube_count NUMERIC(8) := 1024;	
+		l_cube_count NUMERIC(8) := 1024;
+		r_ref RECORD;
 	BEGIN
 		-- A=After B=Before F=First L=Last
 		CASE p_cube_pos_action
@@ -2826,12 +2833,12 @@ AS $BODY$
 				EXIT;
 			ELSE
 				-- renumber.
-				FOR r_ref IN (
+				FOR r_ref IN 
 					SELECT
 					  rowid row_id
 					FROM bot.v_reference
 					WHERE fk_typ_name = p_fk_typ_name
-					ORDER BY cube_sequence)
+					ORDER BY cube_sequence
 				LOOP
 					UPDATE bot.v_reference SET
 						cube_sequence = l_cube_count
@@ -2856,7 +2863,7 @@ CREATE PROCEDURE bot.move_ref (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_sequence NUMERIC(8);	
+		l_cube_sequence NUMERIC(8);
 	BEGIN
 		-- A=After B=Before F=First L=Last
 		IF NVL (p_cube_pos_action, ' ') NOT IN ('A', 'B', 'F', 'L') THEN
@@ -2897,7 +2904,7 @@ CREATE PROCEDURE bot.insert_ref (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_sequence NUMERIC(8);	
+		l_cube_sequence NUMERIC(8);
 	BEGIN
 		-- A=After B=Before F=First L=Last
 		IF NVL (p_cube_pos_action, ' ') NOT IN ('A', 'B', 'F', 'L') THEN
@@ -2958,7 +2965,7 @@ CREATE PROCEDURE bot.update_ref (
 			p_xk_typ_name_1 IN VARCHAR)
 LANGUAGE 'plpgsql'
 AS $BODY$
-	DECLARE	
+	DECLARE
 	BEGIN
 		UPDATE bot.v_reference SET
 			fk_bot_name = p_fk_bot_name,
@@ -2984,7 +2991,7 @@ CREATE PROCEDURE bot.delete_ref (
 			p_xk_typ_name IN VARCHAR)
 LANGUAGE 'plpgsql'
 AS $BODY$
-	DECLARE	
+	DECLARE
 	BEGIN
 		DELETE FROM bot.v_reference
 		WHERE fk_typ_name = p_fk_typ_name
@@ -3002,7 +3009,7 @@ CREATE PROCEDURE bot.get_dcr (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_cursor REFCURSOR := 'cube_cursor';	
+		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
 		OPEN l_cube_cursor FOR
 			SELECT
@@ -3025,7 +3032,7 @@ CREATE PROCEDURE bot.insert_dcr (
 			p_text IN VARCHAR)
 LANGUAGE 'plpgsql'
 AS $BODY$
-	DECLARE	
+	DECLARE
 	BEGIN
 		INSERT INTO bot.v_description_reference (
 			cube_id,
@@ -3058,7 +3065,7 @@ CREATE PROCEDURE bot.update_dcr (
 			p_text IN VARCHAR)
 LANGUAGE 'plpgsql'
 AS $BODY$
-	DECLARE	
+	DECLARE
 	BEGIN
 		UPDATE bot.v_description_reference SET
 			fk_bot_name = p_fk_bot_name,
@@ -3077,7 +3084,7 @@ CREATE PROCEDURE bot.delete_dcr (
 			p_fk_ref_typ_name IN VARCHAR)
 LANGUAGE 'plpgsql'
 AS $BODY$
-	DECLARE	
+	DECLARE
 	BEGIN
 		DELETE FROM bot.v_description_reference
 		WHERE fk_typ_name = p_fk_typ_name
@@ -3098,7 +3105,7 @@ CREATE PROCEDURE bot.get_rtr (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_cursor REFCURSOR := 'cube_cursor';	
+		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
 		OPEN l_cube_cursor FOR
 			SELECT
@@ -3126,7 +3133,7 @@ CREATE PROCEDURE bot.get_next_rtr (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_cursor REFCURSOR := 'cube_cursor';	
+		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
 		OPEN l_cube_cursor FOR
 			SELECT
@@ -3183,7 +3190,7 @@ CREATE PROCEDURE bot.insert_rtr (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_cursor REFCURSOR := 'cube_cursor';	
+		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
 		INSERT INTO bot.v_restriction_type_spec_ref (
 			cube_id,
@@ -3227,7 +3234,7 @@ CREATE PROCEDURE bot.update_rtr (
 			p_xk_tsp_code IN VARCHAR)
 LANGUAGE 'plpgsql'
 AS $BODY$
-	DECLARE	
+	DECLARE
 	BEGIN
 		UPDATE bot.v_restriction_type_spec_ref SET
 			fk_bot_name = p_fk_bot_name,
@@ -3252,7 +3259,7 @@ CREATE PROCEDURE bot.delete_rtr (
 			p_xk_tsp_code IN VARCHAR)
 LANGUAGE 'plpgsql'
 AS $BODY$
-	DECLARE	
+	DECLARE
 	BEGIN
 		DELETE FROM bot.v_restriction_type_spec_ref
 		WHERE fk_typ_name = p_fk_typ_name
@@ -3276,7 +3283,7 @@ CREATE PROCEDURE bot.get_rts (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_cursor REFCURSOR := 'cube_cursor';	
+		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
 		OPEN l_cube_cursor FOR
 			SELECT
@@ -3305,7 +3312,7 @@ CREATE PROCEDURE bot.insert_rts (
 			p_xk_tsp_code IN VARCHAR)
 LANGUAGE 'plpgsql'
 AS $BODY$
-	DECLARE	
+	DECLARE
 	BEGIN
 		INSERT INTO bot.v_restriction_target_type_spec (
 			cube_id,
@@ -3347,7 +3354,7 @@ CREATE PROCEDURE bot.update_rts (
 			p_xk_tsp_code IN VARCHAR)
 LANGUAGE 'plpgsql'
 AS $BODY$
-	DECLARE	
+	DECLARE
 	BEGIN
 		UPDATE bot.v_restriction_target_type_spec SET
 			fk_bot_name = p_fk_bot_name,
@@ -3372,7 +3379,7 @@ CREATE PROCEDURE bot.delete_rts (
 			p_xk_tsp_code IN VARCHAR)
 LANGUAGE 'plpgsql'
 AS $BODY$
-	DECLARE	
+	DECLARE
 	BEGIN
 		DELETE FROM bot.v_restriction_target_type_spec
 		WHERE fk_typ_name = p_fk_typ_name
@@ -3393,7 +3400,7 @@ CREATE PROCEDURE bot.get_rtt (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_cursor REFCURSOR := 'cube_cursor';	
+		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
 		OPEN l_cube_cursor FOR
 			SELECT
@@ -3415,7 +3422,7 @@ CREATE PROCEDURE bot.get_next_rtt (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_cursor REFCURSOR := 'cube_cursor';	
+		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
 		OPEN l_cube_cursor FOR
 			SELECT
@@ -3448,7 +3455,7 @@ CREATE PROCEDURE bot.insert_rtt (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_cursor REFCURSOR := 'cube_cursor';	
+		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
 		INSERT INTO bot.v_restriction_type_spec_typ (
 			cube_id,
@@ -3483,7 +3490,7 @@ CREATE PROCEDURE bot.update_rtt (
 			p_xk_tsp_code IN VARCHAR)
 LANGUAGE 'plpgsql'
 AS $BODY$
-	DECLARE	
+	DECLARE
 	BEGIN
 		UPDATE bot.v_restriction_type_spec_typ SET
 			fk_bot_name = p_fk_bot_name,
@@ -3502,7 +3509,7 @@ CREATE PROCEDURE bot.delete_rtt (
 			p_xk_tsp_code IN VARCHAR)
 LANGUAGE 'plpgsql'
 AS $BODY$
-	DECLARE	
+	DECLARE
 	BEGIN
 		DELETE FROM bot.v_restriction_type_spec_typ
 		WHERE fk_typ_name = p_fk_typ_name
@@ -3522,7 +3529,7 @@ CREATE PROCEDURE bot.get_jsn (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_cursor REFCURSOR := 'cube_cursor';	
+		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
 		OPEN l_cube_cursor FOR
 			SELECT
@@ -3554,7 +3561,7 @@ CREATE PROCEDURE bot.get_jsn_fkey (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_cursor REFCURSOR := 'cube_cursor';	
+		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
 		OPEN l_cube_cursor FOR
 			SELECT
@@ -3579,7 +3586,7 @@ CREATE PROCEDURE bot.get_jsn_jsn_items (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_cursor REFCURSOR := 'cube_cursor';	
+		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
 		OPEN l_cube_cursor FOR
 			SELECT
@@ -3622,7 +3629,7 @@ AS $BODY$
 		l_location v_json_path.location%TYPE;
 		l_xf_atb_typ_name v_json_path.xf_atb_typ_name%TYPE;
 		l_xk_atb_name v_json_path.xk_atb_name%TYPE;
-		l_xk_typ_name v_json_path.xk_typ_name%TYPE;	
+		l_xk_typ_name v_json_path.xk_typ_name%TYPE;
 	BEGIN
 		l_name := x_name;
 		l_location := x_location;
@@ -3677,7 +3684,8 @@ AS $BODY$
 		l_cube_pos_action VARCHAR(1);
 		l_cube_position_sequ NUMERIC(8);
 		l_cube_near_sequ NUMERIC(8);
-		l_cube_count NUMERIC(8) := 1024;	
+		l_cube_count NUMERIC(8) := 1024;
+		r_jsn RECORD;
 	BEGIN
 		-- A=After B=Before F=First L=Last
 		CASE p_cube_pos_action
@@ -3732,7 +3740,7 @@ AS $BODY$
 				EXIT;
 			ELSE
 				-- renumber.
-				FOR r_jsn IN (
+				FOR r_jsn IN 
 					SELECT
 					  rowid row_id
 					FROM bot.v_json_path
@@ -3752,7 +3760,7 @@ AS $BODY$
 						   OR fk_jsn_atb_typ_name = p_fk_jsn_atb_typ_name
 						   OR fk_jsn_atb_name = p_fk_jsn_atb_name
 						   OR fk_jsn_typ_name = p_fk_jsn_typ_name )
-					ORDER BY cube_sequence)
+					ORDER BY cube_sequence
 				LOOP
 					UPDATE bot.v_json_path SET
 						cube_sequence = l_cube_count
@@ -3786,7 +3794,7 @@ AS $BODY$
 		l_fk_jsn_location v_json_path.fk_jsn_location%TYPE;
 		l_fk_jsn_atb_typ_name v_json_path.fk_jsn_atb_typ_name%TYPE;
 		l_fk_jsn_atb_name v_json_path.fk_jsn_atb_name%TYPE;
-		l_fk_jsn_typ_name v_json_path.fk_jsn_typ_name%TYPE;	
+		l_fk_jsn_typ_name v_json_path.fk_jsn_typ_name%TYPE;
 	BEGIN
 		-- A=After B=Before F=First L=Last
 		IF NVL (p_cube_pos_action, ' ') NOT IN ('A', 'B', 'F', 'L') THEN
@@ -3856,7 +3864,7 @@ CREATE PROCEDURE bot.insert_jsn (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_sequence NUMERIC(8);	
+		l_cube_sequence NUMERIC(8);
 	BEGIN
 		-- A=After B=Before F=First L=Last
 		IF NVL (p_cube_pos_action, ' ') NOT IN ('A', 'B', 'F', 'L') THEN
@@ -3922,7 +3930,7 @@ CREATE PROCEDURE bot.update_jsn (
 			p_xk_typ_name IN VARCHAR)
 LANGUAGE 'plpgsql'
 AS $BODY$
-	DECLARE	
+	DECLARE
 	BEGIN
 		UPDATE bot.v_json_path SET
 			fk_bot_name = p_fk_bot_name,
@@ -3951,7 +3959,7 @@ CREATE PROCEDURE bot.delete_jsn (
 			p_xk_typ_name IN VARCHAR)
 LANGUAGE 'plpgsql'
 AS $BODY$
-	DECLARE	
+	DECLARE
 	BEGIN
 		DELETE FROM bot.v_json_path
 		WHERE fk_typ_name = p_fk_typ_name
@@ -3968,7 +3976,7 @@ CREATE PROCEDURE bot.get_dct (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_cursor REFCURSOR := 'cube_cursor';	
+		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
 		OPEN l_cube_cursor FOR
 			SELECT
@@ -3985,7 +3993,7 @@ CREATE PROCEDURE bot.insert_dct (
 			p_text IN VARCHAR)
 LANGUAGE 'plpgsql'
 AS $BODY$
-	DECLARE	
+	DECLARE
 	BEGIN
 		INSERT INTO bot.v_description_type (
 			cube_id,
@@ -4009,7 +4017,7 @@ CREATE PROCEDURE bot.update_dct (
 			p_text IN VARCHAR)
 LANGUAGE 'plpgsql'
 AS $BODY$
-	DECLARE	
+	DECLARE
 	BEGIN
 		UPDATE bot.v_description_type SET
 			fk_bot_name = p_fk_bot_name,
@@ -4022,7 +4030,7 @@ CREATE PROCEDURE bot.delete_dct (
 			p_fk_typ_name IN VARCHAR)
 LANGUAGE 'plpgsql'
 AS $BODY$
-	DECLARE	
+	DECLARE
 	BEGIN
 		DELETE FROM bot.v_description_type
 		WHERE fk_typ_name = p_fk_typ_name;
@@ -4054,7 +4062,7 @@ CREATE PROCEDURE sys.get_sys_root_items ()
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_cursor REFCURSOR := 'cube_cursor';	
+		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
 		OPEN l_cube_cursor FOR
 			SELECT
@@ -4070,7 +4078,7 @@ CREATE PROCEDURE sys.get_sys (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_cursor REFCURSOR := 'cube_cursor';	
+		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
 		OPEN l_cube_cursor FOR
 			SELECT
@@ -4089,7 +4097,7 @@ CREATE PROCEDURE sys.get_sys_sbt_items (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_cursor REFCURSOR := 'cube_cursor';	
+		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
 		OPEN l_cube_cursor FOR
 			SELECT
@@ -4107,7 +4115,7 @@ CREATE PROCEDURE sys.get_next_sys (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_cursor REFCURSOR := 'cube_cursor';	
+		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
 		OPEN l_cube_cursor FOR
 			SELECT
@@ -4128,7 +4136,7 @@ CREATE PROCEDURE sys.insert_sys (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_cursor REFCURSOR := 'cube_cursor';	
+		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
 		INSERT INTO sys.v_system (
 			cube_id,
@@ -4163,7 +4171,7 @@ CREATE PROCEDURE sys.update_sys (
 			p_table_prefix IN VARCHAR)
 LANGUAGE 'plpgsql'
 AS $BODY$
-	DECLARE	
+	DECLARE
 	BEGIN
 		UPDATE sys.v_system SET
 			cube_tsg_type = p_cube_tsg_type,
@@ -4179,7 +4187,7 @@ CREATE PROCEDURE sys.delete_sys (
 			p_name IN VARCHAR)
 LANGUAGE 'plpgsql'
 AS $BODY$
-	DECLARE	
+	DECLARE
 	BEGIN
 		DELETE FROM sys.v_system
 		WHERE name = p_name;
@@ -4197,7 +4205,8 @@ AS $BODY$
 		l_cube_pos_action VARCHAR(1);
 		l_cube_position_sequ NUMERIC(8);
 		l_cube_near_sequ NUMERIC(8);
-		l_cube_count NUMERIC(8) := 1024;	
+		l_cube_count NUMERIC(8) := 1024;
+		r_sbt RECORD;
 	BEGIN
 		-- A=After B=Before F=First L=Last
 		CASE p_cube_pos_action
@@ -4233,12 +4242,12 @@ AS $BODY$
 				EXIT;
 			ELSE
 				-- renumber.
-				FOR r_sbt IN (
+				FOR r_sbt IN 
 					SELECT
 					  rowid row_id
 					FROM sys.v_system_bo_type
 					WHERE fk_sys_name = p_fk_sys_name
-					ORDER BY cube_sequence)
+					ORDER BY cube_sequence
 				LOOP
 					UPDATE sys.v_system_bo_type SET
 						cube_sequence = l_cube_count
@@ -4259,7 +4268,7 @@ CREATE PROCEDURE sys.move_sbt (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_sequence NUMERIC(8);	
+		l_cube_sequence NUMERIC(8);
 	BEGIN
 		-- A=After B=Before F=First L=Last
 		IF NVL (p_cube_pos_action, ' ') NOT IN ('A', 'B', 'F', 'L') THEN
@@ -4285,7 +4294,7 @@ CREATE PROCEDURE sys.insert_sbt (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_sequence NUMERIC(8);	
+		l_cube_sequence NUMERIC(8);
 	BEGIN
 		-- A=After B=Before F=First L=Last
 		IF NVL (p_cube_pos_action, ' ') NOT IN ('A', 'B', 'F', 'L') THEN
@@ -4313,7 +4322,7 @@ CREATE PROCEDURE sys.delete_sbt (
 			p_xk_bot_name IN VARCHAR)
 LANGUAGE 'plpgsql'
 AS $BODY$
-	DECLARE	
+	DECLARE
 	BEGIN
 		DELETE FROM sys.v_system_bo_type
 		WHERE fk_sys_name = p_fk_sys_name
@@ -4346,7 +4355,7 @@ CREATE PROCEDURE fun.get_fun_root_items ()
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_cursor REFCURSOR := 'cube_cursor';	
+		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
 		OPEN l_cube_cursor FOR
 			SELECT
@@ -4360,7 +4369,7 @@ CREATE PROCEDURE fun.count_fun ()
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_cursor REFCURSOR := 'cube_cursor';	
+		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
 		OPEN l_cube_cursor FOR
 			SELECT
@@ -4374,7 +4383,7 @@ CREATE PROCEDURE fun.get_fun_arg_items (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_cursor REFCURSOR := 'cube_cursor';	
+		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
 		OPEN l_cube_cursor FOR
 			SELECT
@@ -4391,7 +4400,7 @@ CREATE PROCEDURE fun.insert_fun (
 			p_name IN VARCHAR)
 LANGUAGE 'plpgsql'
 AS $BODY$
-	DECLARE	
+	DECLARE
 	BEGIN
 		INSERT INTO fun.v_function (
 			cube_id,
@@ -4409,7 +4418,7 @@ CREATE PROCEDURE fun.delete_fun (
 			p_name IN VARCHAR)
 LANGUAGE 'plpgsql'
 AS $BODY$
-	DECLARE	
+	DECLARE
 	BEGIN
 		DELETE FROM fun.v_function
 		WHERE name = p_name;
@@ -4427,7 +4436,8 @@ AS $BODY$
 		l_cube_pos_action VARCHAR(1);
 		l_cube_position_sequ NUMERIC(8);
 		l_cube_near_sequ NUMERIC(8);
-		l_cube_count NUMERIC(8) := 1024;	
+		l_cube_count NUMERIC(8) := 1024;
+		r_arg RECORD;
 	BEGIN
 		-- A=After B=Before F=First L=Last
 		CASE p_cube_pos_action
@@ -4463,12 +4473,12 @@ AS $BODY$
 				EXIT;
 			ELSE
 				-- renumber.
-				FOR r_arg IN (
+				FOR r_arg IN 
 					SELECT
 					  rowid row_id
 					FROM fun.v_argument
 					WHERE fk_fun_name = p_fk_fun_name
-					ORDER BY cube_sequence)
+					ORDER BY cube_sequence
 				LOOP
 					UPDATE fun.v_argument SET
 						cube_sequence = l_cube_count
@@ -4489,7 +4499,7 @@ CREATE PROCEDURE fun.move_arg (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_sequence NUMERIC(8);	
+		l_cube_sequence NUMERIC(8);
 	BEGIN
 		-- A=After B=Before F=First L=Last
 		IF NVL (p_cube_pos_action, ' ') NOT IN ('A', 'B', 'F', 'L') THEN
@@ -4515,7 +4525,7 @@ CREATE PROCEDURE fun.insert_arg (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_cube_sequence NUMERIC(8);	
+		l_cube_sequence NUMERIC(8);
 	BEGIN
 		-- A=After B=Before F=First L=Last
 		IF NVL (p_cube_pos_action, ' ') NOT IN ('A', 'B', 'F', 'L') THEN
@@ -4543,7 +4553,7 @@ CREATE PROCEDURE fun.delete_arg (
 			p_name IN VARCHAR)
 LANGUAGE 'plpgsql'
 AS $BODY$
-	DECLARE	
+	DECLARE
 	BEGIN
 		DELETE FROM fun.v_argument
 		WHERE fk_fun_name = p_fk_fun_name

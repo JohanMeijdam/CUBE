@@ -22,6 +22,9 @@
 				=PROPERTY:2|Length|;
 				=PROPERTY:2|Decimals|;
 			-META_TYPE:;
+			+META_TYPE:CURSOR|;
+				=PROPERTY:0|Name|;
+			-META_TYPE:;
 			+META_TYPE:STATEMENT|;
 				=PROPERTY:0|Type|;
 				+META_TYPE_SPEC:READ_EXPORT|;
@@ -43,6 +46,8 @@
 							-META_TYPE:;
 						-META_TYPE:;
 					-META_TYPE:;
+				-META_TYPE_SPEC:;
+				+META_TYPE_SPEC:ITERATION|;
 				-META_TYPE_SPEC:;
 			-META_TYPE:;
 			+META_TYPE:EXCEPTION|;
@@ -459,6 +464,7 @@
 		+VARIABLE:l_cube_count||NUMBER|8|0;
 			=EXPRESSION:NUMBER|1024;
 		-VARIABLE:;
+		=CURSOR:r_val;
 		=STATEMENT:NOTE|A=After B=Before F=First L=Last;
 		+STATEMENT:SELECTION|CASE;
 			=EXPRESSION:REF_NAME|p_cube_pos_action;
@@ -997,6 +1003,7 @@
 		+VARIABLE:l_cube_count||NUMBER|8|0;
 			=EXPRESSION:NUMBER|1024;
 		-VARIABLE:;
+		=CURSOR:r_bot;
 		=STATEMENT:NOTE|A=After B=Before F=First L=Last;
 		+STATEMENT:SELECTION|CASE;
 			=EXPRESSION:REF_NAME|p_cube_pos_action;
@@ -1931,6 +1938,7 @@
 		+VARIABLE:l_cube_count||NUMBER|8|0;
 			=EXPRESSION:NUMBER|1024;
 		-VARIABLE:;
+		=CURSOR:r_typ;
 		=STATEMENT:NOTE|A=After B=Before F=First L=Last;
 		+STATEMENT:SELECTION|CASE;
 			=EXPRESSION:REF_NAME|p_cube_pos_action;
@@ -2689,6 +2697,7 @@
 		+VARIABLE:l_cube_count||NUMBER|8|0;
 			=EXPRESSION:NUMBER|1024;
 		-VARIABLE:;
+		=CURSOR:r_tsg;
 		=STATEMENT:NOTE|A=After B=Before F=First L=Last;
 		+STATEMENT:SELECTION|CASE;
 			=EXPRESSION:REF_NAME|p_cube_pos_action;
@@ -3513,6 +3522,7 @@
 		+VARIABLE:l_cube_count||NUMBER|8|0;
 			=EXPRESSION:NUMBER|1024;
 		-VARIABLE:;
+		=CURSOR:r_tsp;
 		=STATEMENT:NOTE|A=After B=Before F=First L=Last;
 		+STATEMENT:SELECTION|CASE;
 			=EXPRESSION:REF_NAME|p_cube_pos_action;
@@ -4307,6 +4317,7 @@
 		+VARIABLE:l_cube_count||NUMBER|8|0;
 			=EXPRESSION:NUMBER|1024;
 		-VARIABLE:;
+		=CURSOR:r_atb;
 		=STATEMENT:NOTE|A=After B=Before F=First L=Last;
 		+STATEMENT:SELECTION|CASE;
 			=EXPRESSION:REF_NAME|p_cube_pos_action;
@@ -5589,6 +5600,7 @@
 		+VARIABLE:l_cube_count||NUMBER|8|0;
 			=EXPRESSION:NUMBER|1024;
 		-VARIABLE:;
+		=CURSOR:r_ref;
 		=STATEMENT:NOTE|A=After B=Before F=First L=Last;
 		+STATEMENT:SELECTION|CASE;
 			=EXPRESSION:REF_NAME|p_cube_pos_action;
@@ -7364,6 +7376,7 @@
 		+VARIABLE:l_cube_count||NUMBER|8|0;
 			=EXPRESSION:NUMBER|1024;
 		-VARIABLE:;
+		=CURSOR:r_jsn;
 		=STATEMENT:NOTE|A=After B=Before F=First L=Last;
 		+STATEMENT:SELECTION|CASE;
 			=EXPRESSION:REF_NAME|p_cube_pos_action;
@@ -8459,6 +8472,7 @@
 		+VARIABLE:l_cube_count||NUMBER|8|0;
 			=EXPRESSION:NUMBER|1024;
 		-VARIABLE:;
+		=CURSOR:r_sbt;
 		=STATEMENT:NOTE|A=After B=Before F=First L=Last;
 		+STATEMENT:SELECTION|CASE;
 			=EXPRESSION:REF_NAME|p_cube_pos_action;
@@ -8909,6 +8923,7 @@
 		+VARIABLE:l_cube_count||NUMBER|8|0;
 			=EXPRESSION:NUMBER|1024;
 		-VARIABLE:;
+		=CURSOR:r_arg;
 		=STATEMENT:NOTE|A=After B=Before F=First L=Last;
 		+STATEMENT:SELECTION|CASE;
 			=EXPRESSION:REF_NAME|p_cube_pos_action;
