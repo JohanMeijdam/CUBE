@@ -798,7 +798,7 @@ AS $BODY$
 	DECLARE
 		l_cube_cursor REFCURSOR := 'cube_cursor';
 		l_cube_scope_level NUMERIC(1) := 0;
-		l_name v_type.name%TYPE;
+		l_name bot.v_type.name%TYPE;
 	BEGIN
 		l_name := x_fk_typ_name;
 		IF p_cube_scope_level > 0 THEN
@@ -1057,7 +1057,7 @@ CREATE PROCEDURE bot.check_no_part_typ (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_name v_type.name%TYPE;
+		l_name bot.v_type.name%TYPE;
 	BEGIN
 		l_name := x_name;
 		LOOP
@@ -1154,8 +1154,8 @@ LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
 		l_cube_sequence NUMERIC(8);
-		l_fk_bot_name v_type.fk_bot_name%TYPE;
-		l_fk_typ_name v_type.fk_typ_name%TYPE;
+		l_fk_bot_name bot.v_type.fk_bot_name%TYPE;
+		l_fk_typ_name bot.v_type.fk_typ_name%TYPE;
 	BEGIN
 		-- A=After B=Before F=First L=Last
 		IF NVL (p_cube_pos_action, ' ') NOT IN ('A', 'B', 'F', 'L') THEN
@@ -1396,7 +1396,7 @@ CREATE PROCEDURE bot.check_no_part_tsg (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_code v_type_specialisation_group.code%TYPE;
+		l_code bot.v_type_specialisation_group.code%TYPE;
 	BEGIN
 		l_code := x_code;
 		LOOP
@@ -1497,7 +1497,7 @@ LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
 		l_cube_sequence NUMERIC(8);
-		l_fk_tsg_code v_type_specialisation_group.fk_tsg_code%TYPE;
+		l_fk_tsg_code bot.v_type_specialisation_group.fk_tsg_code%TYPE;
 	BEGIN
 		-- A=After B=Before F=First L=Last
 		IF NVL (p_cube_pos_action, ' ') NOT IN ('A', 'B', 'F', 'L') THEN
@@ -1624,7 +1624,7 @@ AS $BODY$
 	DECLARE
 		l_cube_cursor REFCURSOR := 'cube_cursor';
 		l_cube_scope_level NUMERIC(1) := 0;
-		l_name v_type.name%TYPE;
+		l_name bot.v_type.name%TYPE;
 	BEGIN
 		l_name := x_fk_typ_name;
 		IF p_cube_scope_level > 0 THEN
@@ -1672,7 +1672,7 @@ AS $BODY$
 	DECLARE
 		l_cube_cursor REFCURSOR := 'cube_cursor';
 		l_cube_scope_level NUMERIC(1) := 0;
-		l_code v_type_specialisation_group.code%TYPE;
+		l_code bot.v_type_specialisation_group.code%TYPE;
 	BEGIN
 		l_code := x_fk_tsg_code;
 		IF p_cube_scope_level > 0 THEN
@@ -1934,7 +1934,7 @@ AS $BODY$
 	DECLARE
 		l_cube_cursor REFCURSOR := 'cube_cursor';
 		l_cube_scope_level NUMERIC(1) := 0;
-		l_name v_type.name%TYPE;
+		l_name bot.v_type.name%TYPE;
 	BEGIN
 		l_name := x_fk_typ_name;
 		IF p_cube_scope_level > 0 THEN
@@ -3625,11 +3625,11 @@ CREATE PROCEDURE bot.check_no_part_jsn (
 LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
-		l_name v_json_path.name%TYPE;
-		l_location v_json_path.location%TYPE;
-		l_xf_atb_typ_name v_json_path.xf_atb_typ_name%TYPE;
-		l_xk_atb_name v_json_path.xk_atb_name%TYPE;
-		l_xk_typ_name v_json_path.xk_typ_name%TYPE;
+		l_name bot.v_json_path.name%TYPE;
+		l_location bot.v_json_path.location%TYPE;
+		l_xf_atb_typ_name bot.v_json_path.xf_atb_typ_name%TYPE;
+		l_xk_atb_name bot.v_json_path.xk_atb_name%TYPE;
+		l_xk_typ_name bot.v_json_path.xk_typ_name%TYPE;
 	BEGIN
 		l_name := x_name;
 		l_location := x_location;
@@ -3790,11 +3790,11 @@ LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
 		l_cube_sequence NUMERIC(8);
-		l_fk_jsn_name v_json_path.fk_jsn_name%TYPE;
-		l_fk_jsn_location v_json_path.fk_jsn_location%TYPE;
-		l_fk_jsn_atb_typ_name v_json_path.fk_jsn_atb_typ_name%TYPE;
-		l_fk_jsn_atb_name v_json_path.fk_jsn_atb_name%TYPE;
-		l_fk_jsn_typ_name v_json_path.fk_jsn_typ_name%TYPE;
+		l_fk_jsn_name bot.v_json_path.fk_jsn_name%TYPE;
+		l_fk_jsn_location bot.v_json_path.fk_jsn_location%TYPE;
+		l_fk_jsn_atb_typ_name bot.v_json_path.fk_jsn_atb_typ_name%TYPE;
+		l_fk_jsn_atb_name bot.v_json_path.fk_jsn_atb_name%TYPE;
+		l_fk_jsn_typ_name bot.v_json_path.fk_jsn_typ_name%TYPE;
 	BEGIN
 		-- A=After B=Before F=First L=Last
 		IF NVL (p_cube_pos_action, ' ') NOT IN ('A', 'B', 'F', 'L') THEN
