@@ -24,11 +24,12 @@ echo Generate Database Views.
 
 
 echo Generate Packages.
-CubeGen.exe %sysdir%\CubeServerImplModel.cgm Templates\Package_pg.cgt %sysdir%\PackageDdl_pg.sql %sysname% >> %logfile% 2>&1
-set PGPASSWORD=H00rnse_H0p
-psql -h 82.217.5.32 -p 32781 -d cubetool -U cubetool -f %sysdir%\PackageDdl_pg.sql >> %logfile% 2>&1
+::CubeGen.exe %sysdir%\CubeServerImplModel.cgm Templates\Package_pg.cgt %sysdir%\PackageDdl_pg.sql %sysname% >> %logfile% 2>&1
+::set PGPASSWORD=H00rnse_H0p
+::psql -h 82.217.5.32 -p 32781 -d cubetool -U cubetool -f %sysdir%\PackageDdl_pg.sql >> %logfile% 2>&1
 
-
+echo Generate Application.
+CubeGen.exe %sysdir%\CubeServerSpecModel.cgm Templates\CubeServerPhp_pg.cgt D:\www\%sysname%\%sysname%Server.php %sysname% >> %logfile% 2>&1
 
 
 pause
