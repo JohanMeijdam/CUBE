@@ -26,13 +26,14 @@ case '<<SERVICE:C>>':
 	$conn->query("BEGIN;");[[LOOP,OPERATION]]
 	$ResponseObj = new \stdClass();
 	$ResponseObj->ResultName = '<<SERVICE1:U>>[[IF:!2=#]]_<<OPERATION2:U>>[[ENDIF]][[LOOP,OPERATION_TYPE]]_<<OPERATION_TYPE1:U>>[[ENDLOOP,OPERATION_TYPE]]';
-	$conn->query("CALL [[FOR,BUSINESS_OBJECT_TYPE:N>N]][[LOOP,TYPE]]<<TYPE1:L>>[[ENDLOOP,TYPE]][[ENDFOR]]..<<OPERATION:L>>();");[[IF:CHILD(EXPORT)]]
+	$conn->query("CALL [[FOR,BUSINESS_OBJECT_TYPE:N>N]][[LOOP,TYPE]]<<TYPE1:L>>[[ENDLOOP,TYPE]][[ENDFOR]].<<OPERATION:L>>([[IF,SERVICE:CHILD(ARGUMENT)]]'".[[FORH,SERVICE:N>N]][[LOOP,ARGUMENT]]$RequestObj->Parameters-><<ARGUMENT2>>->[[LOOP,ARGUMENT_ATTRIBUTE]]<<ARGUMENT_ATTRIBUTE:C>>[[ENDLOOP,ARGUMENT_ATTRIBUTE]][[IF:!LAST]]."','".[[ENDIF]][[ENDLOOP,ARGUMENT]][[ENDFOR]]."'[[ENDIF]]);");[[IF:CHILD(EXPORT)]]
+	$ResponseObj->Rows = array();
 	$curs = $conn->query('FETCH ALL FROM "cube_cursor";');
 	[[IF:3=Y]]while[[ELSE]]if[[ENDIF]] ($row = $curs->fetch(PDO::FETCH_ASSOC)) {
 		$RowObj = new \stdClass();[[LOOP,EXPORT]][[IF:1=Y]]
 		$RowObj-><<EXPORT:C>> = new \stdClass();[[LOOP,ARGUMENT]]
-		$RowObj-><<EXPORT:C>>-><<ARGUMENT:C>> = $row["<<ARGUMENT:U>>"];[[ENDLOOP,ARGUMENT]][[ELSE]]
-		$RowObj-><<EXPORT:C>> = [[IF:CHILD(ARGUMENT)]][[LOOP,ARGUMENT]][[IF:1=subscript]][[IF:FIRST]]'('.[[ELSE]].' ('.[[ENDIF]][[ELSE]][[IF:!FIRST]].' '.[[ENDIF]][[ENDIF]]$row["<<ARGUMENT:U>>"][[IF:1=subscript]].')'[[ENDIF]][[ENDLOOP,ARGUMENT]][[ELSE]]' '[[ENDIF]];[[ENDIF]][[ENDLOOP,EXPORT]]
+		$RowObj-><<EXPORT:C>>-><<ARGUMENT:C>> = $row["<<ARGUMENT:L>>"];[[ENDLOOP,ARGUMENT]][[ELSE]]
+		$RowObj-><<EXPORT:C>> = [[IF:CHILD(ARGUMENT)]][[LOOP,ARGUMENT]][[IF:1=subscript]][[IF:FIRST]]'('.[[ELSE]].' ('.[[ENDIF]][[ELSE]][[IF:!FIRST]].' '.[[ENDIF]][[ENDIF]]$row["<<ARGUMENT:L>>"][[IF:1=subscript]].')'[[ENDIF]][[ENDLOOP,ARGUMENT]][[ELSE]]' '[[ENDIF]];[[ENDIF]][[ENDLOOP,EXPORT]]
 		$ResponseObj->Rows[] = $RowObj;
 	}[[ENDIF]][[******
 	

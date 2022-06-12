@@ -9,8 +9,8 @@ $_SESSION['views']=0;
 <link rel="stylesheet" href="base_css.php" />
 <style type="text/css">
 </style>
-<script language="javascript" type="text/javascript" src="..\CubeGeneral\CubeInclude.js?filever=<?=filemtime('..\CubeGeneral\CubeInclude.js')?>"></script>
-<script language="javascript" type="text/javascript" src="..\CubeGeneral\CubeTreeInclude.js?filever=<?=filemtime('..\CubeGeneral\CubeTreeInclude.js')?>"></script>
+<script language="javascript" type="text/javascript" src="../CubeGeneral/CubeInclude.js?filever=<?=filemtime('../CubeGeneral/CubeInclude.js')?>"></script>
+<script language="javascript" type="text/javascript" src="../CubeGeneral/CubeTreeInclude.js?filever=<?=filemtime('../CubeGeneral/CubeTreeInclude.js')?>"></script>
 <script language="javascript" type="text/javascript" src="CubeSysInclude.js?filever=<?=filemtime('CubeSysInclude.js')?>"></script>
 <script language="javascript" type="text/javascript">
 <!--
