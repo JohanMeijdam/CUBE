@@ -140,10 +140,10 @@ AS $BODY$
 			NULL,
 			p_name);
 
-		CALL itp.get_next_itp (p_cube_row, p_name);
+		CALL itp.get_next_itp p_name);
 	EXCEPTION
 	WHEN unique_violation THEN
-			CALL itp.RAISE_APPLICATION_ERROR (-20001, 'Type information_type already exists');
+			CALL itp.RAISE_APPLICATION_ERROR  (-20001, 'Type information_type already exists');
 	END;
 $BODY$;
 
@@ -265,10 +265,10 @@ AS $BODY$
 			p_spaces_allowed,
 			p_presentation);
 
-		CALL itp.get_next_ite (p_cube_row, p_fk_itp_name, p_sequence);
+		CALL itp.get_next_ite p_fk_itp_name, p_sequence);
 	EXCEPTION
 	WHEN unique_violation THEN
-			CALL itp.RAISE_APPLICATION_ERROR (-20001, 'Type information_type_element already exists');
+			CALL itp.RAISE_APPLICATION_ERROR  (-20001, 'Type information_type_element already exists');
 	END;
 $BODY$;
 
@@ -360,7 +360,7 @@ AS $BODY$
 			l_cube_pos_action := p_cube_pos_action;
 		END CASE;
 		LOOP
-			IF p_cube_pos_action IN ('B', 'A') THEN
+			IF p_cube_pos_action IN  ('B', 'A') THEN
 				-- Read sequence number of the target.
 				SELECT NVL (MAX (cube_sequence), DECODE (p_cube_pos_action, 'B', 99999999, 0))
 				INTO l_cube_position_sequ
@@ -416,17 +416,17 @@ AS $BODY$
 		l_cube_sequence NUMERIC(8);
 	BEGIN
 		-- A=After B=Before F=First L=Last
-		IF NVL (p_cube_pos_action, ' ') NOT IN ('A', 'B', 'F', 'L') THEN
-			CALL itp.RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
+		IF NVL (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
+			CALL itp.RAISE_APPLICATION_ERROR  (-20005, 'Invalid position action: ' || p_cube_pos_action);
 		END IF;
-		CALL itp.determine_position_val (l_cube_sequence, p_cube_pos_action, x_fk_itp_name, x_fk_ite_sequence, x_code);
+		CALL itp.determine_position_val  (l_cube_sequence, p_cube_pos_action, x_fk_itp_name, x_fk_ite_sequence, x_code);
 		UPDATE itp.v_permitted_value SET
 			cube_sequence = l_cube_sequence
 		WHERE fk_itp_name = p_fk_itp_name
 		  AND fk_ite_sequence = p_fk_ite_sequence
 		  AND code = p_code;
 		IF SQL%NOTFOUND THEN
-			CALL itp.RAISE_APPLICATION_ERROR (-20002, 'Type permitted_value not found');
+			CALL itp.RAISE_APPLICATION_ERROR  (-20002, 'Type permitted_value not found');
 		END IF;
 	END;
 $BODY$;
@@ -446,10 +446,10 @@ AS $BODY$
 		l_cube_sequence NUMERIC(8);
 	BEGIN
 		-- A=After B=Before F=First L=Last
-		IF NVL (p_cube_pos_action, ' ') NOT IN ('A', 'B', 'F', 'L') THEN
-			CALL itp.RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
+		IF NVL (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
+			CALL itp.RAISE_APPLICATION_ERROR  (-20005, 'Invalid position action: ' || p_cube_pos_action);
 		END IF;
-		CALL itp.determine_position_val (l_cube_sequence, p_cube_pos_action, x_fk_itp_name, x_fk_ite_sequence, x_code);
+		CALL itp.determine_position_val  (l_cube_sequence, p_cube_pos_action, x_fk_itp_name, x_fk_ite_sequence, x_code);
 		INSERT INTO itp.v_permitted_value (
 			cube_id,
 			cube_sequence,
@@ -466,7 +466,7 @@ AS $BODY$
 			p_prompt);
 	EXCEPTION
 	WHEN unique_violation THEN
-			CALL itp.RAISE_APPLICATION_ERROR (-20001, 'Type permitted_value already exists');
+			CALL itp.RAISE_APPLICATION_ERROR  (-20001, 'Type permitted_value already exists');
 	END;
 $BODY$;
 
@@ -632,7 +632,7 @@ AS $BODY$
 			l_cube_pos_action := p_cube_pos_action;
 		END CASE;
 		LOOP
-			IF p_cube_pos_action IN ('B', 'A') THEN
+			IF p_cube_pos_action IN  ('B', 'A') THEN
 				-- Read sequence number of the target.
 				SELECT NVL (MAX (cube_sequence), DECODE (p_cube_pos_action, 'B', 99999999, 0))
 				INTO l_cube_position_sequ
@@ -678,15 +678,15 @@ AS $BODY$
 		l_cube_sequence NUMERIC(8);
 	BEGIN
 		-- A=After B=Before F=First L=Last
-		IF NVL (p_cube_pos_action, ' ') NOT IN ('A', 'B', 'F', 'L') THEN
-			CALL bot.RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
+		IF NVL (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
+			CALL bot.RAISE_APPLICATION_ERROR  (-20005, 'Invalid position action: ' || p_cube_pos_action);
 		END IF;
-		CALL bot.determine_position_bot (l_cube_sequence, p_cube_pos_action, x_name);
+		CALL bot.determine_position_bot  (l_cube_sequence, p_cube_pos_action, x_name);
 		UPDATE bot.v_business_object_type SET
 			cube_sequence = l_cube_sequence
 		WHERE name = p_name;
 		IF SQL%NOTFOUND THEN
-			CALL bot.RAISE_APPLICATION_ERROR (-20002, 'Type business_object_type not found');
+			CALL bot.RAISE_APPLICATION_ERROR  (-20002, 'Type business_object_type not found');
 		END IF;
 	END;
 $BODY$;
@@ -704,10 +704,10 @@ AS $BODY$
 		l_cube_sequence NUMERIC(8);
 	BEGIN
 		-- A=After B=Before F=First L=Last
-		IF NVL (p_cube_pos_action, ' ') NOT IN ('A', 'B', 'F', 'L') THEN
-			CALL bot.RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
+		IF NVL (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
+			CALL bot.RAISE_APPLICATION_ERROR  (-20005, 'Invalid position action: ' || p_cube_pos_action);
 		END IF;
-		CALL bot.determine_position_bot (l_cube_sequence, p_cube_pos_action, x_name);
+		CALL bot.determine_position_bot  (l_cube_sequence, p_cube_pos_action, x_name);
 		INSERT INTO bot.v_business_object_type (
 			cube_id,
 			cube_sequence,
@@ -724,7 +724,7 @@ AS $BODY$
 			p_api_url);
 	EXCEPTION
 	WHEN unique_violation THEN
-			CALL bot.RAISE_APPLICATION_ERROR (-20001, 'Type business_object_type already exists');
+			CALL bot.RAISE_APPLICATION_ERROR  (-20001, 'Type business_object_type already exists');
 	END;
 $BODY$;
 
@@ -1065,7 +1065,7 @@ AS $BODY$
 				EXIT; -- OK
 			END IF;
 			IF l_name = p_name THEN
-				CALL bot.RAISE_APPLICATION_ERROR (-20003, 'Target Type type in hierarchy of moving object');
+				CALL bot.RAISE_APPLICATION_ERROR  (-20003, 'Target Type type in hierarchy of moving object');
 			END IF;
 			SELECT fk_typ_name
 			INTO l_name
@@ -1102,7 +1102,7 @@ AS $BODY$
 			l_cube_pos_action := p_cube_pos_action;
 		END CASE;
 		LOOP
-			IF p_cube_pos_action IN ('B', 'A') THEN
+			IF p_cube_pos_action IN  ('B', 'A') THEN
 				-- Read sequence number of the target.
 				SELECT NVL (MAX (cube_sequence), DECODE (p_cube_pos_action, 'B', 99999999, 0))
 				INTO l_cube_position_sequ
@@ -1158,11 +1158,11 @@ AS $BODY$
 		l_fk_typ_name bot.v_type.fk_typ_name%TYPE;
 	BEGIN
 		-- A=After B=Before F=First L=Last
-		IF NVL (p_cube_pos_action, ' ') NOT IN ('A', 'B', 'F', 'L') THEN
-			CALL bot.RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
+		IF NVL (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
+			CALL bot.RAISE_APPLICATION_ERROR  (-20005, 'Invalid position action: ' || p_cube_pos_action);
 		END IF;
 		-- Get parent id of the target.
-		IF p_cube_pos_action IN ('B', 'A') THEN
+		IF p_cube_pos_action IN  ('B', 'A') THEN
 			SELECT fk_bot_name, fk_typ_name
 			INTO l_fk_bot_name, l_fk_typ_name
 			FROM bot.v_type
@@ -1174,15 +1174,15 @@ AS $BODY$
 			WHERE name = x_name;
 			l_fk_typ_name := x_name;
 		END IF;
-		CALL bot.check_no_part_typ (p_name, l_fk_typ_name);
-		CALL bot.determine_position_typ (l_cube_sequence, p_cube_pos_action, l_fk_bot_name, l_fk_typ_name, x_name);
+		CALL bot.check_no_part_typ  (p_name, l_fk_typ_name);
+		CALL bot.determine_position_typ  (l_cube_sequence, p_cube_pos_action, l_fk_bot_name, l_fk_typ_name, x_name);
 		UPDATE bot.v_type SET
 			fk_bot_name = l_fk_bot_name,
 			fk_typ_name = l_fk_typ_name,
 			cube_sequence = l_cube_sequence
 		WHERE name = p_name;
 		IF SQL%NOTFOUND THEN
-			CALL bot.RAISE_APPLICATION_ERROR (-20002, 'Type type not found');
+			CALL bot.RAISE_APPLICATION_ERROR  (-20002, 'Type type not found');
 		END IF;
 	END;
 $BODY$;
@@ -1207,10 +1207,10 @@ AS $BODY$
 		l_cube_sequence NUMERIC(8);
 	BEGIN
 		-- A=After B=Before F=First L=Last
-		IF NVL (p_cube_pos_action, ' ') NOT IN ('A', 'B', 'F', 'L') THEN
-			CALL bot.RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
+		IF NVL (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
+			CALL bot.RAISE_APPLICATION_ERROR  (-20005, 'Invalid position action: ' || p_cube_pos_action);
 		END IF;
-		CALL bot.determine_position_typ (l_cube_sequence, p_cube_pos_action, p_fk_bot_name, p_fk_typ_name, x_name);
+		CALL bot.determine_position_typ  (l_cube_sequence, p_cube_pos_action, p_fk_bot_name, p_fk_typ_name, x_name);
 		INSERT INTO bot.v_type (
 			cube_id,
 			cube_sequence,
@@ -1243,7 +1243,7 @@ AS $BODY$
 			p_transferable);
 	EXCEPTION
 	WHEN unique_violation THEN
-			CALL bot.RAISE_APPLICATION_ERROR (-20001, 'Type type already exists');
+			CALL bot.RAISE_APPLICATION_ERROR  (-20001, 'Type type already exists');
 	END;
 $BODY$;
 
@@ -1404,7 +1404,7 @@ AS $BODY$
 				EXIT; -- OK
 			END IF;
 			IF l_code = p_code THEN
-				CALL bot.RAISE_APPLICATION_ERROR (-20003, 'Target Type type_specialisation_group in hierarchy of moving object');
+				CALL bot.RAISE_APPLICATION_ERROR  (-20003, 'Target Type type_specialisation_group in hierarchy of moving object');
 			END IF;
 			SELECT fk_tsg_code
 			INTO l_code
@@ -1442,7 +1442,7 @@ AS $BODY$
 			l_cube_pos_action := p_cube_pos_action;
 		END CASE;
 		LOOP
-			IF p_cube_pos_action IN ('B', 'A') THEN
+			IF p_cube_pos_action IN  ('B', 'A') THEN
 				-- Read sequence number of the target.
 				SELECT NVL (MAX (cube_sequence), DECODE (p_cube_pos_action, 'B', 99999999, 0))
 				INTO l_cube_position_sequ
@@ -1500,11 +1500,11 @@ AS $BODY$
 		l_fk_tsg_code bot.v_type_specialisation_group.fk_tsg_code%TYPE;
 	BEGIN
 		-- A=After B=Before F=First L=Last
-		IF NVL (p_cube_pos_action, ' ') NOT IN ('A', 'B', 'F', 'L') THEN
-			CALL bot.RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
+		IF NVL (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
+			CALL bot.RAISE_APPLICATION_ERROR  (-20005, 'Invalid position action: ' || p_cube_pos_action);
 		END IF;
 		-- Get parent id of the target.
-		IF p_cube_pos_action IN ('B', 'A') THEN
+		IF p_cube_pos_action IN  ('B', 'A') THEN
 			SELECT fk_tsg_code
 			INTO l_fk_tsg_code
 			FROM bot.v_type_specialisation_group
@@ -1513,15 +1513,15 @@ AS $BODY$
 		ELSE
 			l_fk_tsg_code := x_code;
 		END IF;
-		CALL bot.check_no_part_tsg (p_fk_typ_name, p_code, l_fk_tsg_code);
-		CALL bot.determine_position_tsg (l_cube_sequence, p_cube_pos_action, x_fk_typ_name, l_fk_tsg_code, x_code);
+		CALL bot.check_no_part_tsg  (p_fk_typ_name, p_code, l_fk_tsg_code);
+		CALL bot.determine_position_tsg  (l_cube_sequence, p_cube_pos_action, x_fk_typ_name, l_fk_tsg_code, x_code);
 		UPDATE bot.v_type_specialisation_group SET
 			fk_tsg_code = l_fk_tsg_code,
 			cube_sequence = l_cube_sequence
 		WHERE fk_typ_name = p_fk_typ_name
 		  AND code = p_code;
 		IF SQL%NOTFOUND THEN
-			CALL bot.RAISE_APPLICATION_ERROR (-20002, 'Type type_specialisation_group not found');
+			CALL bot.RAISE_APPLICATION_ERROR  (-20002, 'Type type_specialisation_group not found');
 		END IF;
 	END;
 $BODY$;
@@ -1544,10 +1544,10 @@ AS $BODY$
 		l_cube_sequence NUMERIC(8);
 	BEGIN
 		-- A=After B=Before F=First L=Last
-		IF NVL (p_cube_pos_action, ' ') NOT IN ('A', 'B', 'F', 'L') THEN
-			CALL bot.RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
+		IF NVL (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
+			CALL bot.RAISE_APPLICATION_ERROR  (-20005, 'Invalid position action: ' || p_cube_pos_action);
 		END IF;
-		CALL bot.determine_position_tsg (l_cube_sequence, p_cube_pos_action, x_fk_typ_name, p_fk_tsg_code, x_code);
+		CALL bot.determine_position_tsg  (l_cube_sequence, p_cube_pos_action, x_fk_typ_name, p_fk_tsg_code, x_code);
 		INSERT INTO bot.v_type_specialisation_group (
 			cube_id,
 			cube_sequence,
@@ -1574,7 +1574,7 @@ AS $BODY$
 			p_xk_atb_name);
 	EXCEPTION
 	WHEN unique_violation THEN
-			CALL bot.RAISE_APPLICATION_ERROR (-20001, 'Type type_specialisation_group already exists');
+			CALL bot.RAISE_APPLICATION_ERROR  (-20001, 'Type type_specialisation_group already exists');
 	END;
 $BODY$;
 
@@ -1764,7 +1764,7 @@ AS $BODY$
 			l_cube_pos_action := p_cube_pos_action;
 		END CASE;
 		LOOP
-			IF p_cube_pos_action IN ('B', 'A') THEN
+			IF p_cube_pos_action IN  ('B', 'A') THEN
 				-- Read sequence number of the target.
 				SELECT NVL (MAX (cube_sequence), DECODE (p_cube_pos_action, 'B', 99999999, 0))
 				INTO l_cube_position_sequ
@@ -1820,17 +1820,17 @@ AS $BODY$
 		l_cube_sequence NUMERIC(8);
 	BEGIN
 		-- A=After B=Before F=First L=Last
-		IF NVL (p_cube_pos_action, ' ') NOT IN ('A', 'B', 'F', 'L') THEN
-			CALL bot.RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
+		IF NVL (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
+			CALL bot.RAISE_APPLICATION_ERROR  (-20005, 'Invalid position action: ' || p_cube_pos_action);
 		END IF;
-		CALL bot.determine_position_tsp (l_cube_sequence, p_cube_pos_action, x_fk_typ_name, x_fk_tsg_code, x_code);
+		CALL bot.determine_position_tsp  (l_cube_sequence, p_cube_pos_action, x_fk_typ_name, x_fk_tsg_code, x_code);
 		UPDATE bot.v_type_specialisation SET
 			cube_sequence = l_cube_sequence
 		WHERE fk_typ_name = p_fk_typ_name
 		  AND fk_tsg_code = p_fk_tsg_code
 		  AND code = p_code;
 		IF SQL%NOTFOUND THEN
-			CALL bot.RAISE_APPLICATION_ERROR (-20002, 'Type type_specialisation not found');
+			CALL bot.RAISE_APPLICATION_ERROR  (-20002, 'Type type_specialisation not found');
 		END IF;
 	END;
 $BODY$;
@@ -1854,10 +1854,10 @@ AS $BODY$
 		l_cube_sequence NUMERIC(8);
 	BEGIN
 		-- A=After B=Before F=First L=Last
-		IF NVL (p_cube_pos_action, ' ') NOT IN ('A', 'B', 'F', 'L') THEN
-			CALL bot.RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
+		IF NVL (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
+			CALL bot.RAISE_APPLICATION_ERROR  (-20005, 'Invalid position action: ' || p_cube_pos_action);
 		END IF;
-		CALL bot.determine_position_tsp (l_cube_sequence, p_cube_pos_action, x_fk_typ_name, x_fk_tsg_code, x_code);
+		CALL bot.determine_position_tsp  (l_cube_sequence, p_cube_pos_action, x_fk_typ_name, x_fk_tsg_code, x_code);
 		INSERT INTO bot.v_type_specialisation (
 			cube_id,
 			cube_sequence,
@@ -1882,7 +1882,7 @@ AS $BODY$
 			p_xk_tsp_code);
 	EXCEPTION
 	WHEN unique_violation THEN
-			CALL bot.RAISE_APPLICATION_ERROR (-20001, 'Type type_specialisation already exists');
+			CALL bot.RAISE_APPLICATION_ERROR  (-20001, 'Type type_specialisation already exists');
 	END;
 $BODY$;
 
@@ -2133,7 +2133,7 @@ AS $BODY$
 			l_cube_pos_action := p_cube_pos_action;
 		END CASE;
 		LOOP
-			IF p_cube_pos_action IN ('B', 'A') THEN
+			IF p_cube_pos_action IN  ('B', 'A') THEN
 				-- Read sequence number of the target.
 				SELECT NVL (MAX (cube_sequence), DECODE (p_cube_pos_action, 'B', 99999999, 0))
 				INTO l_cube_position_sequ
@@ -2184,16 +2184,16 @@ AS $BODY$
 		l_cube_sequence NUMERIC(8);
 	BEGIN
 		-- A=After B=Before F=First L=Last
-		IF NVL (p_cube_pos_action, ' ') NOT IN ('A', 'B', 'F', 'L') THEN
-			CALL bot.RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
+		IF NVL (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
+			CALL bot.RAISE_APPLICATION_ERROR  (-20005, 'Invalid position action: ' || p_cube_pos_action);
 		END IF;
-		CALL bot.determine_position_atb (l_cube_sequence, p_cube_pos_action, x_fk_typ_name, x_name);
+		CALL bot.determine_position_atb  (l_cube_sequence, p_cube_pos_action, x_fk_typ_name, x_name);
 		UPDATE bot.v_attribute SET
 			cube_sequence = l_cube_sequence
 		WHERE fk_typ_name = p_fk_typ_name
 		  AND name = p_name;
 		IF SQL%NOTFOUND THEN
-			CALL bot.RAISE_APPLICATION_ERROR (-20002, 'Type attribute not found');
+			CALL bot.RAISE_APPLICATION_ERROR  (-20002, 'Type attribute not found');
 		END IF;
 	END;
 $BODY$;
@@ -2218,10 +2218,10 @@ AS $BODY$
 		l_cube_sequence NUMERIC(8);
 	BEGIN
 		-- A=After B=Before F=First L=Last
-		IF NVL (p_cube_pos_action, ' ') NOT IN ('A', 'B', 'F', 'L') THEN
-			CALL bot.RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
+		IF NVL (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
+			CALL bot.RAISE_APPLICATION_ERROR  (-20005, 'Invalid position action: ' || p_cube_pos_action);
 		END IF;
-		CALL bot.determine_position_atb (l_cube_sequence, p_cube_pos_action, x_fk_typ_name, x_name);
+		CALL bot.determine_position_atb  (l_cube_sequence, p_cube_pos_action, x_fk_typ_name, x_name);
 		INSERT INTO bot.v_attribute (
 			cube_id,
 			cube_sequence,
@@ -2250,7 +2250,7 @@ AS $BODY$
 			p_xk_itp_name);
 	EXCEPTION
 	WHEN unique_violation THEN
-			CALL bot.RAISE_APPLICATION_ERROR (-20001, 'Type attribute already exists');
+			CALL bot.RAISE_APPLICATION_ERROR  (-20001, 'Type attribute already exists');
 	END;
 $BODY$;
 
@@ -2349,7 +2349,7 @@ AS $BODY$
 			p_xk_typ_name_1);
 	EXCEPTION
 	WHEN unique_violation THEN
-			CALL bot.RAISE_APPLICATION_ERROR (-20001, 'Type derivation already exists');
+			CALL bot.RAISE_APPLICATION_ERROR  (-20001, 'Type derivation already exists');
 	END;
 $BODY$;
 
@@ -2430,7 +2430,7 @@ AS $BODY$
 			p_text);
 	EXCEPTION
 	WHEN unique_violation THEN
-			CALL bot.RAISE_APPLICATION_ERROR (-20001, 'Type description_attribute already exists');
+			CALL bot.RAISE_APPLICATION_ERROR  (-20001, 'Type description_attribute already exists');
 	END;
 $BODY$;
 
@@ -2558,10 +2558,10 @@ AS $BODY$
 			p_xf_tsp_tsg_code,
 			p_xk_tsp_code);
 
-		CALL bot.get_next_rta (p_cube_row, p_fk_typ_name, p_fk_atb_name, p_xf_tsp_typ_name, p_xf_tsp_tsg_code, p_xk_tsp_code);
+		CALL bot.get_next_rta p_fk_typ_name, p_fk_atb_name, p_xf_tsp_typ_name, p_xf_tsp_tsg_code, p_xk_tsp_code);
 	EXCEPTION
 	WHEN unique_violation THEN
-			CALL bot.RAISE_APPLICATION_ERROR (-20001, 'Type restriction_type_spec_atb already exists');
+			CALL bot.RAISE_APPLICATION_ERROR  (-20001, 'Type restriction_type_spec_atb already exists');
 	END;
 $BODY$;
 
@@ -2809,7 +2809,7 @@ AS $BODY$
 			l_cube_pos_action := p_cube_pos_action;
 		END CASE;
 		LOOP
-			IF p_cube_pos_action IN ('B', 'A') THEN
+			IF p_cube_pos_action IN  ('B', 'A') THEN
 				-- Read sequence number of the target.
 				SELECT NVL (MAX (cube_sequence), DECODE (p_cube_pos_action, 'B', 99999999, 0))
 				INTO l_cube_position_sequ
@@ -2866,10 +2866,10 @@ AS $BODY$
 		l_cube_sequence NUMERIC(8);
 	BEGIN
 		-- A=After B=Before F=First L=Last
-		IF NVL (p_cube_pos_action, ' ') NOT IN ('A', 'B', 'F', 'L') THEN
-			CALL bot.RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
+		IF NVL (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
+			CALL bot.RAISE_APPLICATION_ERROR  (-20005, 'Invalid position action: ' || p_cube_pos_action);
 		END IF;
-		CALL bot.determine_position_ref (l_cube_sequence, p_cube_pos_action, x_fk_typ_name, x_sequence, x_xk_bot_name, x_xk_typ_name);
+		CALL bot.determine_position_ref  (l_cube_sequence, p_cube_pos_action, x_fk_typ_name, x_sequence, x_xk_bot_name, x_xk_typ_name);
 		UPDATE bot.v_reference SET
 			cube_sequence = l_cube_sequence
 		WHERE fk_typ_name = p_fk_typ_name
@@ -2877,7 +2877,7 @@ AS $BODY$
 		  AND xk_bot_name = p_xk_bot_name
 		  AND xk_typ_name = p_xk_typ_name;
 		IF SQL%NOTFOUND THEN
-			CALL bot.RAISE_APPLICATION_ERROR (-20002, 'Type reference not found');
+			CALL bot.RAISE_APPLICATION_ERROR  (-20002, 'Type reference not found');
 		END IF;
 	END;
 $BODY$;
@@ -2907,10 +2907,10 @@ AS $BODY$
 		l_cube_sequence NUMERIC(8);
 	BEGIN
 		-- A=After B=Before F=First L=Last
-		IF NVL (p_cube_pos_action, ' ') NOT IN ('A', 'B', 'F', 'L') THEN
-			CALL bot.RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
+		IF NVL (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
+			CALL bot.RAISE_APPLICATION_ERROR  (-20005, 'Invalid position action: ' || p_cube_pos_action);
 		END IF;
-		CALL bot.determine_position_ref (l_cube_sequence, p_cube_pos_action, x_fk_typ_name, x_sequence, x_xk_bot_name, x_xk_typ_name);
+		CALL bot.determine_position_ref  (l_cube_sequence, p_cube_pos_action, x_fk_typ_name, x_sequence, x_xk_bot_name, x_xk_typ_name);
 		INSERT INTO bot.v_reference (
 			cube_id,
 			cube_sequence,
@@ -2945,7 +2945,7 @@ AS $BODY$
 			p_xk_typ_name_1);
 	EXCEPTION
 	WHEN unique_violation THEN
-			CALL bot.RAISE_APPLICATION_ERROR (-20001, 'Type reference already exists');
+			CALL bot.RAISE_APPLICATION_ERROR  (-20001, 'Type reference already exists');
 	END;
 $BODY$;
 
@@ -3052,7 +3052,7 @@ AS $BODY$
 			p_text);
 	EXCEPTION
 	WHEN unique_violation THEN
-			CALL bot.RAISE_APPLICATION_ERROR (-20001, 'Type description_reference already exists');
+			CALL bot.RAISE_APPLICATION_ERROR  (-20001, 'Type description_reference already exists');
 	END;
 $BODY$;
 
@@ -3215,10 +3215,10 @@ AS $BODY$
 			p_xf_tsp_tsg_code,
 			p_xk_tsp_code);
 
-		CALL bot.get_next_rtr (p_cube_row, p_fk_typ_name, p_fk_ref_sequence, p_fk_ref_bot_name, p_fk_ref_typ_name, p_xf_tsp_typ_name, p_xf_tsp_tsg_code, p_xk_tsp_code);
+		CALL bot.get_next_rtr p_fk_typ_name, p_fk_ref_sequence, p_fk_ref_bot_name, p_fk_ref_typ_name, p_xf_tsp_typ_name, p_xf_tsp_tsg_code, p_xk_tsp_code);
 	EXCEPTION
 	WHEN unique_violation THEN
-			CALL bot.RAISE_APPLICATION_ERROR (-20001, 'Type restriction_type_spec_ref already exists');
+			CALL bot.RAISE_APPLICATION_ERROR  (-20001, 'Type restriction_type_spec_ref already exists');
 	END;
 $BODY$;
 
@@ -3338,7 +3338,7 @@ AS $BODY$
 			p_xk_tsp_code);
 	EXCEPTION
 	WHEN unique_violation THEN
-			CALL bot.RAISE_APPLICATION_ERROR (-20001, 'Type restriction_target_type_spec already exists');
+			CALL bot.RAISE_APPLICATION_ERROR  (-20001, 'Type restriction_target_type_spec already exists');
 	END;
 $BODY$;
 
@@ -3474,10 +3474,10 @@ AS $BODY$
 			p_xf_tsp_tsg_code,
 			p_xk_tsp_code);
 
-		CALL bot.get_next_rtt (p_cube_row, p_fk_typ_name, p_xf_tsp_typ_name, p_xf_tsp_tsg_code, p_xk_tsp_code);
+		CALL bot.get_next_rtt p_fk_typ_name, p_xf_tsp_typ_name, p_xf_tsp_tsg_code, p_xk_tsp_code);
 	EXCEPTION
 	WHEN unique_violation THEN
-			CALL bot.RAISE_APPLICATION_ERROR (-20001, 'Type restriction_type_spec_typ already exists');
+			CALL bot.RAISE_APPLICATION_ERROR  (-20001, 'Type restriction_type_spec_typ already exists');
 	END;
 $BODY$;
 
@@ -3649,7 +3649,7 @@ AS $BODY$
 			  AND l_xf_atb_typ_name = p_xf_atb_typ_name
 			  AND l_xk_atb_name = p_xk_atb_name
 			  AND l_xk_typ_name = p_xk_typ_name THEN
-				CALL bot.RAISE_APPLICATION_ERROR (-20003, 'Target Type json_path in hierarchy of moving object');
+				CALL bot.RAISE_APPLICATION_ERROR  (-20003, 'Target Type json_path in hierarchy of moving object');
 			END IF;
 			SELECT fk_jsn_name, fk_jsn_location, fk_jsn_atb_typ_name, fk_jsn_atb_name, fk_jsn_typ_name
 			INTO l_name, l_location, l_xf_atb_typ_name, l_xk_atb_name, l_xk_typ_name
@@ -3699,7 +3699,7 @@ AS $BODY$
 			l_cube_pos_action := p_cube_pos_action;
 		END CASE;
 		LOOP
-			IF p_cube_pos_action IN ('B', 'A') THEN
+			IF p_cube_pos_action IN  ('B', 'A') THEN
 				-- Read sequence number of the target.
 				SELECT NVL (MAX (cube_sequence), DECODE (p_cube_pos_action, 'B', 99999999, 0))
 				INTO l_cube_position_sequ
@@ -3797,11 +3797,11 @@ AS $BODY$
 		l_fk_jsn_typ_name bot.v_json_path.fk_jsn_typ_name%TYPE;
 	BEGIN
 		-- A=After B=Before F=First L=Last
-		IF NVL (p_cube_pos_action, ' ') NOT IN ('A', 'B', 'F', 'L') THEN
-			CALL bot.RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
+		IF NVL (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
+			CALL bot.RAISE_APPLICATION_ERROR  (-20005, 'Invalid position action: ' || p_cube_pos_action);
 		END IF;
 		-- Get parent id of the target.
-		IF p_cube_pos_action IN ('B', 'A') THEN
+		IF p_cube_pos_action IN  ('B', 'A') THEN
 			SELECT fk_jsn_name, fk_jsn_location, fk_jsn_atb_typ_name, fk_jsn_atb_name, fk_jsn_typ_name
 			INTO l_fk_jsn_name, l_fk_jsn_location, l_fk_jsn_atb_typ_name, l_fk_jsn_atb_name, l_fk_jsn_typ_name
 			FROM bot.v_json_path
@@ -3818,8 +3818,8 @@ AS $BODY$
 			l_fk_jsn_atb_name := x_xk_atb_name;
 			l_fk_jsn_typ_name := x_xk_typ_name;
 		END IF;
-		CALL bot.check_no_part_jsn (p_fk_typ_name, p_name, p_location, p_xf_atb_typ_name, p_xk_atb_name, p_xk_typ_name, l_fk_jsn_name, l_fk_jsn_location, l_fk_jsn_atb_typ_name, l_fk_jsn_atb_name, l_fk_jsn_typ_name);
-		CALL bot.determine_position_jsn (l_cube_sequence, p_cube_pos_action, x_fk_typ_name, l_fk_jsn_name, l_fk_jsn_location, l_fk_jsn_atb_typ_name, l_fk_jsn_atb_name, l_fk_jsn_typ_name, x_name, x_location, x_xf_atb_typ_name, x_xk_atb_name, x_xk_typ_name);
+		CALL bot.check_no_part_jsn  (p_fk_typ_name, p_name, p_location, p_xf_atb_typ_name, p_xk_atb_name, p_xk_typ_name, l_fk_jsn_name, l_fk_jsn_location, l_fk_jsn_atb_typ_name, l_fk_jsn_atb_name, l_fk_jsn_typ_name);
+		CALL bot.determine_position_jsn  (l_cube_sequence, p_cube_pos_action, x_fk_typ_name, l_fk_jsn_name, l_fk_jsn_location, l_fk_jsn_atb_typ_name, l_fk_jsn_atb_name, l_fk_jsn_typ_name, x_name, x_location, x_xf_atb_typ_name, x_xk_atb_name, x_xk_typ_name);
 		UPDATE bot.v_json_path SET
 			fk_jsn_name = l_fk_jsn_name,
 			fk_jsn_location = l_fk_jsn_location,
@@ -3834,7 +3834,7 @@ AS $BODY$
 		  AND xk_atb_name = p_xk_atb_name
 		  AND xk_typ_name = p_xk_typ_name;
 		IF SQL%NOTFOUND THEN
-			CALL bot.RAISE_APPLICATION_ERROR (-20002, 'Type json_path not found');
+			CALL bot.RAISE_APPLICATION_ERROR  (-20002, 'Type json_path not found');
 		END IF;
 	END;
 $BODY$;
@@ -3867,10 +3867,10 @@ AS $BODY$
 		l_cube_sequence NUMERIC(8);
 	BEGIN
 		-- A=After B=Before F=First L=Last
-		IF NVL (p_cube_pos_action, ' ') NOT IN ('A', 'B', 'F', 'L') THEN
-			CALL bot.RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
+		IF NVL (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
+			CALL bot.RAISE_APPLICATION_ERROR  (-20005, 'Invalid position action: ' || p_cube_pos_action);
 		END IF;
-		CALL bot.determine_position_jsn (l_cube_sequence, p_cube_pos_action, x_fk_typ_name, p_fk_jsn_name, p_fk_jsn_location, p_fk_jsn_atb_typ_name, p_fk_jsn_atb_name, p_fk_jsn_typ_name, x_name, x_location, x_xf_atb_typ_name, x_xk_atb_name, x_xk_typ_name);
+		CALL bot.determine_position_jsn  (l_cube_sequence, p_cube_pos_action, x_fk_typ_name, p_fk_jsn_name, p_fk_jsn_location, p_fk_jsn_atb_typ_name, p_fk_jsn_atb_name, p_fk_jsn_typ_name, x_name, x_location, x_xf_atb_typ_name, x_xk_atb_name, x_xk_typ_name);
 		INSERT INTO bot.v_json_path (
 			cube_id,
 			cube_sequence,
@@ -3909,7 +3909,7 @@ AS $BODY$
 			p_xk_typ_name);
 	EXCEPTION
 	WHEN unique_violation THEN
-			CALL bot.RAISE_APPLICATION_ERROR (-20001, 'Type json_path already exists');
+			CALL bot.RAISE_APPLICATION_ERROR  (-20001, 'Type json_path already exists');
 	END;
 $BODY$;
 
@@ -4007,7 +4007,7 @@ AS $BODY$
 			p_text);
 	EXCEPTION
 	WHEN unique_violation THEN
-			CALL bot.RAISE_APPLICATION_ERROR (-20001, 'Type description_type already exists');
+			CALL bot.RAISE_APPLICATION_ERROR  (-20001, 'Type description_type already exists');
 	END;
 $BODY$;
 
@@ -4155,10 +4155,10 @@ AS $BODY$
 			p_password,
 			p_table_prefix);
 
-		CALL sys.get_next_sys (p_cube_row, p_name);
+		CALL sys.get_next_sys p_name);
 	EXCEPTION
 	WHEN unique_violation THEN
-			CALL sys.RAISE_APPLICATION_ERROR (-20001, 'Type system already exists');
+			CALL sys.RAISE_APPLICATION_ERROR  (-20001, 'Type system already exists');
 	END;
 $BODY$;
 
@@ -4220,7 +4220,7 @@ AS $BODY$
 			l_cube_pos_action := p_cube_pos_action;
 		END CASE;
 		LOOP
-			IF p_cube_pos_action IN ('B', 'A') THEN
+			IF p_cube_pos_action IN  ('B', 'A') THEN
 				-- Read sequence number of the target.
 				SELECT NVL (MAX (cube_sequence), DECODE (p_cube_pos_action, 'B', 99999999, 0))
 				INTO l_cube_position_sequ
@@ -4271,16 +4271,16 @@ AS $BODY$
 		l_cube_sequence NUMERIC(8);
 	BEGIN
 		-- A=After B=Before F=First L=Last
-		IF NVL (p_cube_pos_action, ' ') NOT IN ('A', 'B', 'F', 'L') THEN
-			CALL sys.RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
+		IF NVL (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
+			CALL sys.RAISE_APPLICATION_ERROR  (-20005, 'Invalid position action: ' || p_cube_pos_action);
 		END IF;
-		CALL sys.determine_position_sbt (l_cube_sequence, p_cube_pos_action, x_fk_sys_name, x_xk_bot_name);
+		CALL sys.determine_position_sbt  (l_cube_sequence, p_cube_pos_action, x_fk_sys_name, x_xk_bot_name);
 		UPDATE sys.v_system_bo_type SET
 			cube_sequence = l_cube_sequence
 		WHERE fk_sys_name = p_fk_sys_name
 		  AND xk_bot_name = p_xk_bot_name;
 		IF SQL%NOTFOUND THEN
-			CALL sys.RAISE_APPLICATION_ERROR (-20002, 'Type system_bo_type not found');
+			CALL sys.RAISE_APPLICATION_ERROR  (-20002, 'Type system_bo_type not found');
 		END IF;
 	END;
 $BODY$;
@@ -4297,10 +4297,10 @@ AS $BODY$
 		l_cube_sequence NUMERIC(8);
 	BEGIN
 		-- A=After B=Before F=First L=Last
-		IF NVL (p_cube_pos_action, ' ') NOT IN ('A', 'B', 'F', 'L') THEN
-			CALL sys.RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
+		IF NVL (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
+			CALL sys.RAISE_APPLICATION_ERROR  (-20005, 'Invalid position action: ' || p_cube_pos_action);
 		END IF;
-		CALL sys.determine_position_sbt (l_cube_sequence, p_cube_pos_action, x_fk_sys_name, x_xk_bot_name);
+		CALL sys.determine_position_sbt  (l_cube_sequence, p_cube_pos_action, x_fk_sys_name, x_xk_bot_name);
 		INSERT INTO sys.v_system_bo_type (
 			cube_id,
 			cube_sequence,
@@ -4313,7 +4313,7 @@ AS $BODY$
 			p_xk_bot_name);
 	EXCEPTION
 	WHEN unique_violation THEN
-			CALL sys.RAISE_APPLICATION_ERROR (-20001, 'Type system_bo_type already exists');
+			CALL sys.RAISE_APPLICATION_ERROR  (-20001, 'Type system_bo_type already exists');
 	END;
 $BODY$;
 
@@ -4410,7 +4410,7 @@ AS $BODY$
 			p_name);
 	EXCEPTION
 	WHEN unique_violation THEN
-			CALL fun.RAISE_APPLICATION_ERROR (-20001, 'Type function already exists');
+			CALL fun.RAISE_APPLICATION_ERROR  (-20001, 'Type function already exists');
 	END;
 $BODY$;
 
@@ -4451,7 +4451,7 @@ AS $BODY$
 			l_cube_pos_action := p_cube_pos_action;
 		END CASE;
 		LOOP
-			IF p_cube_pos_action IN ('B', 'A') THEN
+			IF p_cube_pos_action IN  ('B', 'A') THEN
 				-- Read sequence number of the target.
 				SELECT NVL (MAX (cube_sequence), DECODE (p_cube_pos_action, 'B', 99999999, 0))
 				INTO l_cube_position_sequ
@@ -4502,16 +4502,16 @@ AS $BODY$
 		l_cube_sequence NUMERIC(8);
 	BEGIN
 		-- A=After B=Before F=First L=Last
-		IF NVL (p_cube_pos_action, ' ') NOT IN ('A', 'B', 'F', 'L') THEN
-			CALL fun.RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
+		IF NVL (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
+			CALL fun.RAISE_APPLICATION_ERROR  (-20005, 'Invalid position action: ' || p_cube_pos_action);
 		END IF;
-		CALL fun.determine_position_arg (l_cube_sequence, p_cube_pos_action, x_fk_fun_name, x_name);
+		CALL fun.determine_position_arg  (l_cube_sequence, p_cube_pos_action, x_fk_fun_name, x_name);
 		UPDATE fun.v_argument SET
 			cube_sequence = l_cube_sequence
 		WHERE fk_fun_name = p_fk_fun_name
 		  AND name = p_name;
 		IF SQL%NOTFOUND THEN
-			CALL fun.RAISE_APPLICATION_ERROR (-20002, 'Type argument not found');
+			CALL fun.RAISE_APPLICATION_ERROR  (-20002, 'Type argument not found');
 		END IF;
 	END;
 $BODY$;
@@ -4528,10 +4528,10 @@ AS $BODY$
 		l_cube_sequence NUMERIC(8);
 	BEGIN
 		-- A=After B=Before F=First L=Last
-		IF NVL (p_cube_pos_action, ' ') NOT IN ('A', 'B', 'F', 'L') THEN
-			CALL fun.RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
+		IF NVL (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
+			CALL fun.RAISE_APPLICATION_ERROR  (-20005, 'Invalid position action: ' || p_cube_pos_action);
 		END IF;
-		CALL fun.determine_position_arg (l_cube_sequence, p_cube_pos_action, x_fk_fun_name, x_name);
+		CALL fun.determine_position_arg  (l_cube_sequence, p_cube_pos_action, x_fk_fun_name, x_name);
 		INSERT INTO fun.v_argument (
 			cube_id,
 			cube_sequence,
@@ -4544,7 +4544,7 @@ AS $BODY$
 			p_name);
 	EXCEPTION
 	WHEN unique_violation THEN
-			CALL fun.RAISE_APPLICATION_ERROR (-20001, 'Type argument already exists');
+			CALL fun.RAISE_APPLICATION_ERROR  (-20001, 'Type argument already exists');
 	END;
 $BODY$;
 
