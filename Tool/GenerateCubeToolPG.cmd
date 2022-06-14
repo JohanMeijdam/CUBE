@@ -27,5 +27,4 @@ psql -h %db_host% -p %db_port% -d %db_name% -U %db_user% -f %sysdir%\TableDdl_pg
 echo Generate Application.
 ::CubeGen.exe %sysdir%\CubeServerSpecModel.cgm Templates\CubeServerPhp_pg.cgt D:\www\%sysname%\%sysname%Server.php %sysname% >> %logfile% 2>&1
 
-
 pause
