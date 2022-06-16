@@ -8,7 +8,7 @@ DO $BODY$
 			SELECT nspname 
 			FROM pg_catalog.pg_namespace, pg_catalog.pg_user
 			WHERE nspowner = usesysid
-			  AND usename = 'cubetool'
+			  AND usename = 'JohanM'
 			  AND nspname = 'cube'
 		LOOP
 			EXECUTE 'DROP SCHEMA ' || rec_nspname.nspname || ' CASCADE';
@@ -51,7 +51,7 @@ DO $BODY$
 			FROM pg_catalog.pg_proc, pg_catalog.pg_namespace, pg_catalog.pg_user
 			WHERE pronamespace = pg_namespace.oid
 			  AND nspowner = usesysid
-			  AND usename = 'cubetool'
+			  AND usename = 'JohanM'
 			  AND nspname = 'itp'
 			  AND proname NOT LIKE 'trg_%'
 		LOOP
@@ -140,7 +140,7 @@ AS $BODY$
 			NULL,
 			p_name);
 
-		CALL itp.get_next_itp p_name);
+		CALL itp.get_next_itp (p_name);
 	EXCEPTION
 	WHEN unique_violation THEN
 			CALL itp.RAISE_APPLICATION_ERROR  (-20001, 'Type information_type already exists');
@@ -265,7 +265,7 @@ AS $BODY$
 			p_spaces_allowed,
 			p_presentation);
 
-		CALL itp.get_next_ite p_fk_itp_name, p_sequence);
+		CALL itp.get_next_ite (p_fk_itp_name, p_sequence);
 	EXCEPTION
 	WHEN unique_violation THEN
 			CALL itp.RAISE_APPLICATION_ERROR  (-20001, 'Type information_type_element already exists');
@@ -511,7 +511,7 @@ DO $BODY$
 			FROM pg_catalog.pg_proc, pg_catalog.pg_namespace, pg_catalog.pg_user
 			WHERE pronamespace = pg_namespace.oid
 			  AND nspowner = usesysid
-			  AND usename = 'cubetool'
+			  AND usename = 'JohanM'
 			  AND nspname = 'bot'
 			  AND proname NOT LIKE 'trg_%'
 		LOOP
@@ -2558,7 +2558,7 @@ AS $BODY$
 			p_xf_tsp_tsg_code,
 			p_xk_tsp_code);
 
-		CALL bot.get_next_rta p_fk_typ_name, p_fk_atb_name, p_xf_tsp_typ_name, p_xf_tsp_tsg_code, p_xk_tsp_code);
+		CALL bot.get_next_rta (p_fk_typ_name, p_fk_atb_name, p_xf_tsp_typ_name, p_xf_tsp_tsg_code, p_xk_tsp_code);
 	EXCEPTION
 	WHEN unique_violation THEN
 			CALL bot.RAISE_APPLICATION_ERROR  (-20001, 'Type restriction_type_spec_atb already exists');
@@ -3215,7 +3215,7 @@ AS $BODY$
 			p_xf_tsp_tsg_code,
 			p_xk_tsp_code);
 
-		CALL bot.get_next_rtr p_fk_typ_name, p_fk_ref_sequence, p_fk_ref_bot_name, p_fk_ref_typ_name, p_xf_tsp_typ_name, p_xf_tsp_tsg_code, p_xk_tsp_code);
+		CALL bot.get_next_rtr (p_fk_typ_name, p_fk_ref_sequence, p_fk_ref_bot_name, p_fk_ref_typ_name, p_xf_tsp_typ_name, p_xf_tsp_tsg_code, p_xk_tsp_code);
 	EXCEPTION
 	WHEN unique_violation THEN
 			CALL bot.RAISE_APPLICATION_ERROR  (-20001, 'Type restriction_type_spec_ref already exists');
@@ -3474,7 +3474,7 @@ AS $BODY$
 			p_xf_tsp_tsg_code,
 			p_xk_tsp_code);
 
-		CALL bot.get_next_rtt p_fk_typ_name, p_xf_tsp_typ_name, p_xf_tsp_tsg_code, p_xk_tsp_code);
+		CALL bot.get_next_rtt (p_fk_typ_name, p_xf_tsp_typ_name, p_xf_tsp_tsg_code, p_xk_tsp_code);
 	EXCEPTION
 	WHEN unique_violation THEN
 			CALL bot.RAISE_APPLICATION_ERROR  (-20001, 'Type restriction_type_spec_typ already exists');
@@ -4046,7 +4046,7 @@ DO $BODY$
 			FROM pg_catalog.pg_proc, pg_catalog.pg_namespace, pg_catalog.pg_user
 			WHERE pronamespace = pg_namespace.oid
 			  AND nspowner = usesysid
-			  AND usename = 'cubetool'
+			  AND usename = 'JohanM'
 			  AND nspname = 'sys'
 			  AND proname NOT LIKE 'trg_%'
 		LOOP
@@ -4155,7 +4155,7 @@ AS $BODY$
 			p_password,
 			p_table_prefix);
 
-		CALL sys.get_next_sys p_name);
+		CALL sys.get_next_sys (p_name);
 	EXCEPTION
 	WHEN unique_violation THEN
 			CALL sys.RAISE_APPLICATION_ERROR  (-20001, 'Type system already exists');
@@ -4339,7 +4339,7 @@ DO $BODY$
 			FROM pg_catalog.pg_proc, pg_catalog.pg_namespace, pg_catalog.pg_user
 			WHERE pronamespace = pg_namespace.oid
 			  AND nspowner = usesysid
-			  AND usename = 'cubetool'
+			  AND usename = 'JohanM'
 			  AND nspname = 'fun'
 			  AND proname NOT LIKE 'trg_%'
 		LOOP

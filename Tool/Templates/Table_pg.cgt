@@ -11,7 +11,7 @@ DO $$
 			SELECT nspname 
 			FROM pg_catalog.pg_namespace, pg_catalog.pg_user
 			WHERE nspowner = usesysid
-			  AND usename = '<<DATABASE1:L>>'
+			  AND usename = '<<1>>'
 		LOOP
 			EXECUTE 'DROP SCHEMA ' || rec_nspname.nspname || ' CASCADE';
 		END LOOP;

@@ -8,7 +8,7 @@ DO $$
 			SELECT nspname 
 			FROM pg_catalog.pg_namespace, pg_catalog.pg_user
 			WHERE nspowner = usesysid
-			  AND usename = 'cubetool'
+			  AND usename = 'JohanM'
 		LOOP
 			EXECUTE 'DROP SCHEMA ' || rec_nspname.nspname || ' CASCADE';
 		END LOOP;

@@ -44,7 +44,7 @@ Change log:
 *]][[ELSIF:0=SET]]
 		<<STATEMENT1>> := <<TEXT,EXPRESSION>>;[[*
 *]][[ELSIF:0=USE]]
-		CALL <<PACKAGE:L>>.<<STATEMENT1>> <<TEXT,EXPRESSION>>;[[*
+		CALL <<PACKAGE:L>>.<<STATEMENT1>>[[IF:CHILD(EXPRESSION:0=LIST)]] [[IF:2=Y]]([[ENDIF]][[ENDIF]]<<TEXT,EXPRESSION>>;[[*
 *]][[ELSIF:0=CREATE]]
 		INSERT INTO <<PACKAGE:L>>.<<STATEMENT1>> ([[LOOP,SET]]
 			<<SET>>[[IF:!LAST]],[[ENDIF]][[ENDLOOP,SET]])
@@ -85,7 +85,7 @@ DO $BODY$
 			SELECT nspname 
 			FROM pg_catalog.pg_namespace, pg_catalog.pg_user
 			WHERE nspowner = usesysid
-			  AND usename = '<<PACKAGE1>>'
+			  AND usename = '<<2>>'
 			  AND nspname = '<<PACKAGE>>'
 		LOOP
 			EXECUTE 'DROP SCHEMA ' || rec_nspname.nspname || ' CASCADE';
@@ -128,7 +128,7 @@ DO $BODY$
 			FROM pg_catalog.pg_proc, pg_catalog.pg_namespace, pg_catalog.pg_user
 			WHERE pronamespace = pg_namespace.oid
 			  AND nspowner = usesysid
-			  AND usename = '<<PACKAGE1:L>>'
+			  AND usename = '<<2>>'
 			  AND nspname = '<<PACKAGE>>'
 			  AND proname NOT LIKE 'trg_%'
 		LOOP

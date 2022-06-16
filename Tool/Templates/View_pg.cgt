@@ -33,7 +33,7 @@ DO $BODY$
 			SELECT viewname 
 			FROM pg_catalog.pg_views
 			WHERE schemaname = '<<TYPE1:L>>'
-			  AND viewowner = '<<SYSTEM3>>'[[IF,SYSTEM:1=SUPPORT]]
+			  AND viewowner = '<<2>>'[[IF,SYSTEM:1=SUPPORT]]
 			  AND SUBSTR(viewname,1,INSTR(viewname,'_',3)) = 'V_<<SYSTEM5:U>>_'[[ELSE]][[FOR,ROOT]][[IF:CHILD(SYSTEM:1=SUPPORT)]]
 			  AND COALESCE(SUBSTR(viewname,1,INSTR(viewname,'_',3)),' ') NOT IN ([[LOOP,SYSTEM:1=SUPPORT]]'V_<<SYSTEM5:U>>_'[[IF:!LAST]], [[ENDIF]][[ENDLOOP,SYSTEM]])[[ENDIF]][[ENDFOR]][[ENDIF]]
 		LOOP
@@ -45,7 +45,7 @@ DO $BODY$
 			FROM pg_catalog.pg_proc, pg_catalog.pg_namespace, pg_catalog.pg_user
 			WHERE pronamespace = pg_namespace.oid
 			  AND nspowner = usesysid
-			  AND usename = '<<SYSTEM3>>'
+			  AND usename = '<<2>>'
 			  AND nspname = '<<TYPE1:L>>'
 			  AND proname LIKE 'trg_%'
 		LOOP
