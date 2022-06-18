@@ -22,6 +22,7 @@
 16-02-2022 - FlagCursor to FlagCursorExport.
 06-04-2002 - Exception with code
 14-06-2022 - FlagCursorExport in USE statement
+18-06-2022 - COALESCE ipv NVL i.v.m. PG ORA compatibility
 [[INCLUDE,Includes/general.cgt]]
 [[TEXT,IMPL_SQL_NOT_FOUND]][[*No arguments*]]
 		+STATEMENT:SELECTION|IF;
@@ -44,7 +45,7 @@
 		+STATEMENT:SELECTION|IF;
 			+STATEMENT_GROUP:;
 				+EXPRESSION:CONDITION|NOT IN;
-					+EXPRESSION:FUNCTION|NVL;
+					+EXPRESSION:FUNCTION|COALESCE;
 						=EXPRESSION:REF_NAME|p_cube_pos_action;
 						=EXPRESSION:STRING| ;
 					-EXPRESSION:;
@@ -647,7 +648,7 @@
 					+STATEMENT:READ|SINGLE;
 						=READ_TABLE:v_<<OPERATION_TYPE:L>>|#;
 						+GET:l_cube_position_sequ;
-							+EXPRESSION:FUNCTION|NVL;
+							+EXPRESSION:FUNCTION|COALESCE;
 								+EXPRESSION:FUNCTION|MAX;
 									=EXPRESSION:REF_NAME|cube_sequence;
 								-EXPRESSION:;
@@ -677,13 +678,13 @@
 					+EXPRESSION:FUNCTION|DECODE;
 						=EXPRESSION:REF_NAME|l_cube_pos_action;
 						=EXPRESSION:STRING|B;
-						+EXPRESSION:FUNCTION|NVL;
+						+EXPRESSION:FUNCTION|COALESCE;
 							+EXPRESSION:FUNCTION|MAX;
 								=EXPRESSION:REF_NAME|cube_sequence;
 							-EXPRESSION:;
 							=EXPRESSION:NUMBER|0;
 						-EXPRESSION:;
-						+EXPRESSION:FUNCTION|NVL;
+						+EXPRESSION:FUNCTION|COALESCE;
 							+EXPRESSION:FUNCTION|MIN;
 								=EXPRESSION:REF_NAME|cube_sequence;
 							-EXPRESSION:;

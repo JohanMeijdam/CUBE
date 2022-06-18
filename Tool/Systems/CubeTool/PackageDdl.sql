@@ -375,7 +375,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_itp IS
 		LOOP
 			IF p_cube_pos_action IN  ('B', 'A') THEN
 				-- Read sequence number of the target.
-				SELECT NVL (MAX (cube_sequence), DECODE (p_cube_pos_action, 'B', 99999999, 0))
+				SELECT COALESCE (MAX (cube_sequence), DECODE (p_cube_pos_action, 'B', 99999999, 0))
 				INTO l_cube_position_sequ
 				FROM v_permitted_value
 				WHERE fk_itp_name = p_fk_itp_name
@@ -383,7 +383,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_itp IS
 				  AND code = p_code;
 			END IF;
 			-- read sequence number near the target.
-			SELECT DECODE (l_cube_pos_action, 'B', NVL (MAX (cube_sequence), 0), NVL (MIN (cube_sequence), 99999999))
+			SELECT DECODE (l_cube_pos_action, 'B', COALESCE (MAX (cube_sequence), 0), COALESCE (MIN (cube_sequence), 99999999))
 			INTO l_cube_near_sequ
 			FROM v_permitted_value
 			WHERE fk_itp_name = p_fk_itp_name
@@ -425,7 +425,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_itp IS
 		l_cube_sequence NUMBER(8);
 	BEGIN
 		-- A=After B=Before F=First L=Last
-		IF NVL (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
+		IF COALESCE (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
 			RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
 		END IF;
 		determine_position_val (l_cube_sequence, p_cube_pos_action, x_fk_itp_name, x_fk_ite_sequence, x_code);
@@ -451,7 +451,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_itp IS
 		l_cube_sequence NUMBER(8);
 	BEGIN
 		-- A=After B=Before F=First L=Last
-		IF NVL (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
+		IF COALESCE (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
 			RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
 		END IF;
 		determine_position_val (l_cube_sequence, p_cube_pos_action, x_fk_itp_name, x_fk_ite_sequence, x_code);
@@ -1252,13 +1252,13 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 		LOOP
 			IF p_cube_pos_action IN  ('B', 'A') THEN
 				-- Read sequence number of the target.
-				SELECT NVL (MAX (cube_sequence), DECODE (p_cube_pos_action, 'B', 99999999, 0))
+				SELECT COALESCE (MAX (cube_sequence), DECODE (p_cube_pos_action, 'B', 99999999, 0))
 				INTO l_cube_position_sequ
 				FROM v_business_object_type
 				WHERE name = p_name;
 			END IF;
 			-- read sequence number near the target.
-			SELECT DECODE (l_cube_pos_action, 'B', NVL (MAX (cube_sequence), 0), NVL (MIN (cube_sequence), 99999999))
+			SELECT DECODE (l_cube_pos_action, 'B', COALESCE (MAX (cube_sequence), 0), COALESCE (MIN (cube_sequence), 99999999))
 			INTO l_cube_near_sequ
 			FROM v_business_object_type
 			WHERE 	    ( l_cube_pos_action = 'B'
@@ -1292,7 +1292,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 		l_cube_sequence NUMBER(8);
 	BEGIN
 		-- A=After B=Before F=First L=Last
-		IF NVL (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
+		IF COALESCE (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
 			RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
 		END IF;
 		determine_position_bot (l_cube_sequence, p_cube_pos_action, x_name);
@@ -1314,7 +1314,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 		l_cube_sequence NUMBER(8);
 	BEGIN
 		-- A=After B=Before F=First L=Last
-		IF NVL (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
+		IF COALESCE (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
 			RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
 		END IF;
 		determine_position_bot (l_cube_sequence, p_cube_pos_action, x_name);
@@ -1641,13 +1641,13 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 		LOOP
 			IF p_cube_pos_action IN  ('B', 'A') THEN
 				-- Read sequence number of the target.
-				SELECT NVL (MAX (cube_sequence), DECODE (p_cube_pos_action, 'B', 99999999, 0))
+				SELECT COALESCE (MAX (cube_sequence), DECODE (p_cube_pos_action, 'B', 99999999, 0))
 				INTO l_cube_position_sequ
 				FROM v_type
 				WHERE name = p_name;
 			END IF;
 			-- read sequence number near the target.
-			SELECT DECODE (l_cube_pos_action, 'B', NVL (MAX (cube_sequence), 0), NVL (MIN (cube_sequence), 99999999))
+			SELECT DECODE (l_cube_pos_action, 'B', COALESCE (MAX (cube_sequence), 0), COALESCE (MIN (cube_sequence), 99999999))
 			INTO l_cube_near_sequ
 			FROM v_type
 			WHERE fk_bot_name = p_fk_bot_name
@@ -1691,7 +1691,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 		l_fk_typ_name v_type.fk_typ_name%TYPE;
 	BEGIN
 		-- A=After B=Before F=First L=Last
-		IF NVL (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
+		IF COALESCE (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
 			RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
 		END IF;
 		-- Get parent id of the target.
@@ -1736,7 +1736,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 		l_cube_sequence NUMBER(8);
 	BEGIN
 		-- A=After B=Before F=First L=Last
-		IF NVL (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
+		IF COALESCE (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
 			RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
 		END IF;
 		determine_position_typ (l_cube_sequence, p_cube_pos_action, p_fk_bot_name, p_fk_typ_name, x_name);
@@ -1936,14 +1936,14 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 		LOOP
 			IF p_cube_pos_action IN  ('B', 'A') THEN
 				-- Read sequence number of the target.
-				SELECT NVL (MAX (cube_sequence), DECODE (p_cube_pos_action, 'B', 99999999, 0))
+				SELECT COALESCE (MAX (cube_sequence), DECODE (p_cube_pos_action, 'B', 99999999, 0))
 				INTO l_cube_position_sequ
 				FROM v_type_specialisation_group
 				WHERE fk_typ_name = p_fk_typ_name
 				  AND code = p_code;
 			END IF;
 			-- read sequence number near the target.
-			SELECT DECODE (l_cube_pos_action, 'B', NVL (MAX (cube_sequence), 0), NVL (MIN (cube_sequence), 99999999))
+			SELECT DECODE (l_cube_pos_action, 'B', COALESCE (MAX (cube_sequence), 0), COALESCE (MIN (cube_sequence), 99999999))
 			INTO l_cube_near_sequ
 			FROM v_type_specialisation_group
 			WHERE fk_typ_name = p_fk_typ_name
@@ -1988,7 +1988,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 		l_fk_tsg_code v_type_specialisation_group.fk_tsg_code%TYPE;
 	BEGIN
 		-- A=After B=Before F=First L=Last
-		IF NVL (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
+		IF COALESCE (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
 			RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
 		END IF;
 		-- Get parent id of the target.
@@ -2028,7 +2028,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 		l_cube_sequence NUMBER(8);
 	BEGIN
 		-- A=After B=Before F=First L=Last
-		IF NVL (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
+		IF COALESCE (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
 			RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
 		END IF;
 		determine_position_tsg (l_cube_sequence, p_cube_pos_action, x_fk_typ_name, p_fk_tsg_code, x_code);
@@ -2225,7 +2225,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 		LOOP
 			IF p_cube_pos_action IN  ('B', 'A') THEN
 				-- Read sequence number of the target.
-				SELECT NVL (MAX (cube_sequence), DECODE (p_cube_pos_action, 'B', 99999999, 0))
+				SELECT COALESCE (MAX (cube_sequence), DECODE (p_cube_pos_action, 'B', 99999999, 0))
 				INTO l_cube_position_sequ
 				FROM v_type_specialisation
 				WHERE fk_typ_name = p_fk_typ_name
@@ -2233,7 +2233,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 				  AND code = p_code;
 			END IF;
 			-- read sequence number near the target.
-			SELECT DECODE (l_cube_pos_action, 'B', NVL (MAX (cube_sequence), 0), NVL (MIN (cube_sequence), 99999999))
+			SELECT DECODE (l_cube_pos_action, 'B', COALESCE (MAX (cube_sequence), 0), COALESCE (MIN (cube_sequence), 99999999))
 			INTO l_cube_near_sequ
 			FROM v_type_specialisation
 			WHERE fk_typ_name = p_fk_typ_name
@@ -2275,7 +2275,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 		l_cube_sequence NUMBER(8);
 	BEGIN
 		-- A=After B=Before F=First L=Last
-		IF NVL (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
+		IF COALESCE (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
 			RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
 		END IF;
 		determine_position_tsp (l_cube_sequence, p_cube_pos_action, x_fk_typ_name, x_fk_tsg_code, x_code);
@@ -2305,7 +2305,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 		l_cube_sequence NUMBER(8);
 	BEGIN
 		-- A=After B=Before F=First L=Last
-		IF NVL (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
+		IF COALESCE (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
 			RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
 		END IF;
 		determine_position_tsp (l_cube_sequence, p_cube_pos_action, x_fk_typ_name, x_fk_tsg_code, x_code);
@@ -2541,14 +2541,14 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 		LOOP
 			IF p_cube_pos_action IN  ('B', 'A') THEN
 				-- Read sequence number of the target.
-				SELECT NVL (MAX (cube_sequence), DECODE (p_cube_pos_action, 'B', 99999999, 0))
+				SELECT COALESCE (MAX (cube_sequence), DECODE (p_cube_pos_action, 'B', 99999999, 0))
 				INTO l_cube_position_sequ
 				FROM v_attribute
 				WHERE fk_typ_name = p_fk_typ_name
 				  AND name = p_name;
 			END IF;
 			-- read sequence number near the target.
-			SELECT DECODE (l_cube_pos_action, 'B', NVL (MAX (cube_sequence), 0), NVL (MIN (cube_sequence), 99999999))
+			SELECT DECODE (l_cube_pos_action, 'B', COALESCE (MAX (cube_sequence), 0), COALESCE (MIN (cube_sequence), 99999999))
 			INTO l_cube_near_sequ
 			FROM v_attribute
 			WHERE fk_typ_name = p_fk_typ_name
@@ -2586,7 +2586,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 		l_cube_sequence NUMBER(8);
 	BEGIN
 		-- A=After B=Before F=First L=Last
-		IF NVL (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
+		IF COALESCE (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
 			RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
 		END IF;
 		determine_position_atb (l_cube_sequence, p_cube_pos_action, x_fk_typ_name, x_name);
@@ -2616,7 +2616,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 		l_cube_sequence NUMBER(8);
 	BEGIN
 		-- A=After B=Before F=First L=Last
-		IF NVL (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
+		IF COALESCE (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
 			RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
 		END IF;
 		determine_position_atb (l_cube_sequence, p_cube_pos_action, x_fk_typ_name, x_name);
@@ -3116,7 +3116,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 		LOOP
 			IF p_cube_pos_action IN  ('B', 'A') THEN
 				-- Read sequence number of the target.
-				SELECT NVL (MAX (cube_sequence), DECODE (p_cube_pos_action, 'B', 99999999, 0))
+				SELECT COALESCE (MAX (cube_sequence), DECODE (p_cube_pos_action, 'B', 99999999, 0))
 				INTO l_cube_position_sequ
 				FROM v_reference
 				WHERE fk_typ_name = p_fk_typ_name
@@ -3125,7 +3125,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 				  AND xk_typ_name = p_xk_typ_name;
 			END IF;
 			-- read sequence number near the target.
-			SELECT DECODE (l_cube_pos_action, 'B', NVL (MAX (cube_sequence), 0), NVL (MIN (cube_sequence), 99999999))
+			SELECT DECODE (l_cube_pos_action, 'B', COALESCE (MAX (cube_sequence), 0), COALESCE (MIN (cube_sequence), 99999999))
 			INTO l_cube_near_sequ
 			FROM v_reference
 			WHERE fk_typ_name = p_fk_typ_name
@@ -3167,7 +3167,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 		l_cube_sequence NUMBER(8);
 	BEGIN
 		-- A=After B=Before F=First L=Last
-		IF NVL (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
+		IF COALESCE (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
 			RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
 		END IF;
 		determine_position_ref (l_cube_sequence, p_cube_pos_action, x_fk_typ_name, x_sequence, x_xk_bot_name, x_xk_typ_name);
@@ -3204,7 +3204,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 		l_cube_sequence NUMBER(8);
 	BEGIN
 		-- A=After B=Before F=First L=Last
-		IF NVL (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
+		IF COALESCE (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
 			RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
 		END IF;
 		determine_position_ref (l_cube_sequence, p_cube_pos_action, x_fk_typ_name, x_sequence, x_xk_bot_name, x_xk_typ_name);
@@ -3897,7 +3897,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 		LOOP
 			IF p_cube_pos_action IN  ('B', 'A') THEN
 				-- Read sequence number of the target.
-				SELECT NVL (MAX (cube_sequence), DECODE (p_cube_pos_action, 'B', 99999999, 0))
+				SELECT COALESCE (MAX (cube_sequence), DECODE (p_cube_pos_action, 'B', 99999999, 0))
 				INTO l_cube_position_sequ
 				FROM v_json_path
 				WHERE fk_typ_name = p_fk_typ_name
@@ -3908,7 +3908,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 				  AND xk_typ_name = p_xk_typ_name;
 			END IF;
 			-- read sequence number near the target.
-			SELECT DECODE (l_cube_pos_action, 'B', NVL (MAX (cube_sequence), 0), NVL (MIN (cube_sequence), 99999999))
+			SELECT DECODE (l_cube_pos_action, 'B', COALESCE (MAX (cube_sequence), 0), COALESCE (MIN (cube_sequence), 99999999))
 			INTO l_cube_near_sequ
 			FROM v_json_path
 			WHERE fk_typ_name = p_fk_typ_name
@@ -3989,7 +3989,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 		l_fk_jsn_typ_name v_json_path.fk_jsn_typ_name%TYPE;
 	BEGIN
 		-- A=After B=Before F=First L=Last
-		IF NVL (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
+		IF COALESCE (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
 			RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
 		END IF;
 		-- Get parent id of the target.
@@ -4055,7 +4055,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 		l_cube_sequence NUMBER(8);
 	BEGIN
 		-- A=After B=Before F=First L=Last
-		IF NVL (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
+		IF COALESCE (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
 			RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
 		END IF;
 		determine_position_jsn (l_cube_sequence, p_cube_pos_action, x_fk_typ_name, p_fk_jsn_name, p_fk_jsn_location, p_fk_jsn_atb_typ_name, p_fk_jsn_atb_name, p_fk_jsn_typ_name, x_name, x_location, x_xf_atb_typ_name, x_xk_atb_name, x_xk_typ_name);
@@ -4389,14 +4389,14 @@ CREATE OR REPLACE PACKAGE BODY pkg_sys IS
 		LOOP
 			IF p_cube_pos_action IN  ('B', 'A') THEN
 				-- Read sequence number of the target.
-				SELECT NVL (MAX (cube_sequence), DECODE (p_cube_pos_action, 'B', 99999999, 0))
+				SELECT COALESCE (MAX (cube_sequence), DECODE (p_cube_pos_action, 'B', 99999999, 0))
 				INTO l_cube_position_sequ
 				FROM v_system_bo_type
 				WHERE fk_sys_name = p_fk_sys_name
 				  AND xk_bot_name = p_xk_bot_name;
 			END IF;
 			-- read sequence number near the target.
-			SELECT DECODE (l_cube_pos_action, 'B', NVL (MAX (cube_sequence), 0), NVL (MIN (cube_sequence), 99999999))
+			SELECT DECODE (l_cube_pos_action, 'B', COALESCE (MAX (cube_sequence), 0), COALESCE (MIN (cube_sequence), 99999999))
 			INTO l_cube_near_sequ
 			FROM v_system_bo_type
 			WHERE fk_sys_name = p_fk_sys_name
@@ -4434,7 +4434,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_sys IS
 		l_cube_sequence NUMBER(8);
 	BEGIN
 		-- A=After B=Before F=First L=Last
-		IF NVL (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
+		IF COALESCE (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
 			RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
 		END IF;
 		determine_position_sbt (l_cube_sequence, p_cube_pos_action, x_fk_sys_name, x_xk_bot_name);
@@ -4456,7 +4456,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_sys IS
 		l_cube_sequence NUMBER(8);
 	BEGIN
 		-- A=After B=Before F=First L=Last
-		IF NVL (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
+		IF COALESCE (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
 			RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
 		END IF;
 		determine_position_sbt (l_cube_sequence, p_cube_pos_action, x_fk_sys_name, x_xk_bot_name);
@@ -4605,14 +4605,14 @@ CREATE OR REPLACE PACKAGE BODY pkg_fun IS
 		LOOP
 			IF p_cube_pos_action IN  ('B', 'A') THEN
 				-- Read sequence number of the target.
-				SELECT NVL (MAX (cube_sequence), DECODE (p_cube_pos_action, 'B', 99999999, 0))
+				SELECT COALESCE (MAX (cube_sequence), DECODE (p_cube_pos_action, 'B', 99999999, 0))
 				INTO l_cube_position_sequ
 				FROM v_argument
 				WHERE fk_fun_name = p_fk_fun_name
 				  AND name = p_name;
 			END IF;
 			-- read sequence number near the target.
-			SELECT DECODE (l_cube_pos_action, 'B', NVL (MAX (cube_sequence), 0), NVL (MIN (cube_sequence), 99999999))
+			SELECT DECODE (l_cube_pos_action, 'B', COALESCE (MAX (cube_sequence), 0), COALESCE (MIN (cube_sequence), 99999999))
 			INTO l_cube_near_sequ
 			FROM v_argument
 			WHERE fk_fun_name = p_fk_fun_name
@@ -4650,7 +4650,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_fun IS
 		l_cube_sequence NUMBER(8);
 	BEGIN
 		-- A=After B=Before F=First L=Last
-		IF NVL (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
+		IF COALESCE (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
 			RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
 		END IF;
 		determine_position_arg (l_cube_sequence, p_cube_pos_action, x_fk_fun_name, x_name);
@@ -4672,7 +4672,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_fun IS
 		l_cube_sequence NUMBER(8);
 	BEGIN
 		-- A=After B=Before F=First L=Last
-		IF NVL (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
+		IF COALESCE (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
 			RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
 		END IF;
 		determine_position_arg (l_cube_sequence, p_cube_pos_action, x_fk_fun_name, x_name);
