@@ -362,7 +362,7 @@ AS $BODY$
 		LOOP
 			IF p_cube_pos_action IN  ('B', 'A') THEN
 				-- Read sequence number of the target.
-				SELECT COALESCE (MAX (cube_sequence), DECODE (p_cube_pos_action, 'B', 99999999, 0))
+				SELECT COALESCE (MAX (cube_sequence), CASE p_cube_pos_action WHEN 'B' THEN 99999999 ELSE 0 END)
 				INTO l_cube_position_sequ
 				FROM itp.v_permitted_value
 				WHERE fk_itp_name = p_fk_itp_name
@@ -370,7 +370,7 @@ AS $BODY$
 				  AND code = p_code;
 			END IF;
 			-- read sequence number near the target.
-			SELECT DECODE (l_cube_pos_action, 'B', COALESCE (MAX (cube_sequence), 0), COALESCE (MIN (cube_sequence), 99999999))
+			SELECT CASE l_cube_pos_action WHEN 'B' THEN COALESCE (MAX (cube_sequence), 0) ELSE COALESCE (MIN (cube_sequence), 99999999) END
 			INTO l_cube_near_sequ
 			FROM itp.v_permitted_value
 			WHERE fk_itp_name = p_fk_itp_name
@@ -634,13 +634,13 @@ AS $BODY$
 		LOOP
 			IF p_cube_pos_action IN  ('B', 'A') THEN
 				-- Read sequence number of the target.
-				SELECT COALESCE (MAX (cube_sequence), DECODE (p_cube_pos_action, 'B', 99999999, 0))
+				SELECT COALESCE (MAX (cube_sequence), CASE p_cube_pos_action WHEN 'B' THEN 99999999 ELSE 0 END)
 				INTO l_cube_position_sequ
 				FROM bot.v_business_object_type
 				WHERE name = p_name;
 			END IF;
 			-- read sequence number near the target.
-			SELECT DECODE (l_cube_pos_action, 'B', COALESCE (MAX (cube_sequence), 0), COALESCE (MIN (cube_sequence), 99999999))
+			SELECT CASE l_cube_pos_action WHEN 'B' THEN COALESCE (MAX (cube_sequence), 0) ELSE COALESCE (MIN (cube_sequence), 99999999) END
 			INTO l_cube_near_sequ
 			FROM bot.v_business_object_type
 			WHERE 	    ( l_cube_pos_action = 'B'
@@ -1104,13 +1104,13 @@ AS $BODY$
 		LOOP
 			IF p_cube_pos_action IN  ('B', 'A') THEN
 				-- Read sequence number of the target.
-				SELECT COALESCE (MAX (cube_sequence), DECODE (p_cube_pos_action, 'B', 99999999, 0))
+				SELECT COALESCE (MAX (cube_sequence), CASE p_cube_pos_action WHEN 'B' THEN 99999999 ELSE 0 END)
 				INTO l_cube_position_sequ
 				FROM bot.v_type
 				WHERE name = p_name;
 			END IF;
 			-- read sequence number near the target.
-			SELECT DECODE (l_cube_pos_action, 'B', COALESCE (MAX (cube_sequence), 0), COALESCE (MIN (cube_sequence), 99999999))
+			SELECT CASE l_cube_pos_action WHEN 'B' THEN COALESCE (MAX (cube_sequence), 0) ELSE COALESCE (MIN (cube_sequence), 99999999) END
 			INTO l_cube_near_sequ
 			FROM bot.v_type
 			WHERE fk_bot_name = p_fk_bot_name
@@ -1444,14 +1444,14 @@ AS $BODY$
 		LOOP
 			IF p_cube_pos_action IN  ('B', 'A') THEN
 				-- Read sequence number of the target.
-				SELECT COALESCE (MAX (cube_sequence), DECODE (p_cube_pos_action, 'B', 99999999, 0))
+				SELECT COALESCE (MAX (cube_sequence), CASE p_cube_pos_action WHEN 'B' THEN 99999999 ELSE 0 END)
 				INTO l_cube_position_sequ
 				FROM bot.v_type_specialisation_group
 				WHERE fk_typ_name = p_fk_typ_name
 				  AND code = p_code;
 			END IF;
 			-- read sequence number near the target.
-			SELECT DECODE (l_cube_pos_action, 'B', COALESCE (MAX (cube_sequence), 0), COALESCE (MIN (cube_sequence), 99999999))
+			SELECT CASE l_cube_pos_action WHEN 'B' THEN COALESCE (MAX (cube_sequence), 0) ELSE COALESCE (MIN (cube_sequence), 99999999) END
 			INTO l_cube_near_sequ
 			FROM bot.v_type_specialisation_group
 			WHERE fk_typ_name = p_fk_typ_name
@@ -1766,7 +1766,7 @@ AS $BODY$
 		LOOP
 			IF p_cube_pos_action IN  ('B', 'A') THEN
 				-- Read sequence number of the target.
-				SELECT COALESCE (MAX (cube_sequence), DECODE (p_cube_pos_action, 'B', 99999999, 0))
+				SELECT COALESCE (MAX (cube_sequence), CASE p_cube_pos_action WHEN 'B' THEN 99999999 ELSE 0 END)
 				INTO l_cube_position_sequ
 				FROM bot.v_type_specialisation
 				WHERE fk_typ_name = p_fk_typ_name
@@ -1774,7 +1774,7 @@ AS $BODY$
 				  AND code = p_code;
 			END IF;
 			-- read sequence number near the target.
-			SELECT DECODE (l_cube_pos_action, 'B', COALESCE (MAX (cube_sequence), 0), COALESCE (MIN (cube_sequence), 99999999))
+			SELECT CASE l_cube_pos_action WHEN 'B' THEN COALESCE (MAX (cube_sequence), 0) ELSE COALESCE (MIN (cube_sequence), 99999999) END
 			INTO l_cube_near_sequ
 			FROM bot.v_type_specialisation
 			WHERE fk_typ_name = p_fk_typ_name
@@ -2135,14 +2135,14 @@ AS $BODY$
 		LOOP
 			IF p_cube_pos_action IN  ('B', 'A') THEN
 				-- Read sequence number of the target.
-				SELECT COALESCE (MAX (cube_sequence), DECODE (p_cube_pos_action, 'B', 99999999, 0))
+				SELECT COALESCE (MAX (cube_sequence), CASE p_cube_pos_action WHEN 'B' THEN 99999999 ELSE 0 END)
 				INTO l_cube_position_sequ
 				FROM bot.v_attribute
 				WHERE fk_typ_name = p_fk_typ_name
 				  AND name = p_name;
 			END IF;
 			-- read sequence number near the target.
-			SELECT DECODE (l_cube_pos_action, 'B', COALESCE (MAX (cube_sequence), 0), COALESCE (MIN (cube_sequence), 99999999))
+			SELECT CASE l_cube_pos_action WHEN 'B' THEN COALESCE (MAX (cube_sequence), 0) ELSE COALESCE (MIN (cube_sequence), 99999999) END
 			INTO l_cube_near_sequ
 			FROM bot.v_attribute
 			WHERE fk_typ_name = p_fk_typ_name
@@ -2811,7 +2811,7 @@ AS $BODY$
 		LOOP
 			IF p_cube_pos_action IN  ('B', 'A') THEN
 				-- Read sequence number of the target.
-				SELECT COALESCE (MAX (cube_sequence), DECODE (p_cube_pos_action, 'B', 99999999, 0))
+				SELECT COALESCE (MAX (cube_sequence), CASE p_cube_pos_action WHEN 'B' THEN 99999999 ELSE 0 END)
 				INTO l_cube_position_sequ
 				FROM bot.v_reference
 				WHERE fk_typ_name = p_fk_typ_name
@@ -2820,7 +2820,7 @@ AS $BODY$
 				  AND xk_typ_name = p_xk_typ_name;
 			END IF;
 			-- read sequence number near the target.
-			SELECT DECODE (l_cube_pos_action, 'B', COALESCE (MAX (cube_sequence), 0), COALESCE (MIN (cube_sequence), 99999999))
+			SELECT CASE l_cube_pos_action WHEN 'B' THEN COALESCE (MAX (cube_sequence), 0) ELSE COALESCE (MIN (cube_sequence), 99999999) END
 			INTO l_cube_near_sequ
 			FROM bot.v_reference
 			WHERE fk_typ_name = p_fk_typ_name
@@ -3701,7 +3701,7 @@ AS $BODY$
 		LOOP
 			IF p_cube_pos_action IN  ('B', 'A') THEN
 				-- Read sequence number of the target.
-				SELECT COALESCE (MAX (cube_sequence), DECODE (p_cube_pos_action, 'B', 99999999, 0))
+				SELECT COALESCE (MAX (cube_sequence), CASE p_cube_pos_action WHEN 'B' THEN 99999999 ELSE 0 END)
 				INTO l_cube_position_sequ
 				FROM bot.v_json_path
 				WHERE fk_typ_name = p_fk_typ_name
@@ -3712,7 +3712,7 @@ AS $BODY$
 				  AND xk_typ_name = p_xk_typ_name;
 			END IF;
 			-- read sequence number near the target.
-			SELECT DECODE (l_cube_pos_action, 'B', COALESCE (MAX (cube_sequence), 0), COALESCE (MIN (cube_sequence), 99999999))
+			SELECT CASE l_cube_pos_action WHEN 'B' THEN COALESCE (MAX (cube_sequence), 0) ELSE COALESCE (MIN (cube_sequence), 99999999) END
 			INTO l_cube_near_sequ
 			FROM bot.v_json_path
 			WHERE fk_typ_name = p_fk_typ_name
@@ -4222,14 +4222,14 @@ AS $BODY$
 		LOOP
 			IF p_cube_pos_action IN  ('B', 'A') THEN
 				-- Read sequence number of the target.
-				SELECT COALESCE (MAX (cube_sequence), DECODE (p_cube_pos_action, 'B', 99999999, 0))
+				SELECT COALESCE (MAX (cube_sequence), CASE p_cube_pos_action WHEN 'B' THEN 99999999 ELSE 0 END)
 				INTO l_cube_position_sequ
 				FROM sys.v_system_bo_type
 				WHERE fk_sys_name = p_fk_sys_name
 				  AND xk_bot_name = p_xk_bot_name;
 			END IF;
 			-- read sequence number near the target.
-			SELECT DECODE (l_cube_pos_action, 'B', COALESCE (MAX (cube_sequence), 0), COALESCE (MIN (cube_sequence), 99999999))
+			SELECT CASE l_cube_pos_action WHEN 'B' THEN COALESCE (MAX (cube_sequence), 0) ELSE COALESCE (MIN (cube_sequence), 99999999) END
 			INTO l_cube_near_sequ
 			FROM sys.v_system_bo_type
 			WHERE fk_sys_name = p_fk_sys_name
@@ -4453,14 +4453,14 @@ AS $BODY$
 		LOOP
 			IF p_cube_pos_action IN  ('B', 'A') THEN
 				-- Read sequence number of the target.
-				SELECT COALESCE (MAX (cube_sequence), DECODE (p_cube_pos_action, 'B', 99999999, 0))
+				SELECT COALESCE (MAX (cube_sequence), CASE p_cube_pos_action WHEN 'B' THEN 99999999 ELSE 0 END)
 				INTO l_cube_position_sequ
 				FROM fun.v_argument
 				WHERE fk_fun_name = p_fk_fun_name
 				  AND name = p_name;
 			END IF;
 			-- read sequence number near the target.
-			SELECT DECODE (l_cube_pos_action, 'B', COALESCE (MAX (cube_sequence), 0), COALESCE (MIN (cube_sequence), 99999999))
+			SELECT CASE l_cube_pos_action WHEN 'B' THEN COALESCE (MAX (cube_sequence), 0) ELSE COALESCE (MIN (cube_sequence), 99999999) END
 			INTO l_cube_near_sequ
 			FROM fun.v_argument
 			WHERE fk_fun_name = p_fk_fun_name
