@@ -8,7 +8,7 @@ Change log:
 16-02-2022 Cursor definition based on FlagCursorExport
 06-04-2002 Exception with code
 [[INCLUDE,Includes/general.cgt]]
-[[INCLUDE,Includes/expression.cgt]]
+[[INCLUDE,Includes/expression_pg.cgt]]
 [[TEXT,PACKAGE_SELECT]]
 		SELECT[[IF:EVAL:'<<T1>>' eq 'SINGLE']] [[LOOP,GET]]<<TEXT,EXPRESSION>>[[IF:!LAST]], [[ENDIF]][[ENDLOOP,GET]]
 		INTO [[LOOP,GET]]<<GET>>[[IF:!LAST]], [[ENDIF]][[ENDLOOP,GET]][[ELSE]][[LOOP,GET]]

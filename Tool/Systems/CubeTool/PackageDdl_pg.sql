@@ -425,7 +425,7 @@ AS $BODY$
 		WHERE fk_itp_name = p_fk_itp_name
 		  AND fk_ite_sequence = p_fk_ite_sequence
 		  AND code = p_code;
-		IF SQL%NOTFOUND THEN
+		IF NOT FOUND THEN
 			CALL itp.RAISE_APPLICATION_ERROR  (-20002, 'Type permitted_value not found');
 		END IF;
 	END;
@@ -685,7 +685,7 @@ AS $BODY$
 		UPDATE bot.v_business_object_type SET
 			cube_sequence = l_cube_sequence
 		WHERE name = p_name;
-		IF SQL%NOTFOUND THEN
+		IF NOT FOUND THEN
 			CALL bot.RAISE_APPLICATION_ERROR  (-20002, 'Type business_object_type not found');
 		END IF;
 	END;
@@ -1181,7 +1181,7 @@ AS $BODY$
 			fk_typ_name = l_fk_typ_name,
 			cube_sequence = l_cube_sequence
 		WHERE name = p_name;
-		IF SQL%NOTFOUND THEN
+		IF NOT FOUND THEN
 			CALL bot.RAISE_APPLICATION_ERROR  (-20002, 'Type type not found');
 		END IF;
 	END;
@@ -1520,7 +1520,7 @@ AS $BODY$
 			cube_sequence = l_cube_sequence
 		WHERE fk_typ_name = p_fk_typ_name
 		  AND code = p_code;
-		IF SQL%NOTFOUND THEN
+		IF NOT FOUND THEN
 			CALL bot.RAISE_APPLICATION_ERROR  (-20002, 'Type type_specialisation_group not found');
 		END IF;
 	END;
@@ -1829,7 +1829,7 @@ AS $BODY$
 		WHERE fk_typ_name = p_fk_typ_name
 		  AND fk_tsg_code = p_fk_tsg_code
 		  AND code = p_code;
-		IF SQL%NOTFOUND THEN
+		IF NOT FOUND THEN
 			CALL bot.RAISE_APPLICATION_ERROR  (-20002, 'Type type_specialisation not found');
 		END IF;
 	END;
@@ -2192,7 +2192,7 @@ AS $BODY$
 			cube_sequence = l_cube_sequence
 		WHERE fk_typ_name = p_fk_typ_name
 		  AND name = p_name;
-		IF SQL%NOTFOUND THEN
+		IF NOT FOUND THEN
 			CALL bot.RAISE_APPLICATION_ERROR  (-20002, 'Type attribute not found');
 		END IF;
 	END;
@@ -2876,7 +2876,7 @@ AS $BODY$
 		  AND sequence = p_sequence
 		  AND xk_bot_name = p_xk_bot_name
 		  AND xk_typ_name = p_xk_typ_name;
-		IF SQL%NOTFOUND THEN
+		IF NOT FOUND THEN
 			CALL bot.RAISE_APPLICATION_ERROR  (-20002, 'Type reference not found');
 		END IF;
 	END;
@@ -3833,7 +3833,7 @@ AS $BODY$
 		  AND xf_atb_typ_name = p_xf_atb_typ_name
 		  AND xk_atb_name = p_xk_atb_name
 		  AND xk_typ_name = p_xk_typ_name;
-		IF SQL%NOTFOUND THEN
+		IF NOT FOUND THEN
 			CALL bot.RAISE_APPLICATION_ERROR  (-20002, 'Type json_path not found');
 		END IF;
 	END;
@@ -4279,7 +4279,7 @@ AS $BODY$
 			cube_sequence = l_cube_sequence
 		WHERE fk_sys_name = p_fk_sys_name
 		  AND xk_bot_name = p_xk_bot_name;
-		IF SQL%NOTFOUND THEN
+		IF NOT FOUND THEN
 			CALL sys.RAISE_APPLICATION_ERROR  (-20002, 'Type system_bo_type not found');
 		END IF;
 	END;
@@ -4510,7 +4510,7 @@ AS $BODY$
 			cube_sequence = l_cube_sequence
 		WHERE fk_fun_name = p_fk_fun_name
 		  AND name = p_name;
-		IF SQL%NOTFOUND THEN
+		IF NOT FOUND THEN
 			CALL fun.RAISE_APPLICATION_ERROR  (-20002, 'Type argument not found');
 		END IF;
 	END;

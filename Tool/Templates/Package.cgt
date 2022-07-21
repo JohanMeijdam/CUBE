@@ -8,6 +8,7 @@ Change log:
 16-02-2022 - Cursor definition based on FlagCursorExport
 06-04-2022 - Exception with code
 14-06-2022 - FlagCursorExport in USE statement
+20-06-2022 - EXPRESSION CONDITION DB
 [[INCLUDE,Includes/general.cgt]]
 [[INCLUDE,Includes/expression.cgt]]
 [[TEXT,PACKAGE_PROC_SIGNATURE]]
