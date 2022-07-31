@@ -34,9 +34,7 @@
 					=CODE:NOTFOUND;
 				-EXPRESSION:;
 				+STATEMENT:ABORT;
-					+EXPRESSION:CONCATENATION;
-						=EXPRESSION:STRING|Type <<OPERATION_TYPE:L>> not found;
-					-EXPRESSION:;
+					=EXPRESSION:STRING|Type <<OPERATION_TYPE:L>> not found;
 				-STATEMENT:;
 			-STATEMENT_GROUP:;
 		-STATEMENT:;[[ENDTEXT]]
@@ -57,10 +55,8 @@
 					-EXPRESSION:;
 				-EXPRESSION:;
 				+STATEMENT:ABORT;
-					+EXPRESSION:CONCATENATION;
-						=EXPRESSION:STRING|Invalid position action: ;
-						=EXPRESSION:REF_NAME|p_cube_pos_action;
-					-EXPRESSION:;
+					=EXPRESSION:STRING|Invalid position action: %;
+					=EXPRESSION:REF_NAME|p_cube_pos_action;
 				-STATEMENT:;
 			-STATEMENT_GROUP:;
 		-STATEMENT:;[[ENDTEXT]]
@@ -500,9 +496,7 @@
 						-EXPRESSION:;[[ENDLOOP,ATTRIBUTE]]
 					-EXPRESSION:;
 					+STATEMENT:ABORT;
-						+EXPRESSION:CONCATENATION;
-							=EXPRESSION:STRING|Target Type <<OPERATION_TYPE:L>> in hierarchy of moving object;
-						-EXPRESSION:;
+						=EXPRESSION:STRING|Target Type <<OPERATION_TYPE:L>> in hierarchy of moving object;
 					-STATEMENT:;
 				-STATEMENT_GROUP:;
 			-STATEMENT:;
@@ -863,9 +857,7 @@
 		-STATEMENT:;[[ENDIF]]
 		+EXCEPTION:E001;
 			+STATEMENT:ABORT;
-				+EXPRESSION:CONCATENATION;
-					=EXPRESSION:STRING|Type <<OPERATION_TYPE:L>> already exists;
-				-EXPRESSION:;
+				=EXPRESSION:STRING|Type <<OPERATION_TYPE:L>> already exists;
 			-STATEMENT:;
 		-EXCEPTION:;[[*
 *]][[ELSIF,SERVICE:1=update]]

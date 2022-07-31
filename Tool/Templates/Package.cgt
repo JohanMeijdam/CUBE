@@ -81,7 +81,7 @@ Change log:
 *]][[ELSIF:0=STOP_ITERATION]]
 		EXIT;[[*
 *]][[ELSIF:0=ABORT]]
-		RAISE_APPLICATION_ERROR (-20000, <<TEXT,EXPRESSION>>);[[*
+		RAISE_APPLICATION_ERROR (-20000, pkg_cube.replace_placeholders(<<TEXT,EXPRESSION>>));[[*
 *]][[ENDIF]][[LOOP,REMARK]] -- <<REMARK>>[[ENDLOOP,REMARK]][[ENDLOOP,STATEMENT]][[ENDTEXT]]
 [[BODY]]-- <<1:U>> Packages
 --[[LOOP,PACKAGE]][[IF:0=cube]]
@@ -101,6 +101,7 @@ CREATE OR REPLACE PACKAGE pkg_cube IS
 	FUNCTION years(p_date DATE) RETURN NUMBER;
 	FUNCTION multiply(p_num_1 NUMBER, p_num_2 NUMBER) RETURN NUMBER;
 	FUNCTION add(p_num_1 NUMBER, p_num_2 NUMBER) RETURN NUMBER;
+	FUNCTION replace_placeholders(p_string VARCHAR2, p_value_1 VARCHAR2 DEFAULT NULL, p_value_2 VARCHAR2 DEFAULT NULL, p_value_3 VARCHAR2 DEFAULT NULL, p_value_4 VARCHAR2 DEFAULT NULL, p_value_5 VARCHAR2 DEFAULT NULL) RETURN VARCHAR2;
 END;
 /
 SHOW ERRORS;
@@ -122,6 +123,34 @@ CREATE OR REPLACE PACKAGE BODY pkg_cube IS
 	BEGIN
 		RETURN (p_num_1 + p_num_2);
 	END;
+	FUNCTION replace_placeholders(p_string VARCHAR2, p_value_1 VARCHAR2 DEFAULT NULL, p_value_2 VARCHAR2 DEFAULT NULL, p_value_3 VARCHAR2 DEFAULT NULL, p_value_4 VARCHAR2 DEFAULT NULL, p_value_5 VARCHAR2 DEFAULT NULL) RETURN VARCHAR2 IS
+	l_string VARCHAR2(999);
+	l_pos INTEGER;
+	BEGIN
+		l_string := p_string;
+		l_pos := INSTR(l_string,'%');
+		IF l_pos > 0 THEN
+			l_string := SUBSTR(l_string,1,l_pos-1)||p_value_1||SUBSTR(l_string,l_pos+1);
+			l_pos := INSTR(l_string,'%');
+			IF l_pos > 0 THEN
+				l_string := SUBSTR(l_string,1,l_pos-1)||p_value_2||SUBSTR(l_string,l_pos+1);
+				l_pos := INSTR(l_string,'%');
+				IF l_pos > 0 THEN
+					l_string := SUBSTR(l_string,1,l_pos-1)||p_value_3||SUBSTR(l_string,l_pos+1);
+					l_pos := INSTR(l_string,'%');
+					IF l_pos > 0 THEN
+						l_string := SUBSTR(l_string,1,l_pos-1)||p_value_4||SUBSTR(l_string,l_pos+1);
+						l_pos := INSTR(l_string,'%');
+						IF l_pos > 0 THEN
+							l_string := SUBSTR(l_string,1,l_pos-1)||p_value_5||SUBSTR(l_string,l_pos+1);
+						END IF;
+					END IF;
+				END IF;
+			END IF;
+		END IF;
+		RETURN (l_string);
+	END;
+
 END;
 /
 SHOW ERRORS;

@@ -94,8 +94,8 @@ case 'CreateItp':
 	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_itp.insert_itp (
-		:p_name,
-		:p_cube_row);
+		:p_cube_row,
+		:p_name);
 	END;");
 	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 
@@ -217,6 +217,7 @@ case 'CreateIte':
 	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_itp.insert_ite (
+		:p_cube_row,
 		:p_fk_itp_name,
 		:p_sequence,
 		:p_suffix,
@@ -226,8 +227,7 @@ case 'CreateIte':
 		:p_case_sensitive,
 		:p_default_value,
 		:p_spaces_allowed,
-		:p_presentation,
-		:p_cube_row);
+		:p_presentation);
 	END;");
 	oci_bind_by_name($stid,":p_fk_itp_name",$RequestObj->Parameters->Type->FkItpName);
 	oci_bind_by_name($stid,":p_sequence",$RequestObj->Parameters->Type->Sequence);
@@ -2477,14 +2477,14 @@ case 'CreateRta':
 	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.insert_rta (
+		:p_cube_row,
 		:p_fk_bot_name,
 		:p_fk_typ_name,
 		:p_fk_atb_name,
 		:p_include_or_exclude,
 		:p_xf_tsp_typ_name,
 		:p_xf_tsp_tsg_code,
-		:p_xk_tsp_code,
-		:p_cube_row);
+		:p_xk_tsp_code);
 	END;");
 	oci_bind_by_name($stid,":p_fk_bot_name",$RequestObj->Parameters->Type->FkBotName);
 	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
@@ -3180,6 +3180,7 @@ case 'CreateRtr':
 	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.insert_rtr (
+		:p_cube_row,
 		:p_fk_bot_name,
 		:p_fk_typ_name,
 		:p_fk_ref_sequence,
@@ -3188,8 +3189,7 @@ case 'CreateRtr':
 		:p_include_or_exclude,
 		:p_xf_tsp_typ_name,
 		:p_xf_tsp_tsg_code,
-		:p_xk_tsp_code,
-		:p_cube_row);
+		:p_xk_tsp_code);
 	END;");
 	oci_bind_by_name($stid,":p_fk_bot_name",$RequestObj->Parameters->Type->FkBotName);
 	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
@@ -3491,13 +3491,13 @@ case 'CreateRtt':
 	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.insert_rtt (
+		:p_cube_row,
 		:p_fk_bot_name,
 		:p_fk_typ_name,
 		:p_include_or_exclude,
 		:p_xf_tsp_typ_name,
 		:p_xf_tsp_tsg_code,
-		:p_xk_tsp_code,
-		:p_cube_row);
+		:p_xk_tsp_code);
 	END;");
 	oci_bind_by_name($stid,":p_fk_bot_name",$RequestObj->Parameters->Type->FkBotName);
 	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
@@ -4104,13 +4104,13 @@ case 'CreateSys':
 	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_sys.insert_sys (
+		:p_cube_row,
 		:p_name,
 		:p_cube_tsg_type,
 		:p_database,
 		:p_schema,
 		:p_password,
-		:p_table_prefix,
-		:p_cube_row);
+		:p_table_prefix);
 	END;");
 	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 	oci_bind_by_name($stid,":p_cube_tsg_type",$RequestObj->Parameters->Type->CubeTsgType);

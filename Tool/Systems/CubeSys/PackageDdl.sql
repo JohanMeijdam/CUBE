@@ -82,7 +82,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_cube_dsc IS
 			p_value);
 	EXCEPTION
 	WHEN DUP_VAL_ON_INDEX THEN
-			RAISE_APPLICATION_ERROR (-20001, 'Type cube_description already exists');
+			RAISE_APPLICATION_ERROR (-20000, pkg_cube.replace_placeholders ('Type cube_description already exists'));
 	END;
 
 	PROCEDURE update_cube_dsc (

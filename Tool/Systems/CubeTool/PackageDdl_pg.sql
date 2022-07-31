@@ -417,7 +417,7 @@ AS $BODY$
 	BEGIN
 		-- A=After B=Before F=First L=Last
 		IF COALESCE (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
-			RAISE EXCEPTION 'Invalid position action: ', p_cube_pos_action;
+			RAISE EXCEPTION 'Invalid position action: %', p_cube_pos_action;
 		END IF;
 		CALL itp.determine_position_val  (l_cube_sequence, p_cube_pos_action, x_fk_itp_name, x_fk_ite_sequence, x_code);
 		UPDATE itp.v_permitted_value SET
@@ -447,7 +447,7 @@ AS $BODY$
 	BEGIN
 		-- A=After B=Before F=First L=Last
 		IF COALESCE (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
-			RAISE EXCEPTION 'Invalid position action: ', p_cube_pos_action;
+			RAISE EXCEPTION 'Invalid position action: %', p_cube_pos_action;
 		END IF;
 		CALL itp.determine_position_val  (l_cube_sequence, p_cube_pos_action, x_fk_itp_name, x_fk_ite_sequence, x_code);
 		INSERT INTO itp.v_permitted_value (
@@ -679,7 +679,7 @@ AS $BODY$
 	BEGIN
 		-- A=After B=Before F=First L=Last
 		IF COALESCE (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
-			RAISE EXCEPTION 'Invalid position action: ', p_cube_pos_action;
+			RAISE EXCEPTION 'Invalid position action: %', p_cube_pos_action;
 		END IF;
 		CALL bot.determine_position_bot  (l_cube_sequence, p_cube_pos_action, x_name);
 		UPDATE bot.v_business_object_type SET
@@ -705,7 +705,7 @@ AS $BODY$
 	BEGIN
 		-- A=After B=Before F=First L=Last
 		IF COALESCE (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
-			RAISE EXCEPTION 'Invalid position action: ', p_cube_pos_action;
+			RAISE EXCEPTION 'Invalid position action: %', p_cube_pos_action;
 		END IF;
 		CALL bot.determine_position_bot  (l_cube_sequence, p_cube_pos_action, x_name);
 		INSERT INTO bot.v_business_object_type (
@@ -1159,7 +1159,7 @@ AS $BODY$
 	BEGIN
 		-- A=After B=Before F=First L=Last
 		IF COALESCE (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
-			RAISE EXCEPTION 'Invalid position action: ', p_cube_pos_action;
+			RAISE EXCEPTION 'Invalid position action: %', p_cube_pos_action;
 		END IF;
 		-- Get parent id of the target.
 		IF p_cube_pos_action IN  ('B', 'A') THEN
@@ -1208,7 +1208,7 @@ AS $BODY$
 	BEGIN
 		-- A=After B=Before F=First L=Last
 		IF COALESCE (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
-			RAISE EXCEPTION 'Invalid position action: ', p_cube_pos_action;
+			RAISE EXCEPTION 'Invalid position action: %', p_cube_pos_action;
 		END IF;
 		CALL bot.determine_position_typ  (l_cube_sequence, p_cube_pos_action, p_fk_bot_name, p_fk_typ_name, x_name);
 		INSERT INTO bot.v_type (
@@ -1501,7 +1501,7 @@ AS $BODY$
 	BEGIN
 		-- A=After B=Before F=First L=Last
 		IF COALESCE (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
-			RAISE EXCEPTION 'Invalid position action: ', p_cube_pos_action;
+			RAISE EXCEPTION 'Invalid position action: %', p_cube_pos_action;
 		END IF;
 		-- Get parent id of the target.
 		IF p_cube_pos_action IN  ('B', 'A') THEN
@@ -1545,7 +1545,7 @@ AS $BODY$
 	BEGIN
 		-- A=After B=Before F=First L=Last
 		IF COALESCE (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
-			RAISE EXCEPTION 'Invalid position action: ', p_cube_pos_action;
+			RAISE EXCEPTION 'Invalid position action: %', p_cube_pos_action;
 		END IF;
 		CALL bot.determine_position_tsg  (l_cube_sequence, p_cube_pos_action, x_fk_typ_name, p_fk_tsg_code, x_code);
 		INSERT INTO bot.v_type_specialisation_group (
@@ -1821,7 +1821,7 @@ AS $BODY$
 	BEGIN
 		-- A=After B=Before F=First L=Last
 		IF COALESCE (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
-			RAISE EXCEPTION 'Invalid position action: ', p_cube_pos_action;
+			RAISE EXCEPTION 'Invalid position action: %', p_cube_pos_action;
 		END IF;
 		CALL bot.determine_position_tsp  (l_cube_sequence, p_cube_pos_action, x_fk_typ_name, x_fk_tsg_code, x_code);
 		UPDATE bot.v_type_specialisation SET
@@ -1855,7 +1855,7 @@ AS $BODY$
 	BEGIN
 		-- A=After B=Before F=First L=Last
 		IF COALESCE (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
-			RAISE EXCEPTION 'Invalid position action: ', p_cube_pos_action;
+			RAISE EXCEPTION 'Invalid position action: %', p_cube_pos_action;
 		END IF;
 		CALL bot.determine_position_tsp  (l_cube_sequence, p_cube_pos_action, x_fk_typ_name, x_fk_tsg_code, x_code);
 		INSERT INTO bot.v_type_specialisation (
@@ -2185,7 +2185,7 @@ AS $BODY$
 	BEGIN
 		-- A=After B=Before F=First L=Last
 		IF COALESCE (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
-			RAISE EXCEPTION 'Invalid position action: ', p_cube_pos_action;
+			RAISE EXCEPTION 'Invalid position action: %', p_cube_pos_action;
 		END IF;
 		CALL bot.determine_position_atb  (l_cube_sequence, p_cube_pos_action, x_fk_typ_name, x_name);
 		UPDATE bot.v_attribute SET
@@ -2219,7 +2219,7 @@ AS $BODY$
 	BEGIN
 		-- A=After B=Before F=First L=Last
 		IF COALESCE (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
-			RAISE EXCEPTION 'Invalid position action: ', p_cube_pos_action;
+			RAISE EXCEPTION 'Invalid position action: %', p_cube_pos_action;
 		END IF;
 		CALL bot.determine_position_atb  (l_cube_sequence, p_cube_pos_action, x_fk_typ_name, x_name);
 		INSERT INTO bot.v_attribute (
@@ -2867,7 +2867,7 @@ AS $BODY$
 	BEGIN
 		-- A=After B=Before F=First L=Last
 		IF COALESCE (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
-			RAISE EXCEPTION 'Invalid position action: ', p_cube_pos_action;
+			RAISE EXCEPTION 'Invalid position action: %', p_cube_pos_action;
 		END IF;
 		CALL bot.determine_position_ref  (l_cube_sequence, p_cube_pos_action, x_fk_typ_name, x_sequence, x_xk_bot_name, x_xk_typ_name);
 		UPDATE bot.v_reference SET
@@ -2908,7 +2908,7 @@ AS $BODY$
 	BEGIN
 		-- A=After B=Before F=First L=Last
 		IF COALESCE (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
-			RAISE EXCEPTION 'Invalid position action: ', p_cube_pos_action;
+			RAISE EXCEPTION 'Invalid position action: %', p_cube_pos_action;
 		END IF;
 		CALL bot.determine_position_ref  (l_cube_sequence, p_cube_pos_action, x_fk_typ_name, x_sequence, x_xk_bot_name, x_xk_typ_name);
 		INSERT INTO bot.v_reference (
@@ -3798,7 +3798,7 @@ AS $BODY$
 	BEGIN
 		-- A=After B=Before F=First L=Last
 		IF COALESCE (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
-			RAISE EXCEPTION 'Invalid position action: ', p_cube_pos_action;
+			RAISE EXCEPTION 'Invalid position action: %', p_cube_pos_action;
 		END IF;
 		-- Get parent id of the target.
 		IF p_cube_pos_action IN  ('B', 'A') THEN
@@ -3868,7 +3868,7 @@ AS $BODY$
 	BEGIN
 		-- A=After B=Before F=First L=Last
 		IF COALESCE (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
-			RAISE EXCEPTION 'Invalid position action: ', p_cube_pos_action;
+			RAISE EXCEPTION 'Invalid position action: %', p_cube_pos_action;
 		END IF;
 		CALL bot.determine_position_jsn  (l_cube_sequence, p_cube_pos_action, x_fk_typ_name, p_fk_jsn_name, p_fk_jsn_location, p_fk_jsn_atb_typ_name, p_fk_jsn_atb_name, p_fk_jsn_typ_name, x_name, x_location, x_xf_atb_typ_name, x_xk_atb_name, x_xk_typ_name);
 		INSERT INTO bot.v_json_path (
@@ -4272,7 +4272,7 @@ AS $BODY$
 	BEGIN
 		-- A=After B=Before F=First L=Last
 		IF COALESCE (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
-			RAISE EXCEPTION 'Invalid position action: ', p_cube_pos_action;
+			RAISE EXCEPTION 'Invalid position action: %', p_cube_pos_action;
 		END IF;
 		CALL sys.determine_position_sbt  (l_cube_sequence, p_cube_pos_action, x_fk_sys_name, x_xk_bot_name);
 		UPDATE sys.v_system_bo_type SET
@@ -4298,7 +4298,7 @@ AS $BODY$
 	BEGIN
 		-- A=After B=Before F=First L=Last
 		IF COALESCE (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
-			RAISE EXCEPTION 'Invalid position action: ', p_cube_pos_action;
+			RAISE EXCEPTION 'Invalid position action: %', p_cube_pos_action;
 		END IF;
 		CALL sys.determine_position_sbt  (l_cube_sequence, p_cube_pos_action, x_fk_sys_name, x_xk_bot_name);
 		INSERT INTO sys.v_system_bo_type (
@@ -4503,7 +4503,7 @@ AS $BODY$
 	BEGIN
 		-- A=After B=Before F=First L=Last
 		IF COALESCE (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
-			RAISE EXCEPTION 'Invalid position action: ', p_cube_pos_action;
+			RAISE EXCEPTION 'Invalid position action: %', p_cube_pos_action;
 		END IF;
 		CALL fun.determine_position_arg  (l_cube_sequence, p_cube_pos_action, x_fk_fun_name, x_name);
 		UPDATE fun.v_argument SET
@@ -4529,7 +4529,7 @@ AS $BODY$
 	BEGIN
 		-- A=After B=Before F=First L=Last
 		IF COALESCE (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
-			RAISE EXCEPTION 'Invalid position action: ', p_cube_pos_action;
+			RAISE EXCEPTION 'Invalid position action: %', p_cube_pos_action;
 		END IF;
 		CALL fun.determine_position_arg  (l_cube_sequence, p_cube_pos_action, x_fk_fun_name, x_name);
 		INSERT INTO fun.v_argument (

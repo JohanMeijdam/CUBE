@@ -10,13 +10,17 @@ BEGIN
 	END LOOP;
 END;
 /
+
 CREATE OR REPLACE PACKAGE pkg_cube IS
 	FUNCTION cube_pkg_cuberoot RETURN VARCHAR2;
 	FUNCTION years(p_date DATE) RETURN NUMBER;
 	FUNCTION multiply(p_num_1 NUMBER, p_num_2 NUMBER) RETURN NUMBER;
 	FUNCTION add(p_num_1 NUMBER, p_num_2 NUMBER) RETURN NUMBER;
+	FUNCTION replace_placeholders(p_string VARCHAR2, p_value_1 VARCHAR2 DEFAULT NULL, p_value_2 VARCHAR2 DEFAULT NULL, p_value_3 VARCHAR2 DEFAULT NULL, p_value_4 VARCHAR2 DEFAULT NULL, p_value_5 VARCHAR2 DEFAULT NULL) RETURN VARCHAR2;
 END;
 /
+SHOW ERRORS;
+
 CREATE OR REPLACE PACKAGE BODY pkg_cube IS
 	FUNCTION cube_pkg_cuberoot RETURN VARCHAR2 IS
 	BEGIN
@@ -34,8 +38,38 @@ CREATE OR REPLACE PACKAGE BODY pkg_cube IS
 	BEGIN
 		RETURN (p_num_1 + p_num_2);
 	END;
+	FUNCTION replace_placeholders(p_string VARCHAR2, p_value_1 VARCHAR2 DEFAULT NULL, p_value_2 VARCHAR2 DEFAULT NULL, p_value_3 VARCHAR2 DEFAULT NULL, p_value_4 VARCHAR2 DEFAULT NULL, p_value_5 VARCHAR2 DEFAULT NULL) RETURN VARCHAR2 IS
+	l_string VARCHAR2(999);
+	l_pos INTEGER;
+	BEGIN
+		l_string := p_string;
+		l_pos := INSTR(l_string,'%');
+		IF l_pos > 0 THEN
+			l_string := SUBSTR(l_string,1,l_pos-1)||p_value_1||SUBSTR(l_string,l_pos+1);
+			l_pos := INSTR(l_string,'%');
+			IF l_pos > 0 THEN
+				l_string := SUBSTR(l_string,1,l_pos-1)||p_value_2||SUBSTR(l_string,l_pos+1);
+				l_pos := INSTR(l_string,'%');
+				IF l_pos > 0 THEN
+					l_string := SUBSTR(l_string,1,l_pos-1)||p_value_3||SUBSTR(l_string,l_pos+1);
+					l_pos := INSTR(l_string,'%');
+					IF l_pos > 0 THEN
+						l_string := SUBSTR(l_string,1,l_pos-1)||p_value_4||SUBSTR(l_string,l_pos+1);
+						l_pos := INSTR(l_string,'%');
+						IF l_pos > 0 THEN
+							l_string := SUBSTR(l_string,1,l_pos-1)||p_value_5||SUBSTR(l_string,l_pos+1);
+						END IF;
+					END IF;
+				END IF;
+			END IF;
+		END IF;
+		RETURN (l_string);
+	END;
+
 END;
 /
+SHOW ERRORS;
+
 CREATE OR REPLACE PACKAGE pkg_itp IS
 
 	TYPE c_cube_row IS REF CURSOR;
@@ -48,8 +82,8 @@ CREATE OR REPLACE PACKAGE pkg_itp IS
 			p_cube_row IN OUT c_cube_row,
 			p_name IN VARCHAR2);
 	PROCEDURE insert_itp (
-			p_name IN VARCHAR2,
-			p_cube_row IN OUT c_cube_row);
+			p_cube_row IN OUT c_cube_row,
+			p_name IN VARCHAR2);
 	PROCEDURE delete_itp (
 			p_name IN VARCHAR2);
 	PROCEDURE get_ite (
@@ -61,17 +95,17 @@ CREATE OR REPLACE PACKAGE pkg_itp IS
 			p_fk_itp_name IN VARCHAR2,
 			p_sequence IN NUMBER);
 	PROCEDURE insert_ite (
+			p_cube_row IN OUT c_cube_row,
 			p_fk_itp_name IN VARCHAR2,
 			p_sequence IN NUMBER,
 			p_suffix IN VARCHAR2,
 			p_domain IN VARCHAR2,
 			p_length IN NUMBER,
 			p_decimals IN NUMBER,
-			p_case_sensitive IN CHAR,
+			p_case_sensitive IN VARCHAR2,
 			p_default_value IN VARCHAR2,
-			p_spaces_allowed IN CHAR,
-			p_presentation IN VARCHAR2,
-			p_cube_row IN OUT c_cube_row);
+			p_spaces_allowed IN VARCHAR2,
+			p_presentation IN VARCHAR2);
 	PROCEDURE update_ite (
 			p_fk_itp_name IN VARCHAR2,
 			p_sequence IN NUMBER,
@@ -79,9 +113,9 @@ CREATE OR REPLACE PACKAGE pkg_itp IS
 			p_domain IN VARCHAR2,
 			p_length IN NUMBER,
 			p_decimals IN NUMBER,
-			p_case_sensitive IN CHAR,
+			p_case_sensitive IN VARCHAR2,
 			p_default_value IN VARCHAR2,
-			p_spaces_allowed IN CHAR,
+			p_spaces_allowed IN VARCHAR2,
 			p_presentation IN VARCHAR2);
 	PROCEDURE delete_ite (
 			p_fk_itp_name IN VARCHAR2,
@@ -175,8 +209,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_itp IS
 	END;
 
 	PROCEDURE insert_itp (
-			p_name IN VARCHAR2,
-			p_cube_row IN OUT c_cube_row) IS
+			p_cube_row IN OUT c_cube_row,
+			p_name IN VARCHAR2) IS
 	BEGIN
 		INSERT INTO v_information_type (
 			cube_id,
@@ -187,8 +221,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_itp IS
 
 		get_next_itp (p_cube_row, p_name);
 	EXCEPTION
-		WHEN DUP_VAL_ON_INDEX THEN
-			RAISE_APPLICATION_ERROR (-20001, 'Type information_type already exists');
+	WHEN DUP_VAL_ON_INDEX THEN
+			RAISE_APPLICATION_ERROR (-20000, pkg_cube.replace_placeholders ('Type information_type already exists'));
 	END;
 
 	PROCEDURE delete_itp (
@@ -253,17 +287,17 @@ CREATE OR REPLACE PACKAGE BODY pkg_itp IS
 	END;
 
 	PROCEDURE insert_ite (
+			p_cube_row IN OUT c_cube_row,
 			p_fk_itp_name IN VARCHAR2,
 			p_sequence IN NUMBER,
 			p_suffix IN VARCHAR2,
 			p_domain IN VARCHAR2,
 			p_length IN NUMBER,
 			p_decimals IN NUMBER,
-			p_case_sensitive IN CHAR,
+			p_case_sensitive IN VARCHAR2,
 			p_default_value IN VARCHAR2,
-			p_spaces_allowed IN CHAR,
-			p_presentation IN VARCHAR2,
-			p_cube_row IN OUT c_cube_row) IS
+			p_spaces_allowed IN VARCHAR2,
+			p_presentation IN VARCHAR2) IS
 	BEGIN
 		INSERT INTO v_information_type_element (
 			cube_id,
@@ -292,8 +326,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_itp IS
 
 		get_next_ite (p_cube_row, p_fk_itp_name, p_sequence);
 	EXCEPTION
-		WHEN DUP_VAL_ON_INDEX THEN
-			RAISE_APPLICATION_ERROR (-20001, 'Type information_type_element already exists');
+	WHEN DUP_VAL_ON_INDEX THEN
+			RAISE_APPLICATION_ERROR (-20000, pkg_cube.replace_placeholders ('Type information_type_element already exists'));
 	END;
 
 	PROCEDURE update_ite (
@@ -303,9 +337,9 @@ CREATE OR REPLACE PACKAGE BODY pkg_itp IS
 			p_domain IN VARCHAR2,
 			p_length IN NUMBER,
 			p_decimals IN NUMBER,
-			p_case_sensitive IN CHAR,
+			p_case_sensitive IN VARCHAR2,
 			p_default_value IN VARCHAR2,
-			p_spaces_allowed IN CHAR,
+			p_spaces_allowed IN VARCHAR2,
 			p_presentation IN VARCHAR2) IS
 	BEGIN
 		UPDATE v_information_type_element SET
@@ -351,7 +385,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_itp IS
 			p_fk_itp_name IN VARCHAR2,
 			p_fk_ite_sequence IN NUMBER,
 			p_code IN VARCHAR2) IS
-		l_cube_pos_action VARCHAR2(1);
+		l_cube_pos_action CHAR(1);
 		l_cube_position_sequ NUMBER(8);
 		l_cube_near_sequ NUMBER(8);
 		l_cube_count NUMBER(8) := 1024;
@@ -368,9 +402,9 @@ CREATE OR REPLACE PACKAGE BODY pkg_itp IS
 			l_cube_pos_action := p_cube_pos_action;
 		END CASE;
 		LOOP
-			IF p_cube_pos_action IN ('B', 'A') THEN
+			IF p_cube_pos_action IN  ('B', 'A') THEN
 				-- Read sequence number of the target.
-				SELECT NVL (MAX (cube_sequence), DECODE (p_cube_pos_action, 'B', 99999999, 0))
+				SELECT COALESCE (MAX (cube_sequence), CASE p_cube_pos_action WHEN 'B' THEN 99999999 ELSE 0 END)
 				INTO l_cube_position_sequ
 				FROM v_permitted_value
 				WHERE fk_itp_name = p_fk_itp_name
@@ -378,7 +412,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_itp IS
 				  AND code = p_code;
 			END IF;
 			-- read sequence number near the target.
-			SELECT DECODE (l_cube_pos_action, 'B', NVL (MAX (cube_sequence), 0), NVL (MIN (cube_sequence), 99999999))
+			SELECT CASE l_cube_pos_action WHEN 'B' THEN COALESCE (MAX (cube_sequence), 0) ELSE COALESCE (MIN (cube_sequence), 99999999) END
 			INTO l_cube_near_sequ
 			FROM v_permitted_value
 			WHERE fk_itp_name = p_fk_itp_name
@@ -420,8 +454,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_itp IS
 		l_cube_sequence NUMBER(8);
 	BEGIN
 		-- A=After B=Before F=First L=Last
-		IF NVL (p_cube_pos_action, ' ') NOT IN ('A', 'B', 'F', 'L') THEN
-			RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
+		IF COALESCE (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
+			RAISE_APPLICATION_ERROR (-20000, pkg_cube.replace_placeholders ('Invalid position action: %', p_cube_pos_action));
 		END IF;
 		determine_position_val (l_cube_sequence, p_cube_pos_action, x_fk_itp_name, x_fk_ite_sequence, x_code);
 		UPDATE v_permitted_value SET
@@ -430,7 +464,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_itp IS
 		  AND fk_ite_sequence = p_fk_ite_sequence
 		  AND code = p_code;
 		IF SQL%NOTFOUND THEN
-			RAISE_APPLICATION_ERROR (-20002, 'Type permitted_value not found');
+			RAISE_APPLICATION_ERROR (-20000, pkg_cube.replace_placeholders ('Type permitted_value not found'));
 		END IF;
 	END;
 
@@ -446,8 +480,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_itp IS
 		l_cube_sequence NUMBER(8);
 	BEGIN
 		-- A=After B=Before F=First L=Last
-		IF NVL (p_cube_pos_action, ' ') NOT IN ('A', 'B', 'F', 'L') THEN
-			RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
+		IF COALESCE (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
+			RAISE_APPLICATION_ERROR (-20000, pkg_cube.replace_placeholders ('Invalid position action: %', p_cube_pos_action));
 		END IF;
 		determine_position_val (l_cube_sequence, p_cube_pos_action, x_fk_itp_name, x_fk_ite_sequence, x_code);
 		INSERT INTO v_permitted_value (
@@ -465,8 +499,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_itp IS
 			p_code,
 			p_prompt);
 	EXCEPTION
-		WHEN DUP_VAL_ON_INDEX THEN
-			RAISE_APPLICATION_ERROR (-20001, 'Type permitted_value already exists');
+	WHEN DUP_VAL_ON_INDEX THEN
+			RAISE_APPLICATION_ERROR (-20000, pkg_cube.replace_placeholders ('Type permitted_value already exists'));
 	END;
 
 	PROCEDURE update_val (
@@ -583,26 +617,26 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_fk_typ_name IN VARCHAR2,
 			p_name IN VARCHAR2,
 			p_code IN VARCHAR2,
-			p_flag_partial_key IN CHAR,
-			p_flag_recursive IN CHAR,
-			p_recursive_cardinality IN CHAR,
-			p_cardinality IN CHAR,
-			p_sort_order IN CHAR,
+			p_flag_partial_key IN VARCHAR2,
+			p_flag_recursive IN VARCHAR2,
+			p_recursive_cardinality IN VARCHAR2,
+			p_cardinality IN VARCHAR2,
+			p_sort_order IN VARCHAR2,
 			p_icon IN VARCHAR2,
-			p_transferable IN CHAR,
+			p_transferable IN VARCHAR2,
 			x_name IN VARCHAR2);
 	PROCEDURE update_typ (
 			p_fk_bot_name IN VARCHAR2,
 			p_fk_typ_name IN VARCHAR2,
 			p_name IN VARCHAR2,
 			p_code IN VARCHAR2,
-			p_flag_partial_key IN CHAR,
-			p_flag_recursive IN CHAR,
-			p_recursive_cardinality IN CHAR,
-			p_cardinality IN CHAR,
-			p_sort_order IN CHAR,
+			p_flag_partial_key IN VARCHAR2,
+			p_flag_recursive IN VARCHAR2,
+			p_recursive_cardinality IN VARCHAR2,
+			p_cardinality IN VARCHAR2,
+			p_sort_order IN VARCHAR2,
 			p_icon IN VARCHAR2,
-			p_transferable IN CHAR);
+			p_transferable IN VARCHAR2);
 	PROCEDURE delete_typ (
 			p_name IN VARCHAR2);
 	PROCEDURE get_tsg (
@@ -638,7 +672,7 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_fk_tsg_code IN VARCHAR2,
 			p_code IN VARCHAR2,
 			p_name IN VARCHAR2,
-			p_primary_key IN CHAR,
+			p_primary_key IN VARCHAR2,
 			p_xf_atb_typ_name IN VARCHAR2,
 			p_xk_atb_name IN VARCHAR2,
 			x_fk_typ_name IN VARCHAR2,
@@ -649,7 +683,7 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_fk_tsg_code IN VARCHAR2,
 			p_code IN VARCHAR2,
 			p_name IN VARCHAR2,
-			p_primary_key IN CHAR,
+			p_primary_key IN VARCHAR2,
 			p_xf_atb_typ_name IN VARCHAR2,
 			p_xk_atb_name IN VARCHAR2);
 	PROCEDURE delete_tsg (
@@ -746,12 +780,12 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_fk_bot_name IN VARCHAR2,
 			p_fk_typ_name IN VARCHAR2,
 			p_name IN VARCHAR2,
-			p_primary_key IN CHAR,
-			p_code_display_key IN CHAR,
-			p_code_foreign_key IN CHAR,
-			p_flag_hidden IN CHAR,
+			p_primary_key IN VARCHAR2,
+			p_code_display_key IN VARCHAR2,
+			p_code_foreign_key IN VARCHAR2,
+			p_flag_hidden IN VARCHAR2,
 			p_default_value IN VARCHAR2,
-			p_unchangeable IN CHAR,
+			p_unchangeable IN VARCHAR2,
 			p_xk_itp_name IN VARCHAR2,
 			x_fk_typ_name IN VARCHAR2,
 			x_name IN VARCHAR2);
@@ -759,12 +793,12 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_fk_bot_name IN VARCHAR2,
 			p_fk_typ_name IN VARCHAR2,
 			p_name IN VARCHAR2,
-			p_primary_key IN CHAR,
-			p_code_display_key IN CHAR,
-			p_code_foreign_key IN CHAR,
-			p_flag_hidden IN CHAR,
+			p_primary_key IN VARCHAR2,
+			p_code_display_key IN VARCHAR2,
+			p_code_foreign_key IN VARCHAR2,
+			p_flag_hidden IN VARCHAR2,
 			p_default_value IN VARCHAR2,
-			p_unchangeable IN CHAR,
+			p_unchangeable IN VARCHAR2,
 			p_xk_itp_name IN VARCHAR2);
 	PROCEDURE delete_atb (
 			p_fk_typ_name IN VARCHAR2,
@@ -817,19 +851,19 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_xf_tsp_tsg_code IN VARCHAR2,
 			p_xk_tsp_code IN VARCHAR2);
 	PROCEDURE insert_rta (
+			p_cube_row IN OUT c_cube_row,
 			p_fk_bot_name IN VARCHAR2,
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_atb_name IN VARCHAR2,
-			p_include_or_exclude IN CHAR,
+			p_include_or_exclude IN VARCHAR2,
 			p_xf_tsp_typ_name IN VARCHAR2,
 			p_xf_tsp_tsg_code IN VARCHAR2,
-			p_xk_tsp_code IN VARCHAR2,
-			p_cube_row IN OUT c_cube_row);
+			p_xk_tsp_code IN VARCHAR2);
 	PROCEDURE update_rta (
 			p_fk_bot_name IN VARCHAR2,
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_atb_name IN VARCHAR2,
-			p_include_or_exclude IN CHAR,
+			p_include_or_exclude IN VARCHAR2,
 			p_xf_tsp_typ_name IN VARCHAR2,
 			p_xf_tsp_tsg_code IN VARCHAR2,
 			p_xk_tsp_code IN VARCHAR2);
@@ -896,11 +930,11 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_fk_bot_name IN VARCHAR2,
 			p_fk_typ_name IN VARCHAR2,
 			p_name IN VARCHAR2,
-			p_primary_key IN CHAR,
-			p_code_display_key IN CHAR,
+			p_primary_key IN VARCHAR2,
+			p_code_display_key IN VARCHAR2,
 			p_sequence IN NUMBER,
 			p_scope IN VARCHAR2,
-			p_unchangeable IN CHAR,
+			p_unchangeable IN VARCHAR2,
 			p_within_scope_extension IN VARCHAR2,
 			p_cube_tsg_int_ext IN VARCHAR2,
 			p_xk_bot_name IN VARCHAR2,
@@ -914,11 +948,11 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_fk_bot_name IN VARCHAR2,
 			p_fk_typ_name IN VARCHAR2,
 			p_name IN VARCHAR2,
-			p_primary_key IN CHAR,
-			p_code_display_key IN CHAR,
+			p_primary_key IN VARCHAR2,
+			p_code_display_key IN VARCHAR2,
 			p_sequence IN NUMBER,
 			p_scope IN VARCHAR2,
-			p_unchangeable IN CHAR,
+			p_unchangeable IN VARCHAR2,
 			p_within_scope_extension IN VARCHAR2,
 			p_cube_tsg_int_ext IN VARCHAR2,
 			p_xk_bot_name IN VARCHAR2,
@@ -964,23 +998,23 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_xf_tsp_tsg_code IN VARCHAR2,
 			p_xk_tsp_code IN VARCHAR2);
 	PROCEDURE insert_rtr (
+			p_cube_row IN OUT c_cube_row,
 			p_fk_bot_name IN VARCHAR2,
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_ref_sequence IN NUMBER,
 			p_fk_ref_bot_name IN VARCHAR2,
 			p_fk_ref_typ_name IN VARCHAR2,
-			p_include_or_exclude IN CHAR,
+			p_include_or_exclude IN VARCHAR2,
 			p_xf_tsp_typ_name IN VARCHAR2,
 			p_xf_tsp_tsg_code IN VARCHAR2,
-			p_xk_tsp_code IN VARCHAR2,
-			p_cube_row IN OUT c_cube_row);
+			p_xk_tsp_code IN VARCHAR2);
 	PROCEDURE update_rtr (
 			p_fk_bot_name IN VARCHAR2,
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_ref_sequence IN NUMBER,
 			p_fk_ref_bot_name IN VARCHAR2,
 			p_fk_ref_typ_name IN VARCHAR2,
-			p_include_or_exclude IN CHAR,
+			p_include_or_exclude IN VARCHAR2,
 			p_xf_tsp_typ_name IN VARCHAR2,
 			p_xf_tsp_tsg_code IN VARCHAR2,
 			p_xk_tsp_code IN VARCHAR2);
@@ -1007,7 +1041,7 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_fk_ref_sequence IN NUMBER,
 			p_fk_ref_bot_name IN VARCHAR2,
 			p_fk_ref_typ_name IN VARCHAR2,
-			p_include_or_exclude IN CHAR,
+			p_include_or_exclude IN VARCHAR2,
 			p_xf_tsp_typ_name IN VARCHAR2,
 			p_xf_tsp_tsg_code IN VARCHAR2,
 			p_xk_tsp_code IN VARCHAR2);
@@ -1017,7 +1051,7 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_fk_ref_sequence IN NUMBER,
 			p_fk_ref_bot_name IN VARCHAR2,
 			p_fk_ref_typ_name IN VARCHAR2,
-			p_include_or_exclude IN CHAR,
+			p_include_or_exclude IN VARCHAR2,
 			p_xf_tsp_typ_name IN VARCHAR2,
 			p_xf_tsp_tsg_code IN VARCHAR2,
 			p_xk_tsp_code IN VARCHAR2);
@@ -1036,17 +1070,17 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_xf_tsp_tsg_code IN VARCHAR2,
 			p_xk_tsp_code IN VARCHAR2);
 	PROCEDURE insert_rtt (
+			p_cube_row IN OUT c_cube_row,
 			p_fk_bot_name IN VARCHAR2,
 			p_fk_typ_name IN VARCHAR2,
-			p_include_or_exclude IN CHAR,
+			p_include_or_exclude IN VARCHAR2,
 			p_xf_tsp_typ_name IN VARCHAR2,
 			p_xf_tsp_tsg_code IN VARCHAR2,
-			p_xk_tsp_code IN VARCHAR2,
-			p_cube_row IN OUT c_cube_row);
+			p_xk_tsp_code IN VARCHAR2);
 	PROCEDURE update_rtt (
 			p_fk_bot_name IN VARCHAR2,
 			p_fk_typ_name IN VARCHAR2,
-			p_include_or_exclude IN CHAR,
+			p_include_or_exclude IN VARCHAR2,
 			p_xf_tsp_typ_name IN VARCHAR2,
 			p_xf_tsp_tsg_code IN VARCHAR2,
 			p_xk_tsp_code IN VARCHAR2);
@@ -1228,7 +1262,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_cube_sequence OUT NUMBER,
 			p_cube_pos_action IN VARCHAR2,
 			p_name IN VARCHAR2) IS
-		l_cube_pos_action VARCHAR2(1);
+		l_cube_pos_action CHAR(1);
 		l_cube_position_sequ NUMBER(8);
 		l_cube_near_sequ NUMBER(8);
 		l_cube_count NUMBER(8) := 1024;
@@ -1245,15 +1279,15 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			l_cube_pos_action := p_cube_pos_action;
 		END CASE;
 		LOOP
-			IF p_cube_pos_action IN ('B', 'A') THEN
+			IF p_cube_pos_action IN  ('B', 'A') THEN
 				-- Read sequence number of the target.
-				SELECT NVL (MAX (cube_sequence), DECODE (p_cube_pos_action, 'B', 99999999, 0))
+				SELECT COALESCE (MAX (cube_sequence), CASE p_cube_pos_action WHEN 'B' THEN 99999999 ELSE 0 END)
 				INTO l_cube_position_sequ
 				FROM v_business_object_type
 				WHERE name = p_name;
 			END IF;
 			-- read sequence number near the target.
-			SELECT DECODE (l_cube_pos_action, 'B', NVL (MAX (cube_sequence), 0), NVL (MIN (cube_sequence), 99999999))
+			SELECT CASE l_cube_pos_action WHEN 'B' THEN COALESCE (MAX (cube_sequence), 0) ELSE COALESCE (MIN (cube_sequence), 99999999) END
 			INTO l_cube_near_sequ
 			FROM v_business_object_type
 			WHERE 	    ( l_cube_pos_action = 'B'
@@ -1287,15 +1321,15 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 		l_cube_sequence NUMBER(8);
 	BEGIN
 		-- A=After B=Before F=First L=Last
-		IF NVL (p_cube_pos_action, ' ') NOT IN ('A', 'B', 'F', 'L') THEN
-			RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
+		IF COALESCE (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
+			RAISE_APPLICATION_ERROR (-20000, pkg_cube.replace_placeholders ('Invalid position action: %', p_cube_pos_action));
 		END IF;
 		determine_position_bot (l_cube_sequence, p_cube_pos_action, x_name);
 		UPDATE v_business_object_type SET
 			cube_sequence = l_cube_sequence
 		WHERE name = p_name;
 		IF SQL%NOTFOUND THEN
-			RAISE_APPLICATION_ERROR (-20002, 'Type business_object_type not found');
+			RAISE_APPLICATION_ERROR (-20000, pkg_cube.replace_placeholders ('Type business_object_type not found'));
 		END IF;
 	END;
 
@@ -1309,8 +1343,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 		l_cube_sequence NUMBER(8);
 	BEGIN
 		-- A=After B=Before F=First L=Last
-		IF NVL (p_cube_pos_action, ' ') NOT IN ('A', 'B', 'F', 'L') THEN
-			RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
+		IF COALESCE (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
+			RAISE_APPLICATION_ERROR (-20000, pkg_cube.replace_placeholders ('Invalid position action: %', p_cube_pos_action));
 		END IF;
 		determine_position_bot (l_cube_sequence, p_cube_pos_action, x_name);
 		INSERT INTO v_business_object_type (
@@ -1328,8 +1362,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_directory,
 			p_api_url);
 	EXCEPTION
-		WHEN DUP_VAL_ON_INDEX THEN
-			RAISE_APPLICATION_ERROR (-20001, 'Type business_object_type already exists');
+	WHEN DUP_VAL_ON_INDEX THEN
+			RAISE_APPLICATION_ERROR (-20000, pkg_cube.replace_placeholders ('Type business_object_type already exists'));
 	END;
 
 	PROCEDURE update_bot (
@@ -1602,7 +1636,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 				EXIT; -- OK
 			END IF;
 			IF l_name = p_name THEN
-				RAISE_APPLICATION_ERROR (-20003, 'Target Type type in hierarchy of moving object');
+				RAISE_APPLICATION_ERROR (-20000, pkg_cube.replace_placeholders ('Target Type type in hierarchy of moving object'));
 			END IF;
 			SELECT fk_typ_name
 			INTO l_name
@@ -1617,7 +1651,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_fk_bot_name IN VARCHAR2,
 			p_fk_typ_name IN VARCHAR2,
 			p_name IN VARCHAR2) IS
-		l_cube_pos_action VARCHAR2(1);
+		l_cube_pos_action CHAR(1);
 		l_cube_position_sequ NUMBER(8);
 		l_cube_near_sequ NUMBER(8);
 		l_cube_count NUMBER(8) := 1024;
@@ -1634,15 +1668,15 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			l_cube_pos_action := p_cube_pos_action;
 		END CASE;
 		LOOP
-			IF p_cube_pos_action IN ('B', 'A') THEN
+			IF p_cube_pos_action IN  ('B', 'A') THEN
 				-- Read sequence number of the target.
-				SELECT NVL (MAX (cube_sequence), DECODE (p_cube_pos_action, 'B', 99999999, 0))
+				SELECT COALESCE (MAX (cube_sequence), CASE p_cube_pos_action WHEN 'B' THEN 99999999 ELSE 0 END)
 				INTO l_cube_position_sequ
 				FROM v_type
 				WHERE name = p_name;
 			END IF;
 			-- read sequence number near the target.
-			SELECT DECODE (l_cube_pos_action, 'B', NVL (MAX (cube_sequence), 0), NVL (MIN (cube_sequence), 99999999))
+			SELECT CASE l_cube_pos_action WHEN 'B' THEN COALESCE (MAX (cube_sequence), 0) ELSE COALESCE (MIN (cube_sequence), 99999999) END
 			INTO l_cube_near_sequ
 			FROM v_type
 			WHERE fk_bot_name = p_fk_bot_name
@@ -1686,11 +1720,11 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 		l_fk_typ_name v_type.fk_typ_name%TYPE;
 	BEGIN
 		-- A=After B=Before F=First L=Last
-		IF NVL (p_cube_pos_action, ' ') NOT IN ('A', 'B', 'F', 'L') THEN
-			RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
+		IF COALESCE (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
+			RAISE_APPLICATION_ERROR (-20000, pkg_cube.replace_placeholders ('Invalid position action: %', p_cube_pos_action));
 		END IF;
 		-- Get parent id of the target.
-		IF p_cube_pos_action IN ('B', 'A') THEN
+		IF p_cube_pos_action IN  ('B', 'A') THEN
 			SELECT fk_bot_name, fk_typ_name
 			INTO l_fk_bot_name, l_fk_typ_name
 			FROM v_type
@@ -1710,7 +1744,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			cube_sequence = l_cube_sequence
 		WHERE name = p_name;
 		IF SQL%NOTFOUND THEN
-			RAISE_APPLICATION_ERROR (-20002, 'Type type not found');
+			RAISE_APPLICATION_ERROR (-20000, pkg_cube.replace_placeholders ('Type type not found'));
 		END IF;
 	END;
 
@@ -1720,19 +1754,19 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_fk_typ_name IN VARCHAR2,
 			p_name IN VARCHAR2,
 			p_code IN VARCHAR2,
-			p_flag_partial_key IN CHAR,
-			p_flag_recursive IN CHAR,
-			p_recursive_cardinality IN CHAR,
-			p_cardinality IN CHAR,
-			p_sort_order IN CHAR,
+			p_flag_partial_key IN VARCHAR2,
+			p_flag_recursive IN VARCHAR2,
+			p_recursive_cardinality IN VARCHAR2,
+			p_cardinality IN VARCHAR2,
+			p_sort_order IN VARCHAR2,
 			p_icon IN VARCHAR2,
-			p_transferable IN CHAR,
+			p_transferable IN VARCHAR2,
 			x_name IN VARCHAR2) IS
 		l_cube_sequence NUMBER(8);
 	BEGIN
 		-- A=After B=Before F=First L=Last
-		IF NVL (p_cube_pos_action, ' ') NOT IN ('A', 'B', 'F', 'L') THEN
-			RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
+		IF COALESCE (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
+			RAISE_APPLICATION_ERROR (-20000, pkg_cube.replace_placeholders ('Invalid position action: %', p_cube_pos_action));
 		END IF;
 		determine_position_typ (l_cube_sequence, p_cube_pos_action, p_fk_bot_name, p_fk_typ_name, x_name);
 		INSERT INTO v_type (
@@ -1766,8 +1800,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_icon,
 			p_transferable);
 	EXCEPTION
-		WHEN DUP_VAL_ON_INDEX THEN
-			RAISE_APPLICATION_ERROR (-20001, 'Type type already exists');
+	WHEN DUP_VAL_ON_INDEX THEN
+			RAISE_APPLICATION_ERROR (-20000, pkg_cube.replace_placeholders ('Type type already exists'));
 	END;
 
 	PROCEDURE update_typ (
@@ -1775,13 +1809,13 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_fk_typ_name IN VARCHAR2,
 			p_name IN VARCHAR2,
 			p_code IN VARCHAR2,
-			p_flag_partial_key IN CHAR,
-			p_flag_recursive IN CHAR,
-			p_recursive_cardinality IN CHAR,
-			p_cardinality IN CHAR,
-			p_sort_order IN CHAR,
+			p_flag_partial_key IN VARCHAR2,
+			p_flag_recursive IN VARCHAR2,
+			p_recursive_cardinality IN VARCHAR2,
+			p_cardinality IN VARCHAR2,
+			p_sort_order IN VARCHAR2,
 			p_icon IN VARCHAR2,
-			p_transferable IN CHAR) IS
+			p_transferable IN VARCHAR2) IS
 	BEGIN
 		UPDATE v_type SET
 			fk_bot_name = p_fk_bot_name,
@@ -1896,7 +1930,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 				EXIT; -- OK
 			END IF;
 			IF l_code = p_code THEN
-				RAISE_APPLICATION_ERROR (-20003, 'Target Type type_specialisation_group in hierarchy of moving object');
+				RAISE_APPLICATION_ERROR (-20000, pkg_cube.replace_placeholders ('Target Type type_specialisation_group in hierarchy of moving object'));
 			END IF;
 			SELECT fk_tsg_code
 			INTO l_code
@@ -1912,7 +1946,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_tsg_code IN VARCHAR2,
 			p_code IN VARCHAR2) IS
-		l_cube_pos_action VARCHAR2(1);
+		l_cube_pos_action CHAR(1);
 		l_cube_position_sequ NUMBER(8);
 		l_cube_near_sequ NUMBER(8);
 		l_cube_count NUMBER(8) := 1024;
@@ -1929,16 +1963,16 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			l_cube_pos_action := p_cube_pos_action;
 		END CASE;
 		LOOP
-			IF p_cube_pos_action IN ('B', 'A') THEN
+			IF p_cube_pos_action IN  ('B', 'A') THEN
 				-- Read sequence number of the target.
-				SELECT NVL (MAX (cube_sequence), DECODE (p_cube_pos_action, 'B', 99999999, 0))
+				SELECT COALESCE (MAX (cube_sequence), CASE p_cube_pos_action WHEN 'B' THEN 99999999 ELSE 0 END)
 				INTO l_cube_position_sequ
 				FROM v_type_specialisation_group
 				WHERE fk_typ_name = p_fk_typ_name
 				  AND code = p_code;
 			END IF;
 			-- read sequence number near the target.
-			SELECT DECODE (l_cube_pos_action, 'B', NVL (MAX (cube_sequence), 0), NVL (MIN (cube_sequence), 99999999))
+			SELECT CASE l_cube_pos_action WHEN 'B' THEN COALESCE (MAX (cube_sequence), 0) ELSE COALESCE (MIN (cube_sequence), 99999999) END
 			INTO l_cube_near_sequ
 			FROM v_type_specialisation_group
 			WHERE fk_typ_name = p_fk_typ_name
@@ -1983,11 +2017,11 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 		l_fk_tsg_code v_type_specialisation_group.fk_tsg_code%TYPE;
 	BEGIN
 		-- A=After B=Before F=First L=Last
-		IF NVL (p_cube_pos_action, ' ') NOT IN ('A', 'B', 'F', 'L') THEN
-			RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
+		IF COALESCE (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
+			RAISE_APPLICATION_ERROR (-20000, pkg_cube.replace_placeholders ('Invalid position action: %', p_cube_pos_action));
 		END IF;
 		-- Get parent id of the target.
-		IF p_cube_pos_action IN ('B', 'A') THEN
+		IF p_cube_pos_action IN  ('B', 'A') THEN
 			SELECT fk_tsg_code
 			INTO l_fk_tsg_code
 			FROM v_type_specialisation_group
@@ -2004,7 +2038,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 		WHERE fk_typ_name = p_fk_typ_name
 		  AND code = p_code;
 		IF SQL%NOTFOUND THEN
-			RAISE_APPLICATION_ERROR (-20002, 'Type type_specialisation_group not found');
+			RAISE_APPLICATION_ERROR (-20000, pkg_cube.replace_placeholders ('Type type_specialisation_group not found'));
 		END IF;
 	END;
 
@@ -2015,7 +2049,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_fk_tsg_code IN VARCHAR2,
 			p_code IN VARCHAR2,
 			p_name IN VARCHAR2,
-			p_primary_key IN CHAR,
+			p_primary_key IN VARCHAR2,
 			p_xf_atb_typ_name IN VARCHAR2,
 			p_xk_atb_name IN VARCHAR2,
 			x_fk_typ_name IN VARCHAR2,
@@ -2023,8 +2057,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 		l_cube_sequence NUMBER(8);
 	BEGIN
 		-- A=After B=Before F=First L=Last
-		IF NVL (p_cube_pos_action, ' ') NOT IN ('A', 'B', 'F', 'L') THEN
-			RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
+		IF COALESCE (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
+			RAISE_APPLICATION_ERROR (-20000, pkg_cube.replace_placeholders ('Invalid position action: %', p_cube_pos_action));
 		END IF;
 		determine_position_tsg (l_cube_sequence, p_cube_pos_action, x_fk_typ_name, p_fk_tsg_code, x_code);
 		INSERT INTO v_type_specialisation_group (
@@ -2052,8 +2086,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_xf_atb_typ_name,
 			p_xk_atb_name);
 	EXCEPTION
-		WHEN DUP_VAL_ON_INDEX THEN
-			RAISE_APPLICATION_ERROR (-20001, 'Type type_specialisation_group already exists');
+	WHEN DUP_VAL_ON_INDEX THEN
+			RAISE_APPLICATION_ERROR (-20000, pkg_cube.replace_placeholders ('Type type_specialisation_group already exists'));
 	END;
 
 	PROCEDURE update_tsg (
@@ -2062,7 +2096,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_fk_tsg_code IN VARCHAR2,
 			p_code IN VARCHAR2,
 			p_name IN VARCHAR2,
-			p_primary_key IN CHAR,
+			p_primary_key IN VARCHAR2,
 			p_xf_atb_typ_name IN VARCHAR2,
 			p_xk_atb_name IN VARCHAR2) IS
 	BEGIN
@@ -2201,7 +2235,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_tsg_code IN VARCHAR2,
 			p_code IN VARCHAR2) IS
-		l_cube_pos_action VARCHAR2(1);
+		l_cube_pos_action CHAR(1);
 		l_cube_position_sequ NUMBER(8);
 		l_cube_near_sequ NUMBER(8);
 		l_cube_count NUMBER(8) := 1024;
@@ -2218,9 +2252,9 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			l_cube_pos_action := p_cube_pos_action;
 		END CASE;
 		LOOP
-			IF p_cube_pos_action IN ('B', 'A') THEN
+			IF p_cube_pos_action IN  ('B', 'A') THEN
 				-- Read sequence number of the target.
-				SELECT NVL (MAX (cube_sequence), DECODE (p_cube_pos_action, 'B', 99999999, 0))
+				SELECT COALESCE (MAX (cube_sequence), CASE p_cube_pos_action WHEN 'B' THEN 99999999 ELSE 0 END)
 				INTO l_cube_position_sequ
 				FROM v_type_specialisation
 				WHERE fk_typ_name = p_fk_typ_name
@@ -2228,7 +2262,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 				  AND code = p_code;
 			END IF;
 			-- read sequence number near the target.
-			SELECT DECODE (l_cube_pos_action, 'B', NVL (MAX (cube_sequence), 0), NVL (MIN (cube_sequence), 99999999))
+			SELECT CASE l_cube_pos_action WHEN 'B' THEN COALESCE (MAX (cube_sequence), 0) ELSE COALESCE (MIN (cube_sequence), 99999999) END
 			INTO l_cube_near_sequ
 			FROM v_type_specialisation
 			WHERE fk_typ_name = p_fk_typ_name
@@ -2270,8 +2304,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 		l_cube_sequence NUMBER(8);
 	BEGIN
 		-- A=After B=Before F=First L=Last
-		IF NVL (p_cube_pos_action, ' ') NOT IN ('A', 'B', 'F', 'L') THEN
-			RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
+		IF COALESCE (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
+			RAISE_APPLICATION_ERROR (-20000, pkg_cube.replace_placeholders ('Invalid position action: %', p_cube_pos_action));
 		END IF;
 		determine_position_tsp (l_cube_sequence, p_cube_pos_action, x_fk_typ_name, x_fk_tsg_code, x_code);
 		UPDATE v_type_specialisation SET
@@ -2280,7 +2314,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 		  AND fk_tsg_code = p_fk_tsg_code
 		  AND code = p_code;
 		IF SQL%NOTFOUND THEN
-			RAISE_APPLICATION_ERROR (-20002, 'Type type_specialisation not found');
+			RAISE_APPLICATION_ERROR (-20000, pkg_cube.replace_placeholders ('Type type_specialisation not found'));
 		END IF;
 	END;
 
@@ -2300,8 +2334,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 		l_cube_sequence NUMBER(8);
 	BEGIN
 		-- A=After B=Before F=First L=Last
-		IF NVL (p_cube_pos_action, ' ') NOT IN ('A', 'B', 'F', 'L') THEN
-			RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
+		IF COALESCE (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
+			RAISE_APPLICATION_ERROR (-20000, pkg_cube.replace_placeholders ('Invalid position action: %', p_cube_pos_action));
 		END IF;
 		determine_position_tsp (l_cube_sequence, p_cube_pos_action, x_fk_typ_name, x_fk_tsg_code, x_code);
 		INSERT INTO v_type_specialisation (
@@ -2327,8 +2361,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_xf_tsp_tsg_code,
 			p_xk_tsp_code);
 	EXCEPTION
-		WHEN DUP_VAL_ON_INDEX THEN
-			RAISE_APPLICATION_ERROR (-20001, 'Type type_specialisation already exists');
+	WHEN DUP_VAL_ON_INDEX THEN
+			RAISE_APPLICATION_ERROR (-20000, pkg_cube.replace_placeholders ('Type type_specialisation already exists'));
 	END;
 
 	PROCEDURE update_tsp (
@@ -2517,7 +2551,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_cube_pos_action IN VARCHAR2,
 			p_fk_typ_name IN VARCHAR2,
 			p_name IN VARCHAR2) IS
-		l_cube_pos_action VARCHAR2(1);
+		l_cube_pos_action CHAR(1);
 		l_cube_position_sequ NUMBER(8);
 		l_cube_near_sequ NUMBER(8);
 		l_cube_count NUMBER(8) := 1024;
@@ -2534,16 +2568,16 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			l_cube_pos_action := p_cube_pos_action;
 		END CASE;
 		LOOP
-			IF p_cube_pos_action IN ('B', 'A') THEN
+			IF p_cube_pos_action IN  ('B', 'A') THEN
 				-- Read sequence number of the target.
-				SELECT NVL (MAX (cube_sequence), DECODE (p_cube_pos_action, 'B', 99999999, 0))
+				SELECT COALESCE (MAX (cube_sequence), CASE p_cube_pos_action WHEN 'B' THEN 99999999 ELSE 0 END)
 				INTO l_cube_position_sequ
 				FROM v_attribute
 				WHERE fk_typ_name = p_fk_typ_name
 				  AND name = p_name;
 			END IF;
 			-- read sequence number near the target.
-			SELECT DECODE (l_cube_pos_action, 'B', NVL (MAX (cube_sequence), 0), NVL (MIN (cube_sequence), 99999999))
+			SELECT CASE l_cube_pos_action WHEN 'B' THEN COALESCE (MAX (cube_sequence), 0) ELSE COALESCE (MIN (cube_sequence), 99999999) END
 			INTO l_cube_near_sequ
 			FROM v_attribute
 			WHERE fk_typ_name = p_fk_typ_name
@@ -2581,8 +2615,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 		l_cube_sequence NUMBER(8);
 	BEGIN
 		-- A=After B=Before F=First L=Last
-		IF NVL (p_cube_pos_action, ' ') NOT IN ('A', 'B', 'F', 'L') THEN
-			RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
+		IF COALESCE (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
+			RAISE_APPLICATION_ERROR (-20000, pkg_cube.replace_placeholders ('Invalid position action: %', p_cube_pos_action));
 		END IF;
 		determine_position_atb (l_cube_sequence, p_cube_pos_action, x_fk_typ_name, x_name);
 		UPDATE v_attribute SET
@@ -2590,7 +2624,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 		WHERE fk_typ_name = p_fk_typ_name
 		  AND name = p_name;
 		IF SQL%NOTFOUND THEN
-			RAISE_APPLICATION_ERROR (-20002, 'Type attribute not found');
+			RAISE_APPLICATION_ERROR (-20000, pkg_cube.replace_placeholders ('Type attribute not found'));
 		END IF;
 	END;
 
@@ -2599,20 +2633,20 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_fk_bot_name IN VARCHAR2,
 			p_fk_typ_name IN VARCHAR2,
 			p_name IN VARCHAR2,
-			p_primary_key IN CHAR,
-			p_code_display_key IN CHAR,
-			p_code_foreign_key IN CHAR,
-			p_flag_hidden IN CHAR,
+			p_primary_key IN VARCHAR2,
+			p_code_display_key IN VARCHAR2,
+			p_code_foreign_key IN VARCHAR2,
+			p_flag_hidden IN VARCHAR2,
 			p_default_value IN VARCHAR2,
-			p_unchangeable IN CHAR,
+			p_unchangeable IN VARCHAR2,
 			p_xk_itp_name IN VARCHAR2,
 			x_fk_typ_name IN VARCHAR2,
 			x_name IN VARCHAR2) IS
 		l_cube_sequence NUMBER(8);
 	BEGIN
 		-- A=After B=Before F=First L=Last
-		IF NVL (p_cube_pos_action, ' ') NOT IN ('A', 'B', 'F', 'L') THEN
-			RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
+		IF COALESCE (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
+			RAISE_APPLICATION_ERROR (-20000, pkg_cube.replace_placeholders ('Invalid position action: %', p_cube_pos_action));
 		END IF;
 		determine_position_atb (l_cube_sequence, p_cube_pos_action, x_fk_typ_name, x_name);
 		INSERT INTO v_attribute (
@@ -2642,20 +2676,20 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_unchangeable,
 			p_xk_itp_name);
 	EXCEPTION
-		WHEN DUP_VAL_ON_INDEX THEN
-			RAISE_APPLICATION_ERROR (-20001, 'Type attribute already exists');
+	WHEN DUP_VAL_ON_INDEX THEN
+			RAISE_APPLICATION_ERROR (-20000, pkg_cube.replace_placeholders ('Type attribute already exists'));
 	END;
 
 	PROCEDURE update_atb (
 			p_fk_bot_name IN VARCHAR2,
 			p_fk_typ_name IN VARCHAR2,
 			p_name IN VARCHAR2,
-			p_primary_key IN CHAR,
-			p_code_display_key IN CHAR,
-			p_code_foreign_key IN CHAR,
-			p_flag_hidden IN CHAR,
+			p_primary_key IN VARCHAR2,
+			p_code_display_key IN VARCHAR2,
+			p_code_foreign_key IN VARCHAR2,
+			p_flag_hidden IN VARCHAR2,
 			p_default_value IN VARCHAR2,
-			p_unchangeable IN CHAR,
+			p_unchangeable IN VARCHAR2,
 			p_xk_itp_name IN VARCHAR2) IS
 	BEGIN
 		UPDATE v_attribute SET
@@ -2725,8 +2759,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_xk_typ_name,
 			p_xk_typ_name_1);
 	EXCEPTION
-		WHEN DUP_VAL_ON_INDEX THEN
-			RAISE_APPLICATION_ERROR (-20001, 'Type derivation already exists');
+	WHEN DUP_VAL_ON_INDEX THEN
+			RAISE_APPLICATION_ERROR (-20000, pkg_cube.replace_placeholders ('Type derivation already exists'));
 	END;
 
 	PROCEDURE update_der (
@@ -2790,8 +2824,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_fk_atb_name,
 			p_text);
 	EXCEPTION
-		WHEN DUP_VAL_ON_INDEX THEN
-			RAISE_APPLICATION_ERROR (-20001, 'Type description_attribute already exists');
+	WHEN DUP_VAL_ON_INDEX THEN
+			RAISE_APPLICATION_ERROR (-20000, pkg_cube.replace_placeholders ('Type description_attribute already exists'));
 	END;
 
 	PROCEDURE update_dca (
@@ -2871,14 +2905,14 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 	END;
 
 	PROCEDURE insert_rta (
+			p_cube_row IN OUT c_cube_row,
 			p_fk_bot_name IN VARCHAR2,
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_atb_name IN VARCHAR2,
-			p_include_or_exclude IN CHAR,
+			p_include_or_exclude IN VARCHAR2,
 			p_xf_tsp_typ_name IN VARCHAR2,
 			p_xf_tsp_tsg_code IN VARCHAR2,
-			p_xk_tsp_code IN VARCHAR2,
-			p_cube_row IN OUT c_cube_row) IS
+			p_xk_tsp_code IN VARCHAR2) IS
 	BEGIN
 		INSERT INTO v_restriction_type_spec_atb (
 			cube_id,
@@ -2901,15 +2935,15 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 
 		get_next_rta (p_cube_row, p_fk_typ_name, p_fk_atb_name, p_xf_tsp_typ_name, p_xf_tsp_tsg_code, p_xk_tsp_code);
 	EXCEPTION
-		WHEN DUP_VAL_ON_INDEX THEN
-			RAISE_APPLICATION_ERROR (-20001, 'Type restriction_type_spec_atb already exists');
+	WHEN DUP_VAL_ON_INDEX THEN
+			RAISE_APPLICATION_ERROR (-20000, pkg_cube.replace_placeholders ('Type restriction_type_spec_atb already exists'));
 	END;
 
 	PROCEDURE update_rta (
 			p_fk_bot_name IN VARCHAR2,
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_atb_name IN VARCHAR2,
-			p_include_or_exclude IN CHAR,
+			p_include_or_exclude IN VARCHAR2,
 			p_xf_tsp_typ_name IN VARCHAR2,
 			p_xf_tsp_tsg_code IN VARCHAR2,
 			p_xk_tsp_code IN VARCHAR2) IS
@@ -3092,7 +3126,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_sequence IN NUMBER,
 			p_xk_bot_name IN VARCHAR2,
 			p_xk_typ_name IN VARCHAR2) IS
-		l_cube_pos_action VARCHAR2(1);
+		l_cube_pos_action CHAR(1);
 		l_cube_position_sequ NUMBER(8);
 		l_cube_near_sequ NUMBER(8);
 		l_cube_count NUMBER(8) := 1024;
@@ -3109,9 +3143,9 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			l_cube_pos_action := p_cube_pos_action;
 		END CASE;
 		LOOP
-			IF p_cube_pos_action IN ('B', 'A') THEN
+			IF p_cube_pos_action IN  ('B', 'A') THEN
 				-- Read sequence number of the target.
-				SELECT NVL (MAX (cube_sequence), DECODE (p_cube_pos_action, 'B', 99999999, 0))
+				SELECT COALESCE (MAX (cube_sequence), CASE p_cube_pos_action WHEN 'B' THEN 99999999 ELSE 0 END)
 				INTO l_cube_position_sequ
 				FROM v_reference
 				WHERE fk_typ_name = p_fk_typ_name
@@ -3120,7 +3154,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 				  AND xk_typ_name = p_xk_typ_name;
 			END IF;
 			-- read sequence number near the target.
-			SELECT DECODE (l_cube_pos_action, 'B', NVL (MAX (cube_sequence), 0), NVL (MIN (cube_sequence), 99999999))
+			SELECT CASE l_cube_pos_action WHEN 'B' THEN COALESCE (MAX (cube_sequence), 0) ELSE COALESCE (MIN (cube_sequence), 99999999) END
 			INTO l_cube_near_sequ
 			FROM v_reference
 			WHERE fk_typ_name = p_fk_typ_name
@@ -3162,8 +3196,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 		l_cube_sequence NUMBER(8);
 	BEGIN
 		-- A=After B=Before F=First L=Last
-		IF NVL (p_cube_pos_action, ' ') NOT IN ('A', 'B', 'F', 'L') THEN
-			RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
+		IF COALESCE (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
+			RAISE_APPLICATION_ERROR (-20000, pkg_cube.replace_placeholders ('Invalid position action: %', p_cube_pos_action));
 		END IF;
 		determine_position_ref (l_cube_sequence, p_cube_pos_action, x_fk_typ_name, x_sequence, x_xk_bot_name, x_xk_typ_name);
 		UPDATE v_reference SET
@@ -3173,7 +3207,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 		  AND xk_bot_name = p_xk_bot_name
 		  AND xk_typ_name = p_xk_typ_name;
 		IF SQL%NOTFOUND THEN
-			RAISE_APPLICATION_ERROR (-20002, 'Type reference not found');
+			RAISE_APPLICATION_ERROR (-20000, pkg_cube.replace_placeholders ('Type reference not found'));
 		END IF;
 	END;
 
@@ -3182,11 +3216,11 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_fk_bot_name IN VARCHAR2,
 			p_fk_typ_name IN VARCHAR2,
 			p_name IN VARCHAR2,
-			p_primary_key IN CHAR,
-			p_code_display_key IN CHAR,
+			p_primary_key IN VARCHAR2,
+			p_code_display_key IN VARCHAR2,
 			p_sequence IN NUMBER,
 			p_scope IN VARCHAR2,
-			p_unchangeable IN CHAR,
+			p_unchangeable IN VARCHAR2,
 			p_within_scope_extension IN VARCHAR2,
 			p_cube_tsg_int_ext IN VARCHAR2,
 			p_xk_bot_name IN VARCHAR2,
@@ -3199,8 +3233,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 		l_cube_sequence NUMBER(8);
 	BEGIN
 		-- A=After B=Before F=First L=Last
-		IF NVL (p_cube_pos_action, ' ') NOT IN ('A', 'B', 'F', 'L') THEN
-			RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
+		IF COALESCE (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
+			RAISE_APPLICATION_ERROR (-20000, pkg_cube.replace_placeholders ('Invalid position action: %', p_cube_pos_action));
 		END IF;
 		determine_position_ref (l_cube_sequence, p_cube_pos_action, x_fk_typ_name, x_sequence, x_xk_bot_name, x_xk_typ_name);
 		INSERT INTO v_reference (
@@ -3236,19 +3270,19 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_xk_typ_name,
 			p_xk_typ_name_1);
 	EXCEPTION
-		WHEN DUP_VAL_ON_INDEX THEN
-			RAISE_APPLICATION_ERROR (-20001, 'Type reference already exists');
+	WHEN DUP_VAL_ON_INDEX THEN
+			RAISE_APPLICATION_ERROR (-20000, pkg_cube.replace_placeholders ('Type reference already exists'));
 	END;
 
 	PROCEDURE update_ref (
 			p_fk_bot_name IN VARCHAR2,
 			p_fk_typ_name IN VARCHAR2,
 			p_name IN VARCHAR2,
-			p_primary_key IN CHAR,
-			p_code_display_key IN CHAR,
+			p_primary_key IN VARCHAR2,
+			p_code_display_key IN VARCHAR2,
 			p_sequence IN NUMBER,
 			p_scope IN VARCHAR2,
-			p_unchangeable IN CHAR,
+			p_unchangeable IN VARCHAR2,
 			p_within_scope_extension IN VARCHAR2,
 			p_cube_tsg_int_ext IN VARCHAR2,
 			p_xk_bot_name IN VARCHAR2,
@@ -3327,8 +3361,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_fk_ref_typ_name,
 			p_text);
 	EXCEPTION
-		WHEN DUP_VAL_ON_INDEX THEN
-			RAISE_APPLICATION_ERROR (-20001, 'Type description_reference already exists');
+	WHEN DUP_VAL_ON_INDEX THEN
+			RAISE_APPLICATION_ERROR (-20000, pkg_cube.replace_placeholders ('Type description_reference already exists'));
 	END;
 
 	PROCEDURE update_dcr (
@@ -3437,16 +3471,16 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 	END;
 
 	PROCEDURE insert_rtr (
+			p_cube_row IN OUT c_cube_row,
 			p_fk_bot_name IN VARCHAR2,
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_ref_sequence IN NUMBER,
 			p_fk_ref_bot_name IN VARCHAR2,
 			p_fk_ref_typ_name IN VARCHAR2,
-			p_include_or_exclude IN CHAR,
+			p_include_or_exclude IN VARCHAR2,
 			p_xf_tsp_typ_name IN VARCHAR2,
 			p_xf_tsp_tsg_code IN VARCHAR2,
-			p_xk_tsp_code IN VARCHAR2,
-			p_cube_row IN OUT c_cube_row) IS
+			p_xk_tsp_code IN VARCHAR2) IS
 	BEGIN
 		INSERT INTO v_restriction_type_spec_ref (
 			cube_id,
@@ -3473,8 +3507,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 
 		get_next_rtr (p_cube_row, p_fk_typ_name, p_fk_ref_sequence, p_fk_ref_bot_name, p_fk_ref_typ_name, p_xf_tsp_typ_name, p_xf_tsp_tsg_code, p_xk_tsp_code);
 	EXCEPTION
-		WHEN DUP_VAL_ON_INDEX THEN
-			RAISE_APPLICATION_ERROR (-20001, 'Type restriction_type_spec_ref already exists');
+	WHEN DUP_VAL_ON_INDEX THEN
+			RAISE_APPLICATION_ERROR (-20000, pkg_cube.replace_placeholders ('Type restriction_type_spec_ref already exists'));
 	END;
 
 	PROCEDURE update_rtr (
@@ -3483,7 +3517,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_fk_ref_sequence IN NUMBER,
 			p_fk_ref_bot_name IN VARCHAR2,
 			p_fk_ref_typ_name IN VARCHAR2,
-			p_include_or_exclude IN CHAR,
+			p_include_or_exclude IN VARCHAR2,
 			p_xf_tsp_typ_name IN VARCHAR2,
 			p_xf_tsp_tsg_code IN VARCHAR2,
 			p_xk_tsp_code IN VARCHAR2) IS
@@ -3549,7 +3583,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_fk_ref_sequence IN NUMBER,
 			p_fk_ref_bot_name IN VARCHAR2,
 			p_fk_ref_typ_name IN VARCHAR2,
-			p_include_or_exclude IN CHAR,
+			p_include_or_exclude IN VARCHAR2,
 			p_xf_tsp_typ_name IN VARCHAR2,
 			p_xf_tsp_tsg_code IN VARCHAR2,
 			p_xk_tsp_code IN VARCHAR2) IS
@@ -3577,8 +3611,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_xf_tsp_tsg_code,
 			p_xk_tsp_code);
 	EXCEPTION
-		WHEN DUP_VAL_ON_INDEX THEN
-			RAISE_APPLICATION_ERROR (-20001, 'Type restriction_target_type_spec already exists');
+	WHEN DUP_VAL_ON_INDEX THEN
+			RAISE_APPLICATION_ERROR (-20000, pkg_cube.replace_placeholders ('Type restriction_target_type_spec already exists'));
 	END;
 
 	PROCEDURE update_rts (
@@ -3587,7 +3621,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_fk_ref_sequence IN NUMBER,
 			p_fk_ref_bot_name IN VARCHAR2,
 			p_fk_ref_typ_name IN VARCHAR2,
-			p_include_or_exclude IN CHAR,
+			p_include_or_exclude IN VARCHAR2,
 			p_xf_tsp_typ_name IN VARCHAR2,
 			p_xf_tsp_tsg_code IN VARCHAR2,
 			p_xk_tsp_code IN VARCHAR2) IS
@@ -3669,13 +3703,13 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 	END;
 
 	PROCEDURE insert_rtt (
+			p_cube_row IN OUT c_cube_row,
 			p_fk_bot_name IN VARCHAR2,
 			p_fk_typ_name IN VARCHAR2,
-			p_include_or_exclude IN CHAR,
+			p_include_or_exclude IN VARCHAR2,
 			p_xf_tsp_typ_name IN VARCHAR2,
 			p_xf_tsp_tsg_code IN VARCHAR2,
-			p_xk_tsp_code IN VARCHAR2,
-			p_cube_row IN OUT c_cube_row) IS
+			p_xk_tsp_code IN VARCHAR2) IS
 	BEGIN
 		INSERT INTO v_restriction_type_spec_typ (
 			cube_id,
@@ -3696,14 +3730,14 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 
 		get_next_rtt (p_cube_row, p_fk_typ_name, p_xf_tsp_typ_name, p_xf_tsp_tsg_code, p_xk_tsp_code);
 	EXCEPTION
-		WHEN DUP_VAL_ON_INDEX THEN
-			RAISE_APPLICATION_ERROR (-20001, 'Type restriction_type_spec_typ already exists');
+	WHEN DUP_VAL_ON_INDEX THEN
+			RAISE_APPLICATION_ERROR (-20000, pkg_cube.replace_placeholders ('Type restriction_type_spec_typ already exists'));
 	END;
 
 	PROCEDURE update_rtt (
 			p_fk_bot_name IN VARCHAR2,
 			p_fk_typ_name IN VARCHAR2,
-			p_include_or_exclude IN CHAR,
+			p_include_or_exclude IN VARCHAR2,
 			p_xf_tsp_typ_name IN VARCHAR2,
 			p_xf_tsp_tsg_code IN VARCHAR2,
 			p_xk_tsp_code IN VARCHAR2) IS
@@ -3845,7 +3879,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			  AND l_xf_atb_typ_name = p_xf_atb_typ_name
 			  AND l_xk_atb_name = p_xk_atb_name
 			  AND l_xk_typ_name = p_xk_typ_name THEN
-				RAISE_APPLICATION_ERROR (-20003, 'Target Type json_path in hierarchy of moving object');
+				RAISE_APPLICATION_ERROR (-20000, pkg_cube.replace_placeholders ('Target Type json_path in hierarchy of moving object'));
 			END IF;
 			SELECT fk_jsn_name, fk_jsn_location, fk_jsn_atb_typ_name, fk_jsn_atb_name, fk_jsn_typ_name
 			INTO l_name, l_location, l_xf_atb_typ_name, l_xk_atb_name, l_xk_typ_name
@@ -3873,7 +3907,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_xf_atb_typ_name IN VARCHAR2,
 			p_xk_atb_name IN VARCHAR2,
 			p_xk_typ_name IN VARCHAR2) IS
-		l_cube_pos_action VARCHAR2(1);
+		l_cube_pos_action CHAR(1);
 		l_cube_position_sequ NUMBER(8);
 		l_cube_near_sequ NUMBER(8);
 		l_cube_count NUMBER(8) := 1024;
@@ -3890,9 +3924,9 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			l_cube_pos_action := p_cube_pos_action;
 		END CASE;
 		LOOP
-			IF p_cube_pos_action IN ('B', 'A') THEN
+			IF p_cube_pos_action IN  ('B', 'A') THEN
 				-- Read sequence number of the target.
-				SELECT NVL (MAX (cube_sequence), DECODE (p_cube_pos_action, 'B', 99999999, 0))
+				SELECT COALESCE (MAX (cube_sequence), CASE p_cube_pos_action WHEN 'B' THEN 99999999 ELSE 0 END)
 				INTO l_cube_position_sequ
 				FROM v_json_path
 				WHERE fk_typ_name = p_fk_typ_name
@@ -3903,7 +3937,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 				  AND xk_typ_name = p_xk_typ_name;
 			END IF;
 			-- read sequence number near the target.
-			SELECT DECODE (l_cube_pos_action, 'B', NVL (MAX (cube_sequence), 0), NVL (MIN (cube_sequence), 99999999))
+			SELECT CASE l_cube_pos_action WHEN 'B' THEN COALESCE (MAX (cube_sequence), 0) ELSE COALESCE (MIN (cube_sequence), 99999999) END
 			INTO l_cube_near_sequ
 			FROM v_json_path
 			WHERE fk_typ_name = p_fk_typ_name
@@ -3984,11 +4018,11 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 		l_fk_jsn_typ_name v_json_path.fk_jsn_typ_name%TYPE;
 	BEGIN
 		-- A=After B=Before F=First L=Last
-		IF NVL (p_cube_pos_action, ' ') NOT IN ('A', 'B', 'F', 'L') THEN
-			RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
+		IF COALESCE (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
+			RAISE_APPLICATION_ERROR (-20000, pkg_cube.replace_placeholders ('Invalid position action: %', p_cube_pos_action));
 		END IF;
 		-- Get parent id of the target.
-		IF p_cube_pos_action IN ('B', 'A') THEN
+		IF p_cube_pos_action IN  ('B', 'A') THEN
 			SELECT fk_jsn_name, fk_jsn_location, fk_jsn_atb_typ_name, fk_jsn_atb_name, fk_jsn_typ_name
 			INTO l_fk_jsn_name, l_fk_jsn_location, l_fk_jsn_atb_typ_name, l_fk_jsn_atb_name, l_fk_jsn_typ_name
 			FROM v_json_path
@@ -4021,7 +4055,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 		  AND xk_atb_name = p_xk_atb_name
 		  AND xk_typ_name = p_xk_typ_name;
 		IF SQL%NOTFOUND THEN
-			RAISE_APPLICATION_ERROR (-20002, 'Type json_path not found');
+			RAISE_APPLICATION_ERROR (-20000, pkg_cube.replace_placeholders ('Type json_path not found'));
 		END IF;
 	END;
 
@@ -4050,8 +4084,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 		l_cube_sequence NUMBER(8);
 	BEGIN
 		-- A=After B=Before F=First L=Last
-		IF NVL (p_cube_pos_action, ' ') NOT IN ('A', 'B', 'F', 'L') THEN
-			RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
+		IF COALESCE (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
+			RAISE_APPLICATION_ERROR (-20000, pkg_cube.replace_placeholders ('Invalid position action: %', p_cube_pos_action));
 		END IF;
 		determine_position_jsn (l_cube_sequence, p_cube_pos_action, x_fk_typ_name, p_fk_jsn_name, p_fk_jsn_location, p_fk_jsn_atb_typ_name, p_fk_jsn_atb_name, p_fk_jsn_typ_name, x_name, x_location, x_xf_atb_typ_name, x_xk_atb_name, x_xk_typ_name);
 		INSERT INTO v_json_path (
@@ -4091,8 +4125,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_xk_atb_name,
 			p_xk_typ_name);
 	EXCEPTION
-		WHEN DUP_VAL_ON_INDEX THEN
-			RAISE_APPLICATION_ERROR (-20001, 'Type json_path already exists');
+	WHEN DUP_VAL_ON_INDEX THEN
+			RAISE_APPLICATION_ERROR (-20000, pkg_cube.replace_placeholders ('Type json_path already exists'));
 	END;
 
 	PROCEDURE update_jsn (
@@ -4173,8 +4207,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_fk_typ_name,
 			p_text);
 	EXCEPTION
-		WHEN DUP_VAL_ON_INDEX THEN
-			RAISE_APPLICATION_ERROR (-20001, 'Type description_type already exists');
+	WHEN DUP_VAL_ON_INDEX THEN
+			RAISE_APPLICATION_ERROR (-20000, pkg_cube.replace_placeholders ('Type description_type already exists'));
 	END;
 
 	PROCEDURE update_dct (
@@ -4211,13 +4245,13 @@ CREATE OR REPLACE PACKAGE pkg_sys IS
 			p_cube_row IN OUT c_cube_row,
 			p_name IN VARCHAR2);
 	PROCEDURE insert_sys (
+			p_cube_row IN OUT c_cube_row,
 			p_name IN VARCHAR2,
 			p_cube_tsg_type IN VARCHAR2,
 			p_database IN VARCHAR2,
 			p_schema IN VARCHAR2,
 			p_password IN VARCHAR2,
-			p_table_prefix IN VARCHAR2,
-			p_cube_row IN OUT c_cube_row);
+			p_table_prefix IN VARCHAR2);
 	PROCEDURE update_sys (
 			p_name IN VARCHAR2,
 			p_cube_tsg_type IN VARCHAR2,
@@ -4305,13 +4339,13 @@ CREATE OR REPLACE PACKAGE BODY pkg_sys IS
 	END;
 
 	PROCEDURE insert_sys (
+			p_cube_row IN OUT c_cube_row,
 			p_name IN VARCHAR2,
 			p_cube_tsg_type IN VARCHAR2,
 			p_database IN VARCHAR2,
 			p_schema IN VARCHAR2,
 			p_password IN VARCHAR2,
-			p_table_prefix IN VARCHAR2,
-			p_cube_row IN OUT c_cube_row) IS
+			p_table_prefix IN VARCHAR2) IS
 	BEGIN
 		INSERT INTO v_system (
 			cube_id,
@@ -4332,8 +4366,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_sys IS
 
 		get_next_sys (p_cube_row, p_name);
 	EXCEPTION
-		WHEN DUP_VAL_ON_INDEX THEN
-			RAISE_APPLICATION_ERROR (-20001, 'Type system already exists');
+	WHEN DUP_VAL_ON_INDEX THEN
+			RAISE_APPLICATION_ERROR (-20000, pkg_cube.replace_placeholders ('Type system already exists'));
 	END;
 
 	PROCEDURE update_sys (
@@ -4365,7 +4399,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_sys IS
 			p_cube_pos_action IN VARCHAR2,
 			p_fk_sys_name IN VARCHAR2,
 			p_xk_bot_name IN VARCHAR2) IS
-		l_cube_pos_action VARCHAR2(1);
+		l_cube_pos_action CHAR(1);
 		l_cube_position_sequ NUMBER(8);
 		l_cube_near_sequ NUMBER(8);
 		l_cube_count NUMBER(8) := 1024;
@@ -4382,16 +4416,16 @@ CREATE OR REPLACE PACKAGE BODY pkg_sys IS
 			l_cube_pos_action := p_cube_pos_action;
 		END CASE;
 		LOOP
-			IF p_cube_pos_action IN ('B', 'A') THEN
+			IF p_cube_pos_action IN  ('B', 'A') THEN
 				-- Read sequence number of the target.
-				SELECT NVL (MAX (cube_sequence), DECODE (p_cube_pos_action, 'B', 99999999, 0))
+				SELECT COALESCE (MAX (cube_sequence), CASE p_cube_pos_action WHEN 'B' THEN 99999999 ELSE 0 END)
 				INTO l_cube_position_sequ
 				FROM v_system_bo_type
 				WHERE fk_sys_name = p_fk_sys_name
 				  AND xk_bot_name = p_xk_bot_name;
 			END IF;
 			-- read sequence number near the target.
-			SELECT DECODE (l_cube_pos_action, 'B', NVL (MAX (cube_sequence), 0), NVL (MIN (cube_sequence), 99999999))
+			SELECT CASE l_cube_pos_action WHEN 'B' THEN COALESCE (MAX (cube_sequence), 0) ELSE COALESCE (MIN (cube_sequence), 99999999) END
 			INTO l_cube_near_sequ
 			FROM v_system_bo_type
 			WHERE fk_sys_name = p_fk_sys_name
@@ -4429,8 +4463,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_sys IS
 		l_cube_sequence NUMBER(8);
 	BEGIN
 		-- A=After B=Before F=First L=Last
-		IF NVL (p_cube_pos_action, ' ') NOT IN ('A', 'B', 'F', 'L') THEN
-			RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
+		IF COALESCE (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
+			RAISE_APPLICATION_ERROR (-20000, pkg_cube.replace_placeholders ('Invalid position action: %', p_cube_pos_action));
 		END IF;
 		determine_position_sbt (l_cube_sequence, p_cube_pos_action, x_fk_sys_name, x_xk_bot_name);
 		UPDATE v_system_bo_type SET
@@ -4438,7 +4472,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_sys IS
 		WHERE fk_sys_name = p_fk_sys_name
 		  AND xk_bot_name = p_xk_bot_name;
 		IF SQL%NOTFOUND THEN
-			RAISE_APPLICATION_ERROR (-20002, 'Type system_bo_type not found');
+			RAISE_APPLICATION_ERROR (-20000, pkg_cube.replace_placeholders ('Type system_bo_type not found'));
 		END IF;
 	END;
 
@@ -4451,8 +4485,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_sys IS
 		l_cube_sequence NUMBER(8);
 	BEGIN
 		-- A=After B=Before F=First L=Last
-		IF NVL (p_cube_pos_action, ' ') NOT IN ('A', 'B', 'F', 'L') THEN
-			RAISE_APPLICATION_ERROR (-20005, 'Invalid position action: ' || p_cube_pos_action);
+		IF COALESCE (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
+			RAISE_APPLICATION_ERROR (-20000, pkg_cube.replace_placeholders ('Invalid position action: %', p_cube_pos_action));
 		END IF;
 		determine_position_sbt (l_cube_sequence, p_cube_pos_action, x_fk_sys_name, x_xk_bot_name);
 		INSERT INTO v_system_bo_type (
@@ -4466,8 +4500,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_sys IS
 			p_fk_sys_name,
 			p_xk_bot_name);
 	EXCEPTION
-		WHEN DUP_VAL_ON_INDEX THEN
-			RAISE_APPLICATION_ERROR (-20001, 'Type system_bo_type already exists');
+	WHEN DUP_VAL_ON_INDEX THEN
+			RAISE_APPLICATION_ERROR (-20000, pkg_cube.replace_placeholders ('Type system_bo_type already exists'));
 	END;
 
 	PROCEDURE delete_sbt (

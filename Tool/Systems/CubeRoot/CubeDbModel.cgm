@@ -3,8 +3,8 @@
 +META_MODEL:CUBE;
 	+META_TYPE:DATABASE|;
 		=PROPERTY:0|Name|;
-		=PROPERTY:0|Userid|;
-		=PROPERTY:0|Password|;
+		=PROPERTY:1|Userid|;
+		=PROPERTY:2|Password|;
 		+META_TYPE:SCHEMA|;
 			=PROPERTY:0|Name|;
 			+META_TYPE:SEQUENCE|;
