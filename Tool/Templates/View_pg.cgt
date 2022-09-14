@@ -200,10 +200,13 @@ AS $BODY$
 
 		IF TG_OP = 'INSERT' THEN 
 			CALL <<TYPE(1)1:L>>.trg_insert_<<TYPE1:L>> (r_<<TYPE1:L>>_new);
+			RETURN NEW;
 		ELSIF TG_OP = 'UPDATE' THEN
 			CALL <<TYPE(1)1:L>>.trg_update_<<TYPE1:L>> (l_cube_ctid, r_<<TYPE1:L>>_old, r_<<TYPE1:L>>_new);
+			RETURN NEW;
 		ELSIF TG_OP = 'DELETE' THEN
 			CALL <<TYPE(1)1:L>>.trg_delete_<<TYPE1:L>> (l_cube_ctid, r_<<TYPE1:L>>_old);
+			RETURN OLD;
 		END IF;
 		RETURN NULL;
 	END;

@@ -302,10 +302,13 @@ AS $BODY$
 
 		IF TG_OP = 'INSERT' THEN 
 			CALL itp.trg_insert_itp (r_itp_new);
+			RETURN NEW;
 		ELSIF TG_OP = 'UPDATE' THEN
 			CALL itp.trg_update_itp (l_cube_ctid, r_itp_old, r_itp_new);
+			RETURN NEW;
 		ELSIF TG_OP = 'DELETE' THEN
 			CALL itp.trg_delete_itp (l_cube_ctid, r_itp_old);
+			RETURN OLD;
 		END IF;
 		RETURN NULL;
 	END;
@@ -375,10 +378,13 @@ AS $BODY$
 
 		IF TG_OP = 'INSERT' THEN 
 			CALL itp.trg_insert_ite (r_ite_new);
+			RETURN NEW;
 		ELSIF TG_OP = 'UPDATE' THEN
 			CALL itp.trg_update_ite (l_cube_ctid, r_ite_old, r_ite_new);
+			RETURN NEW;
 		ELSIF TG_OP = 'DELETE' THEN
 			CALL itp.trg_delete_ite (l_cube_ctid, r_ite_old);
+			RETURN OLD;
 		END IF;
 		RETURN NULL;
 	END;
@@ -431,10 +437,13 @@ AS $BODY$
 
 		IF TG_OP = 'INSERT' THEN 
 			CALL itp.trg_insert_val (r_val_new);
+			RETURN NEW;
 		ELSIF TG_OP = 'UPDATE' THEN
 			CALL itp.trg_update_val (l_cube_ctid, r_val_old, r_val_new);
+			RETURN NEW;
 		ELSIF TG_OP = 'DELETE' THEN
 			CALL itp.trg_delete_val (l_cube_ctid, r_val_old);
+			RETURN OLD;
 		END IF;
 		RETURN NULL;
 	END;
@@ -1877,10 +1886,13 @@ AS $BODY$
 
 		IF TG_OP = 'INSERT' THEN 
 			CALL bot.trg_insert_bot (r_bot_new);
+			RETURN NEW;
 		ELSIF TG_OP = 'UPDATE' THEN
 			CALL bot.trg_update_bot (l_cube_ctid, r_bot_old, r_bot_new);
+			RETURN NEW;
 		ELSIF TG_OP = 'DELETE' THEN
 			CALL bot.trg_delete_bot (l_cube_ctid, r_bot_old);
+			RETURN OLD;
 		END IF;
 		RETURN NULL;
 	END;
@@ -1961,10 +1973,13 @@ AS $BODY$
 
 		IF TG_OP = 'INSERT' THEN 
 			CALL bot.trg_insert_typ (r_typ_new);
+			RETURN NEW;
 		ELSIF TG_OP = 'UPDATE' THEN
 			CALL bot.trg_update_typ (l_cube_ctid, r_typ_old, r_typ_new);
+			RETURN NEW;
 		ELSIF TG_OP = 'DELETE' THEN
 			CALL bot.trg_delete_typ (l_cube_ctid, r_typ_old);
+			RETURN OLD;
 		END IF;
 		RETURN NULL;
 	END;
@@ -2050,10 +2065,13 @@ AS $BODY$
 
 		IF TG_OP = 'INSERT' THEN 
 			CALL bot.trg_insert_tsg (r_tsg_new);
+			RETURN NEW;
 		ELSIF TG_OP = 'UPDATE' THEN
 			CALL bot.trg_update_tsg (l_cube_ctid, r_tsg_old, r_tsg_new);
+			RETURN NEW;
 		ELSIF TG_OP = 'DELETE' THEN
 			CALL bot.trg_delete_tsg (l_cube_ctid, r_tsg_old);
+			RETURN OLD;
 		END IF;
 		RETURN NULL;
 	END;
@@ -2144,10 +2162,13 @@ AS $BODY$
 
 		IF TG_OP = 'INSERT' THEN 
 			CALL bot.trg_insert_tsp (r_tsp_new);
+			RETURN NEW;
 		ELSIF TG_OP = 'UPDATE' THEN
 			CALL bot.trg_update_tsp (l_cube_ctid, r_tsp_old, r_tsp_new);
+			RETURN NEW;
 		ELSIF TG_OP = 'DELETE' THEN
 			CALL bot.trg_delete_tsp (l_cube_ctid, r_tsp_old);
+			RETURN OLD;
 		END IF;
 		RETURN NULL;
 	END;
@@ -2226,10 +2247,13 @@ AS $BODY$
 
 		IF TG_OP = 'INSERT' THEN 
 			CALL bot.trg_insert_atb (r_atb_new);
+			RETURN NEW;
 		ELSIF TG_OP = 'UPDATE' THEN
 			CALL bot.trg_update_atb (l_cube_ctid, r_atb_old, r_atb_new);
+			RETURN NEW;
 		ELSIF TG_OP = 'DELETE' THEN
 			CALL bot.trg_delete_atb (l_cube_ctid, r_atb_old);
+			RETURN OLD;
 		END IF;
 		RETURN NULL;
 	END;
@@ -2309,10 +2333,13 @@ AS $BODY$
 
 		IF TG_OP = 'INSERT' THEN 
 			CALL bot.trg_insert_der (r_der_new);
+			RETURN NEW;
 		ELSIF TG_OP = 'UPDATE' THEN
 			CALL bot.trg_update_der (l_cube_ctid, r_der_old, r_der_new);
+			RETURN NEW;
 		ELSIF TG_OP = 'DELETE' THEN
 			CALL bot.trg_delete_der (l_cube_ctid, r_der_old);
+			RETURN OLD;
 		END IF;
 		RETURN NULL;
 	END;
@@ -2367,10 +2394,13 @@ AS $BODY$
 
 		IF TG_OP = 'INSERT' THEN 
 			CALL bot.trg_insert_dca (r_dca_new);
+			RETURN NEW;
 		ELSIF TG_OP = 'UPDATE' THEN
 			CALL bot.trg_update_dca (l_cube_ctid, r_dca_old, r_dca_new);
+			RETURN NEW;
 		ELSIF TG_OP = 'DELETE' THEN
 			CALL bot.trg_delete_dca (l_cube_ctid, r_dca_old);
+			RETURN OLD;
 		END IF;
 		RETURN NULL;
 	END;
@@ -2454,10 +2484,13 @@ AS $BODY$
 
 		IF TG_OP = 'INSERT' THEN 
 			CALL bot.trg_insert_rta (r_rta_new);
+			RETURN NEW;
 		ELSIF TG_OP = 'UPDATE' THEN
 			CALL bot.trg_update_rta (l_cube_ctid, r_rta_old, r_rta_new);
+			RETURN NEW;
 		ELSIF TG_OP = 'DELETE' THEN
 			CALL bot.trg_delete_rta (l_cube_ctid, r_rta_old);
+			RETURN OLD;
 		END IF;
 		RETURN NULL;
 	END;
@@ -2568,10 +2601,13 @@ AS $BODY$
 
 		IF TG_OP = 'INSERT' THEN 
 			CALL bot.trg_insert_ref (r_ref_new);
+			RETURN NEW;
 		ELSIF TG_OP = 'UPDATE' THEN
 			CALL bot.trg_update_ref (l_cube_ctid, r_ref_old, r_ref_new);
+			RETURN NEW;
 		ELSIF TG_OP = 'DELETE' THEN
 			CALL bot.trg_delete_ref (l_cube_ctid, r_ref_old);
+			RETURN OLD;
 		END IF;
 		RETURN NULL;
 	END;
@@ -2637,10 +2673,13 @@ AS $BODY$
 
 		IF TG_OP = 'INSERT' THEN 
 			CALL bot.trg_insert_dcr (r_dcr_new);
+			RETURN NEW;
 		ELSIF TG_OP = 'UPDATE' THEN
 			CALL bot.trg_update_dcr (l_cube_ctid, r_dcr_old, r_dcr_new);
+			RETURN NEW;
 		ELSIF TG_OP = 'DELETE' THEN
 			CALL bot.trg_delete_dcr (l_cube_ctid, r_dcr_old);
+			RETURN OLD;
 		END IF;
 		RETURN NULL;
 	END;
@@ -2735,10 +2774,13 @@ AS $BODY$
 
 		IF TG_OP = 'INSERT' THEN 
 			CALL bot.trg_insert_rtr (r_rtr_new);
+			RETURN NEW;
 		ELSIF TG_OP = 'UPDATE' THEN
 			CALL bot.trg_update_rtr (l_cube_ctid, r_rtr_old, r_rtr_new);
+			RETURN NEW;
 		ELSIF TG_OP = 'DELETE' THEN
 			CALL bot.trg_delete_rtr (l_cube_ctid, r_rtr_old);
+			RETURN OLD;
 		END IF;
 		RETURN NULL;
 	END;
@@ -2833,10 +2875,13 @@ AS $BODY$
 
 		IF TG_OP = 'INSERT' THEN 
 			CALL bot.trg_insert_rts (r_rts_new);
+			RETURN NEW;
 		ELSIF TG_OP = 'UPDATE' THEN
 			CALL bot.trg_update_rts (l_cube_ctid, r_rts_old, r_rts_new);
+			RETURN NEW;
 		ELSIF TG_OP = 'DELETE' THEN
 			CALL bot.trg_delete_rts (l_cube_ctid, r_rts_old);
+			RETURN OLD;
 		END IF;
 		RETURN NULL;
 	END;
@@ -2912,10 +2957,13 @@ AS $BODY$
 
 		IF TG_OP = 'INSERT' THEN 
 			CALL bot.trg_insert_rtt (r_rtt_new);
+			RETURN NEW;
 		ELSIF TG_OP = 'UPDATE' THEN
 			CALL bot.trg_update_rtt (l_cube_ctid, r_rtt_old, r_rtt_new);
+			RETURN NEW;
 		ELSIF TG_OP = 'DELETE' THEN
 			CALL bot.trg_delete_rtt (l_cube_ctid, r_rtt_old);
+			RETURN OLD;
 		END IF;
 		RETURN NULL;
 	END;
@@ -3030,10 +3078,13 @@ AS $BODY$
 
 		IF TG_OP = 'INSERT' THEN 
 			CALL bot.trg_insert_jsn (r_jsn_new);
+			RETURN NEW;
 		ELSIF TG_OP = 'UPDATE' THEN
 			CALL bot.trg_update_jsn (l_cube_ctid, r_jsn_old, r_jsn_new);
+			RETURN NEW;
 		ELSIF TG_OP = 'DELETE' THEN
 			CALL bot.trg_delete_jsn (l_cube_ctid, r_jsn_old);
+			RETURN OLD;
 		END IF;
 		RETURN NULL;
 	END;
@@ -3080,10 +3131,13 @@ AS $BODY$
 
 		IF TG_OP = 'INSERT' THEN 
 			CALL bot.trg_insert_dct (r_dct_new);
+			RETURN NEW;
 		ELSIF TG_OP = 'UPDATE' THEN
 			CALL bot.trg_update_dct (l_cube_ctid, r_dct_old, r_dct_new);
+			RETURN NEW;
 		ELSIF TG_OP = 'DELETE' THEN
 			CALL bot.trg_delete_dct (l_cube_ctid, r_dct_old);
+			RETURN OLD;
 		END IF;
 		RETURN NULL;
 	END;
@@ -3258,10 +3312,13 @@ AS $BODY$
 
 		IF TG_OP = 'INSERT' THEN 
 			CALL sys.trg_insert_sys (r_sys_new);
+			RETURN NEW;
 		ELSIF TG_OP = 'UPDATE' THEN
 			CALL sys.trg_update_sys (l_cube_ctid, r_sys_old, r_sys_new);
+			RETURN NEW;
 		ELSIF TG_OP = 'DELETE' THEN
 			CALL sys.trg_delete_sys (l_cube_ctid, r_sys_old);
+			RETURN OLD;
 		END IF;
 		RETURN NULL;
 	END;
@@ -3308,10 +3365,13 @@ AS $BODY$
 
 		IF TG_OP = 'INSERT' THEN 
 			CALL sys.trg_insert_sbt (r_sbt_new);
+			RETURN NEW;
 		ELSIF TG_OP = 'UPDATE' THEN
 			CALL sys.trg_update_sbt (l_cube_ctid, r_sbt_old, r_sbt_new);
+			RETURN NEW;
 		ELSIF TG_OP = 'DELETE' THEN
 			CALL sys.trg_delete_sbt (l_cube_ctid, r_sbt_old);
+			RETURN OLD;
 		END IF;
 		RETURN NULL;
 	END;
@@ -3436,10 +3496,13 @@ AS $BODY$
 
 		IF TG_OP = 'INSERT' THEN 
 			CALL fun.trg_insert_fun (r_fun_new);
+			RETURN NEW;
 		ELSIF TG_OP = 'UPDATE' THEN
 			CALL fun.trg_update_fun (l_cube_ctid, r_fun_old, r_fun_new);
+			RETURN NEW;
 		ELSIF TG_OP = 'DELETE' THEN
 			CALL fun.trg_delete_fun (l_cube_ctid, r_fun_old);
+			RETURN OLD;
 		END IF;
 		RETURN NULL;
 	END;
@@ -3487,10 +3550,13 @@ AS $BODY$
 
 		IF TG_OP = 'INSERT' THEN 
 			CALL fun.trg_insert_arg (r_arg_new);
+			RETURN NEW;
 		ELSIF TG_OP = 'UPDATE' THEN
 			CALL fun.trg_update_arg (l_cube_ctid, r_arg_old, r_arg_new);
+			RETURN NEW;
 		ELSIF TG_OP = 'DELETE' THEN
 			CALL fun.trg_delete_arg (l_cube_ctid, r_arg_old);
+			RETURN OLD;
 		END IF;
 		RETURN NULL;
 	END;
