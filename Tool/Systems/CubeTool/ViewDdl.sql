@@ -746,7 +746,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 
 	PROCEDURE denorm_typ_typ (p_typ IN OUT NOCOPY v_type%ROWTYPE, p_typ_in IN v_type%ROWTYPE) IS
 	BEGIN
-		p_typ.cube_level := NVL (p_typ_in.cube_level, 0) + 1;
+		p_typ.cube_level := COALESCE (p_typ_in.cube_level, 0) + 1;
 	END;
 
 	PROCEDURE get_denorm_typ_typ (p_typ IN OUT NOCOPY v_type%ROWTYPE) IS
@@ -876,7 +876,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 
 	PROCEDURE denorm_tsg_tsg (p_tsg IN OUT NOCOPY v_type_specialisation_group%ROWTYPE, p_tsg_in IN v_type_specialisation_group%ROWTYPE) IS
 	BEGIN
-		p_tsg.cube_level := NVL (p_tsg_in.cube_level, 0) + 1;
+		p_tsg.cube_level := COALESCE (p_tsg_in.cube_level, 0) + 1;
 	END;
 
 	PROCEDURE get_denorm_tsg_tsg (p_tsg IN OUT NOCOPY v_type_specialisation_group%ROWTYPE) IS
@@ -1553,7 +1553,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 
 	PROCEDURE denorm_jsn_jsn (p_jsn IN OUT NOCOPY v_json_path%ROWTYPE, p_jsn_in IN v_json_path%ROWTYPE) IS
 	BEGIN
-		p_jsn.cube_level := NVL (p_jsn_in.cube_level, 0) + 1;
+		p_jsn.cube_level := COALESCE (p_jsn_in.cube_level, 0) + 1;
 	END;
 
 	PROCEDURE get_denorm_jsn_jsn (p_jsn IN OUT NOCOPY v_json_path%ROWTYPE) IS

@@ -16,7 +16,7 @@ echo Start > %logfile%
 ::goto Views
 ::goto ModelImport
 ::goto ModelExport
-goto Packages
+::goto Packages
 ::goto Application 
 ::goto System
 echo Extract Cube Model
@@ -62,7 +62,7 @@ echo Generate Packages.
 CubeGen.exe %sysdir%\CubeServerSpecModel.cgm Templates\ServerImplModel.cgt %sysdir%\CubeServerImplModel.cgm %sysname% >> %logfile% 2>&1
 CubeGen.exe %sysdir%\CubeServerImplModel.cgm Templates\Package.cgt %sysdir%\PackageDdl.sql %sysname% >> %logfile% 2>&1
 sqlplus.exe %db_schema%/%db_password%@%db_name% @%sysdir%\PackageDdl.sql >> %logfile% 2>&1
-goto End
+::goto End
 :Application 
 echo Generate Application.
 del /S/Q %sysdir%\php\*.php >> %logfile% 2>&1

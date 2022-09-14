@@ -732,7 +732,7 @@ AS $BODY$
 			WHERE fk_bot_name = p_typ.fk_bot_name
 			  AND name = p_typ.fk_typ_name;
 		END IF;
-		CALL trg_get_denorm_typ_typ (p_typ);
+		CALL bot.trg_get_denorm_typ_typ (p_typ);
 		INSERT INTO bot.t_type (
 			cube_id,
 			cube_sequence,
@@ -779,7 +779,7 @@ AS $BODY$
 		r_typ_new bot.v_type%ROWTYPE;
 	BEGIN
 		IF COALESCE(p_typ_old.fk_typ_name,' ') <> COALESCE(p_typ_new.fk_typ_name,' ')  THEN
-			CALL trg_get_denorm_typ_typ (p_typ_new);
+			CALL bot.trg_get_denorm_typ_typ (p_typ_new);
 		END IF;
 		UPDATE bot.t_type SET 
 			cube_sequence = p_typ_new.cube_sequence,
@@ -813,10 +813,10 @@ AS $BODY$
 					r_typ_old.sort_order,
 					r_typ_old.icon,
 					r_typ_old.transferable;
-				EXIT WHEN c_typ%NOTFOUND;
+				EXIT WHEN NOT FOUND;
 				r_typ_new := r_typ_old;
-				CALL trg_denorm_typ_typ (r_typ_new, p_typ_new);
-				CALL trg_update_typ (l_typ_ctid, r_typ_old, r_typ_new);
+				CALL bot.trg_denorm_typ_typ (r_typ_new, p_typ_new);
+				CALL bot.trg_update_typ (l_typ_ctid, r_typ_old, r_typ_new);
 			END LOOP;
 			CLOSE c_typ;
 		END IF;
@@ -836,7 +836,7 @@ CREATE PROCEDURE bot.trg_denorm_typ_typ (p_typ bot.v_type, p_typ_in bot.v_type)
 LANGUAGE plpgsql 
 AS $BODY$
 	BEGIN
-		p_typ.cube_level := NVL (p_typ_in.cube_level, 0) + 1;
+		p_typ.cube_level := COALESCE (p_typ_in.cube_level, 0) + 1;
 	END;
 $BODY$;
 
@@ -853,14 +853,14 @@ AS $BODY$
 		IF p_typ.fk_typ_name IS NOT NULL THEN
 			OPEN c_typ;
 			FETCH c_typ INTO r_typ;
-			IF c_typ%NOTFOUND THEN
+			IF NOT FOUND THEN
 				r_typ := NULL;
 			END IF;
 			CLOSE c_typ;
 		ELSE
 			r_typ := NULL;
 		END IF;
-		CALL trg_denorm_typ_typ (p_typ, r_typ);
+		CALL bot.trg_denorm_typ_typ (p_typ, r_typ);
 	END;
 $BODY$;
 
@@ -889,7 +889,7 @@ AS $BODY$
 			WHERE name = p_tsg.fk_typ_name;
 			
 		END IF;
-		CALL trg_get_denorm_tsg_tsg (p_tsg);
+		CALL bot.trg_get_denorm_tsg_tsg (p_tsg);
 		INSERT INTO bot.t_type_specialisation_group (
 			cube_id,
 			cube_sequence,
@@ -931,7 +931,7 @@ AS $BODY$
 		r_tsg_new bot.v_type_specialisation_group%ROWTYPE;
 	BEGIN
 		IF COALESCE(p_tsg_old.fk_tsg_code,' ') <> COALESCE(p_tsg_new.fk_tsg_code,' ')  THEN
-			CALL trg_get_denorm_tsg_tsg (p_tsg_new);
+			CALL bot.trg_get_denorm_tsg_tsg (p_tsg_new);
 		END IF;
 		UPDATE bot.t_type_specialisation_group SET 
 			cube_sequence = p_tsg_new.cube_sequence,
@@ -958,10 +958,10 @@ AS $BODY$
 					r_tsg_old.primary_key,
 					r_tsg_old.xf_atb_typ_name,
 					r_tsg_old.xk_atb_name;
-				EXIT WHEN c_tsg%NOTFOUND;
+				EXIT WHEN NOT FOUND;
 				r_tsg_new := r_tsg_old;
-				CALL trg_denorm_tsg_tsg (r_tsg_new, p_tsg_new);
-				CALL trg_update_tsg (l_tsg_ctid, r_tsg_old, r_tsg_new);
+				CALL bot.trg_denorm_tsg_tsg (r_tsg_new, p_tsg_new);
+				CALL bot.trg_update_tsg (l_tsg_ctid, r_tsg_old, r_tsg_new);
 			END LOOP;
 			CLOSE c_tsg;
 		END IF;
@@ -981,7 +981,7 @@ CREATE PROCEDURE bot.trg_denorm_tsg_tsg (p_tsg bot.v_type_specialisation_group, 
 LANGUAGE plpgsql 
 AS $BODY$
 	BEGIN
-		p_tsg.cube_level := NVL (p_tsg_in.cube_level, 0) + 1;
+		p_tsg.cube_level := COALESCE (p_tsg_in.cube_level, 0) + 1;
 	END;
 $BODY$;
 
@@ -999,14 +999,14 @@ AS $BODY$
 		IF p_tsg.fk_tsg_code IS NOT NULL THEN
 			OPEN c_tsg;
 			FETCH c_tsg INTO r_tsg;
-			IF c_tsg%NOTFOUND THEN
+			IF NOT FOUND THEN
 				r_tsg := NULL;
 			END IF;
 			CLOSE c_tsg;
 		ELSE
 			r_tsg := NULL;
 		END IF;
-		CALL trg_denorm_tsg_tsg (p_tsg, r_tsg);
+		CALL bot.trg_denorm_tsg_tsg (p_tsg, r_tsg);
 	END;
 $BODY$;
 
@@ -1645,7 +1645,7 @@ AS $BODY$
 			WHERE name = p_jsn.fk_typ_name;
 			
 		END IF;
-		CALL trg_get_denorm_jsn_jsn (p_jsn);
+		CALL bot.trg_get_denorm_jsn_jsn (p_jsn);
 		INSERT INTO bot.t_json_path (
 			cube_id,
 			cube_sequence,
@@ -1707,7 +1707,7 @@ AS $BODY$
 		OR COALESCE(p_jsn_old.fk_jsn_atb_typ_name,' ') <> COALESCE(p_jsn_new.fk_jsn_atb_typ_name,' ') 
 		OR COALESCE(p_jsn_old.fk_jsn_atb_name,' ') <> COALESCE(p_jsn_new.fk_jsn_atb_name,' ') 
 		OR COALESCE(p_jsn_old.fk_jsn_typ_name,' ') <> COALESCE(p_jsn_new.fk_jsn_typ_name,' ')  THEN
-			CALL trg_get_denorm_jsn_jsn (p_jsn_new);
+			CALL bot.trg_get_denorm_jsn_jsn (p_jsn_new);
 		END IF;
 		UPDATE bot.t_json_path SET 
 			cube_sequence = p_jsn_new.cube_sequence,
@@ -1740,10 +1740,10 @@ AS $BODY$
 					r_jsn_old.xf_atb_typ_name,
 					r_jsn_old.xk_atb_name,
 					r_jsn_old.xk_typ_name;
-				EXIT WHEN c_jsn%NOTFOUND;
+				EXIT WHEN NOT FOUND;
 				r_jsn_new := r_jsn_old;
-				CALL trg_denorm_jsn_jsn (r_jsn_new, p_jsn_new);
-				CALL trg_update_jsn (l_jsn_ctid, r_jsn_old, r_jsn_new);
+				CALL bot.trg_denorm_jsn_jsn (r_jsn_new, p_jsn_new);
+				CALL bot.trg_update_jsn (l_jsn_ctid, r_jsn_old, r_jsn_new);
 			END LOOP;
 			CLOSE c_jsn;
 		END IF;
@@ -1763,7 +1763,7 @@ CREATE PROCEDURE bot.trg_denorm_jsn_jsn (p_jsn bot.v_json_path, p_jsn_in bot.v_j
 LANGUAGE plpgsql 
 AS $BODY$
 	BEGIN
-		p_jsn.cube_level := NVL (p_jsn_in.cube_level, 0) + 1;
+		p_jsn.cube_level := COALESCE (p_jsn_in.cube_level, 0) + 1;
 	END;
 $BODY$;
 
@@ -1785,14 +1785,14 @@ AS $BODY$
 		IF p_jsn.fk_jsn_name IS NOT NULL AND p_jsn.fk_jsn_location IS NOT NULL AND p_jsn.fk_jsn_atb_typ_name IS NOT NULL AND p_jsn.fk_jsn_atb_name IS NOT NULL AND p_jsn.fk_jsn_typ_name IS NOT NULL THEN
 			OPEN c_jsn;
 			FETCH c_jsn INTO r_jsn;
-			IF c_jsn%NOTFOUND THEN
+			IF NOT FOUND THEN
 				r_jsn := NULL;
 			END IF;
 			CLOSE c_jsn;
 		ELSE
 			r_jsn := NULL;
 		END IF;
-		CALL trg_denorm_jsn_jsn (p_jsn, r_jsn);
+		CALL bot.trg_denorm_jsn_jsn (p_jsn, r_jsn);
 	END;
 $BODY$;
 

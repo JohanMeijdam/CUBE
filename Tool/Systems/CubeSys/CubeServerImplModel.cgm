@@ -130,9 +130,7 @@
 		-STATEMENT:;
 		+EXCEPTION:E001;
 			+STATEMENT:ABORT;
-				+EXPRESSION:LIST;
-					=EXPRESSION:STRING|Type cube_description already exists;
-				-EXPRESSION:;
+				=EXPRESSION:STRING|Type cube_description already exists;
 			-STATEMENT:;
 		-EXCEPTION:;
 	-PROCEDURE:;
