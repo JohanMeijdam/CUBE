@@ -28,47 +28,16 @@ case '<<SERVICE:C>>':
 	$ResponseObj->ResultName = '<<SERVICE1:U>>[[IF:!2=#]]_<<OPERATION2:U>>[[ENDIF]][[LOOP,OPERATION_TYPE]]_<<OPERATION_TYPE1:U>>[[ENDLOOP,OPERATION_TYPE]]';
 	$conn->query("CALL [[FOR,BUSINESS_OBJECT_TYPE:N>N]][[LOOP,TYPE]]<<TYPE1:L>>[[ENDLOOP,TYPE]][[ENDFOR]].<<OPERATION:L>> ([[FORH,SERVICE:N>N]][[LOOP,ARGUMENT]][[LOOP,ARGUMENT_ATTRIBUTE]][[IF:CHILD(INFORMATION_TYPE_ELEMENT:2=NUMBER)]]".($RequestObj->Parameters-><<ARGUMENT2>>-><<ARGUMENT_ATTRIBUTE:C>>??"null")."[[ELSE]]'".$RequestObj->Parameters-><<ARGUMENT2>>-><<ARGUMENT_ATTRIBUTE:C>>."'[[ENDIF]][[ENDLOOP,ARGUMENT_ATTRIBUTE]][[IF,ARGUMENT:!LAST]],[[ENDIF]][[ENDLOOP,ARGUMENT]][[ENDFOR]])");[[IF:CHILD(EXPORT)]]
 	$ResponseObj->Rows = array();
-	$curs = $conn->query('FETCH ALL FROM "cube_cursor";');
+	$curs = $conn->query('FETCH ALL FROM cube_cursor;');
 	[[IF:3=Y]]while[[ELSE]]if[[ENDIF]] ($row = $curs->fetch(PDO::FETCH_ASSOC)) {
 		$RowObj = new \stdClass();[[LOOP,EXPORT]][[IF:1=Y]]
 		$RowObj-><<EXPORT:C>> = new \stdClass();[[LOOP,ARGUMENT]]
 		$RowObj-><<EXPORT:C>>-><<ARGUMENT:C>> = $row["<<ARGUMENT:L>>"];[[ENDLOOP,ARGUMENT]][[ELSE]]
 		$RowObj-><<EXPORT:C>> = [[IF:CHILD(ARGUMENT)]][[LOOP,ARGUMENT]][[IF:1=subscript]][[IF:FIRST]]'('.[[ELSE]].' ('.[[ENDIF]][[ELSE]][[IF:!FIRST]].' '.[[ENDIF]][[ENDIF]]$row["<<ARGUMENT:L>>"][[IF:1=subscript]].')'[[ENDIF]][[ENDLOOP,ARGUMENT]][[ELSE]]' '[[ENDIF]];[[ENDIF]][[ENDLOOP,EXPORT]]
 		$ResponseObj->Rows[] = $RowObj;
-	}[[ENDIF]][[******
-	
-	[[IF,SERVICE:CHILD(ARGUMENT)]][[FORH,SERVICE:N>N]]
-
-	$stid = oci_parse($conn, "BEGIN pkg_[[FOR,BUSINESS_OBJECT_TYPE:N>N]][[LOOP,TYPE]]<<TYPE1:L>>[[ENDLOOP,TYPE]][[ENDFOR]].<<OPERATION:L>> ([[IF:2=Y[OR]OPERATION.CHILD(EXPORT)]]
-		:p_cube_row,[[ENDIF]][[LOOP,ARGUMENT]]
-		:<<TEXT,SERVER_ARGUMENT_NAME>>[[IF:!LAST]],[[ENDIF]][[ENDLOOP,ARGUMENT]]);
-	END;");[[LOOP,ARGUMENT]]
-	oci_bind_by_name($stid,":<<TEXT,SERVER_ARGUMENT_NAME>>",$RequestObj->Parameters-><<ARGUMENT2>>->[[LOOP,ARGUMENT_ATTRIBUTE]]<<ARGUMENT_ATTRIBUTE:C>>[[ENDLOOP,ARGUMENT_ATTRIBUTE]]);[[ENDLOOP,ARGUMENT]][[ENDFOR]]
-[[ELSE]]
-
-	$stid = oci_parse($conn, "BEGIN pkg_[[FOR,BUSINESS_OBJECT_TYPE:N>N]][[LOOP,TYPE]]<<TYPE1:L>>[[ENDLOOP,TYPE]][[ENDFOR]].<<OPERATION:L>> (:p_cube_row); END;");[[ENDIF]]
-
-
-	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = '<<SERVICE1:U>>[[IF:!2=#]]_<<OPERATION2:U>>[[ENDIF]][[LOOP,OPERATION_TYPE]]_<<OPERATION_TYPE1:U>>[[ENDLOOP,OPERATION_TYPE]]';[[IF:CHILD(EXPORT)]]
-	$r = perform_db_request();
-	if (!$r) { 
-		return;
-	}
-	$ResponseObj->Rows = array();
-	[[IF:3=Y]]while[[ELSE]]if[[ENDIF]] ($row = oci_fetch_assoc($curs)) {
-		$RowObj = new \stdClass();[[LOOP,EXPORT]][[IF:1=Y]]
-		$RowObj-><<EXPORT:C>> = new \stdClass();[[LOOP,ARGUMENT]]
-		$RowObj-><<EXPORT:C>>-><<ARGUMENT:C>> = $row["<<ARGUMENT:U>>"];[[ENDLOOP,ARGUMENT]][[ELSE]]
-		$RowObj-><<EXPORT:C>> = [[IF:CHILD(ARGUMENT)]][[LOOP,ARGUMENT]][[IF:1=subscript]][[IF:FIRST]]'('.[[ELSE]].' ('.[[ENDIF]][[ELSE]][[IF:!FIRST]].' '.[[ENDIF]][[ENDIF]]$row["<<ARGUMENT:U>>"][[IF:1=subscript]].')'[[ENDIF]][[ENDLOOP,ARGUMENT]][[ELSE]]' '[[ENDIF]];[[ENDIF]][[ENDLOOP,EXPORT]]
-		$ResponseObj->Rows[] = $RowObj;
-	}[[ELSE]]
-	$r = oci_execute($stid);
-	if (!$r) {
-		ProcessDbError($stid);
-		return;
-	}[[ENDIF]]****]]
-	$ResponseText = $ResponseText.json_encode($ResponseObj).[[IF:!LAST]]','[[ELSE]]']'[[ENDIF]];[[ENDLOOP,OPERATION]]
+	}[[ENDIF]]
+	$ResponseText = $ResponseText.json_encode($ResponseObj).[[IF:!LAST]]','[[ELSE]]']'[[ENDIF]];
+	$curs = $conn->query('CLOSE cube_cursor;');[[ENDLOOP,OPERATION]]
 	$conn->query("END;");
 	break;[[ENDLOOP,SERVICE]][[ENDLOOP,BUSINESS_OBJECT_TYPE]]
 
