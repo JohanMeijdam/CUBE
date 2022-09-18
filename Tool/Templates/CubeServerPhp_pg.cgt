@@ -35,9 +35,9 @@ case '<<SERVICE:C>>':
 		$RowObj-><<EXPORT:C>>-><<ARGUMENT:C>> = $row["<<ARGUMENT:L>>"];[[ENDLOOP,ARGUMENT]][[ELSE]]
 		$RowObj-><<EXPORT:C>> = [[IF:CHILD(ARGUMENT)]][[LOOP,ARGUMENT]][[IF:1=subscript]][[IF:FIRST]]'('.[[ELSE]].' ('.[[ENDIF]][[ELSE]][[IF:!FIRST]].' '.[[ENDIF]][[ENDIF]]$row["<<ARGUMENT:L>>"][[IF:1=subscript]].')'[[ENDIF]][[ENDLOOP,ARGUMENT]][[ELSE]]' '[[ENDIF]];[[ENDIF]][[ENDLOOP,EXPORT]]
 		$ResponseObj->Rows[] = $RowObj;
-	}[[ENDIF]]
-	$ResponseText = $ResponseText.json_encode($ResponseObj).[[IF:!LAST]]','[[ELSE]]']'[[ENDIF]];
-	$curs = $conn->query('CLOSE cube_cursor;');[[ENDLOOP,OPERATION]]
+	}
+	$curs = $conn->query('CLOSE cube_cursor;');[[ENDIF]]
+	$ResponseText = $ResponseText.json_encode($ResponseObj).[[IF:!LAST]]','[[ELSE]]']'[[ENDIF]];[[ENDLOOP,OPERATION]]
 	$conn->query("END;");
 	break;[[ENDLOOP,SERVICE]][[ENDLOOP,BUSINESS_OBJECT_TYPE]]
 
