@@ -724,7 +724,7 @@ AS $BODY$
 		p_typ.cube_id := 'TYP-' || TO_CHAR(NEXTVAL('bot.sq_typ'),'FM000000000000');
 		p_typ.fk_bot_name := COALESCE(p_typ.fk_bot_name,' ');
 		p_typ.name := COALESCE(p_typ.name,' ');
-		IF p_typ.fk_typ_name IS NOT NULL  THEN
+		IF p_typ.fk_typ_name IS NOT NULL THEN
 			-- Recursive
 			SELECT fk_bot_name
 			  INTO p_typ.fk_bot_name
@@ -874,7 +874,7 @@ AS $BODY$
 		p_tsg.code := COALESCE(p_tsg.code,' ');
 		p_tsg.xf_atb_typ_name := COALESCE(p_tsg.xf_atb_typ_name,' ');
 		p_tsg.xk_atb_name := COALESCE(p_tsg.xk_atb_name,' ');
-		IF p_tsg.fk_tsg_code IS NOT NULL  THEN
+		IF p_tsg.fk_tsg_code IS NOT NULL THEN
 			-- Recursive
 			SELECT fk_bot_name
 			  INTO p_tsg.fk_bot_name
@@ -1626,7 +1626,7 @@ AS $BODY$
 		p_jsn.xf_atb_typ_name := COALESCE(p_jsn.xf_atb_typ_name,' ');
 		p_jsn.xk_atb_name := COALESCE(p_jsn.xk_atb_name,' ');
 		p_jsn.xk_typ_name := COALESCE(p_jsn.xk_typ_name,' ');
-		IF p_jsn.fk_jsn_name IS NOT NULL OR p_jsn.fk_jsn_location IS NOT NULL OR p_jsn.fk_jsn_atb_typ_name IS NOT NULL OR p_jsn.fk_jsn_atb_name IS NOT NULL OR p_jsn.fk_jsn_typ_name IS NOT NULL  THEN
+		IF p_jsn.fk_jsn_name IS NOT NULL OR p_jsn.fk_jsn_location IS NOT NULL OR p_jsn.fk_jsn_atb_typ_name IS NOT NULL OR p_jsn.fk_jsn_atb_name IS NOT NULL OR p_jsn.fk_jsn_typ_name IS NOT NULL THEN
 			-- Recursive
 			SELECT fk_bot_name
 			  INTO p_jsn.fk_bot_name

@@ -98,6 +98,7 @@ AS $BODY$
 	DECLARE
 		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
+		p_name := NULLIF(p_name,'');
 		OPEN l_cube_cursor FOR
 			SELECT
 			  fk_itp_name,
@@ -117,6 +118,7 @@ AS $BODY$
 	DECLARE
 		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
+		p_name := NULLIF(p_name,'');
 		OPEN l_cube_cursor FOR
 			SELECT
 			  name
@@ -133,6 +135,7 @@ AS $BODY$
 	DECLARE
 		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
+		p_name := NULLIF(p_name,'');
 		INSERT INTO itp.v_information_type (
 			cube_id,
 			name)
@@ -153,6 +156,7 @@ LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
 	BEGIN
+		p_name := NULLIF(p_name,'');
 		DELETE FROM itp.v_information_type
 		WHERE name = p_name;
 	END;
@@ -166,6 +170,8 @@ AS $BODY$
 	DECLARE
 		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
+		p_fk_itp_name := NULLIF(p_fk_itp_name,'');
+		p_sequence := NULLIF(p_sequence,'');
 		OPEN l_cube_cursor FOR
 			SELECT
 			  suffix,
@@ -190,6 +196,8 @@ AS $BODY$
 	DECLARE
 		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
+		p_fk_itp_name := NULLIF(p_fk_itp_name,'');
+		p_sequence := NULLIF(p_sequence,'');
 		OPEN l_cube_cursor FOR
 			SELECT
 			  cube_sequence,
@@ -212,6 +220,8 @@ AS $BODY$
 	DECLARE
 		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
+		p_fk_itp_name := NULLIF(p_fk_itp_name,'');
+		p_sequence := NULLIF(p_sequence,'');
 		OPEN l_cube_cursor FOR
 			SELECT
 			  fk_itp_name,
@@ -240,6 +250,16 @@ AS $BODY$
 	DECLARE
 		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
+		p_fk_itp_name := NULLIF(p_fk_itp_name,'');
+		p_sequence := NULLIF(p_sequence,'');
+		p_suffix := NULLIF(p_suffix,'');
+		p_domain := NULLIF(p_domain,'');
+		p_length := NULLIF(p_length,'');
+		p_decimals := NULLIF(p_decimals,'');
+		p_case_sensitive := NULLIF(p_case_sensitive,'');
+		p_default_value := NULLIF(p_default_value,'');
+		p_spaces_allowed := NULLIF(p_spaces_allowed,'');
+		p_presentation := NULLIF(p_presentation,'');
 		INSERT INTO itp.v_information_type_element (
 			cube_id,
 			fk_itp_name,
@@ -287,6 +307,16 @@ LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
 	BEGIN
+		p_fk_itp_name := NULLIF(p_fk_itp_name,'');
+		p_sequence := NULLIF(p_sequence,'');
+		p_suffix := NULLIF(p_suffix,'');
+		p_domain := NULLIF(p_domain,'');
+		p_length := NULLIF(p_length,'');
+		p_decimals := NULLIF(p_decimals,'');
+		p_case_sensitive := NULLIF(p_case_sensitive,'');
+		p_default_value := NULLIF(p_default_value,'');
+		p_spaces_allowed := NULLIF(p_spaces_allowed,'');
+		p_presentation := NULLIF(p_presentation,'');
 		UPDATE itp.v_information_type_element SET
 			suffix = p_suffix,
 			domain = p_domain,
@@ -308,6 +338,8 @@ LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
 	BEGIN
+		p_fk_itp_name := NULLIF(p_fk_itp_name,'');
+		p_sequence := NULLIF(p_sequence,'');
 		DELETE FROM itp.v_information_type_element
 		WHERE fk_itp_name = p_fk_itp_name
 		  AND sequence = p_sequence;
@@ -323,6 +355,9 @@ AS $BODY$
 	DECLARE
 		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
+		p_fk_itp_name := NULLIF(p_fk_itp_name,'');
+		p_fk_ite_sequence := NULLIF(p_fk_ite_sequence,'');
+		p_code := NULLIF(p_code,'');
 		OPEN l_cube_cursor FOR
 			SELECT
 			  prompt
@@ -348,6 +383,10 @@ AS $BODY$
 		l_cube_count NUMERIC(8) := 1024;
 		r_val RECORD;
 	BEGIN
+		p_cube_pos_action := NULLIF(p_cube_pos_action,'');
+		p_fk_itp_name := NULLIF(p_fk_itp_name,'');
+		p_fk_ite_sequence := NULLIF(p_fk_ite_sequence,'');
+		p_code := NULLIF(p_code,'');
 		-- A=After B=Before F=First L=Last
 		CASE p_cube_pos_action
 		WHEN 'F' THEN
@@ -415,6 +454,13 @@ AS $BODY$
 	DECLARE
 		l_cube_sequence NUMERIC(8);
 	BEGIN
+		p_cube_pos_action := NULLIF(p_cube_pos_action,'');
+		p_fk_itp_name := NULLIF(p_fk_itp_name,'');
+		p_fk_ite_sequence := NULLIF(p_fk_ite_sequence,'');
+		p_code := NULLIF(p_code,'');
+		x_fk_itp_name := NULLIF(x_fk_itp_name,'');
+		x_fk_ite_sequence := NULLIF(x_fk_ite_sequence,'');
+		x_code := NULLIF(x_code,'');
 		-- A=After B=Before F=First L=Last
 		IF COALESCE (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
 			RAISE EXCEPTION 'Invalid position action: %', p_cube_pos_action;
@@ -445,6 +491,14 @@ AS $BODY$
 	DECLARE
 		l_cube_sequence NUMERIC(8);
 	BEGIN
+		p_cube_pos_action := NULLIF(p_cube_pos_action,'');
+		p_fk_itp_name := NULLIF(p_fk_itp_name,'');
+		p_fk_ite_sequence := NULLIF(p_fk_ite_sequence,'');
+		p_code := NULLIF(p_code,'');
+		p_prompt := NULLIF(p_prompt,'');
+		x_fk_itp_name := NULLIF(x_fk_itp_name,'');
+		x_fk_ite_sequence := NULLIF(x_fk_ite_sequence,'');
+		x_code := NULLIF(x_code,'');
 		-- A=After B=Before F=First L=Last
 		IF COALESCE (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
 			RAISE EXCEPTION 'Invalid position action: %', p_cube_pos_action;
@@ -479,6 +533,10 @@ LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
 	BEGIN
+		p_fk_itp_name := NULLIF(p_fk_itp_name,'');
+		p_fk_ite_sequence := NULLIF(p_fk_ite_sequence,'');
+		p_code := NULLIF(p_code,'');
+		p_prompt := NULLIF(p_prompt,'');
 		UPDATE itp.v_permitted_value SET
 			prompt = p_prompt
 		WHERE fk_itp_name = p_fk_itp_name
@@ -495,6 +553,9 @@ LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
 	BEGIN
+		p_fk_itp_name := NULLIF(p_fk_itp_name,'');
+		p_fk_ite_sequence := NULLIF(p_fk_ite_sequence,'');
+		p_code := NULLIF(p_code,'');
 		DELETE FROM itp.v_permitted_value
 		WHERE fk_itp_name = p_fk_itp_name
 		  AND fk_ite_sequence = p_fk_ite_sequence
@@ -562,6 +623,7 @@ AS $BODY$
 	DECLARE
 		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
+		p_name := NULLIF(p_name,'');
 		OPEN l_cube_cursor FOR
 			SELECT
 			  cube_tsg_type,
@@ -579,6 +641,7 @@ AS $BODY$
 	DECLARE
 		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
+		p_name := NULLIF(p_name,'');
 		OPEN l_cube_cursor FOR
 			SELECT
 			  cube_sequence,
@@ -598,6 +661,7 @@ AS $BODY$
 	DECLARE
 		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
+		p_name := NULLIF(p_name,'');
 		OPEN l_cube_cursor FOR
 			SELECT
 			  COUNT(1) type_count
@@ -620,6 +684,8 @@ AS $BODY$
 		l_cube_count NUMERIC(8) := 1024;
 		r_bot RECORD;
 	BEGIN
+		p_cube_pos_action := NULLIF(p_cube_pos_action,'');
+		p_name := NULLIF(p_name,'');
 		-- A=After B=Before F=First L=Last
 		CASE p_cube_pos_action
 		WHEN 'F' THEN
@@ -677,6 +743,9 @@ AS $BODY$
 	DECLARE
 		l_cube_sequence NUMERIC(8);
 	BEGIN
+		p_cube_pos_action := NULLIF(p_cube_pos_action,'');
+		p_name := NULLIF(p_name,'');
+		x_name := NULLIF(x_name,'');
 		-- A=After B=Before F=First L=Last
 		IF COALESCE (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
 			RAISE EXCEPTION 'Invalid position action: %', p_cube_pos_action;
@@ -703,6 +772,12 @@ AS $BODY$
 	DECLARE
 		l_cube_sequence NUMERIC(8);
 	BEGIN
+		p_cube_pos_action := NULLIF(p_cube_pos_action,'');
+		p_name := NULLIF(p_name,'');
+		p_cube_tsg_type := NULLIF(p_cube_tsg_type,'');
+		p_directory := NULLIF(p_directory,'');
+		p_api_url := NULLIF(p_api_url,'');
+		x_name := NULLIF(x_name,'');
 		-- A=After B=Before F=First L=Last
 		IF COALESCE (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
 			RAISE EXCEPTION 'Invalid position action: %', p_cube_pos_action;
@@ -737,6 +812,10 @@ LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
 	BEGIN
+		p_name := NULLIF(p_name,'');
+		p_cube_tsg_type := NULLIF(p_cube_tsg_type,'');
+		p_directory := NULLIF(p_directory,'');
+		p_api_url := NULLIF(p_api_url,'');
 		UPDATE bot.v_business_object_type SET
 			cube_tsg_type = p_cube_tsg_type,
 			directory = p_directory,
@@ -751,6 +830,7 @@ LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
 	BEGIN
+		p_name := NULLIF(p_name,'');
 		DELETE FROM bot.v_business_object_type
 		WHERE name = p_name;
 	END;
@@ -779,6 +859,7 @@ AS $BODY$
 	DECLARE
 		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
+		x_fk_bot_name := NULLIF(x_fk_bot_name,'');
 		OPEN l_cube_cursor FOR
 			SELECT
 			  cube_sequence,
@@ -800,6 +881,8 @@ AS $BODY$
 		l_cube_scope_level NUMERIC(1) := 0;
 		l_name bot.v_type.name%TYPE;
 	BEGIN
+		p_cube_scope_level := NULLIF(p_cube_scope_level,'');
+		x_fk_typ_name := NULLIF(x_fk_typ_name,'');
 		l_name := x_fk_typ_name;
 		IF p_cube_scope_level > 0 THEN
 			LOOP
@@ -842,6 +925,7 @@ AS $BODY$
 	DECLARE
 		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
+		p_name := NULLIF(p_name,'');
 		OPEN l_cube_cursor FOR
 			SELECT
 			  fk_bot_name,
@@ -866,6 +950,7 @@ AS $BODY$
 	DECLARE
 		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
+		p_name := NULLIF(p_name,'');
 		OPEN l_cube_cursor FOR
 			SELECT
 			  fk_bot_name
@@ -881,6 +966,7 @@ AS $BODY$
 	DECLARE
 		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
+		p_name := NULLIF(p_name,'');
 		OPEN l_cube_cursor FOR
 			SELECT
 			  cube_sequence,
@@ -901,6 +987,7 @@ AS $BODY$
 	DECLARE
 		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
+		p_name := NULLIF(p_name,'');
 		OPEN l_cube_cursor FOR
 			SELECT
 			  cube_sequence,
@@ -919,6 +1006,7 @@ AS $BODY$
 	DECLARE
 		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
+		p_name := NULLIF(p_name,'');
 		OPEN l_cube_cursor FOR
 			SELECT
 			  cube_sequence,
@@ -941,6 +1029,7 @@ AS $BODY$
 	DECLARE
 		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
+		p_name := NULLIF(p_name,'');
 		OPEN l_cube_cursor FOR
 			SELECT
 			  fk_typ_name,
@@ -960,6 +1049,7 @@ AS $BODY$
 	DECLARE
 		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
+		p_name := NULLIF(p_name,'');
 		OPEN l_cube_cursor FOR
 			SELECT
 			  cube_sequence,
@@ -989,6 +1079,7 @@ AS $BODY$
 	DECLARE
 		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
+		p_name := NULLIF(p_name,'');
 		OPEN l_cube_cursor FOR
 			SELECT
 			  fk_typ_name
@@ -1005,6 +1096,7 @@ AS $BODY$
 	DECLARE
 		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
+		p_name := NULLIF(p_name,'');
 		OPEN l_cube_cursor FOR
 			SELECT
 			  cube_sequence,
@@ -1023,6 +1115,7 @@ AS $BODY$
 	DECLARE
 		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
+		p_name := NULLIF(p_name,'');
 		OPEN l_cube_cursor FOR
 			SELECT
 			  COUNT(1) type_count
@@ -1043,6 +1136,7 @@ AS $BODY$
 	DECLARE
 		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
+		p_name := NULLIF(p_name,'');
 		OPEN l_cube_cursor FOR
 			SELECT
 			  COUNT(1) type_count
@@ -1059,6 +1153,8 @@ AS $BODY$
 	DECLARE
 		l_name bot.v_type.name%TYPE;
 	BEGIN
+		p_name := NULLIF(p_name,'');
+		x_name := NULLIF(x_name,'');
 		l_name := x_name;
 		LOOP
 			IF l_name IS NULL THEN
@@ -1090,6 +1186,10 @@ AS $BODY$
 		l_cube_count NUMERIC(8) := 1024;
 		r_typ RECORD;
 	BEGIN
+		p_cube_pos_action := NULLIF(p_cube_pos_action,'');
+		p_fk_bot_name := NULLIF(p_fk_bot_name,'');
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_name := NULLIF(p_name,'');
 		-- A=After B=Before F=First L=Last
 		CASE p_cube_pos_action
 		WHEN 'F' THEN
@@ -1157,6 +1257,9 @@ AS $BODY$
 		l_fk_bot_name bot.v_type.fk_bot_name%TYPE;
 		l_fk_typ_name bot.v_type.fk_typ_name%TYPE;
 	BEGIN
+		p_cube_pos_action := NULLIF(p_cube_pos_action,'');
+		p_name := NULLIF(p_name,'');
+		x_name := NULLIF(x_name,'');
 		-- A=After B=Before F=First L=Last
 		IF COALESCE (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
 			RAISE EXCEPTION 'Invalid position action: %', p_cube_pos_action;
@@ -1206,6 +1309,19 @@ AS $BODY$
 	DECLARE
 		l_cube_sequence NUMERIC(8);
 	BEGIN
+		p_cube_pos_action := NULLIF(p_cube_pos_action,'');
+		p_fk_bot_name := NULLIF(p_fk_bot_name,'');
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_name := NULLIF(p_name,'');
+		p_code := NULLIF(p_code,'');
+		p_flag_partial_key := NULLIF(p_flag_partial_key,'');
+		p_flag_recursive := NULLIF(p_flag_recursive,'');
+		p_recursive_cardinality := NULLIF(p_recursive_cardinality,'');
+		p_cardinality := NULLIF(p_cardinality,'');
+		p_sort_order := NULLIF(p_sort_order,'');
+		p_icon := NULLIF(p_icon,'');
+		p_transferable := NULLIF(p_transferable,'');
+		x_name := NULLIF(x_name,'');
 		-- A=After B=Before F=First L=Last
 		IF COALESCE (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
 			RAISE EXCEPTION 'Invalid position action: %', p_cube_pos_action;
@@ -1263,6 +1379,17 @@ LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
 	BEGIN
+		p_fk_bot_name := NULLIF(p_fk_bot_name,'');
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_name := NULLIF(p_name,'');
+		p_code := NULLIF(p_code,'');
+		p_flag_partial_key := NULLIF(p_flag_partial_key,'');
+		p_flag_recursive := NULLIF(p_flag_recursive,'');
+		p_recursive_cardinality := NULLIF(p_recursive_cardinality,'');
+		p_cardinality := NULLIF(p_cardinality,'');
+		p_sort_order := NULLIF(p_sort_order,'');
+		p_icon := NULLIF(p_icon,'');
+		p_transferable := NULLIF(p_transferable,'');
 		UPDATE bot.v_type SET
 			fk_bot_name = p_fk_bot_name,
 			fk_typ_name = p_fk_typ_name,
@@ -1284,6 +1411,7 @@ LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
 	BEGIN
+		p_name := NULLIF(p_name,'');
 		DELETE FROM bot.v_type
 		WHERE name = p_name;
 	END;
@@ -1297,6 +1425,8 @@ AS $BODY$
 	DECLARE
 		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_code := NULLIF(p_code,'');
 		OPEN l_cube_cursor FOR
 			SELECT
 			  fk_bot_name,
@@ -1319,6 +1449,8 @@ AS $BODY$
 	DECLARE
 		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_code := NULLIF(p_code,'');
 		OPEN l_cube_cursor FOR
 			SELECT
 			  fk_bot_name
@@ -1336,6 +1468,8 @@ AS $BODY$
 	DECLARE
 		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_code := NULLIF(p_code,'');
 		OPEN l_cube_cursor FOR
 			SELECT
 			  cube_sequence,
@@ -1358,6 +1492,8 @@ AS $BODY$
 	DECLARE
 		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_code := NULLIF(p_code,'');
 		OPEN l_cube_cursor FOR
 			SELECT
 			  cube_sequence,
@@ -1379,6 +1515,8 @@ AS $BODY$
 	DECLARE
 		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_code := NULLIF(p_code,'');
 		OPEN l_cube_cursor FOR
 			SELECT
 			  COUNT(1) type_count
@@ -1398,6 +1536,9 @@ AS $BODY$
 	DECLARE
 		l_code bot.v_type_specialisation_group.code%TYPE;
 	BEGIN
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_code := NULLIF(p_code,'');
+		x_code := NULLIF(x_code,'');
 		l_code := x_code;
 		LOOP
 			IF l_code IS NULL THEN
@@ -1430,6 +1571,10 @@ AS $BODY$
 		l_cube_count NUMERIC(8) := 1024;
 		r_tsg RECORD;
 	BEGIN
+		p_cube_pos_action := NULLIF(p_cube_pos_action,'');
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_fk_tsg_code := NULLIF(p_fk_tsg_code,'');
+		p_code := NULLIF(p_code,'');
 		-- A=After B=Before F=First L=Last
 		CASE p_cube_pos_action
 		WHEN 'F' THEN
@@ -1499,6 +1644,11 @@ AS $BODY$
 		l_cube_sequence NUMERIC(8);
 		l_fk_tsg_code bot.v_type_specialisation_group.fk_tsg_code%TYPE;
 	BEGIN
+		p_cube_pos_action := NULLIF(p_cube_pos_action,'');
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_code := NULLIF(p_code,'');
+		x_fk_typ_name := NULLIF(x_fk_typ_name,'');
+		x_code := NULLIF(x_code,'');
 		-- A=After B=Before F=First L=Last
 		IF COALESCE (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
 			RAISE EXCEPTION 'Invalid position action: %', p_cube_pos_action;
@@ -1543,6 +1693,17 @@ AS $BODY$
 	DECLARE
 		l_cube_sequence NUMERIC(8);
 	BEGIN
+		p_cube_pos_action := NULLIF(p_cube_pos_action,'');
+		p_fk_bot_name := NULLIF(p_fk_bot_name,'');
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_fk_tsg_code := NULLIF(p_fk_tsg_code,'');
+		p_code := NULLIF(p_code,'');
+		p_name := NULLIF(p_name,'');
+		p_primary_key := NULLIF(p_primary_key,'');
+		p_xf_atb_typ_name := NULLIF(p_xf_atb_typ_name,'');
+		p_xk_atb_name := NULLIF(p_xk_atb_name,'');
+		x_fk_typ_name := NULLIF(x_fk_typ_name,'');
+		x_code := NULLIF(x_code,'');
 		-- A=After B=Before F=First L=Last
 		IF COALESCE (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
 			RAISE EXCEPTION 'Invalid position action: %', p_cube_pos_action;
@@ -1591,6 +1752,14 @@ LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
 	BEGIN
+		p_fk_bot_name := NULLIF(p_fk_bot_name,'');
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_fk_tsg_code := NULLIF(p_fk_tsg_code,'');
+		p_code := NULLIF(p_code,'');
+		p_name := NULLIF(p_name,'');
+		p_primary_key := NULLIF(p_primary_key,'');
+		p_xf_atb_typ_name := NULLIF(p_xf_atb_typ_name,'');
+		p_xk_atb_name := NULLIF(p_xk_atb_name,'');
 		UPDATE bot.v_type_specialisation_group SET
 			fk_bot_name = p_fk_bot_name,
 			fk_tsg_code = p_fk_tsg_code,
@@ -1610,6 +1779,8 @@ LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
 	BEGIN
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_code := NULLIF(p_code,'');
 		DELETE FROM bot.v_type_specialisation_group
 		WHERE fk_typ_name = p_fk_typ_name
 		  AND code = p_code;
@@ -1626,6 +1797,8 @@ AS $BODY$
 		l_cube_scope_level NUMERIC(1) := 0;
 		l_name bot.v_type.name%TYPE;
 	BEGIN
+		p_cube_scope_level := NULLIF(p_cube_scope_level,'');
+		x_fk_typ_name := NULLIF(x_fk_typ_name,'');
 		l_name := x_fk_typ_name;
 		IF p_cube_scope_level > 0 THEN
 			LOOP
@@ -1674,6 +1847,9 @@ AS $BODY$
 		l_cube_scope_level NUMERIC(1) := 0;
 		l_code bot.v_type_specialisation_group.code%TYPE;
 	BEGIN
+		p_cube_scope_level := NULLIF(p_cube_scope_level,'');
+		x_fk_typ_name := NULLIF(x_fk_typ_name,'');
+		x_fk_tsg_code := NULLIF(x_fk_tsg_code,'');
 		l_code := x_fk_tsg_code;
 		IF p_cube_scope_level > 0 THEN
 			LOOP
@@ -1723,6 +1899,9 @@ AS $BODY$
 	DECLARE
 		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_fk_tsg_code := NULLIF(p_fk_tsg_code,'');
+		p_code := NULLIF(p_code,'');
 		OPEN l_cube_cursor FOR
 			SELECT
 			  fk_bot_name,
@@ -1752,6 +1931,10 @@ AS $BODY$
 		l_cube_count NUMERIC(8) := 1024;
 		r_tsp RECORD;
 	BEGIN
+		p_cube_pos_action := NULLIF(p_cube_pos_action,'');
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_fk_tsg_code := NULLIF(p_fk_tsg_code,'');
+		p_code := NULLIF(p_code,'');
 		-- A=After B=Before F=First L=Last
 		CASE p_cube_pos_action
 		WHEN 'F' THEN
@@ -1819,6 +2002,13 @@ AS $BODY$
 	DECLARE
 		l_cube_sequence NUMERIC(8);
 	BEGIN
+		p_cube_pos_action := NULLIF(p_cube_pos_action,'');
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_fk_tsg_code := NULLIF(p_fk_tsg_code,'');
+		p_code := NULLIF(p_code,'');
+		x_fk_typ_name := NULLIF(x_fk_typ_name,'');
+		x_fk_tsg_code := NULLIF(x_fk_tsg_code,'');
+		x_code := NULLIF(x_code,'');
 		-- A=After B=Before F=First L=Last
 		IF COALESCE (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
 			RAISE EXCEPTION 'Invalid position action: %', p_cube_pos_action;
@@ -1853,6 +2043,18 @@ AS $BODY$
 	DECLARE
 		l_cube_sequence NUMERIC(8);
 	BEGIN
+		p_cube_pos_action := NULLIF(p_cube_pos_action,'');
+		p_fk_bot_name := NULLIF(p_fk_bot_name,'');
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_fk_tsg_code := NULLIF(p_fk_tsg_code,'');
+		p_code := NULLIF(p_code,'');
+		p_name := NULLIF(p_name,'');
+		p_xf_tsp_typ_name := NULLIF(p_xf_tsp_typ_name,'');
+		p_xf_tsp_tsg_code := NULLIF(p_xf_tsp_tsg_code,'');
+		p_xk_tsp_code := NULLIF(p_xk_tsp_code,'');
+		x_fk_typ_name := NULLIF(x_fk_typ_name,'');
+		x_fk_tsg_code := NULLIF(x_fk_tsg_code,'');
+		x_code := NULLIF(x_code,'');
 		-- A=After B=Before F=First L=Last
 		IF COALESCE (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
 			RAISE EXCEPTION 'Invalid position action: %', p_cube_pos_action;
@@ -1899,6 +2101,14 @@ LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
 	BEGIN
+		p_fk_bot_name := NULLIF(p_fk_bot_name,'');
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_fk_tsg_code := NULLIF(p_fk_tsg_code,'');
+		p_code := NULLIF(p_code,'');
+		p_name := NULLIF(p_name,'');
+		p_xf_tsp_typ_name := NULLIF(p_xf_tsp_typ_name,'');
+		p_xf_tsp_tsg_code := NULLIF(p_xf_tsp_tsg_code,'');
+		p_xk_tsp_code := NULLIF(p_xk_tsp_code,'');
 		UPDATE bot.v_type_specialisation SET
 			fk_bot_name = p_fk_bot_name,
 			name = p_name,
@@ -1919,6 +2129,9 @@ LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
 	BEGIN
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_fk_tsg_code := NULLIF(p_fk_tsg_code,'');
+		p_code := NULLIF(p_code,'');
 		DELETE FROM bot.v_type_specialisation
 		WHERE fk_typ_name = p_fk_typ_name
 		  AND fk_tsg_code = p_fk_tsg_code
@@ -1936,6 +2149,8 @@ AS $BODY$
 		l_cube_scope_level NUMERIC(1) := 0;
 		l_name bot.v_type.name%TYPE;
 	BEGIN
+		p_cube_scope_level := NULLIF(p_cube_scope_level,'');
+		x_fk_typ_name := NULLIF(x_fk_typ_name,'');
 		l_name := x_fk_typ_name;
 		IF p_cube_scope_level > 0 THEN
 			LOOP
@@ -1979,6 +2194,8 @@ AS $BODY$
 	DECLARE
 		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_name := NULLIF(p_name,'');
 		OPEN l_cube_cursor FOR
 			SELECT
 			  fk_bot_name,
@@ -2003,6 +2220,8 @@ AS $BODY$
 	DECLARE
 		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_name := NULLIF(p_name,'');
 		OPEN l_cube_cursor FOR
 			SELECT
 			  fk_bot_name
@@ -2020,6 +2239,8 @@ AS $BODY$
 	DECLARE
 		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_name := NULLIF(p_name,'');
 		OPEN l_cube_cursor FOR
 			SELECT
 			  fk_typ_name,
@@ -2040,6 +2261,8 @@ AS $BODY$
 	DECLARE
 		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_name := NULLIF(p_name,'');
 		OPEN l_cube_cursor FOR
 			SELECT
 			  fk_typ_name,
@@ -2059,6 +2282,8 @@ AS $BODY$
 	DECLARE
 		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_name := NULLIF(p_name,'');
 		OPEN l_cube_cursor FOR
 			SELECT
 			  fk_typ_name,
@@ -2081,6 +2306,8 @@ AS $BODY$
 	DECLARE
 		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_name := NULLIF(p_name,'');
 		OPEN l_cube_cursor FOR
 			SELECT
 			  COUNT(1) type_count
@@ -2098,6 +2325,8 @@ AS $BODY$
 	DECLARE
 		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_name := NULLIF(p_name,'');
 		OPEN l_cube_cursor FOR
 			SELECT
 			  COUNT(1) type_count
@@ -2121,6 +2350,9 @@ AS $BODY$
 		l_cube_count NUMERIC(8) := 1024;
 		r_atb RECORD;
 	BEGIN
+		p_cube_pos_action := NULLIF(p_cube_pos_action,'');
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_name := NULLIF(p_name,'');
 		-- A=After B=Before F=First L=Last
 		CASE p_cube_pos_action
 		WHEN 'F' THEN
@@ -2183,6 +2415,11 @@ AS $BODY$
 	DECLARE
 		l_cube_sequence NUMERIC(8);
 	BEGIN
+		p_cube_pos_action := NULLIF(p_cube_pos_action,'');
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_name := NULLIF(p_name,'');
+		x_fk_typ_name := NULLIF(x_fk_typ_name,'');
+		x_name := NULLIF(x_name,'');
 		-- A=After B=Before F=First L=Last
 		IF COALESCE (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
 			RAISE EXCEPTION 'Invalid position action: %', p_cube_pos_action;
@@ -2217,6 +2454,19 @@ AS $BODY$
 	DECLARE
 		l_cube_sequence NUMERIC(8);
 	BEGIN
+		p_cube_pos_action := NULLIF(p_cube_pos_action,'');
+		p_fk_bot_name := NULLIF(p_fk_bot_name,'');
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_name := NULLIF(p_name,'');
+		p_primary_key := NULLIF(p_primary_key,'');
+		p_code_display_key := NULLIF(p_code_display_key,'');
+		p_code_foreign_key := NULLIF(p_code_foreign_key,'');
+		p_flag_hidden := NULLIF(p_flag_hidden,'');
+		p_default_value := NULLIF(p_default_value,'');
+		p_unchangeable := NULLIF(p_unchangeable,'');
+		p_xk_itp_name := NULLIF(p_xk_itp_name,'');
+		x_fk_typ_name := NULLIF(x_fk_typ_name,'');
+		x_name := NULLIF(x_name,'');
 		-- A=After B=Before F=First L=Last
 		IF COALESCE (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
 			RAISE EXCEPTION 'Invalid position action: %', p_cube_pos_action;
@@ -2269,6 +2519,16 @@ LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
 	BEGIN
+		p_fk_bot_name := NULLIF(p_fk_bot_name,'');
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_name := NULLIF(p_name,'');
+		p_primary_key := NULLIF(p_primary_key,'');
+		p_code_display_key := NULLIF(p_code_display_key,'');
+		p_code_foreign_key := NULLIF(p_code_foreign_key,'');
+		p_flag_hidden := NULLIF(p_flag_hidden,'');
+		p_default_value := NULLIF(p_default_value,'');
+		p_unchangeable := NULLIF(p_unchangeable,'');
+		p_xk_itp_name := NULLIF(p_xk_itp_name,'');
 		UPDATE bot.v_attribute SET
 			fk_bot_name = p_fk_bot_name,
 			primary_key = p_primary_key,
@@ -2290,6 +2550,8 @@ LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
 	BEGIN
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_name := NULLIF(p_name,'');
 		DELETE FROM bot.v_attribute
 		WHERE fk_typ_name = p_fk_typ_name
 		  AND name = p_name;
@@ -2304,6 +2566,8 @@ AS $BODY$
 	DECLARE
 		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_fk_atb_name := NULLIF(p_fk_atb_name,'');
 		OPEN l_cube_cursor FOR
 			SELECT
 			  fk_bot_name,
@@ -2329,6 +2593,13 @@ LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
 	BEGIN
+		p_fk_bot_name := NULLIF(p_fk_bot_name,'');
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_fk_atb_name := NULLIF(p_fk_atb_name,'');
+		p_cube_tsg_type := NULLIF(p_cube_tsg_type,'');
+		p_aggregate_function := NULLIF(p_aggregate_function,'');
+		p_xk_typ_name := NULLIF(p_xk_typ_name,'');
+		p_xk_typ_name_1 := NULLIF(p_xk_typ_name_1,'');
 		INSERT INTO bot.v_derivation (
 			cube_id,
 			fk_bot_name,
@@ -2365,6 +2636,13 @@ LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
 	BEGIN
+		p_fk_bot_name := NULLIF(p_fk_bot_name,'');
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_fk_atb_name := NULLIF(p_fk_atb_name,'');
+		p_cube_tsg_type := NULLIF(p_cube_tsg_type,'');
+		p_aggregate_function := NULLIF(p_aggregate_function,'');
+		p_xk_typ_name := NULLIF(p_xk_typ_name,'');
+		p_xk_typ_name_1 := NULLIF(p_xk_typ_name_1,'');
 		UPDATE bot.v_derivation SET
 			fk_bot_name = p_fk_bot_name,
 			cube_tsg_type = p_cube_tsg_type,
@@ -2383,6 +2661,8 @@ LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
 	BEGIN
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_fk_atb_name := NULLIF(p_fk_atb_name,'');
 		DELETE FROM bot.v_derivation
 		WHERE fk_typ_name = p_fk_typ_name
 		  AND fk_atb_name = p_fk_atb_name;
@@ -2397,6 +2677,8 @@ AS $BODY$
 	DECLARE
 		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_fk_atb_name := NULLIF(p_fk_atb_name,'');
 		OPEN l_cube_cursor FOR
 			SELECT
 			  fk_bot_name,
@@ -2416,6 +2698,10 @@ LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
 	BEGIN
+		p_fk_bot_name := NULLIF(p_fk_bot_name,'');
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_fk_atb_name := NULLIF(p_fk_atb_name,'');
+		p_text := NULLIF(p_text,'');
 		INSERT INTO bot.v_description_attribute (
 			cube_id,
 			fk_bot_name,
@@ -2443,6 +2729,10 @@ LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
 	BEGIN
+		p_fk_bot_name := NULLIF(p_fk_bot_name,'');
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_fk_atb_name := NULLIF(p_fk_atb_name,'');
+		p_text := NULLIF(p_text,'');
 		UPDATE bot.v_description_attribute SET
 			fk_bot_name = p_fk_bot_name,
 			text = p_text
@@ -2458,6 +2748,8 @@ LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
 	BEGIN
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_fk_atb_name := NULLIF(p_fk_atb_name,'');
 		DELETE FROM bot.v_description_attribute
 		WHERE fk_typ_name = p_fk_typ_name
 		  AND fk_atb_name = p_fk_atb_name;
@@ -2475,6 +2767,11 @@ AS $BODY$
 	DECLARE
 		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_fk_atb_name := NULLIF(p_fk_atb_name,'');
+		p_xf_tsp_typ_name := NULLIF(p_xf_tsp_typ_name,'');
+		p_xf_tsp_tsg_code := NULLIF(p_xf_tsp_tsg_code,'');
+		p_xk_tsp_code := NULLIF(p_xk_tsp_code,'');
 		OPEN l_cube_cursor FOR
 			SELECT
 			  fk_bot_name,
@@ -2499,6 +2796,11 @@ AS $BODY$
 	DECLARE
 		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_fk_atb_name := NULLIF(p_fk_atb_name,'');
+		p_xf_tsp_typ_name := NULLIF(p_xf_tsp_typ_name,'');
+		p_xf_tsp_tsg_code := NULLIF(p_xf_tsp_tsg_code,'');
+		p_xk_tsp_code := NULLIF(p_xk_tsp_code,'');
 		OPEN l_cube_cursor FOR
 			SELECT
 			  fk_typ_name,
@@ -2539,6 +2841,13 @@ AS $BODY$
 	DECLARE
 		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
+		p_fk_bot_name := NULLIF(p_fk_bot_name,'');
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_fk_atb_name := NULLIF(p_fk_atb_name,'');
+		p_include_or_exclude := NULLIF(p_include_or_exclude,'');
+		p_xf_tsp_typ_name := NULLIF(p_xf_tsp_typ_name,'');
+		p_xf_tsp_tsg_code := NULLIF(p_xf_tsp_tsg_code,'');
+		p_xk_tsp_code := NULLIF(p_xk_tsp_code,'');
 		INSERT INTO bot.v_restriction_type_spec_atb (
 			cube_id,
 			fk_bot_name,
@@ -2577,6 +2886,13 @@ LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
 	BEGIN
+		p_fk_bot_name := NULLIF(p_fk_bot_name,'');
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_fk_atb_name := NULLIF(p_fk_atb_name,'');
+		p_include_or_exclude := NULLIF(p_include_or_exclude,'');
+		p_xf_tsp_typ_name := NULLIF(p_xf_tsp_typ_name,'');
+		p_xf_tsp_tsg_code := NULLIF(p_xf_tsp_tsg_code,'');
+		p_xk_tsp_code := NULLIF(p_xk_tsp_code,'');
 		UPDATE bot.v_restriction_type_spec_atb SET
 			fk_bot_name = p_fk_bot_name,
 			include_or_exclude = p_include_or_exclude
@@ -2598,6 +2914,11 @@ LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
 	BEGIN
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_fk_atb_name := NULLIF(p_fk_atb_name,'');
+		p_xf_tsp_typ_name := NULLIF(p_xf_tsp_typ_name,'');
+		p_xf_tsp_tsg_code := NULLIF(p_xf_tsp_tsg_code,'');
+		p_xk_tsp_code := NULLIF(p_xk_tsp_code,'');
 		DELETE FROM bot.v_restriction_type_spec_atb
 		WHERE fk_typ_name = p_fk_typ_name
 		  AND fk_atb_name = p_fk_atb_name
@@ -2617,6 +2938,10 @@ AS $BODY$
 	DECLARE
 		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_sequence := NULLIF(p_sequence,'');
+		p_xk_bot_name := NULLIF(p_xk_bot_name,'');
+		p_xk_typ_name := NULLIF(p_xk_typ_name,'');
 		OPEN l_cube_cursor FOR
 			SELECT
 			  fk_bot_name,
@@ -2646,6 +2971,10 @@ AS $BODY$
 	DECLARE
 		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_sequence := NULLIF(p_sequence,'');
+		p_xk_bot_name := NULLIF(p_xk_bot_name,'');
+		p_xk_typ_name := NULLIF(p_xk_typ_name,'');
 		OPEN l_cube_cursor FOR
 			SELECT
 			  fk_bot_name
@@ -2667,6 +2996,10 @@ AS $BODY$
 	DECLARE
 		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_sequence := NULLIF(p_sequence,'');
+		p_xk_bot_name := NULLIF(p_xk_bot_name,'');
+		p_xk_typ_name := NULLIF(p_xk_typ_name,'');
 		OPEN l_cube_cursor FOR
 			SELECT
 			  fk_typ_name,
@@ -2692,6 +3025,10 @@ AS $BODY$
 	DECLARE
 		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_sequence := NULLIF(p_sequence,'');
+		p_xk_bot_name := NULLIF(p_xk_bot_name,'');
+		p_xk_typ_name := NULLIF(p_xk_typ_name,'');
 		OPEN l_cube_cursor FOR
 			SELECT
 			  fk_typ_name,
@@ -2720,6 +3057,10 @@ AS $BODY$
 	DECLARE
 		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_sequence := NULLIF(p_sequence,'');
+		p_xk_bot_name := NULLIF(p_xk_bot_name,'');
+		p_xk_typ_name := NULLIF(p_xk_typ_name,'');
 		OPEN l_cube_cursor FOR
 			SELECT
 			  fk_typ_name,
@@ -2749,6 +3090,10 @@ AS $BODY$
 	DECLARE
 		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_sequence := NULLIF(p_sequence,'');
+		p_xk_bot_name := NULLIF(p_xk_bot_name,'');
+		p_xk_typ_name := NULLIF(p_xk_typ_name,'');
 		OPEN l_cube_cursor FOR
 			SELECT
 			  COUNT(1) type_count
@@ -2770,6 +3115,10 @@ AS $BODY$
 	DECLARE
 		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_sequence := NULLIF(p_sequence,'');
+		p_xk_bot_name := NULLIF(p_xk_bot_name,'');
+		p_xk_typ_name := NULLIF(p_xk_typ_name,'');
 		OPEN l_cube_cursor FOR
 			SELECT
 			  COUNT(1) type_count
@@ -2797,6 +3146,11 @@ AS $BODY$
 		l_cube_count NUMERIC(8) := 1024;
 		r_ref RECORD;
 	BEGIN
+		p_cube_pos_action := NULLIF(p_cube_pos_action,'');
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_sequence := NULLIF(p_sequence,'');
+		p_xk_bot_name := NULLIF(p_xk_bot_name,'');
+		p_xk_typ_name := NULLIF(p_xk_typ_name,'');
 		-- A=After B=Before F=First L=Last
 		CASE p_cube_pos_action
 		WHEN 'F' THEN
@@ -2865,6 +3219,15 @@ AS $BODY$
 	DECLARE
 		l_cube_sequence NUMERIC(8);
 	BEGIN
+		p_cube_pos_action := NULLIF(p_cube_pos_action,'');
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_sequence := NULLIF(p_sequence,'');
+		p_xk_bot_name := NULLIF(p_xk_bot_name,'');
+		p_xk_typ_name := NULLIF(p_xk_typ_name,'');
+		x_fk_typ_name := NULLIF(x_fk_typ_name,'');
+		x_sequence := NULLIF(x_sequence,'');
+		x_xk_bot_name := NULLIF(x_xk_bot_name,'');
+		x_xk_typ_name := NULLIF(x_xk_typ_name,'');
 		-- A=After B=Before F=First L=Last
 		IF COALESCE (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
 			RAISE EXCEPTION 'Invalid position action: %', p_cube_pos_action;
@@ -2906,6 +3269,24 @@ AS $BODY$
 	DECLARE
 		l_cube_sequence NUMERIC(8);
 	BEGIN
+		p_cube_pos_action := NULLIF(p_cube_pos_action,'');
+		p_fk_bot_name := NULLIF(p_fk_bot_name,'');
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_name := NULLIF(p_name,'');
+		p_primary_key := NULLIF(p_primary_key,'');
+		p_code_display_key := NULLIF(p_code_display_key,'');
+		p_sequence := NULLIF(p_sequence,'');
+		p_scope := NULLIF(p_scope,'');
+		p_unchangeable := NULLIF(p_unchangeable,'');
+		p_within_scope_extension := NULLIF(p_within_scope_extension,'');
+		p_cube_tsg_int_ext := NULLIF(p_cube_tsg_int_ext,'');
+		p_xk_bot_name := NULLIF(p_xk_bot_name,'');
+		p_xk_typ_name := NULLIF(p_xk_typ_name,'');
+		p_xk_typ_name_1 := NULLIF(p_xk_typ_name_1,'');
+		x_fk_typ_name := NULLIF(x_fk_typ_name,'');
+		x_sequence := NULLIF(x_sequence,'');
+		x_xk_bot_name := NULLIF(x_xk_bot_name,'');
+		x_xk_typ_name := NULLIF(x_xk_typ_name,'');
 		-- A=After B=Before F=First L=Last
 		IF COALESCE (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
 			RAISE EXCEPTION 'Invalid position action: %', p_cube_pos_action;
@@ -2967,6 +3348,19 @@ LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
 	BEGIN
+		p_fk_bot_name := NULLIF(p_fk_bot_name,'');
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_name := NULLIF(p_name,'');
+		p_primary_key := NULLIF(p_primary_key,'');
+		p_code_display_key := NULLIF(p_code_display_key,'');
+		p_sequence := NULLIF(p_sequence,'');
+		p_scope := NULLIF(p_scope,'');
+		p_unchangeable := NULLIF(p_unchangeable,'');
+		p_within_scope_extension := NULLIF(p_within_scope_extension,'');
+		p_cube_tsg_int_ext := NULLIF(p_cube_tsg_int_ext,'');
+		p_xk_bot_name := NULLIF(p_xk_bot_name,'');
+		p_xk_typ_name := NULLIF(p_xk_typ_name,'');
+		p_xk_typ_name_1 := NULLIF(p_xk_typ_name_1,'');
 		UPDATE bot.v_reference SET
 			fk_bot_name = p_fk_bot_name,
 			name = p_name,
@@ -2993,6 +3387,10 @@ LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
 	BEGIN
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_sequence := NULLIF(p_sequence,'');
+		p_xk_bot_name := NULLIF(p_xk_bot_name,'');
+		p_xk_typ_name := NULLIF(p_xk_typ_name,'');
 		DELETE FROM bot.v_reference
 		WHERE fk_typ_name = p_fk_typ_name
 		  AND sequence = p_sequence
@@ -3011,6 +3409,10 @@ AS $BODY$
 	DECLARE
 		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_fk_ref_sequence := NULLIF(p_fk_ref_sequence,'');
+		p_fk_ref_bot_name := NULLIF(p_fk_ref_bot_name,'');
+		p_fk_ref_typ_name := NULLIF(p_fk_ref_typ_name,'');
 		OPEN l_cube_cursor FOR
 			SELECT
 			  fk_bot_name,
@@ -3034,6 +3436,12 @@ LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
 	BEGIN
+		p_fk_bot_name := NULLIF(p_fk_bot_name,'');
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_fk_ref_sequence := NULLIF(p_fk_ref_sequence,'');
+		p_fk_ref_bot_name := NULLIF(p_fk_ref_bot_name,'');
+		p_fk_ref_typ_name := NULLIF(p_fk_ref_typ_name,'');
+		p_text := NULLIF(p_text,'');
 		INSERT INTO bot.v_description_reference (
 			cube_id,
 			fk_bot_name,
@@ -3067,6 +3475,12 @@ LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
 	BEGIN
+		p_fk_bot_name := NULLIF(p_fk_bot_name,'');
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_fk_ref_sequence := NULLIF(p_fk_ref_sequence,'');
+		p_fk_ref_bot_name := NULLIF(p_fk_ref_bot_name,'');
+		p_fk_ref_typ_name := NULLIF(p_fk_ref_typ_name,'');
+		p_text := NULLIF(p_text,'');
 		UPDATE bot.v_description_reference SET
 			fk_bot_name = p_fk_bot_name,
 			text = p_text
@@ -3086,6 +3500,10 @@ LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
 	BEGIN
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_fk_ref_sequence := NULLIF(p_fk_ref_sequence,'');
+		p_fk_ref_bot_name := NULLIF(p_fk_ref_bot_name,'');
+		p_fk_ref_typ_name := NULLIF(p_fk_ref_typ_name,'');
 		DELETE FROM bot.v_description_reference
 		WHERE fk_typ_name = p_fk_typ_name
 		  AND fk_ref_sequence = p_fk_ref_sequence
@@ -3107,6 +3525,13 @@ AS $BODY$
 	DECLARE
 		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_fk_ref_sequence := NULLIF(p_fk_ref_sequence,'');
+		p_fk_ref_bot_name := NULLIF(p_fk_ref_bot_name,'');
+		p_fk_ref_typ_name := NULLIF(p_fk_ref_typ_name,'');
+		p_xf_tsp_typ_name := NULLIF(p_xf_tsp_typ_name,'');
+		p_xf_tsp_tsg_code := NULLIF(p_xf_tsp_tsg_code,'');
+		p_xk_tsp_code := NULLIF(p_xk_tsp_code,'');
 		OPEN l_cube_cursor FOR
 			SELECT
 			  fk_bot_name,
@@ -3135,6 +3560,13 @@ AS $BODY$
 	DECLARE
 		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_fk_ref_sequence := NULLIF(p_fk_ref_sequence,'');
+		p_fk_ref_bot_name := NULLIF(p_fk_ref_bot_name,'');
+		p_fk_ref_typ_name := NULLIF(p_fk_ref_typ_name,'');
+		p_xf_tsp_typ_name := NULLIF(p_xf_tsp_typ_name,'');
+		p_xf_tsp_tsg_code := NULLIF(p_xf_tsp_tsg_code,'');
+		p_xk_tsp_code := NULLIF(p_xk_tsp_code,'');
 		OPEN l_cube_cursor FOR
 			SELECT
 			  fk_typ_name,
@@ -3192,6 +3624,15 @@ AS $BODY$
 	DECLARE
 		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
+		p_fk_bot_name := NULLIF(p_fk_bot_name,'');
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_fk_ref_sequence := NULLIF(p_fk_ref_sequence,'');
+		p_fk_ref_bot_name := NULLIF(p_fk_ref_bot_name,'');
+		p_fk_ref_typ_name := NULLIF(p_fk_ref_typ_name,'');
+		p_include_or_exclude := NULLIF(p_include_or_exclude,'');
+		p_xf_tsp_typ_name := NULLIF(p_xf_tsp_typ_name,'');
+		p_xf_tsp_tsg_code := NULLIF(p_xf_tsp_tsg_code,'');
+		p_xk_tsp_code := NULLIF(p_xk_tsp_code,'');
 		INSERT INTO bot.v_restriction_type_spec_ref (
 			cube_id,
 			fk_bot_name,
@@ -3236,6 +3677,15 @@ LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
 	BEGIN
+		p_fk_bot_name := NULLIF(p_fk_bot_name,'');
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_fk_ref_sequence := NULLIF(p_fk_ref_sequence,'');
+		p_fk_ref_bot_name := NULLIF(p_fk_ref_bot_name,'');
+		p_fk_ref_typ_name := NULLIF(p_fk_ref_typ_name,'');
+		p_include_or_exclude := NULLIF(p_include_or_exclude,'');
+		p_xf_tsp_typ_name := NULLIF(p_xf_tsp_typ_name,'');
+		p_xf_tsp_tsg_code := NULLIF(p_xf_tsp_tsg_code,'');
+		p_xk_tsp_code := NULLIF(p_xk_tsp_code,'');
 		UPDATE bot.v_restriction_type_spec_ref SET
 			fk_bot_name = p_fk_bot_name,
 			include_or_exclude = p_include_or_exclude
@@ -3261,6 +3711,13 @@ LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
 	BEGIN
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_fk_ref_sequence := NULLIF(p_fk_ref_sequence,'');
+		p_fk_ref_bot_name := NULLIF(p_fk_ref_bot_name,'');
+		p_fk_ref_typ_name := NULLIF(p_fk_ref_typ_name,'');
+		p_xf_tsp_typ_name := NULLIF(p_xf_tsp_typ_name,'');
+		p_xf_tsp_tsg_code := NULLIF(p_xf_tsp_tsg_code,'');
+		p_xk_tsp_code := NULLIF(p_xk_tsp_code,'');
 		DELETE FROM bot.v_restriction_type_spec_ref
 		WHERE fk_typ_name = p_fk_typ_name
 		  AND fk_ref_sequence = p_fk_ref_sequence
@@ -3285,6 +3742,13 @@ AS $BODY$
 	DECLARE
 		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_fk_ref_sequence := NULLIF(p_fk_ref_sequence,'');
+		p_fk_ref_bot_name := NULLIF(p_fk_ref_bot_name,'');
+		p_fk_ref_typ_name := NULLIF(p_fk_ref_typ_name,'');
+		p_xf_tsp_typ_name := NULLIF(p_xf_tsp_typ_name,'');
+		p_xf_tsp_tsg_code := NULLIF(p_xf_tsp_tsg_code,'');
+		p_xk_tsp_code := NULLIF(p_xk_tsp_code,'');
 		OPEN l_cube_cursor FOR
 			SELECT
 			  fk_bot_name,
@@ -3314,6 +3778,15 @@ LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
 	BEGIN
+		p_fk_bot_name := NULLIF(p_fk_bot_name,'');
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_fk_ref_sequence := NULLIF(p_fk_ref_sequence,'');
+		p_fk_ref_bot_name := NULLIF(p_fk_ref_bot_name,'');
+		p_fk_ref_typ_name := NULLIF(p_fk_ref_typ_name,'');
+		p_include_or_exclude := NULLIF(p_include_or_exclude,'');
+		p_xf_tsp_typ_name := NULLIF(p_xf_tsp_typ_name,'');
+		p_xf_tsp_tsg_code := NULLIF(p_xf_tsp_tsg_code,'');
+		p_xk_tsp_code := NULLIF(p_xk_tsp_code,'');
 		INSERT INTO bot.v_restriction_target_type_spec (
 			cube_id,
 			fk_bot_name,
@@ -3356,6 +3829,15 @@ LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
 	BEGIN
+		p_fk_bot_name := NULLIF(p_fk_bot_name,'');
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_fk_ref_sequence := NULLIF(p_fk_ref_sequence,'');
+		p_fk_ref_bot_name := NULLIF(p_fk_ref_bot_name,'');
+		p_fk_ref_typ_name := NULLIF(p_fk_ref_typ_name,'');
+		p_include_or_exclude := NULLIF(p_include_or_exclude,'');
+		p_xf_tsp_typ_name := NULLIF(p_xf_tsp_typ_name,'');
+		p_xf_tsp_tsg_code := NULLIF(p_xf_tsp_tsg_code,'');
+		p_xk_tsp_code := NULLIF(p_xk_tsp_code,'');
 		UPDATE bot.v_restriction_target_type_spec SET
 			fk_bot_name = p_fk_bot_name,
 			include_or_exclude = p_include_or_exclude
@@ -3381,6 +3863,13 @@ LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
 	BEGIN
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_fk_ref_sequence := NULLIF(p_fk_ref_sequence,'');
+		p_fk_ref_bot_name := NULLIF(p_fk_ref_bot_name,'');
+		p_fk_ref_typ_name := NULLIF(p_fk_ref_typ_name,'');
+		p_xf_tsp_typ_name := NULLIF(p_xf_tsp_typ_name,'');
+		p_xf_tsp_tsg_code := NULLIF(p_xf_tsp_tsg_code,'');
+		p_xk_tsp_code := NULLIF(p_xk_tsp_code,'');
 		DELETE FROM bot.v_restriction_target_type_spec
 		WHERE fk_typ_name = p_fk_typ_name
 		  AND fk_ref_sequence = p_fk_ref_sequence
@@ -3402,6 +3891,10 @@ AS $BODY$
 	DECLARE
 		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_xf_tsp_typ_name := NULLIF(p_xf_tsp_typ_name,'');
+		p_xf_tsp_tsg_code := NULLIF(p_xf_tsp_tsg_code,'');
+		p_xk_tsp_code := NULLIF(p_xk_tsp_code,'');
 		OPEN l_cube_cursor FOR
 			SELECT
 			  fk_bot_name,
@@ -3424,6 +3917,10 @@ AS $BODY$
 	DECLARE
 		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_xf_tsp_typ_name := NULLIF(p_xf_tsp_typ_name,'');
+		p_xf_tsp_tsg_code := NULLIF(p_xf_tsp_tsg_code,'');
+		p_xk_tsp_code := NULLIF(p_xk_tsp_code,'');
 		OPEN l_cube_cursor FOR
 			SELECT
 			  fk_typ_name,
@@ -3457,6 +3954,12 @@ AS $BODY$
 	DECLARE
 		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
+		p_fk_bot_name := NULLIF(p_fk_bot_name,'');
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_include_or_exclude := NULLIF(p_include_or_exclude,'');
+		p_xf_tsp_typ_name := NULLIF(p_xf_tsp_typ_name,'');
+		p_xf_tsp_tsg_code := NULLIF(p_xf_tsp_tsg_code,'');
+		p_xk_tsp_code := NULLIF(p_xk_tsp_code,'');
 		INSERT INTO bot.v_restriction_type_spec_typ (
 			cube_id,
 			fk_bot_name,
@@ -3492,6 +3995,12 @@ LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
 	BEGIN
+		p_fk_bot_name := NULLIF(p_fk_bot_name,'');
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_include_or_exclude := NULLIF(p_include_or_exclude,'');
+		p_xf_tsp_typ_name := NULLIF(p_xf_tsp_typ_name,'');
+		p_xf_tsp_tsg_code := NULLIF(p_xf_tsp_tsg_code,'');
+		p_xk_tsp_code := NULLIF(p_xk_tsp_code,'');
 		UPDATE bot.v_restriction_type_spec_typ SET
 			fk_bot_name = p_fk_bot_name,
 			include_or_exclude = p_include_or_exclude
@@ -3511,6 +4020,10 @@ LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
 	BEGIN
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_xf_tsp_typ_name := NULLIF(p_xf_tsp_typ_name,'');
+		p_xf_tsp_tsg_code := NULLIF(p_xf_tsp_tsg_code,'');
+		p_xk_tsp_code := NULLIF(p_xk_tsp_code,'');
 		DELETE FROM bot.v_restriction_type_spec_typ
 		WHERE fk_typ_name = p_fk_typ_name
 		  AND xf_tsp_typ_name = p_xf_tsp_typ_name
@@ -3531,6 +4044,12 @@ AS $BODY$
 	DECLARE
 		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_name := NULLIF(p_name,'');
+		p_location := NULLIF(p_location,'');
+		p_xf_atb_typ_name := NULLIF(p_xf_atb_typ_name,'');
+		p_xk_atb_name := NULLIF(p_xk_atb_name,'');
+		p_xk_typ_name := NULLIF(p_xk_typ_name,'');
 		OPEN l_cube_cursor FOR
 			SELECT
 			  fk_bot_name,
@@ -3563,6 +4082,12 @@ AS $BODY$
 	DECLARE
 		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_name := NULLIF(p_name,'');
+		p_location := NULLIF(p_location,'');
+		p_xf_atb_typ_name := NULLIF(p_xf_atb_typ_name,'');
+		p_xk_atb_name := NULLIF(p_xk_atb_name,'');
+		p_xk_typ_name := NULLIF(p_xk_typ_name,'');
 		OPEN l_cube_cursor FOR
 			SELECT
 			  fk_bot_name
@@ -3588,6 +4113,12 @@ AS $BODY$
 	DECLARE
 		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_name := NULLIF(p_name,'');
+		p_location := NULLIF(p_location,'');
+		p_xf_atb_typ_name := NULLIF(p_xf_atb_typ_name,'');
+		p_xk_atb_name := NULLIF(p_xk_atb_name,'');
+		p_xk_typ_name := NULLIF(p_xk_typ_name,'');
 		OPEN l_cube_cursor FOR
 			SELECT
 			  cube_sequence,
@@ -3631,6 +4162,17 @@ AS $BODY$
 		l_xk_atb_name bot.v_json_path.xk_atb_name%TYPE;
 		l_xk_typ_name bot.v_json_path.xk_typ_name%TYPE;
 	BEGIN
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_name := NULLIF(p_name,'');
+		p_location := NULLIF(p_location,'');
+		p_xf_atb_typ_name := NULLIF(p_xf_atb_typ_name,'');
+		p_xk_atb_name := NULLIF(p_xk_atb_name,'');
+		p_xk_typ_name := NULLIF(p_xk_typ_name,'');
+		x_name := NULLIF(x_name,'');
+		x_location := NULLIF(x_location,'');
+		x_xf_atb_typ_name := NULLIF(x_xf_atb_typ_name,'');
+		x_xk_atb_name := NULLIF(x_xk_atb_name,'');
+		x_xk_typ_name := NULLIF(x_xk_typ_name,'');
 		l_name := x_name;
 		l_location := x_location;
 		l_xf_atb_typ_name := x_xf_atb_typ_name;
@@ -3687,6 +4229,18 @@ AS $BODY$
 		l_cube_count NUMERIC(8) := 1024;
 		r_jsn RECORD;
 	BEGIN
+		p_cube_pos_action := NULLIF(p_cube_pos_action,'');
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_fk_jsn_name := NULLIF(p_fk_jsn_name,'');
+		p_fk_jsn_location := NULLIF(p_fk_jsn_location,'');
+		p_fk_jsn_atb_typ_name := NULLIF(p_fk_jsn_atb_typ_name,'');
+		p_fk_jsn_atb_name := NULLIF(p_fk_jsn_atb_name,'');
+		p_fk_jsn_typ_name := NULLIF(p_fk_jsn_typ_name,'');
+		p_name := NULLIF(p_name,'');
+		p_location := NULLIF(p_location,'');
+		p_xf_atb_typ_name := NULLIF(p_xf_atb_typ_name,'');
+		p_xk_atb_name := NULLIF(p_xk_atb_name,'');
+		p_xk_typ_name := NULLIF(p_xk_typ_name,'');
 		-- A=After B=Before F=First L=Last
 		CASE p_cube_pos_action
 		WHEN 'F' THEN
@@ -3796,6 +4350,19 @@ AS $BODY$
 		l_fk_jsn_atb_name bot.v_json_path.fk_jsn_atb_name%TYPE;
 		l_fk_jsn_typ_name bot.v_json_path.fk_jsn_typ_name%TYPE;
 	BEGIN
+		p_cube_pos_action := NULLIF(p_cube_pos_action,'');
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_name := NULLIF(p_name,'');
+		p_location := NULLIF(p_location,'');
+		p_xf_atb_typ_name := NULLIF(p_xf_atb_typ_name,'');
+		p_xk_atb_name := NULLIF(p_xk_atb_name,'');
+		p_xk_typ_name := NULLIF(p_xk_typ_name,'');
+		x_fk_typ_name := NULLIF(x_fk_typ_name,'');
+		x_name := NULLIF(x_name,'');
+		x_location := NULLIF(x_location,'');
+		x_xf_atb_typ_name := NULLIF(x_xf_atb_typ_name,'');
+		x_xk_atb_name := NULLIF(x_xk_atb_name,'');
+		x_xk_typ_name := NULLIF(x_xk_typ_name,'');
 		-- A=After B=Before F=First L=Last
 		IF COALESCE (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
 			RAISE EXCEPTION 'Invalid position action: %', p_cube_pos_action;
@@ -3866,6 +4433,27 @@ AS $BODY$
 	DECLARE
 		l_cube_sequence NUMERIC(8);
 	BEGIN
+		p_cube_pos_action := NULLIF(p_cube_pos_action,'');
+		p_fk_bot_name := NULLIF(p_fk_bot_name,'');
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_fk_jsn_name := NULLIF(p_fk_jsn_name,'');
+		p_fk_jsn_location := NULLIF(p_fk_jsn_location,'');
+		p_fk_jsn_atb_typ_name := NULLIF(p_fk_jsn_atb_typ_name,'');
+		p_fk_jsn_atb_name := NULLIF(p_fk_jsn_atb_name,'');
+		p_fk_jsn_typ_name := NULLIF(p_fk_jsn_typ_name,'');
+		p_cube_tsg_obj_arr := NULLIF(p_cube_tsg_obj_arr,'');
+		p_cube_tsg_type := NULLIF(p_cube_tsg_type,'');
+		p_name := NULLIF(p_name,'');
+		p_location := NULLIF(p_location,'');
+		p_xf_atb_typ_name := NULLIF(p_xf_atb_typ_name,'');
+		p_xk_atb_name := NULLIF(p_xk_atb_name,'');
+		p_xk_typ_name := NULLIF(p_xk_typ_name,'');
+		x_fk_typ_name := NULLIF(x_fk_typ_name,'');
+		x_name := NULLIF(x_name,'');
+		x_location := NULLIF(x_location,'');
+		x_xf_atb_typ_name := NULLIF(x_xf_atb_typ_name,'');
+		x_xk_atb_name := NULLIF(x_xk_atb_name,'');
+		x_xk_typ_name := NULLIF(x_xk_typ_name,'');
 		-- A=After B=Before F=First L=Last
 		IF COALESCE (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
 			RAISE EXCEPTION 'Invalid position action: %', p_cube_pos_action;
@@ -3932,6 +4520,20 @@ LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
 	BEGIN
+		p_fk_bot_name := NULLIF(p_fk_bot_name,'');
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_fk_jsn_name := NULLIF(p_fk_jsn_name,'');
+		p_fk_jsn_location := NULLIF(p_fk_jsn_location,'');
+		p_fk_jsn_atb_typ_name := NULLIF(p_fk_jsn_atb_typ_name,'');
+		p_fk_jsn_atb_name := NULLIF(p_fk_jsn_atb_name,'');
+		p_fk_jsn_typ_name := NULLIF(p_fk_jsn_typ_name,'');
+		p_cube_tsg_obj_arr := NULLIF(p_cube_tsg_obj_arr,'');
+		p_cube_tsg_type := NULLIF(p_cube_tsg_type,'');
+		p_name := NULLIF(p_name,'');
+		p_location := NULLIF(p_location,'');
+		p_xf_atb_typ_name := NULLIF(p_xf_atb_typ_name,'');
+		p_xk_atb_name := NULLIF(p_xk_atb_name,'');
+		p_xk_typ_name := NULLIF(p_xk_typ_name,'');
 		UPDATE bot.v_json_path SET
 			fk_bot_name = p_fk_bot_name,
 			fk_jsn_name = p_fk_jsn_name,
@@ -3961,6 +4563,12 @@ LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
 	BEGIN
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_name := NULLIF(p_name,'');
+		p_location := NULLIF(p_location,'');
+		p_xf_atb_typ_name := NULLIF(p_xf_atb_typ_name,'');
+		p_xk_atb_name := NULLIF(p_xk_atb_name,'');
+		p_xk_typ_name := NULLIF(p_xk_typ_name,'');
 		DELETE FROM bot.v_json_path
 		WHERE fk_typ_name = p_fk_typ_name
 		  AND name = p_name
@@ -3978,6 +4586,7 @@ AS $BODY$
 	DECLARE
 		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
 		OPEN l_cube_cursor FOR
 			SELECT
 			  fk_bot_name,
@@ -3995,6 +4604,9 @@ LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
 	BEGIN
+		p_fk_bot_name := NULLIF(p_fk_bot_name,'');
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_text := NULLIF(p_text,'');
 		INSERT INTO bot.v_description_type (
 			cube_id,
 			fk_bot_name,
@@ -4019,6 +4631,9 @@ LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
 	BEGIN
+		p_fk_bot_name := NULLIF(p_fk_bot_name,'');
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
+		p_text := NULLIF(p_text,'');
 		UPDATE bot.v_description_type SET
 			fk_bot_name = p_fk_bot_name,
 			text = p_text
@@ -4032,6 +4647,7 @@ LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
 	BEGIN
+		p_fk_typ_name := NULLIF(p_fk_typ_name,'');
 		DELETE FROM bot.v_description_type
 		WHERE fk_typ_name = p_fk_typ_name;
 	END;
@@ -4080,6 +4696,7 @@ AS $BODY$
 	DECLARE
 		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
+		p_name := NULLIF(p_name,'');
 		OPEN l_cube_cursor FOR
 			SELECT
 			  cube_tsg_type,
@@ -4099,6 +4716,7 @@ AS $BODY$
 	DECLARE
 		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
+		p_name := NULLIF(p_name,'');
 		OPEN l_cube_cursor FOR
 			SELECT
 			  cube_sequence,
@@ -4117,6 +4735,7 @@ AS $BODY$
 	DECLARE
 		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
+		p_name := NULLIF(p_name,'');
 		OPEN l_cube_cursor FOR
 			SELECT
 			  name
@@ -4138,6 +4757,12 @@ AS $BODY$
 	DECLARE
 		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
+		p_name := NULLIF(p_name,'');
+		p_cube_tsg_type := NULLIF(p_cube_tsg_type,'');
+		p_database := NULLIF(p_database,'');
+		p_schema := NULLIF(p_schema,'');
+		p_password := NULLIF(p_password,'');
+		p_table_prefix := NULLIF(p_table_prefix,'');
 		INSERT INTO sys.v_system (
 			cube_id,
 			name,
@@ -4173,6 +4798,12 @@ LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
 	BEGIN
+		p_name := NULLIF(p_name,'');
+		p_cube_tsg_type := NULLIF(p_cube_tsg_type,'');
+		p_database := NULLIF(p_database,'');
+		p_schema := NULLIF(p_schema,'');
+		p_password := NULLIF(p_password,'');
+		p_table_prefix := NULLIF(p_table_prefix,'');
 		UPDATE sys.v_system SET
 			cube_tsg_type = p_cube_tsg_type,
 			database = p_database,
@@ -4189,6 +4820,7 @@ LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
 	BEGIN
+		p_name := NULLIF(p_name,'');
 		DELETE FROM sys.v_system
 		WHERE name = p_name;
 	END;
@@ -4208,6 +4840,9 @@ AS $BODY$
 		l_cube_count NUMERIC(8) := 1024;
 		r_sbt RECORD;
 	BEGIN
+		p_cube_pos_action := NULLIF(p_cube_pos_action,'');
+		p_fk_sys_name := NULLIF(p_fk_sys_name,'');
+		p_xk_bot_name := NULLIF(p_xk_bot_name,'');
 		-- A=After B=Before F=First L=Last
 		CASE p_cube_pos_action
 		WHEN 'F' THEN
@@ -4270,6 +4905,11 @@ AS $BODY$
 	DECLARE
 		l_cube_sequence NUMERIC(8);
 	BEGIN
+		p_cube_pos_action := NULLIF(p_cube_pos_action,'');
+		p_fk_sys_name := NULLIF(p_fk_sys_name,'');
+		p_xk_bot_name := NULLIF(p_xk_bot_name,'');
+		x_fk_sys_name := NULLIF(x_fk_sys_name,'');
+		x_xk_bot_name := NULLIF(x_xk_bot_name,'');
 		-- A=After B=Before F=First L=Last
 		IF COALESCE (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
 			RAISE EXCEPTION 'Invalid position action: %', p_cube_pos_action;
@@ -4296,6 +4936,11 @@ AS $BODY$
 	DECLARE
 		l_cube_sequence NUMERIC(8);
 	BEGIN
+		p_cube_pos_action := NULLIF(p_cube_pos_action,'');
+		p_fk_sys_name := NULLIF(p_fk_sys_name,'');
+		p_xk_bot_name := NULLIF(p_xk_bot_name,'');
+		x_fk_sys_name := NULLIF(x_fk_sys_name,'');
+		x_xk_bot_name := NULLIF(x_xk_bot_name,'');
 		-- A=After B=Before F=First L=Last
 		IF COALESCE (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
 			RAISE EXCEPTION 'Invalid position action: %', p_cube_pos_action;
@@ -4324,6 +4969,8 @@ LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
 	BEGIN
+		p_fk_sys_name := NULLIF(p_fk_sys_name,'');
+		p_xk_bot_name := NULLIF(p_xk_bot_name,'');
 		DELETE FROM sys.v_system_bo_type
 		WHERE fk_sys_name = p_fk_sys_name
 		  AND xk_bot_name = p_xk_bot_name;
@@ -4385,6 +5032,7 @@ AS $BODY$
 	DECLARE
 		l_cube_cursor REFCURSOR := 'cube_cursor';
 	BEGIN
+		p_name := NULLIF(p_name,'');
 		OPEN l_cube_cursor FOR
 			SELECT
 			  cube_sequence,
@@ -4402,6 +5050,7 @@ LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
 	BEGIN
+		p_name := NULLIF(p_name,'');
 		INSERT INTO fun.v_function (
 			cube_id,
 			name)
@@ -4420,6 +5069,7 @@ LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
 	BEGIN
+		p_name := NULLIF(p_name,'');
 		DELETE FROM fun.v_function
 		WHERE name = p_name;
 	END;
@@ -4439,6 +5089,9 @@ AS $BODY$
 		l_cube_count NUMERIC(8) := 1024;
 		r_arg RECORD;
 	BEGIN
+		p_cube_pos_action := NULLIF(p_cube_pos_action,'');
+		p_fk_fun_name := NULLIF(p_fk_fun_name,'');
+		p_name := NULLIF(p_name,'');
 		-- A=After B=Before F=First L=Last
 		CASE p_cube_pos_action
 		WHEN 'F' THEN
@@ -4501,6 +5154,11 @@ AS $BODY$
 	DECLARE
 		l_cube_sequence NUMERIC(8);
 	BEGIN
+		p_cube_pos_action := NULLIF(p_cube_pos_action,'');
+		p_fk_fun_name := NULLIF(p_fk_fun_name,'');
+		p_name := NULLIF(p_name,'');
+		x_fk_fun_name := NULLIF(x_fk_fun_name,'');
+		x_name := NULLIF(x_name,'');
 		-- A=After B=Before F=First L=Last
 		IF COALESCE (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
 			RAISE EXCEPTION 'Invalid position action: %', p_cube_pos_action;
@@ -4527,6 +5185,11 @@ AS $BODY$
 	DECLARE
 		l_cube_sequence NUMERIC(8);
 	BEGIN
+		p_cube_pos_action := NULLIF(p_cube_pos_action,'');
+		p_fk_fun_name := NULLIF(p_fk_fun_name,'');
+		p_name := NULLIF(p_name,'');
+		x_fk_fun_name := NULLIF(x_fk_fun_name,'');
+		x_name := NULLIF(x_name,'');
 		-- A=After B=Before F=First L=Last
 		IF COALESCE (p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
 			RAISE EXCEPTION 'Invalid position action: %', p_cube_pos_action;
@@ -4555,6 +5218,8 @@ LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
 	BEGIN
+		p_fk_fun_name := NULLIF(p_fk_fun_name,'');
+		p_name := NULLIF(p_name,'');
 		DELETE FROM fun.v_argument
 		WHERE fk_fun_name = p_fk_fun_name
 		  AND name = p_name;
