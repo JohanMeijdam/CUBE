@@ -11,7 +11,7 @@ Change log:
 04-09-2019 - Sequence name to SQ_name
 04-09-2019 - Drop Views and Packages
 02-02-2020 - In case of create NVL for all primary keys.
-14-11-2021 - Migratie naar Postgresql
+14-11-2021 - Migration to Postgresql
 [[INCLUDE,Includes/general.cgt]]
 [[INCLUDE,Includes/expression_pg.cgt]]
 [[TEXT,VIEW_CHANGEABLE_ATTRIBUTE]]!CHILD(DERIVATION:0=ID)[AND]!1=Y[AND]!6=Y[[ENDTEXT]]

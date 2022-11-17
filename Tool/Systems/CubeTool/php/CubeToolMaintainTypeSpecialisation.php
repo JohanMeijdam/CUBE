@@ -216,6 +216,7 @@ function UpdateForeignKey(p_obj) {
 		alert ('Error Listbox: '+document.body._ListBoxCode);
 	}
 	CloseListBox();
+	SetChangePending();
 }
 
 function StartSelect001(p_event) {

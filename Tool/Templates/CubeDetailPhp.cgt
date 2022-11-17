@@ -274,6 +274,7 @@ function UpdateForeignKey(p_obj) {
 		alert ('Error Listbox: '+document.body._ListBoxCode);
 	}
 	CloseListBox();
+	SetChangePending();
 }[[ENDIF]][[LOOP,REFERENCE]]
 
 function StartSelect<<REFERENCE:S>>(p_event) {

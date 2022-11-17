@@ -1,0 +1,163 @@
+Change log:
+30-11-2016 - Fix in logged sequence name	
+10-11-2021 - DBMS independent
+16-11-2022 - Migration to Postgresql
+[[INCLUDE,Includes/general.cgt]]
+[[BODY]]-- ALTER TABLE DDL
+--[[LOOP,DATABASE]]
+DO $BODY$
+	DECLARE
+		rec_nspname RECORD;
+		rec_sequence RECORD;
+	BEGIN
+		FOR rec_nspname IN 
+			SELECT nspname 
+			FROM pg_catalog.pg_namespace, pg_catalog.pg_user
+			WHERE nspowner = usesysid
+			  AND usename = '<<1>>'
+			  AND nspname NOT IN ('cube'[[LOOP,SCHEMA]],'<<SCHEMA:L>>'[[ENDLOOP,SCHEMA]])
+		LOOP
+			EXECUTE 'DROP SCHEMA ' || rec_nspname.nspname || ' CASCADE';
+		END LOOP;
+		
+		FOR rec_nspname IN 
+			SELECT nspname 
+			FROM pg_catalog.pg_namespace, pg_catalog.pg_user
+			WHERE nspowner = usesysid
+			  AND usename = '<<1>>'
+		LOOP
+			CASE rec_nspname.nspname[[LOOP,SCHEMA]]
+			WHEN '<<SCHEMA:L>>' THEN
+				FOR rec_sequence IN
+					SELECT sequencename
+					FROM pg_catalog.pg_sequences 
+					WHERE sequenceowner = '<<1>>'
+					  AND schemaname = rec_nspname.nspname[[IF:CHILD(SEQUENCE)]]
+					  AND sequencename NOT IN ([[LOOP,SEQUENCE]]'<<SEQUENCE:L>>'[[IF:!LAST]],[[ENDIF]][[ENDLOOP,SEQUENCE]])[[ENDIF]]
+				LOOP
+					EXECUTE 'DROP SEQUENCE ' || rec_nspname.nspname || '.' || rec_sequence.sequencename;
+				END LOOP;[[ENDLOOP,SCHEMA]]
+			WHEN 'cube' THEN
+				-- nop
+			END CASE;
+		END LOOP;
+	END;
+$BODY$;[[LOOP,SCHEMA]]
+
+CREATE SCHEMA IF NOT EXISTS <<SCHEMA:L>>;[[LOOP,SEQUENCE]]
+CREATE SEQUENCE IF NOT EXISTS <<SCHEMA:L>>.<<SEQUENCE:L>> START WITH <<SEQUENCE1>>;[[ENDLOOP,SEQUENCE]][[ENDLOOP,SCHEMA]]
+
+
+
+SET SERVEROUTPUT ON;[[LOOP,SCHEMA]][[LOOP,SEQUENCE]]
+DECLARE
+	l_count NUMBER(4);
+BEGIN
+	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = '<<DATABASE1:U>>' AND sequence_name = '<<SEQUENCE:U>>';
+	IF l_count = 0 THEN
+		EXECUTE IMMEDIATE 
+		'CREATE SEQUENCE <<SEQUENCE:L>> START WITH <<SEQUENCE1>>';
+		DBMS_OUTPUT.PUT_LINE('Sequence <<SEQUENCE:U>> created');
+	END IF;
+END;
+/[[ENDLOOP,SEQUENCE]][[ENDLOOP,SCHEMA]][[LOOP,SCHEMA]][[LOOP,TABLE]]
+DECLARE
+	l_count NUMBER(4);
+BEGIN
+	DBMS_OUTPUT.PUT_LINE('Prepare table <<TABLE:U>>');
+	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = '<<DATABASE1:U>>' AND table_name = '<<TABLE:U>>';
+	IF l_count = 0 THEN
+		EXECUTE IMMEDIATE
+		'CREATE TABLE <<TABLE:L>> ([[LOOP,COLUMN]]
+			<<COLUMN:L>> <<TEXT,GEN_DOMAIN_ORA[|]<<COLUMN3>>[|]<<COLUMN4>>[|]>>[[IF:!5=]] DEFAULT ''<<COLUMN5>>''[[ENDIF]][[IF:!LAST]],[[ENDIF]][[ENDLOOP,COLUMN]])';
+		DBMS_OUTPUT.PUT_LINE('Table <<TABLE:U>> created');
+	ELSE[[LOOP,COLUMN]]
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = '<<DATABASE1:U>>' AND table_name = '<<TABLE:U>>' AND column_name = '<<COLUMN:U>>';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE <<TABLE:L>> ADD <<COLUMN:L>> <<TEXT,GEN_DOMAIN_ORA[|]<<COLUMN3>>[|]<<COLUMN4>>[|]>>[[IF:!5=]] DEFAULT ''<<COLUMN5>>''[[ENDIF]]';
+			DBMS_OUTPUT.PUT_LINE('Column <<TABLE:U>>.<<COLUMN:U>> created');
+		END IF;[[ENDLOOP,COLUMN]]
+		FOR r_key IN (SELECT constraint_name FROM all_constraints WHERE owner = '<<DATABASE1:U>>' AND table_name = '<<TABLE:U>>' AND constraint_type IN ('P','U','R') ORDER BY constraint_type DESC)
+		LOOP
+			EXECUTE IMMEDIATE
+			'ALTER TABLE <<TABLE:L>> DROP CONSTRAINT ' || r_key.constraint_name || ' CASCADE';
+			DBMS_OUTPUT.PUT_LINE('Primary Key <<TABLE:U>>.' || UPPER(r_key.constraint_name) || ' dropped');
+		END LOOP;
+		FOR r_index IN (SELECT index_name FROM all_indexes WHERE owner = '<<DATABASE1:U>>' AND table_name = '<<TABLE:U>>')
+		LOOP
+			EXECUTE IMMEDIATE
+			'DROP INDEX ' || r_index.index_name;
+			DBMS_OUTPUT.PUT_LINE('Index <<TABLE:U>>.' || UPPER(r_index.index_name) || ' dropped');
+		END LOOP;
+	END IF;
+END;
+/[[ENDLOOP,TABLE]][[ENDLOOP,SCHEMA]][[******** DROP TABLE MANUAL
+BEGIN
+	FOR r_table IN (SELECT t.table_name FROM all_tables t, all_tab_comments c
+				WHERE t.table_name = c.table_name
+				  AND t.owner = '<<DATABASE1:U>>'[[LOOP,SCHEMA]][[LOOP,TABLE]][[IF:FIRST]]
+				  AND t.table_name NOT IN ([[ENDIF]]
+							'<<TABLE:U>>'[[IF:!LAST]],[[ELSE]])[[ENDIF]][[ENDLOOP,TABLE]][[ENDLOOP,SCHEMA]]
+				  AND SUBSTR(t.table_name,1,7) <> 'T_CUBE_')
+	LOOP
+		EXECUTE IMMEDIATE
+		'DROP TABLE ' || r_table.table_name || ' CASCADE CONSTRAINTS';
+		DBMS_OUTPUT.PUT_LINE('Table ' || UPPER(r_table.table_name) || ' dropped');
+	END LOOP;
+END;
+/******]][[LOOP,SCHEMA]][[LOOP,TABLE]]
+BEGIN
+	DBMS_OUTPUT.PUT_LINE('Maintain table <<TABLE:U>>');
+	FOR r_field IN (SELECT column_name,
+		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
+		data_default old_default_value,
+  		DECODE(column_name,[[LOOP,COLUMN]]
+			'<<COLUMN:U>>','<<TEXT,GEN_DOMAIN_ORA[|]<<COLUMN3>>[|]<<COLUMN4>>[|]>>',[[ENDLOOP,COLUMN]]NULL) new_domain,
+		DECODE(column_name,[[LOOP,COLUMN]]
+			'<<COLUMN:U>>',[[IF:!5=]]'''<<COLUMN5>>'''[[ELSE]]NULL[[ENDIF]],[[ENDLOOP,COLUMN]]NULL) new_default_value
+  		FROM all_tab_columns WHERE owner = '<<DATABASE1:U>>' AND table_name = '<<TABLE:U>>')
+	LOOP
+		IF r_field.old_domain <> r_field.new_domain THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE <<TABLE:L>> RENAME COLUMN ' || r_field.column_name || ' TO old#domain#field';
+			EXECUTE IMMEDIATE
+			'ALTER TABLE <<TABLE:L>> ADD ' || r_field.column_name || ' ' || r_field.new_domain;
+ 			IF r_field.new_domain = 'VARCHAR2' THEN  
+				EXECUTE IMMEDIATE
+				'UPDATE <<TABLE:L>> SET ' || r_field.column_name || '= TRIM(old#domain#field)';
+			ELSE
+				EXECUTE IMMEDIATE
+				'UPDATE <<TABLE:L>> SET ' || r_field.column_name || '= old#domain#field';
+			END IF;
+			EXECUTE IMMEDIATE
+			'ALTER TABLE <<TABLE:L>> DROP COLUMN old#domain#field';
+			DBMS_OUTPUT.PUT_LINE('Field <<TABLE:U>>.' || UPPER(r_field.column_name) || ' converted from ' || r_field.old_domain || ' to ' || r_field.new_domain);
+		END IF;
+		IF NOT((r_field.old_default_value IS NULL AND r_field.new_default_value IS NULL) OR r_field.old_default_value = r_field.new_default_value) THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE <<TABLE:L>> MODIFY (' || r_field.column_name || ' DEFAULT ' || NVL(r_field.new_default_value,'NULL') || ')';
+			DBMS_OUTPUT.PUT_LINE('Field <<TABLE:U>>.' || UPPER(r_field.column_name) || ' default value set to ' || NVL(r_field.new_default_value,'NULL'));
+		END IF;
+	END LOOP;
+	EXECUTE IMMEDIATE
+	'ALTER TABLE <<TABLE:L>> ADD CONSTRAINT <<TABLE1:L>>
+		PRIMARY KEY ([[LOOP,COLUMN:1=Y]]
+			<<COLUMN:L>>[[IF:!LAST]],[[ENDIF]][[ENDLOOP,COLUMN]] )';
+	DBMS_OUTPUT.PUT_LINE('Primary Key <<TABLE:U>>.<<TABLE1:U>> created');[[LOOP,FOREIGN_KEY]]
+	EXECUTE IMMEDIATE
+	'ALTER TABLE <<TABLE:L>> ADD CONSTRAINT <<FOREIGN_KEY:L>>
+		FOREIGN KEY ([[LOOP,COLUMN]]<<COLUMN:L>>[[IF:!LAST]], [[ENDIF]][[ENDLOOP,COLUMN]])
+		REFERENCES <<FOREIGN_KEY1:L>> ([[LOOP,COLUMN]]<<COLUMN1:L>>[[IF:!LAST]], [[ENDIF]][[ENDLOOP,COLUMN]])[[IF:2=Y]]
+		ON DELETE CASCADE[[ENDIF]]';[[ENDLOOP,FOREIGN_KEY]]
+	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = '<<DATABASE1:U>>' AND table_name = '<<TABLE:U>>' AND column_name NOT IN ([[LOOP,COLUMN]]
+							'<<COLUMN:U>>'[[IF:!LAST]],[[ENDIF]][[ENDLOOP,COLUMN]]))
+	LOOP
+		EXECUTE IMMEDIATE
+		'ALTER TABLE <<TABLE:L>> DROP COLUMN ' || r_field.column_name;
+		DBMS_OUTPUT.PUT_LINE('Field <<TABLE:U>>.' || UPPER(r_field.column_name) || ' dropped');
+	END LOOP;
+END;
+/[[ENDLOOP,TABLE]][[ENDLOOP,SCHEMA]][[ENDLOOP,DATABASE]]
+EXIT;
+[[ENDBODY]]
