@@ -2,65 +2,395 @@
 --
 DO $BODY$
 	DECLARE
-		rec_nspname RECORD;
+		rec_schema RECORD;
 		rec_sequence RECORD;
+		rec_table RECORD;
+		rec_column RECORD;
 	BEGIN
-		FOR rec_nspname IN 
-			SELECT nspname 
-			FROM pg_catalog.pg_namespace, pg_catalog.pg_user
-			WHERE nspowner = usesysid
-			  AND usename = 'JohanM'
-			  AND nspname NOT IN ('cube','itp','bot','sys','fun')
+		FOR rec_schema IN 
+			SELECT schema_name 
+			FROM information_schema.schemata
+			WHERE schema_owner = 'JohanM'
+			  AND schema_name NOT IN ('cube','itp','bot','sys','fun')
 		LOOP
-			EXECUTE 'DROP SCHEMA ' || rec_nspname.nspname || ' CASCADE';
+			EXECUTE 'DROP SCHEMA ' || rec_schema.schema_name || ' CASCADE';
 		END LOOP;
 		
-		FOR rec_nspname IN 
-			SELECT nspname 
-			FROM pg_catalog.pg_namespace, pg_catalog.pg_user
-			WHERE nspowner = usesysid
-			  AND usename = 'JohanM'
+		FOR rec_schema IN 
+			SELECT catalog_name, schema_name 
+			FROM information_schema.schemata
+			WHERE schema_owner = 'JohanM'
 		LOOP
-			CASE rec_nspname.nspname
+			CASE rec_schema.schema_name
 			WHEN 'itp' THEN
 				FOR rec_sequence IN
-					SELECT sequencename
-					FROM pg_catalog.pg_sequences 
-					WHERE sequenceowner = 'JohanM'
-					  AND schemaname = rec_nspname.nspname
-					  AND sequencename NOT IN ('sq_itp','sq_ite','sq_val')
+					SELECT sequence_name
+					FROM information_schema.sequences
+					WHERE sequence_catalog = rec_schema.catalog_name
+					  AND sequence_schema = rec_schema.schema_name
+					  AND sequence_name NOT IN ('sq_itp','sq_ite','sq_val')
 				LOOP
-					EXECUTE 'DROP SEQUENCE ' || rec_nspname.nspname || '.' || rec_sequence.sequencename;
+					EXECUTE 'DROP SEQUENCE ' || rec_schema.schema_name || '.' || rec_sequence.sequence_name;
+				END LOOP;
+				FOR rec_table IN
+					SELECT table_name
+					FROM information_schema.tables
+					WHERE table_type = 'BASE TABLE'
+					  AND table_catalog = rec_schema.catalog_name
+					  AND table_schema = rec_schema.schema_name
+					  AND table_name NOT IN ('t_information_type','t_information_type_element','t_permitted_value')
+				LOOP
+					EXECUTE 'DROP TABLE ' || rec_schema.schema_name || '.' || rec_table.table_name;
+				END LOOP;
+				FOR rec_table IN
+					SELECT table_name
+					FROM information_schema.tables 
+					WHERE table_type = 'BASE TABLE'
+					  AND table_catalog = rec_schema.catalog_name
+					  AND table_schema = rec_schema.schema_name
+					  AND table_name IN ('t_information_type','t_information_type_element','t_permitted_value')
+				LOOP
+					CASE rec_table.table_name
+					WHEN 't_information_type' THEN
+						FOR rec_column IN
+							SELECT column_name
+							FROM information_schema.columns
+							WHERE table_catalog = rec_schema.catalog_name
+							  AND table_schema = rec_schema.schema_name
+							  AND table_name = rec_table.table_name 
+							  AND column_name NOT IN ('cube_id','name')
+						LOOP
+							EXECUTE 'ALTER TABLE ' || rec_schema.schema_name || '.' || rec_table.table_name || ' DROP COLUMN ' || rec_column.column_name || ' CASCADE';
+						END LOOP;
+					WHEN 't_information_type_element' THEN
+						FOR rec_column IN
+							SELECT column_name
+							FROM information_schema.columns
+							WHERE table_catalog = rec_schema.catalog_name
+							  AND table_schema = rec_schema.schema_name
+							  AND table_name = rec_table.table_name 
+							  AND column_name NOT IN ('cube_id','fk_itp_name','sequence','suffix','domain','length','decimals','case_sensitive','default_value','spaces_allowed','presentation')
+						LOOP
+							EXECUTE 'ALTER TABLE ' || rec_schema.schema_name || '.' || rec_table.table_name || ' DROP COLUMN ' || rec_column.column_name || ' CASCADE';
+						END LOOP;
+					WHEN 't_permitted_value' THEN
+						FOR rec_column IN
+							SELECT column_name
+							FROM information_schema.columns
+							WHERE table_catalog = rec_schema.catalog_name
+							  AND table_schema = rec_schema.schema_name
+							  AND table_name = rec_table.table_name 
+							  AND column_name NOT IN ('cube_id','cube_sequence','fk_itp_name','fk_ite_sequence','code','prompt')
+						LOOP
+							EXECUTE 'ALTER TABLE ' || rec_schema.schema_name || '.' || rec_table.table_name || ' DROP COLUMN ' || rec_column.column_name || ' CASCADE';
+						END LOOP;
+					END CASE;
+										
 				END LOOP;
 			WHEN 'bot' THEN
 				FOR rec_sequence IN
-					SELECT sequencename
-					FROM pg_catalog.pg_sequences 
-					WHERE sequenceowner = 'JohanM'
-					  AND schemaname = rec_nspname.nspname
-					  AND sequencename NOT IN ('sq_bot','sq_typ','sq_tsg','sq_tsp','sq_atb','sq_der','sq_dca','sq_rta','sq_ref','sq_dcr','sq_rtr','sq_rts','sq_rtt','sq_jsn','sq_dct')
+					SELECT sequence_name
+					FROM information_schema.sequences
+					WHERE sequence_catalog = rec_schema.catalog_name
+					  AND sequence_schema = rec_schema.schema_name
+					  AND sequence_name NOT IN ('sq_bot','sq_typ','sq_tsg','sq_tsp','sq_atb','sq_der','sq_dca','sq_rta','sq_ref','sq_dcr','sq_rtr','sq_rts','sq_rtt','sq_jsn','sq_dct')
 				LOOP
-					EXECUTE 'DROP SEQUENCE ' || rec_nspname.nspname || '.' || rec_sequence.sequencename;
+					EXECUTE 'DROP SEQUENCE ' || rec_schema.schema_name || '.' || rec_sequence.sequence_name;
+				END LOOP;
+				FOR rec_table IN
+					SELECT table_name
+					FROM information_schema.tables
+					WHERE table_type = 'BASE TABLE'
+					  AND table_catalog = rec_schema.catalog_name
+					  AND table_schema = rec_schema.schema_name
+					  AND table_name NOT IN ('t_business_object_type','t_type','t_type_specialisation_group','t_type_specialisation','t_attribute','t_derivation','t_description_attribute','t_restriction_type_spec_atb','t_reference','t_description_reference','t_restriction_type_spec_ref','t_restriction_target_type_spec','t_restriction_type_spec_typ','t_json_path','t_description_type')
+				LOOP
+					EXECUTE 'DROP TABLE ' || rec_schema.schema_name || '.' || rec_table.table_name;
+				END LOOP;
+				FOR rec_table IN
+					SELECT table_name
+					FROM information_schema.tables 
+					WHERE table_type = 'BASE TABLE'
+					  AND table_catalog = rec_schema.catalog_name
+					  AND table_schema = rec_schema.schema_name
+					  AND table_name IN ('t_business_object_type','t_type','t_type_specialisation_group','t_type_specialisation','t_attribute','t_derivation','t_description_attribute','t_restriction_type_spec_atb','t_reference','t_description_reference','t_restriction_type_spec_ref','t_restriction_target_type_spec','t_restriction_type_spec_typ','t_json_path','t_description_type')
+				LOOP
+					CASE rec_table.table_name
+					WHEN 't_business_object_type' THEN
+						FOR rec_column IN
+							SELECT column_name
+							FROM information_schema.columns
+							WHERE table_catalog = rec_schema.catalog_name
+							  AND table_schema = rec_schema.schema_name
+							  AND table_name = rec_table.table_name 
+							  AND column_name NOT IN ('cube_id','cube_sequence','name','cube_tsg_type','directory','api_url')
+						LOOP
+							EXECUTE 'ALTER TABLE ' || rec_schema.schema_name || '.' || rec_table.table_name || ' DROP COLUMN ' || rec_column.column_name || ' CASCADE';
+						END LOOP;
+					WHEN 't_type' THEN
+						FOR rec_column IN
+							SELECT column_name
+							FROM information_schema.columns
+							WHERE table_catalog = rec_schema.catalog_name
+							  AND table_schema = rec_schema.schema_name
+							  AND table_name = rec_table.table_name 
+							  AND column_name NOT IN ('cube_id','cube_sequence','cube_level','fk_bot_name','fk_typ_name','name','code','flag_partial_key','flag_recursive','recursive_cardinality','cardinality','sort_order','icon','transferable')
+						LOOP
+							EXECUTE 'ALTER TABLE ' || rec_schema.schema_name || '.' || rec_table.table_name || ' DROP COLUMN ' || rec_column.column_name || ' CASCADE';
+						END LOOP;
+					WHEN 't_type_specialisation_group' THEN
+						FOR rec_column IN
+							SELECT column_name
+							FROM information_schema.columns
+							WHERE table_catalog = rec_schema.catalog_name
+							  AND table_schema = rec_schema.schema_name
+							  AND table_name = rec_table.table_name 
+							  AND column_name NOT IN ('cube_id','cube_sequence','cube_level','fk_bot_name','fk_typ_name','fk_tsg_code','code','name','primary_key','xf_atb_typ_name','xk_atb_name')
+						LOOP
+							EXECUTE 'ALTER TABLE ' || rec_schema.schema_name || '.' || rec_table.table_name || ' DROP COLUMN ' || rec_column.column_name || ' CASCADE';
+						END LOOP;
+					WHEN 't_type_specialisation' THEN
+						FOR rec_column IN
+							SELECT column_name
+							FROM information_schema.columns
+							WHERE table_catalog = rec_schema.catalog_name
+							  AND table_schema = rec_schema.schema_name
+							  AND table_name = rec_table.table_name 
+							  AND column_name NOT IN ('cube_id','cube_sequence','fk_bot_name','fk_typ_name','fk_tsg_code','code','name','xf_tsp_typ_name','xf_tsp_tsg_code','xk_tsp_code')
+						LOOP
+							EXECUTE 'ALTER TABLE ' || rec_schema.schema_name || '.' || rec_table.table_name || ' DROP COLUMN ' || rec_column.column_name || ' CASCADE';
+						END LOOP;
+					WHEN 't_attribute' THEN
+						FOR rec_column IN
+							SELECT column_name
+							FROM information_schema.columns
+							WHERE table_catalog = rec_schema.catalog_name
+							  AND table_schema = rec_schema.schema_name
+							  AND table_name = rec_table.table_name 
+							  AND column_name NOT IN ('cube_id','cube_sequence','fk_bot_name','fk_typ_name','name','primary_key','code_display_key','code_foreign_key','flag_hidden','default_value','unchangeable','xk_itp_name')
+						LOOP
+							EXECUTE 'ALTER TABLE ' || rec_schema.schema_name || '.' || rec_table.table_name || ' DROP COLUMN ' || rec_column.column_name || ' CASCADE';
+						END LOOP;
+					WHEN 't_derivation' THEN
+						FOR rec_column IN
+							SELECT column_name
+							FROM information_schema.columns
+							WHERE table_catalog = rec_schema.catalog_name
+							  AND table_schema = rec_schema.schema_name
+							  AND table_name = rec_table.table_name 
+							  AND column_name NOT IN ('cube_id','fk_bot_name','fk_typ_name','fk_atb_name','cube_tsg_type','aggregate_function','xk_typ_name','xk_typ_name_1')
+						LOOP
+							EXECUTE 'ALTER TABLE ' || rec_schema.schema_name || '.' || rec_table.table_name || ' DROP COLUMN ' || rec_column.column_name || ' CASCADE';
+						END LOOP;
+					WHEN 't_description_attribute' THEN
+						FOR rec_column IN
+							SELECT column_name
+							FROM information_schema.columns
+							WHERE table_catalog = rec_schema.catalog_name
+							  AND table_schema = rec_schema.schema_name
+							  AND table_name = rec_table.table_name 
+							  AND column_name NOT IN ('cube_id','fk_bot_name','fk_typ_name','fk_atb_name','text')
+						LOOP
+							EXECUTE 'ALTER TABLE ' || rec_schema.schema_name || '.' || rec_table.table_name || ' DROP COLUMN ' || rec_column.column_name || ' CASCADE';
+						END LOOP;
+					WHEN 't_restriction_type_spec_atb' THEN
+						FOR rec_column IN
+							SELECT column_name
+							FROM information_schema.columns
+							WHERE table_catalog = rec_schema.catalog_name
+							  AND table_schema = rec_schema.schema_name
+							  AND table_name = rec_table.table_name 
+							  AND column_name NOT IN ('cube_id','fk_bot_name','fk_typ_name','fk_atb_name','include_or_exclude','xf_tsp_typ_name','xf_tsp_tsg_code','xk_tsp_code')
+						LOOP
+							EXECUTE 'ALTER TABLE ' || rec_schema.schema_name || '.' || rec_table.table_name || ' DROP COLUMN ' || rec_column.column_name || ' CASCADE';
+						END LOOP;
+					WHEN 't_reference' THEN
+						FOR rec_column IN
+							SELECT column_name
+							FROM information_schema.columns
+							WHERE table_catalog = rec_schema.catalog_name
+							  AND table_schema = rec_schema.schema_name
+							  AND table_name = rec_table.table_name 
+							  AND column_name NOT IN ('cube_id','cube_sequence','fk_bot_name','fk_typ_name','name','primary_key','code_display_key','sequence','scope','unchangeable','within_scope_extension','cube_tsg_int_ext','xk_bot_name','xk_typ_name','xk_typ_name_1')
+						LOOP
+							EXECUTE 'ALTER TABLE ' || rec_schema.schema_name || '.' || rec_table.table_name || ' DROP COLUMN ' || rec_column.column_name || ' CASCADE';
+						END LOOP;
+					WHEN 't_description_reference' THEN
+						FOR rec_column IN
+							SELECT column_name
+							FROM information_schema.columns
+							WHERE table_catalog = rec_schema.catalog_name
+							  AND table_schema = rec_schema.schema_name
+							  AND table_name = rec_table.table_name 
+							  AND column_name NOT IN ('cube_id','fk_bot_name','fk_typ_name','fk_ref_sequence','fk_ref_bot_name','fk_ref_typ_name','text')
+						LOOP
+							EXECUTE 'ALTER TABLE ' || rec_schema.schema_name || '.' || rec_table.table_name || ' DROP COLUMN ' || rec_column.column_name || ' CASCADE';
+						END LOOP;
+					WHEN 't_restriction_type_spec_ref' THEN
+						FOR rec_column IN
+							SELECT column_name
+							FROM information_schema.columns
+							WHERE table_catalog = rec_schema.catalog_name
+							  AND table_schema = rec_schema.schema_name
+							  AND table_name = rec_table.table_name 
+							  AND column_name NOT IN ('cube_id','fk_bot_name','fk_typ_name','fk_ref_sequence','fk_ref_bot_name','fk_ref_typ_name','include_or_exclude','xf_tsp_typ_name','xf_tsp_tsg_code','xk_tsp_code')
+						LOOP
+							EXECUTE 'ALTER TABLE ' || rec_schema.schema_name || '.' || rec_table.table_name || ' DROP COLUMN ' || rec_column.column_name || ' CASCADE';
+						END LOOP;
+					WHEN 't_restriction_target_type_spec' THEN
+						FOR rec_column IN
+							SELECT column_name
+							FROM information_schema.columns
+							WHERE table_catalog = rec_schema.catalog_name
+							  AND table_schema = rec_schema.schema_name
+							  AND table_name = rec_table.table_name 
+							  AND column_name NOT IN ('cube_id','fk_bot_name','fk_typ_name','fk_ref_sequence','fk_ref_bot_name','fk_ref_typ_name','include_or_exclude','xf_tsp_typ_name','xf_tsp_tsg_code','xk_tsp_code')
+						LOOP
+							EXECUTE 'ALTER TABLE ' || rec_schema.schema_name || '.' || rec_table.table_name || ' DROP COLUMN ' || rec_column.column_name || ' CASCADE';
+						END LOOP;
+					WHEN 't_restriction_type_spec_typ' THEN
+						FOR rec_column IN
+							SELECT column_name
+							FROM information_schema.columns
+							WHERE table_catalog = rec_schema.catalog_name
+							  AND table_schema = rec_schema.schema_name
+							  AND table_name = rec_table.table_name 
+							  AND column_name NOT IN ('cube_id','fk_bot_name','fk_typ_name','include_or_exclude','xf_tsp_typ_name','xf_tsp_tsg_code','xk_tsp_code')
+						LOOP
+							EXECUTE 'ALTER TABLE ' || rec_schema.schema_name || '.' || rec_table.table_name || ' DROP COLUMN ' || rec_column.column_name || ' CASCADE';
+						END LOOP;
+					WHEN 't_json_path' THEN
+						FOR rec_column IN
+							SELECT column_name
+							FROM information_schema.columns
+							WHERE table_catalog = rec_schema.catalog_name
+							  AND table_schema = rec_schema.schema_name
+							  AND table_name = rec_table.table_name 
+							  AND column_name NOT IN ('cube_id','cube_sequence','cube_level','fk_bot_name','fk_typ_name','fk_jsn_name','fk_jsn_location','fk_jsn_atb_typ_name','fk_jsn_atb_name','fk_jsn_typ_name','cube_tsg_obj_arr','cube_tsg_type','name','location','xf_atb_typ_name','xk_atb_name','xk_typ_name')
+						LOOP
+							EXECUTE 'ALTER TABLE ' || rec_schema.schema_name || '.' || rec_table.table_name || ' DROP COLUMN ' || rec_column.column_name || ' CASCADE';
+						END LOOP;
+					WHEN 't_description_type' THEN
+						FOR rec_column IN
+							SELECT column_name
+							FROM information_schema.columns
+							WHERE table_catalog = rec_schema.catalog_name
+							  AND table_schema = rec_schema.schema_name
+							  AND table_name = rec_table.table_name 
+							  AND column_name NOT IN ('cube_id','fk_bot_name','fk_typ_name','text')
+						LOOP
+							EXECUTE 'ALTER TABLE ' || rec_schema.schema_name || '.' || rec_table.table_name || ' DROP COLUMN ' || rec_column.column_name || ' CASCADE';
+						END LOOP;
+					END CASE;
+										
 				END LOOP;
 			WHEN 'sys' THEN
 				FOR rec_sequence IN
-					SELECT sequencename
-					FROM pg_catalog.pg_sequences 
-					WHERE sequenceowner = 'JohanM'
-					  AND schemaname = rec_nspname.nspname
-					  AND sequencename NOT IN ('sq_sys','sq_sbt')
+					SELECT sequence_name
+					FROM information_schema.sequences
+					WHERE sequence_catalog = rec_schema.catalog_name
+					  AND sequence_schema = rec_schema.schema_name
+					  AND sequence_name NOT IN ('sq_sys','sq_sbt')
 				LOOP
-					EXECUTE 'DROP SEQUENCE ' || rec_nspname.nspname || '.' || rec_sequence.sequencename;
+					EXECUTE 'DROP SEQUENCE ' || rec_schema.schema_name || '.' || rec_sequence.sequence_name;
+				END LOOP;
+				FOR rec_table IN
+					SELECT table_name
+					FROM information_schema.tables
+					WHERE table_type = 'BASE TABLE'
+					  AND table_catalog = rec_schema.catalog_name
+					  AND table_schema = rec_schema.schema_name
+					  AND table_name NOT IN ('t_system','t_system_bo_type')
+				LOOP
+					EXECUTE 'DROP TABLE ' || rec_schema.schema_name || '.' || rec_table.table_name;
+				END LOOP;
+				FOR rec_table IN
+					SELECT table_name
+					FROM information_schema.tables 
+					WHERE table_type = 'BASE TABLE'
+					  AND table_catalog = rec_schema.catalog_name
+					  AND table_schema = rec_schema.schema_name
+					  AND table_name IN ('t_system','t_system_bo_type')
+				LOOP
+					CASE rec_table.table_name
+					WHEN 't_system' THEN
+						FOR rec_column IN
+							SELECT column_name
+							FROM information_schema.columns
+							WHERE table_catalog = rec_schema.catalog_name
+							  AND table_schema = rec_schema.schema_name
+							  AND table_name = rec_table.table_name 
+							  AND column_name NOT IN ('cube_id','name','cube_tsg_type','database','schema','password','table_prefix')
+						LOOP
+							EXECUTE 'ALTER TABLE ' || rec_schema.schema_name || '.' || rec_table.table_name || ' DROP COLUMN ' || rec_column.column_name || ' CASCADE';
+						END LOOP;
+					WHEN 't_system_bo_type' THEN
+						FOR rec_column IN
+							SELECT column_name
+							FROM information_schema.columns
+							WHERE table_catalog = rec_schema.catalog_name
+							  AND table_schema = rec_schema.schema_name
+							  AND table_name = rec_table.table_name 
+							  AND column_name NOT IN ('cube_id','cube_sequence','fk_sys_name','xk_bot_name')
+						LOOP
+							EXECUTE 'ALTER TABLE ' || rec_schema.schema_name || '.' || rec_table.table_name || ' DROP COLUMN ' || rec_column.column_name || ' CASCADE';
+						END LOOP;
+					END CASE;
+										
 				END LOOP;
 			WHEN 'fun' THEN
 				FOR rec_sequence IN
-					SELECT sequencename
-					FROM pg_catalog.pg_sequences 
-					WHERE sequenceowner = 'JohanM'
-					  AND schemaname = rec_nspname.nspname
-					  AND sequencename NOT IN ('sq_fun','sq_arg')
+					SELECT sequence_name
+					FROM information_schema.sequences
+					WHERE sequence_catalog = rec_schema.catalog_name
+					  AND sequence_schema = rec_schema.schema_name
+					  AND sequence_name NOT IN ('sq_fun','sq_arg')
 				LOOP
-					EXECUTE 'DROP SEQUENCE ' || rec_nspname.nspname || '.' || rec_sequence.sequencename;
+					EXECUTE 'DROP SEQUENCE ' || rec_schema.schema_name || '.' || rec_sequence.sequence_name;
+				END LOOP;
+				FOR rec_table IN
+					SELECT table_name
+					FROM information_schema.tables
+					WHERE table_type = 'BASE TABLE'
+					  AND table_catalog = rec_schema.catalog_name
+					  AND table_schema = rec_schema.schema_name
+					  AND table_name NOT IN ('t_function','t_argument')
+				LOOP
+					EXECUTE 'DROP TABLE ' || rec_schema.schema_name || '.' || rec_table.table_name;
+				END LOOP;
+				FOR rec_table IN
+					SELECT table_name
+					FROM information_schema.tables 
+					WHERE table_type = 'BASE TABLE'
+					  AND table_catalog = rec_schema.catalog_name
+					  AND table_schema = rec_schema.schema_name
+					  AND table_name IN ('t_function','t_argument')
+				LOOP
+					CASE rec_table.table_name
+					WHEN 't_function' THEN
+						FOR rec_column IN
+							SELECT column_name
+							FROM information_schema.columns
+							WHERE table_catalog = rec_schema.catalog_name
+							  AND table_schema = rec_schema.schema_name
+							  AND table_name = rec_table.table_name 
+							  AND column_name NOT IN ('cube_id','name')
+						LOOP
+							EXECUTE 'ALTER TABLE ' || rec_schema.schema_name || '.' || rec_table.table_name || ' DROP COLUMN ' || rec_column.column_name || ' CASCADE';
+						END LOOP;
+					WHEN 't_argument' THEN
+						FOR rec_column IN
+							SELECT column_name
+							FROM information_schema.columns
+							WHERE table_catalog = rec_schema.catalog_name
+							  AND table_schema = rec_schema.schema_name
+							  AND table_name = rec_table.table_name 
+							  AND column_name NOT IN ('cube_id','cube_sequence','fk_fun_name','name')
+						LOOP
+							EXECUTE 'ALTER TABLE ' || rec_schema.schema_name || '.' || rec_table.table_name || ' DROP COLUMN ' || rec_column.column_name || ' CASCADE';
+						END LOOP;
+					END CASE;
+										
 				END LOOP;
 			WHEN 'cube' THEN
 				-- nop
@@ -73,6 +403,45 @@ CREATE SCHEMA IF NOT EXISTS itp;
 CREATE SEQUENCE IF NOT EXISTS itp.sq_itp START WITH 100000;
 CREATE SEQUENCE IF NOT EXISTS itp.sq_ite START WITH 100000;
 CREATE SEQUENCE IF NOT EXISTS itp.sq_val START WITH 100000;
+
+CREATE TABLE IF NOT EXISTS itp.t_information_type (
+	cube_id VARCHAR(16),
+	name VARCHAR(30),
+	CONSTRAINT itp_pk
+		PRIMARY KEY (name) );
+
+CREATE TABLE IF NOT EXISTS itp.t_information_type_element (
+	cube_id VARCHAR(16),
+	fk_itp_name VARCHAR(30),
+	sequence NUMERIC(8) DEFAULT '0',
+	suffix VARCHAR(12) DEFAULT '#',
+	domain VARCHAR(16) DEFAULT 'TEXT',
+	length NUMERIC(8) DEFAULT '0',
+	decimals NUMERIC(8) DEFAULT '0',
+	case_sensitive VARCHAR(1) DEFAULT 'N',
+	default_value VARCHAR(32),
+	spaces_allowed VARCHAR(1) DEFAULT 'N',
+	presentation VARCHAR(3) DEFAULT 'LIN',
+	CONSTRAINT ite_pk
+		PRIMARY KEY (fk_itp_name, sequence),
+	CONSTRAINT ite_itp_fk
+		FOREIGN KEY (fk_itp_name)
+		REFERENCES itp.t_information_type (name)
+		ON DELETE CASCADE );
+
+CREATE TABLE IF NOT EXISTS itp.t_permitted_value (
+	cube_id VARCHAR(16),
+	cube_sequence NUMERIC(8),
+	fk_itp_name VARCHAR(30),
+	fk_ite_sequence NUMERIC(8) DEFAULT '0',
+	code VARCHAR(16),
+	prompt VARCHAR(32),
+	CONSTRAINT val_pk
+		PRIMARY KEY (fk_itp_name, fk_ite_sequence, code),
+	CONSTRAINT val_ite_fk
+		FOREIGN KEY (fk_itp_name, fk_ite_sequence)
+		REFERENCES itp.t_information_type_element (fk_itp_name, sequence)
+		ON DELETE CASCADE );
 
 CREATE SCHEMA IF NOT EXISTS bot;
 CREATE SEQUENCE IF NOT EXISTS bot.sq_bot START WITH 100000;
@@ -91,14 +460,328 @@ CREATE SEQUENCE IF NOT EXISTS bot.sq_rtt START WITH 100000;
 CREATE SEQUENCE IF NOT EXISTS bot.sq_jsn START WITH 100000;
 CREATE SEQUENCE IF NOT EXISTS bot.sq_dct START WITH 100000;
 
+CREATE TABLE IF NOT EXISTS bot.t_business_object_type (
+	cube_id VARCHAR(16),
+	cube_sequence NUMERIC(8),
+	name VARCHAR(30),
+	cube_tsg_type VARCHAR(8) DEFAULT 'INT',
+	directory VARCHAR(80),
+	api_url VARCHAR(300),
+	CONSTRAINT bot_pk
+		PRIMARY KEY (name) );
+
+CREATE TABLE IF NOT EXISTS bot.t_type (
+	cube_id VARCHAR(16),
+	cube_sequence NUMERIC(8),
+	cube_level NUMERIC(8) DEFAULT '1',
+	fk_bot_name VARCHAR(30),
+	fk_typ_name VARCHAR(30),
+	name VARCHAR(30),
+	code VARCHAR(3),
+	flag_partial_key VARCHAR(1) DEFAULT 'Y',
+	flag_recursive VARCHAR(1) DEFAULT 'N',
+	recursive_cardinality VARCHAR(1) DEFAULT 'N',
+	cardinality VARCHAR(1) DEFAULT 'N',
+	sort_order VARCHAR(1) DEFAULT 'N',
+	icon VARCHAR(8),
+	transferable VARCHAR(1) DEFAULT 'Y',
+	CONSTRAINT typ_pk
+		PRIMARY KEY (name),
+	CONSTRAINT typ_bot_fk
+		FOREIGN KEY (fk_bot_name)
+		REFERENCES bot.t_business_object_type (name)
+		ON DELETE CASCADE,
+	CONSTRAINT typ_typ_fk
+		FOREIGN KEY (fk_typ_name)
+		REFERENCES bot.t_type (name)
+		ON DELETE CASCADE );
+
+CREATE TABLE IF NOT EXISTS bot.t_type_specialisation_group (
+	cube_id VARCHAR(16),
+	cube_sequence NUMERIC(8),
+	cube_level NUMERIC(8) DEFAULT '1',
+	fk_bot_name VARCHAR(30),
+	fk_typ_name VARCHAR(30),
+	fk_tsg_code VARCHAR(16),
+	code VARCHAR(16),
+	name VARCHAR(30),
+	primary_key VARCHAR(1) DEFAULT 'N',
+	xf_atb_typ_name VARCHAR(30),
+	xk_atb_name VARCHAR(30),
+	CONSTRAINT tsg_pk
+		PRIMARY KEY (fk_typ_name, code),
+	CONSTRAINT tsg_typ_fk
+		FOREIGN KEY (fk_typ_name)
+		REFERENCES bot.t_type (name)
+		ON DELETE CASCADE,
+	CONSTRAINT tsg_tsg_fk
+		FOREIGN KEY (fk_typ_name, fk_tsg_code)
+		REFERENCES bot.t_type_specialisation_group (fk_typ_name, code)
+		ON DELETE CASCADE );
+
+CREATE TABLE IF NOT EXISTS bot.t_type_specialisation (
+	cube_id VARCHAR(16),
+	cube_sequence NUMERIC(8),
+	fk_bot_name VARCHAR(30),
+	fk_typ_name VARCHAR(30),
+	fk_tsg_code VARCHAR(16),
+	code VARCHAR(16),
+	name VARCHAR(30),
+	xf_tsp_typ_name VARCHAR(30),
+	xf_tsp_tsg_code VARCHAR(16),
+	xk_tsp_code VARCHAR(16),
+	CONSTRAINT tsp_pk
+		PRIMARY KEY (fk_typ_name, fk_tsg_code, code),
+	CONSTRAINT tsp_tsg_fk
+		FOREIGN KEY (fk_typ_name, fk_tsg_code)
+		REFERENCES bot.t_type_specialisation_group (fk_typ_name, code)
+		ON DELETE CASCADE );
+
+CREATE TABLE IF NOT EXISTS bot.t_attribute (
+	cube_id VARCHAR(16),
+	cube_sequence NUMERIC(8),
+	fk_bot_name VARCHAR(30),
+	fk_typ_name VARCHAR(30),
+	name VARCHAR(30),
+	primary_key VARCHAR(1) DEFAULT 'N',
+	code_display_key VARCHAR(1) DEFAULT 'N',
+	code_foreign_key VARCHAR(1) DEFAULT 'N',
+	flag_hidden VARCHAR(1) DEFAULT 'N',
+	default_value VARCHAR(40),
+	unchangeable VARCHAR(1) DEFAULT 'N',
+	xk_itp_name VARCHAR(30),
+	CONSTRAINT atb_pk
+		PRIMARY KEY (fk_typ_name, name),
+	CONSTRAINT atb_typ_fk
+		FOREIGN KEY (fk_typ_name)
+		REFERENCES bot.t_type (name)
+		ON DELETE CASCADE );
+
+CREATE TABLE IF NOT EXISTS bot.t_derivation (
+	cube_id VARCHAR(16),
+	fk_bot_name VARCHAR(30),
+	fk_typ_name VARCHAR(30),
+	fk_atb_name VARCHAR(30),
+	cube_tsg_type VARCHAR(8) DEFAULT 'DN',
+	aggregate_function VARCHAR(3) DEFAULT 'SUM',
+	xk_typ_name VARCHAR(30),
+	xk_typ_name_1 VARCHAR(30),
+	CONSTRAINT der_pk
+		PRIMARY KEY (fk_typ_name, fk_atb_name),
+	CONSTRAINT der_atb_fk
+		FOREIGN KEY (fk_typ_name, fk_atb_name)
+		REFERENCES bot.t_attribute (fk_typ_name, name)
+		ON DELETE CASCADE );
+
+CREATE TABLE IF NOT EXISTS bot.t_description_attribute (
+	cube_id VARCHAR(16),
+	fk_bot_name VARCHAR(30),
+	fk_typ_name VARCHAR(30),
+	fk_atb_name VARCHAR(30),
+	text VARCHAR(3999),
+	CONSTRAINT dca_pk
+		PRIMARY KEY (fk_typ_name, fk_atb_name),
+	CONSTRAINT dca_atb_fk
+		FOREIGN KEY (fk_typ_name, fk_atb_name)
+		REFERENCES bot.t_attribute (fk_typ_name, name)
+		ON DELETE CASCADE );
+
+CREATE TABLE IF NOT EXISTS bot.t_restriction_type_spec_atb (
+	cube_id VARCHAR(16),
+	fk_bot_name VARCHAR(30),
+	fk_typ_name VARCHAR(30),
+	fk_atb_name VARCHAR(30),
+	include_or_exclude VARCHAR(2) DEFAULT 'IN',
+	xf_tsp_typ_name VARCHAR(30),
+	xf_tsp_tsg_code VARCHAR(16),
+	xk_tsp_code VARCHAR(16),
+	CONSTRAINT rta_pk
+		PRIMARY KEY (fk_typ_name, fk_atb_name, xf_tsp_typ_name, xf_tsp_tsg_code, xk_tsp_code),
+	CONSTRAINT rta_atb_fk
+		FOREIGN KEY (fk_typ_name, fk_atb_name)
+		REFERENCES bot.t_attribute (fk_typ_name, name)
+		ON DELETE CASCADE );
+
+CREATE TABLE IF NOT EXISTS bot.t_reference (
+	cube_id VARCHAR(16),
+	cube_sequence NUMERIC(8),
+	fk_bot_name VARCHAR(30),
+	fk_typ_name VARCHAR(30),
+	name VARCHAR(30),
+	primary_key VARCHAR(1) DEFAULT 'N',
+	code_display_key VARCHAR(1) DEFAULT 'N',
+	sequence NUMERIC(1) DEFAULT '0',
+	scope VARCHAR(3) DEFAULT 'ALL',
+	unchangeable VARCHAR(1) DEFAULT 'N',
+	within_scope_extension VARCHAR(3),
+	cube_tsg_int_ext VARCHAR(8) DEFAULT 'INT',
+	xk_bot_name VARCHAR(30),
+	xk_typ_name VARCHAR(30),
+	xk_typ_name_1 VARCHAR(30),
+	CONSTRAINT ref_pk
+		PRIMARY KEY (fk_typ_name, sequence, xk_bot_name, xk_typ_name),
+	CONSTRAINT ref_typ_fk
+		FOREIGN KEY (fk_typ_name)
+		REFERENCES bot.t_type (name)
+		ON DELETE CASCADE );
+
+CREATE TABLE IF NOT EXISTS bot.t_description_reference (
+	cube_id VARCHAR(16),
+	fk_bot_name VARCHAR(30),
+	fk_typ_name VARCHAR(30),
+	fk_ref_sequence NUMERIC(1) DEFAULT '0',
+	fk_ref_bot_name VARCHAR(30),
+	fk_ref_typ_name VARCHAR(30),
+	text VARCHAR(3999),
+	CONSTRAINT dcr_pk
+		PRIMARY KEY (fk_typ_name, fk_ref_sequence, fk_ref_bot_name, fk_ref_typ_name),
+	CONSTRAINT dcr_ref_fk
+		FOREIGN KEY (fk_typ_name, fk_ref_sequence, fk_ref_bot_name, fk_ref_typ_name)
+		REFERENCES bot.t_reference (fk_typ_name, sequence, xk_bot_name, xk_typ_name)
+		ON DELETE CASCADE );
+
+CREATE TABLE IF NOT EXISTS bot.t_restriction_type_spec_ref (
+	cube_id VARCHAR(16),
+	fk_bot_name VARCHAR(30),
+	fk_typ_name VARCHAR(30),
+	fk_ref_sequence NUMERIC(1) DEFAULT '0',
+	fk_ref_bot_name VARCHAR(30),
+	fk_ref_typ_name VARCHAR(30),
+	include_or_exclude VARCHAR(2) DEFAULT 'IN',
+	xf_tsp_typ_name VARCHAR(30),
+	xf_tsp_tsg_code VARCHAR(16),
+	xk_tsp_code VARCHAR(16),
+	CONSTRAINT rtr_pk
+		PRIMARY KEY (fk_typ_name, fk_ref_sequence, fk_ref_bot_name, fk_ref_typ_name, xf_tsp_typ_name, xf_tsp_tsg_code, xk_tsp_code),
+	CONSTRAINT rtr_ref_fk
+		FOREIGN KEY (fk_typ_name, fk_ref_sequence, fk_ref_bot_name, fk_ref_typ_name)
+		REFERENCES bot.t_reference (fk_typ_name, sequence, xk_bot_name, xk_typ_name)
+		ON DELETE CASCADE );
+
+CREATE TABLE IF NOT EXISTS bot.t_restriction_target_type_spec (
+	cube_id VARCHAR(16),
+	fk_bot_name VARCHAR(30),
+	fk_typ_name VARCHAR(30),
+	fk_ref_sequence NUMERIC(1) DEFAULT '0',
+	fk_ref_bot_name VARCHAR(30),
+	fk_ref_typ_name VARCHAR(30),
+	include_or_exclude VARCHAR(2) DEFAULT 'IN',
+	xf_tsp_typ_name VARCHAR(30),
+	xf_tsp_tsg_code VARCHAR(16),
+	xk_tsp_code VARCHAR(16),
+	CONSTRAINT rts_pk
+		PRIMARY KEY (fk_typ_name, fk_ref_sequence, fk_ref_bot_name, fk_ref_typ_name, xf_tsp_typ_name, xf_tsp_tsg_code, xk_tsp_code),
+	CONSTRAINT rts_ref_fk
+		FOREIGN KEY (fk_typ_name, fk_ref_sequence, fk_ref_bot_name, fk_ref_typ_name)
+		REFERENCES bot.t_reference (fk_typ_name, sequence, xk_bot_name, xk_typ_name)
+		ON DELETE CASCADE );
+
+CREATE TABLE IF NOT EXISTS bot.t_restriction_type_spec_typ (
+	cube_id VARCHAR(16),
+	fk_bot_name VARCHAR(30),
+	fk_typ_name VARCHAR(30),
+	include_or_exclude VARCHAR(2) DEFAULT 'IN',
+	xf_tsp_typ_name VARCHAR(30),
+	xf_tsp_tsg_code VARCHAR(16),
+	xk_tsp_code VARCHAR(16),
+	CONSTRAINT rtt_pk
+		PRIMARY KEY (fk_typ_name, xf_tsp_typ_name, xf_tsp_tsg_code, xk_tsp_code),
+	CONSTRAINT rtt_typ_fk
+		FOREIGN KEY (fk_typ_name)
+		REFERENCES bot.t_type (name)
+		ON DELETE CASCADE );
+
+CREATE TABLE IF NOT EXISTS bot.t_json_path (
+	cube_id VARCHAR(16),
+	cube_sequence NUMERIC(8),
+	cube_level NUMERIC(8) DEFAULT '1',
+	fk_bot_name VARCHAR(30),
+	fk_typ_name VARCHAR(30),
+	fk_jsn_name VARCHAR(32),
+	fk_jsn_location NUMERIC(8) DEFAULT '0',
+	fk_jsn_atb_typ_name VARCHAR(30),
+	fk_jsn_atb_name VARCHAR(30),
+	fk_jsn_typ_name VARCHAR(30),
+	cube_tsg_obj_arr VARCHAR(8) DEFAULT 'OBJ',
+	cube_tsg_type VARCHAR(8) DEFAULT 'GRP',
+	name VARCHAR(32),
+	location NUMERIC(8) DEFAULT '0',
+	xf_atb_typ_name VARCHAR(30),
+	xk_atb_name VARCHAR(30),
+	xk_typ_name VARCHAR(30),
+	CONSTRAINT jsn_pk
+		PRIMARY KEY (fk_typ_name, name, location, xf_atb_typ_name, xk_atb_name, xk_typ_name),
+	CONSTRAINT jsn_typ_fk
+		FOREIGN KEY (fk_typ_name)
+		REFERENCES bot.t_type (name)
+		ON DELETE CASCADE,
+	CONSTRAINT jsn_jsn_fk
+		FOREIGN KEY (fk_typ_name, fk_jsn_name, fk_jsn_location, fk_jsn_atb_typ_name, fk_jsn_atb_name, fk_jsn_typ_name)
+		REFERENCES bot.t_json_path (fk_typ_name, name, location, xf_atb_typ_name, xk_atb_name, xk_typ_name)
+		ON DELETE CASCADE );
+
+CREATE TABLE IF NOT EXISTS bot.t_description_type (
+	cube_id VARCHAR(16),
+	fk_bot_name VARCHAR(30),
+	fk_typ_name VARCHAR(30),
+	text VARCHAR(3999),
+	CONSTRAINT dct_pk
+		PRIMARY KEY (fk_typ_name),
+	CONSTRAINT dct_typ_fk
+		FOREIGN KEY (fk_typ_name)
+		REFERENCES bot.t_type (name)
+		ON DELETE CASCADE );
+
 CREATE SCHEMA IF NOT EXISTS sys;
 CREATE SEQUENCE IF NOT EXISTS sys.sq_sys START WITH 100000;
 CREATE SEQUENCE IF NOT EXISTS sys.sq_sbt START WITH 100000;
+
+CREATE TABLE IF NOT EXISTS sys.t_system (
+	cube_id VARCHAR(16),
+	name VARCHAR(30),
+	cube_tsg_type VARCHAR(8) DEFAULT 'PRIMARY',
+	database VARCHAR(30),
+	schema VARCHAR(30),
+	password VARCHAR(20),
+	table_prefix VARCHAR(4),
+	CONSTRAINT sys_pk
+		PRIMARY KEY (name) );
+
+CREATE TABLE IF NOT EXISTS sys.t_system_bo_type (
+	cube_id VARCHAR(16),
+	cube_sequence NUMERIC(8),
+	fk_sys_name VARCHAR(30),
+	xk_bot_name VARCHAR(30),
+	CONSTRAINT sbt_pk
+		PRIMARY KEY (fk_sys_name, xk_bot_name),
+	CONSTRAINT sbt_sys_fk
+		FOREIGN KEY (fk_sys_name)
+		REFERENCES sys.t_system (name)
+		ON DELETE CASCADE );
 
 CREATE SCHEMA IF NOT EXISTS fun;
 CREATE SEQUENCE IF NOT EXISTS fun.sq_fun START WITH 100000;
 CREATE SEQUENCE IF NOT EXISTS fun.sq_arg START WITH 100000;
 
+CREATE TABLE IF NOT EXISTS fun.t_function (
+	cube_id VARCHAR(16),
+	name VARCHAR(30),
+	CONSTRAINT fun_pk
+		PRIMARY KEY (name) );
+
+CREATE TABLE IF NOT EXISTS fun.t_argument (
+	cube_id VARCHAR(16),
+	cube_sequence NUMERIC(8),
+	fk_fun_name VARCHAR(30),
+	name VARCHAR(30),
+	CONSTRAINT arg_pk
+		PRIMARY KEY (fk_fun_name, name),
+	CONSTRAINT arg_fun_fk
+		FOREIGN KEY (fk_fun_name)
+		REFERENCES fun.t_function (name)
+		ON DELETE CASCADE );
+
+\q
 
 
 SET SERVEROUTPUT ON;

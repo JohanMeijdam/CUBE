@@ -7,35 +7,68 @@ Change log:
 --[[LOOP,DATABASE]]
 DO $BODY$
 	DECLARE
-		rec_nspname RECORD;
+		rec_schema RECORD;
 		rec_sequence RECORD;
+		rec_table RECORD;
+		rec_column RECORD;
 	BEGIN
-		FOR rec_nspname IN 
-			SELECT nspname 
-			FROM pg_catalog.pg_namespace, pg_catalog.pg_user
-			WHERE nspowner = usesysid
-			  AND usename = '<<1>>'
-			  AND nspname NOT IN ('cube'[[LOOP,SCHEMA]],'<<SCHEMA:L>>'[[ENDLOOP,SCHEMA]])
+		FOR rec_schema IN 
+			SELECT schema_name 
+			FROM information_schema.schemata
+			WHERE schema_owner = '<<1>>'
+			  AND schema_name NOT IN ('cube'[[LOOP,SCHEMA]],'<<SCHEMA:L>>'[[ENDLOOP,SCHEMA]])
 		LOOP
-			EXECUTE 'DROP SCHEMA ' || rec_nspname.nspname || ' CASCADE';
+			EXECUTE 'DROP SCHEMA ' || rec_schema.schema_name || ' CASCADE';
 		END LOOP;
 		
-		FOR rec_nspname IN 
-			SELECT nspname 
-			FROM pg_catalog.pg_namespace, pg_catalog.pg_user
-			WHERE nspowner = usesysid
-			  AND usename = '<<1>>'
+		FOR rec_schema IN 
+			SELECT catalog_name, schema_name 
+			FROM information_schema.schemata
+			WHERE schema_owner = '<<1>>'
 		LOOP
-			CASE rec_nspname.nspname[[LOOP,SCHEMA]]
+			CASE rec_schema.schema_name[[LOOP,SCHEMA]]
 			WHEN '<<SCHEMA:L>>' THEN
 				FOR rec_sequence IN
-					SELECT sequencename
-					FROM pg_catalog.pg_sequences 
-					WHERE sequenceowner = '<<1>>'
-					  AND schemaname = rec_nspname.nspname[[IF:CHILD(SEQUENCE)]]
-					  AND sequencename NOT IN ([[LOOP,SEQUENCE]]'<<SEQUENCE:L>>'[[IF:!LAST]],[[ENDIF]][[ENDLOOP,SEQUENCE]])[[ENDIF]]
+					SELECT sequence_name
+					FROM information_schema.sequences
+					WHERE sequence_catalog = rec_schema.catalog_name
+					  AND sequence_schema = rec_schema.schema_name[[IF:CHILD(SEQUENCE)]]
+					  AND sequence_name NOT IN ([[LOOP,SEQUENCE]]'<<SEQUENCE:L>>'[[IF:!LAST]],[[ENDIF]][[ENDLOOP,SEQUENCE]])[[ENDIF]]
 				LOOP
-					EXECUTE 'DROP SEQUENCE ' || rec_nspname.nspname || '.' || rec_sequence.sequencename;
+					EXECUTE 'DROP SEQUENCE ' || rec_schema.schema_name || '.' || rec_sequence.sequence_name;
+				END LOOP;
+				FOR rec_table IN
+					SELECT table_name
+					FROM information_schema.tables
+					WHERE table_type = 'BASE TABLE'
+					  AND table_catalog = rec_schema.catalog_name
+					  AND table_schema = rec_schema.schema_name[[IF:CHILD(TABLE)]]
+					  AND table_name NOT IN ([[LOOP,TABLE]]'<<TABLE:L>>'[[IF:!LAST]],[[ENDIF]][[ENDLOOP,TABLE]])[[ENDIF]]
+				LOOP
+					EXECUTE 'DROP TABLE ' || rec_schema.schema_name || '.' || rec_table.table_name;
+				END LOOP;[[IF:CHILD(TABLE)]]
+				FOR rec_table IN
+					SELECT table_name
+					FROM information_schema.tables 
+					WHERE table_type = 'BASE TABLE'
+					  AND table_catalog = rec_schema.catalog_name
+					  AND table_schema = rec_schema.schema_name
+					  AND table_name IN ([[LOOP,TABLE]]'<<TABLE:L>>'[[IF:!LAST]],[[ENDIF]][[ENDLOOP,TABLE]])
+				LOOP
+					CASE rec_table.table_name[[LOOP,TABLE]]
+					WHEN '<<TABLE:L>>' THEN
+						FOR rec_column IN
+							SELECT column_name
+							FROM information_schema.columns
+							WHERE table_catalog = rec_schema.catalog_name
+							  AND table_schema = rec_schema.schema_name
+							  AND table_name = rec_table.table_name[[IF:CHILD(COLUMN)]] 
+							  AND column_name NOT IN ([[LOOP,COLUMN]]'<<COLUMN:L>>'[[IF:!LAST]],[[ENDIF]][[ENDLOOP,COLUMN]])[[ENDIF]]
+						LOOP
+							EXECUTE 'ALTER TABLE ' || rec_schema.schema_name || '.' || rec_table.table_name || ' DROP COLUMN ' || rec_column.column_name || ' CASCADE';
+						END LOOP;[[ENDLOOP,TABLE]]
+					END CASE;
+					[[ENDIF]]					
 				END LOOP;[[ENDLOOP,SCHEMA]]
 			WHEN 'cube' THEN
 				-- nop
@@ -45,8 +78,18 @@ DO $BODY$
 $BODY$;[[LOOP,SCHEMA]]
 
 CREATE SCHEMA IF NOT EXISTS <<SCHEMA:L>>;[[LOOP,SEQUENCE]]
-CREATE SEQUENCE IF NOT EXISTS <<SCHEMA:L>>.<<SEQUENCE:L>> START WITH <<SEQUENCE1>>;[[ENDLOOP,SEQUENCE]][[ENDLOOP,SCHEMA]]
+CREATE SEQUENCE IF NOT EXISTS <<SCHEMA:L>>.<<SEQUENCE:L>> START WITH <<SEQUENCE1>>;[[ENDLOOP,SEQUENCE]][[LOOP,TABLE]]
 
+CREATE TABLE IF NOT EXISTS <<SCHEMA:L>>.<<TABLE:L>> ([[LOOP,COLUMN]]
+	<<COLUMN:L>> <<TEXT,GEN_DOMAIN_PG[|]<<COLUMN3>>[|]<<COLUMN4>>[|]>>[[IF:!5=]] DEFAULT '<<COLUMN5>>'[[ENDIF]],[[ENDLOOP,COLUMN]]
+	CONSTRAINT <<TABLE1:L>>
+		PRIMARY KEY ([[LOOP,COLUMN:1=Y]]<<COLUMN:L>>[[IF:!LAST]], [[ENDIF]][[ENDLOOP,COLUMN]])[[LOOP,FOREIGN_KEY]],
+	CONSTRAINT <<FOREIGN_KEY:L>>
+		FOREIGN KEY ([[LOOP,COLUMN]]<<COLUMN:L>>[[IF:!LAST]], [[ENDIF]][[ENDLOOP,COLUMN]])
+		REFERENCES <<SCHEMA:L>>.<<FOREIGN_KEY1:L>> ([[LOOP,COLUMN]]<<COLUMN1:L>>[[IF:!LAST]], [[ENDIF]][[ENDLOOP,COLUMN]])[[IF:2=Y]]
+		ON DELETE CASCADE[[ENDIF]][[ENDLOOP,FOREIGN_KEY]] );[[ENDLOOP,TABLE]][[ENDLOOP,SCHEMA]]
+
+\q
 
 
 SET SERVEROUTPUT ON;[[LOOP,SCHEMA]][[LOOP,SEQUENCE]]
