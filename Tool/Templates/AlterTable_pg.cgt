@@ -5,6 +5,26 @@ Change log:
 [[INCLUDE,Includes/general.cgt]]
 [[BODY]]-- ALTER TABLE DDL
 --[[LOOP,DATABASE]]
+-- First remove all te constraints.
+DO $BODY$
+	DECLARE
+		rec_constraint RECORD;
+	BEGIN
+		FOR rec_constraint IN
+			SELECT table_schema, table_name, constraint_name
+			FROM information_schema.table_constraints, information_schema.schemata
+			WHERE constraint_catalog = catalog_name
+			  AND constraint_schema = schema_name
+			  AND constraint_type IN ('FOREIGN KEY','PRIMARY KEY')
+			  AND schema_owner = '<<1>>'
+			ORDER BY constraint_type
+		LOOP
+			EXECUTE 'ALTER TABLE ' || rec_constraint.table_schema || '.' || rec_constraint.table_name || ' DROP CONSTRAINT ' || rec_constraint.constraint_name;
+		END LOOP;
+	END;
+$BODY$;
+
+-- Drop all the sequences, tables and columns that are no longer applicable.
 DO $BODY$
 	DECLARE
 		rec_schema RECORD;
@@ -75,83 +95,49 @@ DO $BODY$
 			END CASE;
 		END LOOP;
 	END;
-$BODY$;[[LOOP,SCHEMA]]
+$BODY$;
 
-CREATE SCHEMA IF NOT EXISTS <<SCHEMA:L>>;[[LOOP,SEQUENCE]]
-CREATE SEQUENCE IF NOT EXISTS <<SCHEMA:L>>.<<SEQUENCE:L>> START WITH <<SEQUENCE1>>;[[ENDLOOP,SEQUENCE]][[LOOP,TABLE]]
-
-CREATE TABLE IF NOT EXISTS <<SCHEMA:L>>.<<TABLE:L>> ([[LOOP,COLUMN]]
-	<<COLUMN:L>> <<TEXT,GEN_DOMAIN_PG[|]<<COLUMN3>>[|]<<COLUMN4>>[|]>>[[IF:!5=]] DEFAULT '<<COLUMN5>>'[[ENDIF]],[[ENDLOOP,COLUMN]]
-	CONSTRAINT <<TABLE1:L>>
-		PRIMARY KEY ([[LOOP,COLUMN:1=Y]]<<COLUMN:L>>[[IF:!LAST]], [[ENDIF]][[ENDLOOP,COLUMN]])[[LOOP,FOREIGN_KEY]],
-	CONSTRAINT <<FOREIGN_KEY:L>>
-		FOREIGN KEY ([[LOOP,COLUMN]]<<COLUMN:L>>[[IF:!LAST]], [[ENDIF]][[ENDLOOP,COLUMN]])
-		REFERENCES <<SCHEMA:L>>.<<FOREIGN_KEY1:L>> ([[LOOP,COLUMN]]<<COLUMN1:L>>[[IF:!LAST]], [[ENDIF]][[ENDLOOP,COLUMN]])[[IF:2=Y]]
-		ON DELETE CASCADE[[ENDIF]][[ENDLOOP,FOREIGN_KEY]] );[[ENDLOOP,TABLE]][[ENDLOOP,SCHEMA]]
-
-\q
-
-
-SET SERVEROUTPUT ON;[[LOOP,SCHEMA]][[LOOP,SEQUENCE]]
-DECLARE
-	l_count NUMBER(4);
-BEGIN
-	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = '<<DATABASE1:U>>' AND sequence_name = '<<SEQUENCE:U>>';
-	IF l_count = 0 THEN
-		EXECUTE IMMEDIATE 
-		'CREATE SEQUENCE <<SEQUENCE:L>> START WITH <<SEQUENCE1>>';
-		DBMS_OUTPUT.PUT_LINE('Sequence <<SEQUENCE:U>> created');
-	END IF;
-END;
-/[[ENDLOOP,SEQUENCE]][[ENDLOOP,SCHEMA]][[LOOP,SCHEMA]][[LOOP,TABLE]]
-DECLARE
-	l_count NUMBER(4);
-BEGIN
-	DBMS_OUTPUT.PUT_LINE('Prepare table <<TABLE:U>>');
-	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = '<<DATABASE1:U>>' AND table_name = '<<TABLE:U>>';
-	IF l_count = 0 THEN
-		EXECUTE IMMEDIATE
-		'CREATE TABLE <<TABLE:L>> ([[LOOP,COLUMN]]
-			<<COLUMN:L>> <<TEXT,GEN_DOMAIN_ORA[|]<<COLUMN3>>[|]<<COLUMN4>>[|]>>[[IF:!5=]] DEFAULT ''<<COLUMN5>>''[[ENDIF]][[IF:!LAST]],[[ENDIF]][[ENDLOOP,COLUMN]])';
-		DBMS_OUTPUT.PUT_LINE('Table <<TABLE:U>> created');
-	ELSE[[LOOP,COLUMN]]
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = '<<DATABASE1:U>>' AND table_name = '<<TABLE:U>>' AND column_name = '<<COLUMN:U>>';
-		IF l_count = 0 THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE <<TABLE:L>> ADD <<COLUMN:L>> <<TEXT,GEN_DOMAIN_ORA[|]<<COLUMN3>>[|]<<COLUMN4>>[|]>>[[IF:!5=]] DEFAULT ''<<COLUMN5>>''[[ENDIF]]';
-			DBMS_OUTPUT.PUT_LINE('Column <<TABLE:U>>.<<COLUMN:U>> created');
-		END IF;[[ENDLOOP,COLUMN]]
-		FOR r_key IN (SELECT constraint_name FROM all_constraints WHERE owner = '<<DATABASE1:U>>' AND table_name = '<<TABLE:U>>' AND constraint_type IN ('P','U','R') ORDER BY constraint_type DESC)
+-- Process column updates.
+DO $BODY$
+	DECLARE
+		rec_column RECORD;
+	BEGIN
+		FOR rec_column IN 
+			SELECT schema_name, table_name, column_name, data_type,
+			(	CASE data_type 
+				WHEN 'character varying' THEN COALESCE('TEXT('||character_maximum_length||')','TEXT') 
+				WHEN 'numeric' THEN 'NUMBER('||numeric_precision||(CASE WHEN numeric_scale > 0 THEN ','||numeric_scale||')' ELSE ')' END)
+				WHEN 'date' THEN 'DATE' 
+				WHEN 'time without time zone' THEN 'TIME' 
+				WHEN 'timestamp without time zone' THEN 'TIMESTAMP' 
+				ELSE 'ERROR' END ) dat_type
+			FROM information_schema.schemata, information_schema.columns 
+			WHERE table_schema = schema_name
+			  AND schema_owner = '<<1>>'
+			ORDER BY schema_name, table_name, column_name
 		LOOP
-			EXECUTE IMMEDIATE
-			'ALTER TABLE <<TABLE:L>> DROP CONSTRAINT ' || r_key.constraint_name || ' CASCADE';
-			DBMS_OUTPUT.PUT_LINE('Primary Key <<TABLE:U>>.' || UPPER(r_key.constraint_name) || ' dropped');
-		END LOOP;
-		FOR r_index IN (SELECT index_name FROM all_indexes WHERE owner = '<<DATABASE1:U>>' AND table_name = '<<TABLE:U>>')
-		LOOP
-			EXECUTE IMMEDIATE
-			'DROP INDEX ' || r_index.index_name;
-			DBMS_OUTPUT.PUT_LINE('Index <<TABLE:U>>.' || UPPER(r_index.index_name) || ' dropped');
-		END LOOP;
-	END IF;
-END;
-/[[ENDLOOP,TABLE]][[ENDLOOP,SCHEMA]][[******** DROP TABLE MANUAL
-BEGIN
-	FOR r_table IN (SELECT t.table_name FROM all_tables t, all_tab_comments c
-				WHERE t.table_name = c.table_name
-				  AND t.owner = '<<DATABASE1:U>>'[[LOOP,SCHEMA]][[LOOP,TABLE]][[IF:FIRST]]
-				  AND t.table_name NOT IN ([[ENDIF]]
-							'<<TABLE:U>>'[[IF:!LAST]],[[ELSE]])[[ENDIF]][[ENDLOOP,TABLE]][[ENDLOOP,SCHEMA]]
-				  AND SUBSTR(t.table_name,1,7) <> 'T_CUBE_')
-	LOOP
-		EXECUTE IMMEDIATE
-		'DROP TABLE ' || r_table.table_name || ' CASCADE CONSTRAINTS';
-		DBMS_OUTPUT.PUT_LINE('Table ' || UPPER(r_table.table_name) || ' dropped');
-	END LOOP;
-END;
-/******]][[LOOP,SCHEMA]][[LOOP,TABLE]]
-BEGIN
-	DBMS_OUTPUT.PUT_LINE('Maintain table <<TABLE:U>>');
+			CASE rec_column.schema_name[[LOOP,SCHEMA]]			
+			WHEN '<<SCHEMA:L>>' THEN
+				CASE rec_column.table_name[[LOOP,TABLE]]			
+				WHEN '<<TABLE:L>>' THEN
+					CASE rec_column.column_name[[LOOP,COLUMN]]			
+					WHEN '<<COLUMN:L>>' THEN
+						IF rec_column.data_type <> '<<TEXT,GEN_DOMAIN_PG[|]<<COLUMN3>>[|]<<COLUMN4>>[|]>>' THEN
+							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
+						END IF;[[ENDLOOP,COLUMN]]
+					END CASE;[[ENDLOOP,TABLE]]
+				END CASE;[[ENDLOOP,SCHEMA]]
+			WHEN 'cube' THEN
+				-- nop
+			END CASE;
+		END LOOP;	
+	END;
+$BODY$;
+
+
+
+[[LOOP,XSCHEMA]][[LOOP,TABLE]]
+	
 	FOR r_field IN (SELECT column_name,
 		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
 		data_default old_default_value,
@@ -200,7 +186,23 @@ BEGIN
 		'ALTER TABLE <<TABLE:L>> DROP COLUMN ' || r_field.column_name;
 		DBMS_OUTPUT.PUT_LINE('Field <<TABLE:U>>.' || UPPER(r_field.column_name) || ' dropped');
 	END LOOP;
-END;
-/[[ENDLOOP,TABLE]][[ENDLOOP,SCHEMA]][[ENDLOOP,DATABASE]]
-EXIT;
+/[[ENDLOOP,TABLE]][[ENDLOOP,XSCHEMA]]
+
+-- Add all the new sequences, tables and columns and restore the constraints.
+DO $BODY$
+	DECLARE
+	BEGIN[[LOOP,SCHEMA]]
+		EXECUTE 'CREATE SCHEMA IF NOT EXISTS <<SCHEMA:L>>';[[LOOP,SEQUENCE]]
+		EXECUTE 'CREATE SEQUENCE IF NOT EXISTS <<SCHEMA:L>>.<<SEQUENCE:L>> START WITH <<SEQUENCE1>>';[[ENDLOOP,SEQUENCE]][[LOOP,TABLE]]
+
+		EXECUTE 'CREATE TABLE IF NOT EXISTS <<SCHEMA:L>>.<<TABLE:L>> ()';[[LOOP,COLUMN]]
+		EXECUTE 'ALTER TABLE <<SCHEMA:L>>.<<TABLE:L>> ADD COLUMN IF NOT EXISTS <<COLUMN:L>> <<TEXT,GEN_DOMAIN_PG[|]<<COLUMN3>>[|]<<COLUMN4>>[|]>>[[IF:!5=]] DEFAULT ''<<COLUMN5>>''[[ENDIF]]';[[ENDLOOP,COLUMN]][[IF:CHILD(COLUMN:1=Y)]]
+		EXECUTE 'ALTER TABLE <<SCHEMA:L>>.<<TABLE:L>> ADD CONSTRAINT <<TABLE1:L>> PRIMARY KEY ([[LOOP,COLUMN:1=Y]]<<COLUMN:L>>[[IF:!LAST]], [[ENDIF]][[ENDLOOP,COLUMN]])';[[ENDIF]][[ENDLOOP,TABLE]][[ENDLOOP,SCHEMA]]
+[[LOOP,SCHEMA]][[LOOP,TABLE]][[LOOP,FOREIGN_KEY]]
+		EXECUTE 'ALTER TABLE <<SCHEMA:L>>.<<TABLE:L>> ADD CONSTRAINT <<FOREIGN_KEY:L>> FOREIGN KEY ([[LOOP,COLUMN]]<<COLUMN:L>>[[IF:!LAST]], [[ENDIF]][[ENDLOOP,COLUMN]]) REFERENCES <<SCHEMA:L>>.<<FOREIGN_KEY1:L>> ([[LOOP,COLUMN]]<<COLUMN1:L>>[[IF:!LAST]], [[ENDIF]][[ENDLOOP,COLUMN]])[[IF:2=Y]] ON DELETE CASCADE[[ENDIF]]';[[ENDLOOP,FOREIGN_KEY]][[ENDLOOP,TABLE]][[ENDLOOP,SCHEMA]]
+	END;
+$BODY$;
+[[ENDLOOP,DATABASE]]
+
+\q
 [[ENDBODY]]

@@ -59,6 +59,17 @@ END;
 DECLARE
 	l_count NUMBER(4);
 BEGIN
+	SELECT COUNT(1) INTO l_count FROM all_sequences WHERE sequence_owner = 'CUBETEST' AND sequence_name = 'SQ_AAA';
+	IF l_count = 0 THEN
+		EXECUTE IMMEDIATE 
+		'CREATE SEQUENCE sq_aaa START WITH 100000';
+		DBMS_OUTPUT.PUT_LINE('Sequence SQ_AAA created');
+	END IF;
+END;
+/
+DECLARE
+	l_count NUMBER(4);
+BEGIN
 	DBMS_OUTPUT.PUT_LINE('Prepare table T_PRODUKT');
 	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = 'CUBETEST' AND table_name = 'T_PRODUKT';
 	IF l_count = 0 THEN
@@ -461,6 +472,66 @@ BEGIN
 	END IF;
 END;
 /
+DECLARE
+	l_count NUMBER(4);
+BEGIN
+	DBMS_OUTPUT.PUT_LINE('Prepare table T_AAA');
+	SELECT COUNT(1) INTO l_count FROM all_tables WHERE owner = 'CUBETEST' AND table_name = 'T_AAA';
+	IF l_count = 0 THEN
+		EXECUTE IMMEDIATE
+		'CREATE TABLE t_aaa (
+			cube_id VARCHAR2(16),
+			nummer NUMBER(8) DEFAULT ''0'',
+			struct_d DATE DEFAULT ''1900-01-01'',
+			struct_t DATE DEFAULT ''12:00:00'',
+			struct_dt TIMESTAMP DEFAULT ''1900-01-01 12:00:00'')';
+		DBMS_OUTPUT.PUT_LINE('Table T_AAA created');
+	ELSE
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_AAA' AND column_name = 'CUBE_ID';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_aaa ADD cube_id VARCHAR2(16)';
+			DBMS_OUTPUT.PUT_LINE('Column T_AAA.CUBE_ID created');
+		END IF;
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_AAA' AND column_name = 'NUMMER';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_aaa ADD nummer NUMBER(8) DEFAULT ''0''';
+			DBMS_OUTPUT.PUT_LINE('Column T_AAA.NUMMER created');
+		END IF;
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_AAA' AND column_name = 'STRUCT_D';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_aaa ADD struct_d DATE DEFAULT ''1900-01-01''';
+			DBMS_OUTPUT.PUT_LINE('Column T_AAA.STRUCT_D created');
+		END IF;
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_AAA' AND column_name = 'STRUCT_T';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_aaa ADD struct_t DATE DEFAULT ''12:00:00''';
+			DBMS_OUTPUT.PUT_LINE('Column T_AAA.STRUCT_T created');
+		END IF;
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_AAA' AND column_name = 'STRUCT_DT';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_aaa ADD struct_dt TIMESTAMP DEFAULT ''1900-01-01 12:00:00''';
+			DBMS_OUTPUT.PUT_LINE('Column T_AAA.STRUCT_DT created');
+		END IF;
+		FOR r_key IN (SELECT constraint_name FROM all_constraints WHERE owner = 'CUBETEST' AND table_name = 'T_AAA' AND constraint_type IN ('P','U','R') ORDER BY constraint_type DESC)
+		LOOP
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_aaa DROP CONSTRAINT ' || r_key.constraint_name || ' CASCADE';
+			DBMS_OUTPUT.PUT_LINE('Primary Key T_AAA.' || UPPER(r_key.constraint_name) || ' dropped');
+		END LOOP;
+		FOR r_index IN (SELECT index_name FROM all_indexes WHERE owner = 'CUBETEST' AND table_name = 'T_AAA')
+		LOOP
+			EXECUTE IMMEDIATE
+			'DROP INDEX ' || r_index.index_name;
+			DBMS_OUTPUT.PUT_LINE('Index T_AAA.' || UPPER(r_index.index_name) || ' dropped');
+		END LOOP;
+	END IF;
+END;
+/
 BEGIN
 	DBMS_OUTPUT.PUT_LINE('Maintain table T_PRODUKT');
 	FOR r_field IN (SELECT column_name,
@@ -829,6 +900,64 @@ BEGIN
 		EXECUTE IMMEDIATE
 		'ALTER TABLE t_constructie DROP COLUMN ' || r_field.column_name;
 		DBMS_OUTPUT.PUT_LINE('Field T_CONSTRUCTIE.' || UPPER(r_field.column_name) || ' dropped');
+	END LOOP;
+END;
+/
+BEGIN
+	DBMS_OUTPUT.PUT_LINE('Maintain table T_AAA');
+	FOR r_field IN (SELECT column_name,
+		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
+		data_default old_default_value,
+  		DECODE(column_name,
+			'CUBE_ID','VARCHAR2(16)',
+			'NUMMER','NUMBER(8)',
+			'STRUCT_D','DATE',
+			'STRUCT_T','DATE',
+			'STRUCT_DT','TIMESTAMP',NULL) new_domain,
+		DECODE(column_name,
+			'CUBE_ID',NULL,
+			'NUMMER','''0''',
+			'STRUCT_D','''1900-01-01''',
+			'STRUCT_T','''12:00:00''',
+			'STRUCT_DT','''1900-01-01 12:00:00''',NULL) new_default_value
+  		FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_AAA')
+	LOOP
+		IF r_field.old_domain <> r_field.new_domain THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_aaa RENAME COLUMN ' || r_field.column_name || ' TO old#domain#field';
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_aaa ADD ' || r_field.column_name || ' ' || r_field.new_domain;
+ 			IF r_field.new_domain = 'VARCHAR2' THEN  
+				EXECUTE IMMEDIATE
+				'UPDATE t_aaa SET ' || r_field.column_name || '= TRIM(old#domain#field)';
+			ELSE
+				EXECUTE IMMEDIATE
+				'UPDATE t_aaa SET ' || r_field.column_name || '= old#domain#field';
+			END IF;
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_aaa DROP COLUMN old#domain#field';
+			DBMS_OUTPUT.PUT_LINE('Field T_AAA.' || UPPER(r_field.column_name) || ' converted from ' || r_field.old_domain || ' to ' || r_field.new_domain);
+		END IF;
+		IF NOT((r_field.old_default_value IS NULL AND r_field.new_default_value IS NULL) OR r_field.old_default_value = r_field.new_default_value) THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_aaa MODIFY (' || r_field.column_name || ' DEFAULT ' || NVL(r_field.new_default_value,'NULL') || ')';
+			DBMS_OUTPUT.PUT_LINE('Field T_AAA.' || UPPER(r_field.column_name) || ' default value set to ' || NVL(r_field.new_default_value,'NULL'));
+		END IF;
+	END LOOP;
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_aaa ADD CONSTRAINT aaa_pk
+		PRIMARY KEY ( )';
+	DBMS_OUTPUT.PUT_LINE('Primary Key T_AAA.AAA_PK created');
+	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBETEST' AND table_name = 'T_AAA' AND column_name NOT IN (
+							'CUBE_ID',
+							'NUMMER',
+							'STRUCT_D',
+							'STRUCT_T',
+							'STRUCT_DT'))
+	LOOP
+		EXECUTE IMMEDIATE
+		'ALTER TABLE t_aaa DROP COLUMN ' || r_field.column_name;
+		DBMS_OUTPUT.PUT_LINE('Field T_AAA.' || UPPER(r_field.column_name) || ' dropped');
 	END LOOP;
 END;
 /

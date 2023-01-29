@@ -37,6 +37,8 @@ CREATE SEQUENCE sq_ddd START WITH 100000
 /
 CREATE SEQUENCE sq_cst START WITH 100000
 /
+CREATE SEQUENCE sq_aaa START WITH 100000
+/
 CREATE TABLE t_produkt (
 	cube_id VARCHAR2(16),
 	cube_tsg_type VARCHAR2(8) DEFAULT 'P',
@@ -116,5 +118,14 @@ CREATE TABLE t_constructie (
 		FOREIGN KEY (fk_prd_cube_tsg_type, fk_prd_code, fk_ond_code)
 		REFERENCES t_onderdeel (fk_prd_cube_tsg_type, fk_prd_code, code)
 		ON DELETE CASCADE )
+/
+CREATE TABLE t_aaa (
+	cube_id VARCHAR2(16),
+	nummer NUMBER(8) DEFAULT '0',
+	struct_d DATE DEFAULT '1900-01-01',
+	struct_t DATE DEFAULT '12:00:00',
+	struct_dt TIMESTAMP DEFAULT '1900-01-01 12:00:00',
+	CONSTRAINT aaa_pk
+		PRIMARY KEY () )
 /
 EXIT;
