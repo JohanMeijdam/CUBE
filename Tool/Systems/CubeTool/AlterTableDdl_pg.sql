@@ -31,7 +31,7 @@ DO $BODY$
 			SELECT schema_name 
 			FROM information_schema.schemata
 			WHERE schema_owner = 'JohanM'
-			  AND schema_name NOT IN ('cube','itp','bot','sys','fun')
+			  AND schema_name NOT IN ('cube','aap','itp','bot','sys','fun')
 		LOOP
 			EXECUTE 'DROP SCHEMA ' || rec_schema.schema_name || ' CASCADE';
 		END LOOP;
@@ -42,6 +42,48 @@ DO $BODY$
 			WHERE schema_owner = 'JohanM'
 		LOOP
 			CASE rec_schema.schema_name
+			WHEN 'aap' THEN
+				FOR rec_sequence IN
+					SELECT sequence_name
+					FROM information_schema.sequences
+					WHERE sequence_catalog = rec_schema.catalog_name
+					  AND sequence_schema = rec_schema.schema_name
+				LOOP
+					EXECUTE 'DROP SEQUENCE ' || rec_schema.schema_name || '.' || rec_sequence.sequence_name;
+				END LOOP;
+				FOR rec_table IN
+					SELECT table_name
+					FROM information_schema.tables
+					WHERE table_type = 'BASE TABLE'
+					  AND table_catalog = rec_schema.catalog_name
+					  AND table_schema = rec_schema.schema_name
+					  AND table_name NOT IN ('aap')
+				LOOP
+					EXECUTE 'DROP TABLE ' || rec_schema.schema_name || '.' || rec_table.table_name;
+				END LOOP;
+				FOR rec_table IN
+					SELECT table_name
+					FROM information_schema.tables 
+					WHERE table_type = 'BASE TABLE'
+					  AND table_catalog = rec_schema.catalog_name
+					  AND table_schema = rec_schema.schema_name
+					  AND table_name IN ('aap')
+				LOOP
+					CASE rec_table.table_name
+					WHEN 'aap' THEN
+						FOR rec_column IN
+							SELECT column_name
+							FROM information_schema.columns
+							WHERE table_catalog = rec_schema.catalog_name
+							  AND table_schema = rec_schema.schema_name
+							  AND table_name = rec_table.table_name 
+							  AND column_name NOT IN ('tijdstip','datum','string','nummer','prec','tijd')
+						LOOP
+							EXECUTE 'ALTER TABLE ' || rec_schema.schema_name || '.' || rec_table.table_name || ' DROP COLUMN ' || rec_column.column_name || ' CASCADE';
+						END LOOP;
+					END CASE;
+										
+				END LOOP;
 			WHEN 'itp' THEN
 				FOR rec_sequence IN
 					SELECT sequence_name
@@ -439,6 +481,36 @@ DO $BODY$
 			ORDER BY schema_name, table_name, column_name
 		LOOP
 			CASE rec_column.schema_name			
+			WHEN 'aap' THEN
+				CASE rec_column.table_name			
+				WHEN 'aap' THEN
+					CASE rec_column.column_name			
+					WHEN 'tijdstip' THEN
+						IF rec_column.data_type <> 'TIMESTAMP' THEN
+							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
+						END IF;			
+					WHEN 'datum' THEN
+						IF rec_column.data_type <> 'DATE' THEN
+							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
+						END IF;			
+					WHEN 'string' THEN
+						IF rec_column.data_type <> 'VARCHAR(7)' THEN
+							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
+						END IF;			
+					WHEN 'nummer' THEN
+						IF rec_column.data_type <> 'NUMERIC(8)' THEN
+							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
+						END IF;			
+					WHEN 'prec' THEN
+						IF rec_column.data_type <> 'NUMERIC(8,4)' THEN
+							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
+						END IF;			
+					WHEN 'tijd' THEN
+						IF rec_column.data_type <> 'TIME' THEN
+							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
+						END IF;
+					END CASE;
+				END CASE;			
 			WHEN 'itp' THEN
 				CASE rec_column.table_name			
 				WHEN 't_information_type' THEN
@@ -1264,6 +1336,16 @@ $BODY$;
 DO $BODY$
 	DECLARE
 	BEGIN
+		EXECUTE 'CREATE SCHEMA IF NOT EXISTS aap';
+
+		EXECUTE 'CREATE TABLE IF NOT EXISTS aap.aap ()';
+		EXECUTE 'ALTER TABLE aap.aap ADD COLUMN IF NOT EXISTS tijdstip TIMESTAMP DEFAULT ''99991231 235959''';
+		EXECUTE 'ALTER TABLE aap.aap ADD COLUMN IF NOT EXISTS datum DATE DEFAULT ''00010101''';
+		EXECUTE 'ALTER TABLE aap.aap ADD COLUMN IF NOT EXISTS string VARCHAR(7) DEFAULT ''TEXT''';
+		EXECUTE 'ALTER TABLE aap.aap ADD COLUMN IF NOT EXISTS nummer NUMERIC(8) DEFAULT ''9''';
+		EXECUTE 'ALTER TABLE aap.aap ADD COLUMN IF NOT EXISTS prec NUMERIC(8,4) DEFAULT ''9.9''';
+		EXECUTE 'ALTER TABLE aap.aap ADD COLUMN IF NOT EXISTS tijd TIME DEFAULT ''123456''';
+		EXECUTE 'ALTER TABLE aap.aap ADD CONSTRAINT aap_pk PRIMARY KEY (tijdstip)';
 		EXECUTE 'CREATE SCHEMA IF NOT EXISTS itp';
 		EXECUTE 'CREATE SEQUENCE IF NOT EXISTS itp.sq_itp START WITH 100000';
 		EXECUTE 'CREATE SEQUENCE IF NOT EXISTS itp.sq_ite START WITH 100000';
