@@ -77,7 +77,7 @@ DO $BODY$
 							WHERE table_catalog = rec_schema.catalog_name
 							  AND table_schema = rec_schema.schema_name
 							  AND table_name = rec_table.table_name 
-							  AND column_name NOT IN ('tijdstip','datum','string','nummer','prec','tijd')
+							  AND column_name NOT IN ('tijdstip','datum','string','nummer','prec','tijd','test')
 						LOOP
 							EXECUTE 'ALTER TABLE ' || rec_schema.schema_name || '.' || rec_table.table_name || ' DROP COLUMN ' || rec_column.column_name || ' CASCADE';
 						END LOOP;
@@ -467,14 +467,14 @@ DO $BODY$
 		rec_column RECORD;
 	BEGIN
 		FOR rec_column IN 
-			SELECT schema_name, table_name, column_name, data_type,
+			SELECT schema_name, table_name, column_name,
 			(	CASE data_type 
-				WHEN 'character varying' THEN COALESCE('TEXT('||character_maximum_length||')','TEXT') 
-				WHEN 'numeric' THEN 'NUMBER('||numeric_precision||(CASE WHEN numeric_scale > 0 THEN ','||numeric_scale||')' ELSE ')' END)
+				WHEN 'character varying' THEN COALESCE('VARCHAR('||character_maximum_length||')','VARCHAR') 
+				WHEN 'numeric' THEN 'NUMERIC('||numeric_precision||(CASE WHEN numeric_scale > 0 THEN ','||numeric_scale||')' ELSE ')' END)
 				WHEN 'date' THEN 'DATE' 
 				WHEN 'time without time zone' THEN 'TIME' 
 				WHEN 'timestamp without time zone' THEN 'TIMESTAMP' 
-				ELSE 'ERROR' END ) dat_type
+				ELSE 'ERROR' END ) cube_data_type
 			FROM information_schema.schemata, information_schema.columns 
 			WHERE table_schema = schema_name
 			  AND schema_owner = 'JohanM'
@@ -486,27 +486,31 @@ DO $BODY$
 				WHEN 'aap' THEN
 					CASE rec_column.column_name			
 					WHEN 'tijdstip' THEN
-						IF rec_column.data_type <> 'TIMESTAMP' THEN
+						IF rec_column.cube_data_type <> 'TIMESTAMP' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'datum' THEN
-						IF rec_column.data_type <> 'DATE' THEN
+						IF rec_column.cube_data_type <> 'DATE' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'string' THEN
-						IF rec_column.data_type <> 'VARCHAR(7)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(7)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'nummer' THEN
-						IF rec_column.data_type <> 'NUMERIC(8)' THEN
+						IF rec_column.cube_data_type <> 'NUMERIC(8)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'prec' THEN
-						IF rec_column.data_type <> 'NUMERIC(8,4)' THEN
+						IF rec_column.cube_data_type <> 'NUMERIC(8,4)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'tijd' THEN
-						IF rec_column.data_type <> 'TIME' THEN
+						IF rec_column.cube_data_type <> 'TIME' THEN
+							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
+						END IF;			
+					WHEN 'test' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(8)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;
 					END CASE;
@@ -516,85 +520,85 @@ DO $BODY$
 				WHEN 't_information_type' THEN
 					CASE rec_column.column_name			
 					WHEN 'cube_id' THEN
-						IF rec_column.data_type <> 'VARCHAR(16)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(16)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'name' THEN
-						IF rec_column.data_type <> 'VARCHAR(30)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(30)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;
 					END CASE;			
 				WHEN 't_information_type_element' THEN
 					CASE rec_column.column_name			
 					WHEN 'cube_id' THEN
-						IF rec_column.data_type <> 'VARCHAR(16)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(16)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'fk_itp_name' THEN
-						IF rec_column.data_type <> 'VARCHAR(30)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(30)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'sequence' THEN
-						IF rec_column.data_type <> 'NUMERIC(8)' THEN
+						IF rec_column.cube_data_type <> 'NUMERIC(8)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'suffix' THEN
-						IF rec_column.data_type <> 'VARCHAR(12)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(12)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'domain' THEN
-						IF rec_column.data_type <> 'VARCHAR(16)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(16)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'length' THEN
-						IF rec_column.data_type <> 'NUMERIC(8)' THEN
+						IF rec_column.cube_data_type <> 'NUMERIC(8)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'decimals' THEN
-						IF rec_column.data_type <> 'NUMERIC(8)' THEN
+						IF rec_column.cube_data_type <> 'NUMERIC(8)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'case_sensitive' THEN
-						IF rec_column.data_type <> 'VARCHAR(1)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(1)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'default_value' THEN
-						IF rec_column.data_type <> 'VARCHAR(32)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(32)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'spaces_allowed' THEN
-						IF rec_column.data_type <> 'VARCHAR(1)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(1)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'presentation' THEN
-						IF rec_column.data_type <> 'VARCHAR(3)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(3)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;
 					END CASE;			
 				WHEN 't_permitted_value' THEN
 					CASE rec_column.column_name			
 					WHEN 'cube_id' THEN
-						IF rec_column.data_type <> 'VARCHAR(16)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(16)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'cube_sequence' THEN
-						IF rec_column.data_type <> 'NUMERIC(8)' THEN
+						IF rec_column.cube_data_type <> 'NUMERIC(8)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'fk_itp_name' THEN
-						IF rec_column.data_type <> 'VARCHAR(30)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(30)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'fk_ite_sequence' THEN
-						IF rec_column.data_type <> 'NUMERIC(8)' THEN
+						IF rec_column.cube_data_type <> 'NUMERIC(8)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'code' THEN
-						IF rec_column.data_type <> 'VARCHAR(16)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(16)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'prompt' THEN
-						IF rec_column.data_type <> 'VARCHAR(32)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(32)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;
 					END CASE;
@@ -604,621 +608,621 @@ DO $BODY$
 				WHEN 't_business_object_type' THEN
 					CASE rec_column.column_name			
 					WHEN 'cube_id' THEN
-						IF rec_column.data_type <> 'VARCHAR(16)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(16)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'cube_sequence' THEN
-						IF rec_column.data_type <> 'NUMERIC(8)' THEN
+						IF rec_column.cube_data_type <> 'NUMERIC(8)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'name' THEN
-						IF rec_column.data_type <> 'VARCHAR(30)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(30)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'cube_tsg_type' THEN
-						IF rec_column.data_type <> 'VARCHAR(8)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(8)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'directory' THEN
-						IF rec_column.data_type <> 'VARCHAR(80)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(80)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'api_url' THEN
-						IF rec_column.data_type <> 'VARCHAR(300)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(300)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;
 					END CASE;			
 				WHEN 't_type' THEN
 					CASE rec_column.column_name			
 					WHEN 'cube_id' THEN
-						IF rec_column.data_type <> 'VARCHAR(16)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(16)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'cube_sequence' THEN
-						IF rec_column.data_type <> 'NUMERIC(8)' THEN
+						IF rec_column.cube_data_type <> 'NUMERIC(8)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'cube_level' THEN
-						IF rec_column.data_type <> 'NUMERIC(8)' THEN
+						IF rec_column.cube_data_type <> 'NUMERIC(8)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'fk_bot_name' THEN
-						IF rec_column.data_type <> 'VARCHAR(30)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(30)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'fk_typ_name' THEN
-						IF rec_column.data_type <> 'VARCHAR(30)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(30)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'name' THEN
-						IF rec_column.data_type <> 'VARCHAR(30)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(30)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'code' THEN
-						IF rec_column.data_type <> 'VARCHAR(3)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(3)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'flag_partial_key' THEN
-						IF rec_column.data_type <> 'VARCHAR(1)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(1)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'flag_recursive' THEN
-						IF rec_column.data_type <> 'VARCHAR(1)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(1)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'recursive_cardinality' THEN
-						IF rec_column.data_type <> 'VARCHAR(1)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(1)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'cardinality' THEN
-						IF rec_column.data_type <> 'VARCHAR(1)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(1)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'sort_order' THEN
-						IF rec_column.data_type <> 'VARCHAR(1)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(1)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'icon' THEN
-						IF rec_column.data_type <> 'VARCHAR(8)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(8)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'transferable' THEN
-						IF rec_column.data_type <> 'VARCHAR(1)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(1)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;
 					END CASE;			
 				WHEN 't_type_specialisation_group' THEN
 					CASE rec_column.column_name			
 					WHEN 'cube_id' THEN
-						IF rec_column.data_type <> 'VARCHAR(16)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(16)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'cube_sequence' THEN
-						IF rec_column.data_type <> 'NUMERIC(8)' THEN
+						IF rec_column.cube_data_type <> 'NUMERIC(8)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'cube_level' THEN
-						IF rec_column.data_type <> 'NUMERIC(8)' THEN
+						IF rec_column.cube_data_type <> 'NUMERIC(8)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'fk_bot_name' THEN
-						IF rec_column.data_type <> 'VARCHAR(30)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(30)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'fk_typ_name' THEN
-						IF rec_column.data_type <> 'VARCHAR(30)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(30)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'fk_tsg_code' THEN
-						IF rec_column.data_type <> 'VARCHAR(16)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(16)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'code' THEN
-						IF rec_column.data_type <> 'VARCHAR(16)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(16)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'name' THEN
-						IF rec_column.data_type <> 'VARCHAR(30)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(30)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'primary_key' THEN
-						IF rec_column.data_type <> 'VARCHAR(1)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(1)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'xf_atb_typ_name' THEN
-						IF rec_column.data_type <> 'VARCHAR(30)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(30)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'xk_atb_name' THEN
-						IF rec_column.data_type <> 'VARCHAR(30)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(30)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;
 					END CASE;			
 				WHEN 't_type_specialisation' THEN
 					CASE rec_column.column_name			
 					WHEN 'cube_id' THEN
-						IF rec_column.data_type <> 'VARCHAR(16)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(16)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'cube_sequence' THEN
-						IF rec_column.data_type <> 'NUMERIC(8)' THEN
+						IF rec_column.cube_data_type <> 'NUMERIC(8)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'fk_bot_name' THEN
-						IF rec_column.data_type <> 'VARCHAR(30)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(30)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'fk_typ_name' THEN
-						IF rec_column.data_type <> 'VARCHAR(30)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(30)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'fk_tsg_code' THEN
-						IF rec_column.data_type <> 'VARCHAR(16)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(16)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'code' THEN
-						IF rec_column.data_type <> 'VARCHAR(16)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(16)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'name' THEN
-						IF rec_column.data_type <> 'VARCHAR(30)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(30)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'xf_tsp_typ_name' THEN
-						IF rec_column.data_type <> 'VARCHAR(30)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(30)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'xf_tsp_tsg_code' THEN
-						IF rec_column.data_type <> 'VARCHAR(16)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(16)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'xk_tsp_code' THEN
-						IF rec_column.data_type <> 'VARCHAR(16)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(16)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;
 					END CASE;			
 				WHEN 't_attribute' THEN
 					CASE rec_column.column_name			
 					WHEN 'cube_id' THEN
-						IF rec_column.data_type <> 'VARCHAR(16)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(16)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'cube_sequence' THEN
-						IF rec_column.data_type <> 'NUMERIC(8)' THEN
+						IF rec_column.cube_data_type <> 'NUMERIC(8)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'fk_bot_name' THEN
-						IF rec_column.data_type <> 'VARCHAR(30)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(30)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'fk_typ_name' THEN
-						IF rec_column.data_type <> 'VARCHAR(30)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(30)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'name' THEN
-						IF rec_column.data_type <> 'VARCHAR(30)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(30)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'primary_key' THEN
-						IF rec_column.data_type <> 'VARCHAR(1)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(1)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'code_display_key' THEN
-						IF rec_column.data_type <> 'VARCHAR(1)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(1)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'code_foreign_key' THEN
-						IF rec_column.data_type <> 'VARCHAR(1)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(1)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'flag_hidden' THEN
-						IF rec_column.data_type <> 'VARCHAR(1)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(1)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'default_value' THEN
-						IF rec_column.data_type <> 'VARCHAR(40)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(40)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'unchangeable' THEN
-						IF rec_column.data_type <> 'VARCHAR(1)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(1)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'xk_itp_name' THEN
-						IF rec_column.data_type <> 'VARCHAR(30)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(30)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;
 					END CASE;			
 				WHEN 't_derivation' THEN
 					CASE rec_column.column_name			
 					WHEN 'cube_id' THEN
-						IF rec_column.data_type <> 'VARCHAR(16)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(16)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'fk_bot_name' THEN
-						IF rec_column.data_type <> 'VARCHAR(30)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(30)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'fk_typ_name' THEN
-						IF rec_column.data_type <> 'VARCHAR(30)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(30)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'fk_atb_name' THEN
-						IF rec_column.data_type <> 'VARCHAR(30)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(30)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'cube_tsg_type' THEN
-						IF rec_column.data_type <> 'VARCHAR(8)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(8)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'aggregate_function' THEN
-						IF rec_column.data_type <> 'VARCHAR(3)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(3)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'xk_typ_name' THEN
-						IF rec_column.data_type <> 'VARCHAR(30)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(30)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'xk_typ_name_1' THEN
-						IF rec_column.data_type <> 'VARCHAR(30)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(30)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;
 					END CASE;			
 				WHEN 't_description_attribute' THEN
 					CASE rec_column.column_name			
 					WHEN 'cube_id' THEN
-						IF rec_column.data_type <> 'VARCHAR(16)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(16)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'fk_bot_name' THEN
-						IF rec_column.data_type <> 'VARCHAR(30)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(30)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'fk_typ_name' THEN
-						IF rec_column.data_type <> 'VARCHAR(30)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(30)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'fk_atb_name' THEN
-						IF rec_column.data_type <> 'VARCHAR(30)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(30)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'text' THEN
-						IF rec_column.data_type <> 'VARCHAR(3999)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(3999)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;
 					END CASE;			
 				WHEN 't_restriction_type_spec_atb' THEN
 					CASE rec_column.column_name			
 					WHEN 'cube_id' THEN
-						IF rec_column.data_type <> 'VARCHAR(16)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(16)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'fk_bot_name' THEN
-						IF rec_column.data_type <> 'VARCHAR(30)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(30)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'fk_typ_name' THEN
-						IF rec_column.data_type <> 'VARCHAR(30)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(30)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'fk_atb_name' THEN
-						IF rec_column.data_type <> 'VARCHAR(30)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(30)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'include_or_exclude' THEN
-						IF rec_column.data_type <> 'VARCHAR(2)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(2)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'xf_tsp_typ_name' THEN
-						IF rec_column.data_type <> 'VARCHAR(30)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(30)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'xf_tsp_tsg_code' THEN
-						IF rec_column.data_type <> 'VARCHAR(16)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(16)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'xk_tsp_code' THEN
-						IF rec_column.data_type <> 'VARCHAR(16)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(16)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;
 					END CASE;			
 				WHEN 't_reference' THEN
 					CASE rec_column.column_name			
 					WHEN 'cube_id' THEN
-						IF rec_column.data_type <> 'VARCHAR(16)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(16)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'cube_sequence' THEN
-						IF rec_column.data_type <> 'NUMERIC(8)' THEN
+						IF rec_column.cube_data_type <> 'NUMERIC(8)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'fk_bot_name' THEN
-						IF rec_column.data_type <> 'VARCHAR(30)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(30)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'fk_typ_name' THEN
-						IF rec_column.data_type <> 'VARCHAR(30)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(30)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'name' THEN
-						IF rec_column.data_type <> 'VARCHAR(30)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(30)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'primary_key' THEN
-						IF rec_column.data_type <> 'VARCHAR(1)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(1)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'code_display_key' THEN
-						IF rec_column.data_type <> 'VARCHAR(1)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(1)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'sequence' THEN
-						IF rec_column.data_type <> 'NUMERIC(1)' THEN
+						IF rec_column.cube_data_type <> 'NUMERIC(1)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'scope' THEN
-						IF rec_column.data_type <> 'VARCHAR(3)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(3)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'unchangeable' THEN
-						IF rec_column.data_type <> 'VARCHAR(1)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(1)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'within_scope_extension' THEN
-						IF rec_column.data_type <> 'VARCHAR(3)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(3)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'cube_tsg_int_ext' THEN
-						IF rec_column.data_type <> 'VARCHAR(8)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(8)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'xk_bot_name' THEN
-						IF rec_column.data_type <> 'VARCHAR(30)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(30)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'xk_typ_name' THEN
-						IF rec_column.data_type <> 'VARCHAR(30)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(30)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'xk_typ_name_1' THEN
-						IF rec_column.data_type <> 'VARCHAR(30)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(30)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;
 					END CASE;			
 				WHEN 't_description_reference' THEN
 					CASE rec_column.column_name			
 					WHEN 'cube_id' THEN
-						IF rec_column.data_type <> 'VARCHAR(16)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(16)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'fk_bot_name' THEN
-						IF rec_column.data_type <> 'VARCHAR(30)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(30)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'fk_typ_name' THEN
-						IF rec_column.data_type <> 'VARCHAR(30)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(30)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'fk_ref_sequence' THEN
-						IF rec_column.data_type <> 'NUMERIC(1)' THEN
+						IF rec_column.cube_data_type <> 'NUMERIC(1)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'fk_ref_bot_name' THEN
-						IF rec_column.data_type <> 'VARCHAR(30)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(30)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'fk_ref_typ_name' THEN
-						IF rec_column.data_type <> 'VARCHAR(30)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(30)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'text' THEN
-						IF rec_column.data_type <> 'VARCHAR(3999)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(3999)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;
 					END CASE;			
 				WHEN 't_restriction_type_spec_ref' THEN
 					CASE rec_column.column_name			
 					WHEN 'cube_id' THEN
-						IF rec_column.data_type <> 'VARCHAR(16)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(16)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'fk_bot_name' THEN
-						IF rec_column.data_type <> 'VARCHAR(30)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(30)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'fk_typ_name' THEN
-						IF rec_column.data_type <> 'VARCHAR(30)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(30)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'fk_ref_sequence' THEN
-						IF rec_column.data_type <> 'NUMERIC(1)' THEN
+						IF rec_column.cube_data_type <> 'NUMERIC(1)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'fk_ref_bot_name' THEN
-						IF rec_column.data_type <> 'VARCHAR(30)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(30)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'fk_ref_typ_name' THEN
-						IF rec_column.data_type <> 'VARCHAR(30)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(30)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'include_or_exclude' THEN
-						IF rec_column.data_type <> 'VARCHAR(2)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(2)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'xf_tsp_typ_name' THEN
-						IF rec_column.data_type <> 'VARCHAR(30)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(30)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'xf_tsp_tsg_code' THEN
-						IF rec_column.data_type <> 'VARCHAR(16)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(16)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'xk_tsp_code' THEN
-						IF rec_column.data_type <> 'VARCHAR(16)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(16)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;
 					END CASE;			
 				WHEN 't_restriction_target_type_spec' THEN
 					CASE rec_column.column_name			
 					WHEN 'cube_id' THEN
-						IF rec_column.data_type <> 'VARCHAR(16)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(16)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'fk_bot_name' THEN
-						IF rec_column.data_type <> 'VARCHAR(30)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(30)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'fk_typ_name' THEN
-						IF rec_column.data_type <> 'VARCHAR(30)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(30)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'fk_ref_sequence' THEN
-						IF rec_column.data_type <> 'NUMERIC(1)' THEN
+						IF rec_column.cube_data_type <> 'NUMERIC(1)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'fk_ref_bot_name' THEN
-						IF rec_column.data_type <> 'VARCHAR(30)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(30)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'fk_ref_typ_name' THEN
-						IF rec_column.data_type <> 'VARCHAR(30)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(30)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'include_or_exclude' THEN
-						IF rec_column.data_type <> 'VARCHAR(2)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(2)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'xf_tsp_typ_name' THEN
-						IF rec_column.data_type <> 'VARCHAR(30)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(30)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'xf_tsp_tsg_code' THEN
-						IF rec_column.data_type <> 'VARCHAR(16)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(16)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'xk_tsp_code' THEN
-						IF rec_column.data_type <> 'VARCHAR(16)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(16)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;
 					END CASE;			
 				WHEN 't_restriction_type_spec_typ' THEN
 					CASE rec_column.column_name			
 					WHEN 'cube_id' THEN
-						IF rec_column.data_type <> 'VARCHAR(16)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(16)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'fk_bot_name' THEN
-						IF rec_column.data_type <> 'VARCHAR(30)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(30)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'fk_typ_name' THEN
-						IF rec_column.data_type <> 'VARCHAR(30)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(30)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'include_or_exclude' THEN
-						IF rec_column.data_type <> 'VARCHAR(2)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(2)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'xf_tsp_typ_name' THEN
-						IF rec_column.data_type <> 'VARCHAR(30)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(30)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'xf_tsp_tsg_code' THEN
-						IF rec_column.data_type <> 'VARCHAR(16)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(16)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'xk_tsp_code' THEN
-						IF rec_column.data_type <> 'VARCHAR(16)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(16)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;
 					END CASE;			
 				WHEN 't_json_path' THEN
 					CASE rec_column.column_name			
 					WHEN 'cube_id' THEN
-						IF rec_column.data_type <> 'VARCHAR(16)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(16)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'cube_sequence' THEN
-						IF rec_column.data_type <> 'NUMERIC(8)' THEN
+						IF rec_column.cube_data_type <> 'NUMERIC(8)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'cube_level' THEN
-						IF rec_column.data_type <> 'NUMERIC(8)' THEN
+						IF rec_column.cube_data_type <> 'NUMERIC(8)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'fk_bot_name' THEN
-						IF rec_column.data_type <> 'VARCHAR(30)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(30)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'fk_typ_name' THEN
-						IF rec_column.data_type <> 'VARCHAR(30)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(30)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'fk_jsn_name' THEN
-						IF rec_column.data_type <> 'VARCHAR(32)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(32)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'fk_jsn_location' THEN
-						IF rec_column.data_type <> 'NUMERIC(8)' THEN
+						IF rec_column.cube_data_type <> 'NUMERIC(8)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'fk_jsn_atb_typ_name' THEN
-						IF rec_column.data_type <> 'VARCHAR(30)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(30)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'fk_jsn_atb_name' THEN
-						IF rec_column.data_type <> 'VARCHAR(30)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(30)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'fk_jsn_typ_name' THEN
-						IF rec_column.data_type <> 'VARCHAR(30)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(30)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'cube_tsg_obj_arr' THEN
-						IF rec_column.data_type <> 'VARCHAR(8)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(8)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'cube_tsg_type' THEN
-						IF rec_column.data_type <> 'VARCHAR(8)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(8)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'name' THEN
-						IF rec_column.data_type <> 'VARCHAR(32)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(32)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'location' THEN
-						IF rec_column.data_type <> 'NUMERIC(8)' THEN
+						IF rec_column.cube_data_type <> 'NUMERIC(8)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'xf_atb_typ_name' THEN
-						IF rec_column.data_type <> 'VARCHAR(30)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(30)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'xk_atb_name' THEN
-						IF rec_column.data_type <> 'VARCHAR(30)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(30)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'xk_typ_name' THEN
-						IF rec_column.data_type <> 'VARCHAR(30)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(30)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;
 					END CASE;			
 				WHEN 't_description_type' THEN
 					CASE rec_column.column_name			
 					WHEN 'cube_id' THEN
-						IF rec_column.data_type <> 'VARCHAR(16)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(16)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'fk_bot_name' THEN
-						IF rec_column.data_type <> 'VARCHAR(30)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(30)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'fk_typ_name' THEN
-						IF rec_column.data_type <> 'VARCHAR(30)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(30)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'text' THEN
-						IF rec_column.data_type <> 'VARCHAR(3999)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(3999)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;
 					END CASE;
@@ -1228,50 +1232,50 @@ DO $BODY$
 				WHEN 't_system' THEN
 					CASE rec_column.column_name			
 					WHEN 'cube_id' THEN
-						IF rec_column.data_type <> 'VARCHAR(16)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(16)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'name' THEN
-						IF rec_column.data_type <> 'VARCHAR(30)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(30)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'cube_tsg_type' THEN
-						IF rec_column.data_type <> 'VARCHAR(8)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(8)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'database' THEN
-						IF rec_column.data_type <> 'VARCHAR(30)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(30)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'schema' THEN
-						IF rec_column.data_type <> 'VARCHAR(30)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(30)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'password' THEN
-						IF rec_column.data_type <> 'VARCHAR(20)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(20)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'table_prefix' THEN
-						IF rec_column.data_type <> 'VARCHAR(4)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(4)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;
 					END CASE;			
 				WHEN 't_system_bo_type' THEN
 					CASE rec_column.column_name			
 					WHEN 'cube_id' THEN
-						IF rec_column.data_type <> 'VARCHAR(16)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(16)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'cube_sequence' THEN
-						IF rec_column.data_type <> 'NUMERIC(8)' THEN
+						IF rec_column.cube_data_type <> 'NUMERIC(8)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'fk_sys_name' THEN
-						IF rec_column.data_type <> 'VARCHAR(30)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(30)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'xk_bot_name' THEN
-						IF rec_column.data_type <> 'VARCHAR(30)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(30)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;
 					END CASE;
@@ -1281,42 +1285,42 @@ DO $BODY$
 				WHEN 't_function' THEN
 					CASE rec_column.column_name			
 					WHEN 'cube_id' THEN
-						IF rec_column.data_type <> 'VARCHAR(16)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(16)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'name' THEN
-						IF rec_column.data_type <> 'VARCHAR(30)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(30)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;
 					END CASE;			
 				WHEN 't_argument' THEN
 					CASE rec_column.column_name			
 					WHEN 'cube_id' THEN
-						IF rec_column.data_type <> 'VARCHAR(16)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(16)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'cube_sequence' THEN
-						IF rec_column.data_type <> 'NUMERIC(8)' THEN
+						IF rec_column.cube_data_type <> 'NUMERIC(8)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'fk_fun_name' THEN
-						IF rec_column.data_type <> 'VARCHAR(30)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(30)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'name' THEN
-						IF rec_column.data_type <> 'VARCHAR(30)' THEN
+						IF rec_column.cube_data_type <> 'VARCHAR(30)' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'struct_d' THEN
-						IF rec_column.data_type <> 'DATE' THEN
+						IF rec_column.cube_data_type <> 'DATE' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'struct_t' THEN
-						IF rec_column.data_type <> 'TIME' THEN
+						IF rec_column.cube_data_type <> 'TIME' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;			
 					WHEN 'struct_dt' THEN
-						IF rec_column.data_type <> 'TIMESTAMP' THEN
+						IF rec_column.cube_data_type <> 'TIMESTAMP' THEN
 							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
 						END IF;
 					END CASE;
@@ -1336,6 +1340,7 @@ $BODY$;
 DO $BODY$
 	DECLARE
 	BEGIN
+		SET client_min_messages TO WARNING;
 		EXECUTE 'CREATE SCHEMA IF NOT EXISTS aap';
 
 		EXECUTE 'CREATE TABLE IF NOT EXISTS aap.aap ()';
@@ -1345,6 +1350,7 @@ DO $BODY$
 		EXECUTE 'ALTER TABLE aap.aap ADD COLUMN IF NOT EXISTS nummer NUMERIC(8) DEFAULT ''9''';
 		EXECUTE 'ALTER TABLE aap.aap ADD COLUMN IF NOT EXISTS prec NUMERIC(8,4) DEFAULT ''9.9''';
 		EXECUTE 'ALTER TABLE aap.aap ADD COLUMN IF NOT EXISTS tijd TIME DEFAULT ''123456''';
+		EXECUTE 'ALTER TABLE aap.aap ADD COLUMN IF NOT EXISTS test VARCHAR(8)';
 		EXECUTE 'ALTER TABLE aap.aap ADD CONSTRAINT aap_pk PRIMARY KEY (tijdstip)';
 		EXECUTE 'CREATE SCHEMA IF NOT EXISTS itp';
 		EXECUTE 'CREATE SEQUENCE IF NOT EXISTS itp.sq_itp START WITH 100000';
