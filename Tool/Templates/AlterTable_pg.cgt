@@ -123,7 +123,9 @@ DO $BODY$
 					CASE rec_column.column_name[[LOOP,COLUMN]]			
 					WHEN '<<COLUMN:L>>' THEN
 						IF rec_column.cube_data_type <> '<<TEXT,GEN_DOMAIN_PG[|]<<COLUMN3>>[|]<<COLUMN4>>[|]>>' THEN
-							EXECUTE 'ALTER TABLE ' || rec_column.schema_name || '.' || rec_column.table_name || ' RENAME COLUMN ' || rec_column.column_name || ' TO _' || rec_column.column_name ;
+							EXECUTE 'ALTER TABLE <<SCHEMA:L>>.<<TABLE:L>> RENAME COLUMN <<COLUMN:L>> TO _<<COLUMN:L>>' ;
+						ELSE
+							EXECUTE 'ALTER TABLE <<SCHEMA:L>>.<<TABLE:L>> ALTER COLUMN <<COLUMN:L>> [[IF:5=]]DROP DEFAULT[[ELSE]]SET DEFAULT ''<<COLUMN5>>''[[ENDIF]]';
 						END IF;[[ENDLOOP,COLUMN]]
 					END CASE;[[ENDLOOP,TABLE]]
 				END CASE;[[ENDLOOP,SCHEMA]]
@@ -134,65 +136,12 @@ DO $BODY$
 	END;
 $BODY$;
 
-
-
-[[LOOP,XSCHEMA]][[LOOP,TABLE]]
-	
-	FOR r_field IN (SELECT column_name,
-		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
-		data_default old_default_value,
-  		DECODE(column_name,[[LOOP,COLUMN]]
-			'<<COLUMN:U>>','<<TEXT,GEN_DOMAIN_ORA[|]<<COLUMN3>>[|]<<COLUMN4>>[|]>>',[[ENDLOOP,COLUMN]]NULL) new_domain,
-		DECODE(column_name,[[LOOP,COLUMN]]
-			'<<COLUMN:U>>',[[IF:!5=]]'''<<COLUMN5>>'''[[ELSE]]NULL[[ENDIF]],[[ENDLOOP,COLUMN]]NULL) new_default_value
-  		FROM all_tab_columns WHERE owner = '<<DATABASE1:U>>' AND table_name = '<<TABLE:U>>')
-	LOOP
-		IF r_field.old_domain <> r_field.new_domain THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE <<TABLE:L>> RENAME COLUMN ' || r_field.column_name || ' TO old#domain#field';
-			EXECUTE IMMEDIATE
-			'ALTER TABLE <<TABLE:L>> ADD ' || r_field.column_name || ' ' || r_field.new_domain;
- 			IF r_field.new_domain = 'VARCHAR2' THEN  
-				EXECUTE IMMEDIATE
-				'UPDATE <<TABLE:L>> SET ' || r_field.column_name || '= TRIM(old#domain#field)';
-			ELSE
-				EXECUTE IMMEDIATE
-				'UPDATE <<TABLE:L>> SET ' || r_field.column_name || '= old#domain#field';
-			END IF;
-			EXECUTE IMMEDIATE
-			'ALTER TABLE <<TABLE:L>> DROP COLUMN old#domain#field';
-			DBMS_OUTPUT.PUT_LINE('Field <<TABLE:U>>.' || UPPER(r_field.column_name) || ' converted from ' || r_field.old_domain || ' to ' || r_field.new_domain);
-		END IF;
-		IF NOT((r_field.old_default_value IS NULL AND r_field.new_default_value IS NULL) OR r_field.old_default_value = r_field.new_default_value) THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE <<TABLE:L>> MODIFY (' || r_field.column_name || ' DEFAULT ' || NVL(r_field.new_default_value,'NULL') || ')';
-			DBMS_OUTPUT.PUT_LINE('Field <<TABLE:U>>.' || UPPER(r_field.column_name) || ' default value set to ' || NVL(r_field.new_default_value,'NULL'));
-		END IF;
-	END LOOP;
-	EXECUTE IMMEDIATE
-	'ALTER TABLE <<TABLE:L>> ADD CONSTRAINT <<TABLE1:L>>
-		PRIMARY KEY ([[LOOP,COLUMN:1=Y]]
-			<<COLUMN:L>>[[IF:!LAST]],[[ENDIF]][[ENDLOOP,COLUMN]] )';
-	DBMS_OUTPUT.PUT_LINE('Primary Key <<TABLE:U>>.<<TABLE1:U>> created');[[LOOP,FOREIGN_KEY]]
-	EXECUTE IMMEDIATE
-	'ALTER TABLE <<TABLE:L>> ADD CONSTRAINT <<FOREIGN_KEY:L>>
-		FOREIGN KEY ([[LOOP,COLUMN]]<<COLUMN:L>>[[IF:!LAST]], [[ENDIF]][[ENDLOOP,COLUMN]])
-		REFERENCES <<FOREIGN_KEY1:L>> ([[LOOP,COLUMN]]<<COLUMN1:L>>[[IF:!LAST]], [[ENDIF]][[ENDLOOP,COLUMN]])[[IF:2=Y]]
-		ON DELETE CASCADE[[ENDIF]]';[[ENDLOOP,FOREIGN_KEY]]
-	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = '<<DATABASE1:U>>' AND table_name = '<<TABLE:U>>' AND column_name NOT IN ([[LOOP,COLUMN]]
-							'<<COLUMN:U>>'[[IF:!LAST]],[[ENDIF]][[ENDLOOP,COLUMN]]))
-	LOOP
-		EXECUTE IMMEDIATE
-		'ALTER TABLE <<TABLE:L>> DROP COLUMN ' || r_field.column_name;
-		DBMS_OUTPUT.PUT_LINE('Field <<TABLE:U>>.' || UPPER(r_field.column_name) || ' dropped');
-	END LOOP;
-/[[ENDLOOP,TABLE]][[ENDLOOP,XSCHEMA]]
-
 -- Add all the new sequences, tables and columns and restore the constraints.
 DO $BODY$
 	DECLARE
 	BEGIN
 		SET client_min_messages TO WARNING;[[LOOP,SCHEMA]]
+
 		EXECUTE 'CREATE SCHEMA IF NOT EXISTS <<SCHEMA:L>>';[[LOOP,SEQUENCE]]
 		EXECUTE 'CREATE SEQUENCE IF NOT EXISTS <<SCHEMA:L>>.<<SEQUENCE:L>> START WITH <<SEQUENCE1>>';[[ENDLOOP,SEQUENCE]][[LOOP,TABLE]]
 
@@ -202,8 +151,36 @@ DO $BODY$
 [[LOOP,SCHEMA]][[LOOP,TABLE]][[LOOP,FOREIGN_KEY]]
 		EXECUTE 'ALTER TABLE <<SCHEMA:L>>.<<TABLE:L>> ADD CONSTRAINT <<FOREIGN_KEY:L>> FOREIGN KEY ([[LOOP,COLUMN]]<<COLUMN:L>>[[IF:!LAST]], [[ENDIF]][[ENDLOOP,COLUMN]]) REFERENCES <<SCHEMA:L>>.<<FOREIGN_KEY1:L>> ([[LOOP,COLUMN]]<<COLUMN1:L>>[[IF:!LAST]], [[ENDIF]][[ENDLOOP,COLUMN]])[[IF:2=Y]] ON DELETE CASCADE[[ENDIF]]';[[ENDLOOP,FOREIGN_KEY]][[ENDLOOP,TABLE]][[ENDLOOP,SCHEMA]]
 	END;
+$BODY$;[[ENDLOOP,DATABASE]]
+
+-- update changed column values
+DO $BODY$
+	DECLARE
+		stmnt VARCHAR;
+		rec_column RECORD;
+	BEGIN
+		FOR rec_column IN 
+			SELECT schema_name, old.table_name, old.column_name old_column_name, new.column_name new_column_name, new.data_type 
+			FROM information_schema.schemata, information_schema.columns old, information_schema.columns new
+			WHERE old.table_schema = schema_name
+			  AND new.table_schema = schema_name
+			  AND schema_owner = '<<1>>'
+			  AND substr(old.column_name,1,1) = '_'
+			  AND substr(old.column_name,2) = new.column_name
+			ORDER BY schema_name, old.table_name, old.column_name
+		LOOP
+			BEGIN
+				stmnt := 
+					'UPDATE '||rec_column.schema_name||'.'||rec_column.table_name||
+					' SET '||rec_column.new_column_name||'='||rec_column.old_column_name||'::VARCHAR::'||rec_column.data_type; 
+				RAISE INFO '%',stmnt;
+				EXECUTE stmnt;
+			EXCEPTION
+				WHEN OTHERS THEN RAISE INFO 'Update Failed';
+			END;
+		END LOOP;	
+	END;
 $BODY$;
-[[ENDLOOP,DATABASE]]
 
 \q
 [[ENDBODY]]
