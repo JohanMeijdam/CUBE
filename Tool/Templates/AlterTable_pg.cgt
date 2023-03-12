@@ -10,6 +10,7 @@ DO $BODY$
 	DECLARE
 		rec_constraint RECORD;
 	BEGIN
+		RAISE INFO 'Removing constraints';
 		FOR rec_constraint IN
 			SELECT table_schema, table_name, constraint_name
 			FROM information_schema.table_constraints, information_schema.schemata
@@ -32,6 +33,7 @@ DO $BODY$
 		rec_table RECORD;
 		rec_column RECORD;
 	BEGIN
+		RAISE INFO 'Dropping objects that are no longer applicable';
 		FOR rec_schema IN 
 			SELECT schema_name 
 			FROM information_schema.schemata
@@ -102,6 +104,7 @@ DO $BODY$
 	DECLARE
 		rec_column RECORD;
 	BEGIN
+		RAISE INFO 'Processing column updates';
 		FOR rec_column IN 
 			SELECT schema_name, table_name, column_name,
 			(	CASE data_type 
@@ -140,7 +143,8 @@ $BODY$;
 DO $BODY$
 	DECLARE
 	BEGIN
-		SET client_min_messages TO WARNING;[[LOOP,SCHEMA]]
+		SET client_min_messages TO WARNING;
+		RAISE INFO 'Adding new objects';[[LOOP,SCHEMA]]
 
 		EXECUTE 'CREATE SCHEMA IF NOT EXISTS <<SCHEMA:L>>';[[LOOP,SEQUENCE]]
 		EXECUTE 'CREATE SEQUENCE IF NOT EXISTS <<SCHEMA:L>>.<<SEQUENCE:L>> START WITH <<SEQUENCE1>>';[[ENDLOOP,SEQUENCE]][[LOOP,TABLE]]
@@ -159,6 +163,7 @@ DO $BODY$
 		stmnt VARCHAR;
 		rec_column RECORD;
 	BEGIN
+		RAISE INFO 'Processing values for updated columns';
 		FOR rec_column IN 
 			SELECT schema_name, old.table_name, old.column_name old_column_name, new.column_name new_column_name, new.data_type 
 			FROM information_schema.schemata, information_schema.columns old, information_schema.columns new

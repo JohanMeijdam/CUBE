@@ -836,7 +836,7 @@ CREATE PROCEDURE bot.trg_denorm_typ_typ (p_typ bot.v_type, p_typ_in bot.v_type)
 LANGUAGE plpgsql 
 AS $BODY$
 	BEGIN
-		p_typ.cube_level := COALESCE (p_typ_in.cube_level, 0) + 1;
+		p_typ.cube_level := COALESCE(p_typ_in.cube_level, 0) + 1;
 	END;
 $BODY$;
 
@@ -981,7 +981,7 @@ CREATE PROCEDURE bot.trg_denorm_tsg_tsg (p_tsg bot.v_type_specialisation_group, 
 LANGUAGE plpgsql 
 AS $BODY$
 	BEGIN
-		p_tsg.cube_level := COALESCE (p_tsg_in.cube_level, 0) + 1;
+		p_tsg.cube_level := COALESCE(p_tsg_in.cube_level, 0) + 1;
 	END;
 $BODY$;
 
@@ -1763,7 +1763,7 @@ CREATE PROCEDURE bot.trg_denorm_jsn_jsn (p_jsn bot.v_json_path, p_jsn_in bot.v_j
 LANGUAGE plpgsql 
 AS $BODY$
 	BEGIN
-		p_jsn.cube_level := COALESCE (p_jsn_in.cube_level, 0) + 1;
+		p_jsn.cube_level := COALESCE(p_jsn_in.cube_level, 0) + 1;
 	END;
 $BODY$;
 

@@ -5,6 +5,7 @@ DO $BODY$
 	DECLARE
 		rec_constraint RECORD;
 	BEGIN
+		RAISE INFO 'Removing constraints';
 		FOR rec_constraint IN
 			SELECT table_schema, table_name, constraint_name
 			FROM information_schema.table_constraints, information_schema.schemata
@@ -27,6 +28,7 @@ DO $BODY$
 		rec_table RECORD;
 		rec_column RECORD;
 	BEGIN
+		RAISE INFO 'Dropping objects that are no longer applicable';
 		FOR rec_schema IN 
 			SELECT schema_name 
 			FROM information_schema.schemata
@@ -466,6 +468,7 @@ DO $BODY$
 	DECLARE
 		rec_column RECORD;
 	BEGIN
+		RAISE INFO 'Processing column updates';
 		FOR rec_column IN 
 			SELECT schema_name, table_name, column_name,
 			(	CASE data_type 
@@ -1723,6 +1726,7 @@ DO $BODY$
 	DECLARE
 	BEGIN
 		SET client_min_messages TO WARNING;
+		RAISE INFO 'Adding new objects';
 
 		EXECUTE 'CREATE SCHEMA IF NOT EXISTS aap';
 
@@ -1736,6 +1740,7 @@ DO $BODY$
 		EXECUTE 'ALTER TABLE aap.aap ADD COLUMN IF NOT EXISTS test1 TIMESTAMP';
 		EXECUTE 'ALTER TABLE aap.aap ADD COLUMN IF NOT EXISTS test2 NUMERIC(8)';
 		EXECUTE 'ALTER TABLE aap.aap ADD CONSTRAINT aap_pk PRIMARY KEY (tijdstip)';
+		RAISE INFO 'Adding new objects';
 
 		EXECUTE 'CREATE SCHEMA IF NOT EXISTS itp';
 		EXECUTE 'CREATE SEQUENCE IF NOT EXISTS itp.sq_itp START WITH 100000';
@@ -1769,6 +1774,7 @@ DO $BODY$
 		EXECUTE 'ALTER TABLE itp.t_permitted_value ADD COLUMN IF NOT EXISTS code VARCHAR(16)';
 		EXECUTE 'ALTER TABLE itp.t_permitted_value ADD COLUMN IF NOT EXISTS prompt VARCHAR(32)';
 		EXECUTE 'ALTER TABLE itp.t_permitted_value ADD CONSTRAINT val_pk PRIMARY KEY (fk_itp_name, fk_ite_sequence, code)';
+		RAISE INFO 'Adding new objects';
 
 		EXECUTE 'CREATE SCHEMA IF NOT EXISTS bot';
 		EXECUTE 'CREATE SEQUENCE IF NOT EXISTS bot.sq_bot START WITH 100000';
@@ -1975,6 +1981,7 @@ DO $BODY$
 		EXECUTE 'ALTER TABLE bot.t_description_type ADD COLUMN IF NOT EXISTS fk_typ_name VARCHAR(30)';
 		EXECUTE 'ALTER TABLE bot.t_description_type ADD COLUMN IF NOT EXISTS text VARCHAR(3999)';
 		EXECUTE 'ALTER TABLE bot.t_description_type ADD CONSTRAINT dct_pk PRIMARY KEY (fk_typ_name)';
+		RAISE INFO 'Adding new objects';
 
 		EXECUTE 'CREATE SCHEMA IF NOT EXISTS sys';
 		EXECUTE 'CREATE SEQUENCE IF NOT EXISTS sys.sq_sys START WITH 100000';
@@ -1996,6 +2003,7 @@ DO $BODY$
 		EXECUTE 'ALTER TABLE sys.t_system_bo_type ADD COLUMN IF NOT EXISTS fk_sys_name VARCHAR(30)';
 		EXECUTE 'ALTER TABLE sys.t_system_bo_type ADD COLUMN IF NOT EXISTS xk_bot_name VARCHAR(30)';
 		EXECUTE 'ALTER TABLE sys.t_system_bo_type ADD CONSTRAINT sbt_pk PRIMARY KEY (fk_sys_name, xk_bot_name)';
+		RAISE INFO 'Adding new objects';
 
 		EXECUTE 'CREATE SCHEMA IF NOT EXISTS fun';
 		EXECUTE 'CREATE SEQUENCE IF NOT EXISTS fun.sq_fun START WITH 100000';
@@ -2040,5 +2048,34 @@ DO $BODY$
 	END;
 $BODY$;
 
+-- update changed column values
+DO $BODY$
+	DECLARE
+		stmnt VARCHAR;
+		rec_column RECORD;
+	BEGIN
+		RAISE INFO 'Processing values for updated columns';
+		FOR rec_column IN 
+			SELECT schema_name, old.table_name, old.column_name old_column_name, new.column_name new_column_name, new.data_type 
+			FROM information_schema.schemata, information_schema.columns old, information_schema.columns new
+			WHERE old.table_schema = schema_name
+			  AND new.table_schema = schema_name
+			  AND schema_owner = 'JohanM'
+			  AND substr(old.column_name,1,1) = '_'
+			  AND substr(old.column_name,2) = new.column_name
+			ORDER BY schema_name, old.table_name, old.column_name
+		LOOP
+			BEGIN
+				stmnt := 
+					'UPDATE '||rec_column.schema_name||'.'||rec_column.table_name||
+					' SET '||rec_column.new_column_name||'='||rec_column.old_column_name||'::VARCHAR::'||rec_column.data_type; 
+				RAISE INFO '%',stmnt;
+				EXECUTE stmnt;
+			EXCEPTION
+				WHEN OTHERS THEN RAISE INFO 'Update Failed';
+			END;
+		END LOOP;	
+	END;
+$BODY$;
 
 \q
