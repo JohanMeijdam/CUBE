@@ -139,9 +139,33 @@ DO $BODY$
 		g_cube_id VARCHAR(16);
 		g_system_name VARCHAR(30) :=  '&2';
 		g_line_num NUMERIC(8) := 0;
+	BEGIN
+		CREATE OR REPLACE FUNCTION ftabs (p_level IN NUMERIC) RETURNS VARCHAR LANGUAGE plpgsql AS $$
+		DECLARE
+				l_tabs VARCHAR(80) := '';
+		BEGIN
+			FOR i IN 1..p_level
+			LOOP
+				l_tabs := l_tabs || '	';
+			END LOOP;
+			RETURN(l_tabs);		
+		END; 
+		$$;
+		
+		CREATE OR REPLACE FUNCTION fenperc (p_text IN VARCHAR) RETURNS VARCHAR LANGUAGE plpgsql AS $$
+		BEGIN
+			RETURN(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(p_text,'%','%25'),';','%3B'),'"','%22'),'|','%7C'),CHR(13),'%0D'),CHR(10),'%0A'),CHR(9),'%09'));		
+		END;
+		$$;
+
+		CREATE SCHEMA IF NOT EXISTS cube;
+		CREATE TABLE IF NOT EXISTS cube.line ();
+		ALTER TABLE cube.line ADD COLUMN IF NOT EXISTS num NUMERIC(8);
+		ALTER TABLE cube.line ADD COLUMN IF NOT EXISTS str VARCHAR;
+		DELETE FROM cube.line;
 
 
-		PROCEDURE report_val (p_ite IN t_information_type_element%ROWTYPE) IS
+		CREATE OR REPLACE PROCEDURE report_val (p_ite IN t_information_type_element%ROWTYPE) LANGUAGE plpgsql AS $$
 		BEGIN
 			FOR r_val IN
 				SELECT *				
@@ -155,10 +179,11 @@ DO $BODY$
 				g_level := g_level + 1;
 				g_level := g_level - 1;
 			END LOOP;
-		END;
+		END; 
+		$$
 
 
-		PROCEDURE report_ite (p_itp IN t_information_type%ROWTYPE) IS
+		CREATE OR REPLACE PROCEDURE report_ite (p_itp IN t_information_type%ROWTYPE) LANGUAGE plpgsql AS $$
 		BEGIN
 			FOR r_ite IN
 				SELECT *				
@@ -174,10 +199,11 @@ DO $BODY$
 				g_line_num := g_line_num + 1;
 				INSERT INTO cube.line VALUES(g_line_num, ftabs(g_level) || '-INFORMATION_TYPE_ELEMENT:' || r_ite.sequence || ';');
 			END LOOP;
-		END;
+		END; 
+		$$
 
 
-		PROCEDURE report_itp IS
+		CREATE OR REPLACE PROCEDURE report_itp LANGUAGE plpgsql AS $$
 		BEGIN
 			FOR r_itp IN
 				SELECT *				
@@ -192,10 +218,11 @@ DO $BODY$
 				g_line_num := g_line_num + 1;
 				INSERT INTO cube.line VALUES(g_line_num, ftabs(g_level) || '-INFORMATION_TYPE:' || r_itp.name || ';');
 			END LOOP;
-		END;
+		END; 
+		$$
 
 
-		PROCEDURE report_tsp (p_tsg IN t_type_specialisation_group%ROWTYPE) IS
+		CREATE OR REPLACE PROCEDURE report_tsp (p_tsg IN t_type_specialisation_group%ROWTYPE) LANGUAGE plpgsql AS $$
 		BEGIN
 			FOR r_tsp IN
 				SELECT *				
@@ -224,10 +251,11 @@ DO $BODY$
 				g_line_num := g_line_num + 1;
 				INSERT INTO cube.line VALUES(g_line_num, ftabs(g_level) || '-TYPE_SPECIALISATION:' || r_tsp.code || ';');
 			END LOOP;
-		END;
+		END; 
+		$$
 
 
-		PROCEDURE report_tsg_recursive (p_tsg IN t_type_specialisation_group%ROWTYPE) IS
+		CREATE OR REPLACE PROCEDURE report_tsg_recursive (p_tsg IN t_type_specialisation_group%ROWTYPE) LANGUAGE plpgsql AS $$
 		BEGIN
 			FOR r_tsg IN
 				SELECT *				
@@ -257,10 +285,11 @@ DO $BODY$
 				g_line_num := g_line_num + 1;
 				INSERT INTO cube.line VALUES(g_line_num, ftabs(g_level) || '-TYPE_SPECIALISATION_GROUP:' || r_tsg.code || ';');
 			END LOOP;
-		END;
+		END; 
+		$$
 
 
-		PROCEDURE report_tsg (p_typ IN t_type%ROWTYPE) IS
+		CREATE OR REPLACE PROCEDURE report_tsg (p_typ IN t_type%ROWTYPE) LANGUAGE plpgsql AS $$
 		BEGIN
 			FOR r_tsg IN
 				SELECT *				
@@ -290,10 +319,11 @@ DO $BODY$
 				g_line_num := g_line_num + 1;
 				INSERT INTO cube.line VALUES(g_line_num, ftabs(g_level) || '-TYPE_SPECIALISATION_GROUP:' || r_tsg.code || ';');
 			END LOOP;
-		END;
+		END; 
+		$$
 
 
-		PROCEDURE report_der (p_atb IN t_attribute%ROWTYPE) IS
+		CREATE OR REPLACE PROCEDURE report_der (p_atb IN t_attribute%ROWTYPE) LANGUAGE plpgsql AS $$
 		BEGIN
 			FOR r_der IN
 				SELECT *				
@@ -330,10 +360,11 @@ DO $BODY$
 				g_line_num := g_line_num + 1;
 				INSERT INTO cube.line VALUES(g_line_num, ftabs(g_level) || '-DERIVATION:' || r_der.cube_tsg_type || ';');
 			END LOOP;
-		END;
+		END; 
+		$$
 
 
-		PROCEDURE report_dca (p_atb IN t_attribute%ROWTYPE) IS
+		CREATE OR REPLACE PROCEDURE report_dca (p_atb IN t_attribute%ROWTYPE) LANGUAGE plpgsql AS $$
 		BEGIN
 			FOR r_dca IN
 				SELECT *				
@@ -348,10 +379,11 @@ DO $BODY$
 				g_level := g_level + 1;
 				g_level := g_level - 1;
 			END LOOP;
-		END;
+		END; 
+		$$
 
 
-		PROCEDURE report_rta (p_atb IN t_attribute%ROWTYPE) IS
+		CREATE OR REPLACE PROCEDURE report_rta (p_atb IN t_attribute%ROWTYPE) LANGUAGE plpgsql AS $$
 		BEGIN
 			FOR r_rta IN
 				SELECT *				
@@ -380,10 +412,11 @@ DO $BODY$
 				g_line_num := g_line_num + 1;
 				INSERT INTO cube.line VALUES(g_line_num, ftabs(g_level) || '-RESTRICTION_TYPE_SPEC_ATB:' || r_rta.include_or_exclude || ';');
 			END LOOP;
-		END;
+		END; 
+		$$
 
 
-		PROCEDURE report_atb (p_typ IN t_type%ROWTYPE) IS
+		CREATE OR REPLACE PROCEDURE report_atb (p_typ IN t_type%ROWTYPE) LANGUAGE plpgsql AS $$
 		BEGIN
 			FOR r_atb IN
 				SELECT *				
@@ -412,10 +445,11 @@ DO $BODY$
 				g_line_num := g_line_num + 1;
 				INSERT INTO cube.line VALUES(g_line_num, ftabs(g_level) || '-ATTRIBUTE:' || r_atb.name || ';');
 			END LOOP;
-		END;
+		END; 
+		$$
 
 
-		PROCEDURE report_dcr (p_ref IN t_reference%ROWTYPE) IS
+		CREATE OR REPLACE PROCEDURE report_dcr (p_ref IN t_reference%ROWTYPE) LANGUAGE plpgsql AS $$
 		BEGIN
 			FOR r_dcr IN
 				SELECT *				
@@ -432,10 +466,11 @@ DO $BODY$
 				g_level := g_level + 1;
 				g_level := g_level - 1;
 			END LOOP;
-		END;
+		END; 
+		$$
 
 
-		PROCEDURE report_rtr (p_ref IN t_reference%ROWTYPE) IS
+		CREATE OR REPLACE PROCEDURE report_rtr (p_ref IN t_reference%ROWTYPE) LANGUAGE plpgsql AS $$
 		BEGIN
 			FOR r_rtr IN
 				SELECT *				
@@ -466,10 +501,11 @@ DO $BODY$
 				g_line_num := g_line_num + 1;
 				INSERT INTO cube.line VALUES(g_line_num, ftabs(g_level) || '-RESTRICTION_TYPE_SPEC_REF:' || r_rtr.include_or_exclude || ';');
 			END LOOP;
-		END;
+		END; 
+		$$
 
 
-		PROCEDURE report_rts (p_ref IN t_reference%ROWTYPE) IS
+		CREATE OR REPLACE PROCEDURE report_rts (p_ref IN t_reference%ROWTYPE) LANGUAGE plpgsql AS $$
 		BEGIN
 			FOR r_rts IN
 				SELECT *				
@@ -500,10 +536,11 @@ DO $BODY$
 				g_line_num := g_line_num + 1;
 				INSERT INTO cube.line VALUES(g_line_num, ftabs(g_level) || '-RESTRICTION_TARGET_TYPE_SPEC:' || r_rts.include_or_exclude || ';');
 			END LOOP;
-		END;
+		END; 
+		$$
 
 
-		PROCEDURE report_ref (p_typ IN t_type%ROWTYPE) IS
+		CREATE OR REPLACE PROCEDURE report_ref (p_typ IN t_type%ROWTYPE) LANGUAGE plpgsql AS $$
 		BEGIN
 			FOR r_ref IN
 				SELECT *				
@@ -552,10 +589,11 @@ DO $BODY$
 				g_line_num := g_line_num + 1;
 				INSERT INTO cube.line VALUES(g_line_num, ftabs(g_level) || '-REFERENCE:' || r_ref.name || ';');
 			END LOOP;
-		END;
+		END; 
+		$$
 
 
-		PROCEDURE report_rtt (p_typ IN t_type%ROWTYPE) IS
+		CREATE OR REPLACE PROCEDURE report_rtt (p_typ IN t_type%ROWTYPE) LANGUAGE plpgsql AS $$
 		BEGIN
 			FOR r_rtt IN
 				SELECT *				
@@ -583,10 +621,11 @@ DO $BODY$
 				g_line_num := g_line_num + 1;
 				INSERT INTO cube.line VALUES(g_line_num, ftabs(g_level) || '-RESTRICTION_TYPE_SPEC_TYP:' || r_rtt.include_or_exclude || ';');
 			END LOOP;
-		END;
+		END; 
+		$$
 
 
-		PROCEDURE report_jsn_recursive (p_jsn IN t_json_path%ROWTYPE) IS
+		CREATE OR REPLACE PROCEDURE report_jsn_recursive (p_jsn IN t_json_path%ROWTYPE) LANGUAGE plpgsql AS $$
 		BEGIN
 			FOR r_jsn IN
 				SELECT *				
@@ -629,10 +668,11 @@ DO $BODY$
 				g_line_num := g_line_num + 1;
 				INSERT INTO cube.line VALUES(g_line_num, ftabs(g_level) || '-JSON_PATH:' || r_jsn.cube_tsg_obj_arr || ';');
 			END LOOP;
-		END;
+		END; 
+		$$
 
 
-		PROCEDURE report_jsn (p_typ IN t_type%ROWTYPE) IS
+		CREATE OR REPLACE PROCEDURE report_jsn (p_typ IN t_type%ROWTYPE) LANGUAGE plpgsql AS $$
 		BEGIN
 			FOR r_jsn IN
 				SELECT *				
@@ -675,10 +715,11 @@ DO $BODY$
 				g_line_num := g_line_num + 1;
 				INSERT INTO cube.line VALUES(g_line_num, ftabs(g_level) || '-JSON_PATH:' || r_jsn.cube_tsg_obj_arr || ';');
 			END LOOP;
-		END;
+		END; 
+		$$
 
 
-		PROCEDURE report_dct (p_typ IN t_type%ROWTYPE) IS
+		CREATE OR REPLACE PROCEDURE report_dct (p_typ IN t_type%ROWTYPE) LANGUAGE plpgsql AS $$
 		BEGIN
 			FOR r_dct IN
 				SELECT *				
@@ -692,10 +733,11 @@ DO $BODY$
 				g_level := g_level + 1;
 				g_level := g_level - 1;
 			END LOOP;
-		END;
+		END; 
+		$$
 
 
-		PROCEDURE report_typ_recursive (p_typ IN t_type%ROWTYPE) IS
+		CREATE OR REPLACE PROCEDURE report_typ_recursive (p_typ IN t_type%ROWTYPE) LANGUAGE plpgsql AS $$
 		BEGIN
 			FOR r_typ IN
 				SELECT *				
@@ -718,10 +760,11 @@ DO $BODY$
 				g_line_num := g_line_num + 1;
 				INSERT INTO cube.line VALUES(g_line_num, ftabs(g_level) || '-TYPE:' || r_typ.name || ';');
 			END LOOP;
-		END;
+		END; 
+		$$
 
 
-		PROCEDURE report_typ (p_bot IN t_business_object_type%ROWTYPE) IS
+		CREATE OR REPLACE PROCEDURE report_typ (p_bot IN t_business_object_type%ROWTYPE) LANGUAGE plpgsql AS $$
 		BEGIN
 			FOR r_typ IN
 				SELECT *				
@@ -744,10 +787,11 @@ DO $BODY$
 				g_line_num := g_line_num + 1;
 				INSERT INTO cube.line VALUES(g_line_num, ftabs(g_level) || '-TYPE:' || r_typ.name || ';');
 			END LOOP;
-		END;
+		END; 
+		$$
 
 
-		PROCEDURE report_bot IS
+		CREATE OR REPLACE PROCEDURE report_bot LANGUAGE plpgsql AS $$
 		BEGIN
 			FOR r_bot IN
 				SELECT *				
@@ -763,10 +807,11 @@ DO $BODY$
 				g_line_num := g_line_num + 1;
 				INSERT INTO cube.line VALUES(g_line_num, ftabs(g_level) || '-BUSINESS_OBJECT_TYPE:' || r_bot.name || ';');
 			END LOOP;
-		END;
+		END; 
+		$$
 
 
-		PROCEDURE report_sbt (p_sys IN t_system%ROWTYPE) IS
+		CREATE OR REPLACE PROCEDURE report_sbt (p_sys IN t_system%ROWTYPE) LANGUAGE plpgsql AS $$
 		BEGIN
 			FOR r_sbt IN
 				SELECT *				
@@ -791,10 +836,11 @@ DO $BODY$
 				g_line_num := g_line_num + 1;
 				INSERT INTO cube.line VALUES(g_line_num, ftabs(g_level) || '-SYSTEM_BO_TYPE:' || ';');
 			END LOOP;
-		END;
+		END; 
+		$$
 
 
-		PROCEDURE report_sys IS
+		CREATE OR REPLACE PROCEDURE report_sys LANGUAGE plpgsql AS $$
 		BEGIN
 			FOR r_sys IN
 				SELECT *				
@@ -810,10 +856,11 @@ DO $BODY$
 				g_line_num := g_line_num + 1;
 				INSERT INTO cube.line VALUES(g_line_num, ftabs(g_level) || '-SYSTEM:' || r_sys.name || ';');
 			END LOOP;
-		END;
+		END; 
+		$$
 
 
-		PROCEDURE report_arg (p_fun IN t_function%ROWTYPE) IS
+		CREATE OR REPLACE PROCEDURE report_arg (p_fun IN t_function%ROWTYPE) LANGUAGE plpgsql AS $$
 		BEGIN
 			FOR r_arg IN
 				SELECT *				
@@ -826,10 +873,11 @@ DO $BODY$
 				g_level := g_level + 1;
 				g_level := g_level - 1;
 			END LOOP;
-		END;
+		END; 
+		$$
 
 
-		PROCEDURE report_fun IS
+		CREATE OR REPLACE PROCEDURE report_fun LANGUAGE plpgsql AS $$
 		BEGIN
 			FOR r_fun IN
 				SELECT *				
@@ -844,32 +892,9 @@ DO $BODY$
 				g_line_num := g_line_num + 1;
 				INSERT INTO cube.line VALUES(g_line_num, ftabs(g_level) || '-FUNCTION:' || r_fun.name || ';');
 			END LOOP;
-		END;
-
-	BEGIN
-		CREATE OR REPLACE FUNCTION ftabs (p_level IN NUMERIC) RETURNS VARCHAR LANGUAGE plpgsql AS $$
-		DECLARE
-				l_tabs VARCHAR(80) := '';
-		BEGIN
-			FOR i IN 1..p_level
-			LOOP
-				l_tabs := l_tabs || '	';
-			END LOOP;
-			RETURN(l_tabs);		
 		END; 
-		$$;
-		
-		CREATE OR REPLACE FUNCTION fenperc (p_text IN VARCHAR) RETURNS VARCHAR LANGUAGE plpgsql AS $$
-		BEGIN
-			RETURN(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(p_text,'%','%25'),';','%3B'),'"','%22'),'|','%7C'),CHR(13),'%0D'),CHR(10),'%0A'),CHR(9),'%09'));		
-		END;
-		$$;
+		$$
 
-		CREATE SCHEMA IF NOT EXISTS cube;
-		CREATE TABLE IF NOT EXISTS cube.line ();
-		ALTER TABLE cube.line ADD COLUMN IF NOT EXISTS num NUMERIC(8);
-		ALTER TABLE cube.line ADD COLUMN IF NOT EXISTS str VARCHAR;
-		DELETE FROM cube.line;
 
 		report_itp;
 		report_bot;
