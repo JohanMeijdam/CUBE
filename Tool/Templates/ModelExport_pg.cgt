@@ -9,42 +9,43 @@ Change log:
 22-02-2023 - Migratie naar Postgresql
 [[TEXT,PROCEDURE]]
 		CREATE OR REPLACE PROCEDURE report_<<TYPE1:L>><<TEXT,SIGNATURE>> LANGUAGE plpgsql AS $$
+		DECLARE
+			l_cube_id VARCHAR(16);
+			r_<<TYPE1:L>> <<TYPE(1)1:L>>.t_<<TYPE:L>>;
 		BEGIN
 			FOR r_<<TYPE1:L>> IN
 				SELECT *				
-				FROM t_<<TYPE:L>>[[IF:!ROOT]]
+				FROM <<TYPE(1)1:L>>.t_<<TYPE:L>>[[IF:!ROOT]]
 				WHERE [[LOOP,ATTRIBUTE:3=F[AND]!CHILD(DERIVATION)]]<<ATTRIBUTE:L>> = p_<<TEXT,F_FKEY>>[[IF:!LAST]]
 				AND [[ENDIF]][[ENDLOOP,ATTRIBUTE]][[LOOP,ATTRIBUTE:3=R[AND]!CHILD(DERIVATION)]]
 				AND <<ATTRIBUTE:L>><<TEXT,IS_R_FKEY>>[[ENDLOOP,ATTRIBUTE]][[ELSIF:0=SYSTEM]]
-				WHERE g_system_name = 'ALL' OR name = g_system_name[[ELSIF:0=BUSINESS_OBJECT_TYPE]]
-				WHERE (g_system_name = 'ALL' OR name in (SELECT xk_bot_name FROM t_system_bo_type WHERE fk_sys_name = g_system_name ))[[ENDIF]]
+				WHERE '&2' = 'ALL' OR name = '&2'[[ELSIF:0=BUSINESS_OBJECT_TYPE]]
+				WHERE ('&2' = 'ALL' OR name in (SELECT xk_bot_name FROM t_system_bo_type WHERE fk_sys_name = '&2' ))[[ENDIF]]
 				ORDER BY [[IF:6=K]][[LOOP,ATTRIBUTE:1=Y]]<<ATTRIBUTE:L>>[[IF:!LAST]], [[ENDIF]][[ENDLOOP,ATTRIBUTE]][[ELSIF:6=P]]cube_sequence[[ELSE]]cube_id[[ENDIF]]
 			LOOP
-				g_line_num := g_line_num + 1;
-				INSERT INTO cube.line VALUES(g_line_num, ftabs(g_level) || '[[IF:CHILD(TYPE)[OR]CHILD(REFERENCE)]]+[[ELSE]]=[[ENDIF]]<<TYPE:U>>[' || r_<<TYPE1:L>>.cube_id || ']:' || [[LOOP,ATTRIBUTE:3=N[AND]!CHILD(DERIVATION)]]fenperc(r_<<TYPE1:L>>.<<ATTRIBUTE:L>>) || [[IF:!LAST]]'|' || [[ENDIF]][[ENDLOOP,ATTRIBUTE]]';');
-				g_level := g_level + 1;[[LOOP,TYPE]]
-				report_<<TYPE1:L>> (r_<<TYPE(N-1)1:L>>);[[ENDLOOP,TYPE]][[IF:3=Y]]
-				report_<<TYPE1:L>>_recursive (r_<<TYPE1:L>>);[[ENDIF]][[LOOP,REFERENCE]]
+				p_line_num := p_line_num + 1;
+				INSERT INTO cube.line VALUES(p_line_num, ftabs(p_level) || '[[IF:CHILD(TYPE)[OR]CHILD(REFERENCE)]]+[[ELSE]]=[[ENDIF]]<<TYPE:U>>[' || r_<<TYPE1:L>>.cube_id || ']:' || [[LOOP,ATTRIBUTE:3=N[AND]!CHILD(DERIVATION)]][[IF:CHILD(INFORMATION_TYPE_ELEMENT:2=TEXT)]]fenperc(r_<<TYPE1:L>>.<<ATTRIBUTE:L>>)[[ELSE]]r_<<TYPE1:L>>.<<ATTRIBUTE:L>>[[ENDIF]] || [[IF:!LAST]]'|' || [[ENDIF]][[ENDLOOP,ATTRIBUTE]]';');
+				p_level := p_level + 1;[[LOOP,TYPE]]
+				CALL report_<<TYPE1:L>> (p_line_num, p_level, r_<<TYPE(N-1)1:L>>);[[ENDLOOP,TYPE]][[IF:3=Y]]
+				CALL report_<<TYPE1:L>>_recursive (p_line_num, p_level, r_<<TYPE1:L>>);[[ENDIF]][[LOOP,REFERENCE]]
 				BEGIN
-					SELECT cube_id INTO g_cube_id FROM [[LOOP,REFERENCE_TYPE:FIRST]]t_<<REFERENCE_TYPE:L>>[[ENDLOOP,REFERENCE_TYPE]]
+					SELECT cube_id INTO l_cube_id FROM [[IF:CHILD(BUSINESS_OBJECT_TYPE)]][[LOOP,BUSINESS_OBJECT_TYPE]][[LOOP,TYPE]]<<TYPE1:L>>[[ENDLOOP,TYPE]][[ENDLOOP,BUSINESS_OBJECT_TYPE]][[ELSE]]<<TYPE(1)1:L>>[[ENDIF]].[[LOOP,REFERENCE_TYPE:FIRST]]t_<<REFERENCE_TYPE:L>>[[ENDLOOP,REFERENCE_TYPE]]
 					WHERE [[LOOP,FKEY]][[LOOP,ATTRIBUTE_SOURCE]]<<ATTRIBUTE_SOURCE:L>>[[ENDLOOP,ATTRIBUTE_SOURCE]] = r_<<TYPE1:L>>.<<FKEY:L>>[[IF:!LAST]]
 					AND [[ENDIF]][[ENDLOOP,FKEY]];
-
-					g_line_num := g_line_num + 1;
-					INSERT INTO cube.line VALUES(g_line_num, ftabs(g_level) || '>[[LOOP,REFERENCE_TYPE]][[IF:0=TYPE]]<<TYPE:U>>_[[ENDIF]]<<REFERENCE_TYPE:U>>[[ENDLOOP,REFERENCE_TYPE]][[IF:!3=0]]_<<REFERENCE:U>>[[ENDIF]]:' || l_cube_id || ';');
+					p_line_num := p_line_num + 1;
+					INSERT INTO cube.line VALUES(p_line_num, ftabs(p_level) || '>[[LOOP,REFERENCE_TYPE]][[IF:0=TYPE]]<<TYPE:U>>_[[ENDIF]]<<REFERENCE_TYPE:U>>[[ENDLOOP,REFERENCE_TYPE]][[IF:!3=0]]_<<REFERENCE:U>>[[ENDIF]]:' || l_cube_id || ';');
 				EXCEPTION
 					WHEN NO_DATA_FOUND THEN
 						NULL; 
 				END;[[ENDLOOP,REFERENCE]]
-				g_level := g_level - 1;[[IF:CHILD(TYPE)[OR]CHILD(REFERENCE)]]
-				g_line_num := g_line_num + 1;
-				INSERT INTO cube.line VALUES(g_line_num, ftabs(g_level) || '-<<TYPE:U>>:' || [[LOOP,ATTRIBUTE:3=N[AND]!CHILD(DERIVATION)]][[IF:FIRST]]r_<<TYPE1:L>>.<<ATTRIBUTE:L>> || [[ENDIF]][[ENDLOOP,ATTRIBUTE]]';');[[ENDIF]]
+				p_level := p_level - 1;[[IF:CHILD(TYPE)[OR]CHILD(REFERENCE)]]
+				p_line_num := p_line_num + 1;
+				INSERT INTO cube.line VALUES(p_line_num, ftabs(p_level) || '-<<TYPE:U>>:' || [[LOOP,ATTRIBUTE:3=N[AND]!CHILD(DERIVATION)]][[IF:FIRST]]r_<<TYPE1:L>>.<<ATTRIBUTE:L>> || [[ENDIF]][[ENDLOOP,ATTRIBUTE]]';');[[ENDIF]]
 			END LOOP;
 		END; 
-		$$
-[[ENDTEXT]]
-[[TEXT,SIGNATURE_RECURSIVE]]_recursive (p_<<TYPE1:L>> IN t_<<TYPE:L>>%ROWTYPE)[[ENDTEXT]]
-[[TEXT,SIGNATURE_NORMAL]][[IF:!ROOT]] (p_<<TYPE(N-1)1:L>> IN t_<<TYPE(N-1):L>>%ROWTYPE)[[ENDIF]][[ENDTEXT]]
+		$$;[[ENDTEXT]]
+[[TEXT,SIGNATURE_RECURSIVE]]_recursive (p_line_num NUMERIC, p_level NUMERIC, p_<<TYPE1:L>> IN <<TYPE(1)1:L>>.t_<<TYPE:L>>)[[ENDTEXT]]
+[[TEXT,SIGNATURE_NORMAL]] (p_line_num NUMERIC, p_level NUMERIC[[IF:!ROOT]], p_<<TYPE(N-1)1:L>> IN <<TYPE(1)1:L>>.t_<<TYPE(N-1):L>>[[ENDIF]])[[ENDTEXT]]
 [[TEXT,F_FKEY_RECURSIVE]]<<TYPE1:L>>.<<ATTRIBUTE:L>>[[ENDTEXT]]
 [[TEXT,F_FKEY_NORMAL]]<<TYPE(N-1)1:L>>.[[LOOP,ATTRIBUTE_SOURCE]]<<ATTRIBUTE_SOURCE:L>>[[ENDLOOP,ATTRIBUTE_SOURCE]][[ENDTEXT]]
 [[TEXT,IS_R_FKEY_RECURSIVE]] = p_<<TYPE1:L>>.[[LOOP,ATTRIBUTE_SOURCE]]<<ATTRIBUTE_SOURCE:L>>[[ENDLOOP,ATTRIBUTE_SOURCE]][[ENDTEXT]]
@@ -67,7 +68,6 @@ SELECT '-META_MODEL:CUBE;';
 DO $BODY$
 	DECLARE
 		g_level NUMERIC(4) := 0;
-		g_cube_id VARCHAR(16);
 		g_system_name VARCHAR(30) :=  '&2';
 		g_line_num NUMERIC(8) := 0;
 	BEGIN
@@ -98,7 +98,7 @@ DO $BODY$
 <<TEXT,PROCEDURE.RECURSIVE>>[[ENDIF]]
 <<TEXT,PROCEDURE.NORMAL>>[[ENDLOOP,TYPE]][[ENDLOOP,BUSINESS_OBJECT_TYPE]][[ENDLOOP,SYSTEM_BO_TYPE]]
 [[LOOP,SYSTEM_BO_TYPE]][[LOOP,BUSINESS_OBJECT_TYPE]][[LOOP,TYPE]]
-		report_<<TYPE1:L>>;[[ENDLOOP,TYPE]][[ENDLOOP,BUSINESS_OBJECT_TYPE]][[ENDLOOP,SYSTEM_BO_TYPE]]
+		CALL report_<<TYPE1:L>> (g_line_num, g_level);[[ENDLOOP,TYPE]][[ENDLOOP,BUSINESS_OBJECT_TYPE]][[ENDLOOP,SYSTEM_BO_TYPE]]
 	END;
 $BODY$;[[ENDLOOP,SYSTEM]]
 
