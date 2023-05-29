@@ -15,9 +15,9 @@ echo Start > %logfile%
 ::goto Database
 ::goto Views
 ::goto ModelImport
-::goto ModelExport
+goto ModelExport
 ::goto Packages
-goto Application 
+::goto Application 
 ::goto System
 echo Extract Cube Model
 sqlplus.exe cuberoot/composys@composys @Systems\CubeRoot\ModelExport.sql %sysdir%\CubeModel.cgm %sysname% REPLACE >> %logfile% 2>&1
@@ -56,7 +56,7 @@ echo Import Model.
 :ModelExport
 echo Extract Tool Model
 sqlplus.exe %db_schema%/%db_password%@%db_name% @%sysdir%\ModelExport.sql %sysdir%\CubeToolModel.cgm %sysname% REPLACE >> %logfile% 2>&1
-::goto End
+goto End
 :Packages
 echo Generate Packages.
 CubeGen.exe %sysdir%\CubeServerSpecModel.cgm Templates\ServerImplModel.cgt %sysdir%\CubeServerImplModel.cgm %sysname% >> %logfile% 2>&1
@@ -74,7 +74,7 @@ CubeGen.exe %sysdir%\CubeServerSpecModel.cgm Templates\CubeServerPhp.cgt %sysdir
 del /S/Q %sysroot% >> %logfile% 2>&1
 xcopy /Y/E %sysdir%\files %sysroot% >> %logfile% 2>&1
 xcopy /Y/E %sysdir%\php %sysroot% >> %logfile% 2>&1
-goto End
+::goto End
 :System
 call GenerateCubeSys.cmd
 ::goto End

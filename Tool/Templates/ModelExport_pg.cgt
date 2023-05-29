@@ -19,8 +19,8 @@ Change log:
 				WHERE [[LOOP,ATTRIBUTE:3=F[AND]!CHILD(DERIVATION)]]<<ATTRIBUTE:L>> = p_<<TEXT,F_FKEY>>[[IF:!LAST]]
 				AND [[ENDIF]][[ENDLOOP,ATTRIBUTE]][[LOOP,ATTRIBUTE:3=R[AND]!CHILD(DERIVATION)]]
 				AND <<ATTRIBUTE:L>><<TEXT,IS_R_FKEY>>[[ENDLOOP,ATTRIBUTE]][[ELSIF:0=SYSTEM]]
-				WHERE '&2' = 'ALL' OR name = '&2'[[ELSIF:0=BUSINESS_OBJECT_TYPE]]
-				WHERE ('&2' = 'ALL' OR name in (SELECT xk_bot_name FROM t_system_bo_type WHERE fk_sys_name = '&2' ))[[ENDIF]]
+				WHERE :system = 'ALL' OR name = :system'[[ELSIF:0=BUSINESS_OBJECT_TYPE]]
+				WHERE (:system = 'ALL' OR name in (SELECT xk_bot_name FROM sys.t_system_bo_type WHERE fk_sys_name = :system ))[[ENDIF]]
 				ORDER BY [[IF:6=K]][[LOOP,ATTRIBUTE:1=Y]]<<ATTRIBUTE:L>>[[IF:!LAST]], [[ENDIF]][[ENDLOOP,ATTRIBUTE]][[ELSIF:6=P]]cube_sequence[[ELSE]]cube_id[[ENDIF]]
 			LOOP
 				p_line_num := p_line_num + 1;
@@ -68,7 +68,7 @@ SELECT '-META_MODEL:CUBE;';
 DO $BODY$
 	DECLARE
 		g_level NUMERIC(4) := 0;
-		g_system_name VARCHAR(30) :=  '&2';
+		g_system_name VARCHAR(30) :=  :system;
 		g_line_num NUMERIC(8) := 0;
 	BEGIN
 		CREATE OR REPLACE FUNCTION ftabs (p_level IN NUMERIC) RETURNS VARCHAR LANGUAGE plpgsql AS $$

@@ -136,7 +136,7 @@ SELECT '-META_MODEL:CUBE;';
 DO $BODY$
 	DECLARE
 		g_level NUMERIC(4) := 0;
-		g_system_name VARCHAR(30) :=  '&2';
+		g_system_name VARCHAR(30) :=  :system;
 		g_line_num NUMERIC(8) := 0;
 	BEGIN
 		CREATE OR REPLACE FUNCTION ftabs (p_level IN NUMERIC) RETURNS VARCHAR LANGUAGE plpgsql AS $$
@@ -821,7 +821,7 @@ DO $BODY$
 			FOR r_bot IN
 				SELECT *				
 				FROM bot.t_business_object_type
-				WHERE ('&2' = 'ALL' OR name in (SELECT xk_bot_name FROM t_system_bo_type WHERE fk_sys_name = '&2' ))
+				WHERE (:system = 'ALL' OR name in (SELECT xk_bot_name FROM sys.t_system_bo_type WHERE fk_sys_name = :system ))
 				ORDER BY cube_sequence
 			LOOP
 				p_line_num := p_line_num + 1;
@@ -873,7 +873,7 @@ DO $BODY$
 			FOR r_sys IN
 				SELECT *				
 				FROM sys.t_system
-				WHERE '&2' = 'ALL' OR name = '&2'
+				WHERE :system = 'ALL' OR name = :system'
 				ORDER BY name
 			LOOP
 				p_line_num := p_line_num + 1;
