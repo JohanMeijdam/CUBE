@@ -41,7 +41,7 @@ END;
 $$;
 
 
-CREATE PROCEDURE cube_exp.export_val (p_line_num NUMERIC, p_level NUMERIC, p_ite IN itp.t_information_type_element) LANGUAGE plpgsql AS $$
+CREATE PROCEDURE cube_exp.export_val (p_line_num INOUT NUMERIC, p_level INOUT NUMERIC, p_ite IN itp.t_information_type_element) LANGUAGE plpgsql AS $$
 DECLARE
 	l_cube_id VARCHAR(16);
 	r_val itp.t_permitted_value;
@@ -54,14 +54,14 @@ BEGIN
 		ORDER BY cube_sequence
 	LOOP
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, ftabs(p_level) || '=PERMITTED_VALUE[' || r_val.cube_id || ']:' || fenperc(r_val.code) || '|' || fenperc(r_val.prompt) || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '=PERMITTED_VALUE[' || r_val.cube_id || ']:' || cube_exp.fenperc(r_val.code) || '|' || cube_exp.fenperc(r_val.prompt) || ';');
 		p_level := p_level + 1;
 		p_level := p_level - 1;
 	END LOOP;
 END; 
 $$;
 
-CREATE PROCEDURE cube_exp.export_ite (p_line_num NUMERIC, p_level NUMERIC, p_itp IN itp.t_information_type) LANGUAGE plpgsql AS $$
+CREATE PROCEDURE cube_exp.export_ite (p_line_num INOUT NUMERIC, p_level INOUT NUMERIC, p_itp IN itp.t_information_type) LANGUAGE plpgsql AS $$
 DECLARE
 	l_cube_id VARCHAR(16);
 	r_ite itp.t_information_type_element;
@@ -73,17 +73,17 @@ BEGIN
 		ORDER BY fk_itp_name, sequence
 	LOOP
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, ftabs(p_level) || '+INFORMATION_TYPE_ELEMENT[' || r_ite.cube_id || ']:' || r_ite.sequence || '|' || fenperc(r_ite.suffix) || '|' || fenperc(r_ite.domain) || '|' || r_ite.length || '|' || r_ite.decimals || '|' || fenperc(r_ite.case_sensitive) || '|' || fenperc(r_ite.default_value) || '|' || fenperc(r_ite.spaces_allowed) || '|' || fenperc(r_ite.presentation) || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '+INFORMATION_TYPE_ELEMENT[' || r_ite.cube_id || ']:' || r_ite.sequence || '|' || cube_exp.fenperc(r_ite.suffix) || '|' || cube_exp.fenperc(r_ite.domain) || '|' || r_ite.length || '|' || r_ite.decimals || '|' || cube_exp.fenperc(r_ite.case_sensitive) || '|' || cube_exp.fenperc(r_ite.default_value) || '|' || cube_exp.fenperc(r_ite.spaces_allowed) || '|' || cube_exp.fenperc(r_ite.presentation) || ';');
 		p_level := p_level + 1;
-		CALL export_val (p_line_num, p_level, r_ite);
+		CALL cube_exp.export_val (p_line_num, p_level, r_ite);
 		p_level := p_level - 1;
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, ftabs(p_level) || '-INFORMATION_TYPE_ELEMENT:' || r_ite.sequence || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '-INFORMATION_TYPE_ELEMENT:' || r_ite.sequence || ';');
 	END LOOP;
 END; 
 $$;
 
-CREATE PROCEDURE cube_exp.export_itp (p_line_num NUMERIC, p_level NUMERIC) LANGUAGE plpgsql AS $$
+CREATE PROCEDURE cube_exp.export_itp (p_line_num INOUT NUMERIC, p_level INOUT NUMERIC) LANGUAGE plpgsql AS $$
 DECLARE
 	l_cube_id VARCHAR(16);
 	r_itp itp.t_information_type;
@@ -94,17 +94,17 @@ BEGIN
 		ORDER BY name
 	LOOP
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, ftabs(p_level) || '+INFORMATION_TYPE[' || r_itp.cube_id || ']:' || fenperc(r_itp.name) || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '+INFORMATION_TYPE[' || r_itp.cube_id || ']:' || cube_exp.fenperc(r_itp.name) || ';');
 		p_level := p_level + 1;
-		CALL export_ite (p_line_num, p_level, r_itp);
+		CALL cube_exp.export_ite (p_line_num, p_level, r_itp);
 		p_level := p_level - 1;
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, ftabs(p_level) || '-INFORMATION_TYPE:' || r_itp.name || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '-INFORMATION_TYPE:' || r_itp.name || ';');
 	END LOOP;
 END; 
 $$;
 
-CREATE PROCEDURE cube_exp.export_tsp (p_line_num NUMERIC, p_level NUMERIC, p_tsg IN bot.t_type_specialisation_group) LANGUAGE plpgsql AS $$
+CREATE PROCEDURE cube_exp.export_tsp (p_line_num INOUT NUMERIC, p_level INOUT NUMERIC, p_tsg IN bot.t_type_specialisation_group) LANGUAGE plpgsql AS $$
 DECLARE
 	l_cube_id VARCHAR(16);
 	r_tsp bot.t_type_specialisation;
@@ -118,7 +118,7 @@ BEGIN
 		ORDER BY cube_sequence
 	LOOP
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, ftabs(p_level) || '+TYPE_SPECIALISATION[' || r_tsp.cube_id || ']:' || fenperc(r_tsp.code) || '|' || fenperc(r_tsp.name) || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '+TYPE_SPECIALISATION[' || r_tsp.cube_id || ']:' || cube_exp.fenperc(r_tsp.code) || '|' || cube_exp.fenperc(r_tsp.name) || ';');
 		p_level := p_level + 1;
 		BEGIN
 			SELECT cube_id INTO l_cube_id FROM bot.t_type_specialisation
@@ -126,14 +126,14 @@ BEGIN
 			  AND fk_tsg_code = r_tsp.xf_tsp_tsg_code
 			  AND code = r_tsp.xk_tsp_code;
 			p_line_num := p_line_num + 1;
-			INSERT INTO cube_exp.line VALUES (p_line_num, ftabs(p_level) || '>TYPE_SPECIALISATION:' || l_cube_id || ';');
+			INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '>TYPE_SPECIALISATION:' || l_cube_id || ';');
 		EXCEPTION
 			WHEN NO_DATA_FOUND THEN
 				NULL; 
 		END;
 		p_level := p_level - 1;
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, ftabs(p_level) || '-TYPE_SPECIALISATION:' || r_tsp.code || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '-TYPE_SPECIALISATION:' || r_tsp.code || ';');
 	END LOOP;
 END; 
 $$;
@@ -152,28 +152,28 @@ BEGIN
 		ORDER BY cube_sequence
 	LOOP
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, ftabs(p_level) || '+TYPE_SPECIALISATION_GROUP[' || r_tsg.cube_id || ']:' || fenperc(r_tsg.code) || '|' || fenperc(r_tsg.name) || '|' || fenperc(r_tsg.primary_key) || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '+TYPE_SPECIALISATION_GROUP[' || r_tsg.cube_id || ']:' || cube_exp.fenperc(r_tsg.code) || '|' || cube_exp.fenperc(r_tsg.name) || '|' || cube_exp.fenperc(r_tsg.primary_key) || ';');
 		p_level := p_level + 1;
-		CALL export_tsp (p_line_num, p_level, r_tsg);
-		CALL export_tsg_recursive (p_line_num, p_level, r_tsg);
+		CALL cube_exp.export_tsp (p_line_num, p_level, r_tsg);
+		CALL cube_exp.export_tsg_recursive (p_line_num, p_level, r_tsg);
 		BEGIN
 			SELECT cube_id INTO l_cube_id FROM bot.t_attribute
 			WHERE fk_typ_name = r_tsg.xf_atb_typ_name
 			  AND name = r_tsg.xk_atb_name;
 			p_line_num := p_line_num + 1;
-			INSERT INTO cube_exp.line VALUES (p_line_num, ftabs(p_level) || '>ATTRIBUTE:' || l_cube_id || ';');
+			INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '>ATTRIBUTE:' || l_cube_id || ';');
 		EXCEPTION
 			WHEN NO_DATA_FOUND THEN
 				NULL; 
 		END;
 		p_level := p_level - 1;
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, ftabs(p_level) || '-TYPE_SPECIALISATION_GROUP:' || r_tsg.code || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '-TYPE_SPECIALISATION_GROUP:' || r_tsg.code || ';');
 	END LOOP;
 END; 
 $$;
 
-CREATE PROCEDURE cube_exp.export_tsg (p_line_num NUMERIC, p_level NUMERIC, p_typ IN bot.t_type) LANGUAGE plpgsql AS $$
+CREATE PROCEDURE cube_exp.export_tsg (p_line_num INOUT NUMERIC, p_level INOUT NUMERIC, p_typ IN bot.t_type) LANGUAGE plpgsql AS $$
 DECLARE
 	l_cube_id VARCHAR(16);
 	r_tsg bot.t_type_specialisation_group;
@@ -187,28 +187,28 @@ BEGIN
 		ORDER BY cube_sequence
 	LOOP
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, ftabs(p_level) || '+TYPE_SPECIALISATION_GROUP[' || r_tsg.cube_id || ']:' || fenperc(r_tsg.code) || '|' || fenperc(r_tsg.name) || '|' || fenperc(r_tsg.primary_key) || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '+TYPE_SPECIALISATION_GROUP[' || r_tsg.cube_id || ']:' || cube_exp.fenperc(r_tsg.code) || '|' || cube_exp.fenperc(r_tsg.name) || '|' || cube_exp.fenperc(r_tsg.primary_key) || ';');
 		p_level := p_level + 1;
-		CALL export_tsp (p_line_num, p_level, r_tsg);
-		CALL export_tsg_recursive (p_line_num, p_level, r_tsg);
+		CALL cube_exp.export_tsp (p_line_num, p_level, r_tsg);
+		CALL cube_exp.export_tsg_recursive (p_line_num, p_level, r_tsg);
 		BEGIN
 			SELECT cube_id INTO l_cube_id FROM bot.t_attribute
 			WHERE fk_typ_name = r_tsg.xf_atb_typ_name
 			  AND name = r_tsg.xk_atb_name;
 			p_line_num := p_line_num + 1;
-			INSERT INTO cube_exp.line VALUES (p_line_num, ftabs(p_level) || '>ATTRIBUTE:' || l_cube_id || ';');
+			INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '>ATTRIBUTE:' || l_cube_id || ';');
 		EXCEPTION
 			WHEN NO_DATA_FOUND THEN
 				NULL; 
 		END;
 		p_level := p_level - 1;
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, ftabs(p_level) || '-TYPE_SPECIALISATION_GROUP:' || r_tsg.code || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '-TYPE_SPECIALISATION_GROUP:' || r_tsg.code || ';');
 	END LOOP;
 END; 
 $$;
 
-CREATE PROCEDURE cube_exp.export_der (p_line_num NUMERIC, p_level NUMERIC, p_atb IN bot.t_attribute) LANGUAGE plpgsql AS $$
+CREATE PROCEDURE cube_exp.export_der (p_line_num INOUT NUMERIC, p_level INOUT NUMERIC, p_atb IN bot.t_attribute) LANGUAGE plpgsql AS $$
 DECLARE
 	l_cube_id VARCHAR(16);
 	r_der bot.t_derivation;
@@ -222,13 +222,13 @@ BEGIN
 		ORDER BY cube_id
 	LOOP
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, ftabs(p_level) || '+DERIVATION[' || r_der.cube_id || ']:' || fenperc(r_der.cube_tsg_type) || '|' || fenperc(r_der.aggregate_function) || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '+DERIVATION[' || r_der.cube_id || ']:' || cube_exp.fenperc(r_der.cube_tsg_type) || '|' || cube_exp.fenperc(r_der.aggregate_function) || ';');
 		p_level := p_level + 1;
 		BEGIN
 			SELECT cube_id INTO l_cube_id FROM bot.t_type
 			WHERE name = r_der.xk_typ_name;
 			p_line_num := p_line_num + 1;
-			INSERT INTO cube_exp.line VALUES (p_line_num, ftabs(p_level) || '>DERIVATION_TYPE:' || l_cube_id || ';');
+			INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '>DERIVATION_TYPE:' || l_cube_id || ';');
 		EXCEPTION
 			WHEN NO_DATA_FOUND THEN
 				NULL; 
@@ -237,19 +237,19 @@ BEGIN
 			SELECT cube_id INTO l_cube_id FROM bot.t_type
 			WHERE name = r_der.xk_typ_name_1;
 			p_line_num := p_line_num + 1;
-			INSERT INTO cube_exp.line VALUES (p_line_num, ftabs(p_level) || '>DERIVATION_TYPE_CONCERNS_CHILD:' || l_cube_id || ';');
+			INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '>DERIVATION_TYPE_CONCERNS_CHILD:' || l_cube_id || ';');
 		EXCEPTION
 			WHEN NO_DATA_FOUND THEN
 				NULL; 
 		END;
 		p_level := p_level - 1;
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, ftabs(p_level) || '-DERIVATION:' || r_der.cube_tsg_type || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '-DERIVATION:' || r_der.cube_tsg_type || ';');
 	END LOOP;
 END; 
 $$;
 
-CREATE PROCEDURE cube_exp.export_dca (p_line_num NUMERIC, p_level NUMERIC, p_atb IN bot.t_attribute) LANGUAGE plpgsql AS $$
+CREATE PROCEDURE cube_exp.export_dca (p_line_num INOUT NUMERIC, p_level INOUT NUMERIC, p_atb IN bot.t_attribute) LANGUAGE plpgsql AS $$
 DECLARE
 	l_cube_id VARCHAR(16);
 	r_dca bot.t_description_attribute;
@@ -263,14 +263,14 @@ BEGIN
 		ORDER BY cube_id
 	LOOP
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, ftabs(p_level) || '=DESCRIPTION_ATTRIBUTE[' || r_dca.cube_id || ']:' || fenperc(r_dca.text) || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '=DESCRIPTION_ATTRIBUTE[' || r_dca.cube_id || ']:' || cube_exp.fenperc(r_dca.text) || ';');
 		p_level := p_level + 1;
 		p_level := p_level - 1;
 	END LOOP;
 END; 
 $$;
 
-CREATE PROCEDURE cube_exp.export_rta (p_line_num NUMERIC, p_level NUMERIC, p_atb IN bot.t_attribute) LANGUAGE plpgsql AS $$
+CREATE PROCEDURE cube_exp.export_rta (p_line_num INOUT NUMERIC, p_level INOUT NUMERIC, p_atb IN bot.t_attribute) LANGUAGE plpgsql AS $$
 DECLARE
 	l_cube_id VARCHAR(16);
 	r_rta bot.t_restriction_type_spec_atb;
@@ -284,7 +284,7 @@ BEGIN
 		ORDER BY fk_typ_name, fk_atb_name, xf_tsp_typ_name, xf_tsp_tsg_code, xk_tsp_code
 	LOOP
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, ftabs(p_level) || '+RESTRICTION_TYPE_SPEC_ATB[' || r_rta.cube_id || ']:' || fenperc(r_rta.include_or_exclude) || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '+RESTRICTION_TYPE_SPEC_ATB[' || r_rta.cube_id || ']:' || cube_exp.fenperc(r_rta.include_or_exclude) || ';');
 		p_level := p_level + 1;
 		BEGIN
 			SELECT cube_id INTO l_cube_id FROM bot.t_type_specialisation
@@ -292,19 +292,19 @@ BEGIN
 			  AND fk_tsg_code = r_rta.xf_tsp_tsg_code
 			  AND code = r_rta.xk_tsp_code;
 			p_line_num := p_line_num + 1;
-			INSERT INTO cube_exp.line VALUES (p_line_num, ftabs(p_level) || '>TYPE_SPECIALISATION:' || l_cube_id || ';');
+			INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '>TYPE_SPECIALISATION:' || l_cube_id || ';');
 		EXCEPTION
 			WHEN NO_DATA_FOUND THEN
 				NULL; 
 		END;
 		p_level := p_level - 1;
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, ftabs(p_level) || '-RESTRICTION_TYPE_SPEC_ATB:' || r_rta.include_or_exclude || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '-RESTRICTION_TYPE_SPEC_ATB:' || r_rta.include_or_exclude || ';');
 	END LOOP;
 END; 
 $$;
 
-CREATE PROCEDURE cube_exp.export_atb (p_line_num NUMERIC, p_level NUMERIC, p_typ IN bot.t_type) LANGUAGE plpgsql AS $$
+CREATE PROCEDURE cube_exp.export_atb (p_line_num INOUT NUMERIC, p_level INOUT NUMERIC, p_typ IN bot.t_type) LANGUAGE plpgsql AS $$
 DECLARE
 	l_cube_id VARCHAR(16);
 	r_atb bot.t_attribute;
@@ -317,28 +317,28 @@ BEGIN
 		ORDER BY cube_sequence
 	LOOP
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, ftabs(p_level) || '+ATTRIBUTE[' || r_atb.cube_id || ']:' || fenperc(r_atb.name) || '|' || fenperc(r_atb.primary_key) || '|' || fenperc(r_atb.code_display_key) || '|' || fenperc(r_atb.code_foreign_key) || '|' || fenperc(r_atb.flag_hidden) || '|' || fenperc(r_atb.default_value) || '|' || fenperc(r_atb.unchangeable) || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '+ATTRIBUTE[' || r_atb.cube_id || ']:' || cube_exp.fenperc(r_atb.name) || '|' || cube_exp.fenperc(r_atb.primary_key) || '|' || cube_exp.fenperc(r_atb.code_display_key) || '|' || cube_exp.fenperc(r_atb.code_foreign_key) || '|' || cube_exp.fenperc(r_atb.flag_hidden) || '|' || cube_exp.fenperc(r_atb.default_value) || '|' || cube_exp.fenperc(r_atb.unchangeable) || ';');
 		p_level := p_level + 1;
-		CALL export_der (p_line_num, p_level, r_atb);
-		CALL export_dca (p_line_num, p_level, r_atb);
-		CALL export_rta (p_line_num, p_level, r_atb);
+		CALL cube_exp.export_der (p_line_num, p_level, r_atb);
+		CALL cube_exp.export_dca (p_line_num, p_level, r_atb);
+		CALL cube_exp.export_rta (p_line_num, p_level, r_atb);
 		BEGIN
 			SELECT cube_id INTO l_cube_id FROM itp.t_information_type
 			WHERE name = r_atb.xk_itp_name;
 			p_line_num := p_line_num + 1;
-			INSERT INTO cube_exp.line VALUES (p_line_num, ftabs(p_level) || '>INFORMATION_TYPE:' || l_cube_id || ';');
+			INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '>INFORMATION_TYPE:' || l_cube_id || ';');
 		EXCEPTION
 			WHEN NO_DATA_FOUND THEN
 				NULL; 
 		END;
 		p_level := p_level - 1;
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, ftabs(p_level) || '-ATTRIBUTE:' || r_atb.name || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '-ATTRIBUTE:' || r_atb.name || ';');
 	END LOOP;
 END; 
 $$;
 
-CREATE PROCEDURE cube_exp.export_dcr (p_line_num NUMERIC, p_level NUMERIC, p_ref IN bot.t_reference) LANGUAGE plpgsql AS $$
+CREATE PROCEDURE cube_exp.export_dcr (p_line_num INOUT NUMERIC, p_level INOUT NUMERIC, p_ref IN bot.t_reference) LANGUAGE plpgsql AS $$
 DECLARE
 	l_cube_id VARCHAR(16);
 	r_dcr bot.t_description_reference;
@@ -354,14 +354,14 @@ BEGIN
 		ORDER BY cube_id
 	LOOP
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, ftabs(p_level) || '=DESCRIPTION_REFERENCE[' || r_dcr.cube_id || ']:' || fenperc(r_dcr.text) || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '=DESCRIPTION_REFERENCE[' || r_dcr.cube_id || ']:' || cube_exp.fenperc(r_dcr.text) || ';');
 		p_level := p_level + 1;
 		p_level := p_level - 1;
 	END LOOP;
 END; 
 $$;
 
-CREATE PROCEDURE cube_exp.export_rtr (p_line_num NUMERIC, p_level NUMERIC, p_ref IN bot.t_reference) LANGUAGE plpgsql AS $$
+CREATE PROCEDURE cube_exp.export_rtr (p_line_num INOUT NUMERIC, p_level INOUT NUMERIC, p_ref IN bot.t_reference) LANGUAGE plpgsql AS $$
 DECLARE
 	l_cube_id VARCHAR(16);
 	r_rtr bot.t_restriction_type_spec_ref;
@@ -377,7 +377,7 @@ BEGIN
 		ORDER BY fk_typ_name, fk_ref_sequence, fk_ref_bot_name, fk_ref_typ_name, xf_tsp_typ_name, xf_tsp_tsg_code, xk_tsp_code
 	LOOP
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, ftabs(p_level) || '+RESTRICTION_TYPE_SPEC_REF[' || r_rtr.cube_id || ']:' || fenperc(r_rtr.include_or_exclude) || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '+RESTRICTION_TYPE_SPEC_REF[' || r_rtr.cube_id || ']:' || cube_exp.fenperc(r_rtr.include_or_exclude) || ';');
 		p_level := p_level + 1;
 		BEGIN
 			SELECT cube_id INTO l_cube_id FROM bot.t_type_specialisation
@@ -385,19 +385,19 @@ BEGIN
 			  AND fk_tsg_code = r_rtr.xf_tsp_tsg_code
 			  AND code = r_rtr.xk_tsp_code;
 			p_line_num := p_line_num + 1;
-			INSERT INTO cube_exp.line VALUES (p_line_num, ftabs(p_level) || '>TYPE_SPECIALISATION:' || l_cube_id || ';');
+			INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '>TYPE_SPECIALISATION:' || l_cube_id || ';');
 		EXCEPTION
 			WHEN NO_DATA_FOUND THEN
 				NULL; 
 		END;
 		p_level := p_level - 1;
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, ftabs(p_level) || '-RESTRICTION_TYPE_SPEC_REF:' || r_rtr.include_or_exclude || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '-RESTRICTION_TYPE_SPEC_REF:' || r_rtr.include_or_exclude || ';');
 	END LOOP;
 END; 
 $$;
 
-CREATE PROCEDURE cube_exp.export_rts (p_line_num NUMERIC, p_level NUMERIC, p_ref IN bot.t_reference) LANGUAGE plpgsql AS $$
+CREATE PROCEDURE cube_exp.export_rts (p_line_num INOUT NUMERIC, p_level INOUT NUMERIC, p_ref IN bot.t_reference) LANGUAGE plpgsql AS $$
 DECLARE
 	l_cube_id VARCHAR(16);
 	r_rts bot.t_restriction_target_type_spec;
@@ -413,7 +413,7 @@ BEGIN
 		ORDER BY cube_id
 	LOOP
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, ftabs(p_level) || '+RESTRICTION_TARGET_TYPE_SPEC[' || r_rts.cube_id || ']:' || fenperc(r_rts.include_or_exclude) || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '+RESTRICTION_TARGET_TYPE_SPEC[' || r_rts.cube_id || ']:' || cube_exp.fenperc(r_rts.include_or_exclude) || ';');
 		p_level := p_level + 1;
 		BEGIN
 			SELECT cube_id INTO l_cube_id FROM bot.t_type_specialisation
@@ -421,19 +421,19 @@ BEGIN
 			  AND fk_tsg_code = r_rts.xf_tsp_tsg_code
 			  AND code = r_rts.xk_tsp_code;
 			p_line_num := p_line_num + 1;
-			INSERT INTO cube_exp.line VALUES (p_line_num, ftabs(p_level) || '>TYPE_SPECIALISATION:' || l_cube_id || ';');
+			INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '>TYPE_SPECIALISATION:' || l_cube_id || ';');
 		EXCEPTION
 			WHEN NO_DATA_FOUND THEN
 				NULL; 
 		END;
 		p_level := p_level - 1;
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, ftabs(p_level) || '-RESTRICTION_TARGET_TYPE_SPEC:' || r_rts.include_or_exclude || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '-RESTRICTION_TARGET_TYPE_SPEC:' || r_rts.include_or_exclude || ';');
 	END LOOP;
 END; 
 $$;
 
-CREATE PROCEDURE cube_exp.export_ref (p_line_num NUMERIC, p_level NUMERIC, p_typ IN bot.t_type) LANGUAGE plpgsql AS $$
+CREATE PROCEDURE cube_exp.export_ref (p_line_num INOUT NUMERIC, p_level INOUT NUMERIC, p_typ IN bot.t_type) LANGUAGE plpgsql AS $$
 DECLARE
 	l_cube_id VARCHAR(16);
 	r_ref bot.t_reference;
@@ -446,16 +446,16 @@ BEGIN
 		ORDER BY cube_sequence
 	LOOP
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, ftabs(p_level) || '+REFERENCE[' || r_ref.cube_id || ']:' || fenperc(r_ref.name) || '|' || fenperc(r_ref.primary_key) || '|' || fenperc(r_ref.code_display_key) || '|' || r_ref.sequence || '|' || fenperc(r_ref.scope) || '|' || fenperc(r_ref.unchangeable) || '|' || fenperc(r_ref.within_scope_extension) || '|' || fenperc(r_ref.cube_tsg_int_ext) || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '+REFERENCE[' || r_ref.cube_id || ']:' || cube_exp.fenperc(r_ref.name) || '|' || cube_exp.fenperc(r_ref.primary_key) || '|' || cube_exp.fenperc(r_ref.code_display_key) || '|' || r_ref.sequence || '|' || cube_exp.fenperc(r_ref.scope) || '|' || cube_exp.fenperc(r_ref.unchangeable) || '|' || cube_exp.fenperc(r_ref.within_scope_extension) || '|' || cube_exp.fenperc(r_ref.cube_tsg_int_ext) || ';');
 		p_level := p_level + 1;
-		CALL export_dcr (p_line_num, p_level, r_ref);
-		CALL export_rtr (p_line_num, p_level, r_ref);
-		CALL export_rts (p_line_num, p_level, r_ref);
+		CALL cube_exp.export_dcr (p_line_num, p_level, r_ref);
+		CALL cube_exp.export_rtr (p_line_num, p_level, r_ref);
+		CALL cube_exp.export_rts (p_line_num, p_level, r_ref);
 		BEGIN
 			SELECT cube_id INTO l_cube_id FROM bot.t_business_object_type
 			WHERE name = r_ref.xk_bot_name;
 			p_line_num := p_line_num + 1;
-			INSERT INTO cube_exp.line VALUES (p_line_num, ftabs(p_level) || '>BUSINESS_OBJECT_TYPE:' || l_cube_id || ';');
+			INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '>BUSINESS_OBJECT_TYPE:' || l_cube_id || ';');
 		EXCEPTION
 			WHEN NO_DATA_FOUND THEN
 				NULL; 
@@ -464,7 +464,7 @@ BEGIN
 			SELECT cube_id INTO l_cube_id FROM bot.t_type
 			WHERE name = r_ref.xk_typ_name;
 			p_line_num := p_line_num + 1;
-			INSERT INTO cube_exp.line VALUES (p_line_num, ftabs(p_level) || '>REFERENCE_TYPE:' || l_cube_id || ';');
+			INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '>REFERENCE_TYPE:' || l_cube_id || ';');
 		EXCEPTION
 			WHEN NO_DATA_FOUND THEN
 				NULL; 
@@ -473,19 +473,19 @@ BEGIN
 			SELECT cube_id INTO l_cube_id FROM bot.t_type
 			WHERE name = r_ref.xk_typ_name_1;
 			p_line_num := p_line_num + 1;
-			INSERT INTO cube_exp.line VALUES (p_line_num, ftabs(p_level) || '>REFERENCE_TYPE_WITHIN_SCOPE_OF:' || l_cube_id || ';');
+			INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '>REFERENCE_TYPE_WITHIN_SCOPE_OF:' || l_cube_id || ';');
 		EXCEPTION
 			WHEN NO_DATA_FOUND THEN
 				NULL; 
 		END;
 		p_level := p_level - 1;
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, ftabs(p_level) || '-REFERENCE:' || r_ref.name || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '-REFERENCE:' || r_ref.name || ';');
 	END LOOP;
 END; 
 $$;
 
-CREATE PROCEDURE cube_exp.export_rtt (p_line_num NUMERIC, p_level NUMERIC, p_typ IN bot.t_type) LANGUAGE plpgsql AS $$
+CREATE PROCEDURE cube_exp.export_rtt (p_line_num INOUT NUMERIC, p_level INOUT NUMERIC, p_typ IN bot.t_type) LANGUAGE plpgsql AS $$
 DECLARE
 	l_cube_id VARCHAR(16);
 	r_rtt bot.t_restriction_type_spec_typ;
@@ -498,7 +498,7 @@ BEGIN
 		ORDER BY fk_typ_name, xf_tsp_typ_name, xf_tsp_tsg_code, xk_tsp_code
 	LOOP
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, ftabs(p_level) || '+RESTRICTION_TYPE_SPEC_TYP[' || r_rtt.cube_id || ']:' || fenperc(r_rtt.include_or_exclude) || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '+RESTRICTION_TYPE_SPEC_TYP[' || r_rtt.cube_id || ']:' || cube_exp.fenperc(r_rtt.include_or_exclude) || ';');
 		p_level := p_level + 1;
 		BEGIN
 			SELECT cube_id INTO l_cube_id FROM bot.t_type_specialisation
@@ -506,14 +506,14 @@ BEGIN
 			  AND fk_tsg_code = r_rtt.xf_tsp_tsg_code
 			  AND code = r_rtt.xk_tsp_code;
 			p_line_num := p_line_num + 1;
-			INSERT INTO cube_exp.line VALUES (p_line_num, ftabs(p_level) || '>TYPE_SPECIALISATION:' || l_cube_id || ';');
+			INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '>TYPE_SPECIALISATION:' || l_cube_id || ';');
 		EXCEPTION
 			WHEN NO_DATA_FOUND THEN
 				NULL; 
 		END;
 		p_level := p_level - 1;
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, ftabs(p_level) || '-RESTRICTION_TYPE_SPEC_TYP:' || r_rtt.include_or_exclude || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '-RESTRICTION_TYPE_SPEC_TYP:' || r_rtt.include_or_exclude || ';');
 	END LOOP;
 END; 
 $$;
@@ -536,15 +536,15 @@ BEGIN
 		ORDER BY cube_sequence
 	LOOP
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, ftabs(p_level) || '+JSON_PATH[' || r_jsn.cube_id || ']:' || fenperc(r_jsn.cube_tsg_obj_arr) || '|' || fenperc(r_jsn.cube_tsg_type) || '|' || fenperc(r_jsn.name) || '|' || r_jsn.location || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '+JSON_PATH[' || r_jsn.cube_id || ']:' || cube_exp.fenperc(r_jsn.cube_tsg_obj_arr) || '|' || cube_exp.fenperc(r_jsn.cube_tsg_type) || '|' || cube_exp.fenperc(r_jsn.name) || '|' || r_jsn.location || ';');
 		p_level := p_level + 1;
-		CALL export_jsn_recursive (p_line_num, p_level, r_jsn);
+		CALL cube_exp.export_jsn_recursive (p_line_num, p_level, r_jsn);
 		BEGIN
 			SELECT cube_id INTO l_cube_id FROM bot.t_attribute
 			WHERE fk_typ_name = r_jsn.xf_atb_typ_name
 			  AND name = r_jsn.xk_atb_name;
 			p_line_num := p_line_num + 1;
-			INSERT INTO cube_exp.line VALUES (p_line_num, ftabs(p_level) || '>ATTRIBUTE:' || l_cube_id || ';');
+			INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '>ATTRIBUTE:' || l_cube_id || ';');
 		EXCEPTION
 			WHEN NO_DATA_FOUND THEN
 				NULL; 
@@ -553,19 +553,19 @@ BEGIN
 			SELECT cube_id INTO l_cube_id FROM bot.t_type
 			WHERE name = r_jsn.xk_typ_name;
 			p_line_num := p_line_num + 1;
-			INSERT INTO cube_exp.line VALUES (p_line_num, ftabs(p_level) || '>JSON_PATH_TYPE:' || l_cube_id || ';');
+			INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '>JSON_PATH_TYPE:' || l_cube_id || ';');
 		EXCEPTION
 			WHEN NO_DATA_FOUND THEN
 				NULL; 
 		END;
 		p_level := p_level - 1;
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, ftabs(p_level) || '-JSON_PATH:' || r_jsn.cube_tsg_obj_arr || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '-JSON_PATH:' || r_jsn.cube_tsg_obj_arr || ';');
 	END LOOP;
 END; 
 $$;
 
-CREATE PROCEDURE cube_exp.export_jsn (p_line_num NUMERIC, p_level NUMERIC, p_typ IN bot.t_type) LANGUAGE plpgsql AS $$
+CREATE PROCEDURE cube_exp.export_jsn (p_line_num INOUT NUMERIC, p_level INOUT NUMERIC, p_typ IN bot.t_type) LANGUAGE plpgsql AS $$
 DECLARE
 	l_cube_id VARCHAR(16);
 	r_jsn bot.t_json_path;
@@ -583,15 +583,15 @@ BEGIN
 		ORDER BY cube_sequence
 	LOOP
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, ftabs(p_level) || '+JSON_PATH[' || r_jsn.cube_id || ']:' || fenperc(r_jsn.cube_tsg_obj_arr) || '|' || fenperc(r_jsn.cube_tsg_type) || '|' || fenperc(r_jsn.name) || '|' || r_jsn.location || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '+JSON_PATH[' || r_jsn.cube_id || ']:' || cube_exp.fenperc(r_jsn.cube_tsg_obj_arr) || '|' || cube_exp.fenperc(r_jsn.cube_tsg_type) || '|' || cube_exp.fenperc(r_jsn.name) || '|' || r_jsn.location || ';');
 		p_level := p_level + 1;
-		CALL export_jsn_recursive (p_line_num, p_level, r_jsn);
+		CALL cube_exp.export_jsn_recursive (p_line_num, p_level, r_jsn);
 		BEGIN
 			SELECT cube_id INTO l_cube_id FROM bot.t_attribute
 			WHERE fk_typ_name = r_jsn.xf_atb_typ_name
 			  AND name = r_jsn.xk_atb_name;
 			p_line_num := p_line_num + 1;
-			INSERT INTO cube_exp.line VALUES (p_line_num, ftabs(p_level) || '>ATTRIBUTE:' || l_cube_id || ';');
+			INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '>ATTRIBUTE:' || l_cube_id || ';');
 		EXCEPTION
 			WHEN NO_DATA_FOUND THEN
 				NULL; 
@@ -600,19 +600,19 @@ BEGIN
 			SELECT cube_id INTO l_cube_id FROM bot.t_type
 			WHERE name = r_jsn.xk_typ_name;
 			p_line_num := p_line_num + 1;
-			INSERT INTO cube_exp.line VALUES (p_line_num, ftabs(p_level) || '>JSON_PATH_TYPE:' || l_cube_id || ';');
+			INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '>JSON_PATH_TYPE:' || l_cube_id || ';');
 		EXCEPTION
 			WHEN NO_DATA_FOUND THEN
 				NULL; 
 		END;
 		p_level := p_level - 1;
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, ftabs(p_level) || '-JSON_PATH:' || r_jsn.cube_tsg_obj_arr || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '-JSON_PATH:' || r_jsn.cube_tsg_obj_arr || ';');
 	END LOOP;
 END; 
 $$;
 
-CREATE PROCEDURE cube_exp.export_dct (p_line_num NUMERIC, p_level NUMERIC, p_typ IN bot.t_type) LANGUAGE plpgsql AS $$
+CREATE PROCEDURE cube_exp.export_dct (p_line_num INOUT NUMERIC, p_level INOUT NUMERIC, p_typ IN bot.t_type) LANGUAGE plpgsql AS $$
 DECLARE
 	l_cube_id VARCHAR(16);
 	r_dct bot.t_description_type;
@@ -625,7 +625,7 @@ BEGIN
 		ORDER BY cube_id
 	LOOP
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, ftabs(p_level) || '=DESCRIPTION_TYPE[' || r_dct.cube_id || ']:' || fenperc(r_dct.text) || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '=DESCRIPTION_TYPE[' || r_dct.cube_id || ']:' || cube_exp.fenperc(r_dct.text) || ';');
 		p_level := p_level + 1;
 		p_level := p_level - 1;
 	END LOOP;
@@ -645,23 +645,23 @@ BEGIN
 		ORDER BY cube_sequence
 	LOOP
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, ftabs(p_level) || '+TYPE[' || r_typ.cube_id || ']:' || fenperc(r_typ.name) || '|' || fenperc(r_typ.code) || '|' || fenperc(r_typ.flag_partial_key) || '|' || fenperc(r_typ.flag_recursive) || '|' || fenperc(r_typ.recursive_cardinality) || '|' || fenperc(r_typ.cardinality) || '|' || fenperc(r_typ.sort_order) || '|' || fenperc(r_typ.icon) || '|' || fenperc(r_typ.transferable) || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '+TYPE[' || r_typ.cube_id || ']:' || cube_exp.fenperc(r_typ.name) || '|' || cube_exp.fenperc(r_typ.code) || '|' || cube_exp.fenperc(r_typ.flag_partial_key) || '|' || cube_exp.fenperc(r_typ.flag_recursive) || '|' || cube_exp.fenperc(r_typ.recursive_cardinality) || '|' || cube_exp.fenperc(r_typ.cardinality) || '|' || cube_exp.fenperc(r_typ.sort_order) || '|' || cube_exp.fenperc(r_typ.icon) || '|' || cube_exp.fenperc(r_typ.transferable) || ';');
 		p_level := p_level + 1;
-		CALL export_tsg (p_line_num, p_level, r_typ);
-		CALL export_atb (p_line_num, p_level, r_typ);
-		CALL export_ref (p_line_num, p_level, r_typ);
-		CALL export_rtt (p_line_num, p_level, r_typ);
-		CALL export_jsn (p_line_num, p_level, r_typ);
-		CALL export_dct (p_line_num, p_level, r_typ);
-		CALL export_typ_recursive (p_line_num, p_level, r_typ);
+		CALL cube_exp.export_tsg (p_line_num, p_level, r_typ);
+		CALL cube_exp.export_atb (p_line_num, p_level, r_typ);
+		CALL cube_exp.export_ref (p_line_num, p_level, r_typ);
+		CALL cube_exp.export_rtt (p_line_num, p_level, r_typ);
+		CALL cube_exp.export_jsn (p_line_num, p_level, r_typ);
+		CALL cube_exp.export_dct (p_line_num, p_level, r_typ);
+		CALL cube_exp.export_typ_recursive (p_line_num, p_level, r_typ);
 		p_level := p_level - 1;
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, ftabs(p_level) || '-TYPE:' || r_typ.name || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '-TYPE:' || r_typ.name || ';');
 	END LOOP;
 END; 
 $$;
 
-CREATE PROCEDURE cube_exp.export_typ (p_line_num NUMERIC, p_level NUMERIC, p_bot IN bot.t_business_object_type) LANGUAGE plpgsql AS $$
+CREATE PROCEDURE cube_exp.export_typ (p_line_num INOUT NUMERIC, p_level INOUT NUMERIC, p_bot IN bot.t_business_object_type) LANGUAGE plpgsql AS $$
 DECLARE
 	l_cube_id VARCHAR(16);
 	r_typ bot.t_type;
@@ -674,23 +674,23 @@ BEGIN
 		ORDER BY cube_sequence
 	LOOP
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, ftabs(p_level) || '+TYPE[' || r_typ.cube_id || ']:' || fenperc(r_typ.name) || '|' || fenperc(r_typ.code) || '|' || fenperc(r_typ.flag_partial_key) || '|' || fenperc(r_typ.flag_recursive) || '|' || fenperc(r_typ.recursive_cardinality) || '|' || fenperc(r_typ.cardinality) || '|' || fenperc(r_typ.sort_order) || '|' || fenperc(r_typ.icon) || '|' || fenperc(r_typ.transferable) || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '+TYPE[' || r_typ.cube_id || ']:' || cube_exp.fenperc(r_typ.name) || '|' || cube_exp.fenperc(r_typ.code) || '|' || cube_exp.fenperc(r_typ.flag_partial_key) || '|' || cube_exp.fenperc(r_typ.flag_recursive) || '|' || cube_exp.fenperc(r_typ.recursive_cardinality) || '|' || cube_exp.fenperc(r_typ.cardinality) || '|' || cube_exp.fenperc(r_typ.sort_order) || '|' || cube_exp.fenperc(r_typ.icon) || '|' || cube_exp.fenperc(r_typ.transferable) || ';');
 		p_level := p_level + 1;
-		CALL export_tsg (p_line_num, p_level, r_typ);
-		CALL export_atb (p_line_num, p_level, r_typ);
-		CALL export_ref (p_line_num, p_level, r_typ);
-		CALL export_rtt (p_line_num, p_level, r_typ);
-		CALL export_jsn (p_line_num, p_level, r_typ);
-		CALL export_dct (p_line_num, p_level, r_typ);
-		CALL export_typ_recursive (p_line_num, p_level, r_typ);
+		CALL cube_exp.export_tsg (p_line_num, p_level, r_typ);
+		CALL cube_exp.export_atb (p_line_num, p_level, r_typ);
+		CALL cube_exp.export_ref (p_line_num, p_level, r_typ);
+		CALL cube_exp.export_rtt (p_line_num, p_level, r_typ);
+		CALL cube_exp.export_jsn (p_line_num, p_level, r_typ);
+		CALL cube_exp.export_dct (p_line_num, p_level, r_typ);
+		CALL cube_exp.export_typ_recursive (p_line_num, p_level, r_typ);
 		p_level := p_level - 1;
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, ftabs(p_level) || '-TYPE:' || r_typ.name || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '-TYPE:' || r_typ.name || ';');
 	END LOOP;
 END; 
 $$;
 
-CREATE PROCEDURE cube_exp.export_bot (p_system IN VARCHAR, p_line_num NUMERIC, p_level NUMERIC) LANGUAGE plpgsql AS $$
+CREATE PROCEDURE cube_exp.export_bot (p_system IN VARCHAR, p_line_num INOUT NUMERIC, p_level INOUT NUMERIC) LANGUAGE plpgsql AS $$
 DECLARE
 	l_cube_id VARCHAR(16);
 	r_bot bot.t_business_object_type;
@@ -702,17 +702,17 @@ BEGIN
 		ORDER BY cube_sequence
 	LOOP
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, ftabs(p_level) || '+BUSINESS_OBJECT_TYPE[' || r_bot.cube_id || ']:' || fenperc(r_bot.name) || '|' || fenperc(r_bot.cube_tsg_type) || '|' || fenperc(r_bot.directory) || '|' || fenperc(r_bot.api_url) || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '+BUSINESS_OBJECT_TYPE[' || r_bot.cube_id || ']:' || cube_exp.fenperc(r_bot.name) || '|' || cube_exp.fenperc(r_bot.cube_tsg_type) || '|' || cube_exp.fenperc(r_bot.directory) || '|' || cube_exp.fenperc(r_bot.api_url) || ';');
 		p_level := p_level + 1;
-		CALL export_typ (p_line_num, p_level, r_bot);
+		CALL cube_exp.export_typ (p_line_num, p_level, r_bot);
 		p_level := p_level - 1;
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, ftabs(p_level) || '-BUSINESS_OBJECT_TYPE:' || r_bot.name || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '-BUSINESS_OBJECT_TYPE:' || r_bot.name || ';');
 	END LOOP;
 END; 
 $$;
 
-CREATE PROCEDURE cube_exp.export_sbt (p_line_num NUMERIC, p_level NUMERIC, p_sys IN sys.t_system) LANGUAGE plpgsql AS $$
+CREATE PROCEDURE cube_exp.export_sbt (p_line_num INOUT NUMERIC, p_level INOUT NUMERIC, p_sys IN sys.t_system) LANGUAGE plpgsql AS $$
 DECLARE
 	l_cube_id VARCHAR(16);
 	r_sbt sys.t_system_bo_type;
@@ -724,25 +724,25 @@ BEGIN
 		ORDER BY cube_sequence
 	LOOP
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, ftabs(p_level) || '+SYSTEM_BO_TYPE[' || r_sbt.cube_id || ']:' || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '+SYSTEM_BO_TYPE[' || r_sbt.cube_id || ']:' || ';');
 		p_level := p_level + 1;
 		BEGIN
 			SELECT cube_id INTO l_cube_id FROM bot.t_business_object_type
 			WHERE name = r_sbt.xk_bot_name;
 			p_line_num := p_line_num + 1;
-			INSERT INTO cube_exp.line VALUES (p_line_num, ftabs(p_level) || '>BUSINESS_OBJECT_TYPE:' || l_cube_id || ';');
+			INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '>BUSINESS_OBJECT_TYPE:' || l_cube_id || ';');
 		EXCEPTION
 			WHEN NO_DATA_FOUND THEN
 				NULL; 
 		END;
 		p_level := p_level - 1;
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, ftabs(p_level) || '-SYSTEM_BO_TYPE:' || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '-SYSTEM_BO_TYPE:' || ';');
 	END LOOP;
 END; 
 $$;
 
-CREATE PROCEDURE cube_exp.export_sys (p_system IN VARCHAR, p_line_num NUMERIC, p_level NUMERIC) LANGUAGE plpgsql AS $$
+CREATE PROCEDURE cube_exp.export_sys (p_system IN VARCHAR, p_line_num INOUT NUMERIC, p_level INOUT NUMERIC) LANGUAGE plpgsql AS $$
 DECLARE
 	l_cube_id VARCHAR(16);
 	r_sys sys.t_system;
@@ -754,17 +754,17 @@ BEGIN
 		ORDER BY name
 	LOOP
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, ftabs(p_level) || '+SYSTEM[' || r_sys.cube_id || ']:' || fenperc(r_sys.name) || '|' || fenperc(r_sys.cube_tsg_type) || '|' || fenperc(r_sys.database) || '|' || fenperc(r_sys.schema) || '|' || fenperc(r_sys.password) || '|' || fenperc(r_sys.table_prefix) || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '+SYSTEM[' || r_sys.cube_id || ']:' || cube_exp.fenperc(r_sys.name) || '|' || cube_exp.fenperc(r_sys.cube_tsg_type) || '|' || cube_exp.fenperc(r_sys.database) || '|' || cube_exp.fenperc(r_sys.schema) || '|' || cube_exp.fenperc(r_sys.password) || '|' || cube_exp.fenperc(r_sys.table_prefix) || ';');
 		p_level := p_level + 1;
-		CALL export_sbt (p_line_num, p_level, r_sys);
+		CALL cube_exp.export_sbt (p_line_num, p_level, r_sys);
 		p_level := p_level - 1;
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, ftabs(p_level) || '-SYSTEM:' || r_sys.name || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '-SYSTEM:' || r_sys.name || ';');
 	END LOOP;
 END; 
 $$;
 
-CREATE PROCEDURE cube_exp.export_arg (p_line_num NUMERIC, p_level NUMERIC, p_fun IN fun.t_function) LANGUAGE plpgsql AS $$
+CREATE PROCEDURE cube_exp.export_arg (p_line_num INOUT NUMERIC, p_level INOUT NUMERIC, p_fun IN fun.t_function) LANGUAGE plpgsql AS $$
 DECLARE
 	l_cube_id VARCHAR(16);
 	r_arg fun.t_argument;
@@ -776,14 +776,14 @@ BEGIN
 		ORDER BY cube_sequence
 	LOOP
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, ftabs(p_level) || '=ARGUMENT[' || r_arg.cube_id || ']:' || fenperc(r_arg.name) || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '=ARGUMENT[' || r_arg.cube_id || ']:' || cube_exp.fenperc(r_arg.name) || ';');
 		p_level := p_level + 1;
 		p_level := p_level - 1;
 	END LOOP;
 END; 
 $$;
 
-CREATE PROCEDURE cube_exp.export_fun (p_line_num NUMERIC, p_level NUMERIC) LANGUAGE plpgsql AS $$
+CREATE PROCEDURE cube_exp.export_fun (p_line_num INOUT NUMERIC, p_level INOUT NUMERIC) LANGUAGE plpgsql AS $$
 DECLARE
 	l_cube_id VARCHAR(16);
 	r_fun fun.t_function;
@@ -794,12 +794,12 @@ BEGIN
 		ORDER BY cube_id
 	LOOP
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, ftabs(p_level) || '+FUNCTION[' || r_fun.cube_id || ']:' || fenperc(r_fun.name) || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '+FUNCTION[' || r_fun.cube_id || ']:' || cube_exp.fenperc(r_fun.name) || ';');
 		p_level := p_level + 1;
-		CALL export_arg (p_line_num, p_level, r_fun);
+		CALL cube_exp.export_arg (p_line_num, p_level, r_fun);
 		p_level := p_level - 1;
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, ftabs(p_level) || '-FUNCTION:' || r_fun.name || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '-FUNCTION:' || r_fun.name || ';');
 	END LOOP;
 END; 
 $$;
@@ -809,7 +809,7 @@ DECLARE
 	l_level NUMERIC(4) := 0;
 	l_line_num NUMERIC(8) := 0;
 BEGIN
-	DELETE FROM cube.line;
+	DELETE FROM cube_exp.line;
 	l_line_num := 1;
 	INSERT INTO cube_exp.line VALUES (l_line_num, '! Generated with CubeGen');
 	l_line_num := 2;
@@ -1067,9 +1067,9 @@ BEGIN
 	l_line_num := l_line_num + 1;
 	INSERT INTO cube_exp.line VALUES (l_line_num, '-META_MODEL:CUBE;');
 	
-	CALL export_itp (l_line_num, l_level);
-	CALL export_bot (p_system, l_line_num, l_level);
-	CALL export_sys (p_system, l_line_num, l_level);
-	CALL export_fun (l_line_num, l_level);
+	CALL cube_exp.export_itp (l_line_num, l_level);
+	CALL cube_exp.export_bot (p_system, l_line_num, l_level);
+	CALL cube_exp.export_sys (p_system, l_line_num, l_level);
+	CALL cube_exp.export_fun (l_line_num, l_level);
 END;
 $$;

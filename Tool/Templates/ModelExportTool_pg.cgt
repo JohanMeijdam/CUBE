@@ -16,28 +16,28 @@ BEGIN
 		ORDER BY [[IF:6=K]][[LOOP,ATTRIBUTE:1=Y]]<<ATTRIBUTE:L>>[[IF:!LAST]], [[ENDIF]][[ENDLOOP,ATTRIBUTE]][[ELSIF:6=P]]cube_sequence[[ELSE]]cube_id[[ENDIF]]
 	LOOP
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, ftabs(p_level) || '[[IF:CHILD(TYPE)[OR]CHILD(REFERENCE)]]+[[ELSE]]=[[ENDIF]]<<TYPE:U>>[' || r_<<TYPE1:L>>.cube_id || ']:' || [[LOOP,ATTRIBUTE:3=N[AND]!CHILD(DERIVATION)]][[IF:CHILD(INFORMATION_TYPE_ELEMENT:2=TEXT)]]fenperc(r_<<TYPE1:L>>.<<ATTRIBUTE:L>>)[[ELSE]]r_<<TYPE1:L>>.<<ATTRIBUTE:L>>[[ENDIF]] || [[IF:!LAST]]'|' || [[ENDIF]][[ENDLOOP,ATTRIBUTE]]';');
+		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '[[IF:CHILD(TYPE)[OR]CHILD(REFERENCE)]]+[[ELSE]]=[[ENDIF]]<<TYPE:U>>[' || r_<<TYPE1:L>>.cube_id || ']:' || [[LOOP,ATTRIBUTE:3=N[AND]!CHILD(DERIVATION)]][[IF:CHILD(INFORMATION_TYPE_ELEMENT:2=TEXT)]]cube_exp.fenperc(r_<<TYPE1:L>>.<<ATTRIBUTE:L>>)[[ELSE]]r_<<TYPE1:L>>.<<ATTRIBUTE:L>>[[ENDIF]] || [[IF:!LAST]]'|' || [[ENDIF]][[ENDLOOP,ATTRIBUTE]]';');
 		p_level := p_level + 1;[[LOOP,TYPE]]
-		CALL export_<<TYPE1:L>> (p_line_num, p_level, r_<<TYPE(N-1)1:L>>);[[ENDLOOP,TYPE]][[IF:3=Y]]
-		CALL export_<<TYPE1:L>>_recursive (p_line_num, p_level, r_<<TYPE1:L>>);[[ENDIF]][[LOOP,REFERENCE]]
+		CALL cube_exp.export_<<TYPE1:L>> (p_line_num, p_level, r_<<TYPE(N-1)1:L>>);[[ENDLOOP,TYPE]][[IF:3=Y]]
+		CALL cube_exp.export_<<TYPE1:L>>_recursive (p_line_num, p_level, r_<<TYPE1:L>>);[[ENDIF]][[LOOP,REFERENCE]]
 		BEGIN
 			SELECT cube_id INTO l_cube_id FROM [[IF:CHILD(BUSINESS_OBJECT_TYPE)]][[LOOP,BUSINESS_OBJECT_TYPE]][[LOOP,TYPE]]<<TYPE1:L>>[[ENDLOOP,TYPE]][[ENDLOOP,BUSINESS_OBJECT_TYPE]][[ELSE]]<<TYPE(1)1:L>>[[ENDIF]].[[LOOP,REFERENCE_TYPE:FIRST]]t_<<REFERENCE_TYPE:L>>[[ENDLOOP,REFERENCE_TYPE]]
 			WHERE [[LOOP,FKEY]][[LOOP,ATTRIBUTE_SOURCE]]<<ATTRIBUTE_SOURCE:L>>[[ENDLOOP,ATTRIBUTE_SOURCE]] = r_<<TYPE1:L>>.<<FKEY:L>>[[IF:!LAST]]
 			  AND [[ENDIF]][[ENDLOOP,FKEY]];
 			p_line_num := p_line_num + 1;
-			INSERT INTO cube_exp.line VALUES (p_line_num, ftabs(p_level) || '>[[LOOP,REFERENCE_TYPE]][[IF:0=TYPE]]<<TYPE:U>>_[[ENDIF]]<<REFERENCE_TYPE:U>>[[ENDLOOP,REFERENCE_TYPE]][[IF:!3=0]]_<<REFERENCE:U>>[[ENDIF]]:' || l_cube_id || ';');
+			INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '>[[LOOP,REFERENCE_TYPE]][[IF:0=TYPE]]<<TYPE:U>>_[[ENDIF]]<<REFERENCE_TYPE:U>>[[ENDLOOP,REFERENCE_TYPE]][[IF:!3=0]]_<<REFERENCE:U>>[[ENDIF]]:' || l_cube_id || ';');
 		EXCEPTION
 			WHEN NO_DATA_FOUND THEN
 				NULL; 
 		END;[[ENDLOOP,REFERENCE]]
 		p_level := p_level - 1;[[IF:CHILD(TYPE)[OR]CHILD(REFERENCE)]]
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, ftabs(p_level) || '-<<TYPE:U>>:' || [[LOOP,ATTRIBUTE:3=N[AND]!CHILD(DERIVATION)]][[IF:FIRST]]r_<<TYPE1:L>>.<<ATTRIBUTE:L>> || [[ENDIF]][[ENDLOOP,ATTRIBUTE]]';');[[ENDIF]]
+		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '-<<TYPE:U>>:' || [[LOOP,ATTRIBUTE:3=N[AND]!CHILD(DERIVATION)]][[IF:FIRST]]r_<<TYPE1:L>>.<<ATTRIBUTE:L>> || [[ENDIF]][[ENDLOOP,ATTRIBUTE]]';');[[ENDIF]]
 	END LOOP;
 END; 
 $$;[[ENDTEXT]]
 [[TEXT,SIGNATURE_RECURSIVE]]_recursive (p_line_num INOUT NUMERIC, p_level INOUT NUMERIC, p_<<TYPE1:L>> IN <<TYPE(1)1:L>>.t_<<TYPE:L>>)[[ENDTEXT]]
-[[TEXT,SIGNATURE_NORMAL]] ([[IF:0=SYSTEM[OR]0=BUSINESS_OBJECT_TYPE]]p_system IN VARCHAR, [[ENDIF]]p_line_num NUMERIC, p_level NUMERIC[[IF:!ROOT]], p_<<TYPE(N-1)1:L>> IN <<TYPE(1)1:L>>.t_<<TYPE(N-1):L>>[[ENDIF]])[[ENDTEXT]]
+[[TEXT,SIGNATURE_NORMAL]] ([[IF:0=SYSTEM[OR]0=BUSINESS_OBJECT_TYPE]]p_system IN VARCHAR, [[ENDIF]]p_line_num INOUT NUMERIC, p_level INOUT NUMERIC[[IF:!ROOT]], p_<<TYPE(N-1)1:L>> IN <<TYPE(1)1:L>>.t_<<TYPE(N-1):L>>[[ENDIF]])[[ENDTEXT]]
 [[TEXT,F_FKEY_RECURSIVE]]<<TYPE1:L>>.<<ATTRIBUTE:L>>[[ENDTEXT]]
 [[TEXT,F_FKEY_NORMAL]]<<TYPE(N-1)1:L>>.[[LOOP,ATTRIBUTE_SOURCE]]<<ATTRIBUTE_SOURCE:L>>[[ENDLOOP,ATTRIBUTE_SOURCE]][[ENDTEXT]]
 [[TEXT,IS_R_FKEY_RECURSIVE]] = p_<<TYPE1:L>>.[[LOOP,ATTRIBUTE_SOURCE]]<<ATTRIBUTE_SOURCE:L>>[[ENDLOOP,ATTRIBUTE_SOURCE]][[ENDTEXT]]
@@ -93,7 +93,7 @@ DECLARE
 	l_level NUMERIC(4) := 0;
 	l_line_num NUMERIC(8) := 0;
 BEGIN
-	DELETE FROM cube.line;
+	DELETE FROM cube_exp.line;
 	l_line_num := 1;
 	INSERT INTO cube_exp.line VALUES (l_line_num, '! Generated with CubeGen');
 	l_line_num := 2;
@@ -109,7 +109,7 @@ BEGIN
 	l_line_num := l_line_num + 1;
 	INSERT INTO cube_exp.line VALUES (l_line_num, '-META_MODEL:CUBE;');
 	[[LOOP,SYSTEM_BO_TYPE]][[LOOP,BUSINESS_OBJECT_TYPE]][[LOOP,TYPE]]
-	CALL export_<<TYPE1:L>> ([[IF:0=SYSTEM[OR]0=BUSINESS_OBJECT_TYPE]]p_system, [[ENDIF]]l_line_num, l_level);[[ENDLOOP,TYPE]][[ENDLOOP,BUSINESS_OBJECT_TYPE]][[ENDLOOP,SYSTEM_BO_TYPE]]
+	CALL cube_exp.export_<<TYPE1:L>> ([[IF:0=SYSTEM[OR]0=BUSINESS_OBJECT_TYPE]]p_system, [[ENDIF]]l_line_num, l_level);[[ENDLOOP,TYPE]][[ENDLOOP,BUSINESS_OBJECT_TYPE]][[ENDLOOP,SYSTEM_BO_TYPE]]
 END;
 $$;
 [[ENDLOOP,SYSTEM]][[ENDBODY]]
