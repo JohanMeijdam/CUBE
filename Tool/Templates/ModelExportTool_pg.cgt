@@ -16,7 +16,7 @@ BEGIN
 		ORDER BY [[IF:6=K]][[LOOP,ATTRIBUTE:1=Y]]<<ATTRIBUTE:L>>[[IF:!LAST]], [[ENDIF]][[ENDLOOP,ATTRIBUTE]][[ELSIF:6=P]]cube_sequence[[ELSE]]cube_id[[ENDIF]]
 	LOOP
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '[[IF:CHILD(TYPE)[OR]CHILD(REFERENCE)]]+[[ELSE]]=[[ENDIF]]<<TYPE:U>>[' || r_<<TYPE1:L>>.cube_id || ']:' || [[LOOP,ATTRIBUTE:3=N[AND]!CHILD(DERIVATION)]][[IF:CHILD(INFORMATION_TYPE_ELEMENT:2=TEXT)]]cube_exp.fenperc(r_<<TYPE1:L>>.<<ATTRIBUTE:L>>)[[ELSE]]r_<<TYPE1:L>>.<<ATTRIBUTE:L>>[[ENDIF]] || [[IF:!LAST]]'|' || [[ENDIF]][[ENDLOOP,ATTRIBUTE]]';');
+		INSERT INTO cube_exp.line VALUES (p_line_num, CONCAT(cube_exp.ftabs(p_level),'[[IF:CHILD(TYPE)[OR]CHILD(REFERENCE)]]+[[ELSE]]=[[ENDIF]]<<TYPE:U>>[', r_<<TYPE1:L>>.cube_id, ']:', [[LOOP,ATTRIBUTE:3=N[AND]!CHILD(DERIVATION)]][[IF:CHILD(INFORMATION_TYPE_ELEMENT:2=TEXT)]]cube_exp.fenperc(r_<<TYPE1:L>>.<<ATTRIBUTE:L>>)[[ELSE]]r_<<TYPE1:L>>.<<ATTRIBUTE:L>>[[ENDIF]], [[IF:!LAST]]'|', [[ENDIF]][[ENDLOOP,ATTRIBUTE]]';'));
 		p_level := p_level + 1;[[LOOP,TYPE]]
 		CALL cube_exp.export_<<TYPE1:L>> (p_line_num, p_level, r_<<TYPE(N-1)1:L>>);[[ENDLOOP,TYPE]][[IF:3=Y]]
 		CALL cube_exp.export_<<TYPE1:L>>_recursive (p_line_num, p_level, r_<<TYPE1:L>>);[[ENDIF]][[LOOP,REFERENCE]]
@@ -25,14 +25,14 @@ BEGIN
 			WHERE [[LOOP,FKEY]][[LOOP,ATTRIBUTE_SOURCE]]<<ATTRIBUTE_SOURCE:L>>[[ENDLOOP,ATTRIBUTE_SOURCE]] = r_<<TYPE1:L>>.<<FKEY:L>>[[IF:!LAST]]
 			  AND [[ENDIF]][[ENDLOOP,FKEY]];
 			p_line_num := p_line_num + 1;
-			INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '>[[LOOP,REFERENCE_TYPE]][[IF:0=TYPE]]<<TYPE:U>>_[[ENDIF]]<<REFERENCE_TYPE:U>>[[ENDLOOP,REFERENCE_TYPE]][[IF:!3=0]]_<<REFERENCE:U>>[[ENDIF]]:' || l_cube_id || ';');
+			INSERT INTO cube_exp.line VALUES (p_line_num, CONCAT(cube_exp.ftabs(p_level), '>[[LOOP,REFERENCE_TYPE]][[IF:0=TYPE]]<<TYPE:U>>_[[ENDIF]]<<REFERENCE_TYPE:U>>[[ENDLOOP,REFERENCE_TYPE]][[IF:!3=0]]_<<REFERENCE:U>>[[ENDIF]]:', l_cube_id, ';'));
 		EXCEPTION
 			WHEN NO_DATA_FOUND THEN
 				NULL; 
 		END;[[ENDLOOP,REFERENCE]]
 		p_level := p_level - 1;[[IF:CHILD(TYPE)[OR]CHILD(REFERENCE)]]
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '-<<TYPE:U>>:' || [[LOOP,ATTRIBUTE:3=N[AND]!CHILD(DERIVATION)]][[IF:FIRST]]r_<<TYPE1:L>>.<<ATTRIBUTE:L>> || [[ENDIF]][[ENDLOOP,ATTRIBUTE]]';');[[ENDIF]]
+		INSERT INTO cube_exp.line VALUES (p_line_num,CONCAT(cube_exp.ftabs(p_level), '-<<TYPE:U>>:', [[LOOP,ATTRIBUTE:3=N[AND]!CHILD(DERIVATION)]][[IF:FIRST]]r_<<TYPE1:L>>.<<ATTRIBUTE:L>>, [[ENDIF]][[ENDLOOP,ATTRIBUTE]]';'));[[ENDIF]]
 	END LOOP;
 END; 
 $$;[[ENDTEXT]]

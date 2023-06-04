@@ -10,9 +10,9 @@ echo Start > %logfile%
 set PGPASSWORD=%db_password%
 
 CubeGen.exe %sysdir%\CubeBoModel.cgm Templates\ModelExportTool_pg.cgt %sysdir%\ModelExportTool_pg.sql >> %logfile% 2>&1
-::psql -h %db_host% -p %db_port% -d %db_name% -U %db_user% -f %sysdir%\ModelExportTool_pg.sql >> %logfile% 2>&1
+psql -h %db_host% -p %db_port% -d %db_name% -U %db_user% -f %sysdir%\ModelExportTool_pg.sql >> %logfile% 2>&1
 ::psql -h %db_host% -p %db_port% -d %db_name% -U %db_user% -f %sysdir%\ModelExport_pg.sql -v model="%sysdir%\CubeToolModelPg.cgm" -v system="'%sysname%'" >> %logfile% 2>&1
-psql -h %db_host% -p %db_port% -d %db_name% -U %db_user% -f %sysdir%\ModelExport_pg.sql -v model="%sysdir%\CubeToolModelPg.cgm" -v system="ALL" >> %logfile% 2>&1
+psql -h %db_host% -p %db_port% -d %db_name% -U %db_user% -f %sysdir%\ModelExport_pg.sql -v model="%sysdir%\CubeToolModelPg.cgm" -v system="'CubeDemo'" >> %logfile% 2>&1
 ::psql -h %db_host% -p %db_port% -d %db_name% -U %db_user% -f %sysdir%\test.sql -v model="%sysdir%\CubeToolModelPg.cgm" -v system="'%sysname%'" >> %logfile% 2>&1
 :Scripts
 echo Generate Scripts.

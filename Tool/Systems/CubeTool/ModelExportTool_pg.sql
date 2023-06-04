@@ -54,7 +54,7 @@ BEGIN
 		ORDER BY cube_sequence
 	LOOP
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '=PERMITTED_VALUE[' || r_val.cube_id || ']:' || cube_exp.fenperc(r_val.code) || '|' || cube_exp.fenperc(r_val.prompt) || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num, CONCAT(cube_exp.ftabs(p_level),'=PERMITTED_VALUE[', r_val.cube_id, ']:', cube_exp.fenperc(r_val.code), '|', cube_exp.fenperc(r_val.prompt), ';'));
 		p_level := p_level + 1;
 		p_level := p_level - 1;
 	END LOOP;
@@ -73,12 +73,12 @@ BEGIN
 		ORDER BY fk_itp_name, sequence
 	LOOP
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '+INFORMATION_TYPE_ELEMENT[' || r_ite.cube_id || ']:' || r_ite.sequence || '|' || cube_exp.fenperc(r_ite.suffix) || '|' || cube_exp.fenperc(r_ite.domain) || '|' || r_ite.length || '|' || r_ite.decimals || '|' || cube_exp.fenperc(r_ite.case_sensitive) || '|' || cube_exp.fenperc(r_ite.default_value) || '|' || cube_exp.fenperc(r_ite.spaces_allowed) || '|' || cube_exp.fenperc(r_ite.presentation) || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num, CONCAT(cube_exp.ftabs(p_level),'+INFORMATION_TYPE_ELEMENT[', r_ite.cube_id, ']:', r_ite.sequence, '|', cube_exp.fenperc(r_ite.suffix), '|', cube_exp.fenperc(r_ite.domain), '|', r_ite.length, '|', r_ite.decimals, '|', cube_exp.fenperc(r_ite.case_sensitive), '|', cube_exp.fenperc(r_ite.default_value), '|', cube_exp.fenperc(r_ite.spaces_allowed), '|', cube_exp.fenperc(r_ite.presentation), ';'));
 		p_level := p_level + 1;
 		CALL cube_exp.export_val (p_line_num, p_level, r_ite);
 		p_level := p_level - 1;
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '-INFORMATION_TYPE_ELEMENT:' || r_ite.sequence || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num,CONCAT(cube_exp.ftabs(p_level), '-INFORMATION_TYPE_ELEMENT:', r_ite.sequence, ';'));
 	END LOOP;
 END; 
 $$;
@@ -94,12 +94,12 @@ BEGIN
 		ORDER BY name
 	LOOP
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '+INFORMATION_TYPE[' || r_itp.cube_id || ']:' || cube_exp.fenperc(r_itp.name) || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num, CONCAT(cube_exp.ftabs(p_level),'+INFORMATION_TYPE[', r_itp.cube_id, ']:', cube_exp.fenperc(r_itp.name), ';'));
 		p_level := p_level + 1;
 		CALL cube_exp.export_ite (p_line_num, p_level, r_itp);
 		p_level := p_level - 1;
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '-INFORMATION_TYPE:' || r_itp.name || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num,CONCAT(cube_exp.ftabs(p_level), '-INFORMATION_TYPE:', r_itp.name, ';'));
 	END LOOP;
 END; 
 $$;
@@ -118,7 +118,7 @@ BEGIN
 		ORDER BY cube_sequence
 	LOOP
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '+TYPE_SPECIALISATION[' || r_tsp.cube_id || ']:' || cube_exp.fenperc(r_tsp.code) || '|' || cube_exp.fenperc(r_tsp.name) || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num, CONCAT(cube_exp.ftabs(p_level),'+TYPE_SPECIALISATION[', r_tsp.cube_id, ']:', cube_exp.fenperc(r_tsp.code), '|', cube_exp.fenperc(r_tsp.name), ';'));
 		p_level := p_level + 1;
 		BEGIN
 			SELECT cube_id INTO l_cube_id FROM bot.t_type_specialisation
@@ -126,14 +126,14 @@ BEGIN
 			  AND fk_tsg_code = r_tsp.xf_tsp_tsg_code
 			  AND code = r_tsp.xk_tsp_code;
 			p_line_num := p_line_num + 1;
-			INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '>TYPE_SPECIALISATION:' || l_cube_id || ';');
+			INSERT INTO cube_exp.line VALUES (p_line_num, CONCAT(cube_exp.ftabs(p_level), '>TYPE_SPECIALISATION:', l_cube_id, ';'));
 		EXCEPTION
 			WHEN NO_DATA_FOUND THEN
 				NULL; 
 		END;
 		p_level := p_level - 1;
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '-TYPE_SPECIALISATION:' || r_tsp.code || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num,CONCAT(cube_exp.ftabs(p_level), '-TYPE_SPECIALISATION:', r_tsp.code, ';'));
 	END LOOP;
 END; 
 $$;
@@ -152,7 +152,7 @@ BEGIN
 		ORDER BY cube_sequence
 	LOOP
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '+TYPE_SPECIALISATION_GROUP[' || r_tsg.cube_id || ']:' || cube_exp.fenperc(r_tsg.code) || '|' || cube_exp.fenperc(r_tsg.name) || '|' || cube_exp.fenperc(r_tsg.primary_key) || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num, CONCAT(cube_exp.ftabs(p_level),'+TYPE_SPECIALISATION_GROUP[', r_tsg.cube_id, ']:', cube_exp.fenperc(r_tsg.code), '|', cube_exp.fenperc(r_tsg.name), '|', cube_exp.fenperc(r_tsg.primary_key), ';'));
 		p_level := p_level + 1;
 		CALL cube_exp.export_tsp (p_line_num, p_level, r_tsg);
 		CALL cube_exp.export_tsg_recursive (p_line_num, p_level, r_tsg);
@@ -161,14 +161,14 @@ BEGIN
 			WHERE fk_typ_name = r_tsg.xf_atb_typ_name
 			  AND name = r_tsg.xk_atb_name;
 			p_line_num := p_line_num + 1;
-			INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '>ATTRIBUTE:' || l_cube_id || ';');
+			INSERT INTO cube_exp.line VALUES (p_line_num, CONCAT(cube_exp.ftabs(p_level), '>ATTRIBUTE:', l_cube_id, ';'));
 		EXCEPTION
 			WHEN NO_DATA_FOUND THEN
 				NULL; 
 		END;
 		p_level := p_level - 1;
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '-TYPE_SPECIALISATION_GROUP:' || r_tsg.code || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num,CONCAT(cube_exp.ftabs(p_level), '-TYPE_SPECIALISATION_GROUP:', r_tsg.code, ';'));
 	END LOOP;
 END; 
 $$;
@@ -187,7 +187,7 @@ BEGIN
 		ORDER BY cube_sequence
 	LOOP
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '+TYPE_SPECIALISATION_GROUP[' || r_tsg.cube_id || ']:' || cube_exp.fenperc(r_tsg.code) || '|' || cube_exp.fenperc(r_tsg.name) || '|' || cube_exp.fenperc(r_tsg.primary_key) || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num, CONCAT(cube_exp.ftabs(p_level),'+TYPE_SPECIALISATION_GROUP[', r_tsg.cube_id, ']:', cube_exp.fenperc(r_tsg.code), '|', cube_exp.fenperc(r_tsg.name), '|', cube_exp.fenperc(r_tsg.primary_key), ';'));
 		p_level := p_level + 1;
 		CALL cube_exp.export_tsp (p_line_num, p_level, r_tsg);
 		CALL cube_exp.export_tsg_recursive (p_line_num, p_level, r_tsg);
@@ -196,14 +196,14 @@ BEGIN
 			WHERE fk_typ_name = r_tsg.xf_atb_typ_name
 			  AND name = r_tsg.xk_atb_name;
 			p_line_num := p_line_num + 1;
-			INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '>ATTRIBUTE:' || l_cube_id || ';');
+			INSERT INTO cube_exp.line VALUES (p_line_num, CONCAT(cube_exp.ftabs(p_level), '>ATTRIBUTE:', l_cube_id, ';'));
 		EXCEPTION
 			WHEN NO_DATA_FOUND THEN
 				NULL; 
 		END;
 		p_level := p_level - 1;
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '-TYPE_SPECIALISATION_GROUP:' || r_tsg.code || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num,CONCAT(cube_exp.ftabs(p_level), '-TYPE_SPECIALISATION_GROUP:', r_tsg.code, ';'));
 	END LOOP;
 END; 
 $$;
@@ -222,13 +222,13 @@ BEGIN
 		ORDER BY cube_id
 	LOOP
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '+DERIVATION[' || r_der.cube_id || ']:' || cube_exp.fenperc(r_der.cube_tsg_type) || '|' || cube_exp.fenperc(r_der.aggregate_function) || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num, CONCAT(cube_exp.ftabs(p_level),'+DERIVATION[', r_der.cube_id, ']:', cube_exp.fenperc(r_der.cube_tsg_type), '|', cube_exp.fenperc(r_der.aggregate_function), ';'));
 		p_level := p_level + 1;
 		BEGIN
 			SELECT cube_id INTO l_cube_id FROM bot.t_type
 			WHERE name = r_der.xk_typ_name;
 			p_line_num := p_line_num + 1;
-			INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '>DERIVATION_TYPE:' || l_cube_id || ';');
+			INSERT INTO cube_exp.line VALUES (p_line_num, CONCAT(cube_exp.ftabs(p_level), '>DERIVATION_TYPE:', l_cube_id, ';'));
 		EXCEPTION
 			WHEN NO_DATA_FOUND THEN
 				NULL; 
@@ -237,14 +237,14 @@ BEGIN
 			SELECT cube_id INTO l_cube_id FROM bot.t_type
 			WHERE name = r_der.xk_typ_name_1;
 			p_line_num := p_line_num + 1;
-			INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '>DERIVATION_TYPE_CONCERNS_CHILD:' || l_cube_id || ';');
+			INSERT INTO cube_exp.line VALUES (p_line_num, CONCAT(cube_exp.ftabs(p_level), '>DERIVATION_TYPE_CONCERNS_CHILD:', l_cube_id, ';'));
 		EXCEPTION
 			WHEN NO_DATA_FOUND THEN
 				NULL; 
 		END;
 		p_level := p_level - 1;
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '-DERIVATION:' || r_der.cube_tsg_type || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num,CONCAT(cube_exp.ftabs(p_level), '-DERIVATION:', r_der.cube_tsg_type, ';'));
 	END LOOP;
 END; 
 $$;
@@ -263,7 +263,7 @@ BEGIN
 		ORDER BY cube_id
 	LOOP
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '=DESCRIPTION_ATTRIBUTE[' || r_dca.cube_id || ']:' || cube_exp.fenperc(r_dca.text) || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num, CONCAT(cube_exp.ftabs(p_level),'=DESCRIPTION_ATTRIBUTE[', r_dca.cube_id, ']:', cube_exp.fenperc(r_dca.text), ';'));
 		p_level := p_level + 1;
 		p_level := p_level - 1;
 	END LOOP;
@@ -284,7 +284,7 @@ BEGIN
 		ORDER BY fk_typ_name, fk_atb_name, xf_tsp_typ_name, xf_tsp_tsg_code, xk_tsp_code
 	LOOP
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '+RESTRICTION_TYPE_SPEC_ATB[' || r_rta.cube_id || ']:' || cube_exp.fenperc(r_rta.include_or_exclude) || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num, CONCAT(cube_exp.ftabs(p_level),'+RESTRICTION_TYPE_SPEC_ATB[', r_rta.cube_id, ']:', cube_exp.fenperc(r_rta.include_or_exclude), ';'));
 		p_level := p_level + 1;
 		BEGIN
 			SELECT cube_id INTO l_cube_id FROM bot.t_type_specialisation
@@ -292,14 +292,14 @@ BEGIN
 			  AND fk_tsg_code = r_rta.xf_tsp_tsg_code
 			  AND code = r_rta.xk_tsp_code;
 			p_line_num := p_line_num + 1;
-			INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '>TYPE_SPECIALISATION:' || l_cube_id || ';');
+			INSERT INTO cube_exp.line VALUES (p_line_num, CONCAT(cube_exp.ftabs(p_level), '>TYPE_SPECIALISATION:', l_cube_id, ';'));
 		EXCEPTION
 			WHEN NO_DATA_FOUND THEN
 				NULL; 
 		END;
 		p_level := p_level - 1;
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '-RESTRICTION_TYPE_SPEC_ATB:' || r_rta.include_or_exclude || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num,CONCAT(cube_exp.ftabs(p_level), '-RESTRICTION_TYPE_SPEC_ATB:', r_rta.include_or_exclude, ';'));
 	END LOOP;
 END; 
 $$;
@@ -317,7 +317,7 @@ BEGIN
 		ORDER BY cube_sequence
 	LOOP
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '+ATTRIBUTE[' || r_atb.cube_id || ']:' || cube_exp.fenperc(r_atb.name) || '|' || cube_exp.fenperc(r_atb.primary_key) || '|' || cube_exp.fenperc(r_atb.code_display_key) || '|' || cube_exp.fenperc(r_atb.code_foreign_key) || '|' || cube_exp.fenperc(r_atb.flag_hidden) || '|' || cube_exp.fenperc(r_atb.default_value) || '|' || cube_exp.fenperc(r_atb.unchangeable) || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num, CONCAT(cube_exp.ftabs(p_level),'+ATTRIBUTE[', r_atb.cube_id, ']:', cube_exp.fenperc(r_atb.name), '|', cube_exp.fenperc(r_atb.primary_key), '|', cube_exp.fenperc(r_atb.code_display_key), '|', cube_exp.fenperc(r_atb.code_foreign_key), '|', cube_exp.fenperc(r_atb.flag_hidden), '|', cube_exp.fenperc(r_atb.default_value), '|', cube_exp.fenperc(r_atb.unchangeable), ';'));
 		p_level := p_level + 1;
 		CALL cube_exp.export_der (p_line_num, p_level, r_atb);
 		CALL cube_exp.export_dca (p_line_num, p_level, r_atb);
@@ -326,14 +326,14 @@ BEGIN
 			SELECT cube_id INTO l_cube_id FROM itp.t_information_type
 			WHERE name = r_atb.xk_itp_name;
 			p_line_num := p_line_num + 1;
-			INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '>INFORMATION_TYPE:' || l_cube_id || ';');
+			INSERT INTO cube_exp.line VALUES (p_line_num, CONCAT(cube_exp.ftabs(p_level), '>INFORMATION_TYPE:', l_cube_id, ';'));
 		EXCEPTION
 			WHEN NO_DATA_FOUND THEN
 				NULL; 
 		END;
 		p_level := p_level - 1;
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '-ATTRIBUTE:' || r_atb.name || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num,CONCAT(cube_exp.ftabs(p_level), '-ATTRIBUTE:', r_atb.name, ';'));
 	END LOOP;
 END; 
 $$;
@@ -354,7 +354,7 @@ BEGIN
 		ORDER BY cube_id
 	LOOP
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '=DESCRIPTION_REFERENCE[' || r_dcr.cube_id || ']:' || cube_exp.fenperc(r_dcr.text) || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num, CONCAT(cube_exp.ftabs(p_level),'=DESCRIPTION_REFERENCE[', r_dcr.cube_id, ']:', cube_exp.fenperc(r_dcr.text), ';'));
 		p_level := p_level + 1;
 		p_level := p_level - 1;
 	END LOOP;
@@ -377,7 +377,7 @@ BEGIN
 		ORDER BY fk_typ_name, fk_ref_sequence, fk_ref_bot_name, fk_ref_typ_name, xf_tsp_typ_name, xf_tsp_tsg_code, xk_tsp_code
 	LOOP
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '+RESTRICTION_TYPE_SPEC_REF[' || r_rtr.cube_id || ']:' || cube_exp.fenperc(r_rtr.include_or_exclude) || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num, CONCAT(cube_exp.ftabs(p_level),'+RESTRICTION_TYPE_SPEC_REF[', r_rtr.cube_id, ']:', cube_exp.fenperc(r_rtr.include_or_exclude), ';'));
 		p_level := p_level + 1;
 		BEGIN
 			SELECT cube_id INTO l_cube_id FROM bot.t_type_specialisation
@@ -385,14 +385,14 @@ BEGIN
 			  AND fk_tsg_code = r_rtr.xf_tsp_tsg_code
 			  AND code = r_rtr.xk_tsp_code;
 			p_line_num := p_line_num + 1;
-			INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '>TYPE_SPECIALISATION:' || l_cube_id || ';');
+			INSERT INTO cube_exp.line VALUES (p_line_num, CONCAT(cube_exp.ftabs(p_level), '>TYPE_SPECIALISATION:', l_cube_id, ';'));
 		EXCEPTION
 			WHEN NO_DATA_FOUND THEN
 				NULL; 
 		END;
 		p_level := p_level - 1;
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '-RESTRICTION_TYPE_SPEC_REF:' || r_rtr.include_or_exclude || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num,CONCAT(cube_exp.ftabs(p_level), '-RESTRICTION_TYPE_SPEC_REF:', r_rtr.include_or_exclude, ';'));
 	END LOOP;
 END; 
 $$;
@@ -413,7 +413,7 @@ BEGIN
 		ORDER BY cube_id
 	LOOP
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '+RESTRICTION_TARGET_TYPE_SPEC[' || r_rts.cube_id || ']:' || cube_exp.fenperc(r_rts.include_or_exclude) || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num, CONCAT(cube_exp.ftabs(p_level),'+RESTRICTION_TARGET_TYPE_SPEC[', r_rts.cube_id, ']:', cube_exp.fenperc(r_rts.include_or_exclude), ';'));
 		p_level := p_level + 1;
 		BEGIN
 			SELECT cube_id INTO l_cube_id FROM bot.t_type_specialisation
@@ -421,14 +421,14 @@ BEGIN
 			  AND fk_tsg_code = r_rts.xf_tsp_tsg_code
 			  AND code = r_rts.xk_tsp_code;
 			p_line_num := p_line_num + 1;
-			INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '>TYPE_SPECIALISATION:' || l_cube_id || ';');
+			INSERT INTO cube_exp.line VALUES (p_line_num, CONCAT(cube_exp.ftabs(p_level), '>TYPE_SPECIALISATION:', l_cube_id, ';'));
 		EXCEPTION
 			WHEN NO_DATA_FOUND THEN
 				NULL; 
 		END;
 		p_level := p_level - 1;
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '-RESTRICTION_TARGET_TYPE_SPEC:' || r_rts.include_or_exclude || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num,CONCAT(cube_exp.ftabs(p_level), '-RESTRICTION_TARGET_TYPE_SPEC:', r_rts.include_or_exclude, ';'));
 	END LOOP;
 END; 
 $$;
@@ -446,7 +446,7 @@ BEGIN
 		ORDER BY cube_sequence
 	LOOP
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '+REFERENCE[' || r_ref.cube_id || ']:' || cube_exp.fenperc(r_ref.name) || '|' || cube_exp.fenperc(r_ref.primary_key) || '|' || cube_exp.fenperc(r_ref.code_display_key) || '|' || r_ref.sequence || '|' || cube_exp.fenperc(r_ref.scope) || '|' || cube_exp.fenperc(r_ref.unchangeable) || '|' || cube_exp.fenperc(r_ref.within_scope_extension) || '|' || cube_exp.fenperc(r_ref.cube_tsg_int_ext) || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num, CONCAT(cube_exp.ftabs(p_level),'+REFERENCE[', r_ref.cube_id, ']:', cube_exp.fenperc(r_ref.name), '|', cube_exp.fenperc(r_ref.primary_key), '|', cube_exp.fenperc(r_ref.code_display_key), '|', r_ref.sequence, '|', cube_exp.fenperc(r_ref.scope), '|', cube_exp.fenperc(r_ref.unchangeable), '|', cube_exp.fenperc(r_ref.within_scope_extension), '|', cube_exp.fenperc(r_ref.cube_tsg_int_ext), ';'));
 		p_level := p_level + 1;
 		CALL cube_exp.export_dcr (p_line_num, p_level, r_ref);
 		CALL cube_exp.export_rtr (p_line_num, p_level, r_ref);
@@ -455,7 +455,7 @@ BEGIN
 			SELECT cube_id INTO l_cube_id FROM bot.t_business_object_type
 			WHERE name = r_ref.xk_bot_name;
 			p_line_num := p_line_num + 1;
-			INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '>BUSINESS_OBJECT_TYPE:' || l_cube_id || ';');
+			INSERT INTO cube_exp.line VALUES (p_line_num, CONCAT(cube_exp.ftabs(p_level), '>BUSINESS_OBJECT_TYPE:', l_cube_id, ';'));
 		EXCEPTION
 			WHEN NO_DATA_FOUND THEN
 				NULL; 
@@ -464,7 +464,7 @@ BEGIN
 			SELECT cube_id INTO l_cube_id FROM bot.t_type
 			WHERE name = r_ref.xk_typ_name;
 			p_line_num := p_line_num + 1;
-			INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '>REFERENCE_TYPE:' || l_cube_id || ';');
+			INSERT INTO cube_exp.line VALUES (p_line_num, CONCAT(cube_exp.ftabs(p_level), '>REFERENCE_TYPE:', l_cube_id, ';'));
 		EXCEPTION
 			WHEN NO_DATA_FOUND THEN
 				NULL; 
@@ -473,14 +473,14 @@ BEGIN
 			SELECT cube_id INTO l_cube_id FROM bot.t_type
 			WHERE name = r_ref.xk_typ_name_1;
 			p_line_num := p_line_num + 1;
-			INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '>REFERENCE_TYPE_WITHIN_SCOPE_OF:' || l_cube_id || ';');
+			INSERT INTO cube_exp.line VALUES (p_line_num, CONCAT(cube_exp.ftabs(p_level), '>REFERENCE_TYPE_WITHIN_SCOPE_OF:', l_cube_id, ';'));
 		EXCEPTION
 			WHEN NO_DATA_FOUND THEN
 				NULL; 
 		END;
 		p_level := p_level - 1;
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '-REFERENCE:' || r_ref.name || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num,CONCAT(cube_exp.ftabs(p_level), '-REFERENCE:', r_ref.name, ';'));
 	END LOOP;
 END; 
 $$;
@@ -498,7 +498,7 @@ BEGIN
 		ORDER BY fk_typ_name, xf_tsp_typ_name, xf_tsp_tsg_code, xk_tsp_code
 	LOOP
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '+RESTRICTION_TYPE_SPEC_TYP[' || r_rtt.cube_id || ']:' || cube_exp.fenperc(r_rtt.include_or_exclude) || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num, CONCAT(cube_exp.ftabs(p_level),'+RESTRICTION_TYPE_SPEC_TYP[', r_rtt.cube_id, ']:', cube_exp.fenperc(r_rtt.include_or_exclude), ';'));
 		p_level := p_level + 1;
 		BEGIN
 			SELECT cube_id INTO l_cube_id FROM bot.t_type_specialisation
@@ -506,14 +506,14 @@ BEGIN
 			  AND fk_tsg_code = r_rtt.xf_tsp_tsg_code
 			  AND code = r_rtt.xk_tsp_code;
 			p_line_num := p_line_num + 1;
-			INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '>TYPE_SPECIALISATION:' || l_cube_id || ';');
+			INSERT INTO cube_exp.line VALUES (p_line_num, CONCAT(cube_exp.ftabs(p_level), '>TYPE_SPECIALISATION:', l_cube_id, ';'));
 		EXCEPTION
 			WHEN NO_DATA_FOUND THEN
 				NULL; 
 		END;
 		p_level := p_level - 1;
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '-RESTRICTION_TYPE_SPEC_TYP:' || r_rtt.include_or_exclude || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num,CONCAT(cube_exp.ftabs(p_level), '-RESTRICTION_TYPE_SPEC_TYP:', r_rtt.include_or_exclude, ';'));
 	END LOOP;
 END; 
 $$;
@@ -536,7 +536,7 @@ BEGIN
 		ORDER BY cube_sequence
 	LOOP
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '+JSON_PATH[' || r_jsn.cube_id || ']:' || cube_exp.fenperc(r_jsn.cube_tsg_obj_arr) || '|' || cube_exp.fenperc(r_jsn.cube_tsg_type) || '|' || cube_exp.fenperc(r_jsn.name) || '|' || r_jsn.location || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num, CONCAT(cube_exp.ftabs(p_level),'+JSON_PATH[', r_jsn.cube_id, ']:', cube_exp.fenperc(r_jsn.cube_tsg_obj_arr), '|', cube_exp.fenperc(r_jsn.cube_tsg_type), '|', cube_exp.fenperc(r_jsn.name), '|', r_jsn.location, ';'));
 		p_level := p_level + 1;
 		CALL cube_exp.export_jsn_recursive (p_line_num, p_level, r_jsn);
 		BEGIN
@@ -544,7 +544,7 @@ BEGIN
 			WHERE fk_typ_name = r_jsn.xf_atb_typ_name
 			  AND name = r_jsn.xk_atb_name;
 			p_line_num := p_line_num + 1;
-			INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '>ATTRIBUTE:' || l_cube_id || ';');
+			INSERT INTO cube_exp.line VALUES (p_line_num, CONCAT(cube_exp.ftabs(p_level), '>ATTRIBUTE:', l_cube_id, ';'));
 		EXCEPTION
 			WHEN NO_DATA_FOUND THEN
 				NULL; 
@@ -553,14 +553,14 @@ BEGIN
 			SELECT cube_id INTO l_cube_id FROM bot.t_type
 			WHERE name = r_jsn.xk_typ_name;
 			p_line_num := p_line_num + 1;
-			INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '>JSON_PATH_TYPE:' || l_cube_id || ';');
+			INSERT INTO cube_exp.line VALUES (p_line_num, CONCAT(cube_exp.ftabs(p_level), '>JSON_PATH_TYPE:', l_cube_id, ';'));
 		EXCEPTION
 			WHEN NO_DATA_FOUND THEN
 				NULL; 
 		END;
 		p_level := p_level - 1;
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '-JSON_PATH:' || r_jsn.cube_tsg_obj_arr || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num,CONCAT(cube_exp.ftabs(p_level), '-JSON_PATH:', r_jsn.cube_tsg_obj_arr, ';'));
 	END LOOP;
 END; 
 $$;
@@ -583,7 +583,7 @@ BEGIN
 		ORDER BY cube_sequence
 	LOOP
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '+JSON_PATH[' || r_jsn.cube_id || ']:' || cube_exp.fenperc(r_jsn.cube_tsg_obj_arr) || '|' || cube_exp.fenperc(r_jsn.cube_tsg_type) || '|' || cube_exp.fenperc(r_jsn.name) || '|' || r_jsn.location || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num, CONCAT(cube_exp.ftabs(p_level),'+JSON_PATH[', r_jsn.cube_id, ']:', cube_exp.fenperc(r_jsn.cube_tsg_obj_arr), '|', cube_exp.fenperc(r_jsn.cube_tsg_type), '|', cube_exp.fenperc(r_jsn.name), '|', r_jsn.location, ';'));
 		p_level := p_level + 1;
 		CALL cube_exp.export_jsn_recursive (p_line_num, p_level, r_jsn);
 		BEGIN
@@ -591,7 +591,7 @@ BEGIN
 			WHERE fk_typ_name = r_jsn.xf_atb_typ_name
 			  AND name = r_jsn.xk_atb_name;
 			p_line_num := p_line_num + 1;
-			INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '>ATTRIBUTE:' || l_cube_id || ';');
+			INSERT INTO cube_exp.line VALUES (p_line_num, CONCAT(cube_exp.ftabs(p_level), '>ATTRIBUTE:', l_cube_id, ';'));
 		EXCEPTION
 			WHEN NO_DATA_FOUND THEN
 				NULL; 
@@ -600,14 +600,14 @@ BEGIN
 			SELECT cube_id INTO l_cube_id FROM bot.t_type
 			WHERE name = r_jsn.xk_typ_name;
 			p_line_num := p_line_num + 1;
-			INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '>JSON_PATH_TYPE:' || l_cube_id || ';');
+			INSERT INTO cube_exp.line VALUES (p_line_num, CONCAT(cube_exp.ftabs(p_level), '>JSON_PATH_TYPE:', l_cube_id, ';'));
 		EXCEPTION
 			WHEN NO_DATA_FOUND THEN
 				NULL; 
 		END;
 		p_level := p_level - 1;
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '-JSON_PATH:' || r_jsn.cube_tsg_obj_arr || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num,CONCAT(cube_exp.ftabs(p_level), '-JSON_PATH:', r_jsn.cube_tsg_obj_arr, ';'));
 	END LOOP;
 END; 
 $$;
@@ -625,7 +625,7 @@ BEGIN
 		ORDER BY cube_id
 	LOOP
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '=DESCRIPTION_TYPE[' || r_dct.cube_id || ']:' || cube_exp.fenperc(r_dct.text) || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num, CONCAT(cube_exp.ftabs(p_level),'=DESCRIPTION_TYPE[', r_dct.cube_id, ']:', cube_exp.fenperc(r_dct.text), ';'));
 		p_level := p_level + 1;
 		p_level := p_level - 1;
 	END LOOP;
@@ -645,7 +645,7 @@ BEGIN
 		ORDER BY cube_sequence
 	LOOP
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '+TYPE[' || r_typ.cube_id || ']:' || cube_exp.fenperc(r_typ.name) || '|' || cube_exp.fenperc(r_typ.code) || '|' || cube_exp.fenperc(r_typ.flag_partial_key) || '|' || cube_exp.fenperc(r_typ.flag_recursive) || '|' || cube_exp.fenperc(r_typ.recursive_cardinality) || '|' || cube_exp.fenperc(r_typ.cardinality) || '|' || cube_exp.fenperc(r_typ.sort_order) || '|' || cube_exp.fenperc(r_typ.icon) || '|' || cube_exp.fenperc(r_typ.transferable) || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num, CONCAT(cube_exp.ftabs(p_level),'+TYPE[', r_typ.cube_id, ']:', cube_exp.fenperc(r_typ.name), '|', cube_exp.fenperc(r_typ.code), '|', cube_exp.fenperc(r_typ.flag_partial_key), '|', cube_exp.fenperc(r_typ.flag_recursive), '|', cube_exp.fenperc(r_typ.recursive_cardinality), '|', cube_exp.fenperc(r_typ.cardinality), '|', cube_exp.fenperc(r_typ.sort_order), '|', cube_exp.fenperc(r_typ.icon), '|', cube_exp.fenperc(r_typ.transferable), ';'));
 		p_level := p_level + 1;
 		CALL cube_exp.export_tsg (p_line_num, p_level, r_typ);
 		CALL cube_exp.export_atb (p_line_num, p_level, r_typ);
@@ -656,7 +656,7 @@ BEGIN
 		CALL cube_exp.export_typ_recursive (p_line_num, p_level, r_typ);
 		p_level := p_level - 1;
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '-TYPE:' || r_typ.name || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num,CONCAT(cube_exp.ftabs(p_level), '-TYPE:', r_typ.name, ';'));
 	END LOOP;
 END; 
 $$;
@@ -674,7 +674,7 @@ BEGIN
 		ORDER BY cube_sequence
 	LOOP
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '+TYPE[' || r_typ.cube_id || ']:' || cube_exp.fenperc(r_typ.name) || '|' || cube_exp.fenperc(r_typ.code) || '|' || cube_exp.fenperc(r_typ.flag_partial_key) || '|' || cube_exp.fenperc(r_typ.flag_recursive) || '|' || cube_exp.fenperc(r_typ.recursive_cardinality) || '|' || cube_exp.fenperc(r_typ.cardinality) || '|' || cube_exp.fenperc(r_typ.sort_order) || '|' || cube_exp.fenperc(r_typ.icon) || '|' || cube_exp.fenperc(r_typ.transferable) || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num, CONCAT(cube_exp.ftabs(p_level),'+TYPE[', r_typ.cube_id, ']:', cube_exp.fenperc(r_typ.name), '|', cube_exp.fenperc(r_typ.code), '|', cube_exp.fenperc(r_typ.flag_partial_key), '|', cube_exp.fenperc(r_typ.flag_recursive), '|', cube_exp.fenperc(r_typ.recursive_cardinality), '|', cube_exp.fenperc(r_typ.cardinality), '|', cube_exp.fenperc(r_typ.sort_order), '|', cube_exp.fenperc(r_typ.icon), '|', cube_exp.fenperc(r_typ.transferable), ';'));
 		p_level := p_level + 1;
 		CALL cube_exp.export_tsg (p_line_num, p_level, r_typ);
 		CALL cube_exp.export_atb (p_line_num, p_level, r_typ);
@@ -685,7 +685,7 @@ BEGIN
 		CALL cube_exp.export_typ_recursive (p_line_num, p_level, r_typ);
 		p_level := p_level - 1;
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '-TYPE:' || r_typ.name || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num,CONCAT(cube_exp.ftabs(p_level), '-TYPE:', r_typ.name, ';'));
 	END LOOP;
 END; 
 $$;
@@ -702,12 +702,12 @@ BEGIN
 		ORDER BY cube_sequence
 	LOOP
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '+BUSINESS_OBJECT_TYPE[' || r_bot.cube_id || ']:' || cube_exp.fenperc(r_bot.name) || '|' || cube_exp.fenperc(r_bot.cube_tsg_type) || '|' || cube_exp.fenperc(r_bot.directory) || '|' || cube_exp.fenperc(r_bot.api_url) || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num, CONCAT(cube_exp.ftabs(p_level),'+BUSINESS_OBJECT_TYPE[', r_bot.cube_id, ']:', cube_exp.fenperc(r_bot.name), '|', cube_exp.fenperc(r_bot.cube_tsg_type), '|', cube_exp.fenperc(r_bot.directory), '|', cube_exp.fenperc(r_bot.api_url), ';'));
 		p_level := p_level + 1;
 		CALL cube_exp.export_typ (p_line_num, p_level, r_bot);
 		p_level := p_level - 1;
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '-BUSINESS_OBJECT_TYPE:' || r_bot.name || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num,CONCAT(cube_exp.ftabs(p_level), '-BUSINESS_OBJECT_TYPE:', r_bot.name, ';'));
 	END LOOP;
 END; 
 $$;
@@ -724,20 +724,20 @@ BEGIN
 		ORDER BY cube_sequence
 	LOOP
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '+SYSTEM_BO_TYPE[' || r_sbt.cube_id || ']:' || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num, CONCAT(cube_exp.ftabs(p_level),'+SYSTEM_BO_TYPE[', r_sbt.cube_id, ']:', ';'));
 		p_level := p_level + 1;
 		BEGIN
 			SELECT cube_id INTO l_cube_id FROM bot.t_business_object_type
 			WHERE name = r_sbt.xk_bot_name;
 			p_line_num := p_line_num + 1;
-			INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '>BUSINESS_OBJECT_TYPE:' || l_cube_id || ';');
+			INSERT INTO cube_exp.line VALUES (p_line_num, CONCAT(cube_exp.ftabs(p_level), '>BUSINESS_OBJECT_TYPE:', l_cube_id, ';'));
 		EXCEPTION
 			WHEN NO_DATA_FOUND THEN
 				NULL; 
 		END;
 		p_level := p_level - 1;
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '-SYSTEM_BO_TYPE:' || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num,CONCAT(cube_exp.ftabs(p_level), '-SYSTEM_BO_TYPE:', ';'));
 	END LOOP;
 END; 
 $$;
@@ -754,12 +754,12 @@ BEGIN
 		ORDER BY name
 	LOOP
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '+SYSTEM[' || r_sys.cube_id || ']:' || cube_exp.fenperc(r_sys.name) || '|' || cube_exp.fenperc(r_sys.cube_tsg_type) || '|' || cube_exp.fenperc(r_sys.database) || '|' || cube_exp.fenperc(r_sys.schema) || '|' || cube_exp.fenperc(r_sys.password) || '|' || cube_exp.fenperc(r_sys.table_prefix) || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num, CONCAT(cube_exp.ftabs(p_level),'+SYSTEM[', r_sys.cube_id, ']:', cube_exp.fenperc(r_sys.name), '|', cube_exp.fenperc(r_sys.cube_tsg_type), '|', cube_exp.fenperc(r_sys.database), '|', cube_exp.fenperc(r_sys.schema), '|', cube_exp.fenperc(r_sys.password), '|', cube_exp.fenperc(r_sys.table_prefix), ';'));
 		p_level := p_level + 1;
 		CALL cube_exp.export_sbt (p_line_num, p_level, r_sys);
 		p_level := p_level - 1;
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '-SYSTEM:' || r_sys.name || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num,CONCAT(cube_exp.ftabs(p_level), '-SYSTEM:', r_sys.name, ';'));
 	END LOOP;
 END; 
 $$;
@@ -776,7 +776,7 @@ BEGIN
 		ORDER BY cube_sequence
 	LOOP
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '=ARGUMENT[' || r_arg.cube_id || ']:' || cube_exp.fenperc(r_arg.name) || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num, CONCAT(cube_exp.ftabs(p_level),'=ARGUMENT[', r_arg.cube_id, ']:', cube_exp.fenperc(r_arg.name), ';'));
 		p_level := p_level + 1;
 		p_level := p_level - 1;
 	END LOOP;
@@ -794,12 +794,12 @@ BEGIN
 		ORDER BY cube_id
 	LOOP
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '+FUNCTION[' || r_fun.cube_id || ']:' || cube_exp.fenperc(r_fun.name) || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num, CONCAT(cube_exp.ftabs(p_level),'+FUNCTION[', r_fun.cube_id, ']:', cube_exp.fenperc(r_fun.name), ';'));
 		p_level := p_level + 1;
 		CALL cube_exp.export_arg (p_line_num, p_level, r_fun);
 		p_level := p_level - 1;
 		p_line_num := p_line_num + 1;
-		INSERT INTO cube_exp.line VALUES (p_line_num, cube_exp.ftabs(p_level) || '-FUNCTION:' || r_fun.name || ';');
+		INSERT INTO cube_exp.line VALUES (p_line_num,CONCAT(cube_exp.ftabs(p_level), '-FUNCTION:', r_fun.name, ';'));
 	END LOOP;
 END; 
 $$;
