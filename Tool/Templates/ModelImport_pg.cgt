@@ -1,0 +1,458 @@
+20-01-2018 - TYPE_1 replaced by TYPE_WITHIN_SCOPE_OF
+01-02-2018 - Support taht key attribute is not the first one.
+10-03-2018 - Reference type prefixen with source type
+26-06-2023 - Postgresql versie
+
+[[BODY]]#!/usr/bin/perl
+use HTML::Entities;
+use URI::Escape;
+use Switch;
+#
+# Cube Model Import
+#
+($ModelFile, $ImportFile) = @ARGV;
+#
+# Model File Processing
+# ===== ==== ==========
+#
+print "\n";
+print "CubeGen v2.7  30 Jun 2014\n";
+print "=====================================\n";
+print "Reading Model\n";
+######################################################################################
+# Lezen van de modelfile in memory struktuur.
+# Inhoud gekopieerd omdat deze wordt gedeeld tussen de generator en de model import.
+######################################################################################
+$MODEL="$ModelFile";
+open MODEL, "$MODEL" or die "Cannot open $MODEL:$!";
+
+$I = 0;
+$Number = 1;
+$NodeNumber[$I] = 0;
+$NodeId[$I] = "ROOT";
+$NodeSubNumber[$I] = 0;
+$SubNumberCounter[$I] = 0;
+$NodeString[$I] = "Root";
+$NodeFirst[$I] = -1;
+$NodeFirstSequ[$I] = -1;
+$NodeType[$I] = "R";
+$NodeParent[$I] = -1;
+$NodeNext[$I] = -1;
+$NodeNextSequ[$I] = -1;
+$NodeValuePntr[$I] = -1;
+$NodeValueCount[$I] = -1;
+$NodeRef[$I] = 0;
+$V = 0;
+$NodeValue[$V] = -1;
+
+$J = 0;  
+$Parent[$J] = 0;
+while(<MODEL>) {
+	$ModelString = $_;
+	$ModelString =~ s/\t//g;
+	if (substr($ModelString, 0, 1) eq '!') {
+		next;
+	}
+#	print $ModelString; 
+	$IndexColon = index($ModelString, ':');
+	if ($IndexColon > 1) { 
+		$IndexRelSep = index($ModelString, '|');
+		if ($IndexRelSep > 1 && $IndexRelSep < $IndexColon) {
+			$Rels = substr($ModelString, $IndexRelSep+1, $IndexColon-$IndexRelSep-1);
+			$ModelString = substr($ModelString, 0, $IndexRelSep).substr($ModelString, $IndexColon);
+			$IndexColon = $IndexRelSep;
+		} else {
+			$Rels = "NONE";
+		}
+		$Tag = substr($ModelString, 1, $IndexColon-1);
+		$IndexBracket = index ($Tag, '[');
+		$Id = '';
+		if ($IndexBracket > 1) {
+			if (substr($Tag, $IndexColon-2, 1) eq ']') {
+				$Id = substr($Tag,$IndexBracket+1, $IndexColon-$IndexBracket-3);
+			} else {
+				print "Error: ']' not found at end of tag\n";
+			}
+			$Tag = substr($Tag, 0, $IndexBracket);
+		}
+	} else {
+		print "Error: ':' not found\n"; 
+	}
+	$IndexSemiColon = index($ModelString, ';');
+	$IndexSeparator = index($ModelString, '|');
+
+	if ($IndexSemiColon > 1) { 
+		if ($IndexSeparator > 1) {
+			$Name = substr($ModelString, $IndexColon+1, $IndexSeparator-$IndexColon-1);
+		} else {	
+			$Name = substr($ModelString, $IndexColon+1, $IndexSemiColon-$IndexColon-1);
+		}
+	} else {
+		print "Error: ';' not found\n"; 
+	}
+
+	$Sign = substr ($ModelString,0,1);
+	if ($Sign eq "+" || $Sign eq "=" || $Sign eq ">") {
+		$LineSign = $Sign;
+		ProcessModelLine();
+		if ($IndexSeparator > -1) {
+			$Values = substr($ModelString, $IndexSeparator+1, $IndexSemiColon-$IndexSeparator-1);
+			$NodeValuePntr[$I] = $V;
+			$NodeValueCount[$I] = 1;
+			while (1) {
+				$IndexSeparator = index($Values,'|');
+				if ($IndexSeparator > -1) {
+					$NodeValue[$V] = uri_unescape(substr($Values, 0, $IndexSeparator));
+					$Values = substr($Values, $IndexSeparator+1);
+					$V++;
+				} else {	
+					$NodeValue[$V] = uri_unescape($Values);
+					$V++;
+					last;
+				}
+				$NodeValueCount[$I]++;			
+			}
+		} else {
+			$NodeValuePntr[$I] = -1;
+			$NodeValueCount[$I] = 0;
+		}
+
+		# Process inline references
+		if ($Rels ne "NONE") {
+			while($IndexRelSep > -1) {
+				$IndexRelSep = index($Rels, '|');
+				if ($IndexRelSep > -1) {
+					$Rel = substr($Rels, 0, $IndexRelSep);
+					$Rels = substr($Rels, $IndexRelSep+1);
+				} else {
+					$Rel = $Rels;
+				}
+				$IndexComma = index($Rel, ',');
+				if ($IndexComma	> -1) {
+					$LineSign = ">";
+					$Id = '';
+					$Tag = substr($Rel,0,$IndexComma);
+					$Name = substr($Rel,$IndexComma+1);
+					ProcessModelLine();
+				} else {
+					print "Error: ',' not found in rel spec\n";
+				}			
+			}
+			if ($Sign eq "=") {
+				$J = $J-2;
+			}
+		}
+	} elsif ($Sign eq "-") {
+		$J = $J-2;
+	} else {
+		print "Error: no +,- or =\n";
+	}
+}
+
+# Resolve pointers and Create reverse pointers
+$LastNr = $I;
+for ($i=0; $i<=$LastNr; $i++) {
+	if ($NodeType[$i] eq "P") {
+		# Find node'
+		$Tag = '*'.$NodeString[$NodeParent[$NodeParent[$NodeParent[$i]]]];
+		$NodeRef[$i] = -1;
+		for ($j=0; $j<=$I; $j++) {
+			if ($NodeId[$j] eq $NodeString[$i]) {
+				$NodeRef[$i] = $j;
+				last;
+			}
+		}
+		if ($NodeRef[$i] != -1) {
+			# Find tag in node
+			$N = -1;
+			for ($j=0; $j<=$I; $j++) {
+				if ($NodeString[$j] eq $Tag && $NodeParent[$j] == $NodeRef[$i]) {
+					$N = $j;
+					last;
+				}
+			}
+		}
+		if ($N == -1) {
+			$I++;
+			$SubNumberCounter[$I] = 0;
+			# Update First/next
+			if ($NodeFirst[$NodeRef[$i]] == -1) {
+				$NodeFirst[$NodeRef[$i]] = $I;
+			} else {
+				for ($j=0; $j<=$I-1; $j++) {
+					if ($NodeParent[$j] == $NodeRef[$i] && $NodeNext[$j] == -1) {
+						$NodeNext[$j] = $I;
+						last;
+					}
+				}
+			}
+			$NodeType[$I] = 'T';
+			$NodeString[$I] = $Tag;
+			$NodeParent[$I] = $NodeRef[$i];
+			$NodeNext[$I] = -1;
+			$NodeFirst[$I] = $I + 1;
+			$N = $I;
+		} else {
+			# Update next of value
+			for ($j=0; $j<=$I; $j++) {
+				if ($NodeParent[$j] == $N && $NodeNext[$j] == -1) {
+					$NodeNext[$j] = $I + 1;
+					last;
+				}
+			}
+		}
+		$I++;
+		$NodeType[$I] = 'P';
+		$NodeString[$I] = $NodeId[$NodeParent[$NodeParent[$i]]];
+		$NodeNumber[$I] = $Number;
+		$SubNumberCounter[$N]++;
+		$NodeSubNumber[$I] = $SubNumberCounter[$N];
+		$NodeParent[$I] = $N;
+		$NodeNext[$I] = -1;
+		$NodeFirst[$I] = -1;
+		$NodeRef[$I] = $NodeParent[$NodeParent[$i]]; 
+		$Number++;
+	}
+}
+
+sub ProcessModelLine {
+		if($NodeFirst[$Parent[$J]] > -1) {
+			$N = $NodeFirst[$Parent[$J]]; 
+			while (1) {
+				if ($Tag eq $NodeString[$N]) {
+					last;
+				}
+				if ($NodeNext[$N] > -1) {
+					$N = $NodeNext[$N];
+				} else {
+					$I++;
+					$SubNumberCounter[$I] = 0;
+					$NodeFirst[$I] = -1; 
+					$N = $I;
+					$NodeNext[$N] = -1;
+					$NodeNext[$NodeLast[$Parent[$J]]] = $N;
+					$NodeLast[$Parent[$J]] = $N;
+					last;
+				}				 
+			}
+		} else {
+			$I++;
+			$SubNumberCounter[$I] = 0;
+			$NodeFirst[$I] = -1; 
+			$N = $I;
+			$NodeFirst[$Parent[$J]] = $N;
+			$NodeNext[$N] = -1;
+			$NodeLast[$Parent[$J]] = $N;
+		}
+		$NodeParent[$N] = $Parent[$J];
+		$NodeString[$N] = $Tag;
+		$NodeType  [$N] = "T";
+
+		$J++;
+		$Parent[$J] = $N;
+		$I++;
+		$SubNumberCounter[$I] = 0;
+		$NodeFirst[$I] = -1;
+		if ($NodeFirst[$Parent[$J]] > -1) {
+			$NodeNext[$NodeLast[$Parent[$J]]] = $I;
+		} else {
+			$NodeFirst[$Parent[$J]] = $I;
+		}
+		$NodeLast[$Parent[$J]] = $I;
+
+		# Sequence pointers
+		$NodeFirstSequ[$I] = -1;
+		$NodeNextSequ[$I] = -1;
+		if ($NodeFirstSequ[$Parent[$J-1]] > -1) {
+			$NodeNextSequ[$NodeLastSequ[$Parent[$J-1]]] = $I;
+		} else {
+			$NodeFirstSequ[$Parent[$J-1]] = $I;
+		}
+		$NodeLastSequ[$Parent[$J-1]] = $I;
+
+		$NodeParent[$I] = $Parent[$J];
+		$NodeNumber[$I] = $Number;
+		$SubNumberCounter[$Parent[$J]]++;
+		$NodeSubNumber[$I] = $SubNumberCounter[$Parent[$J]];
+		$Number++;
+		if ($Id ne '') {	
+			for ($i=0; $i<$I; $i++) {
+				if ($NodeId[$i] eq $Id) {
+					print "Error: Duplicate id '$Id'\n";
+					$Id = '';
+					last;
+				}
+			}
+		}
+		$NodeId[$I] = $Id;
+		$NodeString[$I] = uri_unescape($Name);
+
+		if ($LineSign eq ">") {
+			$NodeType[$I] = "P";
+		} else {
+			$NodeType[$I] = "V";
+		}
+		$NodeNext[$I] = -1;
+
+		if ($LineSign eq "+" || ($LineSign eq "=" && $Rels ne "NONE")) {
+			$J++;
+			$Parent[$J] = $I;
+		} else {
+			$J--;
+		}
+}
+######################################################################################
+# Einde modelfile import
+######################################################################################
+if (0) {
+	$NODEFILE="nodefile.csv";
+	open NODEFILE, ">$NODEFILE" or die "Cannot open $NODEFILE:$!";
+
+	print NODEFILE "Nr;Id;Type;String;Node;SubN;Prnt;Next;Frst;NxtS;FstS;Ref;\n";
+	for ($i=0; $i<=$I; $i++) {
+		print NODEFILE "$i;$NodeId[$i];$NodeType[$i];" . uri_escape($NodeString[$i]) . ";$NodeNumber[$i];$NodeSubNumber[$i];$NodeParent[$i];$NodeNext[$i];$NodeFirst[$i];$NodeNextSequ[$i];$NodeFirstSequ[$i];$NodeRef[$i];\n";
+	}
+close NODEFILE;
+}
+
+#print "@NodeString\n";
+#print "@NodeNumber\n";
+#print "@NodeId\n";
+#print "@NodeSubNumber\n";
+#print "@NodeParent\n";
+#print "@NodeNext\n";
+#print "@NodeFirst\n";
+#print "@NodeValuePntr\n";
+#print "@NodeValueCount\n";
+#print "@NodeValue\n";
+
+#
+# Generate ModelImport file
+#[[TEXT,QUOTE]][[IF:CHILD(INFORMATION_TYPE_ELEMENT:2=TEXT)]]'[[ENDIF]][[ENDTEXT]][[*
+*]][[TEXT,ATTRIBUTE_SELECTION]]!CHILD(DERIVATION)[OR]0=CUBE_SEQUENCE[[ENDTEXT]][[*
+*]][[TEXT,VALUE_X]]ReplX(GetXkey($j,[[LOOP,*REFERENCE]]'[[LOOP,REFERENCE_TYPE]][[IF:0=TYPE]]<<TYPE:U>>_[[ENDIF]]<<REFERENCE_TYPE>>[[ENDLOOP,REFERENCE_TYPE]][[IF:!3=0]]_<<REFERENCE>>[[ENDIF]]'[[ENDLOOP,*REFERENCE]],[[LOOP,ATTRIBUTE_ROOT]][[LOOP,^TYPE]]'<<^TYPE>>'[[ENDLOOP,^TYPE]],[[LOOP,ATTRIBUTE_NUMBER]]<<ATTRIBUTE_NUMBER>>[[ENDLOOP,ATTRIBUTE_NUMBER]][[ENDLOOP,ATTRIBUTE_ROOT]]))[[ENDTEXT]][[*
+*]][[TEXT,VALUE_N]]ReplX([[IF:EVAL:$myI==1]]$NodeString[$j][[ELSE]]$NodeValue[$NodeValuePntr[$j][[IF:EVAL:$myI>2]]+[[EVAL:$myI-2]][[ENDIF]]][[ENDIF]])[[ENDTEXT]]
+$IMPORT="$ImportFile";
+
+# Parent Key Variables[[LOOP,BUSINESS_OBJECT_TYPE]][[LOOP,TYPE:CHILD(TYPE)]]
+$FKey<<TYPE1:C>>[[IF:3=Y]][0][[ENDIF]] = '';[[IF:3=Y]]
+$I<<TYPE1:C>> = 0;[[ENDIF]][[REPEAT]][[ENDLOOP,TYPE]][[ENDLOOP,BUSINESS_OBJECT_TYPE]]
+
+open IMPORT, ">$IMPORT" or die "Cannot open $IMPORT:$!";
+
+print IMPORT "----------------------------------------------------------\n";
+print IMPORT "-- CubeTool Model Import DML\n";
+print IMPORT "--\n";
+print IMPORT "-- Model: $ModelFile\n";
+print IMPORT "----------------------------------------------------------\n";
+print IMPORT "--\n";
+print IMPORT "-- Delete All\n";
+print IMPORT "--\n";[[LOOP,SYSTEM:0=<<1>>]][[LOOP,SYSTEM_BO_TYPE]][[LOOP,BUSINESS_OBJECT_TYPE]][[LOOP,TYPE]]
+print IMPORT "DELETE FROM <<TYPE(1)1:L>>.v_<<TYPE:L>>;\n";[[REPEAT]][[ENDLOOP,TYPE]][[ENDLOOP,BUSINESS_OBJECT_TYPE]][[ENDLOOP,SYSTEM_BO_TYPE]][[ENDLOOP,SYSTEM]]
+
+$i = $NodeFirst[0];
+CreateInsertStmnts ($i,'');
+
+print IMPORT "EXIT;\n";
+print "Ready\n";
+
+sub CreateInsertStmnts {
+my ($i, $j, $Sequence, $FKeyFlag);
+my (@FkeyValues);
+	while (1) {
+		if ($_[0] == -1) {
+			last;
+		}
+		if ($NodeType[$NodeFirst[$_[0]]] ne 'P') {
+			switch ($NodeString[$_[0]]) {[[LOOP,BUSINESS_OBJECT_TYPE]][[LOOP,TYPE]]
+				case "<<TYPE>>" {[[IF:ROOT]]
+					print IMPORT "--\n";
+					print IMPORT "-- Insert <<TYPE:U>> business object types\n";
+					print IMPORT "--\n";[[ENDIF]]
+					$j = $NodeFirst[$_[0]];[[IF:6=P]]
+					$Sequence = 0;[[ENDIF]]
+					while (1) {
+						if ($j == -1) {
+							last;
+						}[[IF:6=P]]
+						$Sequence++;[[ENDIF]][[IF:3=Y]]
+						if ($NodeString[$NodeParent[$NodeParent[$_[0]]]] eq '<<TYPE>>') {
+							$FKeyFlag = 1;
+						} else {
+							$FKeyFlag = 0;
+						}[[ENDIF]]
+						print IMPORT "INSERT INTO <<TYPE(1)1:L>>.v_<<TYPE:L>> ([[LOOP,ATTRIBUTE:<<TEXT,ATTRIBUTE_SELECTION>>]]<<ATTRIBUTE>>[[IF:!LAST]], [[ENDIF]][[ENDLOOP,ATTRIBUTE]])\n"; 
+						print IMPORT "	VALUES ([[EVAL:($myIf=0)]][[EVAL:($myI=0)]][[LOOP,ATTRIBUTE:<<TEXT,ATTRIBUTE_SELECTION>>]][[*
+							*]][[IF:0=CUBE_SEQUENCE]]$Sequence[[*
+							*]][[ELSIF:3=F]]<<TEXT,QUOTE>>$_[[[EVAL:++$myIf]]]<<TEXT,QUOTE>>[[*
+							*]][[ELSIF:3=R]]".SwitchFlag($FKeyFlag,"<<TEXT,QUOTE>>".$_[[[EVAL:++$myIf]]]."<<TEXT,QUOTE>>")."[[*
+							*]][[ELSIF:3=X]]<<TEXT,QUOTE>>".<<TEXT,VALUE_X>>."<<TEXT,QUOTE>>[[*
+							*]][[ELSE]][[EVAL:($myI++)]]<<TEXT,QUOTE>>".<<TEXT,VALUE_N>>."<<TEXT,QUOTE>>[[ENDIF]][[IF:!LAST]], [[ENDIF]][[ENDLOOP,ATTRIBUTE]]);\n";
+						print IMPORT "\n";[[IF:CHILD(TYPE)]][[EVAL:($myIf=0)]][[LOOP,ATTRIBUTE:3=F]]
+						$FkeyValues[[[EVAL:$myIf++]]] = $_[[[EVAL:$myIf]]];[[ENDLOOP,ATTRIBUTE]][[EVAL:($myI=0)]][[LOOP,ATTRIBUTE:!CHILD(DERIVATION)[AND](3=N[OR]3=X)]][[IF:3=N]][[EVAL:($myI++)]][[ENDIF]][[IF:1=Y]][[IF:3=X]]
+						$FkeyValues[[[EVAL:$myIf++]]] = <<TEXT,VALUE_X>>;[[ELSE]]
+						$FkeyValues[[[EVAL:$myIf++]]] = <<TEXT,VALUE_N>>;[[ENDIF]][[ENDIF]][[ENDLOOP,ATTRIBUTE]]
+						$i = $NodeFirst[$j];
+						CreateInsertStmnts($i,@FkeyValues);[[ENDIF]]
+						$j = $NodeNext[$j];
+					}
+				}[[REPEAT]][[ENDLOOP,TYPE]][[ENDLOOP,BUSINESS_OBJECT_TYPE]]
+			}
+		}
+		$_[0] = $NodeNext[$_[0]];
+	}
+}
+
+sub GetXkey {
+my ($i, $RefTag, $TypeTag, $PropNum) = @_;
+my ($j, $p, $Value);
+	$j = $NodeFirst[$i];
+	$Value = '';
+	while(1) {
+		if ($j == -1) {
+			last;
+		}
+		if ($NodeType[$NodeFirst[$j]] eq 'P' && $NodeString[$j] eq $RefTag) {
+			$p = $NodeRef[$NodeFirst[$j]];
+			while(1) {
+				if ($p == -1) {
+					last;
+				}
+				if ($NodeString[$NodeParent[$p]] eq $TypeTag) {
+					if ($PropNum == 1) {
+						$Value = $NodeString[$p];
+					} else {
+						$Value = $NodeValue[$NodeValuePntr[$p]+$PropNum-2];[[*Niet getest!!!*]]
+					}
+					last;
+				}				
+				$p = $NodeParent[$NodeParent[$p]];
+			}
+			last;
+		}
+		$j = $NodeNext[$j];
+	}
+	return $Value;
+}
+
+
+sub SwitchFlag {
+my ($flag,$value) = @_;
+	if ($flag) {
+		return $value;
+	} else {
+		return 'NULL';
+	}
+}
+
+sub ReplX {
+my ($value) = @_;
+	$value =~ s/'/''/g;
+	$value =~ s/\r\n/'||CHR(13)||CHR(10)||'/g;
+	$value =~ s/\r/'||CHR(13)||'/g;
+	$value =~ s/\n/'||CHR(10)||'/g;
+	$value =~ s/\t/'||CHR(9)||'/g;
+	return $value;
+}
+[[ENDBODY]]
+
