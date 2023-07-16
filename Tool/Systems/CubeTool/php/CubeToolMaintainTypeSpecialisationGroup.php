@@ -137,7 +137,7 @@ function CreateTsg() {
 		CubePosAction: l_pos_action
 	};
 	if (l_pos_action == 'F' || l_pos_action == 'L') {
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "CreateTsg",
 			Parameters: {
 				Option,
@@ -146,7 +146,7 @@ function CreateTsg() {
 		} );
 	} else {
 		var Ref = g_json_option.Type.TYP_TSG;
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "CreateTsg",
 				Parameters: {
 					Option,
@@ -168,7 +168,7 @@ function UpdateTsg() {
 		XfAtbTypName: document.getElementById("InputXfAtbTypName").value,
 		XkAtbName: document.getElementById("InputXkAtbName").value
 	};
-	PerformTrans( {
+	PerformTrans('BusinessObjectType', {
 		Service: "UpdateTsg",
 		Parameters: {
 			Type
@@ -181,7 +181,7 @@ function DeleteTsg() {
 		FkTypName: document.getElementById("InputFkTypName").value,
 		Code: document.getElementById("InputCode").value
 	};
-	PerformTrans( {
+	PerformTrans('BusinessObjectType', {
 		Service: "DeleteTsg",
 		Parameters: {
 			Type
@@ -227,7 +227,7 @@ function StartSelect001(p_event) {
 			FkTypName:document.getElementById("InputFkTypName").value
 		}
 	};
-	PerformTrans( {
+	PerformTrans('BusinessObjectType', {
 		Service: "GetAtbForTypList",
 		Parameters
 	} );
@@ -249,7 +249,7 @@ function InitBody() {
 		document.getElementById("InputCode").value = l_json_objectKey.TYP_TSG.Code;
 		document.getElementById("ButtonOK").innerText = "Update";
 		document.getElementById("ButtonOK").onclick = function(){UpdateTsg()};
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "GetTsg",
 			Parameters: {
 				Type: l_json_objectKey.TYP_TSG
@@ -265,7 +265,7 @@ function InitBody() {
 		document.getElementById("InputFkTypName").value = l_json_objectKey.TYP_TYP.Name;
 		document.getElementById("ButtonOK").innerText = "Create";
 		document.getElementById("ButtonOK").onclick = function(){CreateTsg()};
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "GetTypFkey",
 			Parameters: {
 				Type: l_json_objectKey.TYP_TYP
@@ -283,7 +283,7 @@ function InitBody() {
 		document.getElementById("InputFkTsgCode").value = l_json_objectKey.TYP_TSG.Code;
 		document.getElementById("ButtonOK").innerText = "Create";
 		document.getElementById("ButtonOK").onclick = function(){CreateTsg()};
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "GetTsgFkey",
 			Parameters: {
 				Type: l_json_objectKey.TYP_TSG
@@ -302,7 +302,7 @@ function InitBody() {
 		document.getElementById("ButtonOK").innerText = "Delete";
 		document.getElementById("ButtonOK").onclick = function(){DeleteTsg()};
 		SetChangePending();
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "GetTsg",
 			Parameters: {
 				Type: l_json_objectKey.TYP_TSG

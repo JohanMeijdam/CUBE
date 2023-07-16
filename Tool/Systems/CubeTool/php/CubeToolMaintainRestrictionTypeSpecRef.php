@@ -151,7 +151,7 @@ function CreateRtr() {
 		XfTspTsgCode: document.getElementById("InputXfTspTsgCode").value,
 		XkTspCode: document.getElementById("InputXkTspCode").value
 	};
-	PerformTrans( {
+	PerformTrans('BusinessObjectType', {
 		Service: "CreateRtr",
 		Parameters: {
 			Type
@@ -171,7 +171,7 @@ function UpdateRtr() {
 		XfTspTsgCode: document.getElementById("InputXfTspTsgCode").value,
 		XkTspCode: document.getElementById("InputXkTspCode").value
 	};
-	PerformTrans( {
+	PerformTrans('BusinessObjectType', {
 		Service: "UpdateRtr",
 		Parameters: {
 			Type
@@ -189,7 +189,7 @@ function DeleteRtr() {
 		XfTspTsgCode: document.getElementById("InputXfTspTsgCode").value,
 		XkTspCode: document.getElementById("InputXkTspCode").value
 	};
-	PerformTrans( {
+	PerformTrans('BusinessObjectType', {
 		Service: "DeleteRtr",
 		Parameters: {
 			Type
@@ -241,7 +241,7 @@ function StartSelect001(p_event) {
 			FkRefTypName:document.getElementById("InputFkRefTypName").value
 		}
 	};
-	PerformTrans( {
+	PerformTrans('BusinessObjectType', {
 		Service: "GetTspForTypList",
 		Parameters
 	} );
@@ -267,7 +267,7 @@ function InitBody() {
 		document.getElementById("InputXkTspCode").value = l_json_objectKey.TYP_RTR.XkTspCode;
 		document.getElementById("ButtonOK").innerText = "Update";
 		document.getElementById("ButtonOK").onclick = function(){UpdateRtr()};
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "GetRtr",
 			Parameters: {
 				Type: l_json_objectKey.TYP_RTR
@@ -291,7 +291,7 @@ function InitBody() {
 		document.getElementById("InputFkRefTypName").value = l_json_objectKey.TYP_REF.XkTypName;
 		document.getElementById("ButtonOK").innerText = "Create";
 		document.getElementById("ButtonOK").onclick = function(){CreateRtr()};
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "GetRefFkey",
 			Parameters: {
 				Type: l_json_objectKey.TYP_REF
@@ -316,7 +316,7 @@ function InitBody() {
 		document.getElementById("ButtonOK").innerText = "Delete";
 		document.getElementById("ButtonOK").onclick = function(){DeleteRtr()};
 		SetChangePending();
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "GetRtr",
 			Parameters: {
 				Type: l_json_objectKey.TYP_RTR

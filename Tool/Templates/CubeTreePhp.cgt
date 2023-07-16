@@ -104,11 +104,11 @@ function OpenCloseOnClick(p_obj) {
 
 		switch (p_obj.parentNode._type) {[[LOOP,SYSTEM_BO_TYPE]][[LOOP,BUSINESS_OBJECT_TYPE]][[LOOP,TYPE]][[IF:ROOT]]
  		case 'DIR_<<TYPE1:U>>':
-			PerformTrans( {Service:"GetDir<<TYPE1:C>>Items"} );
+			PerformTrans('<<BUSINESS_OBJECT_TYPE:C>>', {Service:"GetDir<<TYPE1:C>>Items"} );
 			break;[[ENDIF]][[IF:CHILD(TYPE)[OR]3=Y]]
  		case 'TYP_<<TYPE1:U>>':
 			var l_json_id = JSON.parse(p_obj.parentNode.id)["TYP_<<TYPE1:U>>"];
-			PerformTrans( {Service:"Get<<TYPE1:C>>Items",Parameters:{Type:l_json_id}} );
+			PerformTrans('<<BUSINESS_OBJECT_TYPE:C>>', {Service:"Get<<TYPE1:C>>Items",Parameters:{Type:l_json_id}} );
 			break;[[ENDIF]][[REPEAT]][[ENDLOOP,TYPE]][[ENDLOOP,BUSINESS_OBJECT_TYPE]][[ENDLOOP,SYSTEM_BO_TYPE]]
 		} 
 	}
@@ -146,7 +146,7 @@ function OpenDetail(p_obj) {
 			var l_json_id_ref = JSON.parse(document.body._objNodePosId)[l_obj._type];
 			switch (l_obj._type) {[[LOOP,SYSTEM_BO_TYPE]][[LOOP,BUSINESS_OBJECT_TYPE]][[LOOP,TYPE]][[IF:6=P[AND]CHILD(ATTRIBUTE:<<TEXT,GEN_IS_OWN_KEY>>)]]
 			case 'TYP_<<TYPE1:U>>':
-				PerformTrans( {Service:"Move<<TYPE1:C>>",Parameters:{Option:{CubePosAction:document.body._moveAction},Type:l_json_id,Ref:l_json_id_ref}} );
+				PerformTrans('<<BUSINESS_OBJECT_TYPE:C>>', {Service:"Move<<TYPE1:C>>",Parameters:{Option:{CubePosAction:document.body._moveAction},Type:l_json_id,Ref:l_json_id_ref}} );
 				break;[[ENDIF]][[REPEAT]][[ENDLOOP,TYPE]][[ENDLOOP,BUSINESS_OBJECT_TYPE]][[ENDLOOP,SYSTEM_BO_TYPE]]
 			}
 		}
@@ -170,16 +170,16 @@ function OpenDetail(p_obj) {
 				var l_json_id = JSON.parse(g_currentObjId)[g_currentObjType];
 				switch (l_obj._type) {[[LOOP,SYSTEM_BO_TYPE]][[LOOP,BUSINESS_OBJECT_TYPE]][[LOOP,TYPE]][[IF:ROOT[AND]!6=P[AND]CHILD(ATTRIBUTE:<<TEXT,GEN_IS_OWN_KEY>>)[AND]3=Y[AND]!4=1)]]
 				case 'DIR_<<TYPE1:U>>':
-					PerformTrans( {Service:"ChangeParent<<TYPE1:C>>",Parameters:{Option:{CubeFlagRoot:"Y"},Type:l_json_id}} );
+					PerformTrans('<<BUSINESS_OBJECT_TYPE:C>>', {Service:"ChangeParent<<TYPE1:C>>",Parameters:{Option:{CubeFlagRoot:"Y"},Type:l_json_id}} );
 					break;[[ENDIF]][[IF:CHILD(ATTRIBUTE:<<TEXT,GEN_IS_OWN_KEY>>)[AND]3=Y[AND]!4=1[OR]CHILD(TYPE:CHILD(ATTRIBUTE:<<TEXT,GEN_IS_OWN_KEY>>)[AND]3=Y[AND]!4=1[AND]!6=P)]]
 				case 'TYP_<<TYPE1:U>>':
 					var l_json_id_ref = JSON.parse(document.body._objNodePosId)[l_obj._type];[[IF:6=P]]
-					PerformTrans( {Service:"Move<<TYPE1:C>>",Parameters:{Option:{CubePosAction:document.body._moveAction},Type:l_json_id,Ref:l_json_id_ref}} );[[ELSE]][[LOOP,TYPE:CHILD(ATTRIBUTE:<<TEXT,GEN_IS_OWN_KEY>>)[AND]3=Y[AND]!4=1[AND]!6=P]]
+					PerformTrans('<<BUSINESS_OBJECT_TYPE:C>>', {Service:"Move<<TYPE1:C>>",Parameters:{Option:{CubePosAction:document.body._moveAction},Type:l_json_id,Ref:l_json_id_ref}} );[[ELSE]][[LOOP,TYPE:CHILD(ATTRIBUTE:<<TEXT,GEN_IS_OWN_KEY>>)[AND]3=Y[AND]!4=1[AND]!6=P]]
 					if (document.body._menuItemType == 'CUBE_P_<<TYPE1:U>>') {
-						PerformTrans( {Service:"ChangeParent<<TYPE1:C>>",Parameters:{Option:{CubeFlagRoot:"Y"},Type:l_json_id}} );			
+						PerformTrans('<<BUSINESS_OBJECT_TYPE:C>>', {Service:"ChangeParent<<TYPE1:C>>",Parameters:{Option:{CubeFlagRoot:"Y"},Type:l_json_id}} );			
 						break;
 					}[[ENDLOOP,TYPE]]
-					PerformTrans( {Service:"ChangeParent<<TYPE1:C>>",Parameters:{Option:{CubeFlagRoot:"N"},Type:l_json_id,Ref:l_json_id_ref}} );[[ENDIF]]
+					PerformTrans('<<BUSINESS_OBJECT_TYPE:C>>', {Service:"ChangeParent<<TYPE1:C>>",Parameters:{Option:{CubeFlagRoot:"N"},Type:l_json_id,Ref:l_json_id_ref}} );[[ENDIF]]
 					break;[[ENDIF]][[REPEAT]][[ENDLOOP,TYPE]][[ENDLOOP,BUSINESS_OBJECT_TYPE]][[ENDLOOP,SYSTEM_BO_TYPE]]
 				}
 			}
@@ -271,7 +271,7 @@ function OpenMenu(p_obj) {
 	switch (l_type_id) {[[LOOP,SYSTEM_BO_TYPE]][[LOOP,BUSINESS_OBJECT_TYPE]][[LOOP,TYPE]][[IF:ROOT]]
  	case 'DIR_<<TYPE1:U>>':
 		AddMenuItem(g_objMenuList, 'add <<TYPE:L>>', 'icons/<<TYPE7:L>>.bmp','[[IF:6=P]]CubeAdd[[ELSE]]Detail<<TYPE1:U>>[[ENDIF]]','N','TYP_<<TYPE1:U>>','<<TYPE:C>>',[[IF:!5=N]]<<TYPE5>>[[ELSE]]0[[ENDIF]],'N',2);[[IF:!5=N]]
-		PerformTrans( {Service:"Count<<TYPE1:C>>"} );[[ENDIF]]
+		PerformTrans('<<BUSINESS_OBJECT_TYPE:C>>', {Service:"Count<<TYPE1:C>>"} );[[ENDIF]]
 		break;[[ENDIF]][[IF:CHILD(TYPE)[OR]3=Y[OR](6=P[AND]CHILD(ATTRIBUTE:<<TEXT,GEN_IS_OWN_KEY>>))]]
  	case 'TYP_<<TYPE1:U>>':[[IF:6=P[AND]CHILD(ATTRIBUTE:<<TEXT,GEN_IS_OWN_KEY>>)]]
 		if (l_childCount > 1) {
@@ -286,7 +286,7 @@ function OpenMenu(p_obj) {
 		AddMenuItem(g_objMenuList, 'add <<TYPE:L>>', 'icons/<<TYPE7:L>>.bmp','[[IF:6=P]]CubeAdd[[ELSE]]Detail<<TYPE1:U>>[[ENDIF]]','R','TYP_<<TYPE1:U>>','<<TYPE:C>>',[[IF:!4=N]]<<TYPE4>>[[ELSE]]0[[ENDIF]],'N',[[EVAL:++$myI]]);[[ENDIF]]
 		AddMenuItem(g_objMenuList, 'delete', 'icons/cube_delete.bmp','CubeDelete','X','','<<TYPE:C>>',0,'N',0);[[IF:(3=Y[AND]!4=N)[OR]CHILD(TYPE:!5=N)]]
 		var l_json_id = l_json_node_id[l_type_id];
-		PerformTrans( {Service:"Count<<TYPE1:C>>RestrictedItems",Parameters:{Type:l_json_id}} );[[ENDIF]]
+		PerformTrans('<<BUSINESS_OBJECT_TYPE:C>>', {Service:"Count<<TYPE1:C>>RestrictedItems",Parameters:{Type:l_json_id}} );[[ENDIF]]
 		break;[[ENDIF]][[REPEAT]][[ENDLOOP,TYPE]][[ENDLOOP,BUSINESS_OBJECT_TYPE]][[ENDLOOP,SYSTEM_BO_TYPE]]
 	}
 }
@@ -307,9 +307,9 @@ Treeview</div>
 Detail</div><div style="overflow:auto;position:absolute;top:106px;bottom:0px;left:40%;right:0;background-color:white;border-left: 2px solid darkslategray;">
 <iframe id="DetailFrame" style="position:absolute;height:100%;width:100%;" onmouseover="ResetState()"></iframe>
 </div></body></html>[[ENDLOOP,SYSTEM]][[FILE,<<2>>\<<1>>Include.js]]<!--
-function PerformTrans(p_json_parm) {
+function PerformTrans(p_serverType, p_json_parm) {
 	var l_requestText = JSON.stringify(p_json_parm);
-	g_xmlhttp.open('POST','<<1>>Server.php',true);
+	g_xmlhttp.open('POST','<<1>>Server' + p_serverType + '.php',true);
 	g_xmlhttp.send(l_requestText);
 }
 -->[[ENDBODY]]

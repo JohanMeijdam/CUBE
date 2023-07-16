@@ -112,7 +112,7 @@ function CreateSys() {
 		Password: document.getElementById("InputPassword").value,
 		TablePrefix: document.getElementById("InputTablePrefix").value
 	};
-	PerformTrans( {
+	PerformTrans('System', {
 		Service: "CreateSys",
 		Parameters: {
 			Type
@@ -129,7 +129,7 @@ function UpdateSys() {
 		Password: document.getElementById("InputPassword").value,
 		TablePrefix: document.getElementById("InputTablePrefix").value
 	};
-	PerformTrans( {
+	PerformTrans('System', {
 		Service: "UpdateSys",
 		Parameters: {
 			Type
@@ -141,7 +141,7 @@ function DeleteSys() {
 	var Type = {
 		Name: document.getElementById("InputName").value
 	};
-	PerformTrans( {
+	PerformTrans('System', {
 		Service: "DeleteSys",
 		Parameters: {
 			Type
@@ -163,7 +163,7 @@ function InitBody() {
 		document.getElementById("InputName").value = l_json_objectKey.TYP_SYS.Name;
 		document.getElementById("ButtonOK").innerText = "Update";
 		document.getElementById("ButtonOK").onclick = function(){UpdateSys()};
-		PerformTrans( {
+		PerformTrans('System', {
 			Service: "GetSys",
 			Parameters: {
 				Type: l_json_objectKey.TYP_SYS
@@ -183,7 +183,7 @@ function InitBody() {
 		document.getElementById("ButtonOK").innerText = "Delete";
 		document.getElementById("ButtonOK").onclick = function(){DeleteSys()};
 		SetChangePending();
-		PerformTrans( {
+		PerformTrans('System', {
 			Service: "GetSys",
 			Parameters: {
 				Type: l_json_objectKey.TYP_SYS

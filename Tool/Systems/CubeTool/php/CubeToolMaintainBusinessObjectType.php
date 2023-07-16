@@ -108,7 +108,7 @@ function CreateBot() {
 		CubePosAction: l_pos_action
 	};
 	if (l_pos_action == 'F' || l_pos_action == 'L') {
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "CreateBot",
 			Parameters: {
 				Option,
@@ -117,7 +117,7 @@ function CreateBot() {
 		} );
 	} else {
 		var Ref = g_json_option.Type.TYP_BOT;
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "CreateBot",
 				Parameters: {
 					Option,
@@ -135,7 +135,7 @@ function UpdateBot() {
 		Directory: document.getElementById("InputDirectory").value,
 		ApiUrl: document.getElementById("InputApiUrl").value
 	};
-	PerformTrans( {
+	PerformTrans('BusinessObjectType', {
 		Service: "UpdateBot",
 		Parameters: {
 			Type
@@ -147,7 +147,7 @@ function DeleteBot() {
 	var Type = {
 		Name: document.getElementById("InputName").value
 	};
-	PerformTrans( {
+	PerformTrans('BusinessObjectType', {
 		Service: "DeleteBot",
 		Parameters: {
 			Type
@@ -170,7 +170,7 @@ function InitBody() {
 		document.getElementById("InputName").value = l_json_objectKey.TYP_BOT.Name;
 		document.getElementById("ButtonOK").innerText = "Update";
 		document.getElementById("ButtonOK").onclick = function(){UpdateBot()};
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "GetBot",
 			Parameters: {
 				Type: l_json_objectKey.TYP_BOT
@@ -190,7 +190,7 @@ function InitBody() {
 		document.getElementById("ButtonOK").innerText = "Delete";
 		document.getElementById("ButtonOK").onclick = function(){DeleteBot()};
 		SetChangePending();
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "GetBot",
 			Parameters: {
 				Type: l_json_objectKey.TYP_BOT

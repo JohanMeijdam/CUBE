@@ -133,7 +133,7 @@ function CreateRtt() {
 		XfTspTsgCode: document.getElementById("InputXfTspTsgCode").value,
 		XkTspCode: document.getElementById("InputXkTspCode").value
 	};
-	PerformTrans( {
+	PerformTrans('BusinessObjectType', {
 		Service: "CreateRtt",
 		Parameters: {
 			Type
@@ -150,7 +150,7 @@ function UpdateRtt() {
 		XfTspTsgCode: document.getElementById("InputXfTspTsgCode").value,
 		XkTspCode: document.getElementById("InputXkTspCode").value
 	};
-	PerformTrans( {
+	PerformTrans('BusinessObjectType', {
 		Service: "UpdateRtt",
 		Parameters: {
 			Type
@@ -165,7 +165,7 @@ function DeleteRtt() {
 		XfTspTsgCode: document.getElementById("InputXfTspTsgCode").value,
 		XkTspCode: document.getElementById("InputXkTspCode").value
 	};
-	PerformTrans( {
+	PerformTrans('BusinessObjectType', {
 		Service: "DeleteRtt",
 		Parameters: {
 			Type
@@ -216,7 +216,7 @@ function StartSelect001(p_event) {
 			FkTypName:document.getElementById("InputFkTypName").value
 		}
 	};
-	PerformTrans( {
+	PerformTrans('BusinessObjectType', {
 		Service: "GetTspForTypList",
 		Parameters
 	} );
@@ -239,7 +239,7 @@ function InitBody() {
 		document.getElementById("InputXkTspCode").value = l_json_objectKey.TYP_RTT.XkTspCode;
 		document.getElementById("ButtonOK").innerText = "Update";
 		document.getElementById("ButtonOK").onclick = function(){UpdateRtt()};
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "GetRtt",
 			Parameters: {
 				Type: l_json_objectKey.TYP_RTT
@@ -257,7 +257,7 @@ function InitBody() {
 		document.getElementById("InputFkTypName").value = l_json_objectKey.TYP_TYP.Name;
 		document.getElementById("ButtonOK").innerText = "Create";
 		document.getElementById("ButtonOK").onclick = function(){CreateRtt()};
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "GetTypFkey",
 			Parameters: {
 				Type: l_json_objectKey.TYP_TYP
@@ -276,7 +276,7 @@ function InitBody() {
 		document.getElementById("ButtonOK").innerText = "Delete";
 		document.getElementById("ButtonOK").onclick = function(){DeleteRtt()};
 		SetChangePending();
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "GetRtt",
 			Parameters: {
 				Type: l_json_objectKey.TYP_RTT

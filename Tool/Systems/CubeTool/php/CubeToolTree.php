@@ -155,56 +155,56 @@ function OpenCloseOnClick(p_obj) {
 
 		switch (p_obj.parentNode._type) {
  		case 'DIR_ITP':
-			PerformTrans( {Service:"GetDirItpItems"} );
+			PerformTrans('InformationType', {Service:"GetDirItpItems"} );
 			break;
  		case 'TYP_ITP':
 			var l_json_id = JSON.parse(p_obj.parentNode.id)["TYP_ITP"];
-			PerformTrans( {Service:"GetItpItems",Parameters:{Type:l_json_id}} );
+			PerformTrans('InformationType', {Service:"GetItpItems",Parameters:{Type:l_json_id}} );
 			break;
  		case 'TYP_ITE':
 			var l_json_id = JSON.parse(p_obj.parentNode.id)["TYP_ITE"];
-			PerformTrans( {Service:"GetIteItems",Parameters:{Type:l_json_id}} );
+			PerformTrans('InformationType', {Service:"GetIteItems",Parameters:{Type:l_json_id}} );
 			break;
  		case 'DIR_BOT':
-			PerformTrans( {Service:"GetDirBotItems"} );
+			PerformTrans('BusinessObjectType', {Service:"GetDirBotItems"} );
 			break;
  		case 'TYP_BOT':
 			var l_json_id = JSON.parse(p_obj.parentNode.id)["TYP_BOT"];
-			PerformTrans( {Service:"GetBotItems",Parameters:{Type:l_json_id}} );
+			PerformTrans('BusinessObjectType', {Service:"GetBotItems",Parameters:{Type:l_json_id}} );
 			break;
  		case 'TYP_TYP':
 			var l_json_id = JSON.parse(p_obj.parentNode.id)["TYP_TYP"];
-			PerformTrans( {Service:"GetTypItems",Parameters:{Type:l_json_id}} );
+			PerformTrans('BusinessObjectType', {Service:"GetTypItems",Parameters:{Type:l_json_id}} );
 			break;
  		case 'TYP_TSG':
 			var l_json_id = JSON.parse(p_obj.parentNode.id)["TYP_TSG"];
-			PerformTrans( {Service:"GetTsgItems",Parameters:{Type:l_json_id}} );
+			PerformTrans('BusinessObjectType', {Service:"GetTsgItems",Parameters:{Type:l_json_id}} );
 			break;
  		case 'TYP_ATB':
 			var l_json_id = JSON.parse(p_obj.parentNode.id)["TYP_ATB"];
-			PerformTrans( {Service:"GetAtbItems",Parameters:{Type:l_json_id}} );
+			PerformTrans('BusinessObjectType', {Service:"GetAtbItems",Parameters:{Type:l_json_id}} );
 			break;
  		case 'TYP_REF':
 			var l_json_id = JSON.parse(p_obj.parentNode.id)["TYP_REF"];
-			PerformTrans( {Service:"GetRefItems",Parameters:{Type:l_json_id}} );
+			PerformTrans('BusinessObjectType', {Service:"GetRefItems",Parameters:{Type:l_json_id}} );
 			break;
  		case 'TYP_JSN':
 			var l_json_id = JSON.parse(p_obj.parentNode.id)["TYP_JSN"];
-			PerformTrans( {Service:"GetJsnItems",Parameters:{Type:l_json_id}} );
+			PerformTrans('BusinessObjectType', {Service:"GetJsnItems",Parameters:{Type:l_json_id}} );
 			break;
  		case 'DIR_SYS':
-			PerformTrans( {Service:"GetDirSysItems"} );
+			PerformTrans('System', {Service:"GetDirSysItems"} );
 			break;
  		case 'TYP_SYS':
 			var l_json_id = JSON.parse(p_obj.parentNode.id)["TYP_SYS"];
-			PerformTrans( {Service:"GetSysItems",Parameters:{Type:l_json_id}} );
+			PerformTrans('System', {Service:"GetSysItems",Parameters:{Type:l_json_id}} );
 			break;
  		case 'DIR_FUN':
-			PerformTrans( {Service:"GetDirFunItems"} );
+			PerformTrans('Function', {Service:"GetDirFunItems"} );
 			break;
  		case 'TYP_FUN':
 			var l_json_id = JSON.parse(p_obj.parentNode.id)["TYP_FUN"];
-			PerformTrans( {Service:"GetFunItems",Parameters:{Type:l_json_id}} );
+			PerformTrans('Function', {Service:"GetFunItems",Parameters:{Type:l_json_id}} );
 			break;
 		} 
 	}
@@ -242,34 +242,34 @@ function OpenDetail(p_obj) {
 			var l_json_id_ref = JSON.parse(document.body._objNodePosId)[l_obj._type];
 			switch (l_obj._type) {
 			case 'TYP_VAL':
-				PerformTrans( {Service:"MoveVal",Parameters:{Option:{CubePosAction:document.body._moveAction},Type:l_json_id,Ref:l_json_id_ref}} );
+				PerformTrans('InformationType', {Service:"MoveVal",Parameters:{Option:{CubePosAction:document.body._moveAction},Type:l_json_id,Ref:l_json_id_ref}} );
 				break;
 			case 'TYP_BOT':
-				PerformTrans( {Service:"MoveBot",Parameters:{Option:{CubePosAction:document.body._moveAction},Type:l_json_id,Ref:l_json_id_ref}} );
+				PerformTrans('BusinessObjectType', {Service:"MoveBot",Parameters:{Option:{CubePosAction:document.body._moveAction},Type:l_json_id,Ref:l_json_id_ref}} );
 				break;
 			case 'TYP_TYP':
-				PerformTrans( {Service:"MoveTyp",Parameters:{Option:{CubePosAction:document.body._moveAction},Type:l_json_id,Ref:l_json_id_ref}} );
+				PerformTrans('BusinessObjectType', {Service:"MoveTyp",Parameters:{Option:{CubePosAction:document.body._moveAction},Type:l_json_id,Ref:l_json_id_ref}} );
 				break;
 			case 'TYP_TSG':
-				PerformTrans( {Service:"MoveTsg",Parameters:{Option:{CubePosAction:document.body._moveAction},Type:l_json_id,Ref:l_json_id_ref}} );
+				PerformTrans('BusinessObjectType', {Service:"MoveTsg",Parameters:{Option:{CubePosAction:document.body._moveAction},Type:l_json_id,Ref:l_json_id_ref}} );
 				break;
 			case 'TYP_TSP':
-				PerformTrans( {Service:"MoveTsp",Parameters:{Option:{CubePosAction:document.body._moveAction},Type:l_json_id,Ref:l_json_id_ref}} );
+				PerformTrans('BusinessObjectType', {Service:"MoveTsp",Parameters:{Option:{CubePosAction:document.body._moveAction},Type:l_json_id,Ref:l_json_id_ref}} );
 				break;
 			case 'TYP_ATB':
-				PerformTrans( {Service:"MoveAtb",Parameters:{Option:{CubePosAction:document.body._moveAction},Type:l_json_id,Ref:l_json_id_ref}} );
+				PerformTrans('BusinessObjectType', {Service:"MoveAtb",Parameters:{Option:{CubePosAction:document.body._moveAction},Type:l_json_id,Ref:l_json_id_ref}} );
 				break;
 			case 'TYP_REF':
-				PerformTrans( {Service:"MoveRef",Parameters:{Option:{CubePosAction:document.body._moveAction},Type:l_json_id,Ref:l_json_id_ref}} );
+				PerformTrans('BusinessObjectType', {Service:"MoveRef",Parameters:{Option:{CubePosAction:document.body._moveAction},Type:l_json_id,Ref:l_json_id_ref}} );
 				break;
 			case 'TYP_JSN':
-				PerformTrans( {Service:"MoveJsn",Parameters:{Option:{CubePosAction:document.body._moveAction},Type:l_json_id,Ref:l_json_id_ref}} );
+				PerformTrans('BusinessObjectType', {Service:"MoveJsn",Parameters:{Option:{CubePosAction:document.body._moveAction},Type:l_json_id,Ref:l_json_id_ref}} );
 				break;
 			case 'TYP_SBT':
-				PerformTrans( {Service:"MoveSbt",Parameters:{Option:{CubePosAction:document.body._moveAction},Type:l_json_id,Ref:l_json_id_ref}} );
+				PerformTrans('System', {Service:"MoveSbt",Parameters:{Option:{CubePosAction:document.body._moveAction},Type:l_json_id,Ref:l_json_id_ref}} );
 				break;
 			case 'TYP_ARG':
-				PerformTrans( {Service:"MoveArg",Parameters:{Option:{CubePosAction:document.body._moveAction},Type:l_json_id,Ref:l_json_id_ref}} );
+				PerformTrans('Function', {Service:"MoveArg",Parameters:{Option:{CubePosAction:document.body._moveAction},Type:l_json_id,Ref:l_json_id_ref}} );
 				break;
 			}
 		}
@@ -294,11 +294,11 @@ function OpenDetail(p_obj) {
 				switch (l_obj._type) {
 				case 'TYP_TYP':
 					var l_json_id_ref = JSON.parse(document.body._objNodePosId)[l_obj._type];
-					PerformTrans( {Service:"MoveTyp",Parameters:{Option:{CubePosAction:document.body._moveAction},Type:l_json_id,Ref:l_json_id_ref}} );
+					PerformTrans('BusinessObjectType', {Service:"MoveTyp",Parameters:{Option:{CubePosAction:document.body._moveAction},Type:l_json_id,Ref:l_json_id_ref}} );
 					break;
 				case 'TYP_JSN':
 					var l_json_id_ref = JSON.parse(document.body._objNodePosId)[l_obj._type];
-					PerformTrans( {Service:"MoveJsn",Parameters:{Option:{CubePosAction:document.body._moveAction},Type:l_json_id,Ref:l_json_id_ref}} );
+					PerformTrans('BusinessObjectType', {Service:"MoveJsn",Parameters:{Option:{CubePosAction:document.body._moveAction},Type:l_json_id,Ref:l_json_id_ref}} );
 					break;
 				}
 			}
@@ -415,7 +415,7 @@ function OpenMenu(p_obj) {
 		AddMenuItem(g_objMenuList, 'add type', 'icons/type.bmp','CubeAdd','N','TYP_TYP','Type',1,'N',2);
 		AddMenuItem(g_objMenuList, 'delete', 'icons/cube_delete.bmp','CubeDelete','X','','BusinessObjectType',0,'N',0);
 		var l_json_id = l_json_node_id[l_type_id];
-		PerformTrans( {Service:"CountBotRestrictedItems",Parameters:{Type:l_json_id}} );
+		PerformTrans('BusinessObjectType', {Service:"CountBotRestrictedItems",Parameters:{Type:l_json_id}} );
 		break;
  	case 'TYP_TYP':
 		if (l_childCount > 1) {
@@ -435,7 +435,7 @@ function OpenMenu(p_obj) {
 		AddMenuItem(g_objMenuList, 'add type', 'icons/type.bmp','CubeAdd','R','TYP_TYP','Type',0,'N',8);
 		AddMenuItem(g_objMenuList, 'delete', 'icons/cube_delete.bmp','CubeDelete','X','','Type',0,'N',0);
 		var l_json_id = l_json_node_id[l_type_id];
-		PerformTrans( {Service:"CountTypRestrictedItems",Parameters:{Type:l_json_id}} );
+		PerformTrans('BusinessObjectType', {Service:"CountTypRestrictedItems",Parameters:{Type:l_json_id}} );
 		break;
  	case 'TYP_TSG':
 		if (l_childCount > 1) {
@@ -445,7 +445,7 @@ function OpenMenu(p_obj) {
 		AddMenuItem(g_objMenuList, 'add type_specialisation_group', 'icons/tspgroup.bmp','CubeAdd','R','TYP_TSG','TypeSpecialisationGroup',1,'N',3);
 		AddMenuItem(g_objMenuList, 'delete', 'icons/cube_delete.bmp','CubeDelete','X','','TypeSpecialisationGroup',0,'N',0);
 		var l_json_id = l_json_node_id[l_type_id];
-		PerformTrans( {Service:"CountTsgRestrictedItems",Parameters:{Type:l_json_id}} );
+		PerformTrans('BusinessObjectType', {Service:"CountTsgRestrictedItems",Parameters:{Type:l_json_id}} );
 		break;
  	case 'TYP_TSP':
 		if (l_childCount > 1) {
@@ -462,7 +462,7 @@ function OpenMenu(p_obj) {
 		AddMenuItem(g_objMenuList, 'add restriction_type_spec_atb', 'icons/restrict.bmp','DetailRTA','N','TYP_RTA','RestrictionTypeSpecAtb',0,'N',4);
 		AddMenuItem(g_objMenuList, 'delete', 'icons/cube_delete.bmp','CubeDelete','X','','Attribute',0,'N',0);
 		var l_json_id = l_json_node_id[l_type_id];
-		PerformTrans( {Service:"CountAtbRestrictedItems",Parameters:{Type:l_json_id}} );
+		PerformTrans('BusinessObjectType', {Service:"CountAtbRestrictedItems",Parameters:{Type:l_json_id}} );
 		break;
  	case 'TYP_REF':
 		if (l_childCount > 1) {
@@ -473,7 +473,7 @@ function OpenMenu(p_obj) {
 		AddMenuItem(g_objMenuList, 'add restriction_target_type_spec', 'icons/restrtgt.bmp','DetailRTS','N','TYP_RTS','RestrictionTargetTypeSpec',1,'N',4);
 		AddMenuItem(g_objMenuList, 'delete', 'icons/cube_delete.bmp','CubeDelete','X','','Reference',0,'N',0);
 		var l_json_id = l_json_node_id[l_type_id];
-		PerformTrans( {Service:"CountRefRestrictedItems",Parameters:{Type:l_json_id}} );
+		PerformTrans('BusinessObjectType', {Service:"CountRefRestrictedItems",Parameters:{Type:l_json_id}} );
 		break;
  	case 'TYP_JSN':
 		if (l_childCount > 1) {
@@ -502,7 +502,7 @@ function OpenMenu(p_obj) {
 		break;
  	case 'DIR_FUN':
 		AddMenuItem(g_objMenuList, 'add function', 'icons/function.bmp','DetailFUN','N','TYP_FUN','Function',1,'N',2);
-		PerformTrans( {Service:"CountFun"} );
+		PerformTrans('Function', {Service:"CountFun"} );
 		break;
  	case 'TYP_FUN':
 		AddMenuItem(g_objMenuList, 'add argument', 'icons/funcatb.bmp','CubeAdd','N','TYP_ARG','Argument',0,'N',2);

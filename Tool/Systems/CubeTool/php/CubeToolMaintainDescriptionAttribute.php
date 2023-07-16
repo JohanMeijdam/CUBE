@@ -107,7 +107,7 @@ function CreateDca() {
 		FkAtbName: document.getElementById("InputFkAtbName").value,
 		Text: document.getElementById("InputText").value
 	};
-	PerformTrans( {
+	PerformTrans('BusinessObjectType', {
 		Service: "CreateDca",
 		Parameters: {
 			Type
@@ -122,7 +122,7 @@ function UpdateDca() {
 		FkAtbName: document.getElementById("InputFkAtbName").value,
 		Text: document.getElementById("InputText").value
 	};
-	PerformTrans( {
+	PerformTrans('BusinessObjectType', {
 		Service: "UpdateDca",
 		Parameters: {
 			Type
@@ -135,7 +135,7 @@ function DeleteDca() {
 		FkTypName: document.getElementById("InputFkTypName").value,
 		FkAtbName: document.getElementById("InputFkAtbName").value
 	};
-	PerformTrans( {
+	PerformTrans('BusinessObjectType', {
 		Service: "DeleteDca",
 		Parameters: {
 			Type
@@ -158,7 +158,7 @@ function InitBody() {
 		document.getElementById("InputFkAtbName").value = l_json_objectKey.TYP_DCA.FkAtbName;
 		document.getElementById("ButtonOK").innerText = "Update";
 		document.getElementById("ButtonOK").onclick = function(){UpdateDca()};
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "GetDca",
 			Parameters: {
 				Type: l_json_objectKey.TYP_DCA
@@ -174,7 +174,7 @@ function InitBody() {
 		document.getElementById("InputFkAtbName").value = l_json_objectKey.TYP_ATB.Name;
 		document.getElementById("ButtonOK").innerText = "Create";
 		document.getElementById("ButtonOK").onclick = function(){CreateDca()};
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "GetAtbFkey",
 			Parameters: {
 				Type: l_json_objectKey.TYP_ATB
@@ -191,7 +191,7 @@ function InitBody() {
 		document.getElementById("ButtonOK").innerText = "Delete";
 		document.getElementById("ButtonOK").onclick = function(){DeleteDca()};
 		SetChangePending();
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "GetDca",
 			Parameters: {
 				Type: l_json_objectKey.TYP_DCA

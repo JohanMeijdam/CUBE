@@ -132,7 +132,7 @@ function CreateAtb() {
 		CubePosAction: l_pos_action
 	};
 	if (l_pos_action == 'F' || l_pos_action == 'L') {
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "CreateAtb",
 			Parameters: {
 				Option,
@@ -141,7 +141,7 @@ function CreateAtb() {
 		} );
 	} else {
 		var Ref = g_json_option.Type.TYP_ATB;
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "CreateAtb",
 				Parameters: {
 					Option,
@@ -165,7 +165,7 @@ function UpdateAtb() {
 		Unchangeable: document.getElementById("InputUnchangeable").value,
 		XkItpName: document.getElementById("InputXkItpName").value
 	};
-	PerformTrans( {
+	PerformTrans('BusinessObjectType', {
 		Service: "UpdateAtb",
 		Parameters: {
 			Type
@@ -178,7 +178,7 @@ function DeleteAtb() {
 		FkTypName: document.getElementById("InputFkTypName").value,
 		Name: document.getElementById("InputName").value
 	};
-	PerformTrans( {
+	PerformTrans('BusinessObjectType', {
 		Service: "DeleteAtb",
 		Parameters: {
 			Type
@@ -211,7 +211,7 @@ function StartSelect001(p_event) {
 	document.body._SelectTop = p_event.clientY;
 	document.body._ListBoxCode = 'Ref001';
 	document.body._ListBoxOptional = 'Y';
-	PerformTrans( {
+	PerformTrans('BusinessObjectType', {
 		Service: "GetItpList"
 	} );
 }
@@ -232,7 +232,7 @@ function InitBody() {
 		document.getElementById("InputName").value = l_json_objectKey.TYP_ATB.Name;
 		document.getElementById("ButtonOK").innerText = "Update";
 		document.getElementById("ButtonOK").onclick = function(){UpdateAtb()};
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "GetAtb",
 			Parameters: {
 				Type: l_json_objectKey.TYP_ATB
@@ -247,7 +247,7 @@ function InitBody() {
 		document.getElementById("InputFkTypName").value = l_json_objectKey.TYP_TYP.Name;
 		document.getElementById("ButtonOK").innerText = "Create";
 		document.getElementById("ButtonOK").onclick = function(){CreateAtb()};
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "GetTypFkey",
 			Parameters: {
 				Type: l_json_objectKey.TYP_TYP
@@ -268,7 +268,7 @@ function InitBody() {
 		document.getElementById("ButtonOK").innerText = "Delete";
 		document.getElementById("ButtonOK").onclick = function(){DeleteAtb()};
 		SetChangePending();
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "GetAtb",
 			Parameters: {
 				Type: l_json_objectKey.TYP_ATB

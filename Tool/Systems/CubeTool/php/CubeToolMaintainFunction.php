@@ -91,7 +91,7 @@ function CreateFun() {
 	var Type = {
 		Name: document.getElementById("InputName").value
 	};
-	PerformTrans( {
+	PerformTrans('Function', {
 		Service: "CreateFun",
 		Parameters: {
 			Type
@@ -103,7 +103,7 @@ function UpdateFun() {
 	var Type = {
 		Name: document.getElementById("InputName").value
 	};
-	PerformTrans( {
+	PerformTrans('Function', {
 		Service: "UpdateFun",
 		Parameters: {
 			Type
@@ -115,7 +115,7 @@ function DeleteFun() {
 	var Type = {
 		Name: document.getElementById("InputName").value
 	};
-	PerformTrans( {
+	PerformTrans('Function', {
 		Service: "DeleteFun",
 		Parameters: {
 			Type

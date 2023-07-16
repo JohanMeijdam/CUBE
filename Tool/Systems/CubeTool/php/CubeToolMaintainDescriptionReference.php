@@ -119,7 +119,7 @@ function CreateDcr() {
 		FkRefTypName: document.getElementById("InputFkRefTypName").value,
 		Text: document.getElementById("InputText").value
 	};
-	PerformTrans( {
+	PerformTrans('BusinessObjectType', {
 		Service: "CreateDcr",
 		Parameters: {
 			Type
@@ -136,7 +136,7 @@ function UpdateDcr() {
 		FkRefTypName: document.getElementById("InputFkRefTypName").value,
 		Text: document.getElementById("InputText").value
 	};
-	PerformTrans( {
+	PerformTrans('BusinessObjectType', {
 		Service: "UpdateDcr",
 		Parameters: {
 			Type
@@ -151,7 +151,7 @@ function DeleteDcr() {
 		FkRefBotName: document.getElementById("InputFkRefBotName").value,
 		FkRefTypName: document.getElementById("InputFkRefTypName").value
 	};
-	PerformTrans( {
+	PerformTrans('BusinessObjectType', {
 		Service: "DeleteDcr",
 		Parameters: {
 			Type
@@ -176,7 +176,7 @@ function InitBody() {
 		document.getElementById("InputFkRefTypName").value = l_json_objectKey.TYP_DCR.FkRefTypName;
 		document.getElementById("ButtonOK").innerText = "Update";
 		document.getElementById("ButtonOK").onclick = function(){UpdateDcr()};
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "GetDcr",
 			Parameters: {
 				Type: l_json_objectKey.TYP_DCR
@@ -196,7 +196,7 @@ function InitBody() {
 		document.getElementById("InputFkRefTypName").value = l_json_objectKey.TYP_REF.XkTypName;
 		document.getElementById("ButtonOK").innerText = "Create";
 		document.getElementById("ButtonOK").onclick = function(){CreateDcr()};
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "GetRefFkey",
 			Parameters: {
 				Type: l_json_objectKey.TYP_REF
@@ -217,7 +217,7 @@ function InitBody() {
 		document.getElementById("ButtonOK").innerText = "Delete";
 		document.getElementById("ButtonOK").onclick = function(){DeleteDcr()};
 		SetChangePending();
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "GetDcr",
 			Parameters: {
 				Type: l_json_objectKey.TYP_DCR

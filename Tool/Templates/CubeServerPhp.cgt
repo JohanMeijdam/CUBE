@@ -10,7 +10,7 @@
 13-02-2022 - p_cube_row always as first argument
 [[INCLUDE,Includes/general.cgt]]
 [[TEXT,SERVER_ARGUMENT_NAME]]<<ARGUMENT:L>>[[LOOP,ARGUMENT_ATTRIBUTE]]<<ARGUMENT_ATTRIBUTE:L>>[[ENDLOOP,ARGUMENT_ATTRIBUTE]][[ENDTEXT]]
-[[BODY]]<?php
+[[BODY]][[LOOP,BUSINESS_OBJECT_TYPE]][[FILE,<<2>>\<<1>>Server<<BUSINESS_OBJECT_TYPE:C>>.php]]<?php
 session_start();
 include 'CubeDbLogon.php';
 
@@ -19,7 +19,7 @@ set_error_handler("CubeError");
 $RequestText = file_get_contents('php://input');
 $RequestObj = json_decode($RequestText, false);
 
-switch ($RequestObj->Service) {[[LOOP,BUSINESS_OBJECT_TYPE]][[LOOP,SERVICE:3=E]]
+switch ($RequestObj->Service) {[[LOOP,SERVICE:3=E]]
 
 case '<<SERVICE:C>>':[[LOOP,OPERATION]][[IF:FIRST]]
 	echo '[';[[ENDIF]][[IF,SERVICE:CHILD(ARGUMENT)]][[FORH,SERVICE:N>N]]
@@ -57,7 +57,7 @@ case '<<SERVICE:C>>':[[LOOP,OPERATION]][[IF:FIRST]]
 	echo $ResponseText;
 	echo '[[IF:!LAST]],[[ELSE]]][[ENDIF]]';[[ENDLOOP,OPERATION]]
 
-	break;[[ENDLOOP,SERVICE]][[ENDLOOP,BUSINESS_OBJECT_TYPE]]
+	break;[[ENDLOOP,SERVICE]]
 
 default:
 	$ResponseObj = new \stdClass();
@@ -107,4 +107,4 @@ function CubeError($errno, $errstr) {
 		exit;
 	}
 }
-?>[[ENDBODY]]
+?>[[ENDLOOP,BUSINESS_OBJECT_TYPE]][[ENDBODY]]

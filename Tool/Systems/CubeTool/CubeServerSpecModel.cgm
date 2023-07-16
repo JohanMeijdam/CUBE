@@ -148,6 +148,7 @@
 		=PROPERTY:1|Id|;
 		=PROPERTY:2|Prompt|;
 		=PROPERTY:3|Icon|;
+		=PROPERTY:4|ServerType|;
 		=ASSOCIATION:TYPE|Concerns|TYPE;
 		+META_TYPE:PAGE_HEADER;
 			+META_TYPE:PAGE_SELECTOR_SWITCH;
@@ -4115,7 +4116,7 @@
 		=OPERATION|OPERATION_TYPE,CUBE-TYP-0100021:delete_arg||#|N|N|N;
 	-SERVICE:delete_arg;
 -BUSINESS_OBJECT_TYPE:function;
-+PAGE[CUBE-PAG-00258]:MaintainInformationType||INFORMATION_TYPE|inftype_large;
++PAGE[CUBE-PAG-00258]:MaintainInformationType||INFORMATION_TYPE|inftype_large|InformationType;
 	>TYPE:CUBE-TYP-0100000;
 	+PAGE_FIELD[CUBE-PAG-00258_CUBE-ITP-ID]:InputCubeId|CubeId|N|hidden||||;
 		>PAGE_FIELD_ATTRIBUTE:CUBE-ITP-ID;
@@ -4131,7 +4132,7 @@
 	=BUTTON:ButtonOK|OK|#;
 	=BUTTON:ButtonCancel|Cancel|CancelChangePending();
 -PAGE:;
-+PAGE[CUBE-PAG-00269]:MaintainInformationTypeElement||INFORMATION_TYPE_ELEMENT|infelem_large;
++PAGE[CUBE-PAG-00269]:MaintainInformationTypeElement||INFORMATION_TYPE_ELEMENT|infelem_large|InformationType;
 	>TYPE:CUBE-TYP-0100001;
 	+PAGE_FIELD[CUBE-PAG-00269_CUBE-ITE-ID]:InputCubeId|CubeId|N|hidden||||;
 		>PAGE_FIELD_ATTRIBUTE:CUBE-ITE-ID;
@@ -4230,7 +4231,7 @@
 	=BUTTON:ButtonOK|OK|#;
 	=BUTTON:ButtonCancel|Cancel|CancelChangePending();
 -PAGE:;
-+PAGE[CUBE-PAG-00327]:MaintainPermittedValue||PERMITTED_VALUE|value_large;
++PAGE[CUBE-PAG-00327]:MaintainPermittedValue||PERMITTED_VALUE|value_large|InformationType;
 	>TYPE:CUBE-TYP-0100002;
 	+PAGE_FIELD[CUBE-PAG-00327_CUBE-VAL-ID]:InputCubeId|CubeId|N|hidden||||;
 		>PAGE_FIELD_ATTRIBUTE:CUBE-VAL-ID;
@@ -4267,7 +4268,7 @@
 	=BUTTON:ButtonOK|OK|#;
 	=BUTTON:ButtonCancel|Cancel|CancelChangePending();
 -PAGE:;
-+PAGE[CUBE-PAG-00362]:MaintainBusinessObjectType||BUSINESS_OBJECT_TYPE|botype_large;
++PAGE[CUBE-PAG-00362]:MaintainBusinessObjectType||BUSINESS_OBJECT_TYPE|botype_large|BusinessObjectType;
 	>TYPE:CUBE-TYP-0100003;
 	+PAGE_FIELD[CUBE-PAG-00362_CUBE-BOT-ID]:InputCubeId|CubeId|N|hidden||||;
 		>PAGE_FIELD_ATTRIBUTE:CUBE-BOT-ID;
@@ -4313,7 +4314,7 @@
 	=BUTTON:ButtonCancel|Cancel|CancelChangePending();
 	=DESCRIPTION:BUSINESS_OBJECT_TYPE|_|-1|botype|BusinessObjectType;
 -PAGE:;
-+PAGE[CUBE-PAG-00406]:MaintainType||TYPE|type_large;
++PAGE[CUBE-PAG-00406]:MaintainType||TYPE|type_large|BusinessObjectType;
 	>TYPE:CUBE-TYP-0100004;
 	+PAGE_FIELD[CUBE-PAG-00406_CUBE-TYP-ID]:InputCubeId|CubeId|N|hidden||||;
 		>PAGE_FIELD_ATTRIBUTE:CUBE-TYP-ID;
@@ -4445,7 +4446,7 @@
 	=BUTTON:ButtonCancel|Cancel|CancelChangePending();
 	=DESCRIPTION:TYPE|_|-1|type|Type;
 -PAGE:;
-+PAGE[CUBE-PAG-00500]:MaintainTypeSpecialisationGroup||TYPE_SPECIALISATION_GROUP|tspgroup_large;
++PAGE[CUBE-PAG-00500]:MaintainTypeSpecialisationGroup||TYPE_SPECIALISATION_GROUP|tspgroup_large|BusinessObjectType;
 	>TYPE:CUBE-TYP-0100005;
 	+PAGE_FIELD[CUBE-PAG-00500_CUBE-TSG-ID]:InputCubeId|CubeId|N|hidden||||;
 		>PAGE_FIELD_ATTRIBUTE:CUBE-TSG-ID;
@@ -4517,7 +4518,7 @@
 	=BUTTON:ButtonCancel|Cancel|CancelChangePending();
 	=DESCRIPTION:TYPE_SPECIALISATION_GROUP|_|-1|tspgroup|TypeSpecialisationGroup;
 -PAGE:;
-+PAGE[CUBE-PAG-00579]:MaintainTypeSpecialisation||TYPE_SPECIALISATION|typespec_large;
++PAGE[CUBE-PAG-00579]:MaintainTypeSpecialisation||TYPE_SPECIALISATION|typespec_large|BusinessObjectType;
 	>TYPE:CUBE-TYP-0100006;
 	+PAGE_FIELD[CUBE-PAG-00579_CUBE-TSP-ID]:InputCubeId|CubeId|N|hidden||||;
 		>PAGE_FIELD_ATTRIBUTE:CUBE-TSP-ID;
@@ -4577,7 +4578,7 @@
 	=BUTTON:ButtonCancel|Cancel|CancelChangePending();
 	=DESCRIPTION:TYPE_SPECIALISATION|_|-1|typespec|TypeSpecialisation;
 -PAGE:;
-+PAGE[CUBE-PAG-00660]:MaintainAttribute||ATTRIBUTE|attrib_large;
++PAGE[CUBE-PAG-00660]:MaintainAttribute||ATTRIBUTE|attrib_large|BusinessObjectType;
 	>TYPE:CUBE-TYP-0100007;
 	+PAGE_FIELD[CUBE-PAG-00660_CUBE-ATB-ID]:InputCubeId|CubeId|N|hidden||||;
 		>PAGE_FIELD_ATTRIBUTE:CUBE-ATB-ID;
@@ -4681,7 +4682,7 @@
 	=BUTTON:ButtonOK|OK|#;
 	=BUTTON:ButtonCancel|Cancel|CancelChangePending();
 -PAGE:;
-+PAGE[CUBE-PAG-00737]:MaintainDerivation||DERIVATION|deriv_large;
++PAGE[CUBE-PAG-00737]:MaintainDerivation||DERIVATION|deriv_large|BusinessObjectType;
 	>TYPE:CUBE-TYP-0100008;
 	+PAGE_FIELD[CUBE-PAG-00737_CUBE-DER-ID]:InputCubeId|CubeId|N|hidden||||;
 		>PAGE_FIELD_ATTRIBUTE:CUBE-DER-ID;
@@ -4753,7 +4754,7 @@
 	=BUTTON:ButtonOK|OK|#;
 	=BUTTON:ButtonCancel|Cancel|CancelChangePending();
 -PAGE:;
-+PAGE[CUBE-PAG-00801]:MaintainDescriptionAttribute||DESCRIPTION_ATTRIBUTE|desc_large;
++PAGE[CUBE-PAG-00801]:MaintainDescriptionAttribute||DESCRIPTION_ATTRIBUTE|desc_large|BusinessObjectType;
 	>TYPE:CUBE-TYP-0100009;
 	+PAGE_FIELD[CUBE-PAG-00801_CUBE-DCA-ID]:InputCubeId|CubeId|N|hidden||||;
 		>PAGE_FIELD_ATTRIBUTE:CUBE-DCA-ID;
@@ -4787,7 +4788,7 @@
 	=BUTTON:ButtonOK|OK|#;
 	=BUTTON:ButtonCancel|Cancel|CancelChangePending();
 -PAGE:;
-+PAGE[CUBE-PAG-00833]:MaintainRestrictionTypeSpecAtb||RESTRICTION_TYPE_SPEC_ATB|restrict_large;
++PAGE[CUBE-PAG-00833]:MaintainRestrictionTypeSpecAtb||RESTRICTION_TYPE_SPEC_ATB|restrict_large|BusinessObjectType;
 	>TYPE:CUBE-TYP-0100010;
 	+PAGE_FIELD[CUBE-PAG-00833_CUBE-RTA-ID]:InputCubeId|CubeId|N|hidden||||;
 		>PAGE_FIELD_ATTRIBUTE:CUBE-RTA-ID;
@@ -4843,7 +4844,7 @@
 	=BUTTON:ButtonOK|OK|#;
 	=BUTTON:ButtonCancel|Cancel|CancelChangePending();
 -PAGE:;
-+PAGE[CUBE-PAG-00891]:MaintainReference||REFERENCE|ref_large;
++PAGE[CUBE-PAG-00891]:MaintainReference||REFERENCE|ref_large|BusinessObjectType;
 	>TYPE:CUBE-TYP-0100011;
 	+PAGE_FIELD[CUBE-PAG-00891_CUBE-REF-ID]:InputCubeId|CubeId|N|hidden||||;
 		>PAGE_FIELD_ATTRIBUTE:CUBE-REF-ID;
@@ -4981,7 +4982,7 @@
 	=BUTTON:ButtonOK|OK|#;
 	=BUTTON:ButtonCancel|Cancel|CancelChangePending();
 -PAGE:;
-+PAGE[CUBE-PAG-01007]:MaintainDescriptionReference||DESCRIPTION_REFERENCE|desc_large;
++PAGE[CUBE-PAG-01007]:MaintainDescriptionReference||DESCRIPTION_REFERENCE|desc_large|BusinessObjectType;
 	>TYPE:CUBE-TYP-0100012;
 	+PAGE_FIELD[CUBE-PAG-01007_CUBE-DCR-ID]:InputCubeId|CubeId|N|hidden||||;
 		>PAGE_FIELD_ATTRIBUTE:CUBE-DCR-ID;
@@ -5027,7 +5028,7 @@
 	=BUTTON:ButtonOK|OK|#;
 	=BUTTON:ButtonCancel|Cancel|CancelChangePending();
 -PAGE:;
-+PAGE[CUBE-PAG-01055]:MaintainRestrictionTypeSpecRef||RESTRICTION_TYPE_SPEC_REF|restrict_large;
++PAGE[CUBE-PAG-01055]:MaintainRestrictionTypeSpecRef||RESTRICTION_TYPE_SPEC_REF|restrict_large|BusinessObjectType;
 	>TYPE:CUBE-TYP-0100013;
 	+PAGE_FIELD[CUBE-PAG-01055_CUBE-RTR-ID]:InputCubeId|CubeId|N|hidden||||;
 		>PAGE_FIELD_ATTRIBUTE:CUBE-RTR-ID;
@@ -5095,7 +5096,7 @@
 	=BUTTON:ButtonOK|OK|#;
 	=BUTTON:ButtonCancel|Cancel|CancelChangePending();
 -PAGE:;
-+PAGE[CUBE-PAG-01130]:MaintainRestrictionTargetTypeSpec||RESTRICTION_TARGET_TYPE_SPEC|restrtgt_large;
++PAGE[CUBE-PAG-01130]:MaintainRestrictionTargetTypeSpec||RESTRICTION_TARGET_TYPE_SPEC|restrtgt_large|BusinessObjectType;
 	>TYPE:CUBE-TYP-0100014;
 	+PAGE_FIELD[CUBE-PAG-01130_CUBE-RTS-ID]:InputCubeId|CubeId|N|hidden||||;
 		>PAGE_FIELD_ATTRIBUTE:CUBE-RTS-ID;
@@ -5162,7 +5163,7 @@
 	=BUTTON:ButtonOK|OK|#;
 	=BUTTON:ButtonCancel|Cancel|CancelChangePending();
 -PAGE:;
-+PAGE[CUBE-PAG-01209]:MaintainRestrictionTypeSpecTyp||RESTRICTION_TYPE_SPEC_TYP|restrict_large;
++PAGE[CUBE-PAG-01209]:MaintainRestrictionTypeSpecTyp||RESTRICTION_TYPE_SPEC_TYP|restrict_large|BusinessObjectType;
 	>TYPE:CUBE-TYP-0100015;
 	+PAGE_FIELD[CUBE-PAG-01209_CUBE-RTT-ID]:InputCubeId|CubeId|N|hidden||||;
 		>PAGE_FIELD_ATTRIBUTE:CUBE-RTT-ID;
@@ -5212,7 +5213,7 @@
 	=BUTTON:ButtonOK|OK|#;
 	=BUTTON:ButtonCancel|Cancel|CancelChangePending();
 -PAGE:;
-+PAGE[CUBE-PAG-01259]:MaintainJsonPath||JSON_PATH|braces_large;
++PAGE[CUBE-PAG-01259]:MaintainJsonPath||JSON_PATH|braces_large|BusinessObjectType;
 	>TYPE:CUBE-TYP-0100016;
 	+PAGE_FIELD[CUBE-PAG-01259_CUBE-JSN-ID]:InputCubeId|CubeId|N|hidden||||;
 		>PAGE_FIELD_ATTRIBUTE:CUBE-JSN-ID;
@@ -5328,7 +5329,7 @@
 	=BUTTON:ButtonOK|OK|#;
 	=BUTTON:ButtonCancel|Cancel|CancelChangePending();
 -PAGE:;
-+PAGE[CUBE-PAG-01410]:MaintainDescriptionType||DESCRIPTION_TYPE|desc_large;
++PAGE[CUBE-PAG-01410]:MaintainDescriptionType||DESCRIPTION_TYPE|desc_large|BusinessObjectType;
 	>TYPE:CUBE-TYP-0100017;
 	+PAGE_FIELD[CUBE-PAG-01410_CUBE-DCT-ID]:InputCubeId|CubeId|N|hidden||||;
 		>PAGE_FIELD_ATTRIBUTE:CUBE-DCT-ID;
@@ -5357,7 +5358,7 @@
 	=BUTTON:ButtonCancel|Cancel|CancelChangePending();
 	=DESCRIPTION:DESCRIPTION_TYPE|_|-1|desc|DescriptionType;
 -PAGE:;
-+PAGE[CUBE-PAG-01436]:MaintainSystem||SYSTEM|system_large;
++PAGE[CUBE-PAG-01436]:MaintainSystem||SYSTEM|system_large|System;
 	>TYPE:CUBE-TYP-0100018;
 	+PAGE_FIELD[CUBE-PAG-01436_CUBE-SYS-ID]:InputCubeId|CubeId|N|hidden||||;
 		>PAGE_FIELD_ATTRIBUTE:CUBE-SYS-ID;
@@ -5409,7 +5410,7 @@
 	=BUTTON:ButtonOK|OK|#;
 	=BUTTON:ButtonCancel|Cancel|CancelChangePending();
 -PAGE:;
-+PAGE[CUBE-PAG-01485]:MaintainSystemBoType||SYSTEM_BO_TYPE|sysbot_large;
++PAGE[CUBE-PAG-01485]:MaintainSystemBoType||SYSTEM_BO_TYPE|sysbot_large|System;
 	>TYPE:CUBE-TYP-0100019;
 	+PAGE_FIELD[CUBE-PAG-01485_CUBE-SBT-ID]:InputCubeId|CubeId|N|hidden||||;
 		>PAGE_FIELD_ATTRIBUTE:CUBE-SBT-ID;
@@ -5436,7 +5437,7 @@
 	=BUTTON:ButtonOK|OK|#;
 	=BUTTON:ButtonCancel|Cancel|CancelChangePending();
 -PAGE:;
-+PAGE[CUBE-PAG-01512]:MaintainFunction||FUNCTION|function_large;
++PAGE[CUBE-PAG-01512]:MaintainFunction||FUNCTION|function_large|Function;
 	>TYPE:CUBE-TYP-0100020;
 	+PAGE_FIELD[CUBE-PAG-01512_CUBE-FUN-ID]:InputCubeId|CubeId|N|hidden||||;
 		>PAGE_FIELD_ATTRIBUTE:CUBE-FUN-ID;
@@ -5452,7 +5453,7 @@
 	=BUTTON:ButtonOK|OK|#;
 	=BUTTON:ButtonCancel|Cancel|CancelChangePending();
 -PAGE:;
-+PAGE[CUBE-PAG-01522]:MaintainArgument||ARGUMENT|funcatb_large;
++PAGE[CUBE-PAG-01522]:MaintainArgument||ARGUMENT|funcatb_large|Function;
 	>TYPE:CUBE-TYP-0100021;
 	+PAGE_FIELD[CUBE-PAG-01522_CUBE-ARG-ID]:InputCubeId|CubeId|N|hidden||||;
 		>PAGE_FIELD_ATTRIBUTE:CUBE-ARG-ID;

@@ -96,7 +96,7 @@ function CreateItp() {
 	var Type = {
 		Name: document.getElementById("InputName").value
 	};
-	PerformTrans( {
+	PerformTrans('InformationType', {
 		Service: "CreateItp",
 		Parameters: {
 			Type
@@ -108,7 +108,7 @@ function UpdateItp() {
 	var Type = {
 		Name: document.getElementById("InputName").value
 	};
-	PerformTrans( {
+	PerformTrans('InformationType', {
 		Service: "UpdateItp",
 		Parameters: {
 			Type
@@ -120,7 +120,7 @@ function DeleteItp() {
 	var Type = {
 		Name: document.getElementById("InputName").value
 	};
-	PerformTrans( {
+	PerformTrans('InformationType', {
 		Service: "DeleteItp",
 		Parameters: {
 			Type

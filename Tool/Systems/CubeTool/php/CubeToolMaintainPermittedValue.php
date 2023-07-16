@@ -115,7 +115,7 @@ function CreateVal() {
 		CubePosAction: l_pos_action
 	};
 	if (l_pos_action == 'F' || l_pos_action == 'L') {
-		PerformTrans( {
+		PerformTrans('InformationType', {
 			Service: "CreateVal",
 			Parameters: {
 				Option,
@@ -124,7 +124,7 @@ function CreateVal() {
 		} );
 	} else {
 		var Ref = g_json_option.Type.TYP_VAL;
-		PerformTrans( {
+		PerformTrans('InformationType', {
 			Service: "CreateVal",
 				Parameters: {
 					Option,
@@ -142,7 +142,7 @@ function UpdateVal() {
 		Code: document.getElementById("InputCode").value,
 		Prompt: document.getElementById("InputPrompt").value
 	};
-	PerformTrans( {
+	PerformTrans('InformationType', {
 		Service: "UpdateVal",
 		Parameters: {
 			Type
@@ -156,7 +156,7 @@ function DeleteVal() {
 		FkIteSequence: document.getElementById("InputFkIteSequence").value,
 		Code: document.getElementById("InputCode").value
 	};
-	PerformTrans( {
+	PerformTrans('InformationType', {
 		Service: "DeleteVal",
 		Parameters: {
 			Type
@@ -181,7 +181,7 @@ function InitBody() {
 		document.getElementById("InputCode").value = l_json_objectKey.TYP_VAL.Code;
 		document.getElementById("ButtonOK").innerText = "Update";
 		document.getElementById("ButtonOK").onclick = function(){UpdateVal()};
-		PerformTrans( {
+		PerformTrans('InformationType', {
 			Service: "GetVal",
 			Parameters: {
 				Type: l_json_objectKey.TYP_VAL
@@ -208,7 +208,7 @@ function InitBody() {
 		document.getElementById("ButtonOK").innerText = "Delete";
 		document.getElementById("ButtonOK").onclick = function(){DeleteVal()};
 		SetChangePending();
-		PerformTrans( {
+		PerformTrans('InformationType', {
 			Service: "GetVal",
 			Parameters: {
 				Type: l_json_objectKey.TYP_VAL

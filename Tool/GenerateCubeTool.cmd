@@ -10,12 +10,13 @@ set wwwroot=C:\inetpub\wwwroot
 set sysroot=%wwwroot%\%sysname%
 
 echo Start > %logfile%
+goto XXX
 ::goto Models
 ::goto Scripts
 ::goto Database
 ::goto Views
 ::goto ModelImport
-goto ModelExport
+::goto ModelExport
 ::goto Packages
 ::goto Application 
 ::goto System
@@ -56,7 +57,7 @@ echo Import Model.
 :ModelExport
 echo Extract Tool Model
 sqlplus.exe %db_schema%/%db_password%@%db_name% @%sysdir%\ModelExport.sql %sysdir%\CubeToolModel.cgm %sysname% REPLACE >> %logfile% 2>&1
-goto End
+::goto End
 :Packages
 echo Generate Packages.
 CubeGen.exe %sysdir%\CubeServerSpecModel.cgm Templates\ServerImplModel.cgt %sysdir%\CubeServerImplModel.cgm %sysname% >> %logfile% 2>&1
@@ -69,12 +70,13 @@ del /S/Q %sysdir%\php\*.php >> %logfile% 2>&1
 CubeGen.exe %sysdir%\CubeBoModel.cgm Templates\CubeDbLogonPhp.cgt %sysdir%\php\CubeDbLogon.php %sysname% >> %logfile% 2>&1
 CubeGen.exe %sysdir%\CubeBoModel.cgm Templates\IndexHtml.cgt %sysdir%\php\index.html %sysname% >> %logfile% 2>&1
 CubeGen.exe %sysdir%\CubeBoModel.cgm Templates\CubeTreePhp.cgt %sysdir%\php\%sysname%Tree.php %sysname% %sysdir%\php >> %logfile% 2>&1
+:XXX
 CubeGen.exe %sysdir%\CubeServerSpecModel.cgm Templates\CubeDetailPhp.cgt %sysdir%\php\%sysname%Detail.php %sysname% %sysdir%\php >> %logfile% 2>&1
-CubeGen.exe %sysdir%\CubeServerSpecModel.cgm Templates\CubeServerPhp.cgt %sysdir%\php\%sysname%Server.php %sysname% >> %logfile% 2>&1
+CubeGen.exe %sysdir%\CubeServerSpecModel.cgm Templates\CubeServerPhp.cgt %sysdir%\php\%sysname%Server.php %sysname% %sysdir%\php >> %logfile% 2>&1
 del /S/Q %sysroot% >> %logfile% 2>&1
 xcopy /Y/E %sysdir%\files %sysroot% >> %logfile% 2>&1
 xcopy /Y/E %sysdir%\php %sysroot% >> %logfile% 2>&1
-::goto End
+goto End
 :System
 call GenerateCubeSys.cmd
 ::goto End

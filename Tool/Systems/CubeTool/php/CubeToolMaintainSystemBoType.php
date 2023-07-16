@@ -111,7 +111,7 @@ function CreateSbt() {
 		CubePosAction: l_pos_action
 	};
 	if (l_pos_action == 'F' || l_pos_action == 'L') {
-		PerformTrans( {
+		PerformTrans('System', {
 			Service: "CreateSbt",
 			Parameters: {
 				Option,
@@ -120,7 +120,7 @@ function CreateSbt() {
 		} );
 	} else {
 		var Ref = g_json_option.Type.TYP_SBT;
-		PerformTrans( {
+		PerformTrans('System', {
 			Service: "CreateSbt",
 				Parameters: {
 					Option,
@@ -136,7 +136,7 @@ function UpdateSbt() {
 		FkSysName: document.getElementById("InputFkSysName").value,
 		XkBotName: document.getElementById("InputXkBotName").value
 	};
-	PerformTrans( {
+	PerformTrans('System', {
 		Service: "UpdateSbt",
 		Parameters: {
 			Type
@@ -149,7 +149,7 @@ function DeleteSbt() {
 		FkSysName: document.getElementById("InputFkSysName").value,
 		XkBotName: document.getElementById("InputXkBotName").value
 	};
-	PerformTrans( {
+	PerformTrans('System', {
 		Service: "DeleteSbt",
 		Parameters: {
 			Type
@@ -182,7 +182,7 @@ function StartSelect001(p_event) {
 	document.body._SelectTop = p_event.clientY;
 	document.body._ListBoxCode = 'Ref001';
 	document.body._ListBoxOptional = 'N';
-	PerformTrans( {
+	PerformTrans('System', {
 		Service: "GetBotList"
 	} );
 }

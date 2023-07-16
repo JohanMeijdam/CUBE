@@ -101,7 +101,7 @@ function CreateDct() {
 		FkTypName: document.getElementById("InputFkTypName").value,
 		Text: document.getElementById("InputText").value
 	};
-	PerformTrans( {
+	PerformTrans('BusinessObjectType', {
 		Service: "CreateDct",
 		Parameters: {
 			Type
@@ -115,7 +115,7 @@ function UpdateDct() {
 		FkTypName: document.getElementById("InputFkTypName").value,
 		Text: document.getElementById("InputText").value
 	};
-	PerformTrans( {
+	PerformTrans('BusinessObjectType', {
 		Service: "UpdateDct",
 		Parameters: {
 			Type
@@ -127,7 +127,7 @@ function DeleteDct() {
 	var Type = {
 		FkTypName: document.getElementById("InputFkTypName").value
 	};
-	PerformTrans( {
+	PerformTrans('BusinessObjectType', {
 		Service: "DeleteDct",
 		Parameters: {
 			Type
@@ -149,7 +149,7 @@ function InitBody() {
 		document.getElementById("InputFkTypName").value = l_json_objectKey.TYP_DCT.FkTypName;
 		document.getElementById("ButtonOK").innerText = "Update";
 		document.getElementById("ButtonOK").onclick = function(){UpdateDct()};
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "GetDct",
 			Parameters: {
 				Type: l_json_objectKey.TYP_DCT
@@ -163,7 +163,7 @@ function InitBody() {
 		document.getElementById("InputFkTypName").value = l_json_objectKey.TYP_TYP.Name;
 		document.getElementById("ButtonOK").innerText = "Create";
 		document.getElementById("ButtonOK").onclick = function(){CreateDct()};
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "GetTypFkey",
 			Parameters: {
 				Type: l_json_objectKey.TYP_TYP
@@ -178,7 +178,7 @@ function InitBody() {
 		document.getElementById("ButtonOK").innerText = "Delete";
 		document.getElementById("ButtonOK").onclick = function(){DeleteDct()};
 		SetChangePending();
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "GetDct",
 			Parameters: {
 				Type: l_json_objectKey.TYP_DCT

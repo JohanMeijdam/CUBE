@@ -159,7 +159,7 @@ function CreateRef() {
 		CubePosAction: l_pos_action
 	};
 	if (l_pos_action == 'F' || l_pos_action == 'L') {
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "CreateRef",
 			Parameters: {
 				Option,
@@ -168,7 +168,7 @@ function CreateRef() {
 		} );
 	} else {
 		var Ref = g_json_option.Type.TYP_REF;
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "CreateRef",
 				Parameters: {
 					Option,
@@ -195,7 +195,7 @@ function UpdateRef() {
 		XkTypName: document.getElementById("InputXkTypName").value,
 		XkTypName1: document.getElementById("InputXkTypName1").value
 	};
-	PerformTrans( {
+	PerformTrans('BusinessObjectType', {
 		Service: "UpdateRef",
 		Parameters: {
 			Type
@@ -210,7 +210,7 @@ function DeleteRef() {
 		XkBotName: document.getElementById("InputXkBotName").value,
 		XkTypName: document.getElementById("InputXkTypName").value
 	};
-	PerformTrans( {
+	PerformTrans('BusinessObjectType', {
 		Service: "DeleteRef",
 		Parameters: {
 			Type
@@ -257,7 +257,7 @@ function StartSelect001(p_event) {
 	document.body._SelectTop = p_event.clientY;
 	document.body._ListBoxCode = 'Ref001';
 	document.body._ListBoxOptional = 'N';
-	PerformTrans( {
+	PerformTrans('BusinessObjectType', {
 		Service: "GetBotList"
 	} );
 }
@@ -272,7 +272,7 @@ function StartSelect002(p_event) {
 			FkBotName:document.getElementById("InputFkBotName").value
 		}
 	};
-	PerformTrans( {
+	PerformTrans('BusinessObjectType', {
 		Service: "GetTypForBotListAll",
 		Parameters
 	} );
@@ -283,7 +283,7 @@ function StartSelect003(p_event) {
 	document.body._SelectTop = p_event.clientY;
 	document.body._ListBoxCode = 'Ref003';
 	document.body._ListBoxOptional = 'Y';
-	PerformTrans( {
+	PerformTrans('BusinessObjectType', {
 		Service: "GetTypListAll"
 	} );
 }
@@ -306,7 +306,7 @@ function InitBody() {
 		document.getElementById("InputXkTypName").value = l_json_objectKey.TYP_REF.XkTypName;
 		document.getElementById("ButtonOK").innerText = "Update";
 		document.getElementById("ButtonOK").onclick = function(){UpdateRef()};
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "GetRef",
 			Parameters: {
 				Type: l_json_objectKey.TYP_REF
@@ -326,7 +326,7 @@ function InitBody() {
 		document.getElementById("InputFkTypName").value = l_json_objectKey.TYP_TYP.Name;
 		document.getElementById("ButtonOK").innerText = "Create";
 		document.getElementById("ButtonOK").onclick = function(){CreateRef()};
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "GetTypFkey",
 			Parameters: {
 				Type: l_json_objectKey.TYP_TYP
@@ -349,7 +349,7 @@ function InitBody() {
 		document.getElementById("ButtonOK").innerText = "Delete";
 		document.getElementById("ButtonOK").onclick = function(){DeleteRef()};
 		SetChangePending();
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "GetRef",
 			Parameters: {
 				Type: l_json_objectKey.TYP_REF

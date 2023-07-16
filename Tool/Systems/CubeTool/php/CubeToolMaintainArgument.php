@@ -102,7 +102,7 @@ function CreateArg() {
 		CubePosAction: l_pos_action
 	};
 	if (l_pos_action == 'F' || l_pos_action == 'L') {
-		PerformTrans( {
+		PerformTrans('Function', {
 			Service: "CreateArg",
 			Parameters: {
 				Option,
@@ -111,7 +111,7 @@ function CreateArg() {
 		} );
 	} else {
 		var Ref = g_json_option.Type.TYP_ARG;
-		PerformTrans( {
+		PerformTrans('Function', {
 			Service: "CreateArg",
 				Parameters: {
 					Option,
@@ -127,7 +127,7 @@ function UpdateArg() {
 		FkFunName: document.getElementById("InputFkFunName").value,
 		Name: document.getElementById("InputName").value
 	};
-	PerformTrans( {
+	PerformTrans('Function', {
 		Service: "UpdateArg",
 		Parameters: {
 			Type
@@ -140,7 +140,7 @@ function DeleteArg() {
 		FkFunName: document.getElementById("InputFkFunName").value,
 		Name: document.getElementById("InputName").value
 	};
-	PerformTrans( {
+	PerformTrans('Function', {
 		Service: "DeleteArg",
 		Parameters: {
 			Type

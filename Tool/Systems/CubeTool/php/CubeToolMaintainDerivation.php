@@ -129,7 +129,7 @@ function CreateDer() {
 		XkTypName: document.getElementById("InputXkTypName").value,
 		XkTypName1: document.getElementById("InputXkTypName1").value
 	};
-	PerformTrans( {
+	PerformTrans('BusinessObjectType', {
 		Service: "CreateDer",
 		Parameters: {
 			Type
@@ -147,7 +147,7 @@ function UpdateDer() {
 		XkTypName: document.getElementById("InputXkTypName").value,
 		XkTypName1: document.getElementById("InputXkTypName1").value
 	};
-	PerformTrans( {
+	PerformTrans('BusinessObjectType', {
 		Service: "UpdateDer",
 		Parameters: {
 			Type
@@ -160,7 +160,7 @@ function DeleteDer() {
 		FkTypName: document.getElementById("InputFkTypName").value,
 		FkAtbName: document.getElementById("InputFkAtbName").value
 	};
-	PerformTrans( {
+	PerformTrans('BusinessObjectType', {
 		Service: "DeleteDer",
 		Parameters: {
 			Type
@@ -200,7 +200,7 @@ function StartSelect001(p_event) {
 	document.body._SelectTop = p_event.clientY;
 	document.body._ListBoxCode = 'Ref001';
 	document.body._ListBoxOptional = 'Y';
-	PerformTrans( {
+	PerformTrans('BusinessObjectType', {
 		Service: "GetTypListAll"
 	} );
 }
@@ -210,7 +210,7 @@ function StartSelect002(p_event) {
 	document.body._SelectTop = p_event.clientY;
 	document.body._ListBoxCode = 'Ref002';
 	document.body._ListBoxOptional = 'Y';
-	PerformTrans( {
+	PerformTrans('BusinessObjectType', {
 		Service: "GetTypListAll"
 	} );
 }
@@ -230,7 +230,7 @@ function InitBody() {
 		document.getElementById("InputFkAtbName").value = l_json_objectKey.TYP_DER.FkAtbName;
 		document.getElementById("ButtonOK").innerText = "Update";
 		document.getElementById("ButtonOK").onclick = function(){UpdateDer()};
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "GetDer",
 			Parameters: {
 				Type: l_json_objectKey.TYP_DER
@@ -247,7 +247,7 @@ function InitBody() {
 		document.getElementById("InputFkAtbName").value = l_json_objectKey.TYP_ATB.Name;
 		document.getElementById("ButtonOK").innerText = "Create";
 		document.getElementById("ButtonOK").onclick = function(){CreateDer()};
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "GetAtbFkey",
 			Parameters: {
 				Type: l_json_objectKey.TYP_ATB
@@ -265,7 +265,7 @@ function InitBody() {
 		document.getElementById("ButtonOK").innerText = "Delete";
 		document.getElementById("ButtonOK").onclick = function(){DeleteDer()};
 		SetChangePending();
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "GetDer",
 			Parameters: {
 				Type: l_json_objectKey.TYP_DER

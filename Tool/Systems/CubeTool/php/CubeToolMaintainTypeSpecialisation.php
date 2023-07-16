@@ -136,7 +136,7 @@ function CreateTsp() {
 		CubePosAction: l_pos_action
 	};
 	if (l_pos_action == 'F' || l_pos_action == 'L') {
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "CreateTsp",
 			Parameters: {
 				Option,
@@ -145,7 +145,7 @@ function CreateTsp() {
 		} );
 	} else {
 		var Ref = g_json_option.Type.TYP_TSP;
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "CreateTsp",
 				Parameters: {
 					Option,
@@ -167,7 +167,7 @@ function UpdateTsp() {
 		XfTspTsgCode: document.getElementById("InputXfTspTsgCode").value,
 		XkTspCode: document.getElementById("InputXkTspCode").value
 	};
-	PerformTrans( {
+	PerformTrans('BusinessObjectType', {
 		Service: "UpdateTsp",
 		Parameters: {
 			Type
@@ -181,7 +181,7 @@ function DeleteTsp() {
 		FkTsgCode: document.getElementById("InputFkTsgCode").value,
 		Code: document.getElementById("InputCode").value
 	};
-	PerformTrans( {
+	PerformTrans('BusinessObjectType', {
 		Service: "DeleteTsp",
 		Parameters: {
 			Type
@@ -233,7 +233,7 @@ function StartSelect001(p_event) {
 			FkTsgCode:document.getElementById("InputFkTsgCode").value
 		}
 	};
-	PerformTrans( {
+	PerformTrans('BusinessObjectType', {
 		Service: "GetTspForTsgList",
 		Parameters
 	} );
@@ -256,7 +256,7 @@ function InitBody() {
 		document.getElementById("InputCode").value = l_json_objectKey.TYP_TSP.Code;
 		document.getElementById("ButtonOK").innerText = "Update";
 		document.getElementById("ButtonOK").onclick = function(){UpdateTsp()};
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "GetTsp",
 			Parameters: {
 				Type: l_json_objectKey.TYP_TSP
@@ -273,7 +273,7 @@ function InitBody() {
 		document.getElementById("InputFkTsgCode").value = l_json_objectKey.TYP_TSG.Code;
 		document.getElementById("ButtonOK").innerText = "Create";
 		document.getElementById("ButtonOK").onclick = function(){CreateTsp()};
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "GetTsgFkey",
 			Parameters: {
 				Type: l_json_objectKey.TYP_TSG
@@ -291,7 +291,7 @@ function InitBody() {
 		document.getElementById("ButtonOK").innerText = "Delete";
 		document.getElementById("ButtonOK").onclick = function(){DeleteTsp()};
 		SetChangePending();
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "GetTsp",
 			Parameters: {
 				Type: l_json_objectKey.TYP_TSP

@@ -127,7 +127,7 @@ function CreateTyp() {
 		CubePosAction: l_pos_action
 	};
 	if (l_pos_action == 'F' || l_pos_action == 'L') {
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "CreateTyp",
 			Parameters: {
 				Option,
@@ -136,7 +136,7 @@ function CreateTyp() {
 		} );
 	} else {
 		var Ref = g_json_option.Type.TYP_TYP;
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "CreateTyp",
 				Parameters: {
 					Option,
@@ -161,7 +161,7 @@ function UpdateTyp() {
 		Icon: document.getElementById("InputIcon").value,
 		Transferable: document.getElementById("InputTransferable").value
 	};
-	PerformTrans( {
+	PerformTrans('BusinessObjectType', {
 		Service: "UpdateTyp",
 		Parameters: {
 			Type
@@ -173,7 +173,7 @@ function DeleteTyp() {
 	var Type = {
 		Name: document.getElementById("InputName").value
 	};
-	PerformTrans( {
+	PerformTrans('BusinessObjectType', {
 		Service: "DeleteTyp",
 		Parameters: {
 			Type
@@ -196,7 +196,7 @@ function InitBody() {
 		document.getElementById("InputName").value = l_json_objectKey.TYP_TYP.Name;
 		document.getElementById("ButtonOK").innerText = "Update";
 		document.getElementById("ButtonOK").onclick = function(){UpdateTyp()};
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "GetTyp",
 			Parameters: {
 				Type: l_json_objectKey.TYP_TYP
@@ -226,7 +226,7 @@ function InitBody() {
 		document.getElementById("InputFkTypName").value = l_json_objectKey.TYP_TYP.Name;
 		document.getElementById("ButtonOK").innerText = "Create";
 		document.getElementById("ButtonOK").onclick = function(){CreateTyp()};
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "GetTypFkey",
 			Parameters: {
 				Type: l_json_objectKey.TYP_TYP
@@ -248,7 +248,7 @@ function InitBody() {
 		document.getElementById("ButtonOK").innerText = "Delete";
 		document.getElementById("ButtonOK").onclick = function(){DeleteTyp()};
 		SetChangePending();
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "GetTyp",
 			Parameters: {
 				Type: l_json_objectKey.TYP_TYP

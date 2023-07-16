@@ -123,7 +123,7 @@ function CreateIte() {
 		SpacesAllowed: document.getElementById("InputSpacesAllowed").value,
 		Presentation: document.getElementById("InputPresentation").value
 	};
-	PerformTrans( {
+	PerformTrans('InformationType', {
 		Service: "CreateIte",
 		Parameters: {
 			Type
@@ -144,7 +144,7 @@ function UpdateIte() {
 		SpacesAllowed: document.getElementById("InputSpacesAllowed").value,
 		Presentation: document.getElementById("InputPresentation").value
 	};
-	PerformTrans( {
+	PerformTrans('InformationType', {
 		Service: "UpdateIte",
 		Parameters: {
 			Type
@@ -157,7 +157,7 @@ function DeleteIte() {
 		FkItpName: document.getElementById("InputFkItpName").value,
 		Sequence: document.getElementById("InputSequence").value
 	};
-	PerformTrans( {
+	PerformTrans('InformationType', {
 		Service: "DeleteIte",
 		Parameters: {
 			Type
@@ -180,7 +180,7 @@ function InitBody() {
 		document.getElementById("InputSequence").value = l_json_objectKey.TYP_ITE.Sequence;
 		document.getElementById("ButtonOK").innerText = "Update";
 		document.getElementById("ButtonOK").onclick = function(){UpdateIte()};
-		PerformTrans( {
+		PerformTrans('InformationType', {
 			Service: "GetIte",
 			Parameters: {
 				Type: l_json_objectKey.TYP_ITE
@@ -211,7 +211,7 @@ function InitBody() {
 		document.getElementById("ButtonOK").innerText = "Delete";
 		document.getElementById("ButtonOK").onclick = function(){DeleteIte()};
 		SetChangePending();
-		PerformTrans( {
+		PerformTrans('InformationType', {
 			Service: "GetIte",
 			Parameters: {
 				Type: l_json_objectKey.TYP_ITE

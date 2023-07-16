@@ -175,7 +175,7 @@ function CreateJsn() {
 		CubePosAction: l_pos_action
 	};
 	if (l_pos_action == 'F' || l_pos_action == 'L') {
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "CreateJsn",
 			Parameters: {
 				Option,
@@ -184,7 +184,7 @@ function CreateJsn() {
 		} );
 	} else {
 		var Ref = g_json_option.Type.TYP_JSN;
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "CreateJsn",
 				Parameters: {
 					Option,
@@ -212,7 +212,7 @@ function UpdateJsn() {
 		XkAtbName: document.getElementById("InputXkAtbName").value,
 		XkTypName: document.getElementById("InputXkTypName").value
 	};
-	PerformTrans( {
+	PerformTrans('BusinessObjectType', {
 		Service: "UpdateJsn",
 		Parameters: {
 			Type
@@ -229,7 +229,7 @@ function DeleteJsn() {
 		XkAtbName: document.getElementById("InputXkAtbName").value,
 		XkTypName: document.getElementById("InputXkTypName").value
 	};
-	PerformTrans( {
+	PerformTrans('BusinessObjectType', {
 		Service: "DeleteJsn",
 		Parameters: {
 			Type
@@ -282,7 +282,7 @@ function StartSelect001(p_event) {
 			FkTypName:document.getElementById("InputFkTypName").value
 		}
 	};
-	PerformTrans( {
+	PerformTrans('BusinessObjectType', {
 		Service: "GetAtbForTypList",
 		Parameters
 	} );
@@ -301,7 +301,7 @@ function StartSelect002(p_event) {
 			FkTypName:document.getElementById("InputFkTypName").value
 		}
 	};
-	PerformTrans( {
+	PerformTrans('BusinessObjectType', {
 		Service: "GetTypForTypListAll",
 		Parameters
 	} );
@@ -327,7 +327,7 @@ function InitBody() {
 		document.getElementById("InputXkTypName").value = l_json_objectKey.TYP_JSN.XkTypName;
 		document.getElementById("ButtonOK").innerText = "Update";
 		document.getElementById("ButtonOK").onclick = function(){UpdateJsn()};
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "GetJsn",
 			Parameters: {
 				Type: l_json_objectKey.TYP_JSN
@@ -355,7 +355,7 @@ function InitBody() {
 		document.getElementById("InputFkTypName").value = l_json_objectKey.TYP_TYP.Name;
 		document.getElementById("ButtonOK").innerText = "Create";
 		document.getElementById("ButtonOK").onclick = function(){CreateJsn()};
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "GetTypFkey",
 			Parameters: {
 				Type: l_json_objectKey.TYP_TYP
@@ -381,7 +381,7 @@ function InitBody() {
 		document.getElementById("InputFkJsnTypName").value = l_json_objectKey.TYP_JSN.XkTypName;
 		document.getElementById("ButtonOK").innerText = "Create";
 		document.getElementById("ButtonOK").onclick = function(){CreateJsn()};
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "GetJsnFkey",
 			Parameters: {
 				Type: l_json_objectKey.TYP_JSN
@@ -408,7 +408,7 @@ function InitBody() {
 		document.getElementById("ButtonOK").innerText = "Delete";
 		document.getElementById("ButtonOK").onclick = function(){DeleteJsn()};
 		SetChangePending();
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "GetJsn",
 			Parameters: {
 				Type: l_json_objectKey.TYP_JSN
