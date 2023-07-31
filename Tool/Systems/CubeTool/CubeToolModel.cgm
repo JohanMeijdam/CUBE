@@ -44,6 +44,12 @@
 					=ASSOCIATION:TYPE_SPECIALISATION|Specialise|TYPE_SPECIALISATION|;
 				-META_TYPE:TYPE_SPECIALISATION;
 			-META_TYPE:TYPE_SPECIALISATION_GROUP;
+			+META_TYPE:SERVICE|;
+				=PROPERTY:0|Name|;
+				+META_TYPE:SERVICE_ARGUMENT|;
+					=ASSOCIATION:ATTRIBUTE|ServiceArgumentAttribute|ATTRIBUTE|;
+				-META_TYPE:SERVICE_ARGUMENT;
+			-META_TYPE:SERVICE;
 			+META_TYPE:ATTRIBUTE|;
 				=PROPERTY:0|Name|Unique identifier of the attribute.;
 				=PROPERTY:1|PrimaryKey|Indication that attribute is part of the unique identification of the type. Values: Y(Yes), N(No);

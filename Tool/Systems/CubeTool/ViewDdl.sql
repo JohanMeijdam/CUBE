@@ -391,6 +391,26 @@ CREATE OR REPLACE VIEW v_type_specialisation AS
 		xk_tsp_code
 	FROM t_type_specialisation
 /
+CREATE OR REPLACE VIEW v_service AS 
+	SELECT
+		cube_id,
+		cube_sequence,
+		fk_bot_name,
+		fk_typ_name,
+		name
+	FROM t_service
+/
+CREATE OR REPLACE VIEW v_service_argument AS 
+	SELECT
+		cube_id,
+		cube_sequence,
+		fk_bot_name,
+		fk_typ_name,
+		fk_srv_name,
+		xf_atb_typ_name,
+		xk_atb_name
+	FROM t_service_argument
+/
 CREATE OR REPLACE VIEW v_attribute AS 
 	SELECT
 		cube_id,
@@ -557,6 +577,12 @@ CREATE OR REPLACE PACKAGE pkg_bot_trg IS
 	PROCEDURE insert_tsp (p_tsp IN OUT NOCOPY v_type_specialisation%ROWTYPE);
 	PROCEDURE update_tsp (p_cube_rowid IN UROWID, p_tsp_old IN OUT NOCOPY v_type_specialisation%ROWTYPE, p_tsp_new IN OUT NOCOPY v_type_specialisation%ROWTYPE);
 	PROCEDURE delete_tsp (p_cube_rowid IN UROWID, p_tsp IN OUT NOCOPY v_type_specialisation%ROWTYPE);
+	PROCEDURE insert_srv (p_srv IN OUT NOCOPY v_service%ROWTYPE);
+	PROCEDURE update_srv (p_cube_rowid IN UROWID, p_srv_old IN OUT NOCOPY v_service%ROWTYPE, p_srv_new IN OUT NOCOPY v_service%ROWTYPE);
+	PROCEDURE delete_srv (p_cube_rowid IN UROWID, p_srv IN OUT NOCOPY v_service%ROWTYPE);
+	PROCEDURE insert_sva (p_sva IN OUT NOCOPY v_service_argument%ROWTYPE);
+	PROCEDURE update_sva (p_cube_rowid IN UROWID, p_sva_old IN OUT NOCOPY v_service_argument%ROWTYPE, p_sva_new IN OUT NOCOPY v_service_argument%ROWTYPE);
+	PROCEDURE delete_sva (p_cube_rowid IN UROWID, p_sva IN OUT NOCOPY v_service_argument%ROWTYPE);
 	PROCEDURE insert_atb (p_atb IN OUT NOCOPY v_attribute%ROWTYPE);
 	PROCEDURE update_atb (p_cube_rowid IN UROWID, p_atb_old IN OUT NOCOPY v_attribute%ROWTYPE, p_atb_new IN OUT NOCOPY v_attribute%ROWTYPE);
 	PROCEDURE delete_atb (p_cube_rowid IN UROWID, p_atb IN OUT NOCOPY v_attribute%ROWTYPE);
@@ -746,7 +772,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 
 	PROCEDURE denorm_typ_typ (p_typ IN OUT NOCOPY v_type%ROWTYPE, p_typ_in IN v_type%ROWTYPE) IS
 	BEGIN
-		p_typ.cube_level := COALESCE (p_typ_in.cube_level, 0) + 1;
+		p_typ.cube_level := COALESCE(p_typ_in.cube_level, 0) + 1;
 	END;
 
 	PROCEDURE get_denorm_typ_typ (p_typ IN OUT NOCOPY v_type%ROWTYPE) IS
@@ -876,7 +902,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 
 	PROCEDURE denorm_tsg_tsg (p_tsg IN OUT NOCOPY v_type_specialisation_group%ROWTYPE, p_tsg_in IN v_type_specialisation_group%ROWTYPE) IS
 	BEGIN
-		p_tsg.cube_level := COALESCE (p_tsg_in.cube_level, 0) + 1;
+		p_tsg.cube_level := COALESCE(p_tsg_in.cube_level, 0) + 1;
 	END;
 
 	PROCEDURE get_denorm_tsg_tsg (p_tsg IN OUT NOCOPY v_type_specialisation_group%ROWTYPE) IS
@@ -954,6 +980,87 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 	PROCEDURE delete_tsp (p_cube_rowid UROWID, p_tsp IN OUT NOCOPY v_type_specialisation%ROWTYPE) IS
 	BEGIN
 		DELETE t_type_specialisation 
+		WHERE rowid = p_cube_rowid;
+	END;
+
+	PROCEDURE insert_srv (p_srv IN OUT NOCOPY v_service%ROWTYPE) IS
+	BEGIN
+		p_srv.cube_id := 'SRV-' || TO_CHAR(sq_srv.NEXTVAL,'FM000000000000');
+		p_srv.fk_bot_name := NVL(p_srv.fk_bot_name,' ');
+		p_srv.fk_typ_name := NVL(p_srv.fk_typ_name,' ');
+		p_srv.name := NVL(p_srv.name,' ');
+		SELECT fk_bot_name
+		  INTO p_srv.fk_bot_name
+		FROM t_type
+		WHERE name = p_srv.fk_typ_name;
+		INSERT INTO t_service (
+			cube_id,
+			cube_sequence,
+			fk_bot_name,
+			fk_typ_name,
+			name)
+		VALUES (
+			p_srv.cube_id,
+			p_srv.cube_sequence,
+			p_srv.fk_bot_name,
+			p_srv.fk_typ_name,
+			p_srv.name);
+	END;
+
+	PROCEDURE update_srv (p_cube_rowid UROWID, p_srv_old IN OUT NOCOPY v_service%ROWTYPE, p_srv_new IN OUT NOCOPY v_service%ROWTYPE) IS
+	BEGIN
+		UPDATE t_service SET 
+			cube_sequence = p_srv_new.cube_sequence
+		WHERE rowid = p_cube_rowid;
+	END;
+
+	PROCEDURE delete_srv (p_cube_rowid UROWID, p_srv IN OUT NOCOPY v_service%ROWTYPE) IS
+	BEGIN
+		DELETE t_service 
+		WHERE rowid = p_cube_rowid;
+	END;
+
+	PROCEDURE insert_sva (p_sva IN OUT NOCOPY v_service_argument%ROWTYPE) IS
+	BEGIN
+		p_sva.cube_id := 'SVA-' || TO_CHAR(sq_sva.NEXTVAL,'FM000000000000');
+		p_sva.fk_bot_name := NVL(p_sva.fk_bot_name,' ');
+		p_sva.fk_typ_name := NVL(p_sva.fk_typ_name,' ');
+		p_sva.fk_srv_name := NVL(p_sva.fk_srv_name,' ');
+		p_sva.xf_atb_typ_name := NVL(p_sva.xf_atb_typ_name,' ');
+		p_sva.xk_atb_name := NVL(p_sva.xk_atb_name,' ');
+		SELECT fk_bot_name
+		  INTO p_sva.fk_bot_name
+		FROM t_service
+		WHERE fk_typ_name = p_sva.fk_typ_name
+		  AND name = p_sva.fk_srv_name;
+		INSERT INTO t_service_argument (
+			cube_id,
+			cube_sequence,
+			fk_bot_name,
+			fk_typ_name,
+			fk_srv_name,
+			xf_atb_typ_name,
+			xk_atb_name)
+		VALUES (
+			p_sva.cube_id,
+			p_sva.cube_sequence,
+			p_sva.fk_bot_name,
+			p_sva.fk_typ_name,
+			p_sva.fk_srv_name,
+			p_sva.xf_atb_typ_name,
+			p_sva.xk_atb_name);
+	END;
+
+	PROCEDURE update_sva (p_cube_rowid UROWID, p_sva_old IN OUT NOCOPY v_service_argument%ROWTYPE, p_sva_new IN OUT NOCOPY v_service_argument%ROWTYPE) IS
+	BEGIN
+		UPDATE t_service_argument SET 
+			cube_sequence = p_sva_new.cube_sequence
+		WHERE rowid = p_cube_rowid;
+	END;
+
+	PROCEDURE delete_sva (p_cube_rowid UROWID, p_sva IN OUT NOCOPY v_service_argument%ROWTYPE) IS
+	BEGIN
+		DELETE t_service_argument 
 		WHERE rowid = p_cube_rowid;
 	END;
 
@@ -1553,7 +1660,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 
 	PROCEDURE denorm_jsn_jsn (p_jsn IN OUT NOCOPY v_json_path%ROWTYPE, p_jsn_in IN v_json_path%ROWTYPE) IS
 	BEGIN
-		p_jsn.cube_level := COALESCE (p_jsn_in.cube_level, 0) + 1;
+		p_jsn.cube_level := COALESCE(p_jsn_in.cube_level, 0) + 1;
 	END;
 
 	PROCEDURE get_denorm_jsn_jsn (p_jsn IN OUT NOCOPY v_json_path%ROWTYPE) IS
@@ -1901,6 +2008,120 @@ BEGIN
 		pkg_bot_trg.update_tsp (l_cube_rowid, r_tsp_old, r_tsp_new);
 	ELSIF DELETING THEN
 		pkg_bot_trg.delete_tsp (l_cube_rowid, r_tsp_old);
+	END IF;
+END;
+/
+SHOW ERRORS
+
+CREATE OR REPLACE TRIGGER trg_srv
+INSTEAD OF INSERT OR DELETE OR UPDATE ON v_service
+FOR EACH ROW
+DECLARE
+	l_cube_rowid UROWID;
+	r_srv_new v_service%ROWTYPE;
+	r_srv_old v_service%ROWTYPE;
+BEGIN
+	IF INSERTING OR UPDATING THEN
+		r_srv_new.cube_sequence := :NEW.cube_sequence;
+		IF :NEW.fk_bot_name = ' ' THEN
+			r_srv_new.fk_bot_name := ' ';
+		ELSE
+			r_srv_new.fk_bot_name := REPLACE(:NEW.fk_bot_name,' ','_');
+		END IF;
+		IF :NEW.fk_typ_name = ' ' THEN
+			r_srv_new.fk_typ_name := ' ';
+		ELSE
+			r_srv_new.fk_typ_name := REPLACE(:NEW.fk_typ_name,' ','_');
+		END IF;
+		IF :NEW.name = ' ' THEN
+			r_srv_new.name := ' ';
+		ELSE
+			r_srv_new.name := REPLACE(:NEW.name,' ','_');
+		END IF;
+	END IF;
+	IF UPDATING THEN
+		r_srv_new.cube_id := :OLD.cube_id;
+	END IF;
+	IF UPDATING OR DELETING THEN
+		SELECT rowid INTO l_cube_rowid FROM t_service
+		WHERE fk_typ_name = :OLD.fk_typ_name
+		  AND name = :OLD.name;
+		r_srv_old.cube_sequence := :OLD.cube_sequence;
+		r_srv_old.fk_bot_name := :OLD.fk_bot_name;
+		r_srv_old.fk_typ_name := :OLD.fk_typ_name;
+		r_srv_old.name := :OLD.name;
+	END IF;
+
+	IF INSERTING THEN 
+		pkg_bot_trg.insert_srv (r_srv_new);
+	ELSIF UPDATING THEN
+		pkg_bot_trg.update_srv (l_cube_rowid, r_srv_old, r_srv_new);
+	ELSIF DELETING THEN
+		pkg_bot_trg.delete_srv (l_cube_rowid, r_srv_old);
+	END IF;
+END;
+/
+SHOW ERRORS
+
+CREATE OR REPLACE TRIGGER trg_sva
+INSTEAD OF INSERT OR DELETE OR UPDATE ON v_service_argument
+FOR EACH ROW
+DECLARE
+	l_cube_rowid UROWID;
+	r_sva_new v_service_argument%ROWTYPE;
+	r_sva_old v_service_argument%ROWTYPE;
+BEGIN
+	IF INSERTING OR UPDATING THEN
+		r_sva_new.cube_sequence := :NEW.cube_sequence;
+		IF :NEW.fk_bot_name = ' ' THEN
+			r_sva_new.fk_bot_name := ' ';
+		ELSE
+			r_sva_new.fk_bot_name := REPLACE(:NEW.fk_bot_name,' ','_');
+		END IF;
+		IF :NEW.fk_typ_name = ' ' THEN
+			r_sva_new.fk_typ_name := ' ';
+		ELSE
+			r_sva_new.fk_typ_name := REPLACE(:NEW.fk_typ_name,' ','_');
+		END IF;
+		IF :NEW.fk_srv_name = ' ' THEN
+			r_sva_new.fk_srv_name := ' ';
+		ELSE
+			r_sva_new.fk_srv_name := REPLACE(:NEW.fk_srv_name,' ','_');
+		END IF;
+		IF :NEW.xf_atb_typ_name = ' ' THEN
+			r_sva_new.xf_atb_typ_name := ' ';
+		ELSE
+			r_sva_new.xf_atb_typ_name := REPLACE(:NEW.xf_atb_typ_name,' ','_');
+		END IF;
+		IF :NEW.xk_atb_name = ' ' THEN
+			r_sva_new.xk_atb_name := ' ';
+		ELSE
+			r_sva_new.xk_atb_name := REPLACE(:NEW.xk_atb_name,' ','_');
+		END IF;
+	END IF;
+	IF UPDATING THEN
+		r_sva_new.cube_id := :OLD.cube_id;
+	END IF;
+	IF UPDATING OR DELETING THEN
+		SELECT rowid INTO l_cube_rowid FROM t_service_argument
+		WHERE fk_typ_name = :OLD.fk_typ_name
+		  AND fk_srv_name = :OLD.fk_srv_name
+		  AND xf_atb_typ_name = :OLD.xf_atb_typ_name
+		  AND xk_atb_name = :OLD.xk_atb_name;
+		r_sva_old.cube_sequence := :OLD.cube_sequence;
+		r_sva_old.fk_bot_name := :OLD.fk_bot_name;
+		r_sva_old.fk_typ_name := :OLD.fk_typ_name;
+		r_sva_old.fk_srv_name := :OLD.fk_srv_name;
+		r_sva_old.xf_atb_typ_name := :OLD.xf_atb_typ_name;
+		r_sva_old.xk_atb_name := :OLD.xk_atb_name;
+	END IF;
+
+	IF INSERTING THEN 
+		pkg_bot_trg.insert_sva (r_sva_new);
+	ELSIF UPDATING THEN
+		pkg_bot_trg.update_sva (l_cube_rowid, r_sva_old, r_sva_new);
+	ELSIF DELETING THEN
+		pkg_bot_trg.delete_sva (l_cube_rowid, r_sva_old);
 	END IF;
 END;
 /

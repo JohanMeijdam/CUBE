@@ -10,7 +10,6 @@ set wwwroot=C:\inetpub\wwwroot
 set sysroot=%wwwroot%\%sysname%
 
 echo Start > %logfile%
-goto XXX
 ::goto Models
 ::goto Scripts
 ::goto Database
@@ -70,7 +69,6 @@ del /S/Q %sysdir%\php\*.php >> %logfile% 2>&1
 CubeGen.exe %sysdir%\CubeBoModel.cgm Templates\CubeDbLogonPhp.cgt %sysdir%\php\CubeDbLogon.php %sysname% >> %logfile% 2>&1
 CubeGen.exe %sysdir%\CubeBoModel.cgm Templates\IndexHtml.cgt %sysdir%\php\index.html %sysname% >> %logfile% 2>&1
 CubeGen.exe %sysdir%\CubeBoModel.cgm Templates\CubeTreePhp.cgt %sysdir%\php\%sysname%Tree.php %sysname% %sysdir%\php >> %logfile% 2>&1
-:XXX
 CubeGen.exe %sysdir%\CubeServerSpecModel.cgm Templates\CubeDetailPhp.cgt %sysdir%\php\%sysname%Detail.php %sysname% %sysdir%\php >> %logfile% 2>&1
 CubeGen.exe %sysdir%\CubeServerSpecModel.cgm Templates\CubeServerPhp.cgt %sysdir%\php\%sysname%Server.php %sysname% %sysdir%\php >> %logfile% 2>&1
 del /S/Q %sysroot% >> %logfile% 2>&1

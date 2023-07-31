@@ -168,6 +168,52 @@ DECLARE
 	END;
 
 
+	PROCEDURE report_sva (p_srv IN t_service%ROWTYPE) IS
+	BEGIN
+		FOR r_sva IN (
+			SELECT *				
+			FROM t_service_argument
+			WHERE fk_bot_name = p_srv.fk_bot_name
+			  AND fk_typ_name = p_srv.fk_typ_name
+			  AND fk_srv_name = p_srv.name
+			ORDER BY cube_sequence )
+		LOOP
+			DBMS_OUTPUT.PUT_LINE (ftabs || '+SERVICE_ARGUMENT[' || r_sva.cube_id || ']:' || ';');
+				l_level := l_level + 1;
+				BEGIN
+					SELECT cube_id INTO l_cube_id FROM t_attribute
+					WHERE fk_typ_name = r_sva.xf_atb_typ_name
+					  AND name = r_sva.xk_atb_name;
+
+					DBMS_OUTPUT.PUT_LINE (ftabs || '>ATTRIBUTE:' || l_cube_id || ';');
+				EXCEPTION
+					WHEN NO_DATA_FOUND THEN
+						NULL; 
+				END;
+				l_level := l_level - 1;
+			DBMS_OUTPUT.PUT_LINE (ftabs || '-SERVICE_ARGUMENT:' || ';');
+		END LOOP;
+	END;
+
+
+	PROCEDURE report_srv (p_typ IN t_type%ROWTYPE) IS
+	BEGIN
+		FOR r_srv IN (
+			SELECT *				
+			FROM t_service
+			WHERE fk_bot_name = p_typ.fk_bot_name
+			  AND fk_typ_name = p_typ.name
+			ORDER BY cube_sequence )
+		LOOP
+			DBMS_OUTPUT.PUT_LINE (ftabs || '+SERVICE[' || r_srv.cube_id || ']:' || fenperc(r_srv.name) || ';');
+				l_level := l_level + 1;
+				report_sva (r_srv);
+				l_level := l_level - 1;
+			DBMS_OUTPUT.PUT_LINE (ftabs || '-SERVICE:' || r_srv.name || ';');
+		END LOOP;
+	END;
+
+
 	PROCEDURE report_der (p_atb IN t_attribute%ROWTYPE) IS
 	BEGIN
 		FOR r_der IN (
@@ -547,6 +593,7 @@ DECLARE
 			DBMS_OUTPUT.PUT_LINE (ftabs || '+TYPE[' || r_typ.cube_id || ']:' || fenperc(r_typ.name) || '|' || fenperc(r_typ.code) || '|' || fenperc(r_typ.flag_partial_key) || '|' || fenperc(r_typ.flag_recursive) || '|' || fenperc(r_typ.recursive_cardinality) || '|' || fenperc(r_typ.cardinality) || '|' || fenperc(r_typ.sort_order) || '|' || fenperc(r_typ.icon) || '|' || fenperc(r_typ.transferable) || ';');
 				l_level := l_level + 1;
 				report_tsg (r_typ);
+				report_srv (r_typ);
 				report_atb (r_typ);
 				report_ref (r_typ);
 				report_rtt (r_typ);
@@ -571,6 +618,7 @@ DECLARE
 			DBMS_OUTPUT.PUT_LINE (ftabs || '+TYPE[' || r_typ.cube_id || ']:' || fenperc(r_typ.name) || '|' || fenperc(r_typ.code) || '|' || fenperc(r_typ.flag_partial_key) || '|' || fenperc(r_typ.flag_recursive) || '|' || fenperc(r_typ.recursive_cardinality) || '|' || fenperc(r_typ.cardinality) || '|' || fenperc(r_typ.sort_order) || '|' || fenperc(r_typ.icon) || '|' || fenperc(r_typ.transferable) || ';');
 				l_level := l_level + 1;
 				report_tsg (r_typ);
+				report_srv (r_typ);
 				report_atb (r_typ);
 				report_ref (r_typ);
 				report_rtt (r_typ);
@@ -719,6 +767,12 @@ BEGIN
 	DBMS_OUTPUT.PUT_LINE ('					=ASSOCIATION:TYPE_SPECIALISATION|Specialise|TYPE_SPECIALISATION|;');
 	DBMS_OUTPUT.PUT_LINE ('				-META_TYPE:TYPE_SPECIALISATION;');
 	DBMS_OUTPUT.PUT_LINE ('			-META_TYPE:TYPE_SPECIALISATION_GROUP;');
+	DBMS_OUTPUT.PUT_LINE ('			+META_TYPE:SERVICE|;');
+	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:0|Name|;');
+	DBMS_OUTPUT.PUT_LINE ('				+META_TYPE:SERVICE_ARGUMENT|;');
+	DBMS_OUTPUT.PUT_LINE ('					=ASSOCIATION:ATTRIBUTE|ServiceArgumentAttribute|ATTRIBUTE|;');
+	DBMS_OUTPUT.PUT_LINE ('				-META_TYPE:SERVICE_ARGUMENT;');
+	DBMS_OUTPUT.PUT_LINE ('			-META_TYPE:SERVICE;');
 	DBMS_OUTPUT.PUT_LINE ('			+META_TYPE:ATTRIBUTE|;');
 	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:0|Name|'||REPLACE('Unique%20identifier%20of%20the%20attribute.','%20',' ')||';');
 	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:1|PrimaryKey|'||REPLACE('Indication%20that%20attribute%20is%20part%20of%20the%20unique%20identification%20of%20the%20type.','%20',' ')||' Values: Y(Yes), N(No);');

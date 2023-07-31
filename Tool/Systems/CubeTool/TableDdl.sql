@@ -41,6 +41,10 @@ CREATE SEQUENCE sq_tsg START WITH 100000
 /
 CREATE SEQUENCE sq_tsp START WITH 100000
 /
+CREATE SEQUENCE sq_srv START WITH 100000
+/
+CREATE SEQUENCE sq_sva START WITH 100000
+/
 CREATE SEQUENCE sq_atb START WITH 100000
 /
 CREATE SEQUENCE sq_der START WITH 100000
@@ -185,6 +189,34 @@ CREATE TABLE t_type_specialisation (
 	CONSTRAINT tsp_tsg_fk
 		FOREIGN KEY (fk_typ_name, fk_tsg_code)
 		REFERENCES t_type_specialisation_group (fk_typ_name, code)
+		ON DELETE CASCADE )
+/
+CREATE TABLE t_service (
+	cube_id VARCHAR2(16),
+	cube_sequence NUMBER(8),
+	fk_bot_name VARCHAR2(30),
+	fk_typ_name VARCHAR2(30),
+	name VARCHAR2(30),
+	CONSTRAINT srv_pk
+		PRIMARY KEY (fk_typ_name, name),
+	CONSTRAINT srv_typ_fk
+		FOREIGN KEY (fk_typ_name)
+		REFERENCES t_type (name)
+		ON DELETE CASCADE )
+/
+CREATE TABLE t_service_argument (
+	cube_id VARCHAR2(16),
+	cube_sequence NUMBER(8),
+	fk_bot_name VARCHAR2(30),
+	fk_typ_name VARCHAR2(30),
+	fk_srv_name VARCHAR2(30),
+	xf_atb_typ_name VARCHAR2(30),
+	xk_atb_name VARCHAR2(30),
+	CONSTRAINT sva_pk
+		PRIMARY KEY (fk_typ_name, fk_srv_name, xf_atb_typ_name, xk_atb_name),
+	CONSTRAINT sva_srv_fk
+		FOREIGN KEY (fk_typ_name, fk_srv_name)
+		REFERENCES t_service (fk_typ_name, name)
 		ON DELETE CASCADE )
 /
 CREATE TABLE t_attribute (

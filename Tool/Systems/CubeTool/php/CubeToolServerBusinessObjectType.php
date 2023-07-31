@@ -440,6 +440,32 @@ case 'GetTypItems':
 	echo $ResponseText;
 	echo ',';
 
+	$stid = oci_parse($conn, "BEGIN pkg_bot.get_typ_srv_items (
+		:p_cube_row,
+		:p_name);
+	END;");
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
+
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'LIST_SRV';
+	$r = perform_db_request();
+	if (!$r) { 
+		echo ']';
+		return;
+	}
+	$ResponseObj->Rows = array();
+	while ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Key = new \stdClass();
+		$RowObj->Key->FkTypName = $row["FK_TYP_NAME"];
+		$RowObj->Key->Name = $row["NAME"];
+		$RowObj->Display = $row["NAME"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ',';
+
 	$stid = oci_parse($conn, "BEGIN pkg_bot.get_typ_atb_items (
 		:p_cube_row,
 		:p_name);
@@ -1320,6 +1346,386 @@ case 'DeleteTsp':
 
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'DELETE_TSP';
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		echo ']';
+		return;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
+	break;
+
+case 'GetSrv':
+	echo '[';
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.get_srv (
+		:p_cube_row,
+		:p_fk_typ_name,
+		:p_name);
+	END;");
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
+
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'SELECT_SRV';
+	$r = perform_db_request();
+	if (!$r) { 
+		echo ']';
+		return;
+	}
+	$ResponseObj->Rows = array();
+	if ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Data = new \stdClass();
+		$RowObj->Data->FkBotName = $row["FK_BOT_NAME"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
+	break;
+
+case 'GetSrvFkey':
+	echo '[';
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.get_srv_fkey (
+		:p_cube_row,
+		:p_fk_typ_name,
+		:p_name);
+	END;");
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
+
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'SELECT_FKEY_SRV';
+	$r = perform_db_request();
+	if (!$r) { 
+		echo ']';
+		return;
+	}
+	$ResponseObj->Rows = array();
+	if ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Data = new \stdClass();
+		$RowObj->Data->FkBotName = $row["FK_BOT_NAME"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
+	break;
+
+case 'GetSrvItems':
+	echo '[';
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.get_srv_sva_items (
+		:p_cube_row,
+		:p_fk_typ_name,
+		:p_name);
+	END;");
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
+
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'LIST_SVA';
+	$r = perform_db_request();
+	if (!$r) { 
+		echo ']';
+		return;
+	}
+	$ResponseObj->Rows = array();
+	while ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Key = new \stdClass();
+		$RowObj->Key->FkTypName = $row["FK_TYP_NAME"];
+		$RowObj->Key->FkSrvName = $row["FK_SRV_NAME"];
+		$RowObj->Key->XfAtbTypName = $row["XF_ATB_TYP_NAME"];
+		$RowObj->Key->XkAtbName = $row["XK_ATB_NAME"];
+		$RowObj->Display = $row["XF_ATB_TYP_NAME"].' '.$row["XK_ATB_NAME"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
+	break;
+
+case 'MoveSrv':
+	echo '[';
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.move_srv (
+		:p_cube_pos_action,
+		:p_fk_typ_name,
+		:p_name,
+		:x_fk_typ_name,
+		:x_name);
+	END;");
+	oci_bind_by_name($stid,":p_cube_pos_action",$RequestObj->Parameters->Option->CubePosAction);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
+	oci_bind_by_name($stid,":x_fk_typ_name",$RequestObj->Parameters->Ref->FkTypName);
+	oci_bind_by_name($stid,":x_name",$RequestObj->Parameters->Ref->Name);
+
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'MOVE_SRV';
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		echo ']';
+		return;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
+	break;
+
+case 'CreateSrv':
+	echo '[';
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.insert_srv (
+		:p_cube_pos_action,
+		:p_fk_bot_name,
+		:p_fk_typ_name,
+		:p_name,
+		:x_fk_typ_name,
+		:x_name);
+	END;");
+	oci_bind_by_name($stid,":p_cube_pos_action",$RequestObj->Parameters->Option->CubePosAction);
+	oci_bind_by_name($stid,":p_fk_bot_name",$RequestObj->Parameters->Type->FkBotName);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
+	oci_bind_by_name($stid,":x_fk_typ_name",$RequestObj->Parameters->Ref->FkTypName);
+	oci_bind_by_name($stid,":x_name",$RequestObj->Parameters->Ref->Name);
+
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'CREATE_SRV';
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		echo ']';
+		return;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
+	break;
+
+case 'UpdateSrv':
+	echo '[';
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.update_srv (
+		:p_fk_bot_name,
+		:p_fk_typ_name,
+		:p_name);
+	END;");
+	oci_bind_by_name($stid,":p_fk_bot_name",$RequestObj->Parameters->Type->FkBotName);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
+
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'UPDATE_SRV';
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		echo ']';
+		return;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
+	break;
+
+case 'DeleteSrv':
+	echo '[';
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.delete_srv (
+		:p_fk_typ_name,
+		:p_name);
+	END;");
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
+
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'DELETE_SRV';
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		echo ']';
+		return;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
+	break;
+
+case 'GetSva':
+	echo '[';
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.get_sva (
+		:p_cube_row,
+		:p_fk_typ_name,
+		:p_fk_srv_name,
+		:p_xf_atb_typ_name,
+		:p_xk_atb_name);
+	END;");
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_fk_srv_name",$RequestObj->Parameters->Type->FkSrvName);
+	oci_bind_by_name($stid,":p_xf_atb_typ_name",$RequestObj->Parameters->Type->XfAtbTypName);
+	oci_bind_by_name($stid,":p_xk_atb_name",$RequestObj->Parameters->Type->XkAtbName);
+
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'SELECT_SVA';
+	$r = perform_db_request();
+	if (!$r) { 
+		echo ']';
+		return;
+	}
+	$ResponseObj->Rows = array();
+	if ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Data = new \stdClass();
+		$RowObj->Data->FkBotName = $row["FK_BOT_NAME"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
+	break;
+
+case 'MoveSva':
+	echo '[';
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.move_sva (
+		:p_cube_pos_action,
+		:p_fk_typ_name,
+		:p_fk_srv_name,
+		:p_xf_atb_typ_name,
+		:p_xk_atb_name,
+		:x_fk_typ_name,
+		:x_fk_srv_name,
+		:x_xf_atb_typ_name,
+		:x_xk_atb_name);
+	END;");
+	oci_bind_by_name($stid,":p_cube_pos_action",$RequestObj->Parameters->Option->CubePosAction);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_fk_srv_name",$RequestObj->Parameters->Type->FkSrvName);
+	oci_bind_by_name($stid,":p_xf_atb_typ_name",$RequestObj->Parameters->Type->XfAtbTypName);
+	oci_bind_by_name($stid,":p_xk_atb_name",$RequestObj->Parameters->Type->XkAtbName);
+	oci_bind_by_name($stid,":x_fk_typ_name",$RequestObj->Parameters->Ref->FkTypName);
+	oci_bind_by_name($stid,":x_fk_srv_name",$RequestObj->Parameters->Ref->FkSrvName);
+	oci_bind_by_name($stid,":x_xf_atb_typ_name",$RequestObj->Parameters->Ref->XfAtbTypName);
+	oci_bind_by_name($stid,":x_xk_atb_name",$RequestObj->Parameters->Ref->XkAtbName);
+
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'MOVE_SVA';
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		echo ']';
+		return;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
+	break;
+
+case 'CreateSva':
+	echo '[';
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.insert_sva (
+		:p_cube_pos_action,
+		:p_fk_bot_name,
+		:p_fk_typ_name,
+		:p_fk_srv_name,
+		:p_xf_atb_typ_name,
+		:p_xk_atb_name,
+		:x_fk_typ_name,
+		:x_fk_srv_name,
+		:x_xf_atb_typ_name,
+		:x_xk_atb_name);
+	END;");
+	oci_bind_by_name($stid,":p_cube_pos_action",$RequestObj->Parameters->Option->CubePosAction);
+	oci_bind_by_name($stid,":p_fk_bot_name",$RequestObj->Parameters->Type->FkBotName);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_fk_srv_name",$RequestObj->Parameters->Type->FkSrvName);
+	oci_bind_by_name($stid,":p_xf_atb_typ_name",$RequestObj->Parameters->Type->XfAtbTypName);
+	oci_bind_by_name($stid,":p_xk_atb_name",$RequestObj->Parameters->Type->XkAtbName);
+	oci_bind_by_name($stid,":x_fk_typ_name",$RequestObj->Parameters->Ref->FkTypName);
+	oci_bind_by_name($stid,":x_fk_srv_name",$RequestObj->Parameters->Ref->FkSrvName);
+	oci_bind_by_name($stid,":x_xf_atb_typ_name",$RequestObj->Parameters->Ref->XfAtbTypName);
+	oci_bind_by_name($stid,":x_xk_atb_name",$RequestObj->Parameters->Ref->XkAtbName);
+
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'CREATE_SVA';
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		echo ']';
+		return;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
+	break;
+
+case 'UpdateSva':
+	echo '[';
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.update_sva (
+		:p_fk_bot_name,
+		:p_fk_typ_name,
+		:p_fk_srv_name,
+		:p_xf_atb_typ_name,
+		:p_xk_atb_name);
+	END;");
+	oci_bind_by_name($stid,":p_fk_bot_name",$RequestObj->Parameters->Type->FkBotName);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_fk_srv_name",$RequestObj->Parameters->Type->FkSrvName);
+	oci_bind_by_name($stid,":p_xf_atb_typ_name",$RequestObj->Parameters->Type->XfAtbTypName);
+	oci_bind_by_name($stid,":p_xk_atb_name",$RequestObj->Parameters->Type->XkAtbName);
+
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'UPDATE_SVA';
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		echo ']';
+		return;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
+	break;
+
+case 'DeleteSva':
+	echo '[';
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.delete_sva (
+		:p_fk_typ_name,
+		:p_fk_srv_name,
+		:p_xf_atb_typ_name,
+		:p_xk_atb_name);
+	END;");
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_fk_srv_name",$RequestObj->Parameters->Type->FkSrvName);
+	oci_bind_by_name($stid,":p_xf_atb_typ_name",$RequestObj->Parameters->Type->XfAtbTypName);
+	oci_bind_by_name($stid,":p_xk_atb_name",$RequestObj->Parameters->Type->XkAtbName);
+
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'DELETE_SVA';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);

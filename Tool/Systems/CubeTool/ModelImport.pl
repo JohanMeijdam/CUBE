@@ -334,6 +334,7 @@ $FKeyTyp[0] = '';
 $ITyp = 0;
 $FKeyTsg[0] = '';
 $ITsg = 0;
+$FKeySrv = '';
 $FKeyAtb = '';
 $FKeyRef = '';
 $FKeySys = '';
@@ -356,6 +357,8 @@ print IMPORT "DELETE v_business_object_type;\n";
 print IMPORT "DELETE v_type;\n";
 print IMPORT "DELETE v_type_specialisation_group;\n";
 print IMPORT "DELETE v_type_specialisation;\n";
+print IMPORT "DELETE v_service;\n";
+print IMPORT "DELETE v_service_argument;\n";
 print IMPORT "DELETE v_attribute;\n";
 print IMPORT "DELETE v_derivation;\n";
 print IMPORT "DELETE v_description_attribute;\n";
@@ -512,6 +515,39 @@ my (@FkeyValues);
 						$Sequence++;
 						print IMPORT "INSERT INTO v_type_specialisation (CUBE_SEQUENCE, FK_BOT_NAME, FK_TYP_NAME, FK_TSG_CODE, CODE, NAME, XF_TSP_TYP_NAME, XF_TSP_TSG_CODE, XK_TSP_CODE)\n"; 
 						print IMPORT "	VALUES ($Sequence, '$_[1]', '$_[2]', '$_[3]', '".ReplX($NodeString[$j])."', '".ReplX($NodeValue[$NodeValuePntr[$j]])."', '".ReplX(GetXkey($j,'TYPE_SPECIALISATION','TYPE',001))."', '".ReplX(GetXkey($j,'TYPE_SPECIALISATION','TYPE_SPECIALISATION_GROUP',001))."', '".ReplX(GetXkey($j,'TYPE_SPECIALISATION','TYPE_SPECIALISATION',001))."');\n";
+						print IMPORT "\n";
+						$j = $NodeNext[$j];
+					}
+				}
+				case "SERVICE" {
+					$j = $NodeFirst[$_[0]];
+					$Sequence = 0;
+					while (1) {
+						if ($j == -1) {
+							last;
+						}
+						$Sequence++;
+						print IMPORT "INSERT INTO v_service (CUBE_SEQUENCE, FK_BOT_NAME, FK_TYP_NAME, NAME)\n"; 
+						print IMPORT "	VALUES ($Sequence, '$_[1]', '$_[2]', '".ReplX($NodeString[$j])."');\n";
+						print IMPORT "\n";
+						$FkeyValues[0] = $_[1];
+						$FkeyValues[1] = $_[2];
+						$FkeyValues[2] = ReplX($NodeString[$j]);
+						$i = $NodeFirst[$j];
+						CreateInsertStmnts($i,@FkeyValues);
+						$j = $NodeNext[$j];
+					}
+				}
+				case "SERVICE_ARGUMENT" {
+					$j = $NodeFirst[$_[0]];
+					$Sequence = 0;
+					while (1) {
+						if ($j == -1) {
+							last;
+						}
+						$Sequence++;
+						print IMPORT "INSERT INTO v_service_argument (CUBE_SEQUENCE, FK_BOT_NAME, FK_TYP_NAME, FK_SRV_NAME, XF_ATB_TYP_NAME, XK_ATB_NAME)\n"; 
+						print IMPORT "	VALUES ($Sequence, '$_[1]', '$_[2]', '$_[3]', '".ReplX(GetXkey($j,'ATTRIBUTE','TYPE',001))."', '".ReplX(GetXkey($j,'ATTRIBUTE','ATTRIBUTE',001))."');\n";
 						print IMPORT "\n";
 						$j = $NodeNext[$j];
 					}
