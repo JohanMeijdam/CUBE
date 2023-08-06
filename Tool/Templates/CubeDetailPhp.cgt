@@ -43,6 +43,8 @@ Change log:
 10-07-2021 - Onchange improved
 15-07-2021 - Buttons OK and Cancel
 06-10-2021 - CheckChangePending
+16-07-2023 - Multiple PHP servers (one for each BO)
+06-08-2023 - Fix within_scope_of reference
 
 [[INCLUDE,Includes/general.cgt]]
 [[TEXT,DETAIL_RECURSIVE_PARMS]]
@@ -295,8 +297,8 @@ function StartSelect<<REFERENCE:S>>(p_event) {
 	PerformTrans('<<PAGE4>>', {
 		Service: "<<TEXT,DETAIL_GET_LIST_NAME>>Recursive"[[IF:EVAL:$myFlag]],
 		Parameters[[ENDIF]]
-	} );[[ELSE]][[IF,REFERENCE:4=ALL[AND]CHILD(REFERENCE_SCOPE_ATTRIBUTE)]]
-	var Parameters = {[[IF,REFERENCE:CHILD(REFERENCE_TYPE_WITHIN_SCOPE_OF:3=Y)]]
+	} );[[ELSE]][[IF,REFERENCE:CHILD(REFERENCE_SCOPE_ATTRIBUTE)]]
+	var Parameters = {[[IF,REFERENCE:CHILD(REFERENCE_TYPE_WITHIN_SCOPE_OF)]]
 		Option: {
 			CubeScopeLevel:[[IF,REFERENCE:6=PAR]]1[[ELSE]]0[[ENDIF]]
 		},[[ENDIF]]
@@ -305,7 +307,7 @@ function StartSelect<<REFERENCE:S>>(p_event) {
 		}
 	};[[ENDIF]]
 	PerformTrans('<<PAGE4>>', {
-		Service: "<<TEXT,DETAIL_GET_LIST_NAME>>[[IF:3=Y]]All[[ENDIF]]"[[IF,REFERENCE:4=ALL[AND]CHILD(REFERENCE_SCOPE_ATTRIBUTE)]],
+		Service: "<<TEXT,DETAIL_GET_LIST_NAME>>[[IF:3=Y]]All[[ENDIF]]"[[IF,REFERENCE:CHILD(REFERENCE_SCOPE_ATTRIBUTE)]],
 		Parameters[[ENDIF]]
 	} );[[ENDIF]][[ENDLOOP,REFERENCE_TYPE]]
 }[[ENDLOOP,REFERENCE]]

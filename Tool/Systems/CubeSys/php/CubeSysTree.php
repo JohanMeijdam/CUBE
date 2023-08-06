@@ -82,7 +82,7 @@ function OpenCloseOnClick(p_obj) {
 
 		switch (p_obj.parentNode._type) {
  		case 'DIR_CUBE_DSC':
-			PerformTrans( {Service:"GetDirCubeDscItems"} );
+			PerformTrans('CubeDescription', {Service:"GetDirCubeDscItems"} );
 			break;
 		} 
 	}

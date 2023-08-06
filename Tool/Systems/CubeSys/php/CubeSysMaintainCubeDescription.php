@@ -106,7 +106,7 @@ function CreateCubeDsc() {
 		Sequence: document.getElementById("InputSequence").value,
 		Value: document.getElementById("InputValue").value
 	};
-	PerformTrans( {
+	PerformTrans('CubeDescription', {
 		Service: "CreateCubeDsc",
 		Parameters: {
 			Type
@@ -121,7 +121,7 @@ function UpdateCubeDsc() {
 		Sequence: document.getElementById("InputSequence").value,
 		Value: document.getElementById("InputValue").value
 	};
-	PerformTrans( {
+	PerformTrans('CubeDescription', {
 		Service: "UpdateCubeDsc",
 		Parameters: {
 			Type
@@ -135,7 +135,7 @@ function DeleteCubeDsc() {
 		AttributeTypeName: document.getElementById("InputAttributeTypeName").value,
 		Sequence: document.getElementById("InputSequence").value
 	};
-	PerformTrans( {
+	PerformTrans('CubeDescription', {
 		Service: "DeleteCubeDsc",
 		Parameters: {
 			Type
@@ -159,7 +159,7 @@ function InitBody() {
 		document.getElementById("InputSequence").value = l_json_objectKey.TYP_CUBE_DSC.Sequence;
 		document.getElementById("ButtonOK").innerText = "Update";
 		document.getElementById("ButtonOK").onclick = function(){UpdateCubeDsc()};
-		PerformTrans( {
+		PerformTrans('CubeDescription', {
 			Service: "GetCubeDsc",
 			Parameters: {
 				Type: l_json_objectKey.TYP_CUBE_DSC
@@ -184,7 +184,7 @@ function InitBody() {
 		document.getElementById("ButtonOK").innerText = "Delete";
 		document.getElementById("ButtonOK").onclick = function(){DeleteCubeDsc()};
 		SetChangePending();
-		PerformTrans( {
+		PerformTrans('CubeDescription', {
 			Service: "GetCubeDsc",
 			Parameters: {
 				Type: l_json_objectKey.TYP_CUBE_DSC

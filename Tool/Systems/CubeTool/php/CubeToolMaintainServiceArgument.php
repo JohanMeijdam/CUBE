@@ -211,8 +211,17 @@ function StartSelect001(p_event) {
 	document.body._SelectTop = p_event.clientY;
 	document.body._ListBoxCode = 'Ref001';
 	document.body._ListBoxOptional = 'N';
+	var Parameters = {
+		Option: {
+			CubeScopeLevel:0
+		},
+		Ref: {
+			FkTypName:document.getElementById("InputFkTypName").value
+		}
+	};
 	PerformTrans('BusinessObjectType', {
-		Service: "GetAtbForTypList"
+		Service: "GetAtbForTypList",
+		Parameters
 	} );
 }
 

@@ -232,6 +232,9 @@ function StartSelect001(p_event) {
 	document.body._ListBoxCode = 'Ref001';
 	document.body._ListBoxOptional = 'N';
 	var Parameters = {
+		Option: {
+			CubeScopeLevel:0
+		},
 		Ref: {
 			FkTypName:document.getElementById("InputFkTypName").value,
 			FkRefTypName:document.getElementById("InputFkRefTypName").value,
