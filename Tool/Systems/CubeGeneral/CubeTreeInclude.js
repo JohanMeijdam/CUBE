@@ -295,7 +295,7 @@ function GetDescription(p_type,p_attribute_type,p_sequence) {
 			}
 		}
 	} );
-	g_xmlhttp.open('POST','CubeSysServer.php',true);
+	g_xmlhttp.open('POST','CubeSysServerCubeDescription.php',true);
 	g_xmlhttp.send(l_requestText);
 }
 
