@@ -50,7 +50,7 @@ g_xmlhttp.onreadystatechange = function() {
 									l_objNode,
 									'TYP_SVA',
 									l_json_node_id,
-									'icons/servatb.bmp',
+									'icons/servarg.bmp',
 									'ServiceArgument',
 									document.getElementById("InputXfAtbTypName").value.toLowerCase()+' '+document.getElementById("InputXkAtbName").value.toLowerCase(),
 									'N',
@@ -304,7 +304,7 @@ function InitBody() {
 -->
 </script>
 </head><body oncontextmenu="return false;" onload="InitBody()" onbeforeunload="return parent.CheckChangePending()" ondrop="Drop(event)" ondragover="AllowDrop(event)">
-<div><img src="icons/servatb_large.bmp" /><span> SERVICE_ARGUMENT</span></div>
+<div><img src="icons/servarg_large.bmp" /><span> SERVICE_ARGUMENT</span></div>
 <hr/>
 <table>
 <tr id="RowAtbFkBotName"><td><div>BusinessObjectType.Name</div></td><td><div style="max-width:30em;"><input id="InputFkBotName" type="text" maxlength="30" style="width:100%" onchange="SetChangePending();ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>

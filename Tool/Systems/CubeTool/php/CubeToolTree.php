@@ -45,7 +45,7 @@ g_xmlhttp.onreadystatechange = function() {
 					case 'MOVE_TSP': MoveNode (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.body._moveAction); break;
 					case 'LIST_SRV': AddTreeviewChildren(l_json_array[i].Rows,'TYP_SRV','icons/service.bmp','Service'); break;
 					case 'MOVE_SRV': MoveNode (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.body._moveAction); break;
-					case 'LIST_SVA': AddTreeviewChildren(l_json_array[i].Rows,'TYP_SVA','icons/servatb.bmp','ServiceArgument'); break;
+					case 'LIST_SVA': AddTreeviewChildren(l_json_array[i].Rows,'TYP_SVA','icons/servarg.bmp','ServiceArgument'); break;
 					case 'MOVE_SVA': MoveNode (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.body._moveAction); break;
 					case 'LIST_ATB': AddTreeviewChildren(l_json_array[i].Rows,'TYP_ATB','icons/attrib.bmp','Attribute'); break;
 					case 'MOVE_ATB': MoveNode (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.body._moveAction); break;
@@ -475,7 +475,7 @@ function OpenMenu(p_obj) {
 		if (l_childCount > 1) {
 			AddMenuItem(g_objMenuList, 'move', 'icons/cube_move.bmp','CubeMove','','CUBE_M_SRV','',0,'N',0);
 		}
-		AddMenuItem(g_objMenuList, 'add service_argument', 'icons/servatb.bmp','CubeAdd','N','TYP_SVA','ServiceArgument',0,'N',2);
+		AddMenuItem(g_objMenuList, 'add service_argument', 'icons/servarg.bmp','CubeAdd','N','TYP_SVA','ServiceArgument',0,'N',2);
 		AddMenuItem(g_objMenuList, 'delete', 'icons/cube_delete.bmp','CubeDelete','X','','Service',0,'N',0);
 		break;
  	case 'TYP_SVA':
