@@ -10,6 +10,7 @@
 13-02-2022 - p_cube_row always as first argument
 14-04-2022 - Migration to Posgresql
 08-08-2023 - ARGUMENT > SERVICE_ARGUMENT
+10-09-2023 - SERVICE properties
 [[INCLUDE,Includes/general.cgt]]
 [[BODY]]<?php
 session_start();
@@ -21,11 +22,11 @@ $RequestText = file_get_contents('php://input');
 $RequestObj = json_decode($RequestText, false);
 $ResponseText = '[';
 
-switch ($RequestObj->Service) {[[LOOP,BUSINESS_OBJECT_TYPE]][[LOOP,SERVICE:3=E]]
+switch ($RequestObj->Service) {[[LOOP,BUSINESS_OBJECT_TYPE]][[LOOP,SERVICE:4=E]]
 case '<<SERVICE:C>>':
 	$conn->query("BEGIN;");[[LOOP,OPERATION]]
 	$ResponseObj = new \stdClass();
-	$ResponseObj->ResultName = '<<SERVICE1:U>>[[IF:!2=#]]_<<OPERATION2:U>>[[ENDIF]][[LOOP,OPERATION_TYPE]]_<<OPERATION_TYPE1:U>>[[ENDLOOP,OPERATION_TYPE]]';
+	$ResponseObj->ResultName = '<<SERVICE2:U>>[[IF:!2=#]]_<<OPERATION2:U>>[[ENDIF]][[LOOP,OPERATION_TYPE]]_<<OPERATION_TYPE1:U>>[[ENDLOOP,OPERATION_TYPE]]';
 	$conn->query("CALL [[FOR,BUSINESS_OBJECT_TYPE:N>N]][[LOOP,TYPE]]<<TYPE1:L>>[[ENDLOOP,TYPE]][[ENDFOR]].<<OPERATION:L>> ([[FORH,SERVICE:N>N]][[LOOP,SERVICE_ARGUMENT]][[LOOP,ARGUMENT_ATTRIBUTE]][[IF:CHILD(INFORMATION_TYPE_ELEMENT:2=NUMBER)]]".($RequestObj->Parameters-><<SERVICE_ARGUMENT2>>-><<ARGUMENT_ATTRIBUTE:C>>??"null")."[[ELSE]]'".$RequestObj->Parameters-><<SERVICE_ARGUMENT2>>-><<ARGUMENT_ATTRIBUTE:C>>."'[[ENDIF]][[ENDLOOP,ARGUMENT_ATTRIBUTE]][[IF,SERVICE_ARGUMENT:!LAST]],[[ENDIF]][[ENDLOOP,SERVICE_ARGUMENT]][[ENDFOR]])");[[IF:CHILD(EXPORT)]]
 	$ResponseObj->Rows = array();
 	$curs = $conn->query('FETCH ALL FROM cube_cursor;');
