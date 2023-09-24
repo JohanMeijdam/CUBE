@@ -27,14 +27,15 @@ Change log:
 16-07-2023 - page server type added
 08-08-2023 - ARGUMENT > SERVICE_ARGUMENT
 10-09-2023 - SERVICE properties
+24-09-2023 - ARGUMENT > EXPORT_ARGUMENT
 [[INCLUDE,Includes/general.cgt]]
 [[TEXT,SPEC_EXPORT_LIST]]
 			>OPERATION_TYPE:<<TYPE:I>>;
 			+EXPORT:key|Y;[[LOOP,ATTRIBUTE:1=Y]]
-				=ARGUMENT:<<ATTRIBUTE:L>>| ;[[ENDLOOP,ATTRIBUTE]]
+				=EXPORT_ARGUMENT:<<ATTRIBUTE:L>>| ;[[ENDLOOP,ATTRIBUTE]]
 			-EXPORT:;
 			+EXPORT:display|N;[[LOOP,ATTRIBUTE:<<T1>>]]
-				=ARGUMENT:<<ATTRIBUTE:L>>|[[IF:2=S]]subscript[[ELSE]] [[ENDIF]];[[ENDLOOP,ATTRIBUTE]]
+				=EXPORT_ARGUMENT:<<ATTRIBUTE:L>>|[[IF:2=S]]subscript[[ELSE]] [[ENDIF]];[[ENDLOOP,ATTRIBUTE]]
 			-EXPORT:;[[ENDTEXT]]
 [[BODY]][[EVAL:($mySrvCount=0)]]! Cube Server Specification Model
 ![[LOOP,META_MODEL]]
@@ -136,7 +137,7 @@ Change log:
 !			OPERATION: 0=Name 1=SelectionType 2=ResultNameExtension 3=FlagMultipleExport 4=FlagMultipleList
 !				>OPERATION_TYPE: TYPE
 !				EXPORT: 0=Type 1=FlagSeparated
-!					ARGUMENT: 0=Name 1=Type
+!					EXPORT_ARGUMENT: 0=Name 1=Type
 ![[LOOP,INFORMATION_TYPE]]
 +INFORMATION_TYPE[<<INFORMATION_TYPE:I>>]:[[VALUE,INFORMATION_TYPE:0>N:|]];[[LOOP,*]]
 	+<<*TAG>>[[IF:EVAL:'<<*:I>>'ne'']][<<*:I>>][[ENDIF]]:[[VALUE,*:0>N:|]];[[REPEAT:TAB]][[LOOP,>*]]
@@ -183,7 +184,7 @@ Change log:
 		+OPERATION:count_<<TYPE1:L>>|[[IF:3=Y]]root[[ELSE]]all[[ENDIF]]|#|N|N|N;
 			>OPERATION_TYPE:<<TYPE:I>>;
 			+EXPORT:data|Y;
-				=ARGUMENT:type_count|;
+				=EXPORT_ARGUMENT:type_count|;
 			-EXPORT:;
 		-OPERATION:;
 	-SERVICE:;[[ENDIF]][[IF:CHILD(ATTRIBUTE:1=N[AND]4=N)]]
@@ -193,7 +194,7 @@ Change log:
 		+OPERATION:get_<<TYPE1:L>>||#|N|N|N;
 			>OPERATION_TYPE:<<TYPE:I>>;
 			+EXPORT:data|Y;[[LOOP,ATTRIBUTE:1=N[AND]4=N]]
-				=ARGUMENT:<<ATTRIBUTE:L>>|;[[ENDLOOP,ATTRIBUTE]]
+				=EXPORT_ARGUMENT:<<ATTRIBUTE:L>>|;[[ENDLOOP,ATTRIBUTE]]
 			-EXPORT:;
 		-OPERATION:;
 	-SERVICE:;[[ENDIF]][[IF:CHILD(TYPE)[OR]3=Y]][[IF:CHILD(ATTRIBUTE:1=N[AND]3=F)]]
@@ -203,7 +204,7 @@ Change log:
 		+OPERATION:get_<<TYPE1:L>>_fkey||fkey|N|N|N;
 			>OPERATION_TYPE:<<TYPE:I>>;
 			+EXPORT:data|Y;[[LOOP,ATTRIBUTE:1=N[AND]3=F]]
-				=ARGUMENT:<<ATTRIBUTE:L>>|;[[ENDLOOP,ATTRIBUTE]]
+				=EXPORT_ARGUMENT:<<ATTRIBUTE:L>>|;[[ENDLOOP,ATTRIBUTE]]
 			-EXPORT:;
 		-OPERATION:;
 	-SERVICE:;[[ENDIF]]
@@ -221,13 +222,13 @@ Change log:
 		+OPERATION:count_<<TYPE1:L>>_<<TYPE1:L>>|part_recursive|#|N|N|Y;
 			>OPERATION_TYPE:<<TYPE:I>>;
 			+EXPORT:data|Y;
-				=ARGUMENT:type_count|;
+				=EXPORT_ARGUMENT:type_count|;
 			-EXPORT:;
 		-OPERATION:;[[ENDIF]][[LOOP,TYPE:!5=N]]
 		+OPERATION:count_<<TYPE(N-1)1:L>>_<<TYPE1:L>>|part|#|N|N|N;
 			>OPERATION_TYPE:<<TYPE:I>>;
 			+EXPORT:data|Y;
-				=ARGUMENT:type_count|;
+				=EXPORT_ARGUMENT:type_count|;
 			-EXPORT:;
 		-OPERATION:;[[ENDLOOP,TYPE]]
 	-SERVICE:;[[ENDIF]][[ENDIF]][[IF:3=Y]]
@@ -264,7 +265,7 @@ Change log:
 		+OPERATION:change_parent_<<TYPE1:L>>||#|N|N|N;
 			>OPERATION_TYPE:<<TYPE:I>>;[[IF:6=K]]
 			+EXPORT:key|Y;[[LOOP,ATTRIBUTE:1=Y]]
-				=ARGUMENT:<<ATTRIBUTE:L>>|;[[ENDLOOP,ATTRIBUTE]]
+				=EXPORT_ARGUMENT:<<ATTRIBUTE:L>>|;[[ENDLOOP,ATTRIBUTE]]
 			-EXPORT:;[[ENDIF]]
 		-OPERATION:;
 	-SERVICE:;[[ENDIF]]
@@ -276,7 +277,7 @@ Change log:
 		+OPERATION:insert_<<TYPE1:L>>||#|N|N|N;
 			>OPERATION_TYPE:<<TYPE:I>>;[[IF:6=K]]
 			+EXPORT:key|Y;[[LOOP,ATTRIBUTE:1=Y]]
-				=ARGUMENT:<<ATTRIBUTE:L>>|;[[ENDLOOP,ATTRIBUTE]]
+				=EXPORT_ARGUMENT:<<ATTRIBUTE:L>>|;[[ENDLOOP,ATTRIBUTE]]
 			-EXPORT:;[[ENDIF]]
 		-OPERATION:;
 	-SERVICE:;[[IF:CHILD(ATTRIBUTE:1=N[AND]4=N)]]

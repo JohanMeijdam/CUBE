@@ -241,7 +241,7 @@
 !			OPERATION: 0=Name 1=SelectionType 2=ResultNameExtension 3=FlagMultipleExport 4=FlagMultipleList
 !				>OPERATION_TYPE: TYPE
 !				EXPORT: 0=Type 1=FlagSeparated
-!					ARGUMENT: 0=Name 1=Type
+!					EXPORT_ARGUMENT: 0=Name 1=Type
 !
 +INFORMATION_TYPE[CUBE-ID-ITP]:CUBE_ID;
 	+INFORMATION_TYPE_ELEMENT[CUBE-ID-ITE]:1|#|TEXT|16|0|Y|||N;
@@ -326,14 +326,14 @@
 		+OPERATION:get_cube_dsc_root_items|all|#|Y|N|N;
 			>OPERATION_TYPE:CUBE-TYP-0100024;
 			+EXPORT:key|Y;
-				=ARGUMENT:type_name| ;
-				=ARGUMENT:attribute_type_name| ;
-				=ARGUMENT:sequence| ;
+				=EXPORT_ARGUMENT:type_name| ;
+				=EXPORT_ARGUMENT:attribute_type_name| ;
+				=EXPORT_ARGUMENT:sequence| ;
 			-EXPORT:;
 			+EXPORT:display|N;
-				=ARGUMENT:type_name| ;
-				=ARGUMENT:attribute_type_name| ;
-				=ARGUMENT:sequence| ;
+				=EXPORT_ARGUMENT:type_name| ;
+				=EXPORT_ARGUMENT:attribute_type_name| ;
+				=EXPORT_ARGUMENT:sequence| ;
 			-EXPORT:;
 		-OPERATION:;
 	-SERVICE:;
@@ -345,7 +345,7 @@
 		+OPERATION:get_cube_dsc||#|N|N|N;
 			>OPERATION_TYPE:CUBE-TYP-0100024;
 			+EXPORT:data|Y;
-				=ARGUMENT:value|;
+				=EXPORT_ARGUMENT:value|;
 			-EXPORT:;
 		-OPERATION:;
 	-SERVICE:;

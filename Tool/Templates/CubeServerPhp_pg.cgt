@@ -11,6 +11,7 @@
 14-04-2022 - Migration to Posgresql
 08-08-2023 - ARGUMENT > SERVICE_ARGUMENT
 10-09-2023 - SERVICE properties
+24-09-2023 - ARGUMENT > EXPORT_ARGUMENT
 [[INCLUDE,Includes/general.cgt]]
 [[BODY]]<?php
 session_start();
@@ -32,9 +33,9 @@ case '<<SERVICE:C>>':
 	$curs = $conn->query('FETCH ALL FROM cube_cursor;');
 	[[IF:3=Y]]while[[ELSE]]if[[ENDIF]] ($row = $curs->fetch(PDO::FETCH_ASSOC)) {
 		$RowObj = new \stdClass();[[LOOP,EXPORT]][[IF:1=Y]]
-		$RowObj-><<EXPORT:C>> = new \stdClass();[[LOOP,ARGUMENT]]
-		$RowObj-><<EXPORT:C>>-><<ARGUMENT:C>> = $row["<<ARGUMENT:L>>"];[[ENDLOOP,ARGUMENT]][[ELSE]]
-		$RowObj-><<EXPORT:C>> = [[IF:CHILD(ARGUMENT)]][[LOOP,ARGUMENT]][[IF:1=subscript]][[IF:FIRST]]'('.[[ELSE]].' ('.[[ENDIF]][[ELSE]][[IF:!FIRST]].' '.[[ENDIF]][[ENDIF]]$row["<<ARGUMENT:L>>"][[IF:1=subscript]].')'[[ENDIF]][[ENDLOOP,ARGUMENT]][[ELSE]]' '[[ENDIF]];[[ENDIF]][[ENDLOOP,EXPORT]]
+		$RowObj-><<EXPORT:C>> = new \stdClass();[[LOOP,EXPORT_ARGUMENT]]
+		$RowObj-><<EXPORT:C>>-><<EXPORT_ARGUMENT:C>> = $row["<<EXPORT_ARGUMENT:L>>"];[[ENDLOOP,EXPORT_ARGUMENT]][[ELSE]]
+		$RowObj-><<EXPORT:C>> = [[IF:CHILD(EXPORT_ARGUMENT)]][[LOOP,EXPORT_ARGUMENT]][[IF:1=subscript]][[IF:FIRST]]'('.[[ELSE]].' ('.[[ENDIF]][[ELSE]][[IF:!FIRST]].' '.[[ENDIF]][[ENDIF]]$row["<<EXPORT_ARGUMENT:L>>"][[IF:1=subscript]].')'[[ENDIF]][[ENDLOOP,EXPORT_ARGUMENT]][[ELSE]]' '[[ENDIF]];[[ENDIF]][[ENDLOOP,EXPORT]]
 		$ResponseObj->Rows[] = $RowObj;
 	}
 	$curs = $conn->query('CLOSE cube_cursor;');[[ENDIF]]
