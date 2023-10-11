@@ -197,6 +197,7 @@ CREATE TABLE t_service (
 	fk_bot_name VARCHAR2(30),
 	fk_typ_name VARCHAR2(30),
 	name VARCHAR2(30),
+	cube_tsg_type VARCHAR2(8) DEFAULT 'D',
 	CONSTRAINT srv_pk
 		PRIMARY KEY (fk_typ_name, name),
 	CONSTRAINT srv_typ_fk

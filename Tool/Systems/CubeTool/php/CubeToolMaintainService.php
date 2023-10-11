@@ -30,12 +30,15 @@ g_xmlhttp.onreadystatechange = function() {
 					case "SELECT_SRV":
 						var l_json_values = l_json_array[i].Rows[0].Data;
 						document.getElementById("InputFkBotName").value=l_json_values.FkBotName;
+						document.getElementById("InputCubeTsgType").value=l_json_values.CubeTsgType;
+						ProcessTypeSpecialisation();
 						break;
 					case "CREATE_SRV":
 						document.getElementById("InputFkBotName").disabled=true;
 						document.getElementById("InputFkTypName").disabled=true;
 						document.getElementById("InputName").disabled=true;
 						document.getElementById("ButtonOK").innerText="Update";
+						document.getElementById("ButtonOK").disabled=false;
 						var l_objNode = parent.document.getElementById(g_parent_node_id);
 						var l_json_node_id = {FkTypName:document.getElementById("InputFkTypName").value,Name:document.getElementById("InputName").value};
 						g_node_id = '{"TYP_SRV":'+JSON.stringify(l_json_node_id)+'}';
@@ -49,7 +52,7 @@ g_xmlhttp.onreadystatechange = function() {
 									l_json_node_id,
 									'icons/service.bmp',
 									'Service',
-									document.getElementById("InputName").value.toLowerCase(),
+									document.getElementById("InputName").value.toLowerCase()+' ('+document.getElementById("InputCubeTsgType").value.toLowerCase()+')',
 									'N',
 									l_position,
 									l_objNodePos);
@@ -60,6 +63,10 @@ g_xmlhttp.onreadystatechange = function() {
 						ResetChangePending();
 						break;
 					case "UPDATE_SRV":
+						var l_objNode = parent.document.getElementById(g_node_id);
+						if (l_objNode != null) {
+							l_objNode.children[1].lastChild.nodeValue = ' '+document.getElementById("InputName").value.toLowerCase()+' ('+document.getElementById("InputCubeTsgType").value.toLowerCase()+')';
+						}
 						ResetChangePending();
 						break;
 					case "DELETE_SRV":
@@ -102,7 +109,8 @@ function CreateSrv() {
 	var Type = {
 		FkBotName: document.getElementById("InputFkBotName").value,
 		FkTypName: document.getElementById("InputFkTypName").value,
-		Name: document.getElementById("InputName").value
+		Name: document.getElementById("InputName").value,
+		CubeTsgType: document.getElementById("InputCubeTsgType").value
 	};
 	var l_pos_action = g_json_option.Code;
 	var Option = {
@@ -133,7 +141,8 @@ function UpdateSrv() {
 	var Type = {
 		FkBotName: document.getElementById("InputFkBotName").value,
 		FkTypName: document.getElementById("InputFkTypName").value,
-		Name: document.getElementById("InputName").value
+		Name: document.getElementById("InputName").value,
+		CubeTsgType: document.getElementById("InputCubeTsgType").value
 	};
 	PerformTrans('BusinessObjectType', {
 		Service: "UpdateSrv",
@@ -178,10 +187,10 @@ function InitBody() {
 				Type: l_json_objectKey.TYP_SRV
 			}
 		} );
-		document.getElementById("ButtonOK").disabled = true;
 		document.getElementById("InputFkBotName").disabled = true;
 		document.getElementById("InputFkTypName").disabled = true;
 		document.getElementById("InputName").disabled = true;
+		document.getElementById("InputCubeTsgType").disabled = true;
 		break;
 	case "N": // New (non recursive) object
 		g_parent_node_id = JSON.stringify(l_json_argument.objectId);
@@ -215,21 +224,34 @@ function InitBody() {
 		document.getElementById("InputFkBotName").disabled = true;
 		document.getElementById("InputFkTypName").disabled = true;
 		document.getElementById("InputName").disabled = true;
+		document.getElementById("InputCubeTsgType").disabled = true;
 		break;
 	default:
 		alert ('Error InitBody: nodeType='+l_json_argument.nodeType);
 	}
 }
 
+function ProcessTypeSpecialisation() {
+	if (document.getElementById("InputCubeTsgType").value != ' ') {
+		document.getElementById("InputCubeTsgType").disabled = true;
+		document.getElementById("TableMain").style.display = "inline";
+	}
+}
+
 -->
 </script>
 </head><body oncontextmenu="return false;" onload="InitBody()" onbeforeunload="return parent.CheckChangePending()" ondrop="Drop(event)" ondragover="AllowDrop(event)">
-<div><img src="icons/service_large.bmp" /><span> SERVICE</span></div>
+<div><img src="icons/service_large.bmp" /><span style="cursor:help" oncontextmenu="parent.OpenDescBox('service','Service','SERVICE','_',-1)"> SERVICE /
+<select id="InputCubeTsgType" type="text" onchange="ProcessTypeSpecialisation();">
+	<option value=" " selected>&lt;type&gt;</option>
+	<option id="OptionCubeTsgType-D" style="display:inline" value="D">DATABASE_INTERACTION</option>
+	<option id="OptionCubeTsgType-S" style="display:inline" value="S">SERVER_SCRIPT</option>
+</select></span></div>
 <hr/>
-<table>
+<table id="TableMain" style="display:none">
 <tr id="RowAtbFkBotName"><td><div>BusinessObjectType.Name</div></td><td><div style="max-width:30em;"><input id="InputFkBotName" type="text" maxlength="30" style="width:100%" onchange="SetChangePending();ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
 <tr id="RowAtbFkTypName"><td><u><div>Type.Name</div></u></td><td><div style="max-width:30em;"><input id="InputFkTypName" type="text" maxlength="30" style="width:100%" onchange="SetChangePending();ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
-<tr id="RowAtbName"><td><u><div>Name</div></u></td><td><div style="max-width:30em;"><input id="InputName" type="text" maxlength="30" style="width:100%" onchange="SetChangePending();ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr id="RowAtbName"><td style="cursor:help" oncontextmenu="parent.OpenDescBox('service','Service.Name','SERVICE','NAME',-1)"><u><div>Name</div></u></td><td><div style="max-width:30em;"><input id="InputName" type="text" maxlength="30" style="width:100%" onchange="SetChangePending();ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
 <tr><td><br></td><td style="width:100%"></td></tr>
 <tr><td/><td>
 <button id="ButtonOK" type="button" disabled>OK</button>&nbsp;&nbsp;&nbsp;

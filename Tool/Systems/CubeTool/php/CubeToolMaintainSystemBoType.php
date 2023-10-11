@@ -182,7 +182,7 @@ function StartSelect001(p_event) {
 	document.body._SelectTop = p_event.clientY;
 	document.body._ListBoxCode = 'Ref001';
 	document.body._ListBoxOptional = 'N';
-	PerformTrans('System', {
+	PerformTrans('BusinessObjectType', {
 		Service: "GetBotList"
 	} );
 }

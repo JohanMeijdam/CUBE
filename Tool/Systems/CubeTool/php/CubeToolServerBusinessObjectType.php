@@ -459,7 +459,7 @@ case 'GetTypItems':
 		$RowObj->Key = new \stdClass();
 		$RowObj->Key->FkTypName = $row["FK_TYP_NAME"];
 		$RowObj->Key->Name = $row["NAME"];
-		$RowObj->Display = $row["NAME"];
+		$RowObj->Display = $row["NAME"].' ('.$row["CUBE_TSG_TYPE"].')';
 		$ResponseObj->Rows[] = $RowObj;
 	}
 	$ResponseText = json_encode($ResponseObj);
@@ -1381,6 +1381,7 @@ case 'GetSrv':
 		$RowObj = new \stdClass();
 		$RowObj->Data = new \stdClass();
 		$RowObj->Data->FkBotName = $row["FK_BOT_NAME"];
+		$RowObj->Data->CubeTsgType = $row["CUBE_TSG_TYPE"];
 		$ResponseObj->Rows[] = $RowObj;
 	}
 	$ResponseText = json_encode($ResponseObj);
@@ -1493,6 +1494,7 @@ case 'CreateSrv':
 		:p_fk_bot_name,
 		:p_fk_typ_name,
 		:p_name,
+		:p_cube_tsg_type,
 		:x_fk_typ_name,
 		:x_name);
 	END;");
@@ -1500,6 +1502,7 @@ case 'CreateSrv':
 	oci_bind_by_name($stid,":p_fk_bot_name",$RequestObj->Parameters->Type->FkBotName);
 	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
 	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
+	oci_bind_by_name($stid,":p_cube_tsg_type",$RequestObj->Parameters->Type->CubeTsgType);
 	oci_bind_by_name($stid,":x_fk_typ_name",$RequestObj->Parameters->Ref->FkTypName);
 	oci_bind_by_name($stid,":x_name",$RequestObj->Parameters->Ref->Name);
 
@@ -1523,11 +1526,13 @@ case 'UpdateSrv':
 	$stid = oci_parse($conn, "BEGIN pkg_bot.update_srv (
 		:p_fk_bot_name,
 		:p_fk_typ_name,
-		:p_name);
+		:p_name,
+		:p_cube_tsg_type);
 	END;");
 	oci_bind_by_name($stid,":p_fk_bot_name",$RequestObj->Parameters->Type->FkBotName);
 	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
 	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
+	oci_bind_by_name($stid,":p_cube_tsg_type",$RequestObj->Parameters->Type->CubeTsgType);
 
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'UPDATE_SRV';

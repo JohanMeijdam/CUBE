@@ -872,7 +872,8 @@ BEGIN
 			cube_sequence NUMBER(8),
 			fk_bot_name VARCHAR2(30),
 			fk_typ_name VARCHAR2(30),
-			name VARCHAR2(30))';
+			name VARCHAR2(30),
+			cube_tsg_type VARCHAR2(8) DEFAULT ''D'')';
 		DBMS_OUTPUT.PUT_LINE('Table T_SERVICE created');
 	ELSE
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_SERVICE' AND column_name = 'CUBE_ID';
@@ -904,6 +905,12 @@ BEGIN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_service ADD name VARCHAR2(30)';
 			DBMS_OUTPUT.PUT_LINE('Column T_SERVICE.NAME created');
+		END IF;
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_SERVICE' AND column_name = 'CUBE_TSG_TYPE';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_service ADD cube_tsg_type VARCHAR2(8) DEFAULT ''D''';
+			DBMS_OUTPUT.PUT_LINE('Column T_SERVICE.CUBE_TSG_TYPE created');
 		END IF;
 		FOR r_key IN (SELECT constraint_name FROM all_constraints WHERE owner = 'CUBETOOL' AND table_name = 'T_SERVICE' AND constraint_type IN ('P','U','R') ORDER BY constraint_type DESC)
 		LOOP
@@ -2748,13 +2755,15 @@ BEGIN
 			'CUBE_SEQUENCE','NUMBER(8)',
 			'FK_BOT_NAME','VARCHAR2(30)',
 			'FK_TYP_NAME','VARCHAR2(30)',
-			'NAME','VARCHAR2(30)',NULL) new_domain,
+			'NAME','VARCHAR2(30)',
+			'CUBE_TSG_TYPE','VARCHAR2(8)',NULL) new_domain,
 		DECODE(column_name,
 			'CUBE_ID',NULL,
 			'CUBE_SEQUENCE',NULL,
 			'FK_BOT_NAME',NULL,
 			'FK_TYP_NAME',NULL,
-			'NAME',NULL,NULL) new_default_value
+			'NAME',NULL,
+			'CUBE_TSG_TYPE','''D''',NULL) new_default_value
   		FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_SERVICE')
 	LOOP
 		IF r_field.old_domain <> r_field.new_domain THEN
@@ -2795,7 +2804,8 @@ BEGIN
 							'CUBE_SEQUENCE',
 							'FK_BOT_NAME',
 							'FK_TYP_NAME',
-							'NAME'))
+							'NAME',
+							'CUBE_TSG_TYPE'))
 	LOOP
 		EXECUTE IMMEDIATE
 		'ALTER TABLE t_service DROP COLUMN ' || r_field.column_name;

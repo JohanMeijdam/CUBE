@@ -763,12 +763,14 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_fk_bot_name IN VARCHAR2,
 			p_fk_typ_name IN VARCHAR2,
 			p_name IN VARCHAR2,
+			p_cube_tsg_type IN VARCHAR2,
 			x_fk_typ_name IN VARCHAR2,
 			x_name IN VARCHAR2);
 	PROCEDURE update_srv (
 			p_fk_bot_name IN VARCHAR2,
 			p_fk_typ_name IN VARCHAR2,
-			p_name IN VARCHAR2);
+			p_name IN VARCHAR2,
+			p_cube_tsg_type IN VARCHAR2);
 	PROCEDURE delete_srv (
 			p_fk_typ_name IN VARCHAR2,
 			p_name IN VARCHAR2);
@@ -1581,7 +1583,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			SELECT
 			  cube_sequence,
 			  fk_typ_name,
-			  name
+			  name,
+			  cube_tsg_type
 			FROM v_service
 			WHERE fk_typ_name = p_name
 			ORDER BY fk_typ_name, cube_sequence;
@@ -2491,7 +2494,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 	BEGIN
 		OPEN p_cube_row FOR
 			SELECT
-			  fk_bot_name
+			  fk_bot_name,
+			  cube_tsg_type
 			FROM v_service
 			WHERE fk_typ_name = p_fk_typ_name
 			  AND name = p_name;
@@ -2615,6 +2619,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_fk_bot_name IN VARCHAR2,
 			p_fk_typ_name IN VARCHAR2,
 			p_name IN VARCHAR2,
+			p_cube_tsg_type IN VARCHAR2,
 			x_fk_typ_name IN VARCHAR2,
 			x_name IN VARCHAR2) IS
 		l_cube_sequence NUMBER(8);
@@ -2629,13 +2634,15 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			cube_sequence,
 			fk_bot_name,
 			fk_typ_name,
-			name)
+			name,
+			cube_tsg_type)
 		VALUES (
 			NULL,
 			l_cube_sequence,
 			p_fk_bot_name,
 			p_fk_typ_name,
-			p_name);
+			p_name,
+			p_cube_tsg_type);
 	EXCEPTION
 	WHEN DUP_VAL_ON_INDEX THEN
 			RAISE_APPLICATION_ERROR (-20000, pkg_cube.replace_placeholders('Type service already exists'));
@@ -2644,10 +2651,12 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 	PROCEDURE update_srv (
 			p_fk_bot_name IN VARCHAR2,
 			p_fk_typ_name IN VARCHAR2,
-			p_name IN VARCHAR2) IS
+			p_name IN VARCHAR2,
+			p_cube_tsg_type IN VARCHAR2) IS
 	BEGIN
 		UPDATE v_service SET
-			fk_bot_name = p_fk_bot_name
+			fk_bot_name = p_fk_bot_name,
+			cube_tsg_type = p_cube_tsg_type
 		WHERE fk_typ_name = p_fk_typ_name
 		  AND name = p_name;
 	END;

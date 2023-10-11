@@ -397,7 +397,8 @@ CREATE OR REPLACE VIEW v_service AS
 		cube_sequence,
 		fk_bot_name,
 		fk_typ_name,
-		name
+		name,
+		cube_tsg_type
 	FROM t_service
 /
 CREATE OR REPLACE VIEW v_service_argument AS 
@@ -998,13 +999,15 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			cube_sequence,
 			fk_bot_name,
 			fk_typ_name,
-			name)
+			name,
+			cube_tsg_type)
 		VALUES (
 			p_srv.cube_id,
 			p_srv.cube_sequence,
 			p_srv.fk_bot_name,
 			p_srv.fk_typ_name,
-			p_srv.name);
+			p_srv.name,
+			p_srv.cube_tsg_type);
 	END;
 
 	PROCEDURE update_srv (p_cube_rowid UROWID, p_srv_old IN OUT NOCOPY v_service%ROWTYPE, p_srv_new IN OUT NOCOPY v_service%ROWTYPE) IS
@@ -2038,6 +2041,11 @@ BEGIN
 		ELSE
 			r_srv_new.name := REPLACE(:NEW.name,' ','_');
 		END IF;
+		IF :NEW.cube_tsg_type = ' ' THEN
+			r_srv_new.cube_tsg_type := ' ';
+		ELSE
+			r_srv_new.cube_tsg_type := REPLACE(:NEW.cube_tsg_type,' ','_');
+		END IF;
 	END IF;
 	IF UPDATING THEN
 		r_srv_new.cube_id := :OLD.cube_id;
@@ -2050,6 +2058,7 @@ BEGIN
 		r_srv_old.fk_bot_name := :OLD.fk_bot_name;
 		r_srv_old.fk_typ_name := :OLD.fk_typ_name;
 		r_srv_old.name := :OLD.name;
+		r_srv_old.cube_tsg_type := :OLD.cube_tsg_type;
 	END IF;
 
 	IF INSERTING THEN 
