@@ -27,10 +27,10 @@ g_xmlhttp.onreadystatechange = function() {
 			}
 			for (i in l_json_array) {
 				switch (l_json_array[i].ResultName) {
-					case "SELECT_ARG":
+					case "SEL_ARG":
 						var l_json_values = l_json_array[i].Rows[0].Data;
 						break;
-					case "CREATE_ARG":
+					case "CRE_ARG":
 						document.getElementById("InputFkFunName").disabled=true;
 						document.getElementById("InputName").disabled=true;
 						document.getElementById("ButtonOK").innerText="Update";
@@ -57,10 +57,10 @@ g_xmlhttp.onreadystatechange = function() {
 						document.getElementById("ButtonOK").onclick = function(){UpdateArg()};						
 						ResetChangePending();
 						break;
-					case "UPDATE_ARG":
+					case "UPD_ARG":
 						ResetChangePending();
 						break;
-					case "DELETE_ARG":
+					case "DEL_ARG":
 						var l_objNode = parent.document.getElementById(g_node_id);
 						if (g_parent_node_id == null) {
 							g_parent_node_id = l_objNode.parentNode.parentNode.id;

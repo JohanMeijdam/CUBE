@@ -14,7 +14,7 @@ case 'GetDirBotItems':
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.get_bot_root_items (:p_cube_row); END;");
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'LIST_BOT';
+	$ResponseObj->ResultName = 'LST_BOT';
 	$r = perform_db_request();
 	if (!$r) { 
 		echo ']';
@@ -39,7 +39,7 @@ case 'GetBotList':
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.get_bot_list (:p_cube_row); END;");
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'LIST_BOT';
+	$ResponseObj->ResultName = 'LST_BOT';
 	$r = perform_db_request();
 	if (!$r) { 
 		echo ']';
@@ -69,7 +69,7 @@ case 'GetBot':
 	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'SELECT_BOT';
+	$ResponseObj->ResultName = 'SEL_BOT';
 	$r = perform_db_request();
 	if (!$r) { 
 		echo ']';
@@ -100,7 +100,7 @@ case 'GetBotItems':
 	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'LIST_TYP';
+	$ResponseObj->ResultName = 'LST_TYP';
 	$r = perform_db_request();
 	if (!$r) { 
 		echo ']';
@@ -130,7 +130,7 @@ case 'CountBotRestrictedItems':
 	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'COUNT_TYP';
+	$ResponseObj->ResultName = 'CNT_TYP';
 	$r = perform_db_request();
 	if (!$r) { 
 		echo ']';
@@ -162,7 +162,7 @@ case 'MoveBot':
 	oci_bind_by_name($stid,":x_name",$RequestObj->Parameters->Ref->Name);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'MOVE_BOT';
+	$ResponseObj->ResultName = 'MOV_BOT';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -194,7 +194,7 @@ case 'CreateBot':
 	oci_bind_by_name($stid,":x_name",$RequestObj->Parameters->Ref->Name);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'CREATE_BOT';
+	$ResponseObj->ResultName = 'CRE_BOT';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -222,7 +222,7 @@ case 'UpdateBot':
 	oci_bind_by_name($stid,":p_api_url",$RequestObj->Parameters->Type->ApiUrl);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'UPDATE_BOT';
+	$ResponseObj->ResultName = 'UPD_BOT';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -244,7 +244,7 @@ case 'DeleteBot':
 	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'DELETE_BOT';
+	$ResponseObj->ResultName = 'DEL_BOT';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -262,7 +262,7 @@ case 'GetTypListAll':
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.get_typ_list_all (:p_cube_row); END;");
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'LIST_TYP';
+	$ResponseObj->ResultName = 'LST_TYP';
 	$r = perform_db_request();
 	if (!$r) { 
 		echo ']';
@@ -292,7 +292,7 @@ case 'GetTypForBotListAll':
 	oci_bind_by_name($stid,":x_fk_bot_name",$RequestObj->Parameters->Ref->FkBotName);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'LIST_TYP';
+	$ResponseObj->ResultName = 'LST_TYP';
 	$r = perform_db_request();
 	if (!$r) { 
 		echo ']';
@@ -324,7 +324,7 @@ case 'GetTypForTypListAll':
 	oci_bind_by_name($stid,":x_fk_typ_name",$RequestObj->Parameters->Ref->FkTypName);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'LIST_TYP';
+	$ResponseObj->ResultName = 'LST_TYP';
 	$r = perform_db_request();
 	if (!$r) { 
 		echo ']';
@@ -354,7 +354,7 @@ case 'GetTyp':
 	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'SELECT_TYP';
+	$ResponseObj->ResultName = 'SEL_TYP';
 	$r = perform_db_request();
 	if (!$r) { 
 		echo ']';
@@ -392,7 +392,7 @@ case 'GetTypFkey':
 	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'SELECT_FKEY_TYP';
+	$ResponseObj->ResultName = 'SEL_FKEY_TYP';
 	$r = perform_db_request();
 	if (!$r) { 
 		echo ']';
@@ -421,7 +421,7 @@ case 'GetTypItems':
 	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'LIST_TSG';
+	$ResponseObj->ResultName = 'LST_TSG';
 	$r = perform_db_request();
 	if (!$r) { 
 		echo ']';
@@ -447,7 +447,7 @@ case 'GetTypItems':
 	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'LIST_SRV';
+	$ResponseObj->ResultName = 'LST_SRV';
 	$r = perform_db_request();
 	if (!$r) { 
 		echo ']';
@@ -473,7 +473,7 @@ case 'GetTypItems':
 	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'LIST_ATB';
+	$ResponseObj->ResultName = 'LST_ATB';
 	$r = perform_db_request();
 	if (!$r) { 
 		echo ']';
@@ -499,7 +499,7 @@ case 'GetTypItems':
 	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'LIST_REF';
+	$ResponseObj->ResultName = 'LST_REF';
 	$r = perform_db_request();
 	if (!$r) { 
 		echo ']';
@@ -527,7 +527,7 @@ case 'GetTypItems':
 	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'LIST_RTT';
+	$ResponseObj->ResultName = 'LST_RTT';
 	$r = perform_db_request();
 	if (!$r) { 
 		echo ']';
@@ -555,7 +555,7 @@ case 'GetTypItems':
 	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'LIST_JSN';
+	$ResponseObj->ResultName = 'LST_JSN';
 	$r = perform_db_request();
 	if (!$r) { 
 		echo ']';
@@ -585,7 +585,7 @@ case 'GetTypItems':
 	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'LIST_DCT';
+	$ResponseObj->ResultName = 'LST_DCT';
 	$r = perform_db_request();
 	if (!$r) { 
 		echo ']';
@@ -610,7 +610,7 @@ case 'GetTypItems':
 	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'LIST_TYP';
+	$ResponseObj->ResultName = 'LST_TYP';
 	$r = perform_db_request();
 	if (!$r) { 
 		echo ']';
@@ -640,7 +640,7 @@ case 'CountTypRestrictedItems':
 	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'COUNT_JSN';
+	$ResponseObj->ResultName = 'CNT_JSN';
 	$r = perform_db_request();
 	if (!$r) { 
 		echo ']';
@@ -664,7 +664,7 @@ case 'CountTypRestrictedItems':
 	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'COUNT_DCT';
+	$ResponseObj->ResultName = 'CNT_DCT';
 	$r = perform_db_request();
 	if (!$r) { 
 		echo ']';
@@ -696,7 +696,7 @@ case 'MoveTyp':
 	oci_bind_by_name($stid,":x_name",$RequestObj->Parameters->Ref->Name);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'MOVE_TYP';
+	$ResponseObj->ResultName = 'MOV_TYP';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -742,7 +742,7 @@ case 'CreateTyp':
 	oci_bind_by_name($stid,":x_name",$RequestObj->Parameters->Ref->Name);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'CREATE_TYP';
+	$ResponseObj->ResultName = 'CRE_TYP';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -784,7 +784,7 @@ case 'UpdateTyp':
 	oci_bind_by_name($stid,":p_transferable",$RequestObj->Parameters->Type->Transferable);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'UPDATE_TYP';
+	$ResponseObj->ResultName = 'UPD_TYP';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -806,7 +806,7 @@ case 'DeleteTyp':
 	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'DELETE_TYP';
+	$ResponseObj->ResultName = 'DEL_TYP';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -831,7 +831,7 @@ case 'GetTsg':
 	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'SELECT_TSG';
+	$ResponseObj->ResultName = 'SEL_TSG';
 	$r = perform_db_request();
 	if (!$r) { 
 		echo ']';
@@ -867,7 +867,7 @@ case 'GetTsgFkey':
 	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'SELECT_FKEY_TSG';
+	$ResponseObj->ResultName = 'SEL_FKEY_TSG';
 	$r = perform_db_request();
 	if (!$r) { 
 		echo ']';
@@ -898,7 +898,7 @@ case 'GetTsgItems':
 	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'LIST_TSP';
+	$ResponseObj->ResultName = 'LST_TSP';
 	$r = perform_db_request();
 	if (!$r) { 
 		echo ']';
@@ -927,7 +927,7 @@ case 'GetTsgItems':
 	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'LIST_TSG';
+	$ResponseObj->ResultName = 'LST_TSG';
 	$r = perform_db_request();
 	if (!$r) { 
 		echo ']';
@@ -960,7 +960,7 @@ case 'CountTsgRestrictedItems':
 	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'COUNT_TSG';
+	$ResponseObj->ResultName = 'CNT_TSG';
 	$r = perform_db_request();
 	if (!$r) { 
 		echo ']';
@@ -996,7 +996,7 @@ case 'MoveTsg':
 	oci_bind_by_name($stid,":x_code",$RequestObj->Parameters->Ref->Code);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'MOVE_TSG';
+	$ResponseObj->ResultName = 'MOV_TSG';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -1038,7 +1038,7 @@ case 'CreateTsg':
 	oci_bind_by_name($stid,":x_code",$RequestObj->Parameters->Ref->Code);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'CREATE_TSG';
+	$ResponseObj->ResultName = 'CRE_TSG';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -1074,7 +1074,7 @@ case 'UpdateTsg':
 	oci_bind_by_name($stid,":p_xk_atb_name",$RequestObj->Parameters->Type->XkAtbName);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'UPDATE_TSG';
+	$ResponseObj->ResultName = 'UPD_TSG';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -1098,7 +1098,7 @@ case 'DeleteTsg':
 	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'DELETE_TSG';
+	$ResponseObj->ResultName = 'DEL_TSG';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -1123,7 +1123,7 @@ case 'GetTspForTypList':
 	oci_bind_by_name($stid,":x_fk_typ_name",$RequestObj->Parameters->Ref->FkTypName);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'LIST_TSP';
+	$ResponseObj->ResultName = 'LST_TSP';
 	$r = perform_db_request();
 	if (!$r) { 
 		echo ']';
@@ -1159,7 +1159,7 @@ case 'GetTspForTsgList':
 	oci_bind_by_name($stid,":x_fk_tsg_code",$RequestObj->Parameters->Ref->FkTsgCode);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'LIST_TSP';
+	$ResponseObj->ResultName = 'LST_TSP';
 	$r = perform_db_request();
 	if (!$r) { 
 		echo ']';
@@ -1195,7 +1195,7 @@ case 'GetTsp':
 	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'SELECT_TSP';
+	$ResponseObj->ResultName = 'SEL_TSP';
 	$r = perform_db_request();
 	if (!$r) { 
 		echo ']';
@@ -1239,7 +1239,7 @@ case 'MoveTsp':
 	oci_bind_by_name($stid,":x_code",$RequestObj->Parameters->Ref->Code);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'MOVE_TSP';
+	$ResponseObj->ResultName = 'MOV_TSP';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -1283,7 +1283,7 @@ case 'CreateTsp':
 	oci_bind_by_name($stid,":x_code",$RequestObj->Parameters->Ref->Code);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'CREATE_TSP';
+	$ResponseObj->ResultName = 'CRE_TSP';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -1319,7 +1319,7 @@ case 'UpdateTsp':
 	oci_bind_by_name($stid,":p_xk_tsp_code",$RequestObj->Parameters->Type->XkTspCode);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'UPDATE_TSP';
+	$ResponseObj->ResultName = 'UPD_TSP';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -1345,7 +1345,7 @@ case 'DeleteTsp':
 	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'DELETE_TSP';
+	$ResponseObj->ResultName = 'DEL_TSP';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -1370,7 +1370,7 @@ case 'GetSrv':
 	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'SELECT_SRV';
+	$ResponseObj->ResultName = 'SEL_SRV';
 	$r = perform_db_request();
 	if (!$r) { 
 		echo ']';
@@ -1382,6 +1382,7 @@ case 'GetSrv':
 		$RowObj->Data = new \stdClass();
 		$RowObj->Data->FkBotName = $row["FK_BOT_NAME"];
 		$RowObj->Data->CubeTsgType = $row["CUBE_TSG_TYPE"];
+		$RowObj->Data->Class = $row["CLASS"];
 		$ResponseObj->Rows[] = $RowObj;
 	}
 	$ResponseText = json_encode($ResponseObj);
@@ -1402,7 +1403,7 @@ case 'GetSrvFkey':
 	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'SELECT_FKEY_SRV';
+	$ResponseObj->ResultName = 'SEL_FKEY_SRV';
 	$r = perform_db_request();
 	if (!$r) { 
 		echo ']';
@@ -1433,7 +1434,7 @@ case 'GetSrvItems':
 	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'LIST_SVA';
+	$ResponseObj->ResultName = 'LST_SVA';
 	$r = perform_db_request();
 	if (!$r) { 
 		echo ']';
@@ -1473,7 +1474,7 @@ case 'MoveSrv':
 	oci_bind_by_name($stid,":x_name",$RequestObj->Parameters->Ref->Name);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'MOVE_SRV';
+	$ResponseObj->ResultName = 'MOV_SRV';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -1495,6 +1496,7 @@ case 'CreateSrv':
 		:p_fk_typ_name,
 		:p_name,
 		:p_cube_tsg_type,
+		:p_class,
 		:x_fk_typ_name,
 		:x_name);
 	END;");
@@ -1503,11 +1505,12 @@ case 'CreateSrv':
 	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
 	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 	oci_bind_by_name($stid,":p_cube_tsg_type",$RequestObj->Parameters->Type->CubeTsgType);
+	oci_bind_by_name($stid,":p_class",$RequestObj->Parameters->Type->Class);
 	oci_bind_by_name($stid,":x_fk_typ_name",$RequestObj->Parameters->Ref->FkTypName);
 	oci_bind_by_name($stid,":x_name",$RequestObj->Parameters->Ref->Name);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'CREATE_SRV';
+	$ResponseObj->ResultName = 'CRE_SRV';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -1527,15 +1530,17 @@ case 'UpdateSrv':
 		:p_fk_bot_name,
 		:p_fk_typ_name,
 		:p_name,
-		:p_cube_tsg_type);
+		:p_cube_tsg_type,
+		:p_class);
 	END;");
 	oci_bind_by_name($stid,":p_fk_bot_name",$RequestObj->Parameters->Type->FkBotName);
 	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
 	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 	oci_bind_by_name($stid,":p_cube_tsg_type",$RequestObj->Parameters->Type->CubeTsgType);
+	oci_bind_by_name($stid,":p_class",$RequestObj->Parameters->Type->Class);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'UPDATE_SRV';
+	$ResponseObj->ResultName = 'UPD_SRV';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -1559,7 +1564,7 @@ case 'DeleteSrv':
 	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'DELETE_SRV';
+	$ResponseObj->ResultName = 'DEL_SRV';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -1588,7 +1593,7 @@ case 'GetSva':
 	oci_bind_by_name($stid,":p_xk_atb_name",$RequestObj->Parameters->Type->XkAtbName);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'SELECT_SVA';
+	$ResponseObj->ResultName = 'SEL_SVA';
 	$r = perform_db_request();
 	if (!$r) { 
 		echo ']';
@@ -1632,7 +1637,7 @@ case 'MoveSva':
 	oci_bind_by_name($stid,":x_xk_atb_name",$RequestObj->Parameters->Ref->XkAtbName);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'MOVE_SVA';
+	$ResponseObj->ResultName = 'MOV_SVA';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -1672,7 +1677,7 @@ case 'CreateSva':
 	oci_bind_by_name($stid,":x_xk_atb_name",$RequestObj->Parameters->Ref->XkAtbName);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'CREATE_SVA';
+	$ResponseObj->ResultName = 'CRE_SVA';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -1702,7 +1707,7 @@ case 'UpdateSva':
 	oci_bind_by_name($stid,":p_xk_atb_name",$RequestObj->Parameters->Type->XkAtbName);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'UPDATE_SVA';
+	$ResponseObj->ResultName = 'UPD_SVA';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -1730,7 +1735,7 @@ case 'DeleteSva':
 	oci_bind_by_name($stid,":p_xk_atb_name",$RequestObj->Parameters->Type->XkAtbName);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'DELETE_SVA';
+	$ResponseObj->ResultName = 'DEL_SVA';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -1755,7 +1760,7 @@ case 'GetAtbForTypList':
 	oci_bind_by_name($stid,":x_fk_typ_name",$RequestObj->Parameters->Ref->FkTypName);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'LIST_ATB';
+	$ResponseObj->ResultName = 'LST_ATB';
 	$r = perform_db_request();
 	if (!$r) { 
 		echo ']';
@@ -1788,7 +1793,7 @@ case 'GetAtb':
 	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'SELECT_ATB';
+	$ResponseObj->ResultName = 'SEL_ATB';
 	$r = perform_db_request();
 	if (!$r) { 
 		echo ']';
@@ -1826,7 +1831,7 @@ case 'GetAtbFkey':
 	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'SELECT_FKEY_ATB';
+	$ResponseObj->ResultName = 'SEL_FKEY_ATB';
 	$r = perform_db_request();
 	if (!$r) { 
 		echo ']';
@@ -1857,7 +1862,7 @@ case 'GetAtbItems':
 	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'LIST_DER';
+	$ResponseObj->ResultName = 'LST_DER';
 	$r = perform_db_request();
 	if (!$r) { 
 		echo ']';
@@ -1885,7 +1890,7 @@ case 'GetAtbItems':
 	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'LIST_DCA';
+	$ResponseObj->ResultName = 'LST_DCA';
 	$r = perform_db_request();
 	if (!$r) { 
 		echo ']';
@@ -1913,7 +1918,7 @@ case 'GetAtbItems':
 	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'LIST_RTA';
+	$ResponseObj->ResultName = 'LST_RTA';
 	$r = perform_db_request();
 	if (!$r) { 
 		echo ']';
@@ -1949,7 +1954,7 @@ case 'CountAtbRestrictedItems':
 	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'COUNT_DER';
+	$ResponseObj->ResultName = 'CNT_DER';
 	$r = perform_db_request();
 	if (!$r) { 
 		echo ']';
@@ -1975,7 +1980,7 @@ case 'CountAtbRestrictedItems':
 	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'COUNT_DCA';
+	$ResponseObj->ResultName = 'CNT_DCA';
 	$r = perform_db_request();
 	if (!$r) { 
 		echo ']';
@@ -2011,7 +2016,7 @@ case 'MoveAtb':
 	oci_bind_by_name($stid,":x_name",$RequestObj->Parameters->Ref->Name);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'MOVE_ATB';
+	$ResponseObj->ResultName = 'MOV_ATB';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -2057,7 +2062,7 @@ case 'CreateAtb':
 	oci_bind_by_name($stid,":x_name",$RequestObj->Parameters->Ref->Name);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'CREATE_ATB';
+	$ResponseObj->ResultName = 'CRE_ATB';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -2097,7 +2102,7 @@ case 'UpdateAtb':
 	oci_bind_by_name($stid,":p_xk_itp_name",$RequestObj->Parameters->Type->XkItpName);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'UPDATE_ATB';
+	$ResponseObj->ResultName = 'UPD_ATB';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -2121,7 +2126,7 @@ case 'DeleteAtb':
 	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'DELETE_ATB';
+	$ResponseObj->ResultName = 'DEL_ATB';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -2146,7 +2151,7 @@ case 'GetDer':
 	oci_bind_by_name($stid,":p_fk_atb_name",$RequestObj->Parameters->Type->FkAtbName);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'SELECT_DER';
+	$ResponseObj->ResultName = 'SEL_DER';
 	$r = perform_db_request();
 	if (!$r) { 
 		echo ']';
@@ -2190,7 +2195,7 @@ case 'CreateDer':
 	oci_bind_by_name($stid,":p_xk_typ_name_1",$RequestObj->Parameters->Type->XkTypName1);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'CREATE_DER';
+	$ResponseObj->ResultName = 'CRE_DER';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -2224,7 +2229,7 @@ case 'UpdateDer':
 	oci_bind_by_name($stid,":p_xk_typ_name_1",$RequestObj->Parameters->Type->XkTypName1);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'UPDATE_DER';
+	$ResponseObj->ResultName = 'UPD_DER';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -2248,7 +2253,7 @@ case 'DeleteDer':
 	oci_bind_by_name($stid,":p_fk_atb_name",$RequestObj->Parameters->Type->FkAtbName);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'DELETE_DER';
+	$ResponseObj->ResultName = 'DEL_DER';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -2273,7 +2278,7 @@ case 'GetDca':
 	oci_bind_by_name($stid,":p_fk_atb_name",$RequestObj->Parameters->Type->FkAtbName);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'SELECT_DCA';
+	$ResponseObj->ResultName = 'SEL_DCA';
 	$r = perform_db_request();
 	if (!$r) { 
 		echo ']';
@@ -2308,7 +2313,7 @@ case 'CreateDca':
 	oci_bind_by_name($stid,":p_text",$RequestObj->Parameters->Type->Text);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'CREATE_DCA';
+	$ResponseObj->ResultName = 'CRE_DCA';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -2336,7 +2341,7 @@ case 'UpdateDca':
 	oci_bind_by_name($stid,":p_text",$RequestObj->Parameters->Type->Text);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'UPDATE_DCA';
+	$ResponseObj->ResultName = 'UPD_DCA';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -2360,7 +2365,7 @@ case 'DeleteDca':
 	oci_bind_by_name($stid,":p_fk_atb_name",$RequestObj->Parameters->Type->FkAtbName);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'DELETE_DCA';
+	$ResponseObj->ResultName = 'DEL_DCA';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -2391,7 +2396,7 @@ case 'GetRta':
 	oci_bind_by_name($stid,":p_xk_tsp_code",$RequestObj->Parameters->Type->XkTspCode);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'SELECT_RTA';
+	$ResponseObj->ResultName = 'SEL_RTA';
 	$r = perform_db_request();
 	if (!$r) { 
 		echo ']';
@@ -2433,7 +2438,7 @@ case 'CreateRta':
 	oci_bind_by_name($stid,":p_xk_tsp_code",$RequestObj->Parameters->Type->XkTspCode);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'CREATE_RTA';
+	$ResponseObj->ResultName = 'CRE_RTA';
 	$r = perform_db_request();
 	if (!$r) { 
 		echo ']';
@@ -2477,7 +2482,7 @@ case 'UpdateRta':
 	oci_bind_by_name($stid,":p_xk_tsp_code",$RequestObj->Parameters->Type->XkTspCode);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'UPDATE_RTA';
+	$ResponseObj->ResultName = 'UPD_RTA';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -2507,7 +2512,7 @@ case 'DeleteRta':
 	oci_bind_by_name($stid,":p_xk_tsp_code",$RequestObj->Parameters->Type->XkTspCode);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'DELETE_RTA';
+	$ResponseObj->ResultName = 'DEL_RTA';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -2536,7 +2541,7 @@ case 'GetRef':
 	oci_bind_by_name($stid,":p_xk_typ_name",$RequestObj->Parameters->Type->XkTypName);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'SELECT_REF';
+	$ResponseObj->ResultName = 'SEL_REF';
 	$r = perform_db_request();
 	if (!$r) { 
 		echo ']';
@@ -2579,7 +2584,7 @@ case 'GetRefFkey':
 	oci_bind_by_name($stid,":p_xk_typ_name",$RequestObj->Parameters->Type->XkTypName);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'SELECT_FKEY_REF';
+	$ResponseObj->ResultName = 'SEL_FKEY_REF';
 	$r = perform_db_request();
 	if (!$r) { 
 		echo ']';
@@ -2614,7 +2619,7 @@ case 'GetRefItems':
 	oci_bind_by_name($stid,":p_xk_typ_name",$RequestObj->Parameters->Type->XkTypName);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'LIST_DCR';
+	$ResponseObj->ResultName = 'LST_DCR';
 	$r = perform_db_request();
 	if (!$r) { 
 		echo ']';
@@ -2648,7 +2653,7 @@ case 'GetRefItems':
 	oci_bind_by_name($stid,":p_xk_typ_name",$RequestObj->Parameters->Type->XkTypName);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'LIST_RTR';
+	$ResponseObj->ResultName = 'LST_RTR';
 	$r = perform_db_request();
 	if (!$r) { 
 		echo ']';
@@ -2685,7 +2690,7 @@ case 'GetRefItems':
 	oci_bind_by_name($stid,":p_xk_typ_name",$RequestObj->Parameters->Type->XkTypName);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'LIST_RTS';
+	$ResponseObj->ResultName = 'LST_RTS';
 	$r = perform_db_request();
 	if (!$r) { 
 		echo ']';
@@ -2727,7 +2732,7 @@ case 'CountRefRestrictedItems':
 	oci_bind_by_name($stid,":p_xk_typ_name",$RequestObj->Parameters->Type->XkTypName);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'COUNT_DCR';
+	$ResponseObj->ResultName = 'CNT_DCR';
 	$r = perform_db_request();
 	if (!$r) { 
 		echo ']';
@@ -2757,7 +2762,7 @@ case 'CountRefRestrictedItems':
 	oci_bind_by_name($stid,":p_xk_typ_name",$RequestObj->Parameters->Type->XkTypName);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'COUNT_RTS';
+	$ResponseObj->ResultName = 'CNT_RTS';
 	$r = perform_db_request();
 	if (!$r) { 
 		echo ']';
@@ -2801,7 +2806,7 @@ case 'MoveRef':
 	oci_bind_by_name($stid,":x_xk_typ_name",$RequestObj->Parameters->Ref->XkTypName);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'MOVE_REF';
+	$ResponseObj->ResultName = 'MOV_REF';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -2857,7 +2862,7 @@ case 'CreateRef':
 	oci_bind_by_name($stid,":x_xk_typ_name",$RequestObj->Parameters->Ref->XkTypName);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'CREATE_REF';
+	$ResponseObj->ResultName = 'CRE_REF';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -2903,7 +2908,7 @@ case 'UpdateRef':
 	oci_bind_by_name($stid,":p_xk_typ_name_1",$RequestObj->Parameters->Type->XkTypName1);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'UPDATE_REF';
+	$ResponseObj->ResultName = 'UPD_REF';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -2931,7 +2936,7 @@ case 'DeleteRef':
 	oci_bind_by_name($stid,":p_xk_typ_name",$RequestObj->Parameters->Type->XkTypName);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'DELETE_REF';
+	$ResponseObj->ResultName = 'DEL_REF';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -2960,7 +2965,7 @@ case 'GetDcr':
 	oci_bind_by_name($stid,":p_fk_ref_typ_name",$RequestObj->Parameters->Type->FkRefTypName);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'SELECT_DCR';
+	$ResponseObj->ResultName = 'SEL_DCR';
 	$r = perform_db_request();
 	if (!$r) { 
 		echo ']';
@@ -2999,7 +3004,7 @@ case 'CreateDcr':
 	oci_bind_by_name($stid,":p_text",$RequestObj->Parameters->Type->Text);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'CREATE_DCR';
+	$ResponseObj->ResultName = 'CRE_DCR';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -3031,7 +3036,7 @@ case 'UpdateDcr':
 	oci_bind_by_name($stid,":p_text",$RequestObj->Parameters->Type->Text);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'UPDATE_DCR';
+	$ResponseObj->ResultName = 'UPD_DCR';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -3059,7 +3064,7 @@ case 'DeleteDcr':
 	oci_bind_by_name($stid,":p_fk_ref_typ_name",$RequestObj->Parameters->Type->FkRefTypName);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'DELETE_DCR';
+	$ResponseObj->ResultName = 'DEL_DCR';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -3094,7 +3099,7 @@ case 'GetRtr':
 	oci_bind_by_name($stid,":p_xk_tsp_code",$RequestObj->Parameters->Type->XkTspCode);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'SELECT_RTR';
+	$ResponseObj->ResultName = 'SEL_RTR';
 	$r = perform_db_request();
 	if (!$r) { 
 		echo ']';
@@ -3140,7 +3145,7 @@ case 'CreateRtr':
 	oci_bind_by_name($stid,":p_xk_tsp_code",$RequestObj->Parameters->Type->XkTspCode);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'CREATE_RTR';
+	$ResponseObj->ResultName = 'CRE_RTR';
 	$r = perform_db_request();
 	if (!$r) { 
 		echo ']';
@@ -3190,7 +3195,7 @@ case 'UpdateRtr':
 	oci_bind_by_name($stid,":p_xk_tsp_code",$RequestObj->Parameters->Type->XkTspCode);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'UPDATE_RTR';
+	$ResponseObj->ResultName = 'UPD_RTR';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -3224,7 +3229,7 @@ case 'DeleteRtr':
 	oci_bind_by_name($stid,":p_xk_tsp_code",$RequestObj->Parameters->Type->XkTspCode);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'DELETE_RTR';
+	$ResponseObj->ResultName = 'DEL_RTR';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -3259,7 +3264,7 @@ case 'GetRts':
 	oci_bind_by_name($stid,":p_xk_tsp_code",$RequestObj->Parameters->Type->XkTspCode);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'SELECT_RTS';
+	$ResponseObj->ResultName = 'SEL_RTS';
 	$r = perform_db_request();
 	if (!$r) { 
 		echo ']';
@@ -3304,7 +3309,7 @@ case 'CreateRts':
 	oci_bind_by_name($stid,":p_xk_tsp_code",$RequestObj->Parameters->Type->XkTspCode);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'CREATE_RTS';
+	$ResponseObj->ResultName = 'CRE_RTS';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -3342,7 +3347,7 @@ case 'UpdateRts':
 	oci_bind_by_name($stid,":p_xk_tsp_code",$RequestObj->Parameters->Type->XkTspCode);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'UPDATE_RTS';
+	$ResponseObj->ResultName = 'UPD_RTS';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -3376,7 +3381,7 @@ case 'DeleteRts':
 	oci_bind_by_name($stid,":p_xk_tsp_code",$RequestObj->Parameters->Type->XkTspCode);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'DELETE_RTS';
+	$ResponseObj->ResultName = 'DEL_RTS';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -3405,7 +3410,7 @@ case 'GetRtt':
 	oci_bind_by_name($stid,":p_xk_tsp_code",$RequestObj->Parameters->Type->XkTspCode);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'SELECT_RTT';
+	$ResponseObj->ResultName = 'SEL_RTT';
 	$r = perform_db_request();
 	if (!$r) { 
 		echo ']';
@@ -3445,7 +3450,7 @@ case 'CreateRtt':
 	oci_bind_by_name($stid,":p_xk_tsp_code",$RequestObj->Parameters->Type->XkTspCode);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'CREATE_RTT';
+	$ResponseObj->ResultName = 'CRE_RTT';
 	$r = perform_db_request();
 	if (!$r) { 
 		echo ']';
@@ -3486,7 +3491,7 @@ case 'UpdateRtt':
 	oci_bind_by_name($stid,":p_xk_tsp_code",$RequestObj->Parameters->Type->XkTspCode);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'UPDATE_RTT';
+	$ResponseObj->ResultName = 'UPD_RTT';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -3514,7 +3519,7 @@ case 'DeleteRtt':
 	oci_bind_by_name($stid,":p_xk_tsp_code",$RequestObj->Parameters->Type->XkTspCode);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'DELETE_RTT';
+	$ResponseObj->ResultName = 'DEL_RTT';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -3547,7 +3552,7 @@ case 'GetJsn':
 	oci_bind_by_name($stid,":p_xk_typ_name",$RequestObj->Parameters->Type->XkTypName);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'SELECT_JSN';
+	$ResponseObj->ResultName = 'SEL_JSN';
 	$r = perform_db_request();
 	if (!$r) { 
 		echo ']';
@@ -3593,7 +3598,7 @@ case 'GetJsnFkey':
 	oci_bind_by_name($stid,":p_xk_typ_name",$RequestObj->Parameters->Type->XkTypName);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'SELECT_FKEY_JSN';
+	$ResponseObj->ResultName = 'SEL_FKEY_JSN';
 	$r = perform_db_request();
 	if (!$r) { 
 		echo ']';
@@ -3632,7 +3637,7 @@ case 'GetJsnItems':
 	oci_bind_by_name($stid,":p_xk_typ_name",$RequestObj->Parameters->Type->XkTypName);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'LIST_JSN';
+	$ResponseObj->ResultName = 'LST_JSN';
 	$r = perform_db_request();
 	if (!$r) { 
 		echo ']';
@@ -3690,7 +3695,7 @@ case 'MoveJsn':
 	oci_bind_by_name($stid,":x_xk_typ_name",$RequestObj->Parameters->Ref->XkTypName);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'MOVE_JSN';
+	$ResponseObj->ResultName = 'MOV_JSN';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -3752,7 +3757,7 @@ case 'CreateJsn':
 	oci_bind_by_name($stid,":x_xk_typ_name",$RequestObj->Parameters->Ref->XkTypName);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'CREATE_JSN';
+	$ResponseObj->ResultName = 'CRE_JSN';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -3800,7 +3805,7 @@ case 'UpdateJsn':
 	oci_bind_by_name($stid,":p_xk_typ_name",$RequestObj->Parameters->Type->XkTypName);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'UPDATE_JSN';
+	$ResponseObj->ResultName = 'UPD_JSN';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -3832,7 +3837,7 @@ case 'DeleteJsn':
 	oci_bind_by_name($stid,":p_xk_typ_name",$RequestObj->Parameters->Type->XkTypName);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'DELETE_JSN';
+	$ResponseObj->ResultName = 'DEL_JSN';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -3855,7 +3860,7 @@ case 'GetDct':
 	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'SELECT_DCT';
+	$ResponseObj->ResultName = 'SEL_DCT';
 	$r = perform_db_request();
 	if (!$r) { 
 		echo ']';
@@ -3888,7 +3893,7 @@ case 'CreateDct':
 	oci_bind_by_name($stid,":p_text",$RequestObj->Parameters->Type->Text);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'CREATE_DCT';
+	$ResponseObj->ResultName = 'CRE_DCT';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -3914,7 +3919,7 @@ case 'UpdateDct':
 	oci_bind_by_name($stid,":p_text",$RequestObj->Parameters->Type->Text);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'UPDATE_DCT';
+	$ResponseObj->ResultName = 'UPD_DCT';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -3936,7 +3941,7 @@ case 'DeleteDct':
 	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'DELETE_DCT';
+	$ResponseObj->ResultName = 'DEL_DCT';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);

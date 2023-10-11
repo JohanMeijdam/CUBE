@@ -14,7 +14,7 @@ case 'GetDirSysItems':
 
 	$stid = oci_parse($conn, "BEGIN pkg_sys.get_sys_root_items (:p_cube_row); END;");
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'LIST_SYS';
+	$ResponseObj->ResultName = 'LST_SYS';
 	$r = perform_db_request();
 	if (!$r) { 
 		echo ']';
@@ -44,7 +44,7 @@ case 'GetSys':
 	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'SELECT_SYS';
+	$ResponseObj->ResultName = 'SEL_SYS';
 	$r = perform_db_request();
 	if (!$r) { 
 		echo ']';
@@ -77,7 +77,7 @@ case 'GetSysItems':
 	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'LIST_SBT';
+	$ResponseObj->ResultName = 'LST_SBT';
 	$r = perform_db_request();
 	if (!$r) { 
 		echo ']';
@@ -118,7 +118,7 @@ case 'CreateSys':
 	oci_bind_by_name($stid,":p_table_prefix",$RequestObj->Parameters->Type->TablePrefix);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'CREATE_SYS';
+	$ResponseObj->ResultName = 'CRE_SYS';
 	$r = perform_db_request();
 	if (!$r) { 
 		echo ']';
@@ -156,7 +156,7 @@ case 'UpdateSys':
 	oci_bind_by_name($stid,":p_table_prefix",$RequestObj->Parameters->Type->TablePrefix);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'UPDATE_SYS';
+	$ResponseObj->ResultName = 'UPD_SYS';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -178,7 +178,7 @@ case 'DeleteSys':
 	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'DELETE_SYS';
+	$ResponseObj->ResultName = 'DEL_SYS';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -208,7 +208,7 @@ case 'MoveSbt':
 	oci_bind_by_name($stid,":x_xk_bot_name",$RequestObj->Parameters->Ref->XkBotName);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'MOVE_SBT';
+	$ResponseObj->ResultName = 'MOV_SBT';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -238,7 +238,7 @@ case 'CreateSbt':
 	oci_bind_by_name($stid,":x_xk_bot_name",$RequestObj->Parameters->Ref->XkBotName);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'CREATE_SBT';
+	$ResponseObj->ResultName = 'CRE_SBT';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -262,7 +262,7 @@ case 'DeleteSbt':
 	oci_bind_by_name($stid,":p_xk_bot_name",$RequestObj->Parameters->Type->XkBotName);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'DELETE_SBT';
+	$ResponseObj->ResultName = 'DEL_SBT';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);

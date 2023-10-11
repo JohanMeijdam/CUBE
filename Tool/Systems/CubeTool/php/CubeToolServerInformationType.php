@@ -14,7 +14,7 @@ case 'GetDirItpItems':
 
 	$stid = oci_parse($conn, "BEGIN pkg_itp.get_itp_root_items (:p_cube_row); END;");
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'LIST_ITP';
+	$ResponseObj->ResultName = 'LST_ITP';
 	$r = perform_db_request();
 	if (!$r) { 
 		echo ']';
@@ -39,7 +39,7 @@ case 'GetItpList':
 
 	$stid = oci_parse($conn, "BEGIN pkg_itp.get_itp_list (:p_cube_row); END;");
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'LIST_ITP';
+	$ResponseObj->ResultName = 'LST_ITP';
 	$r = perform_db_request();
 	if (!$r) { 
 		echo ']';
@@ -69,7 +69,7 @@ case 'GetItpItems':
 	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'LIST_ITE';
+	$ResponseObj->ResultName = 'LST_ITE';
 	$r = perform_db_request();
 	if (!$r) { 
 		echo ']';
@@ -100,7 +100,7 @@ case 'CreateItp':
 	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'CREATE_ITP';
+	$ResponseObj->ResultName = 'CRE_ITP';
 	$r = perform_db_request();
 	if (!$r) { 
 		echo ']';
@@ -128,7 +128,7 @@ case 'DeleteItp':
 	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'DELETE_ITP';
+	$ResponseObj->ResultName = 'DEL_ITP';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -153,7 +153,7 @@ case 'GetIte':
 	oci_bind_by_name($stid,":p_sequence",$RequestObj->Parameters->Type->Sequence);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'SELECT_ITE';
+	$ResponseObj->ResultName = 'SEL_ITE';
 	$r = perform_db_request();
 	if (!$r) { 
 		echo ']';
@@ -191,7 +191,7 @@ case 'GetIteItems':
 	oci_bind_by_name($stid,":p_sequence",$RequestObj->Parameters->Type->Sequence);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'LIST_VAL';
+	$ResponseObj->ResultName = 'LST_VAL';
 	$r = perform_db_request();
 	if (!$r) { 
 		echo ']';
@@ -241,7 +241,7 @@ case 'CreateIte':
 	oci_bind_by_name($stid,":p_presentation",$RequestObj->Parameters->Type->Presentation);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'CREATE_ITE';
+	$ResponseObj->ResultName = 'CRE_ITE';
 	$r = perform_db_request();
 	if (!$r) { 
 		echo ']';
@@ -288,7 +288,7 @@ case 'UpdateIte':
 	oci_bind_by_name($stid,":p_presentation",$RequestObj->Parameters->Type->Presentation);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'UPDATE_ITE';
+	$ResponseObj->ResultName = 'UPD_ITE';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -312,7 +312,7 @@ case 'DeleteIte':
 	oci_bind_by_name($stid,":p_sequence",$RequestObj->Parameters->Type->Sequence);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'DELETE_ITE';
+	$ResponseObj->ResultName = 'DEL_ITE';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -339,7 +339,7 @@ case 'GetVal':
 	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'SELECT_VAL';
+	$ResponseObj->ResultName = 'SEL_VAL';
 	$r = perform_db_request();
 	if (!$r) { 
 		echo ']';
@@ -379,7 +379,7 @@ case 'MoveVal':
 	oci_bind_by_name($stid,":x_code",$RequestObj->Parameters->Ref->Code);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'MOVE_VAL';
+	$ResponseObj->ResultName = 'MOV_VAL';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -415,7 +415,7 @@ case 'CreateVal':
 	oci_bind_by_name($stid,":x_code",$RequestObj->Parameters->Ref->Code);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'CREATE_VAL';
+	$ResponseObj->ResultName = 'CRE_VAL';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -443,7 +443,7 @@ case 'UpdateVal':
 	oci_bind_by_name($stid,":p_prompt",$RequestObj->Parameters->Type->Prompt);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'UPDATE_VAL';
+	$ResponseObj->ResultName = 'UPD_VAL';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -469,7 +469,7 @@ case 'DeleteVal':
 	oci_bind_by_name($stid,":p_code",$RequestObj->Parameters->Type->Code);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'DELETE_VAL';
+	$ResponseObj->ResultName = 'DEL_VAL';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);

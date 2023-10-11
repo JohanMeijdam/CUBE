@@ -22,12 +22,12 @@ set_error_handler("CubeError");
 $RequestText = file_get_contents('php://input');
 $RequestObj = json_decode($RequestText, false);
 
-switch ($RequestObj->Service) {[[LOOP,SERVICE:4=E]]
+switch ($RequestObj->Service) {[[LOOP,SERVICE:3=E]]
 
 case '<<SERVICE:C>>':[[LOOP,OPERATION]][[IF:FIRST]]
 	echo '[';[[ENDIF]][[IF,SERVICE:CHILD(SERVICE_ARGUMENT)]][[FORH,SERVICE:N>N]]
 
-	$stid = oci_parse($conn, "BEGIN pkg_[[FOR,BUSINESS_OBJECT_TYPE:N>N]][[LOOP,TYPE]]<<TYPE1:L>>[[ENDLOOP,TYPE]][[ENDFOR]].<<OPERATION:L>> ([[IF:3=Y[OR]OPERATION.CHILD(EXPORT)]]
+	$stid = oci_parse($conn, "BEGIN pkg_[[FOR,BUSINESS_OBJECT_TYPE:N>N]][[LOOP,TYPE]]<<TYPE1:L>>[[ENDLOOP,TYPE]][[ENDFOR]].<<OPERATION:L>> ([[IF:<<TEXT,GEN_HAS_CURSOR>>[OR]OPERATION.CHILD(EXPORT)]]
 		:p_cube_row,[[ENDIF]][[LOOP,SERVICE_ARGUMENT]]
 		:<<TEXT,SERVER_ARGUMENT_NAME>>[[IF:!LAST]],[[ENDIF]][[ENDLOOP,SERVICE_ARGUMENT]]);
 	END;");[[LOOP,SERVICE_ARGUMENT]]
@@ -36,7 +36,7 @@ case '<<SERVICE:C>>':[[LOOP,OPERATION]][[IF:FIRST]]
 
 	$stid = oci_parse($conn, "BEGIN pkg_[[FOR,BUSINESS_OBJECT_TYPE:N>N]][[LOOP,TYPE]]<<TYPE1:L>>[[ENDLOOP,TYPE]][[ENDFOR]].<<OPERATION:L>> (:p_cube_row); END;");[[ENDIF]]
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = '<<SERVICE2:U>>[[IF:!2=#]]_<<OPERATION2:U>>[[ENDIF]][[LOOP,OPERATION_TYPE]]_<<OPERATION_TYPE1:U>>[[ENDLOOP,OPERATION_TYPE]]';[[IF:CHILD(EXPORT)]]
+	$ResponseObj->ResultName = '<<SERVICE2>>[[IF:!2=#]]_<<OPERATION2:U>>[[ENDIF]][[LOOP,OPERATION_TYPE]]_<<OPERATION_TYPE1:U>>[[ENDLOOP,OPERATION_TYPE]]';[[IF:CHILD(EXPORT)]]
 	$r = perform_db_request();
 	if (!$r) { 
 		echo ']';

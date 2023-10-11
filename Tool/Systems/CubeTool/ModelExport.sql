@@ -205,7 +205,7 @@ DECLARE
 			  AND fk_typ_name = p_typ.name
 			ORDER BY cube_sequence )
 		LOOP
-			DBMS_OUTPUT.PUT_LINE (ftabs || '+SERVICE[' || r_srv.cube_id || ']:' || fenperc(r_srv.name) || '|' || fenperc(r_srv.cube_tsg_type) || ';');
+			DBMS_OUTPUT.PUT_LINE (ftabs || '+SERVICE[' || r_srv.cube_id || ']:' || fenperc(r_srv.name) || '|' || fenperc(r_srv.cube_tsg_type) || '|' || fenperc(r_srv.class) || ';');
 				l_level := l_level + 1;
 				report_sva (r_srv);
 				l_level := l_level - 1;
@@ -770,6 +770,7 @@ BEGIN
 	DBMS_OUTPUT.PUT_LINE ('			+META_TYPE:SERVICE|'||REPLACE('User%20defined%20service.','%20',' ')||';');
 	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:0|Name|'||REPLACE('Name%20of%20the%20service.','%20',' ')||';');
 	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:1|CubeTsgType| Values: D(DATABASE_INTERACTION), S(SERVER_SCRIPT);');
+	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:2|Class| Values: LST(List), CNT(Count), SEL(Select), CNP(Check no part), DPO(Determine position), MOV(Move), GTN(Get next), CPA(Change parent), CRE(Create), UPD(Update), DEL(Delete);');
 	DBMS_OUTPUT.PUT_LINE ('				+META_TYPE:SERVICE_ARGUMENT|;');
 	DBMS_OUTPUT.PUT_LINE ('					=ASSOCIATION:ATTRIBUTE|ServiceArgumentAttribute|ATTRIBUTE|;');
 	DBMS_OUTPUT.PUT_LINE ('				-META_TYPE:SERVICE_ARGUMENT;');

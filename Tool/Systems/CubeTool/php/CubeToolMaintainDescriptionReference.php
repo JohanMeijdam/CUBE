@@ -27,12 +27,12 @@ g_xmlhttp.onreadystatechange = function() {
 			}
 			for (i in l_json_array) {
 				switch (l_json_array[i].ResultName) {
-					case "SELECT_DCR":
+					case "SEL_DCR":
 						var l_json_values = l_json_array[i].Rows[0].Data;
 						document.getElementById("InputFkBotName").value=l_json_values.FkBotName;
 						document.getElementById("InputText").value=l_json_values.Text;
 						break;
-					case "CREATE_DCR":
+					case "CRE_DCR":
 						document.getElementById("InputFkBotName").disabled=true;
 						document.getElementById("InputFkTypName").disabled=true;
 						document.getElementById("InputFkRefSequence").disabled=true;
@@ -63,10 +63,10 @@ g_xmlhttp.onreadystatechange = function() {
 						document.getElementById("ButtonOK").onclick = function(){UpdateDcr()};						
 						ResetChangePending();
 						break;
-					case "UPDATE_DCR":
+					case "UPD_DCR":
 						ResetChangePending();
 						break;
-					case "DELETE_DCR":
+					case "DEL_DCR":
 						var l_objNode = parent.document.getElementById(g_node_id);
 						if (g_parent_node_id == null) {
 							g_parent_node_id = l_objNode.parentNode.parentNode.id;
@@ -76,7 +76,7 @@ g_xmlhttp.onreadystatechange = function() {
 						}
 						CancelChangePending();
 						break;
-					case "SELECT_FKEY_REF":
+					case "SEL_FKEY_REF":
 						var l_json_values = l_json_array[i].Rows[0].Data;
 						document.getElementById("InputFkBotName").value=l_json_values.FkBotName;
 						break;

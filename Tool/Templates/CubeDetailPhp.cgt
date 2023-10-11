@@ -107,12 +107,12 @@ g_xmlhttp.onreadystatechange = function() {
 			}
 			for (i in l_json_array) {
 				switch (l_json_array[i].ResultName) {
-					case "SELECT_<<TYPE1:U>>":
+					case "SEL_<<TYPE1:U>>":
 						var l_json_values = l_json_array[i].Rows[0].Data;[[LOOP,ATTRIBUTE:1=N[AND]4=N]]
 						document.getElementById("Input<<ATTRIBUTE:C>>").value=l_json_values.<<ATTRIBUTE:C>>;[[ENDLOOP,ATTRIBUTE]][[IF:CHILD(TYPE_SPECIALISATION_GROUP)]]
 						ProcessTypeSpecialisation();[[ENDIF]]
 						break;
-					case "CREATE_<<TYPE1:U>>":[[LOOP,ATTRIBUTE:(1=Y[OR]3=F[OR]3=R)[AND]4=N]]
+					case "CRE_<<TYPE1:U>>":[[LOOP,ATTRIBUTE:(1=Y[OR]3=F[OR]3=R)[AND]4=N]]
 						document.getElementById("Input<<ATTRIBUTE:C>>").disabled=true;[[ENDLOOP,ATTRIBUTE]][[LOOP,REFERENCE:1=Y]]
 						document.getElementById("RefSelect<<REFERENCE:S>>").disabled=true;[[ENDLOOP,REFERENCE]]
 						document.getElementById("ButtonOK").innerText="Update";[[IF:CHILD(ATTRIBUTE:1=N[AND]!(3=F[OR]3=R)[AND]4=N)]]
@@ -149,14 +149,14 @@ g_xmlhttp.onreadystatechange = function() {
 						document.getElementById("ButtonOK").onclick = function(){Update<<TYPE1:C>>()};						
 						ResetChangePending();
 						break;
-					case "UPDATE_<<TYPE1:U>>":[[IF:CHILD(ATTRIBUTE:1=N[AND]!2=N)]]
+					case "UPD_<<TYPE1:U>>":[[IF:CHILD(ATTRIBUTE:1=N[AND]!2=N)]]
 						var l_objNode = parent.document.getElementById(g_node_id);
 						if (l_objNode != null) {
 							l_objNode.children[1].lastChild.nodeValue = ' '+[[LOOP,ATTRIBUTE:!2=N]][[IF:2=S]][[IF:FIRST]]'('+[[ELSE]]' ('+[[ENDIF]][[ELSE]][[IF:!FIRST]]' '+[[ENDIF]][[ENDIF]]document.getElementById("Input<<ATTRIBUTE:C>>").value.toLowerCase()[[IF:2=S]]+')'[[ENDIF]][[IF:!LAST]]+[[ENDIF]][[ENDLOOP,ATTRIBUTE]];
 						}[[ENDIF]]
 						ResetChangePending();
 						break;
-					case "DELETE_<<TYPE1:U>>":
+					case "DEL_<<TYPE1:U>>":
 						var l_objNode = parent.document.getElementById(g_node_id);
 						if (g_parent_node_id == null) {
 							g_parent_node_id = l_objNode.parentNode.parentNode.id;
@@ -166,11 +166,11 @@ g_xmlhttp.onreadystatechange = function() {
 						}
 						CancelChangePending();
 						break;[[IF:CHILD(ATTRIBUTE:3=F[AND]CHILD(ATTRIBUTE_SOURCE:1=N))]]
-					case "SELECT_FKEY_[[LOOP,^TYPE]]<<^TYPE1:U>>[[ENDLOOP,^TYPE]]":
+					case "SEL_FKEY_[[LOOP,^TYPE]]<<^TYPE1:U>>[[ENDLOOP,^TYPE]]":
 						var l_json_values = l_json_array[i].Rows[0].Data;[[LOOP,ATTRIBUTE:3=F[AND]CHILD(ATTRIBUTE_SOURCE:1=N)]]
 						document.getElementById("Input<<ATTRIBUTE:C>>").value=l_json_values.<<ATTRIBUTE:C>>;[[ENDLOOP,ATTRIBUTE]]
 						break;[[ENDIF]][[IF:3=Y[AND]CHILD(ATTRIBUTE:1=N[AND]3=F)]]
-					case "SELECT_FKEY_<<TYPE1:U>>":
+					case "SEL_FKEY_<<TYPE1:U>>":
 						var l_json_values = l_json_array[i].Rows[0].Data;[[LOOP,ATTRIBUTE:1=N[AND]3=F]]
 						document.getElementById("Input<<ATTRIBUTE:C>>").value=l_json_values.<<ATTRIBUTE:C>>;[[ENDLOOP,ATTRIBUTE]]
 						break;[[ENDIF]]
@@ -178,7 +178,7 @@ g_xmlhttp.onreadystatechange = function() {
 						alert ('Server error:\n'+l_json_array[i].ErrorText);
 						break;
 					default:[[IF:CHILD(REFERENCE)]]
-						if (l_json_array[i].ResultName.substring(0,5) == 'LIST_') {
+						if (l_json_array[i].ResultName.substring(0,4) == 'LST_') {
 							switch (document.body._ListBoxCode){[[LOOP,REFERENCE]][[LOOP,REFERENCE_TYPE]]
 								case "Ref<<REFERENCE:S>>":
 									OpenListBox(l_json_array[i].Rows,'<<REFERENCE_TYPE7:L>>','<<REFERENCE_TYPE:C>>');

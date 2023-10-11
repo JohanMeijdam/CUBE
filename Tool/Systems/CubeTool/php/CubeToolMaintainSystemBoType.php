@@ -27,10 +27,10 @@ g_xmlhttp.onreadystatechange = function() {
 			}
 			for (i in l_json_array) {
 				switch (l_json_array[i].ResultName) {
-					case "SELECT_SBT":
+					case "SEL_SBT":
 						var l_json_values = l_json_array[i].Rows[0].Data;
 						break;
-					case "CREATE_SBT":
+					case "CRE_SBT":
 						document.getElementById("InputFkSysName").disabled=true;
 						document.getElementById("InputXkBotName").disabled=true;
 						document.getElementById("RefSelect001").disabled=true;
@@ -58,10 +58,10 @@ g_xmlhttp.onreadystatechange = function() {
 						document.getElementById("ButtonOK").onclick = function(){UpdateSbt()};						
 						ResetChangePending();
 						break;
-					case "UPDATE_SBT":
+					case "UPD_SBT":
 						ResetChangePending();
 						break;
-					case "DELETE_SBT":
+					case "DEL_SBT":
 						var l_objNode = parent.document.getElementById(g_node_id);
 						if (g_parent_node_id == null) {
 							g_parent_node_id = l_objNode.parentNode.parentNode.id;
@@ -75,7 +75,7 @@ g_xmlhttp.onreadystatechange = function() {
 						alert ('Server error:\n'+l_json_array[i].ErrorText);
 						break;
 					default:
-						if (l_json_array[i].ResultName.substring(0,5) == 'LIST_') {
+						if (l_json_array[i].ResultName.substring(0,4) == 'LST_') {
 							switch (document.body._ListBoxCode){
 								case "Ref001":
 									OpenListBox(l_json_array[i].Rows,'botype','BusinessObjectType');

@@ -45,11 +45,11 @@ g_xmlhttp.onreadystatechange = function() {
 			for (i in l_json_array) {
 				switch (l_json_array[i].ResultName) {
 					case '': break;[[LOOP,SYSTEM_BO_TYPE]][[LOOP,BUSINESS_OBJECT_TYPE]][[LOOP,TYPE]]
-					case 'LIST_<<TYPE1:U>>': AddTreeviewChildren(l_json_array[i].Rows,'TYP_<<TYPE1:U>>','icons/<<TYPE7:L>>.bmp','<<TYPE:C>>'); break;[[IF:(3=Y[AND]!4=N)[OR]!5=N]]
-					case 'COUNT_<<TYPE1:U>>': CheckMenuItem('TYP_<<TYPE1:U>>',l_json_array[i].Rows[0].Data.TypeCount); break;[[ENDIF]][[IF:6=P[AND]CHILD(ATTRIBUTE:<<TEXT,GEN_IS_OWN_KEY>>)]]
-					case 'MOVE_<<TYPE1:U>>': MoveNode (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.body._moveAction); break;[[ENDIF]][[IF:3=Y[AND]!4=1[AND]!6=P[AND]CHILD(ATTRIBUTE:<<TEXT,GEN_IS_OWN_KEY>>)]]
-					case 'CHANGE_PARENT_<<TYPE1:U>>': ChangeParent (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId),'TYP_<<TYPE1:U>>',l_json_array[i].Rows); break;[[ENDIF]][[REPEAT]][[ENDLOOP,TYPE]][[ENDLOOP,BUSINESS_OBJECT_TYPE]][[ENDLOOP,SYSTEM_BO_TYPE]]
-					case "SELECT_CUBE_DSC":	document.getElementById("CubeDesc").value = l_json_array[i].Rows[0].Data.Value;	break;
+					case 'LST_<<TYPE1:U>>': AddTreeviewChildren(l_json_array[i].Rows,'TYP_<<TYPE1:U>>','icons/<<TYPE7:L>>.bmp','<<TYPE:C>>'); break;[[IF:(3=Y[AND]!4=N)[OR]!5=N]]
+					case 'CNT_<<TYPE1:U>>': CheckMenuItem('TYP_<<TYPE1:U>>',l_json_array[i].Rows[0].Data.TypeCount); break;[[ENDIF]][[IF:6=P[AND]CHILD(ATTRIBUTE:<<TEXT,GEN_IS_OWN_KEY>>)]]
+					case 'MOV_<<TYPE1:U>>': MoveNode (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.body._moveAction); break;[[ENDIF]][[IF:3=Y[AND]!4=1[AND]!6=P[AND]CHILD(ATTRIBUTE:<<TEXT,GEN_IS_OWN_KEY>>)]]
+					case 'CPA_<<TYPE1:U>>': ChangeParent (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId),'TYP_<<TYPE1:U>>',l_json_array[i].Rows); break;[[ENDIF]][[REPEAT]][[ENDLOOP,TYPE]][[ENDLOOP,BUSINESS_OBJECT_TYPE]][[ENDLOOP,SYSTEM_BO_TYPE]]
+					case "SEL_CUBE_DSC":	document.getElementById("CubeDesc").value = l_json_array[i].Rows[0].Data.Value;	break;
 					case "ERROR": alert ('Server error:\n'+l_json_array[i].ErrorText); break;
 					default: alert ('Unknown reply:\n'+g_responseText);
 				}

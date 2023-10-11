@@ -23,15 +23,15 @@ $RequestText = file_get_contents('php://input');
 $RequestObj = json_decode($RequestText, false);
 $ResponseText = '[';
 
-switch ($RequestObj->Service) {[[LOOP,BUSINESS_OBJECT_TYPE]][[LOOP,SERVICE:4=E]]
+switch ($RequestObj->Service) {[[LOOP,BUSINESS_OBJECT_TYPE]][[LOOP,SERVICE:3=E]]
 case '<<SERVICE:C>>':
 	$conn->query("BEGIN;");[[LOOP,OPERATION]]
 	$ResponseObj = new \stdClass();
-	$ResponseObj->ResultName = '<<SERVICE2:U>>[[IF:!2=#]]_<<OPERATION2:U>>[[ENDIF]][[LOOP,OPERATION_TYPE]]_<<OPERATION_TYPE1:U>>[[ENDLOOP,OPERATION_TYPE]]';
+	$ResponseObj->ResultName = '<<SERVICE2>>[[IF:!2=#]]_<<OPERATION2:U>>[[ENDIF]][[LOOP,OPERATION_TYPE]]_<<OPERATION_TYPE1:U>>[[ENDLOOP,OPERATION_TYPE]]';
 	$conn->query("CALL [[FOR,BUSINESS_OBJECT_TYPE:N>N]][[LOOP,TYPE]]<<TYPE1:L>>[[ENDLOOP,TYPE]][[ENDFOR]].<<OPERATION:L>> ([[FORH,SERVICE:N>N]][[LOOP,SERVICE_ARGUMENT]][[LOOP,ARGUMENT_ATTRIBUTE]][[IF:CHILD(INFORMATION_TYPE_ELEMENT:2=NUMBER)]]".($RequestObj->Parameters-><<SERVICE_ARGUMENT2>>-><<ARGUMENT_ATTRIBUTE:C>>??"null")."[[ELSE]]'".$RequestObj->Parameters-><<SERVICE_ARGUMENT2>>-><<ARGUMENT_ATTRIBUTE:C>>."'[[ENDIF]][[ENDLOOP,ARGUMENT_ATTRIBUTE]][[IF,SERVICE_ARGUMENT:!LAST]],[[ENDIF]][[ENDLOOP,SERVICE_ARGUMENT]][[ENDFOR]])");[[IF:CHILD(EXPORT)]]
 	$ResponseObj->Rows = array();
 	$curs = $conn->query('FETCH ALL FROM cube_cursor;');
-	[[IF:3=Y]]while[[ELSE]]if[[ENDIF]] ($row = $curs->fetch(PDO::FETCH_ASSOC)) {
+	[[IF:<<TEXT,GEN_HAS_CURSOR>>]]while[[ELSE]]if[[ENDIF]] ($row = $curs->fetch(PDO::FETCH_ASSOC)) {
 		$RowObj = new \stdClass();[[LOOP,EXPORT]][[IF:1=Y]]
 		$RowObj-><<EXPORT:C>> = new \stdClass();[[LOOP,EXPORT_ARGUMENT]]
 		$RowObj-><<EXPORT:C>>-><<EXPORT_ARGUMENT:C>> = $row["<<EXPORT_ARGUMENT:L>>"];[[ENDLOOP,EXPORT_ARGUMENT]][[ELSE]]

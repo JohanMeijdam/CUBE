@@ -3913,6 +3913,9 @@
 			+GET:;
 				=EXPRESSION:REF_NAME|cube_tsg_type;
 			-GET:;
+			+GET:;
+				=EXPRESSION:REF_NAME|class;
+			-GET:;
 			+SELECTION:;
 				+EXPRESSION:LOGICAL|AND;
 					+EXPRESSION:CONDITION|=;
@@ -4272,6 +4275,7 @@
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
 		=ARGUMENT:p_name|I|TEXT;
 		=ARGUMENT:p_cube_tsg_type|I|TEXT;
+		=ARGUMENT:p_class|I|TEXT;
 		=ARGUMENT:x_fk_typ_name|I|TEXT;
 		=ARGUMENT:x_name|I|TEXT;
 		+VARIABLE:l_cube_sequence||NUMBER|8|0;
@@ -4324,6 +4328,9 @@
 			+SET:cube_tsg_type;
 				=EXPRESSION:REF_NAME|p_cube_tsg_type;
 			-SET:;
+			+SET:class;
+				=EXPRESSION:REF_NAME|p_class;
+			-SET:;
 		-STATEMENT:;
 		+EXCEPTION:E001;
 			+STATEMENT:ABORT;
@@ -4336,12 +4343,16 @@
 		=ARGUMENT:p_fk_typ_name|I|TEXT;
 		=ARGUMENT:p_name|I|TEXT;
 		=ARGUMENT:p_cube_tsg_type|I|TEXT;
+		=ARGUMENT:p_class|I|TEXT;
 		+STATEMENT:UPDATE|v_service;
 			+SET:fk_bot_name;
 				=EXPRESSION:REF_NAME|p_fk_bot_name;
 			-SET:;
 			+SET:cube_tsg_type;
 				=EXPRESSION:REF_NAME|p_cube_tsg_type;
+			-SET:;
+			+SET:class;
+				=EXPRESSION:REF_NAME|p_class;
 			-SET:;
 			+SELECTION:;
 				+EXPRESSION:LOGICAL|AND;

@@ -14,7 +14,7 @@ case 'GetDirFunItems':
 
 	$stid = oci_parse($conn, "BEGIN pkg_fun.get_fun_root_items (:p_cube_row); END;");
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'LIST_FUN';
+	$ResponseObj->ResultName = 'LST_FUN';
 	$r = perform_db_request();
 	if (!$r) { 
 		echo ']';
@@ -39,7 +39,7 @@ case 'CountFun':
 
 	$stid = oci_parse($conn, "BEGIN pkg_fun.count_fun (:p_cube_row); END;");
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'COUNT_FUN';
+	$ResponseObj->ResultName = 'CNT_FUN';
 	$r = perform_db_request();
 	if (!$r) { 
 		echo ']';
@@ -68,7 +68,7 @@ case 'GetFunItems':
 	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'LIST_ARG';
+	$ResponseObj->ResultName = 'LST_ARG';
 	$r = perform_db_request();
 	if (!$r) { 
 		echo ']';
@@ -98,7 +98,7 @@ case 'CreateFun':
 	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'CREATE_FUN';
+	$ResponseObj->ResultName = 'CRE_FUN';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -120,7 +120,7 @@ case 'DeleteFun':
 	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'DELETE_FUN';
+	$ResponseObj->ResultName = 'DEL_FUN';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -150,7 +150,7 @@ case 'MoveArg':
 	oci_bind_by_name($stid,":x_name",$RequestObj->Parameters->Ref->Name);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'MOVE_ARG';
+	$ResponseObj->ResultName = 'MOV_ARG';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -180,7 +180,7 @@ case 'CreateArg':
 	oci_bind_by_name($stid,":x_name",$RequestObj->Parameters->Ref->Name);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'CREATE_ARG';
+	$ResponseObj->ResultName = 'CRE_ARG';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -204,7 +204,7 @@ case 'DeleteArg':
 	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'DELETE_ARG';
+	$ResponseObj->ResultName = 'DEL_ARG';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);

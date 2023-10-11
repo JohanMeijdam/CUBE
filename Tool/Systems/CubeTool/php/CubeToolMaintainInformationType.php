@@ -27,10 +27,10 @@ g_xmlhttp.onreadystatechange = function() {
 			}
 			for (i in l_json_array) {
 				switch (l_json_array[i].ResultName) {
-					case "SELECT_ITP":
+					case "SEL_ITP":
 						var l_json_values = l_json_array[i].Rows[0].Data;
 						break;
-					case "CREATE_ITP":
+					case "CRE_ITP":
 						document.getElementById("InputName").disabled=true;
 						document.getElementById("ButtonOK").innerText="Update";
 						var l_objNode = parent.document.getElementById(g_parent_node_id);
@@ -61,10 +61,10 @@ g_xmlhttp.onreadystatechange = function() {
 						document.getElementById("ButtonOK").onclick = function(){UpdateItp()};						
 						ResetChangePending();
 						break;
-					case "UPDATE_ITP":
+					case "UPD_ITP":
 						ResetChangePending();
 						break;
-					case "DELETE_ITP":
+					case "DEL_ITP":
 						var l_objNode = parent.document.getElementById(g_node_id);
 						if (g_parent_node_id == null) {
 							g_parent_node_id = l_objNode.parentNode.parentNode.id;

@@ -14,7 +14,7 @@ case 'GetDirCubeDscItems':
 
 	$stid = oci_parse($conn, "BEGIN pkg_cube_dsc.get_cube_dsc_root_items (:p_cube_row); END;");
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'LIST_CUBE_DSC';
+	$ResponseObj->ResultName = 'LST_CUBE_DSC';
 	$r = perform_db_request();
 	if (!$r) { 
 		echo ']';
@@ -50,7 +50,7 @@ case 'GetCubeDsc':
 	oci_bind_by_name($stid,":p_sequence",$RequestObj->Parameters->Type->Sequence);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'SELECT_CUBE_DSC';
+	$ResponseObj->ResultName = 'SEL_CUBE_DSC';
 	$r = perform_db_request();
 	if (!$r) { 
 		echo ']';
@@ -84,7 +84,7 @@ case 'CreateCubeDsc':
 	oci_bind_by_name($stid,":p_value",$RequestObj->Parameters->Type->Value);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'CREATE_CUBE_DSC';
+	$ResponseObj->ResultName = 'CRE_CUBE_DSC';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -112,7 +112,7 @@ case 'UpdateCubeDsc':
 	oci_bind_by_name($stid,":p_value",$RequestObj->Parameters->Type->Value);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'UPDATE_CUBE_DSC';
+	$ResponseObj->ResultName = 'UPD_CUBE_DSC';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);
@@ -138,7 +138,7 @@ case 'DeleteCubeDsc':
 	oci_bind_by_name($stid,":p_sequence",$RequestObj->Parameters->Type->Sequence);
 
 	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'DELETE_CUBE_DSC';
+	$ResponseObj->ResultName = 'DEL_CUBE_DSC';
 	$r = oci_execute($stid);
 	if (!$r) {
 		ProcessDbError($stid);

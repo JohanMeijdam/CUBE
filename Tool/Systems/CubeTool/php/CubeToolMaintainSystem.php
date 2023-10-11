@@ -27,7 +27,7 @@ g_xmlhttp.onreadystatechange = function() {
 			}
 			for (i in l_json_array) {
 				switch (l_json_array[i].ResultName) {
-					case "SELECT_SYS":
+					case "SEL_SYS":
 						var l_json_values = l_json_array[i].Rows[0].Data;
 						document.getElementById("InputCubeTsgType").value=l_json_values.CubeTsgType;
 						document.getElementById("InputDatabase").value=l_json_values.Database;
@@ -36,7 +36,7 @@ g_xmlhttp.onreadystatechange = function() {
 						document.getElementById("InputTablePrefix").value=l_json_values.TablePrefix;
 						ProcessTypeSpecialisation();
 						break;
-					case "CREATE_SYS":
+					case "CRE_SYS":
 						document.getElementById("InputName").disabled=true;
 						document.getElementById("ButtonOK").innerText="Update";
 						document.getElementById("ButtonOK").disabled=false;
@@ -68,14 +68,14 @@ g_xmlhttp.onreadystatechange = function() {
 						document.getElementById("ButtonOK").onclick = function(){UpdateSys()};						
 						ResetChangePending();
 						break;
-					case "UPDATE_SYS":
+					case "UPD_SYS":
 						var l_objNode = parent.document.getElementById(g_node_id);
 						if (l_objNode != null) {
 							l_objNode.children[1].lastChild.nodeValue = ' '+document.getElementById("InputName").value.toLowerCase()+' ('+document.getElementById("InputCubeTsgType").value.toLowerCase()+')';
 						}
 						ResetChangePending();
 						break;
-					case "DELETE_SYS":
+					case "DEL_SYS":
 						var l_objNode = parent.document.getElementById(g_node_id);
 						if (g_parent_node_id == null) {
 							g_parent_node_id = l_objNode.parentNode.parentNode.id;

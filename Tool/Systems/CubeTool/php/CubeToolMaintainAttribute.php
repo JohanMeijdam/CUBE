@@ -27,7 +27,7 @@ g_xmlhttp.onreadystatechange = function() {
 			}
 			for (i in l_json_array) {
 				switch (l_json_array[i].ResultName) {
-					case "SELECT_ATB":
+					case "SEL_ATB":
 						var l_json_values = l_json_array[i].Rows[0].Data;
 						document.getElementById("InputFkBotName").value=l_json_values.FkBotName;
 						document.getElementById("InputPrimaryKey").value=l_json_values.PrimaryKey;
@@ -38,7 +38,7 @@ g_xmlhttp.onreadystatechange = function() {
 						document.getElementById("InputUnchangeable").value=l_json_values.Unchangeable;
 						document.getElementById("InputXkItpName").value=l_json_values.XkItpName;
 						break;
-					case "CREATE_ATB":
+					case "CRE_ATB":
 						document.getElementById("InputFkBotName").disabled=true;
 						document.getElementById("InputFkTypName").disabled=true;
 						document.getElementById("InputName").disabled=true;
@@ -67,10 +67,10 @@ g_xmlhttp.onreadystatechange = function() {
 						document.getElementById("ButtonOK").onclick = function(){UpdateAtb()};						
 						ResetChangePending();
 						break;
-					case "UPDATE_ATB":
+					case "UPD_ATB":
 						ResetChangePending();
 						break;
-					case "DELETE_ATB":
+					case "DEL_ATB":
 						var l_objNode = parent.document.getElementById(g_node_id);
 						if (g_parent_node_id == null) {
 							g_parent_node_id = l_objNode.parentNode.parentNode.id;
@@ -80,7 +80,7 @@ g_xmlhttp.onreadystatechange = function() {
 						}
 						CancelChangePending();
 						break;
-					case "SELECT_FKEY_TYP":
+					case "SEL_FKEY_TYP":
 						var l_json_values = l_json_array[i].Rows[0].Data;
 						document.getElementById("InputFkBotName").value=l_json_values.FkBotName;
 						break;
@@ -88,7 +88,7 @@ g_xmlhttp.onreadystatechange = function() {
 						alert ('Server error:\n'+l_json_array[i].ErrorText);
 						break;
 					default:
-						if (l_json_array[i].ResultName.substring(0,5) == 'LIST_') {
+						if (l_json_array[i].ResultName.substring(0,4) == 'LST_') {
 							switch (document.body._ListBoxCode){
 								case "Ref001":
 									OpenListBox(l_json_array[i].Rows,'inftype','InformationType');

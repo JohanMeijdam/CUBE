@@ -27,11 +27,11 @@ g_xmlhttp.onreadystatechange = function() {
 			}
 			for (i in l_json_array) {
 				switch (l_json_array[i].ResultName) {
-					case "SELECT_CUBE_DSC":
+					case "SEL_CUBE_DSC":
 						var l_json_values = l_json_array[i].Rows[0].Data;
 						document.getElementById("InputValue").value=l_json_values.Value;
 						break;
-					case "CREATE_CUBE_DSC":
+					case "CRE_CUBE_DSC":
 						document.getElementById("InputTypeName").disabled=true;
 						document.getElementById("InputAttributeTypeName").disabled=true;
 						document.getElementById("InputSequence").disabled=true;
@@ -60,10 +60,10 @@ g_xmlhttp.onreadystatechange = function() {
 						document.getElementById("ButtonOK").onclick = function(){UpdateCubeDsc()};						
 						ResetChangePending();
 						break;
-					case "UPDATE_CUBE_DSC":
+					case "UPD_CUBE_DSC":
 						ResetChangePending();
 						break;
-					case "DELETE_CUBE_DSC":
+					case "DEL_CUBE_DSC":
 						var l_objNode = parent.document.getElementById(g_node_id);
 						if (g_parent_node_id == null) {
 							g_parent_node_id = l_objNode.parentNode.parentNode.id;

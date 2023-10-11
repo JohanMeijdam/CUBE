@@ -27,13 +27,14 @@ g_xmlhttp.onreadystatechange = function() {
 			}
 			for (i in l_json_array) {
 				switch (l_json_array[i].ResultName) {
-					case "SELECT_SRV":
+					case "SEL_SRV":
 						var l_json_values = l_json_array[i].Rows[0].Data;
 						document.getElementById("InputFkBotName").value=l_json_values.FkBotName;
 						document.getElementById("InputCubeTsgType").value=l_json_values.CubeTsgType;
+						document.getElementById("InputClass").value=l_json_values.Class;
 						ProcessTypeSpecialisation();
 						break;
-					case "CREATE_SRV":
+					case "CRE_SRV":
 						document.getElementById("InputFkBotName").disabled=true;
 						document.getElementById("InputFkTypName").disabled=true;
 						document.getElementById("InputName").disabled=true;
@@ -62,14 +63,14 @@ g_xmlhttp.onreadystatechange = function() {
 						document.getElementById("ButtonOK").onclick = function(){UpdateSrv()};						
 						ResetChangePending();
 						break;
-					case "UPDATE_SRV":
+					case "UPD_SRV":
 						var l_objNode = parent.document.getElementById(g_node_id);
 						if (l_objNode != null) {
 							l_objNode.children[1].lastChild.nodeValue = ' '+document.getElementById("InputName").value.toLowerCase()+' ('+document.getElementById("InputCubeTsgType").value.toLowerCase()+')';
 						}
 						ResetChangePending();
 						break;
-					case "DELETE_SRV":
+					case "DEL_SRV":
 						var l_objNode = parent.document.getElementById(g_node_id);
 						if (g_parent_node_id == null) {
 							g_parent_node_id = l_objNode.parentNode.parentNode.id;
@@ -79,7 +80,7 @@ g_xmlhttp.onreadystatechange = function() {
 						}
 						CancelChangePending();
 						break;
-					case "SELECT_FKEY_TYP":
+					case "SEL_FKEY_TYP":
 						var l_json_values = l_json_array[i].Rows[0].Data;
 						document.getElementById("InputFkBotName").value=l_json_values.FkBotName;
 						break;
@@ -110,7 +111,8 @@ function CreateSrv() {
 		FkBotName: document.getElementById("InputFkBotName").value,
 		FkTypName: document.getElementById("InputFkTypName").value,
 		Name: document.getElementById("InputName").value,
-		CubeTsgType: document.getElementById("InputCubeTsgType").value
+		CubeTsgType: document.getElementById("InputCubeTsgType").value,
+		Class: document.getElementById("InputClass").value
 	};
 	var l_pos_action = g_json_option.Code;
 	var Option = {
@@ -142,7 +144,8 @@ function UpdateSrv() {
 		FkBotName: document.getElementById("InputFkBotName").value,
 		FkTypName: document.getElementById("InputFkTypName").value,
 		Name: document.getElementById("InputName").value,
-		CubeTsgType: document.getElementById("InputCubeTsgType").value
+		CubeTsgType: document.getElementById("InputCubeTsgType").value,
+		Class: document.getElementById("InputClass").value
 	};
 	PerformTrans('BusinessObjectType', {
 		Service: "UpdateSrv",
@@ -225,6 +228,7 @@ function InitBody() {
 		document.getElementById("InputFkTypName").disabled = true;
 		document.getElementById("InputName").disabled = true;
 		document.getElementById("InputCubeTsgType").disabled = true;
+		document.getElementById("InputClass").disabled = true;
 		break;
 	default:
 		alert ('Error InitBody: nodeType='+l_json_argument.nodeType);
@@ -234,6 +238,11 @@ function InitBody() {
 function ProcessTypeSpecialisation() {
 	if (document.getElementById("InputCubeTsgType").value != ' ') {
 		document.getElementById("InputCubeTsgType").disabled = true;
+		switch (document.getElementById("InputCubeTsgType").value) {
+		case "S":
+			document.getElementById("RowAtbClass").style.display = "none";
+			break;
+		}
 		document.getElementById("TableMain").style.display = "inline";
 	}
 }
@@ -252,6 +261,20 @@ function ProcessTypeSpecialisation() {
 <tr id="RowAtbFkBotName"><td><div>BusinessObjectType.Name</div></td><td><div style="max-width:30em;"><input id="InputFkBotName" type="text" maxlength="30" style="width:100%" onchange="SetChangePending();ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
 <tr id="RowAtbFkTypName"><td><u><div>Type.Name</div></u></td><td><div style="max-width:30em;"><input id="InputFkTypName" type="text" maxlength="30" style="width:100%" onchange="SetChangePending();ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
 <tr id="RowAtbName"><td style="cursor:help" oncontextmenu="parent.OpenDescBox('service','Service.Name','SERVICE','NAME',-1)"><u><div>Name</div></u></td><td><div style="max-width:30em;"><input id="InputName" type="text" maxlength="30" style="width:100%" onchange="SetChangePending();ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr id="RowAtbClass"><td><div>Class</div></td><td><div><select id="InputClass" type="text" onchange="SetChangePending();">
+	<option value=" " selected> </option>
+	<option id="OptionClass-LST" style="display:inline" value="LST">List</option>
+	<option id="OptionClass-CNT" style="display:inline" value="CNT">Count</option>
+	<option id="OptionClass-SEL" style="display:inline" value="SEL">Select</option>
+	<option id="OptionClass-CNP" style="display:inline" value="CNP">Check no part</option>
+	<option id="OptionClass-DPO" style="display:inline" value="DPO">Determine position</option>
+	<option id="OptionClass-MOV" style="display:inline" value="MOV">Move</option>
+	<option id="OptionClass-GTN" style="display:inline" value="GTN">Get next</option>
+	<option id="OptionClass-CPA" style="display:inline" value="CPA">Change parent</option>
+	<option id="OptionClass-CRE" style="display:inline" value="CRE">Create</option>
+	<option id="OptionClass-UPD" style="display:inline" value="UPD">Update</option>
+	<option id="OptionClass-DEL" style="display:inline" value="DEL">Delete</option>
+</select></div></td></tr>
 <tr><td><br></td><td style="width:100%"></td></tr>
 <tr><td/><td>
 <button id="ButtonOK" type="button" disabled>OK</button>&nbsp;&nbsp;&nbsp;

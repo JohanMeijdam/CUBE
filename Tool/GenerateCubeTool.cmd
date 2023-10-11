@@ -74,7 +74,7 @@ CubeGen.exe %sysdir%\CubeServerSpecModel.cgm Templates\CubeServerPhp.cgt %sysdir
 del /S/Q %sysroot% >> %logfile% 2>&1
 xcopy /Y/E %sysdir%\files %sysroot% >> %logfile% 2>&1
 xcopy /Y/E %sysdir%\php %sysroot% >> %logfile% 2>&1
-goto End
+::goto End
 :System
 call GenerateCubeSys.cmd
 ::goto End

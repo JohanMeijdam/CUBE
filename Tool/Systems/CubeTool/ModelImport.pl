@@ -527,8 +527,8 @@ my (@FkeyValues);
 							last;
 						}
 						$Sequence++;
-						print IMPORT "INSERT INTO v_service (CUBE_SEQUENCE, FK_BOT_NAME, FK_TYP_NAME, NAME, CUBE_TSG_TYPE)\n"; 
-						print IMPORT "	VALUES ($Sequence, '$_[1]', '$_[2]', '".ReplX($NodeString[$j])."', '".ReplX($NodeValue[$NodeValuePntr[$j]])."');\n";
+						print IMPORT "INSERT INTO v_service (CUBE_SEQUENCE, FK_BOT_NAME, FK_TYP_NAME, NAME, CUBE_TSG_TYPE, CLASS)\n"; 
+						print IMPORT "	VALUES ($Sequence, '$_[1]', '$_[2]', '".ReplX($NodeString[$j])."', '".ReplX($NodeValue[$NodeValuePntr[$j]])."', '".ReplX($NodeValue[$NodeValuePntr[$j]+1])."');\n";
 						print IMPORT "\n";
 						$FkeyValues[0] = $_[1];
 						$FkeyValues[1] = $_[2];

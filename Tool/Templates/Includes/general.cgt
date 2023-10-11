@@ -11,4 +11,6 @@
 Count ($myCount) the number of children of type T1 with condition T2 
 *]][[TEXT,GEN_IF_MULTIPLE]][[EVAL:($myCount=0)]][[LOOP,<<T1>><<T2>>]][[EVAL:($myCount++)]][[ENDLOOP,<<T1>>]][[IF:EVAL:$myCount>1]][[ENDTEXT]][[*
 Replace Child 1=Tag 2=number 3=Function
-*]][[TEXT,GEN_REPLACE]][[LOOP,<<T1>>]]<<<<T1>><<T2>><<T3>>>>[[ENDLOOP,<<T1>>]][[ENDTEXT]]
+*]][[TEXT,GEN_REPLACE]][[LOOP,<<T1>>]]<<<<T1>><<T2>><<T3>>>>[[ENDLOOP,<<T1>>]][[ENDTEXT]][[*
+Determine cursor usage based on SERVICE property 2
+*]][[TEXT,GEN_HAS_CURSOR]](2=LST[OR]2=CNT[OR]2=SEL[OR]2=GTN)[[ENDTEXT]]

@@ -27,7 +27,7 @@ g_xmlhttp.onreadystatechange = function() {
 			}
 			for (i in l_json_array) {
 				switch (l_json_array[i].ResultName) {
-					case "SELECT_ITE":
+					case "SEL_ITE":
 						var l_json_values = l_json_array[i].Rows[0].Data;
 						document.getElementById("InputSuffix").value=l_json_values.Suffix;
 						document.getElementById("InputDomain").value=l_json_values.Domain;
@@ -38,7 +38,7 @@ g_xmlhttp.onreadystatechange = function() {
 						document.getElementById("InputSpacesAllowed").value=l_json_values.SpacesAllowed;
 						document.getElementById("InputPresentation").value=l_json_values.Presentation;
 						break;
-					case "CREATE_ITE":
+					case "CRE_ITE":
 						document.getElementById("InputFkItpName").disabled=true;
 						document.getElementById("InputSequence").disabled=true;
 						document.getElementById("ButtonOK").innerText="Update";
@@ -71,14 +71,14 @@ g_xmlhttp.onreadystatechange = function() {
 						document.getElementById("ButtonOK").onclick = function(){UpdateIte()};						
 						ResetChangePending();
 						break;
-					case "UPDATE_ITE":
+					case "UPD_ITE":
 						var l_objNode = parent.document.getElementById(g_node_id);
 						if (l_objNode != null) {
 							l_objNode.children[1].lastChild.nodeValue = ' '+document.getElementById("InputSuffix").value.toLowerCase()+' ('+document.getElementById("InputDomain").value.toLowerCase()+')';
 						}
 						ResetChangePending();
 						break;
-					case "DELETE_ITE":
+					case "DEL_ITE":
 						var l_objNode = parent.document.getElementById(g_node_id);
 						if (g_parent_node_id == null) {
 							g_parent_node_id = l_objNode.parentNode.parentNode.id;

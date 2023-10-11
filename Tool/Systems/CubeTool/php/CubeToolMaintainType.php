@@ -27,7 +27,7 @@ g_xmlhttp.onreadystatechange = function() {
 			}
 			for (i in l_json_array) {
 				switch (l_json_array[i].ResultName) {
-					case "SELECT_TYP":
+					case "SEL_TYP":
 						var l_json_values = l_json_array[i].Rows[0].Data;
 						document.getElementById("InputFkBotName").value=l_json_values.FkBotName;
 						document.getElementById("InputFkTypName").value=l_json_values.FkTypName;
@@ -40,7 +40,7 @@ g_xmlhttp.onreadystatechange = function() {
 						document.getElementById("InputIcon").value=l_json_values.Icon;
 						document.getElementById("InputTransferable").value=l_json_values.Transferable;
 						break;
-					case "CREATE_TYP":
+					case "CRE_TYP":
 						document.getElementById("InputFkBotName").disabled=true;
 						document.getElementById("InputFkTypName").disabled=true;
 						document.getElementById("InputName").disabled=true;
@@ -69,14 +69,14 @@ g_xmlhttp.onreadystatechange = function() {
 						document.getElementById("ButtonOK").onclick = function(){UpdateTyp()};						
 						ResetChangePending();
 						break;
-					case "UPDATE_TYP":
+					case "UPD_TYP":
 						var l_objNode = parent.document.getElementById(g_node_id);
 						if (l_objNode != null) {
 							l_objNode.children[1].lastChild.nodeValue = ' '+document.getElementById("InputName").value.toLowerCase()+' ('+document.getElementById("InputCode").value.toLowerCase()+')';
 						}
 						ResetChangePending();
 						break;
-					case "DELETE_TYP":
+					case "DEL_TYP":
 						var l_objNode = parent.document.getElementById(g_node_id);
 						if (g_parent_node_id == null) {
 							g_parent_node_id = l_objNode.parentNode.parentNode.id;
@@ -86,7 +86,7 @@ g_xmlhttp.onreadystatechange = function() {
 						}
 						CancelChangePending();
 						break;
-					case "SELECT_FKEY_TYP":
+					case "SEL_FKEY_TYP":
 						var l_json_values = l_json_array[i].Rows[0].Data;
 						document.getElementById("InputFkBotName").value=l_json_values.FkBotName;
 						break;
