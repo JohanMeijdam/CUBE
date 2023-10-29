@@ -407,6 +407,53 @@ DECLARE
 	END;
 
 
+	PROCEDURE report_sva (p_srv IN t_service%ROWTYPE) IS
+	BEGIN
+		FOR r_sva IN (
+			SELECT *				
+			FROM t_service_argument
+			WHERE fk_bot_name = p_srv.fk_bot_name
+			  AND fk_typ_name = p_srv.fk_typ_name
+			  AND fk_srv_name = p_srv.name
+			  AND fk_srv_cube_tsg_db_scr = p_srv.cube_tsg_db_scr
+			ORDER BY cube_id )
+		LOOP
+			DBMS_OUTPUT.PUT_LINE (ftabs || '+SERVICE_ARGUMENT[' || r_sva.cube_id || ']:' || ';');
+				l_level := l_level + 1;
+				BEGIN
+					SELECT cube_id INTO l_cube_id FROM t_attribute
+					WHERE fk_typ_name = r_sva.xf_atb_typ_name
+					  AND name = r_sva.xk_atb_name;
+
+					DBMS_OUTPUT.PUT_LINE (ftabs || '>ATTRIBUTE:' || l_cube_id || ';');
+				EXCEPTION
+					WHEN NO_DATA_FOUND THEN
+						NULL; 
+				END;
+				l_level := l_level - 1;
+			DBMS_OUTPUT.PUT_LINE (ftabs || '-SERVICE_ARGUMENT:' || ';');
+		END LOOP;
+	END;
+
+
+	PROCEDURE report_srv (p_typ IN t_type%ROWTYPE) IS
+	BEGIN
+		FOR r_srv IN (
+			SELECT *				
+			FROM t_service
+			WHERE fk_bot_name = p_typ.fk_bot_name
+			  AND fk_typ_name = p_typ.name
+			ORDER BY cube_sequence )
+		LOOP
+			DBMS_OUTPUT.PUT_LINE (ftabs || '+SERVICE[' || r_srv.cube_id || ']:' || fenperc(r_srv.name) || '|' || fenperc(r_srv.cube_tsg_db_scr) || '|' || fenperc(r_srv.class) || '|' || fenperc(r_srv.accessibility) || ';');
+				l_level := l_level + 1;
+				report_sva (r_srv);
+				l_level := l_level - 1;
+			DBMS_OUTPUT.PUT_LINE (ftabs || '-SERVICE:' || r_srv.name || ';');
+		END LOOP;
+	END;
+
+
 	PROCEDURE report_rtt (p_typ IN t_type%ROWTYPE) IS
 	BEGIN
 		FOR r_rtt IN (
@@ -549,6 +596,7 @@ DECLARE
 				report_tsg (r_typ);
 				report_atb (r_typ);
 				report_ref (r_typ);
+				report_srv (r_typ);
 				report_rtt (r_typ);
 				report_jsn (r_typ);
 				report_dct (r_typ);
@@ -573,6 +621,7 @@ DECLARE
 				report_tsg (r_typ);
 				report_atb (r_typ);
 				report_ref (r_typ);
+				report_srv (r_typ);
 				report_rtt (r_typ);
 				report_jsn (r_typ);
 				report_dct (r_typ);
@@ -735,6 +784,15 @@ BEGIN
 	DBMS_OUTPUT.PUT_LINE ('					=ASSOCIATION:TYPE_SPECIALISATION|IsValidFor|TYPE_SPECIALISATION|;');
 	DBMS_OUTPUT.PUT_LINE ('				-META_TYPE:RESTRICTION_TARGET_TYPE_SPEC;');
 	DBMS_OUTPUT.PUT_LINE ('			-META_TYPE:REFERENCE;');
+	DBMS_OUTPUT.PUT_LINE ('			+META_TYPE:SERVICE|;');
+	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:0|Name|;');
+	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:1|CubeTsgDbScr| Values: D(DATABASE_INTERACTION), S(SERVER_SCRIPT);');
+	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:2|Class| Values: LST(List), CNT(Count), SEL(Select), CNP(Check no part), DPO(Determine position), MOV(Move), GTN(Get next), CPA(Change parent), CRE(Create), UPD(Update), DEL(Delete);');
+	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:3|Accessibility| Values: I(Internal), E(External), U(User);');
+	DBMS_OUTPUT.PUT_LINE ('				+META_TYPE:SERVICE_ARGUMENT|;');
+	DBMS_OUTPUT.PUT_LINE ('					=ASSOCIATION:ATTRIBUTE|Imports|ATTRIBUTE|;');
+	DBMS_OUTPUT.PUT_LINE ('				-META_TYPE:SERVICE_ARGUMENT;');
+	DBMS_OUTPUT.PUT_LINE ('			-META_TYPE:SERVICE;');
 	DBMS_OUTPUT.PUT_LINE ('			+META_TYPE:RESTRICTION_TYPE_SPEC_TYP|;');
 	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:0|IncludeOrExclude|'||REPLACE('Indication%20that%20the%20child%20type%20is%20valid%20(included)%20or%20invalid%20(excluded)%20for%20the%20concerning%20type%20specialisation.','%20',' ')||' Values: IN(Include), EX(Exclude);');
 	DBMS_OUTPUT.PUT_LINE ('				=ASSOCIATION:TYPE_SPECIALISATION|IsValidFor|TYPE_SPECIALISATION|;');

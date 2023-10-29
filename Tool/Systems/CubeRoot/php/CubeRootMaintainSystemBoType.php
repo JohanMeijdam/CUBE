@@ -27,10 +27,10 @@ g_xmlhttp.onreadystatechange = function() {
 			}
 			for (i in l_json_array) {
 				switch (l_json_array[i].ResultName) {
-					case "SELECT_SBT":
+					case "SEL_SBT":
 						var l_json_values = l_json_array[i].Rows[0].Data;
 						break;
-					case "CREATE_SBT":
+					case "CRE_SBT":
 						document.getElementById("InputFkSysName").disabled=true;
 						document.getElementById("InputXkBotName").disabled=true;
 						document.getElementById("RefSelect001").disabled=true;
@@ -58,10 +58,10 @@ g_xmlhttp.onreadystatechange = function() {
 						document.getElementById("ButtonOK").onclick = function(){UpdateSbt()};						
 						ResetChangePending();
 						break;
-					case "UPDATE_SBT":
+					case "UPD_SBT":
 						ResetChangePending();
 						break;
-					case "DELETE_SBT":
+					case "DEL_SBT":
 						var l_objNode = parent.document.getElementById(g_node_id);
 						if (g_parent_node_id == null) {
 							g_parent_node_id = l_objNode.parentNode.parentNode.id;
@@ -75,7 +75,7 @@ g_xmlhttp.onreadystatechange = function() {
 						alert ('Server error:\n'+l_json_array[i].ErrorText);
 						break;
 					default:
-						if (l_json_array[i].ResultName.substring(0,5) == 'LIST_') {
+						if (l_json_array[i].ResultName.substring(0,4) == 'LST_') {
 							switch (document.body._ListBoxCode){
 								case "Ref001":
 									OpenListBox(l_json_array[i].Rows,'botype','BusinessObjectType');
@@ -111,7 +111,7 @@ function CreateSbt() {
 		CubePosAction: l_pos_action
 	};
 	if (l_pos_action == 'F' || l_pos_action == 'L') {
-		PerformTrans( {
+		PerformTrans('System', {
 			Service: "CreateSbt",
 			Parameters: {
 				Option,
@@ -120,7 +120,7 @@ function CreateSbt() {
 		} );
 	} else {
 		var Ref = g_json_option.Type.TYP_SBT;
-		PerformTrans( {
+		PerformTrans('System', {
 			Service: "CreateSbt",
 				Parameters: {
 					Option,
@@ -136,7 +136,7 @@ function UpdateSbt() {
 		FkSysName: document.getElementById("InputFkSysName").value,
 		XkBotName: document.getElementById("InputXkBotName").value
 	};
-	PerformTrans( {
+	PerformTrans('System', {
 		Service: "UpdateSbt",
 		Parameters: {
 			Type
@@ -149,7 +149,7 @@ function DeleteSbt() {
 		FkSysName: document.getElementById("InputFkSysName").value,
 		XkBotName: document.getElementById("InputXkBotName").value
 	};
-	PerformTrans( {
+	PerformTrans('System', {
 		Service: "DeleteSbt",
 		Parameters: {
 			Type
@@ -174,6 +174,7 @@ function UpdateForeignKey(p_obj) {
 		alert ('Error Listbox: '+document.body._ListBoxCode);
 	}
 	CloseListBox();
+	SetChangePending();
 }
 
 function StartSelect001(p_event) {
@@ -181,7 +182,7 @@ function StartSelect001(p_event) {
 	document.body._SelectTop = p_event.clientY;
 	document.body._ListBoxCode = 'Ref001';
 	document.body._ListBoxOptional = 'N';
-	PerformTrans( {
+	PerformTrans('BusinessObjectType', {
 		Service: "GetBotList"
 	} );
 }

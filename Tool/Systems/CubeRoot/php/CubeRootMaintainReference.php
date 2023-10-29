@@ -27,7 +27,7 @@ g_xmlhttp.onreadystatechange = function() {
 			}
 			for (i in l_json_array) {
 				switch (l_json_array[i].ResultName) {
-					case "SELECT_REF":
+					case "SEL_REF":
 						var l_json_values = l_json_array[i].Rows[0].Data;
 						document.getElementById("InputFkBotName").value=l_json_values.FkBotName;
 						document.getElementById("InputName").value=l_json_values.Name;
@@ -40,7 +40,7 @@ g_xmlhttp.onreadystatechange = function() {
 						document.getElementById("InputXkTypName1").value=l_json_values.XkTypName1;
 						ProcessTypeSpecialisation();
 						break;
-					case "CREATE_REF":
+					case "CRE_REF":
 						document.getElementById("InputFkBotName").disabled=true;
 						document.getElementById("InputFkTypName").disabled=true;
 						document.getElementById("InputSequence").disabled=true;
@@ -73,14 +73,14 @@ g_xmlhttp.onreadystatechange = function() {
 						document.getElementById("ButtonOK").onclick = function(){UpdateRef()};						
 						ResetChangePending();
 						break;
-					case "UPDATE_REF":
+					case "UPD_REF":
 						var l_objNode = parent.document.getElementById(g_node_id);
 						if (l_objNode != null) {
 							l_objNode.children[1].lastChild.nodeValue = ' '+document.getElementById("InputName").value.toLowerCase()+' ('+document.getElementById("InputCubeTsgIntExt").value.toLowerCase()+')'+' '+document.getElementById("InputXkBotName").value.toLowerCase()+' '+document.getElementById("InputXkTypName").value.toLowerCase();
 						}
 						ResetChangePending();
 						break;
-					case "DELETE_REF":
+					case "DEL_REF":
 						var l_objNode = parent.document.getElementById(g_node_id);
 						if (g_parent_node_id == null) {
 							g_parent_node_id = l_objNode.parentNode.parentNode.id;
@@ -90,7 +90,7 @@ g_xmlhttp.onreadystatechange = function() {
 						}
 						CancelChangePending();
 						break;
-					case "SELECT_FKEY_TYP":
+					case "SEL_FKEY_TYP":
 						var l_json_values = l_json_array[i].Rows[0].Data;
 						document.getElementById("InputFkBotName").value=l_json_values.FkBotName;
 						break;
@@ -98,7 +98,7 @@ g_xmlhttp.onreadystatechange = function() {
 						alert ('Server error:\n'+l_json_array[i].ErrorText);
 						break;
 					default:
-						if (l_json_array[i].ResultName.substring(0,5) == 'LIST_') {
+						if (l_json_array[i].ResultName.substring(0,4) == 'LST_') {
 							switch (document.body._ListBoxCode){
 								case "Ref001":
 									OpenListBox(l_json_array[i].Rows,'botype','BusinessObjectType');
@@ -159,7 +159,7 @@ function CreateRef() {
 		CubePosAction: l_pos_action
 	};
 	if (l_pos_action == 'F' || l_pos_action == 'L') {
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "CreateRef",
 			Parameters: {
 				Option,
@@ -168,7 +168,7 @@ function CreateRef() {
 		} );
 	} else {
 		var Ref = g_json_option.Type.TYP_REF;
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "CreateRef",
 				Parameters: {
 					Option,
@@ -195,7 +195,7 @@ function UpdateRef() {
 		XkTypName: document.getElementById("InputXkTypName").value,
 		XkTypName1: document.getElementById("InputXkTypName1").value
 	};
-	PerformTrans( {
+	PerformTrans('BusinessObjectType', {
 		Service: "UpdateRef",
 		Parameters: {
 			Type
@@ -210,7 +210,7 @@ function DeleteRef() {
 		XkBotName: document.getElementById("InputXkBotName").value,
 		XkTypName: document.getElementById("InputXkTypName").value
 	};
-	PerformTrans( {
+	PerformTrans('BusinessObjectType', {
 		Service: "DeleteRef",
 		Parameters: {
 			Type
@@ -249,6 +249,7 @@ function UpdateForeignKey(p_obj) {
 		alert ('Error Listbox: '+document.body._ListBoxCode);
 	}
 	CloseListBox();
+	SetChangePending();
 }
 
 function StartSelect001(p_event) {
@@ -256,7 +257,7 @@ function StartSelect001(p_event) {
 	document.body._SelectTop = p_event.clientY;
 	document.body._ListBoxCode = 'Ref001';
 	document.body._ListBoxOptional = 'N';
-	PerformTrans( {
+	PerformTrans('BusinessObjectType', {
 		Service: "GetBotList"
 	} );
 }
@@ -267,11 +268,14 @@ function StartSelect002(p_event) {
 	document.body._ListBoxCode = 'Ref002';
 	document.body._ListBoxOptional = 'N';
 	var Parameters = {
+		Option: {
+			CubeScopeLevel:0
+		},
 		Ref: {
 			FkBotName:document.getElementById("InputFkBotName").value
 		}
 	};
-	PerformTrans( {
+	PerformTrans('BusinessObjectType', {
 		Service: "GetTypForBotListAll",
 		Parameters
 	} );
@@ -282,7 +286,7 @@ function StartSelect003(p_event) {
 	document.body._SelectTop = p_event.clientY;
 	document.body._ListBoxCode = 'Ref003';
 	document.body._ListBoxOptional = 'Y';
-	PerformTrans( {
+	PerformTrans('BusinessObjectType', {
 		Service: "GetTypListAll"
 	} );
 }
@@ -305,7 +309,7 @@ function InitBody() {
 		document.getElementById("InputXkTypName").value = l_json_objectKey.TYP_REF.XkTypName;
 		document.getElementById("ButtonOK").innerText = "Update";
 		document.getElementById("ButtonOK").onclick = function(){UpdateRef()};
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "GetRef",
 			Parameters: {
 				Type: l_json_objectKey.TYP_REF
@@ -325,7 +329,7 @@ function InitBody() {
 		document.getElementById("InputFkTypName").value = l_json_objectKey.TYP_TYP.Name;
 		document.getElementById("ButtonOK").innerText = "Create";
 		document.getElementById("ButtonOK").onclick = function(){CreateRef()};
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "GetTypFkey",
 			Parameters: {
 				Type: l_json_objectKey.TYP_TYP
@@ -348,7 +352,7 @@ function InitBody() {
 		document.getElementById("ButtonOK").innerText = "Delete";
 		document.getElementById("ButtonOK").onclick = function(){DeleteRef()};
 		SetChangePending();
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "GetRef",
 			Parameters: {
 				Type: l_json_objectKey.TYP_REF

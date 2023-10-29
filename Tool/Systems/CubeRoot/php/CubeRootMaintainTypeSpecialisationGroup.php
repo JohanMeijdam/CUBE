@@ -27,7 +27,7 @@ g_xmlhttp.onreadystatechange = function() {
 			}
 			for (i in l_json_array) {
 				switch (l_json_array[i].ResultName) {
-					case "SELECT_TSG":
+					case "SEL_TSG":
 						var l_json_values = l_json_array[i].Rows[0].Data;
 						document.getElementById("InputFkBotName").value=l_json_values.FkBotName;
 						document.getElementById("InputFkTsgCode").value=l_json_values.FkTsgCode;
@@ -36,7 +36,7 @@ g_xmlhttp.onreadystatechange = function() {
 						document.getElementById("InputXfAtbTypName").value=l_json_values.XfAtbTypName;
 						document.getElementById("InputXkAtbName").value=l_json_values.XkAtbName;
 						break;
-					case "CREATE_TSG":
+					case "CRE_TSG":
 						document.getElementById("InputFkBotName").disabled=true;
 						document.getElementById("InputFkTypName").disabled=true;
 						document.getElementById("InputFkTsgCode").disabled=true;
@@ -66,14 +66,14 @@ g_xmlhttp.onreadystatechange = function() {
 						document.getElementById("ButtonOK").onclick = function(){UpdateTsg()};						
 						ResetChangePending();
 						break;
-					case "UPDATE_TSG":
+					case "UPD_TSG":
 						var l_objNode = parent.document.getElementById(g_node_id);
 						if (l_objNode != null) {
 							l_objNode.children[1].lastChild.nodeValue = ' '+'('+document.getElementById("InputCode").value.toLowerCase()+')'+' '+document.getElementById("InputName").value.toLowerCase();
 						}
 						ResetChangePending();
 						break;
-					case "DELETE_TSG":
+					case "DEL_TSG":
 						var l_objNode = parent.document.getElementById(g_node_id);
 						if (g_parent_node_id == null) {
 							g_parent_node_id = l_objNode.parentNode.parentNode.id;
@@ -83,11 +83,11 @@ g_xmlhttp.onreadystatechange = function() {
 						}
 						CancelChangePending();
 						break;
-					case "SELECT_FKEY_TYP":
+					case "SEL_FKEY_TYP":
 						var l_json_values = l_json_array[i].Rows[0].Data;
 						document.getElementById("InputFkBotName").value=l_json_values.FkBotName;
 						break;
-					case "SELECT_FKEY_TSG":
+					case "SEL_FKEY_TSG":
 						var l_json_values = l_json_array[i].Rows[0].Data;
 						document.getElementById("InputFkBotName").value=l_json_values.FkBotName;
 						break;
@@ -95,7 +95,7 @@ g_xmlhttp.onreadystatechange = function() {
 						alert ('Server error:\n'+l_json_array[i].ErrorText);
 						break;
 					default:
-						if (l_json_array[i].ResultName.substring(0,5) == 'LIST_') {
+						if (l_json_array[i].ResultName.substring(0,4) == 'LST_') {
 							switch (document.body._ListBoxCode){
 								case "Ref001":
 									OpenListBox(l_json_array[i].Rows,'attrib','Attribute');
@@ -137,7 +137,7 @@ function CreateTsg() {
 		CubePosAction: l_pos_action
 	};
 	if (l_pos_action == 'F' || l_pos_action == 'L') {
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "CreateTsg",
 			Parameters: {
 				Option,
@@ -146,7 +146,7 @@ function CreateTsg() {
 		} );
 	} else {
 		var Ref = g_json_option.Type.TYP_TSG;
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "CreateTsg",
 				Parameters: {
 					Option,
@@ -168,7 +168,7 @@ function UpdateTsg() {
 		XfAtbTypName: document.getElementById("InputXfAtbTypName").value,
 		XkAtbName: document.getElementById("InputXkAtbName").value
 	};
-	PerformTrans( {
+	PerformTrans('BusinessObjectType', {
 		Service: "UpdateTsg",
 		Parameters: {
 			Type
@@ -181,7 +181,7 @@ function DeleteTsg() {
 		FkTypName: document.getElementById("InputFkTypName").value,
 		Code: document.getElementById("InputCode").value
 	};
-	PerformTrans( {
+	PerformTrans('BusinessObjectType', {
 		Service: "DeleteTsg",
 		Parameters: {
 			Type
@@ -211,6 +211,7 @@ function UpdateForeignKey(p_obj) {
 		alert ('Error Listbox: '+document.body._ListBoxCode);
 	}
 	CloseListBox();
+	SetChangePending();
 }
 
 function StartSelect001(p_event) {
@@ -226,7 +227,7 @@ function StartSelect001(p_event) {
 			FkTypName:document.getElementById("InputFkTypName").value
 		}
 	};
-	PerformTrans( {
+	PerformTrans('BusinessObjectType', {
 		Service: "GetAtbForTypList",
 		Parameters
 	} );
@@ -248,7 +249,7 @@ function InitBody() {
 		document.getElementById("InputCode").value = l_json_objectKey.TYP_TSG.Code;
 		document.getElementById("ButtonOK").innerText = "Update";
 		document.getElementById("ButtonOK").onclick = function(){UpdateTsg()};
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "GetTsg",
 			Parameters: {
 				Type: l_json_objectKey.TYP_TSG
@@ -264,7 +265,7 @@ function InitBody() {
 		document.getElementById("InputFkTypName").value = l_json_objectKey.TYP_TYP.Name;
 		document.getElementById("ButtonOK").innerText = "Create";
 		document.getElementById("ButtonOK").onclick = function(){CreateTsg()};
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "GetTypFkey",
 			Parameters: {
 				Type: l_json_objectKey.TYP_TYP
@@ -282,7 +283,7 @@ function InitBody() {
 		document.getElementById("InputFkTsgCode").value = l_json_objectKey.TYP_TSG.Code;
 		document.getElementById("ButtonOK").innerText = "Create";
 		document.getElementById("ButtonOK").onclick = function(){CreateTsg()};
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "GetTsgFkey",
 			Parameters: {
 				Type: l_json_objectKey.TYP_TSG
@@ -301,7 +302,7 @@ function InitBody() {
 		document.getElementById("ButtonOK").innerText = "Delete";
 		document.getElementById("ButtonOK").onclick = function(){DeleteTsg()};
 		SetChangePending();
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "GetTsg",
 			Parameters: {
 				Type: l_json_objectKey.TYP_TSG

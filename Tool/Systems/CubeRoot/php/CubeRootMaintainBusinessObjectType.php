@@ -27,14 +27,14 @@ g_xmlhttp.onreadystatechange = function() {
 			}
 			for (i in l_json_array) {
 				switch (l_json_array[i].ResultName) {
-					case "SELECT_BOT":
+					case "SEL_BOT":
 						var l_json_values = l_json_array[i].Rows[0].Data;
 						document.getElementById("InputCubeTsgType").value=l_json_values.CubeTsgType;
 						document.getElementById("InputDirectory").value=l_json_values.Directory;
 						document.getElementById("InputApiUrl").value=l_json_values.ApiUrl;
 						ProcessTypeSpecialisation();
 						break;
-					case "CREATE_BOT":
+					case "CRE_BOT":
 						document.getElementById("InputName").disabled=true;
 						document.getElementById("ButtonOK").innerText="Update";
 						document.getElementById("ButtonOK").disabled=false;
@@ -61,14 +61,14 @@ g_xmlhttp.onreadystatechange = function() {
 						document.getElementById("ButtonOK").onclick = function(){UpdateBot()};						
 						ResetChangePending();
 						break;
-					case "UPDATE_BOT":
+					case "UPD_BOT":
 						var l_objNode = parent.document.getElementById(g_node_id);
 						if (l_objNode != null) {
 							l_objNode.children[1].lastChild.nodeValue = ' '+document.getElementById("InputName").value.toLowerCase()+' ('+document.getElementById("InputCubeTsgType").value.toLowerCase()+')';
 						}
 						ResetChangePending();
 						break;
-					case "DELETE_BOT":
+					case "DEL_BOT":
 						var l_objNode = parent.document.getElementById(g_node_id);
 						if (g_parent_node_id == null) {
 							g_parent_node_id = l_objNode.parentNode.parentNode.id;
@@ -108,7 +108,7 @@ function CreateBot() {
 		CubePosAction: l_pos_action
 	};
 	if (l_pos_action == 'F' || l_pos_action == 'L') {
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "CreateBot",
 			Parameters: {
 				Option,
@@ -117,7 +117,7 @@ function CreateBot() {
 		} );
 	} else {
 		var Ref = g_json_option.Type.TYP_BOT;
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "CreateBot",
 				Parameters: {
 					Option,
@@ -135,7 +135,7 @@ function UpdateBot() {
 		Directory: document.getElementById("InputDirectory").value,
 		ApiUrl: document.getElementById("InputApiUrl").value
 	};
-	PerformTrans( {
+	PerformTrans('BusinessObjectType', {
 		Service: "UpdateBot",
 		Parameters: {
 			Type
@@ -147,7 +147,7 @@ function DeleteBot() {
 	var Type = {
 		Name: document.getElementById("InputName").value
 	};
-	PerformTrans( {
+	PerformTrans('BusinessObjectType', {
 		Service: "DeleteBot",
 		Parameters: {
 			Type
@@ -170,7 +170,7 @@ function InitBody() {
 		document.getElementById("InputName").value = l_json_objectKey.TYP_BOT.Name;
 		document.getElementById("ButtonOK").innerText = "Update";
 		document.getElementById("ButtonOK").onclick = function(){UpdateBot()};
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "GetBot",
 			Parameters: {
 				Type: l_json_objectKey.TYP_BOT
@@ -190,7 +190,7 @@ function InitBody() {
 		document.getElementById("ButtonOK").innerText = "Delete";
 		document.getElementById("ButtonOK").onclick = function(){DeleteBot()};
 		SetChangePending();
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "GetBot",
 			Parameters: {
 				Type: l_json_objectKey.TYP_BOT

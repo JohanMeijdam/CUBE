@@ -27,11 +27,11 @@ g_xmlhttp.onreadystatechange = function() {
 			}
 			for (i in l_json_array) {
 				switch (l_json_array[i].ResultName) {
-					case "SELECT_VAL":
+					case "SEL_VAL":
 						var l_json_values = l_json_array[i].Rows[0].Data;
 						document.getElementById("InputPrompt").value=l_json_values.Prompt;
 						break;
-					case "CREATE_VAL":
+					case "CRE_VAL":
 						document.getElementById("InputFkItpName").disabled=true;
 						document.getElementById("InputFkIteSequence").disabled=true;
 						document.getElementById("InputCode").disabled=true;
@@ -60,14 +60,14 @@ g_xmlhttp.onreadystatechange = function() {
 						document.getElementById("ButtonOK").onclick = function(){UpdateVal()};						
 						ResetChangePending();
 						break;
-					case "UPDATE_VAL":
+					case "UPD_VAL":
 						var l_objNode = parent.document.getElementById(g_node_id);
 						if (l_objNode != null) {
 							l_objNode.children[1].lastChild.nodeValue = ' '+document.getElementById("InputCode").value.toLowerCase()+' '+document.getElementById("InputPrompt").value.toLowerCase();
 						}
 						ResetChangePending();
 						break;
-					case "DELETE_VAL":
+					case "DEL_VAL":
 						var l_objNode = parent.document.getElementById(g_node_id);
 						if (g_parent_node_id == null) {
 							g_parent_node_id = l_objNode.parentNode.parentNode.id;
@@ -115,7 +115,7 @@ function CreateVal() {
 		CubePosAction: l_pos_action
 	};
 	if (l_pos_action == 'F' || l_pos_action == 'L') {
-		PerformTrans( {
+		PerformTrans('InformationType', {
 			Service: "CreateVal",
 			Parameters: {
 				Option,
@@ -124,7 +124,7 @@ function CreateVal() {
 		} );
 	} else {
 		var Ref = g_json_option.Type.TYP_VAL;
-		PerformTrans( {
+		PerformTrans('InformationType', {
 			Service: "CreateVal",
 				Parameters: {
 					Option,
@@ -142,7 +142,7 @@ function UpdateVal() {
 		Code: document.getElementById("InputCode").value,
 		Prompt: document.getElementById("InputPrompt").value
 	};
-	PerformTrans( {
+	PerformTrans('InformationType', {
 		Service: "UpdateVal",
 		Parameters: {
 			Type
@@ -156,7 +156,7 @@ function DeleteVal() {
 		FkIteSequence: document.getElementById("InputFkIteSequence").value,
 		Code: document.getElementById("InputCode").value
 	};
-	PerformTrans( {
+	PerformTrans('InformationType', {
 		Service: "DeleteVal",
 		Parameters: {
 			Type
@@ -181,7 +181,7 @@ function InitBody() {
 		document.getElementById("InputCode").value = l_json_objectKey.TYP_VAL.Code;
 		document.getElementById("ButtonOK").innerText = "Update";
 		document.getElementById("ButtonOK").onclick = function(){UpdateVal()};
-		PerformTrans( {
+		PerformTrans('InformationType', {
 			Service: "GetVal",
 			Parameters: {
 				Type: l_json_objectKey.TYP_VAL
@@ -208,7 +208,7 @@ function InitBody() {
 		document.getElementById("ButtonOK").innerText = "Delete";
 		document.getElementById("ButtonOK").onclick = function(){DeleteVal()};
 		SetChangePending();
-		PerformTrans( {
+		PerformTrans('InformationType', {
 			Service: "GetVal",
 			Parameters: {
 				Type: l_json_objectKey.TYP_VAL

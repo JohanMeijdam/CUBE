@@ -27,12 +27,12 @@ g_xmlhttp.onreadystatechange = function() {
 			}
 			for (i in l_json_array) {
 				switch (l_json_array[i].ResultName) {
-					case "SELECT_RTT":
+					case "SEL_RTT":
 						var l_json_values = l_json_array[i].Rows[0].Data;
 						document.getElementById("InputFkBotName").value=l_json_values.FkBotName;
 						document.getElementById("InputIncludeOrExclude").value=l_json_values.IncludeOrExclude;
 						break;
-					case "CREATE_RTT":
+					case "CRE_RTT":
 						document.getElementById("InputFkBotName").disabled=true;
 						document.getElementById("InputFkTypName").disabled=true;
 						document.getElementById("InputXfTspTypName").disabled=true;
@@ -69,10 +69,10 @@ g_xmlhttp.onreadystatechange = function() {
 						document.getElementById("ButtonOK").onclick = function(){UpdateRtt()};						
 						ResetChangePending();
 						break;
-					case "UPDATE_RTT":
+					case "UPD_RTT":
 						ResetChangePending();
 						break;
-					case "DELETE_RTT":
+					case "DEL_RTT":
 						var l_objNode = parent.document.getElementById(g_node_id);
 						if (g_parent_node_id == null) {
 							g_parent_node_id = l_objNode.parentNode.parentNode.id;
@@ -82,7 +82,7 @@ g_xmlhttp.onreadystatechange = function() {
 						}
 						CancelChangePending();
 						break;
-					case "SELECT_FKEY_TYP":
+					case "SEL_FKEY_TYP":
 						var l_json_values = l_json_array[i].Rows[0].Data;
 						document.getElementById("InputFkBotName").value=l_json_values.FkBotName;
 						break;
@@ -90,7 +90,7 @@ g_xmlhttp.onreadystatechange = function() {
 						alert ('Server error:\n'+l_json_array[i].ErrorText);
 						break;
 					default:
-						if (l_json_array[i].ResultName.substring(0,5) == 'LIST_') {
+						if (l_json_array[i].ResultName.substring(0,4) == 'LST_') {
 							switch (document.body._ListBoxCode){
 								case "Ref001":
 									OpenListBox(l_json_array[i].Rows,'typespec','TypeSpecialisation');
@@ -133,7 +133,7 @@ function CreateRtt() {
 		XfTspTsgCode: document.getElementById("InputXfTspTsgCode").value,
 		XkTspCode: document.getElementById("InputXkTspCode").value
 	};
-	PerformTrans( {
+	PerformTrans('BusinessObjectType', {
 		Service: "CreateRtt",
 		Parameters: {
 			Type
@@ -150,7 +150,7 @@ function UpdateRtt() {
 		XfTspTsgCode: document.getElementById("InputXfTspTsgCode").value,
 		XkTspCode: document.getElementById("InputXkTspCode").value
 	};
-	PerformTrans( {
+	PerformTrans('BusinessObjectType', {
 		Service: "UpdateRtt",
 		Parameters: {
 			Type
@@ -165,7 +165,7 @@ function DeleteRtt() {
 		XfTspTsgCode: document.getElementById("InputXfTspTsgCode").value,
 		XkTspCode: document.getElementById("InputXkTspCode").value
 	};
-	PerformTrans( {
+	PerformTrans('BusinessObjectType', {
 		Service: "DeleteRtt",
 		Parameters: {
 			Type
@@ -200,6 +200,7 @@ function UpdateForeignKey(p_obj) {
 		alert ('Error Listbox: '+document.body._ListBoxCode);
 	}
 	CloseListBox();
+	SetChangePending();
 }
 
 function StartSelect001(p_event) {
@@ -209,13 +210,13 @@ function StartSelect001(p_event) {
 	document.body._ListBoxOptional = 'N';
 	var Parameters = {
 		Option: {
-			CubeScopeLevel:0
+			CubeScopeLevel:1
 		},
 		Ref: {
 			FkTypName:document.getElementById("InputFkTypName").value
 		}
 	};
-	PerformTrans( {
+	PerformTrans('BusinessObjectType', {
 		Service: "GetTspForTypList",
 		Parameters
 	} );
@@ -238,7 +239,7 @@ function InitBody() {
 		document.getElementById("InputXkTspCode").value = l_json_objectKey.TYP_RTT.XkTspCode;
 		document.getElementById("ButtonOK").innerText = "Update";
 		document.getElementById("ButtonOK").onclick = function(){UpdateRtt()};
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "GetRtt",
 			Parameters: {
 				Type: l_json_objectKey.TYP_RTT
@@ -256,7 +257,7 @@ function InitBody() {
 		document.getElementById("InputFkTypName").value = l_json_objectKey.TYP_TYP.Name;
 		document.getElementById("ButtonOK").innerText = "Create";
 		document.getElementById("ButtonOK").onclick = function(){CreateRtt()};
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "GetTypFkey",
 			Parameters: {
 				Type: l_json_objectKey.TYP_TYP
@@ -275,7 +276,7 @@ function InitBody() {
 		document.getElementById("ButtonOK").innerText = "Delete";
 		document.getElementById("ButtonOK").onclick = function(){DeleteRtt()};
 		SetChangePending();
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "GetRtt",
 			Parameters: {
 				Type: l_json_objectKey.TYP_RTT

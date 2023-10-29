@@ -43,10 +43,6 @@ g_xmlhttp.onreadystatechange = function() {
 					case 'MOV_TSG': MoveNode (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.body._moveAction); break;
 					case 'LST_TSP': AddTreeviewChildren(l_json_array[i].Rows,'TYP_TSP','icons/typespec.bmp','TypeSpecialisation'); break;
 					case 'MOV_TSP': MoveNode (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.body._moveAction); break;
-					case 'LST_SRV': AddTreeviewChildren(l_json_array[i].Rows,'TYP_SRV','icons/service.bmp','Service'); break;
-					case 'MOV_SRV': MoveNode (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.body._moveAction); break;
-					case 'LST_SVA': AddTreeviewChildren(l_json_array[i].Rows,'TYP_SVA','icons/servarg.bmp','ServiceArgument'); break;
-					case 'MOV_SVA': MoveNode (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.body._moveAction); break;
 					case 'LST_ATB': AddTreeviewChildren(l_json_array[i].Rows,'TYP_ATB','icons/attrib.bmp','Attribute'); break;
 					case 'MOV_ATB': MoveNode (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.body._moveAction); break;
 					case 'LST_DER': AddTreeviewChildren(l_json_array[i].Rows,'TYP_DER','icons/deriv.bmp','Derivation'); break;
@@ -61,6 +57,9 @@ g_xmlhttp.onreadystatechange = function() {
 					case 'LST_RTR': AddTreeviewChildren(l_json_array[i].Rows,'TYP_RTR','icons/restrict.bmp','RestrictionTypeSpecRef'); break;
 					case 'LST_RTS': AddTreeviewChildren(l_json_array[i].Rows,'TYP_RTS','icons/restrtgt.bmp','RestrictionTargetTypeSpec'); break;
 					case 'CNT_RTS': CheckMenuItem('TYP_RTS',l_json_array[i].Rows[0].Data.TypeCount); break;
+					case 'LST_SRV': AddTreeviewChildren(l_json_array[i].Rows,'TYP_SRV','icons/service.bmp','Service'); break;
+					case 'MOV_SRV': MoveNode (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.body._moveAction); break;
+					case 'LST_SVA': AddTreeviewChildren(l_json_array[i].Rows,'TYP_SVA','icons/servarg.bmp','ServiceArgument'); break;
 					case 'LST_RTT': AddTreeviewChildren(l_json_array[i].Rows,'TYP_RTT','icons/restrict.bmp','RestrictionTypeSpecTyp'); break;
 					case 'LST_JSN': AddTreeviewChildren(l_json_array[i].Rows,'TYP_JSN','icons/braces.bmp','JsonPath'); break;
 					case 'CNT_JSN': CheckMenuItem('TYP_JSN',l_json_array[i].Rows[0].Data.TypeCount); break;
@@ -111,20 +110,20 @@ function DefineTypePosition (p_parentType, p_type, p_switch) {
 		switch (p_type) { case 'TYP_TYP': l_index = 2; break;}
 		var l_count = 1; break;
 	case 'TYP_TYP':
-		switch (p_type) { case 'TYP_TSG': l_index = 2; break; case 'TYP_SRV': l_index = 3; break; case 'TYP_ATB': l_index = 4; break; case 'TYP_REF': l_index = 5; break; case 'TYP_RTT': l_index = 6; break; case 'TYP_JSN': l_index = 7; break; case 'TYP_DCT': l_index = 8; break;case 'TYP_TYP': l_index = 9; break;}
+		switch (p_type) { case 'TYP_TSG': l_index = 2; break; case 'TYP_ATB': l_index = 3; break; case 'TYP_REF': l_index = 4; break; case 'TYP_SRV': l_index = 5; break; case 'TYP_RTT': l_index = 6; break; case 'TYP_JSN': l_index = 7; break; case 'TYP_DCT': l_index = 8; break;case 'TYP_TYP': l_index = 9; break;}
 		var l_count = 8; break;
 	case 'TYP_TSG':
 		switch (p_type) { case 'TYP_TSP': l_index = 2; break;case 'TYP_TSG': l_index = 3; break;}
 		var l_count = 2; break;
-	case 'TYP_SRV':
-		switch (p_type) { case 'TYP_SVA': l_index = 2; break;}
-		var l_count = 1; break;
 	case 'TYP_ATB':
 		switch (p_type) { case 'TYP_DER': l_index = 2; break; case 'TYP_DCA': l_index = 3; break; case 'TYP_RTA': l_index = 4; break;}
 		var l_count = 3; break;
 	case 'TYP_REF':
 		switch (p_type) { case 'TYP_DCR': l_index = 2; break; case 'TYP_RTR': l_index = 3; break; case 'TYP_RTS': l_index = 4; break;}
 		var l_count = 3; break;
+	case 'TYP_SRV':
+		switch (p_type) { case 'TYP_SVA': l_index = 2; break;}
+		var l_count = 1; break;
 	case 'TYP_JSN':
 		switch (p_type) {case 'TYP_JSN': l_index = 2; break;}
 		var l_count = 1; break;
@@ -187,10 +186,6 @@ function OpenCloseOnClick(p_obj) {
 			var l_json_id = JSON.parse(p_obj.parentNode.id)["TYP_TSG"];
 			PerformTrans('BusinessObjectType', {Service:"GetTsgItems",Parameters:{Type:l_json_id}} );
 			break;
- 		case 'TYP_SRV':
-			var l_json_id = JSON.parse(p_obj.parentNode.id)["TYP_SRV"];
-			PerformTrans('BusinessObjectType', {Service:"GetSrvItems",Parameters:{Type:l_json_id}} );
-			break;
  		case 'TYP_ATB':
 			var l_json_id = JSON.parse(p_obj.parentNode.id)["TYP_ATB"];
 			PerformTrans('BusinessObjectType', {Service:"GetAtbItems",Parameters:{Type:l_json_id}} );
@@ -198,6 +193,10 @@ function OpenCloseOnClick(p_obj) {
  		case 'TYP_REF':
 			var l_json_id = JSON.parse(p_obj.parentNode.id)["TYP_REF"];
 			PerformTrans('BusinessObjectType', {Service:"GetRefItems",Parameters:{Type:l_json_id}} );
+			break;
+ 		case 'TYP_SRV':
+			var l_json_id = JSON.parse(p_obj.parentNode.id)["TYP_SRV"];
+			PerformTrans('BusinessObjectType', {Service:"GetSrvItems",Parameters:{Type:l_json_id}} );
 			break;
  		case 'TYP_JSN':
 			var l_json_id = JSON.parse(p_obj.parentNode.id)["TYP_JSN"];
@@ -267,17 +266,14 @@ function OpenDetail(p_obj) {
 			case 'TYP_TSP':
 				PerformTrans('BusinessObjectType', {Service:"MoveTsp",Parameters:{Option:{CubePosAction:document.body._moveAction},Type:l_json_id,Ref:l_json_id_ref}} );
 				break;
-			case 'TYP_SRV':
-				PerformTrans('BusinessObjectType', {Service:"MoveSrv",Parameters:{Option:{CubePosAction:document.body._moveAction},Type:l_json_id,Ref:l_json_id_ref}} );
-				break;
-			case 'TYP_SVA':
-				PerformTrans('BusinessObjectType', {Service:"MoveSva",Parameters:{Option:{CubePosAction:document.body._moveAction},Type:l_json_id,Ref:l_json_id_ref}} );
-				break;
 			case 'TYP_ATB':
 				PerformTrans('BusinessObjectType', {Service:"MoveAtb",Parameters:{Option:{CubePosAction:document.body._moveAction},Type:l_json_id,Ref:l_json_id_ref}} );
 				break;
 			case 'TYP_REF':
 				PerformTrans('BusinessObjectType', {Service:"MoveRef",Parameters:{Option:{CubePosAction:document.body._moveAction},Type:l_json_id,Ref:l_json_id_ref}} );
+				break;
+			case 'TYP_SRV':
+				PerformTrans('BusinessObjectType', {Service:"MoveSrv",Parameters:{Option:{CubePosAction:document.body._moveAction},Type:l_json_id,Ref:l_json_id_ref}} );
 				break;
 			case 'TYP_JSN':
 				PerformTrans('BusinessObjectType', {Service:"MoveJsn",Parameters:{Option:{CubePosAction:document.body._moveAction},Type:l_json_id,Ref:l_json_id_ref}} );
@@ -444,9 +440,9 @@ function OpenMenu(p_obj) {
 			AddMenuItem(g_objMenuList, 'change parent', 'icons/cube_change_par.bmp','CubeChangePar','','CUBE_P_TYP','',0,'Y',0);
 		}
 		AddMenuItem(g_objMenuList, 'add type_specialisation_group', 'icons/tspgroup.bmp','CubeAdd','N','TYP_TSG','TypeSpecialisationGroup',0,'N',2);
-		AddMenuItem(g_objMenuList, 'add service', 'icons/service.bmp','CubeAdd','N','TYP_SRV','Service',0,'N',3);
-		AddMenuItem(g_objMenuList, 'add attribute', 'icons/attrib.bmp','CubeAdd','N','TYP_ATB','Attribute',0,'N',4);
-		AddMenuItem(g_objMenuList, 'add reference', 'icons/ref.bmp','CubeAdd','N','TYP_REF','Reference',0,'N',5);
+		AddMenuItem(g_objMenuList, 'add attribute', 'icons/attrib.bmp','CubeAdd','N','TYP_ATB','Attribute',0,'N',3);
+		AddMenuItem(g_objMenuList, 'add reference', 'icons/ref.bmp','CubeAdd','N','TYP_REF','Reference',0,'N',4);
+		AddMenuItem(g_objMenuList, 'add service', 'icons/service.bmp','CubeAdd','N','TYP_SRV','Service',0,'N',5);
 		AddMenuItem(g_objMenuList, 'add restriction_type_spec_typ', 'icons/restrict.bmp','DetailRTT','N','TYP_RTT','RestrictionTypeSpecTyp',0,'N',6);
 		AddMenuItem(g_objMenuList, 'add json_path', 'icons/braces.bmp','CubeAdd','N','TYP_JSN','JsonPath',1,'N',7);
 		AddMenuItem(g_objMenuList, 'add description_type', 'icons/desc.bmp','DetailDCT','N','TYP_DCT','DescriptionType',1,'N',8);
@@ -471,19 +467,6 @@ function OpenMenu(p_obj) {
 		}
 		AddMenuItem(g_objMenuList, 'delete', 'icons/cube_delete.bmp','CubeDelete','X','','TypeSpecialisation',0,'N',0);
 		break;
- 	case 'TYP_SRV':
-		if (l_childCount > 1) {
-			AddMenuItem(g_objMenuList, 'move', 'icons/cube_move.bmp','CubeMove','','CUBE_M_SRV','',0,'N',0);
-		}
-		AddMenuItem(g_objMenuList, 'add service_argument', 'icons/servarg.bmp','CubeAdd','N','TYP_SVA','ServiceArgument',0,'N',2);
-		AddMenuItem(g_objMenuList, 'delete', 'icons/cube_delete.bmp','CubeDelete','X','','Service',0,'N',0);
-		break;
- 	case 'TYP_SVA':
-		if (l_childCount > 1) {
-			AddMenuItem(g_objMenuList, 'move', 'icons/cube_move.bmp','CubeMove','','CUBE_M_SVA','',0,'N',0);
-		}
-		AddMenuItem(g_objMenuList, 'delete', 'icons/cube_delete.bmp','CubeDelete','X','','ServiceArgument',0,'N',0);
-		break;
  	case 'TYP_ATB':
 		if (l_childCount > 1) {
 			AddMenuItem(g_objMenuList, 'move', 'icons/cube_move.bmp','CubeMove','','CUBE_M_ATB','',0,'N',0);
@@ -505,6 +488,13 @@ function OpenMenu(p_obj) {
 		AddMenuItem(g_objMenuList, 'delete', 'icons/cube_delete.bmp','CubeDelete','X','','Reference',0,'N',0);
 		var l_json_id = l_json_node_id[l_type_id];
 		PerformTrans('BusinessObjectType', {Service:"CountRefRestrictedItems",Parameters:{Type:l_json_id}} );
+		break;
+ 	case 'TYP_SRV':
+		if (l_childCount > 1) {
+			AddMenuItem(g_objMenuList, 'move', 'icons/cube_move.bmp','CubeMove','','CUBE_M_SRV','',0,'N',0);
+		}
+		AddMenuItem(g_objMenuList, 'add service_argument', 'icons/servarg.bmp','DetailSVA','N','TYP_SVA','ServiceArgument',0,'N',2);
+		AddMenuItem(g_objMenuList, 'delete', 'icons/cube_delete.bmp','CubeDelete','X','','Service',0,'N',0);
 		break;
  	case 'TYP_JSN':
 		if (l_childCount > 1) {

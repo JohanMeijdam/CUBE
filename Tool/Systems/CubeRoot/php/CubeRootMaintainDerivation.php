@@ -27,7 +27,7 @@ g_xmlhttp.onreadystatechange = function() {
 			}
 			for (i in l_json_array) {
 				switch (l_json_array[i].ResultName) {
-					case "SELECT_DER":
+					case "SEL_DER":
 						var l_json_values = l_json_array[i].Rows[0].Data;
 						document.getElementById("InputFkBotName").value=l_json_values.FkBotName;
 						document.getElementById("InputCubeTsgType").value=l_json_values.CubeTsgType;
@@ -36,7 +36,7 @@ g_xmlhttp.onreadystatechange = function() {
 						document.getElementById("InputXkTypName1").value=l_json_values.XkTypName1;
 						ProcessTypeSpecialisation();
 						break;
-					case "CREATE_DER":
+					case "CRE_DER":
 						document.getElementById("InputFkBotName").disabled=true;
 						document.getElementById("InputFkTypName").disabled=true;
 						document.getElementById("InputFkAtbName").disabled=true;
@@ -65,14 +65,14 @@ g_xmlhttp.onreadystatechange = function() {
 						document.getElementById("ButtonOK").onclick = function(){UpdateDer()};						
 						ResetChangePending();
 						break;
-					case "UPDATE_DER":
+					case "UPD_DER":
 						var l_objNode = parent.document.getElementById(g_node_id);
 						if (l_objNode != null) {
 							l_objNode.children[1].lastChild.nodeValue = ' '+'('+document.getElementById("InputCubeTsgType").value.toLowerCase()+')';
 						}
 						ResetChangePending();
 						break;
-					case "DELETE_DER":
+					case "DEL_DER":
 						var l_objNode = parent.document.getElementById(g_node_id);
 						if (g_parent_node_id == null) {
 							g_parent_node_id = l_objNode.parentNode.parentNode.id;
@@ -82,7 +82,7 @@ g_xmlhttp.onreadystatechange = function() {
 						}
 						CancelChangePending();
 						break;
-					case "SELECT_FKEY_ATB":
+					case "SEL_FKEY_ATB":
 						var l_json_values = l_json_array[i].Rows[0].Data;
 						document.getElementById("InputFkBotName").value=l_json_values.FkBotName;
 						break;
@@ -90,7 +90,7 @@ g_xmlhttp.onreadystatechange = function() {
 						alert ('Server error:\n'+l_json_array[i].ErrorText);
 						break;
 					default:
-						if (l_json_array[i].ResultName.substring(0,5) == 'LIST_') {
+						if (l_json_array[i].ResultName.substring(0,4) == 'LST_') {
 							switch (document.body._ListBoxCode){
 								case "Ref001":
 									OpenListBox(l_json_array[i].Rows,'type','Type');
@@ -129,7 +129,7 @@ function CreateDer() {
 		XkTypName: document.getElementById("InputXkTypName").value,
 		XkTypName1: document.getElementById("InputXkTypName1").value
 	};
-	PerformTrans( {
+	PerformTrans('BusinessObjectType', {
 		Service: "CreateDer",
 		Parameters: {
 			Type
@@ -147,7 +147,7 @@ function UpdateDer() {
 		XkTypName: document.getElementById("InputXkTypName").value,
 		XkTypName1: document.getElementById("InputXkTypName1").value
 	};
-	PerformTrans( {
+	PerformTrans('BusinessObjectType', {
 		Service: "UpdateDer",
 		Parameters: {
 			Type
@@ -160,7 +160,7 @@ function DeleteDer() {
 		FkTypName: document.getElementById("InputFkTypName").value,
 		FkAtbName: document.getElementById("InputFkAtbName").value
 	};
-	PerformTrans( {
+	PerformTrans('BusinessObjectType', {
 		Service: "DeleteDer",
 		Parameters: {
 			Type
@@ -192,6 +192,7 @@ function UpdateForeignKey(p_obj) {
 		alert ('Error Listbox: '+document.body._ListBoxCode);
 	}
 	CloseListBox();
+	SetChangePending();
 }
 
 function StartSelect001(p_event) {
@@ -199,7 +200,7 @@ function StartSelect001(p_event) {
 	document.body._SelectTop = p_event.clientY;
 	document.body._ListBoxCode = 'Ref001';
 	document.body._ListBoxOptional = 'Y';
-	PerformTrans( {
+	PerformTrans('BusinessObjectType', {
 		Service: "GetTypListAll"
 	} );
 }
@@ -209,7 +210,7 @@ function StartSelect002(p_event) {
 	document.body._SelectTop = p_event.clientY;
 	document.body._ListBoxCode = 'Ref002';
 	document.body._ListBoxOptional = 'Y';
-	PerformTrans( {
+	PerformTrans('BusinessObjectType', {
 		Service: "GetTypListAll"
 	} );
 }
@@ -229,7 +230,7 @@ function InitBody() {
 		document.getElementById("InputFkAtbName").value = l_json_objectKey.TYP_DER.FkAtbName;
 		document.getElementById("ButtonOK").innerText = "Update";
 		document.getElementById("ButtonOK").onclick = function(){UpdateDer()};
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "GetDer",
 			Parameters: {
 				Type: l_json_objectKey.TYP_DER
@@ -246,7 +247,7 @@ function InitBody() {
 		document.getElementById("InputFkAtbName").value = l_json_objectKey.TYP_ATB.Name;
 		document.getElementById("ButtonOK").innerText = "Create";
 		document.getElementById("ButtonOK").onclick = function(){CreateDer()};
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "GetAtbFkey",
 			Parameters: {
 				Type: l_json_objectKey.TYP_ATB
@@ -264,7 +265,7 @@ function InitBody() {
 		document.getElementById("ButtonOK").innerText = "Delete";
 		document.getElementById("ButtonOK").onclick = function(){DeleteDer()};
 		SetChangePending();
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "GetDer",
 			Parameters: {
 				Type: l_json_objectKey.TYP_DER

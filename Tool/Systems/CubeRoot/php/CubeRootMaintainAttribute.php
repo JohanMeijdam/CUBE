@@ -27,7 +27,7 @@ g_xmlhttp.onreadystatechange = function() {
 			}
 			for (i in l_json_array) {
 				switch (l_json_array[i].ResultName) {
-					case "SELECT_ATB":
+					case "SEL_ATB":
 						var l_json_values = l_json_array[i].Rows[0].Data;
 						document.getElementById("InputFkBotName").value=l_json_values.FkBotName;
 						document.getElementById("InputPrimaryKey").value=l_json_values.PrimaryKey;
@@ -38,7 +38,7 @@ g_xmlhttp.onreadystatechange = function() {
 						document.getElementById("InputUnchangeable").value=l_json_values.Unchangeable;
 						document.getElementById("InputXkItpName").value=l_json_values.XkItpName;
 						break;
-					case "CREATE_ATB":
+					case "CRE_ATB":
 						document.getElementById("InputFkBotName").disabled=true;
 						document.getElementById("InputFkTypName").disabled=true;
 						document.getElementById("InputName").disabled=true;
@@ -67,10 +67,10 @@ g_xmlhttp.onreadystatechange = function() {
 						document.getElementById("ButtonOK").onclick = function(){UpdateAtb()};						
 						ResetChangePending();
 						break;
-					case "UPDATE_ATB":
+					case "UPD_ATB":
 						ResetChangePending();
 						break;
-					case "DELETE_ATB":
+					case "DEL_ATB":
 						var l_objNode = parent.document.getElementById(g_node_id);
 						if (g_parent_node_id == null) {
 							g_parent_node_id = l_objNode.parentNode.parentNode.id;
@@ -80,7 +80,7 @@ g_xmlhttp.onreadystatechange = function() {
 						}
 						CancelChangePending();
 						break;
-					case "SELECT_FKEY_TYP":
+					case "SEL_FKEY_TYP":
 						var l_json_values = l_json_array[i].Rows[0].Data;
 						document.getElementById("InputFkBotName").value=l_json_values.FkBotName;
 						break;
@@ -88,7 +88,7 @@ g_xmlhttp.onreadystatechange = function() {
 						alert ('Server error:\n'+l_json_array[i].ErrorText);
 						break;
 					default:
-						if (l_json_array[i].ResultName.substring(0,5) == 'LIST_') {
+						if (l_json_array[i].ResultName.substring(0,4) == 'LST_') {
 							switch (document.body._ListBoxCode){
 								case "Ref001":
 									OpenListBox(l_json_array[i].Rows,'inftype','InformationType');
@@ -132,7 +132,7 @@ function CreateAtb() {
 		CubePosAction: l_pos_action
 	};
 	if (l_pos_action == 'F' || l_pos_action == 'L') {
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "CreateAtb",
 			Parameters: {
 				Option,
@@ -141,7 +141,7 @@ function CreateAtb() {
 		} );
 	} else {
 		var Ref = g_json_option.Type.TYP_ATB;
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "CreateAtb",
 				Parameters: {
 					Option,
@@ -165,7 +165,7 @@ function UpdateAtb() {
 		Unchangeable: document.getElementById("InputUnchangeable").value,
 		XkItpName: document.getElementById("InputXkItpName").value
 	};
-	PerformTrans( {
+	PerformTrans('BusinessObjectType', {
 		Service: "UpdateAtb",
 		Parameters: {
 			Type
@@ -178,7 +178,7 @@ function DeleteAtb() {
 		FkTypName: document.getElementById("InputFkTypName").value,
 		Name: document.getElementById("InputName").value
 	};
-	PerformTrans( {
+	PerformTrans('BusinessObjectType', {
 		Service: "DeleteAtb",
 		Parameters: {
 			Type
@@ -203,6 +203,7 @@ function UpdateForeignKey(p_obj) {
 		alert ('Error Listbox: '+document.body._ListBoxCode);
 	}
 	CloseListBox();
+	SetChangePending();
 }
 
 function StartSelect001(p_event) {
@@ -210,7 +211,7 @@ function StartSelect001(p_event) {
 	document.body._SelectTop = p_event.clientY;
 	document.body._ListBoxCode = 'Ref001';
 	document.body._ListBoxOptional = 'Y';
-	PerformTrans( {
+	PerformTrans('InformationType', {
 		Service: "GetItpList"
 	} );
 }
@@ -231,7 +232,7 @@ function InitBody() {
 		document.getElementById("InputName").value = l_json_objectKey.TYP_ATB.Name;
 		document.getElementById("ButtonOK").innerText = "Update";
 		document.getElementById("ButtonOK").onclick = function(){UpdateAtb()};
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "GetAtb",
 			Parameters: {
 				Type: l_json_objectKey.TYP_ATB
@@ -246,7 +247,7 @@ function InitBody() {
 		document.getElementById("InputFkTypName").value = l_json_objectKey.TYP_TYP.Name;
 		document.getElementById("ButtonOK").innerText = "Create";
 		document.getElementById("ButtonOK").onclick = function(){CreateAtb()};
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "GetTypFkey",
 			Parameters: {
 				Type: l_json_objectKey.TYP_TYP
@@ -267,7 +268,7 @@ function InitBody() {
 		document.getElementById("ButtonOK").innerText = "Delete";
 		document.getElementById("ButtonOK").onclick = function(){DeleteAtb()};
 		SetChangePending();
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "GetAtb",
 			Parameters: {
 				Type: l_json_objectKey.TYP_ATB

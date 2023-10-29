@@ -27,7 +27,7 @@ g_xmlhttp.onreadystatechange = function() {
 			}
 			for (i in l_json_array) {
 				switch (l_json_array[i].ResultName) {
-					case "SELECT_JSN":
+					case "SEL_JSN":
 						var l_json_values = l_json_array[i].Rows[0].Data;
 						document.getElementById("InputFkBotName").value=l_json_values.FkBotName;
 						document.getElementById("InputFkJsnName").value=l_json_values.FkJsnName;
@@ -39,7 +39,7 @@ g_xmlhttp.onreadystatechange = function() {
 						document.getElementById("InputCubeTsgType").value=l_json_values.CubeTsgType;
 						ProcessTypeSpecialisation();
 						break;
-					case "CREATE_JSN":
+					case "CRE_JSN":
 						document.getElementById("InputFkBotName").disabled=true;
 						document.getElementById("InputFkTypName").disabled=true;
 						document.getElementById("InputFkJsnName").disabled=true;
@@ -79,14 +79,14 @@ g_xmlhttp.onreadystatechange = function() {
 						document.getElementById("ButtonOK").onclick = function(){UpdateJsn()};						
 						ResetChangePending();
 						break;
-					case "UPDATE_JSN":
+					case "UPD_JSN":
 						var l_objNode = parent.document.getElementById(g_node_id);
 						if (l_objNode != null) {
 							l_objNode.children[1].lastChild.nodeValue = ' '+'('+document.getElementById("InputCubeTsgObjArr").value.toLowerCase()+')'+' ('+document.getElementById("InputCubeTsgType").value.toLowerCase()+')'+' '+document.getElementById("InputName").value.toLowerCase()+' '+document.getElementById("InputLocation").value.toLowerCase();
 						}
 						ResetChangePending();
 						break;
-					case "DELETE_JSN":
+					case "DEL_JSN":
 						var l_objNode = parent.document.getElementById(g_node_id);
 						if (g_parent_node_id == null) {
 							g_parent_node_id = l_objNode.parentNode.parentNode.id;
@@ -96,11 +96,11 @@ g_xmlhttp.onreadystatechange = function() {
 						}
 						CancelChangePending();
 						break;
-					case "SELECT_FKEY_TYP":
+					case "SEL_FKEY_TYP":
 						var l_json_values = l_json_array[i].Rows[0].Data;
 						document.getElementById("InputFkBotName").value=l_json_values.FkBotName;
 						break;
-					case "SELECT_FKEY_JSN":
+					case "SEL_FKEY_JSN":
 						var l_json_values = l_json_array[i].Rows[0].Data;
 						document.getElementById("InputFkBotName").value=l_json_values.FkBotName;
 						break;
@@ -108,7 +108,7 @@ g_xmlhttp.onreadystatechange = function() {
 						alert ('Server error:\n'+l_json_array[i].ErrorText);
 						break;
 					default:
-						if (l_json_array[i].ResultName.substring(0,5) == 'LIST_') {
+						if (l_json_array[i].ResultName.substring(0,4) == 'LST_') {
 							switch (document.body._ListBoxCode){
 								case "Ref001":
 									OpenListBox(l_json_array[i].Rows,'attrib','Attribute');
@@ -175,7 +175,7 @@ function CreateJsn() {
 		CubePosAction: l_pos_action
 	};
 	if (l_pos_action == 'F' || l_pos_action == 'L') {
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "CreateJsn",
 			Parameters: {
 				Option,
@@ -184,7 +184,7 @@ function CreateJsn() {
 		} );
 	} else {
 		var Ref = g_json_option.Type.TYP_JSN;
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "CreateJsn",
 				Parameters: {
 					Option,
@@ -212,7 +212,7 @@ function UpdateJsn() {
 		XkAtbName: document.getElementById("InputXkAtbName").value,
 		XkTypName: document.getElementById("InputXkTypName").value
 	};
-	PerformTrans( {
+	PerformTrans('BusinessObjectType', {
 		Service: "UpdateJsn",
 		Parameters: {
 			Type
@@ -229,7 +229,7 @@ function DeleteJsn() {
 		XkAtbName: document.getElementById("InputXkAtbName").value,
 		XkTypName: document.getElementById("InputXkTypName").value
 	};
-	PerformTrans( {
+	PerformTrans('BusinessObjectType', {
 		Service: "DeleteJsn",
 		Parameters: {
 			Type
@@ -266,6 +266,7 @@ function UpdateForeignKey(p_obj) {
 		alert ('Error Listbox: '+document.body._ListBoxCode);
 	}
 	CloseListBox();
+	SetChangePending();
 }
 
 function StartSelect001(p_event) {
@@ -281,7 +282,7 @@ function StartSelect001(p_event) {
 			FkTypName:document.getElementById("InputFkTypName").value
 		}
 	};
-	PerformTrans( {
+	PerformTrans('BusinessObjectType', {
 		Service: "GetAtbForTypList",
 		Parameters
 	} );
@@ -300,7 +301,7 @@ function StartSelect002(p_event) {
 			FkTypName:document.getElementById("InputFkTypName").value
 		}
 	};
-	PerformTrans( {
+	PerformTrans('BusinessObjectType', {
 		Service: "GetTypForTypListAll",
 		Parameters
 	} );
@@ -326,7 +327,7 @@ function InitBody() {
 		document.getElementById("InputXkTypName").value = l_json_objectKey.TYP_JSN.XkTypName;
 		document.getElementById("ButtonOK").innerText = "Update";
 		document.getElementById("ButtonOK").onclick = function(){UpdateJsn()};
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "GetJsn",
 			Parameters: {
 				Type: l_json_objectKey.TYP_JSN
@@ -354,7 +355,7 @@ function InitBody() {
 		document.getElementById("InputFkTypName").value = l_json_objectKey.TYP_TYP.Name;
 		document.getElementById("ButtonOK").innerText = "Create";
 		document.getElementById("ButtonOK").onclick = function(){CreateJsn()};
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "GetTypFkey",
 			Parameters: {
 				Type: l_json_objectKey.TYP_TYP
@@ -380,7 +381,7 @@ function InitBody() {
 		document.getElementById("InputFkJsnTypName").value = l_json_objectKey.TYP_JSN.XkTypName;
 		document.getElementById("ButtonOK").innerText = "Create";
 		document.getElementById("ButtonOK").onclick = function(){CreateJsn()};
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "GetJsnFkey",
 			Parameters: {
 				Type: l_json_objectKey.TYP_JSN
@@ -407,7 +408,7 @@ function InitBody() {
 		document.getElementById("ButtonOK").innerText = "Delete";
 		document.getElementById("ButtonOK").onclick = function(){DeleteJsn()};
 		SetChangePending();
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "GetJsn",
 			Parameters: {
 				Type: l_json_objectKey.TYP_JSN

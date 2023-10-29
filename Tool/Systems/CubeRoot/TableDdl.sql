@@ -60,6 +60,10 @@ CREATE SEQUENCE sq_rtr START WITH 100000
 /
 CREATE SEQUENCE sq_rts START WITH 100000
 /
+CREATE SEQUENCE sq_srv START WITH 100000
+/
+CREATE SEQUENCE sq_sva START WITH 100000
+/
 CREATE SEQUENCE sq_rtt START WITH 100000
 /
 CREATE SEQUENCE sq_jsn START WITH 100000
@@ -323,6 +327,37 @@ CREATE TABLE t_restriction_target_type_spec (
 	CONSTRAINT rts_ref_fk
 		FOREIGN KEY (fk_typ_name, fk_ref_sequence, fk_ref_bot_name, fk_ref_typ_name)
 		REFERENCES t_reference (fk_typ_name, sequence, xk_bot_name, xk_typ_name)
+		ON DELETE CASCADE )
+/
+CREATE TABLE t_service (
+	cube_id VARCHAR2(16),
+	cube_sequence NUMBER(8),
+	fk_bot_name VARCHAR2(30),
+	fk_typ_name VARCHAR2(30),
+	name VARCHAR2(30),
+	cube_tsg_db_scr VARCHAR2(8) DEFAULT 'D',
+	class VARCHAR2(3),
+	accessibility CHAR(1),
+	CONSTRAINT srv_pk
+		PRIMARY KEY (fk_typ_name, name, cube_tsg_db_scr),
+	CONSTRAINT srv_typ_fk
+		FOREIGN KEY (fk_typ_name)
+		REFERENCES t_type (name)
+		ON DELETE CASCADE )
+/
+CREATE TABLE t_service_argument (
+	cube_id VARCHAR2(16),
+	fk_bot_name VARCHAR2(30),
+	fk_typ_name VARCHAR2(30),
+	fk_srv_name VARCHAR2(30),
+	fk_srv_cube_tsg_db_scr VARCHAR2(8) DEFAULT 'D',
+	xf_atb_typ_name VARCHAR2(30),
+	xk_atb_name VARCHAR2(30),
+	CONSTRAINT sva_pk
+		PRIMARY KEY (fk_typ_name, fk_srv_name, fk_srv_cube_tsg_db_scr, xf_atb_typ_name, xk_atb_name),
+	CONSTRAINT sva_srv_fk
+		FOREIGN KEY (fk_typ_name, fk_srv_name, fk_srv_cube_tsg_db_scr)
+		REFERENCES t_service (fk_typ_name, name, cube_tsg_db_scr)
 		ON DELETE CASCADE )
 /
 CREATE TABLE t_restriction_type_spec_typ (

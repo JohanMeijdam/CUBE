@@ -210,7 +210,7 @@ function StartSelect001(p_event) {
 	document.body._ListBoxOptional = 'N';
 	var Parameters = {
 		Option: {
-			CubeScopeLevel:0
+			CubeScopeLevel:1
 		},
 		Ref: {
 			FkTypName:document.getElementById("InputFkTypName").value

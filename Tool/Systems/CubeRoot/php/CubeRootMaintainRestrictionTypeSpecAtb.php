@@ -27,12 +27,12 @@ g_xmlhttp.onreadystatechange = function() {
 			}
 			for (i in l_json_array) {
 				switch (l_json_array[i].ResultName) {
-					case "SELECT_RTA":
+					case "SEL_RTA":
 						var l_json_values = l_json_array[i].Rows[0].Data;
 						document.getElementById("InputFkBotName").value=l_json_values.FkBotName;
 						document.getElementById("InputIncludeOrExclude").value=l_json_values.IncludeOrExclude;
 						break;
-					case "CREATE_RTA":
+					case "CRE_RTA":
 						document.getElementById("InputFkBotName").disabled=true;
 						document.getElementById("InputFkTypName").disabled=true;
 						document.getElementById("InputFkAtbName").disabled=true;
@@ -70,10 +70,10 @@ g_xmlhttp.onreadystatechange = function() {
 						document.getElementById("ButtonOK").onclick = function(){UpdateRta()};						
 						ResetChangePending();
 						break;
-					case "UPDATE_RTA":
+					case "UPD_RTA":
 						ResetChangePending();
 						break;
-					case "DELETE_RTA":
+					case "DEL_RTA":
 						var l_objNode = parent.document.getElementById(g_node_id);
 						if (g_parent_node_id == null) {
 							g_parent_node_id = l_objNode.parentNode.parentNode.id;
@@ -83,7 +83,7 @@ g_xmlhttp.onreadystatechange = function() {
 						}
 						CancelChangePending();
 						break;
-					case "SELECT_FKEY_ATB":
+					case "SEL_FKEY_ATB":
 						var l_json_values = l_json_array[i].Rows[0].Data;
 						document.getElementById("InputFkBotName").value=l_json_values.FkBotName;
 						break;
@@ -91,7 +91,7 @@ g_xmlhttp.onreadystatechange = function() {
 						alert ('Server error:\n'+l_json_array[i].ErrorText);
 						break;
 					default:
-						if (l_json_array[i].ResultName.substring(0,5) == 'LIST_') {
+						if (l_json_array[i].ResultName.substring(0,4) == 'LST_') {
 							switch (document.body._ListBoxCode){
 								case "Ref001":
 									OpenListBox(l_json_array[i].Rows,'typespec','TypeSpecialisation');
@@ -139,7 +139,7 @@ function CreateRta() {
 		XfTspTsgCode: document.getElementById("InputXfTspTsgCode").value,
 		XkTspCode: document.getElementById("InputXkTspCode").value
 	};
-	PerformTrans( {
+	PerformTrans('BusinessObjectType', {
 		Service: "CreateRta",
 		Parameters: {
 			Type
@@ -157,7 +157,7 @@ function UpdateRta() {
 		XfTspTsgCode: document.getElementById("InputXfTspTsgCode").value,
 		XkTspCode: document.getElementById("InputXkTspCode").value
 	};
-	PerformTrans( {
+	PerformTrans('BusinessObjectType', {
 		Service: "UpdateRta",
 		Parameters: {
 			Type
@@ -173,7 +173,7 @@ function DeleteRta() {
 		XfTspTsgCode: document.getElementById("InputXfTspTsgCode").value,
 		XkTspCode: document.getElementById("InputXkTspCode").value
 	};
-	PerformTrans( {
+	PerformTrans('BusinessObjectType', {
 		Service: "DeleteRta",
 		Parameters: {
 			Type
@@ -208,6 +208,7 @@ function UpdateForeignKey(p_obj) {
 		alert ('Error Listbox: '+document.body._ListBoxCode);
 	}
 	CloseListBox();
+	SetChangePending();
 }
 
 function StartSelect001(p_event) {
@@ -223,7 +224,7 @@ function StartSelect001(p_event) {
 			FkTypName:document.getElementById("InputFkTypName").value
 		}
 	};
-	PerformTrans( {
+	PerformTrans('BusinessObjectType', {
 		Service: "GetTspForTypList",
 		Parameters
 	} );
@@ -247,7 +248,7 @@ function InitBody() {
 		document.getElementById("InputXkTspCode").value = l_json_objectKey.TYP_RTA.XkTspCode;
 		document.getElementById("ButtonOK").innerText = "Update";
 		document.getElementById("ButtonOK").onclick = function(){UpdateRta()};
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "GetRta",
 			Parameters: {
 				Type: l_json_objectKey.TYP_RTA
@@ -267,7 +268,7 @@ function InitBody() {
 		document.getElementById("InputFkAtbName").value = l_json_objectKey.TYP_ATB.Name;
 		document.getElementById("ButtonOK").innerText = "Create";
 		document.getElementById("ButtonOK").onclick = function(){CreateRta()};
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "GetAtbFkey",
 			Parameters: {
 				Type: l_json_objectKey.TYP_ATB
@@ -288,7 +289,7 @@ function InitBody() {
 		document.getElementById("ButtonOK").innerText = "Delete";
 		document.getElementById("ButtonOK").onclick = function(){DeleteRta()};
 		SetChangePending();
-		PerformTrans( {
+		PerformTrans('BusinessObjectType', {
 			Service: "GetRta",
 			Parameters: {
 				Type: l_json_objectKey.TYP_RTA

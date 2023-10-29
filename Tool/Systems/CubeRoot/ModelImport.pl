@@ -336,6 +336,7 @@ $FKeyTsg[0] = '';
 $ITsg = 0;
 $FKeyAtb = '';
 $FKeyRef = '';
+$FKeySrv = '';
 $FKeySys = '';
 $FKeyFun = '';
 $FKeyCub = '';
@@ -366,6 +367,8 @@ print IMPORT "DELETE v_reference;\n";
 print IMPORT "DELETE v_description_reference;\n";
 print IMPORT "DELETE v_restriction_type_spec_ref;\n";
 print IMPORT "DELETE v_restriction_target_type_spec;\n";
+print IMPORT "DELETE v_service;\n";
+print IMPORT "DELETE v_service_argument;\n";
 print IMPORT "DELETE v_restriction_type_spec_typ;\n";
 print IMPORT "DELETE v_json_path;\n";
 print IMPORT "DELETE v_description_type;\n";
@@ -624,6 +627,38 @@ my (@FkeyValues);
 						}
 						print IMPORT "INSERT INTO v_restriction_target_type_spec (FK_BOT_NAME, FK_TYP_NAME, FK_REF_SEQUENCE, FK_REF_BOT_NAME, FK_REF_TYP_NAME, INCLUDE_OR_EXCLUDE, XF_TSP_TYP_NAME, XF_TSP_TSG_CODE, XK_TSP_CODE)\n"; 
 						print IMPORT "	VALUES ('$_[1]', '$_[2]', $_[3], '$_[4]', '$_[5]', '".ReplX($NodeString[$j])."', '".ReplX(GetXkey($j,'TYPE_SPECIALISATION','TYPE',001))."', '".ReplX(GetXkey($j,'TYPE_SPECIALISATION','TYPE_SPECIALISATION_GROUP',001))."', '".ReplX(GetXkey($j,'TYPE_SPECIALISATION','TYPE_SPECIALISATION',001))."');\n";
+						print IMPORT "\n";
+						$j = $NodeNext[$j];
+					}
+				}
+				case "SERVICE" {
+					$j = $NodeFirst[$_[0]];
+					$Sequence = 0;
+					while (1) {
+						if ($j == -1) {
+							last;
+						}
+						$Sequence++;
+						print IMPORT "INSERT INTO v_service (CUBE_SEQUENCE, FK_BOT_NAME, FK_TYP_NAME, NAME, CUBE_TSG_DB_SCR, CLASS, ACCESSIBILITY)\n"; 
+						print IMPORT "	VALUES ($Sequence, '$_[1]', '$_[2]', '".ReplX($NodeString[$j])."', '".ReplX($NodeValue[$NodeValuePntr[$j]])."', '".ReplX($NodeValue[$NodeValuePntr[$j]+1])."', '".ReplX($NodeValue[$NodeValuePntr[$j]+2])."');\n";
+						print IMPORT "\n";
+						$FkeyValues[0] = $_[1];
+						$FkeyValues[1] = $_[2];
+						$FkeyValues[2] = ReplX($NodeString[$j]);
+						$FkeyValues[3] = ReplX($NodeValue[$NodeValuePntr[$j]]);
+						$i = $NodeFirst[$j];
+						CreateInsertStmnts($i,@FkeyValues);
+						$j = $NodeNext[$j];
+					}
+				}
+				case "SERVICE_ARGUMENT" {
+					$j = $NodeFirst[$_[0]];
+					while (1) {
+						if ($j == -1) {
+							last;
+						}
+						print IMPORT "INSERT INTO v_service_argument (FK_BOT_NAME, FK_TYP_NAME, FK_SRV_NAME, FK_SRV_CUBE_TSG_DB_SCR, XF_ATB_TYP_NAME, XK_ATB_NAME)\n"; 
+						print IMPORT "	VALUES ('$_[1]', '$_[2]', '$_[3]', '$_[4]', '".ReplX(GetXkey($j,'ATTRIBUTE','TYPE',001))."', '".ReplX(GetXkey($j,'ATTRIBUTE','ATTRIBUTE',001))."');\n";
 						print IMPORT "\n";
 						$j = $NodeNext[$j];
 					}
