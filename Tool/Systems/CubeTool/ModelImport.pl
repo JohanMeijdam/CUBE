@@ -366,6 +366,7 @@ print IMPORT "DELETE v_description_reference;\n";
 print IMPORT "DELETE v_restriction_type_spec_ref;\n";
 print IMPORT "DELETE v_restriction_target_type_spec;\n";
 print IMPORT "DELETE v_service;\n";
+print IMPORT "DELETE v_service_step;\n";
 print IMPORT "DELETE v_service_argument;\n";
 print IMPORT "DELETE v_restriction_type_spec_typ;\n";
 print IMPORT "DELETE v_json_path;\n";
@@ -651,14 +652,30 @@ my (@FkeyValues);
 						$j = $NodeNext[$j];
 					}
 				}
-				case "SERVICE_ARGUMENT" {
+				case "SERVICE_STEP" {
 					$j = $NodeFirst[$_[0]];
+					$Sequence = 0;
 					while (1) {
 						if ($j == -1) {
 							last;
 						}
-						print IMPORT "INSERT INTO v_service_argument (FK_BOT_NAME, FK_TYP_NAME, FK_SRV_NAME, FK_SRV_CUBE_TSG_DB_SCR, XF_ATB_TYP_NAME, XK_ATB_NAME)\n"; 
-						print IMPORT "	VALUES ('$_[1]', '$_[2]', '$_[3]', '$_[4]', '".ReplX(GetXkey($j,'ATTRIBUTE','TYPE',001))."', '".ReplX(GetXkey($j,'ATTRIBUTE','ATTRIBUTE',001))."');\n";
+						$Sequence++;
+						print IMPORT "INSERT INTO v_service_step (CUBE_SEQUENCE, FK_BOT_NAME, FK_TYP_NAME, FK_SRV_NAME, FK_SRV_CUBE_TSG_DB_SCR, NAME, SCRIPT_NAME)\n"; 
+						print IMPORT "	VALUES ($Sequence, '$_[1]', '$_[2]', '$_[3]', '$_[4]', '".ReplX($NodeString[$j])."', '".ReplX($NodeValue[$NodeValuePntr[$j]])."');\n";
+						print IMPORT "\n";
+						$j = $NodeNext[$j];
+					}
+				}
+				case "SERVICE_ARGUMENT" {
+					$j = $NodeFirst[$_[0]];
+					$Sequence = 0;
+					while (1) {
+						if ($j == -1) {
+							last;
+						}
+						$Sequence++;
+						print IMPORT "INSERT INTO v_service_argument (CUBE_SEQUENCE, FK_BOT_NAME, FK_TYP_NAME, FK_SRV_NAME, FK_SRV_CUBE_TSG_DB_SCR, XF_ATB_TYP_NAME, XK_ATB_NAME)\n"; 
+						print IMPORT "	VALUES ($Sequence, '$_[1]', '$_[2]', '$_[3]', '$_[4]', '".ReplX(GetXkey($j,'ATTRIBUTE','TYPE',001))."', '".ReplX(GetXkey($j,'ATTRIBUTE','ATTRIBUTE',001))."');\n";
 						print IMPORT "\n";
 						$j = $NodeNext[$j];
 					}

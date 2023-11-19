@@ -125,7 +125,7 @@ function OpenDetail(p_obj) {
 	case 'N': // Normal (no user interaction)
 		ResetState();
 		if (p_obj.parentNode._type.substr(0,4) == 'TYP_') {
-			OpenDetailPage(p_obj.parentNode._name, 'D', p_obj.parentNode.id, null);
+			OpenDetailPage('Maintain'+p_obj.parentNode._name, 'D', p_obj.parentNode.id, null);
 		}
 		break;
 	case 'M': // Moving object
@@ -193,19 +193,19 @@ function OpenDetail(p_obj) {
 				var l_option = '{"Code":"B","Type":'+g_objNodeDiv.children[g_currentChildIndex].firstChild.id+'}';
 			}
 			ResetState();
-			OpenDetailPage(g_currentObjName, g_currentNodeType, g_currentObjId, l_option);
+			OpenDetailPage('Maintain'+g_currentObjName, g_currentNodeType, g_currentObjId, l_option);
 		}
 		break;
 	}
 }
 
-function OpenDetailPage (p_name, p_nodeType, p_objId, p_option) {
+function OpenDetailPage (p_pageName, p_nodeType, p_objId, p_option) {
 	if (p_option == null) {
 		var l_option = '';
 	} else {
 		var l_option = ',"Option":'+p_option;
 	}
-	document.getElementById('DetailFrame').src='<<1>>Maintain'+p_name+'.php?'+encodeURIComponent('{"nodeType":"'+p_nodeType+'","objectId":'+p_objId+l_option+'}');
+	document.getElementById('DetailFrame').src='<<1>>'+p_pageName+'.php?'+encodeURIComponent('{"nodeType":"'+p_nodeType+'","objectId":'+p_objId+l_option+'}');
 }
 
 function OpenMenu(p_obj) {
@@ -270,21 +270,22 @@ function OpenMenu(p_obj) {
 
 	switch (l_type_id) {[[LOOP,SYSTEM_BO_TYPE]][[LOOP,BUSINESS_OBJECT_TYPE]][[LOOP,TYPE]][[IF:ROOT]]
  	case 'DIR_<<TYPE1:U>>':
-		AddMenuItem(g_objMenuList, 'add <<TYPE:L>>', 'icons/<<TYPE7:L>>.bmp','[[IF:6=P]]CubeAdd[[ELSE]]Detail<<TYPE1:U>>[[ENDIF]]','N','TYP_<<TYPE1:U>>','<<TYPE:C>>',[[IF:!5=N]]<<TYPE5>>[[ELSE]]0[[ENDIF]],'N',2);[[IF:!5=N]]
+		AddMenuItem(g_objMenuList,'add <<TYPE:L>>','icons/<<TYPE7:L>>.bmp','[[IF:6=P]]CubeAdd[[ELSE]]Detail<<TYPE1:U>>[[ENDIF]]','N','TYP_<<TYPE1:U>>','<<TYPE:C>>',[[IF:!5=N]]<<TYPE5>>[[ELSE]]0[[ENDIF]],'N',2);[[IF:!5=N]]
 		PerformTrans('<<BUSINESS_OBJECT_TYPE:C>>', {Service:"Count<<TYPE1:C>>"} );[[ENDIF]]
 		break;[[ENDIF]][[IF:CHILD(TYPE)[OR]3=Y[OR](6=P[AND]CHILD(ATTRIBUTE:<<TEXT,GEN_IS_OWN_KEY>>))]]
  	case 'TYP_<<TYPE1:U>>':[[IF:6=P[AND]CHILD(ATTRIBUTE:<<TEXT,GEN_IS_OWN_KEY>>)]]
 		if (l_childCount > 1) {
-			AddMenuItem(g_objMenuList, 'move', 'icons/cube_move.bmp','CubeMove','','CUBE_M_<<TYPE1:U>>','',0,'N',0);
+			AddMenuItem(g_objMenuList,'move','icons/cube_move.bmp','CubeMove','','CUBE_M_<<TYPE1:U>>','',0,'N',0);
 		}[[ENDIF]][[EVAL:($myI=1)]][[IF:3=Y[AND]!4=1[AND]8=Y[AND]CHILD(ATTRIBUTE:<<TEXT,GEN_IS_OWN_KEY>>)]]
 		var l_json_parent_node_id = JSON.parse(p_obj.parentNode.parentNode.parentNode.id);
 		var l_parent_type_id = Object.keys(l_json_parent_node_id)[0];
 		if (l_childCount > 1 || l_type_id == l_parent_type_id) {
-			AddMenuItem(g_objMenuList, 'change parent', 'icons/cube_change_par.bmp','CubeChangePar','','CUBE_P_<<TYPE1:U>>','',0,[[IF:6=P]]'Y'[[ELSE]]'N'[[ENDIF]],0);
+			AddMenuItem(g_objMenuList,'change parent','icons/cube_change_par.bmp','CubeChangePar','','CUBE_P_<<TYPE1:U>>','',0,[[IF:6=P]]'Y'[[ELSE]]'N'[[ENDIF]],0);
 		}[[ENDIF]][[LOOP,TYPE]]
-		AddMenuItem(g_objMenuList, 'add <<TYPE:L>>', 'icons/<<TYPE7:L>>.bmp','[[IF:6=P]]CubeAdd[[ELSE]]Detail<<TYPE1:U>>[[ENDIF]]','N','TYP_<<TYPE1:U>>','<<TYPE:C>>',[[IF:!5=N]]<<TYPE5>>[[ELSE]]0[[ENDIF]],'N',[[EVAL:++$myI]]);[[ENDLOOP,TYPE]][[IF:3=Y]]
-		AddMenuItem(g_objMenuList, 'add <<TYPE:L>>', 'icons/<<TYPE7:L>>.bmp','[[IF:6=P]]CubeAdd[[ELSE]]Detail<<TYPE1:U>>[[ENDIF]]','R','TYP_<<TYPE1:U>>','<<TYPE:C>>',[[IF:!4=N]]<<TYPE4>>[[ELSE]]0[[ENDIF]],'N',[[EVAL:++$myI]]);[[ENDIF]]
-		AddMenuItem(g_objMenuList, 'delete', 'icons/cube_delete.bmp','CubeDelete','X','','<<TYPE:C>>',0,'N',0);[[IF:(3=Y[AND]!4=N)[OR]CHILD(TYPE:!5=N)]]
+		AddMenuItem(g_objMenuList,'add <<TYPE:L>>','icons/<<TYPE7:L>>.bmp','[[IF:6=P]]CubeAdd[[ELSE]]Detail<<TYPE1:U>>[[ENDIF]]','N','TYP_<<TYPE1:U>>','<<TYPE:C>>',[[IF:!5=N]]<<TYPE5>>[[ELSE]]0[[ENDIF]],'N',[[EVAL:++$myI]]);[[ENDLOOP,TYPE]][[IF:3=Y]]
+		AddMenuItem(g_objMenuList,'add <<TYPE:L>>','icons/<<TYPE7:L>>.bmp','[[IF:6=P]]CubeAdd[[ELSE]]Detail<<TYPE1:U>>[[ENDIF]]','R','TYP_<<TYPE1:U>>','<<TYPE:C>>',[[IF:!4=N]]<<TYPE4>>[[ELSE]]0[[ENDIF]],'N',[[EVAL:++$myI]]);[[ENDIF]][[LOOP,SERVICE]]
+		AddMenuItem(g_objMenuList,'execute <<SERVICE:L>>','icons/service.bmp','CubeExecute','E','','<<SERVICE:C>>',0,'',0);[[ENDLOOP,SERVICE]]
+		AddMenuItem(g_objMenuList,'delete','icons/cube_delete.bmp','CubeDelete','X','','<<TYPE:C>>',0,'N',0);[[IF:(3=Y[AND]!4=N)[OR]CHILD(TYPE:!5=N)]]
 		var l_json_id = l_json_node_id[l_type_id];
 		PerformTrans('<<BUSINESS_OBJECT_TYPE:C>>', {Service:"Count<<TYPE1:C>>RestrictedItems",Parameters:{Type:l_json_id}} );[[ENDIF]]
 		break;[[ENDIF]][[REPEAT]][[ENDLOOP,TYPE]][[ENDLOOP,BUSINESS_OBJECT_TYPE]][[ENDLOOP,SYSTEM_BO_TYPE]]

@@ -149,10 +149,10 @@
 	-META_TYPE:;
 	+META_TYPE:PAGE;
 		=PROPERTY:0|Name|;
-		=PROPERTY:1|Id|;
+		=PROPERTY:1|PageType|Values: D(Database interaction), S(Script);
 		=PROPERTY:2|Prompt|;
 		=PROPERTY:3|Icon|;
-		=PROPERTY:4|ServerType|;
+		=PROPERTY:4|ServerName|;
 		=ASSOCIATION:TYPE|Concerns|TYPE;
 		+META_TYPE:PAGE_HEADER;
 			+META_TYPE:PAGE_SELECTOR_SWITCH;
@@ -375,7 +375,7 @@
 		=OPERATION|OPERATION_TYPE,CUBE-TYP-0100024:delete_cube_dsc||#|N|N|N;
 	-SERVICE:delete_cube_dsc;
 -BUSINESS_OBJECT_TYPE:cube_description;
-+PAGE[CUBE-PAG-00137]:MaintainCubeDescription||CUBE_DESCRIPTION|desc_large|CubeDescription;
++PAGE[CUBE-PAG-00137]:MaintainCubeDescription|D|CUBE_DESCRIPTION|desc_large|CubeDescription;
 	>TYPE:CUBE-TYP-0100024;
 	+PAGE_FIELD[CUBE-PAG-00137_CUBE-CUBE_DSC-ID]:InputCubeId|CubeId|N|hidden||||;
 		>PAGE_FIELD_ATTRIBUTE:CUBE-CUBE_DSC-ID;

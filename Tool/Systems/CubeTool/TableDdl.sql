@@ -59,6 +59,8 @@ CREATE SEQUENCE sq_rts START WITH 100000
 /
 CREATE SEQUENCE sq_srv START WITH 100000
 /
+CREATE SEQUENCE sq_sst START WITH 100000
+/
 CREATE SEQUENCE sq_sva START WITH 100000
 /
 CREATE SEQUENCE sq_rtt START WITH 100000
@@ -346,8 +348,25 @@ CREATE TABLE t_service (
 		REFERENCES t_type (name)
 		ON DELETE CASCADE )
 /
+CREATE TABLE t_service_step (
+	cube_id VARCHAR2(16),
+	cube_sequence NUMBER(8),
+	fk_bot_name VARCHAR2(30),
+	fk_typ_name VARCHAR2(30),
+	fk_srv_name VARCHAR2(30),
+	fk_srv_cube_tsg_db_scr VARCHAR2(8) DEFAULT 'D',
+	name VARCHAR2(30),
+	script_name VARCHAR2(60),
+	CONSTRAINT sst_pk
+		PRIMARY KEY (fk_typ_name, fk_srv_name, fk_srv_cube_tsg_db_scr, name),
+	CONSTRAINT sst_srv_fk
+		FOREIGN KEY (fk_typ_name, fk_srv_name, fk_srv_cube_tsg_db_scr)
+		REFERENCES t_service (fk_typ_name, name, cube_tsg_db_scr)
+		ON DELETE CASCADE )
+/
 CREATE TABLE t_service_argument (
 	cube_id VARCHAR2(16),
+	cube_sequence NUMBER(8),
 	fk_bot_name VARCHAR2(30),
 	fk_typ_name VARCHAR2(30),
 	fk_srv_name VARCHAR2(30),

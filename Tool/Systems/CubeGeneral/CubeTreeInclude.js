@@ -343,9 +343,9 @@ function OpenMenuItem(p_obj) {
 		break;
 	case 'CubeAdd':
 		if (g_objNodeDiv.firstChild._state == 'C') {
-			OpenDetailPage(p_obj._name, p_obj._nodeType, g_currentObjId, '{"Code":"L"}');
+			OpenDetailPage('Maintain'+p_obj._name, p_obj._nodeType, g_currentObjId, '{"Code":"L"}');
 		} else if (g_objNodeDiv.children[p_obj._childIndex].children.length == 0) {
-			OpenDetailPage(p_obj._name, p_obj._nodeType, g_currentObjId, '{"Code":"F"}');
+			OpenDetailPage('Maintain'+p_obj._name, p_obj._nodeType, g_currentObjId, '{"Code":"F"}');
 		} else {
 			document.body.style.cursor = "url(icons/pointer-pos.cur), default";
 			document.body._state = "A"; // Adding object
@@ -356,10 +356,13 @@ function OpenMenuItem(p_obj) {
 		}
 		break;
 	case 'CubeDelete':
-		OpenDetailPage(p_obj._name, p_obj._nodeType, g_currentObjId, null);
+		OpenDetailPage('Maintain'+p_obj._name, p_obj._nodeType, g_currentObjId, null);
+		break;
+	case 'CubeExecute':
+		OpenDetailPage('Execute'+p_obj._name, p_obj._nodeType, g_currentObjId, null);
 		break;
 	default:
-		OpenDetailPage(p_obj._name, p_obj._nodeType, g_currentObjId, null);
+		OpenDetailPage('Maintain'+p_obj._name, p_obj._nodeType, g_currentObjId, null);
 	}
 }
 

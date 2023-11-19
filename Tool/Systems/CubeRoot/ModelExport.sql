@@ -407,6 +407,24 @@ DECLARE
 	END;
 
 
+	PROCEDURE report_sst (p_srv IN t_service%ROWTYPE) IS
+	BEGIN
+		FOR r_sst IN (
+			SELECT *				
+			FROM t_service_step
+			WHERE fk_bot_name = p_srv.fk_bot_name
+			  AND fk_typ_name = p_srv.fk_typ_name
+			  AND fk_srv_name = p_srv.name
+			  AND fk_srv_cube_tsg_db_scr = p_srv.cube_tsg_db_scr
+			ORDER BY cube_sequence )
+		LOOP
+			DBMS_OUTPUT.PUT_LINE (ftabs || '=SERVICE_STEP[' || r_sst.cube_id || ']:' || fenperc(r_sst.name) || '|' || fenperc(r_sst.script_name) || ';');
+				l_level := l_level + 1;
+				l_level := l_level - 1;
+		END LOOP;
+	END;
+
+
 	PROCEDURE report_sva (p_srv IN t_service%ROWTYPE) IS
 	BEGIN
 		FOR r_sva IN (
@@ -416,7 +434,7 @@ DECLARE
 			  AND fk_typ_name = p_srv.fk_typ_name
 			  AND fk_srv_name = p_srv.name
 			  AND fk_srv_cube_tsg_db_scr = p_srv.cube_tsg_db_scr
-			ORDER BY cube_id )
+			ORDER BY cube_sequence )
 		LOOP
 			DBMS_OUTPUT.PUT_LINE (ftabs || '+SERVICE_ARGUMENT[' || r_sva.cube_id || ']:' || ';');
 				l_level := l_level + 1;
@@ -447,6 +465,7 @@ DECLARE
 		LOOP
 			DBMS_OUTPUT.PUT_LINE (ftabs || '+SERVICE[' || r_srv.cube_id || ']:' || fenperc(r_srv.name) || '|' || fenperc(r_srv.cube_tsg_db_scr) || '|' || fenperc(r_srv.class) || '|' || fenperc(r_srv.accessibility) || ';');
 				l_level := l_level + 1;
+				report_sst (r_srv);
 				report_sva (r_srv);
 				l_level := l_level - 1;
 			DBMS_OUTPUT.PUT_LINE (ftabs || '-SERVICE:' || r_srv.name || ';');
@@ -789,6 +808,10 @@ BEGIN
 	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:1|CubeTsgDbScr| Values: D(DATABASE_INTERACTION), S(SERVER_SCRIPT);');
 	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:2|Class| Values: LST(List), CNT(Count), SEL(Select), CNP(Check no part), DPO(Determine position), MOV(Move), GTN(Get next), CPA(Change parent), CRE(Create), UPD(Update), DEL(Delete);');
 	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:3|Accessibility| Values: I(Internal), E(External), U(User);');
+	DBMS_OUTPUT.PUT_LINE ('				+META_TYPE:SERVICE_STEP|;');
+	DBMS_OUTPUT.PUT_LINE ('					=PROPERTY:0|Name|;');
+	DBMS_OUTPUT.PUT_LINE ('					=PROPERTY:1|ScriptName|;');
+	DBMS_OUTPUT.PUT_LINE ('				-META_TYPE:SERVICE_STEP;');
 	DBMS_OUTPUT.PUT_LINE ('				+META_TYPE:SERVICE_ARGUMENT|;');
 	DBMS_OUTPUT.PUT_LINE ('					=ASSOCIATION:ATTRIBUTE|Imports|ATTRIBUTE|;');
 	DBMS_OUTPUT.PUT_LINE ('				-META_TYPE:SERVICE_ARGUMENT;');

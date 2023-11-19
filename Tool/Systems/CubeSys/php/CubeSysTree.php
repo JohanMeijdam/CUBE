@@ -99,7 +99,7 @@ function OpenDetail(p_obj) {
 	case 'N': // Normal (no user interaction)
 		ResetState();
 		if (p_obj.parentNode._type.substr(0,4) == 'TYP_') {
-			OpenDetailPage(p_obj.parentNode._name, 'D', p_obj.parentNode.id, null);
+			OpenDetailPage('Maintain'+p_obj.parentNode._name, 'D', p_obj.parentNode.id, null);
 		}
 		break;
 	case 'M': // Moving object
@@ -152,19 +152,19 @@ function OpenDetail(p_obj) {
 				var l_option = '{"Code":"B","Type":'+g_objNodeDiv.children[g_currentChildIndex].firstChild.id+'}';
 			}
 			ResetState();
-			OpenDetailPage(g_currentObjName, g_currentNodeType, g_currentObjId, l_option);
+			OpenDetailPage('Maintain'+g_currentObjName, g_currentNodeType, g_currentObjId, l_option);
 		}
 		break;
 	}
 }
 
-function OpenDetailPage (p_name, p_nodeType, p_objId, p_option) {
+function OpenDetailPage (p_pageName, p_nodeType, p_objId, p_option) {
 	if (p_option == null) {
 		var l_option = '';
 	} else {
 		var l_option = ',"Option":'+p_option;
 	}
-	document.getElementById('DetailFrame').src='CubeSysMaintain'+p_name+'.php?'+encodeURIComponent('{"nodeType":"'+p_nodeType+'","objectId":'+p_objId+l_option+'}');
+	document.getElementById('DetailFrame').src='CubeSys'+p_pageName+'.php?'+encodeURIComponent('{"nodeType":"'+p_nodeType+'","objectId":'+p_objId+l_option+'}');
 }
 
 function OpenMenu(p_obj) {
@@ -229,7 +229,7 @@ function OpenMenu(p_obj) {
 
 	switch (l_type_id) {
  	case 'DIR_CUBE_DSC':
-		AddMenuItem(g_objMenuList, 'add cube_description', 'icons/desc.bmp','DetailCUBE_DSC','N','TYP_CUBE_DSC','CubeDescription',0,'N',2);
+		AddMenuItem(g_objMenuList,'add cube_description','icons/desc.bmp','DetailCUBE_DSC','N','TYP_CUBE_DSC','CubeDescription',0,'N',2);
 		break;
 	}
 }

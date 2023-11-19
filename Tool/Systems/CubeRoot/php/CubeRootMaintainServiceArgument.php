@@ -45,8 +45,8 @@ g_xmlhttp.onreadystatechange = function() {
 						g_node_id = '{"TYP_SVA":'+JSON.stringify(l_json_node_id)+'}';
 						if (l_objNode != null) {
 							if (l_objNode.firstChild._state == 'O') {
-								var l_position = 'L';
-								l_objNodePos = null;
+								var l_position = g_json_option.Code;
+								l_objNodePos = parent.document.getElementById(JSON.stringify(g_json_option.Type));
 								parent.AddTreeviewNode(
 									l_objNode,
 									'TYP_SVA',
@@ -131,12 +131,29 @@ function CreateSva() {
 		XfAtbTypName: document.getElementById("InputXfAtbTypName").value,
 		XkAtbName: document.getElementById("InputXkAtbName").value
 	};
-	PerformTrans('BusinessObjectType', {
-		Service: "CreateSva",
-		Parameters: {
-			Type
-		}
-	} );
+	var l_pos_action = g_json_option.Code;
+	var Option = {
+		CubePosAction: l_pos_action
+	};
+	if (l_pos_action == 'F' || l_pos_action == 'L') {
+		PerformTrans('BusinessObjectType', {
+			Service: "CreateSva",
+			Parameters: {
+				Option,
+				Type
+			}
+		} );
+	} else {
+		var Ref = g_json_option.Type.TYP_SVA;
+		PerformTrans('BusinessObjectType', {
+			Service: "CreateSva",
+				Parameters: {
+					Option,
+					Type,
+					Ref
+				}
+			} );
+	}
 }
 
 function UpdateSva() {
@@ -224,6 +241,7 @@ function InitBody() {
 	document.body._ListBoxCode = "Ref000";
 	document.body._ListBoxOptional = ' ';
 	var l_json_objectKey = l_json_argument.objectId;
+	g_json_option = l_json_argument.Option;
 	switch (l_json_argument.nodeType) {
 	case "D": // Details of existing object 
 		g_node_id = JSON.stringify(l_json_argument.objectId);
@@ -284,6 +302,7 @@ function InitBody() {
 			}
 		} );
 		document.getElementById("InputCubeId").disabled = true;
+		document.getElementById("InputCubeSequence").disabled = true;
 		document.getElementById("InputFkBotName").disabled = true;
 		document.getElementById("InputFkTypName").disabled = true;
 		document.getElementById("InputFkSrvName").disabled = true;
@@ -322,5 +341,6 @@ function InitBody() {
 <button id="ButtonCancel" type="button" disabled onclick="CancelChangePending()">Cancel</button></td></tr>
 </table>
 <input id="InputCubeId" type="hidden"></input>
+<input id="InputCubeSequence" type="hidden"></input>
 </body>
 </html>

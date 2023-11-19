@@ -3076,6 +3076,38 @@ case 'GetSrvFkey':
 case 'GetSrvItems':
 	echo '[';
 
+	$stid = oci_parse($conn, "BEGIN pkg_bot.get_srv_sst_items (
+		:p_cube_row,
+		:p_fk_typ_name,
+		:p_name,
+		:p_cube_tsg_db_scr);
+	END;");
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
+	oci_bind_by_name($stid,":p_cube_tsg_db_scr",$RequestObj->Parameters->Type->CubeTsgDbScr);
+
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'LST_SST';
+	$r = perform_db_request();
+	if (!$r) { 
+		echo ']';
+		return;
+	}
+	$ResponseObj->Rows = array();
+	while ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Key = new \stdClass();
+		$RowObj->Key->FkTypName = $row["FK_TYP_NAME"];
+		$RowObj->Key->FkSrvName = $row["FK_SRV_NAME"];
+		$RowObj->Key->FkSrvCubeTsgDbScr = $row["FK_SRV_CUBE_TSG_DB_SCR"];
+		$RowObj->Key->Name = $row["NAME"];
+		$RowObj->Display = $row["NAME"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ',';
+
 	$stid = oci_parse($conn, "BEGIN pkg_bot.get_srv_sva_items (
 		:p_cube_row,
 		:p_fk_typ_name,
@@ -3243,6 +3275,182 @@ case 'DeleteSrv':
 
 	break;
 
+case 'GetSst':
+	echo '[';
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.get_sst (
+		:p_cube_row,
+		:p_fk_typ_name,
+		:p_fk_srv_name,
+		:p_fk_srv_cube_tsg_db_scr,
+		:p_name);
+	END;");
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_fk_srv_name",$RequestObj->Parameters->Type->FkSrvName);
+	oci_bind_by_name($stid,":p_fk_srv_cube_tsg_db_scr",$RequestObj->Parameters->Type->FkSrvCubeTsgDbScr);
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
+
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'SEL_SST';
+	$r = perform_db_request();
+	if (!$r) { 
+		echo ']';
+		return;
+	}
+	$ResponseObj->Rows = array();
+	if ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Data = new \stdClass();
+		$RowObj->Data->FkBotName = $row["FK_BOT_NAME"];
+		$RowObj->Data->ScriptName = $row["SCRIPT_NAME"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
+	break;
+
+case 'MoveSst':
+	echo '[';
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.move_sst (
+		:p_cube_pos_action,
+		:p_fk_typ_name,
+		:p_fk_srv_name,
+		:p_fk_srv_cube_tsg_db_scr,
+		:p_name,
+		:x_fk_typ_name,
+		:x_fk_srv_name,
+		:x_fk_srv_cube_tsg_db_scr,
+		:x_name);
+	END;");
+	oci_bind_by_name($stid,":p_cube_pos_action",$RequestObj->Parameters->Option->CubePosAction);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_fk_srv_name",$RequestObj->Parameters->Type->FkSrvName);
+	oci_bind_by_name($stid,":p_fk_srv_cube_tsg_db_scr",$RequestObj->Parameters->Type->FkSrvCubeTsgDbScr);
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
+	oci_bind_by_name($stid,":x_fk_typ_name",$RequestObj->Parameters->Ref->FkTypName);
+	oci_bind_by_name($stid,":x_fk_srv_name",$RequestObj->Parameters->Ref->FkSrvName);
+	oci_bind_by_name($stid,":x_fk_srv_cube_tsg_db_scr",$RequestObj->Parameters->Ref->FkSrvCubeTsgDbScr);
+	oci_bind_by_name($stid,":x_name",$RequestObj->Parameters->Ref->Name);
+
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'MOV_SST';
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		echo ']';
+		return;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
+	break;
+
+case 'CreateSst':
+	echo '[';
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.insert_sst (
+		:p_cube_pos_action,
+		:p_fk_bot_name,
+		:p_fk_typ_name,
+		:p_fk_srv_name,
+		:p_fk_srv_cube_tsg_db_scr,
+		:p_name,
+		:p_script_name,
+		:x_fk_typ_name,
+		:x_fk_srv_name,
+		:x_fk_srv_cube_tsg_db_scr,
+		:x_name);
+	END;");
+	oci_bind_by_name($stid,":p_cube_pos_action",$RequestObj->Parameters->Option->CubePosAction);
+	oci_bind_by_name($stid,":p_fk_bot_name",$RequestObj->Parameters->Type->FkBotName);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_fk_srv_name",$RequestObj->Parameters->Type->FkSrvName);
+	oci_bind_by_name($stid,":p_fk_srv_cube_tsg_db_scr",$RequestObj->Parameters->Type->FkSrvCubeTsgDbScr);
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
+	oci_bind_by_name($stid,":p_script_name",$RequestObj->Parameters->Type->ScriptName);
+	oci_bind_by_name($stid,":x_fk_typ_name",$RequestObj->Parameters->Ref->FkTypName);
+	oci_bind_by_name($stid,":x_fk_srv_name",$RequestObj->Parameters->Ref->FkSrvName);
+	oci_bind_by_name($stid,":x_fk_srv_cube_tsg_db_scr",$RequestObj->Parameters->Ref->FkSrvCubeTsgDbScr);
+	oci_bind_by_name($stid,":x_name",$RequestObj->Parameters->Ref->Name);
+
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'CRE_SST';
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		echo ']';
+		return;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
+	break;
+
+case 'UpdateSst':
+	echo '[';
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.update_sst (
+		:p_fk_bot_name,
+		:p_fk_typ_name,
+		:p_fk_srv_name,
+		:p_fk_srv_cube_tsg_db_scr,
+		:p_name,
+		:p_script_name);
+	END;");
+	oci_bind_by_name($stid,":p_fk_bot_name",$RequestObj->Parameters->Type->FkBotName);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_fk_srv_name",$RequestObj->Parameters->Type->FkSrvName);
+	oci_bind_by_name($stid,":p_fk_srv_cube_tsg_db_scr",$RequestObj->Parameters->Type->FkSrvCubeTsgDbScr);
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
+	oci_bind_by_name($stid,":p_script_name",$RequestObj->Parameters->Type->ScriptName);
+
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'UPD_SST';
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		echo ']';
+		return;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
+	break;
+
+case 'DeleteSst':
+	echo '[';
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.delete_sst (
+		:p_fk_typ_name,
+		:p_fk_srv_name,
+		:p_fk_srv_cube_tsg_db_scr,
+		:p_name);
+	END;");
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_fk_srv_name",$RequestObj->Parameters->Type->FkSrvName);
+	oci_bind_by_name($stid,":p_fk_srv_cube_tsg_db_scr",$RequestObj->Parameters->Type->FkSrvCubeTsgDbScr);
+	oci_bind_by_name($stid,":p_name",$RequestObj->Parameters->Type->Name);
+
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'DEL_SST';
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		echo ']';
+		return;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
+	break;
+
 case 'GetSva':
 	echo '[';
 
@@ -3280,23 +3488,77 @@ case 'GetSva':
 
 	break;
 
+case 'MoveSva':
+	echo '[';
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.move_sva (
+		:p_cube_pos_action,
+		:p_fk_typ_name,
+		:p_fk_srv_name,
+		:p_fk_srv_cube_tsg_db_scr,
+		:p_xf_atb_typ_name,
+		:p_xk_atb_name,
+		:x_fk_typ_name,
+		:x_fk_srv_name,
+		:x_fk_srv_cube_tsg_db_scr,
+		:x_xf_atb_typ_name,
+		:x_xk_atb_name);
+	END;");
+	oci_bind_by_name($stid,":p_cube_pos_action",$RequestObj->Parameters->Option->CubePosAction);
+	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
+	oci_bind_by_name($stid,":p_fk_srv_name",$RequestObj->Parameters->Type->FkSrvName);
+	oci_bind_by_name($stid,":p_fk_srv_cube_tsg_db_scr",$RequestObj->Parameters->Type->FkSrvCubeTsgDbScr);
+	oci_bind_by_name($stid,":p_xf_atb_typ_name",$RequestObj->Parameters->Type->XfAtbTypName);
+	oci_bind_by_name($stid,":p_xk_atb_name",$RequestObj->Parameters->Type->XkAtbName);
+	oci_bind_by_name($stid,":x_fk_typ_name",$RequestObj->Parameters->Ref->FkTypName);
+	oci_bind_by_name($stid,":x_fk_srv_name",$RequestObj->Parameters->Ref->FkSrvName);
+	oci_bind_by_name($stid,":x_fk_srv_cube_tsg_db_scr",$RequestObj->Parameters->Ref->FkSrvCubeTsgDbScr);
+	oci_bind_by_name($stid,":x_xf_atb_typ_name",$RequestObj->Parameters->Ref->XfAtbTypName);
+	oci_bind_by_name($stid,":x_xk_atb_name",$RequestObj->Parameters->Ref->XkAtbName);
+
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'MOV_SVA';
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		echo ']';
+		return;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
+	break;
+
 case 'CreateSva':
 	echo '[';
 
 	$stid = oci_parse($conn, "BEGIN pkg_bot.insert_sva (
+		:p_cube_pos_action,
 		:p_fk_bot_name,
 		:p_fk_typ_name,
 		:p_fk_srv_name,
 		:p_fk_srv_cube_tsg_db_scr,
 		:p_xf_atb_typ_name,
-		:p_xk_atb_name);
+		:p_xk_atb_name,
+		:x_fk_typ_name,
+		:x_fk_srv_name,
+		:x_fk_srv_cube_tsg_db_scr,
+		:x_xf_atb_typ_name,
+		:x_xk_atb_name);
 	END;");
+	oci_bind_by_name($stid,":p_cube_pos_action",$RequestObj->Parameters->Option->CubePosAction);
 	oci_bind_by_name($stid,":p_fk_bot_name",$RequestObj->Parameters->Type->FkBotName);
 	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
 	oci_bind_by_name($stid,":p_fk_srv_name",$RequestObj->Parameters->Type->FkSrvName);
 	oci_bind_by_name($stid,":p_fk_srv_cube_tsg_db_scr",$RequestObj->Parameters->Type->FkSrvCubeTsgDbScr);
 	oci_bind_by_name($stid,":p_xf_atb_typ_name",$RequestObj->Parameters->Type->XfAtbTypName);
 	oci_bind_by_name($stid,":p_xk_atb_name",$RequestObj->Parameters->Type->XkAtbName);
+	oci_bind_by_name($stid,":x_fk_typ_name",$RequestObj->Parameters->Ref->FkTypName);
+	oci_bind_by_name($stid,":x_fk_srv_name",$RequestObj->Parameters->Ref->FkSrvName);
+	oci_bind_by_name($stid,":x_fk_srv_cube_tsg_db_scr",$RequestObj->Parameters->Ref->FkSrvCubeTsgDbScr);
+	oci_bind_by_name($stid,":x_xf_atb_typ_name",$RequestObj->Parameters->Ref->XfAtbTypName);
+	oci_bind_by_name($stid,":x_xk_atb_name",$RequestObj->Parameters->Ref->XkAtbName);
 
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'CRE_SVA';

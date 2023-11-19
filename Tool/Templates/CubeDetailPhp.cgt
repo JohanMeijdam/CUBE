@@ -83,13 +83,13 @@ session_start();
 $_SESSION['views']=0;
 ?><html>
 <head>
-<link rel="stylesheet" href="base_css.php" />
+<link rel="stylesheet" href="base_css.php" />[[IF,PAGE:1=D]]
 <script language="javascript" type="text/javascript" src="../CubeGeneral/CubeInclude.js?filever=<?=filemtime('../CubeGeneral/CubeInclude.js')?>"></script>
 <script language="javascript" type="text/javascript" src="../CubeGeneral/CubeDetailInclude.js?filever=<?=filemtime('../CubeGeneral/CubeDetailInclude.js')?>"></script>
 <script language="javascript" type="text/javascript" src="<<1>>Include.js?filever=<?=filemtime('<<1>>Include.js')?>"></script>
 <script language="javascript" type="text/javascript" src="<<1>>DetailInclude.js?filever=<?=filemtime('<<1>>DetailInclude.js')?>"></script>
-<script language="javascript" type="text/javascript">
-<!--
+<script language="javascript" type="text/javascript">[[ENDIF]]
+<!--[[IF,PAGE:1=D]]
 var g_option = null;
 var g_json_option = null;
 var g_parent_node_id = null;
@@ -382,7 +382,7 @@ function InitBody() {
 	default:
 		alert ('Error InitBody: nodeType='+l_json_argument.nodeType);
 	}
-}[[ENDLOOP,TYPE]][[IF:CHILD(PAGE_FIELD:CHILD(*PAGE_SELECTOR_SWITCH))]]
+}[[ENDIF]][[ENDLOOP,TYPE]][[IF:CHILD(PAGE_FIELD:CHILD(*PAGE_SELECTOR_SWITCH))]]
 
 function ProcessTypeSpecialisation() {
 	if ([[LOOP,PAGE_FIELD:CHILD(*PAGE_SELECTOR_SWITCH)]]document.getElementById("<<PAGE_FIELD>>").value != ' '[[IF:!LAST]] && [[ENDIF]][[ENDLOOP,PAGE_FIELD]]) {[[LOOP,PAGE_FIELD:CHILD(*PAGE_SELECTOR_SWITCH)]]

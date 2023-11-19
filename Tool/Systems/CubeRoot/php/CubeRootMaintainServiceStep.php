@@ -6,8 +6,8 @@ $_SESSION['views']=0;
 <link rel="stylesheet" href="base_css.php" />
 <script language="javascript" type="text/javascript" src="../CubeGeneral/CubeInclude.js?filever=<?=filemtime('../CubeGeneral/CubeInclude.js')?>"></script>
 <script language="javascript" type="text/javascript" src="../CubeGeneral/CubeDetailInclude.js?filever=<?=filemtime('../CubeGeneral/CubeDetailInclude.js')?>"></script>
-<script language="javascript" type="text/javascript" src="CubeToolInclude.js?filever=<?=filemtime('CubeToolInclude.js')?>"></script>
-<script language="javascript" type="text/javascript" src="CubeToolDetailInclude.js?filever=<?=filemtime('CubeToolDetailInclude.js')?>"></script>
+<script language="javascript" type="text/javascript" src="CubeRootInclude.js?filever=<?=filemtime('CubeRootInclude.js')?>"></script>
+<script language="javascript" type="text/javascript" src="CubeRootDetailInclude.js?filever=<?=filemtime('CubeRootDetailInclude.js')?>"></script>
 <script language="javascript" type="text/javascript">
 <!--
 var g_option = null;
@@ -27,46 +27,46 @@ g_xmlhttp.onreadystatechange = function() {
 			}
 			for (i in l_json_array) {
 				switch (l_json_array[i].ResultName) {
-					case "SEL_SVA":
+					case "SEL_SST":
 						var l_json_values = l_json_array[i].Rows[0].Data;
 						document.getElementById("InputFkBotName").value=l_json_values.FkBotName;
+						document.getElementById("InputScriptName").value=l_json_values.ScriptName;
 						break;
-					case "CRE_SVA":
+					case "CRE_SST":
 						document.getElementById("InputFkBotName").disabled=true;
 						document.getElementById("InputFkTypName").disabled=true;
 						document.getElementById("InputFkSrvName").disabled=true;
 						document.getElementById("InputFkSrvCubeTsgDbScr").disabled=true;
-						document.getElementById("InputXfAtbTypName").disabled=true;
-						document.getElementById("InputXkAtbName").disabled=true;
-						document.getElementById("RefSelect001").disabled=true;
+						document.getElementById("InputName").disabled=true;
 						document.getElementById("ButtonOK").innerText="Update";
+						document.getElementById("ButtonOK").disabled=false;
 						var l_objNode = parent.document.getElementById(g_parent_node_id);
-						var l_json_node_id = {FkTypName:document.getElementById("InputFkTypName").value,FkSrvName:document.getElementById("InputFkSrvName").value,FkSrvCubeTsgDbScr:document.getElementById("InputFkSrvCubeTsgDbScr").value,XfAtbTypName:document.getElementById("InputXfAtbTypName").value,XkAtbName:document.getElementById("InputXkAtbName").value};
-						g_node_id = '{"TYP_SVA":'+JSON.stringify(l_json_node_id)+'}';
+						var l_json_node_id = {FkTypName:document.getElementById("InputFkTypName").value,FkSrvName:document.getElementById("InputFkSrvName").value,FkSrvCubeTsgDbScr:document.getElementById("InputFkSrvCubeTsgDbScr").value,Name:document.getElementById("InputName").value};
+						g_node_id = '{"TYP_SST":'+JSON.stringify(l_json_node_id)+'}';
 						if (l_objNode != null) {
 							if (l_objNode.firstChild._state == 'O') {
 								var l_position = g_json_option.Code;
 								l_objNodePos = parent.document.getElementById(JSON.stringify(g_json_option.Type));
 								parent.AddTreeviewNode(
 									l_objNode,
-									'TYP_SVA',
+									'TYP_SST',
 									l_json_node_id,
-									'icons/servarg.bmp',
-									'ServiceArgument',
-									document.getElementById("InputXfAtbTypName").value.toLowerCase()+' '+document.getElementById("InputXkAtbName").value.toLowerCase(),
+									'icons/servstep.bmp',
+									'ServiceStep',
+									document.getElementById("InputName").value.toLowerCase(),
 									'N',
 									l_position,
 									l_objNodePos);
 							}
 						}
 						document.getElementById("ButtonOK").innerText = "Update";
-						document.getElementById("ButtonOK").onclick = function(){UpdateSva()};						
+						document.getElementById("ButtonOK").onclick = function(){UpdateSst()};						
 						ResetChangePending();
 						break;
-					case "UPD_SVA":
+					case "UPD_SST":
 						ResetChangePending();
 						break;
-					case "DEL_SVA":
+					case "DEL_SST":
 						var l_objNode = parent.document.getElementById(g_node_id);
 						if (g_parent_node_id == null) {
 							g_parent_node_id = l_objNode.parentNode.parentNode.id;
@@ -83,16 +83,8 @@ g_xmlhttp.onreadystatechange = function() {
 					case "ERROR":
 						alert ('Server error:\n'+l_json_array[i].ErrorText);
 						break;
-					default:
-						if (l_json_array[i].ResultName.substring(0,4) == 'LST_') {
-							switch (document.body._ListBoxCode){
-								case "Ref001":
-									OpenListBox(l_json_array[i].Rows,'attrib','Attribute');
-									break;
-							}
-						} else {
-							alert ('Unknown reply:\n'+g_responseText);
-						}
+					default:	
+						alert ('Unknown reply:\n'+g_responseText);
 						
 				}
 			}
@@ -102,7 +94,7 @@ g_xmlhttp.onreadystatechange = function() {
 	}
 }
 
-function CreateSva() {
+function CreateSst() {
 	if (document.getElementById("InputFkTypName").value == '') {
 		alert ('Error: Primary key FkTypName not filled');
 		return;
@@ -115,12 +107,8 @@ function CreateSva() {
 		alert ('Error: Primary key FkSrvCubeTsgDbScr not filled');
 		return;
 	}
-	if (document.getElementById("InputXfAtbTypName").value == '') {
-		alert ('Error: Primary key XfAtbTypName not filled');
-		return;
-	}
-	if (document.getElementById("InputXkAtbName").value == '') {
-		alert ('Error: Primary key XkAtbName not filled');
+	if (document.getElementById("InputName").value == '') {
+		alert ('Error: Primary key Name not filled');
 		return;
 	}
 	var Type = {
@@ -128,8 +116,8 @@ function CreateSva() {
 		FkTypName: document.getElementById("InputFkTypName").value,
 		FkSrvName: document.getElementById("InputFkSrvName").value,
 		FkSrvCubeTsgDbScr: document.getElementById("InputFkSrvCubeTsgDbScr").value,
-		XfAtbTypName: document.getElementById("InputXfAtbTypName").value,
-		XkAtbName: document.getElementById("InputXkAtbName").value
+		Name: document.getElementById("InputName").value,
+		ScriptName: document.getElementById("InputScriptName").value
 	};
 	var l_pos_action = g_json_option.Code;
 	var Option = {
@@ -137,16 +125,16 @@ function CreateSva() {
 	};
 	if (l_pos_action == 'F' || l_pos_action == 'L') {
 		PerformTrans('BusinessObjectType', {
-			Service: "CreateSva",
+			Service: "CreateSst",
 			Parameters: {
 				Option,
 				Type
 			}
 		} );
 	} else {
-		var Ref = g_json_option.Type.TYP_SVA;
+		var Ref = g_json_option.Type.TYP_SST;
 		PerformTrans('BusinessObjectType', {
-			Service: "CreateSva",
+			Service: "CreateSst",
 				Parameters: {
 					Option,
 					Type,
@@ -156,80 +144,35 @@ function CreateSva() {
 	}
 }
 
-function UpdateSva() {
+function UpdateSst() {
 	var Type = {
 		FkBotName: document.getElementById("InputFkBotName").value,
 		FkTypName: document.getElementById("InputFkTypName").value,
 		FkSrvName: document.getElementById("InputFkSrvName").value,
 		FkSrvCubeTsgDbScr: document.getElementById("InputFkSrvCubeTsgDbScr").value,
-		XfAtbTypName: document.getElementById("InputXfAtbTypName").value,
-		XkAtbName: document.getElementById("InputXkAtbName").value
+		Name: document.getElementById("InputName").value,
+		ScriptName: document.getElementById("InputScriptName").value
 	};
 	PerformTrans('BusinessObjectType', {
-		Service: "UpdateSva",
+		Service: "UpdateSst",
 		Parameters: {
 			Type
 		}
 	} );
 }
 
-function DeleteSva() {
+function DeleteSst() {
 	var Type = {
 		FkTypName: document.getElementById("InputFkTypName").value,
 		FkSrvName: document.getElementById("InputFkSrvName").value,
 		FkSrvCubeTsgDbScr: document.getElementById("InputFkSrvCubeTsgDbScr").value,
-		XfAtbTypName: document.getElementById("InputXfAtbTypName").value,
-		XkAtbName: document.getElementById("InputXkAtbName").value
+		Name: document.getElementById("InputName").value
 	};
 	PerformTrans('BusinessObjectType', {
-		Service: "DeleteSva",
+		Service: "DeleteSst",
 		Parameters: {
 			Type
 		}
-	} );
-}
-
-function UpdateForeignKey(p_obj) {
-	var l_values = p_obj.options[p_obj.selectedIndex].value;
-	if (l_values != '') {
-		var l_json_values = JSON.parse(l_values);
-	}
-	switch (document.body._ListBoxCode){
-	case "Ref001":
-		if (l_values == '') {
-			document.getElementById("InputXfAtbTypName").value = '';
-		} else {
-			document.getElementById("InputXfAtbTypName").value = l_json_values.FkTypName;
-		}
-		if (l_values == '') {
-			document.getElementById("InputXkAtbName").value = '';
-		} else {
-			document.getElementById("InputXkAtbName").value = l_json_values.Name;
-		}
-		break;
-	default:
-		alert ('Error Listbox: '+document.body._ListBoxCode);
-	}
-	CloseListBox();
-	SetChangePending();
-}
-
-function StartSelect001(p_event) {
-	document.body._SelectLeft = p_event.clientX;
-	document.body._SelectTop = p_event.clientY;
-	document.body._ListBoxCode = 'Ref001';
-	document.body._ListBoxOptional = 'N';
-	var Parameters = {
-		Option: {
-			CubeScopeLevel:0
-		},
-		Ref: {
-			FkTypName:document.getElementById("InputFkTypName").value
-		}
-	};
-	PerformTrans('BusinessObjectType', {
-		Service: "GetAtbForTypList",
-		Parameters
 	} );
 }
 
@@ -245,27 +188,23 @@ function InitBody() {
 	switch (l_json_argument.nodeType) {
 	case "D": // Details of existing object 
 		g_node_id = JSON.stringify(l_json_argument.objectId);
-		document.getElementById("InputFkTypName").value = l_json_objectKey.TYP_SVA.FkTypName;
-		document.getElementById("InputFkSrvName").value = l_json_objectKey.TYP_SVA.FkSrvName;
-		document.getElementById("InputFkSrvCubeTsgDbScr").value = l_json_objectKey.TYP_SVA.FkSrvCubeTsgDbScr;
-		document.getElementById("InputXfAtbTypName").value = l_json_objectKey.TYP_SVA.XfAtbTypName;
-		document.getElementById("InputXkAtbName").value = l_json_objectKey.TYP_SVA.XkAtbName;
+		document.getElementById("InputFkTypName").value = l_json_objectKey.TYP_SST.FkTypName;
+		document.getElementById("InputFkSrvName").value = l_json_objectKey.TYP_SST.FkSrvName;
+		document.getElementById("InputFkSrvCubeTsgDbScr").value = l_json_objectKey.TYP_SST.FkSrvCubeTsgDbScr;
+		document.getElementById("InputName").value = l_json_objectKey.TYP_SST.Name;
 		document.getElementById("ButtonOK").innerText = "Update";
-		document.getElementById("ButtonOK").onclick = function(){UpdateSva()};
+		document.getElementById("ButtonOK").onclick = function(){UpdateSst()};
 		PerformTrans('BusinessObjectType', {
-			Service: "GetSva",
+			Service: "GetSst",
 			Parameters: {
-				Type: l_json_objectKey.TYP_SVA
+				Type: l_json_objectKey.TYP_SST
 			}
 		} );
-		document.getElementById("ButtonOK").disabled = true;
 		document.getElementById("InputFkBotName").disabled = true;
 		document.getElementById("InputFkTypName").disabled = true;
 		document.getElementById("InputFkSrvName").disabled = true;
 		document.getElementById("InputFkSrvCubeTsgDbScr").disabled = true;
-		document.getElementById("InputXfAtbTypName").disabled = true;
-		document.getElementById("InputXkAtbName").disabled = true;
-		document.getElementById("RefSelect001").disabled = true;
+		document.getElementById("InputName").disabled = true;
 		break;
 	case "N": // New (non recursive) object
 		g_parent_node_id = JSON.stringify(l_json_argument.objectId);
@@ -273,7 +212,7 @@ function InitBody() {
 		document.getElementById("InputFkSrvName").value = l_json_objectKey.TYP_SRV.Name;
 		document.getElementById("InputFkSrvCubeTsgDbScr").value = l_json_objectKey.TYP_SRV.CubeTsgDbScr;
 		document.getElementById("ButtonOK").innerText = "Create";
-		document.getElementById("ButtonOK").onclick = function(){CreateSva()};
+		document.getElementById("ButtonOK").onclick = function(){CreateSst()};
 		PerformTrans('BusinessObjectType', {
 			Service: "GetSrvFkey",
 			Parameters: {
@@ -287,18 +226,17 @@ function InitBody() {
 		break;
 	case "X": // Delete object
 		g_node_id = JSON.stringify(l_json_argument.objectId);
-		document.getElementById("InputFkTypName").value = l_json_objectKey.TYP_SVA.FkTypName;
-		document.getElementById("InputFkSrvName").value = l_json_objectKey.TYP_SVA.FkSrvName;
-		document.getElementById("InputFkSrvCubeTsgDbScr").value = l_json_objectKey.TYP_SVA.FkSrvCubeTsgDbScr;
-		document.getElementById("InputXfAtbTypName").value = l_json_objectKey.TYP_SVA.XfAtbTypName;
-		document.getElementById("InputXkAtbName").value = l_json_objectKey.TYP_SVA.XkAtbName;
+		document.getElementById("InputFkTypName").value = l_json_objectKey.TYP_SST.FkTypName;
+		document.getElementById("InputFkSrvName").value = l_json_objectKey.TYP_SST.FkSrvName;
+		document.getElementById("InputFkSrvCubeTsgDbScr").value = l_json_objectKey.TYP_SST.FkSrvCubeTsgDbScr;
+		document.getElementById("InputName").value = l_json_objectKey.TYP_SST.Name;
 		document.getElementById("ButtonOK").innerText = "Delete";
-		document.getElementById("ButtonOK").onclick = function(){DeleteSva()};
+		document.getElementById("ButtonOK").onclick = function(){DeleteSst()};
 		SetChangePending();
 		PerformTrans('BusinessObjectType', {
-			Service: "GetSva",
+			Service: "GetSst",
 			Parameters: {
-				Type: l_json_objectKey.TYP_SVA
+				Type: l_json_objectKey.TYP_SST
 			}
 		} );
 		document.getElementById("InputCubeId").disabled = true;
@@ -307,8 +245,8 @@ function InitBody() {
 		document.getElementById("InputFkTypName").disabled = true;
 		document.getElementById("InputFkSrvName").disabled = true;
 		document.getElementById("InputFkSrvCubeTsgDbScr").disabled = true;
-		document.getElementById("InputXfAtbTypName").disabled = true;
-		document.getElementById("InputXkAtbName").disabled = true;
+		document.getElementById("InputName").disabled = true;
+		document.getElementById("InputScriptName").disabled = true;
 		break;
 	default:
 		alert ('Error InitBody: nodeType='+l_json_argument.nodeType);
@@ -318,7 +256,7 @@ function InitBody() {
 -->
 </script>
 </head><body oncontextmenu="return false;" onload="InitBody()" onbeforeunload="return parent.CheckChangePending()" ondrop="Drop(event)" ondragover="AllowDrop(event)">
-<div><img src="icons/servarg_large.bmp" /><span> SERVICE_ARGUMENT</span></div>
+<div><img src="icons/servstep_large.bmp" /><span> SERVICE_STEP</span></div>
 <hr/>
 <table>
 <tr id="RowAtbFkBotName"><td><div>BusinessObjectType.Name</div></td><td><div style="max-width:30em;"><input id="InputFkBotName" type="text" maxlength="30" style="width:100%" onchange="SetChangePending();ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
@@ -329,12 +267,8 @@ function InitBody() {
 	<option id="OptionFkSrvCubeTsgDbScr-D" style="display:inline" value="D">DATABASE_INTERACTION</option>
 	<option id="OptionFkSrvCubeTsgDbScr-S" style="display:inline" value="S">SERVER_SCRIPT</option>
 </select></div></td></tr>
-<tr><td height=6></td></tr><tr id="RowRefAttribute0"><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/attrib.bmp"/> Attribute (Imports)</legend>
-<table style="width:100%">
-<tr><td><u>Type.Name</u></td><td style="width:100%"><div style="max-width:30em;"><input id="InputXfAtbTypName" type="text" maxlength="30" style="width:100%" disabled></input></div></td>
-<td><button id="RefSelect001" type="button" onclick="StartSelect001(event)">Select</button></td></tr>
-<tr><td><u>Attribute.Name</u></td><td style="width:100%"><div style="max-width:30em;"><input id="InputXkAtbName" type="text" maxlength="30" style="width:100%" disabled></input></div></td></tr>
-</table></fieldset></td></tr>
+<tr id="RowAtbName"><td><u><div>Name</div></u></td><td><div style="max-width:30em;"><input id="InputName" type="text" maxlength="30" style="width:100%" onchange="SetChangePending();ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr id="RowAtbScriptName"><td><div>ScriptName</div></td><td><div style="max-width:60em;"><input id="InputScriptName" type="text" maxlength="60" style="width:100%" onchange="SetChangePending();ReplaceSpaces(this);"></input></div></td></tr>
 <tr><td><br></td><td style="width:100%"></td></tr>
 <tr><td/><td>
 <button id="ButtonOK" type="button" disabled>OK</button>&nbsp;&nbsp;&nbsp;
