@@ -45,6 +45,7 @@ Change log:
 06-10-2021 - CheckChangePending
 16-07-2023 - Multiple PHP servers (one for each BO)
 06-08-2023 - Fix within_scope_of reference
+19-11-2023 - Service page
 
 [[INCLUDE,Includes/general.cgt]]
 [[TEXT,DETAIL_RECURSIVE_PARMS]]
@@ -412,8 +413,8 @@ function ProcessChange<<PAGE_FIELD>>(p_obj) {[[LOOP,CONTROLLED_PAGE_FIELD]]
 </head><body oncontextmenu="return false;" onload="InitBody()" onbeforeunload="return parent.CheckChangePending()" ondrop="Drop(event)" ondragover="AllowDrop(event)">
 <div><img src="icons/<<PAGE3>>.bmp" /><span<<TEXT,DETAIL_DESCRIPTION>>> <<PAGE2>>[[LOOP,PAGE_HEADER]][[LOOP,PAGE_SELECTOR_SWITCH]] /[[LOOP,PAGE_FIELD]][[IF:!FIRST]] <b>.</b>[[ENDIF]]
 <<TEXT,DETAIL_INPUT>>[[ENDLOOP,PAGE_FIELD]][[ENDLOOP,PAGE_SELECTOR_SWITCH]]</span></div>
-<hr/>
-<table[[IF:CHILD(PAGE_SELECTOR_SWITCH)]] id="TableMain" style="display:none"[[ENDIF]]>[[ENDLOOP,PAGE_HEADER]][[LOOP,PAGE_ROW]]
+<hr/>[[ENDLOOP,PAGE_HEADER]]
+<table[[LOOP,PAGE_HEADER]][[IF:CHILD(PAGE_SELECTOR_SWITCH)]] id="TableMain" style="display:none"[[ENDIF]][[ENDLOOP,PAGE_HEADER]]>[[LOOP,PAGE_ROW]]
 <tr id="<<PAGE_ROW>>"><td<<TEXT,DETAIL_DESCRIPTION>>>[[LOOP,PAGE_FIELD]][[IF:2=Y]]<u>[[ENDIF]]<div[[IF,PAGE_ROW:1=area]] style="padding-top:10px"[[ENDIF]]><<PAGE_FIELD1>></div>[[IF:2=Y]]</u>[[ENDIF]]</td>[[IF,PAGE_ROW:1=area]]</tr><tr><td colspan="2">[[ELSE]]<td>[[ENDIF]]<<TEXT,DETAIL_INPUT>>[[ENDLOOP,PAGE_FIELD]]</td></tr>[[ENDLOOP,PAGE_ROW]][[LOOP,GROUP_BOX]]
 <tr><td height=6></td></tr><tr id="<<GROUP_BOX>>"><td colspan=2><fieldset><legend<<TEXT,DETAIL_DESCRIPTION>>><img style="border:1 solid transparent;" src="icons/<<GROUP_BOX2>>.bmp"/> <<GROUP_BOX1>></legend>
 <table style="width:100%">[[LOOP,PAGE_FIELD]]
