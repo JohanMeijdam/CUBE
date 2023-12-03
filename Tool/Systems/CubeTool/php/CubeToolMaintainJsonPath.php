@@ -472,7 +472,6 @@ function ProcessTypeSpecialisation() {
 		document.getElementById("TableMain").style.display = "inline";
 	}
 }
-
 -->
 </script>
 </head><body oncontextmenu="return false;" onload="InitBody()" onbeforeunload="return parent.CheckChangePending()" ondrop="Drop(event)" ondragover="AllowDrop(event)">

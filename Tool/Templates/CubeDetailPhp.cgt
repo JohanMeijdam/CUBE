@@ -84,17 +84,17 @@ session_start();
 $_SESSION['views']=0;
 ?><html>
 <head>
-<link rel="stylesheet" href="base_css.php" />[[IF,PAGE:1=D]]
+<link rel="stylesheet" href="base_css.php" />
 <script language="javascript" type="text/javascript" src="../CubeGeneral/CubeInclude.js?filever=<?=filemtime('../CubeGeneral/CubeInclude.js')?>"></script>
 <script language="javascript" type="text/javascript" src="../CubeGeneral/CubeDetailInclude.js?filever=<?=filemtime('../CubeGeneral/CubeDetailInclude.js')?>"></script>
 <script language="javascript" type="text/javascript" src="<<1>>Include.js?filever=<?=filemtime('<<1>>Include.js')?>"></script>
 <script language="javascript" type="text/javascript" src="<<1>>DetailInclude.js?filever=<?=filemtime('<<1>>DetailInclude.js')?>"></script>
-<script language="javascript" type="text/javascript">[[ENDIF]]
-<!--[[IF,PAGE:1=D]]
+<script language="javascript" type="text/javascript">
+<!--
 var g_option = null;
 var g_json_option = null;
 var g_parent_node_id = null;
-var g_node_id = null;
+var g_node_id = null;[[IF,PAGE:1=D]]
 
 g_xmlhttp.onreadystatechange = function() {
 	if (g_xmlhttp.readyState == 4) {
@@ -383,6 +383,21 @@ function InitBody() {
 	default:
 		alert ('Error InitBody: nodeType='+l_json_argument.nodeType);
 	}
+}[[ELSE]]
+
+function InitBody() {
+	var l_json_argument = JSON.parse(decodeURIComponent(location.href.split("?")[1]));
+	document.body._FlagDragging = 0;
+	document.body._DraggingId = ' ';
+	var l_json_objectKey = l_json_argument.objectId;
+	switch (l_json_argument.nodeType) {
+	case "E": // Execute Script [[*Werkt dus alleen als argument onderdeel van de key is*]]
+		g_node_id = JSON.stringify(l_json_argument.objectId);[[LOOP,ATTRIBUTE:1=Y]]
+		document.getElementById("Input<<ATTRIBUTE:C>>").value = l_json_objectKey.TYP_<<TYPE1>>.<<ATTRIBUTE:C>>;[[ENDLOOP,ATTRIBUTE]]
+		break;
+	default:
+		alert ('Error InitBody: nodeType='+l_json_argument.nodeType);
+	}
 }[[ENDIF]][[ENDLOOP,TYPE]][[IF:CHILD(PAGE_FIELD:CHILD(*PAGE_SELECTOR_SWITCH))]]
 
 function ProcessTypeSpecialisation() {
@@ -407,23 +422,22 @@ function ProcessChange<<PAGE_FIELD>>(p_obj) {[[LOOP,CONTROLLED_PAGE_FIELD]]
 		break;[[ENDLOOP,OPTION]]
 	}
 }[[ENDLOOP,PAGE_FIELD]]
-
 -->
 </script>
-</head><body oncontextmenu="return false;" onload="InitBody()" onbeforeunload="return parent.CheckChangePending()" ondrop="Drop(event)" ondragover="AllowDrop(event)">
-<div><img src="icons/<<PAGE3>>.bmp" /><span<<TEXT,DETAIL_DESCRIPTION>>> <<PAGE2>>[[LOOP,PAGE_HEADER]][[LOOP,PAGE_SELECTOR_SWITCH]] /[[LOOP,PAGE_FIELD]][[IF:!FIRST]] <b>.</b>[[ENDIF]]
-<<TEXT,DETAIL_INPUT>>[[ENDLOOP,PAGE_FIELD]][[ENDLOOP,PAGE_SELECTOR_SWITCH]]</span></div>
+</head><body oncontextmenu="return false;" onload="InitBody()" onbeforeunload="return parent.CheckChangePending()" ondrop="Drop(event)" ondragover="AllowDrop(event)">[[LOOP,PAGE_HEADER]]
+<div><img src="icons/<<PAGE3>>.bmp" /><span<<TEXT,DETAIL_DESCRIPTION>>> <<PAGE2>>[[LOOP,PAGE_SELECTOR_SWITCH]] /[[LOOP,PAGE_FIELD]][[IF:!FIRST]] <b>.</b>[[ENDIF]]
+<<TEXT,DETAIL_INPUT>>[[ENDLOOP,PAGE_FIELD]][[ENDLOOP,PAGE_SELECTOR_SWITCH]][[LOOP,SCRIPT]] - execute <<SCRIPT:C>>[[ENDLOOP,SCRIPT]]</span></div>
 <hr/>[[ENDLOOP,PAGE_HEADER]]
 <table[[LOOP,PAGE_HEADER]][[IF:CHILD(PAGE_SELECTOR_SWITCH)]] id="TableMain" style="display:none"[[ENDIF]][[ENDLOOP,PAGE_HEADER]]>[[LOOP,PAGE_ROW]]
 <tr id="<<PAGE_ROW>>"><td<<TEXT,DETAIL_DESCRIPTION>>>[[LOOP,PAGE_FIELD]][[IF:2=Y]]<u>[[ENDIF]]<div[[IF,PAGE_ROW:1=area]] style="padding-top:10px"[[ENDIF]]><<PAGE_FIELD1>></div>[[IF:2=Y]]</u>[[ENDIF]]</td>[[IF,PAGE_ROW:1=area]]</tr><tr><td colspan="2">[[ELSE]]<td>[[ENDIF]]<<TEXT,DETAIL_INPUT>>[[ENDLOOP,PAGE_FIELD]]</td></tr>[[ENDLOOP,PAGE_ROW]][[LOOP,GROUP_BOX]]
 <tr><td height=6></td></tr><tr id="<<GROUP_BOX>>"><td colspan=2><fieldset><legend<<TEXT,DETAIL_DESCRIPTION>>><img style="border:1 solid transparent;" src="icons/<<GROUP_BOX2>>.bmp"/> <<GROUP_BOX1>></legend>
 <table style="width:100%">[[LOOP,PAGE_FIELD]]
 <tr><td>[[IF:2=Y]]<u>[[ENDIF]]<<PAGE_FIELD1>>[[IF:2=Y]]</u>[[ENDIF]]</td><td style="width:100%"><<TEXT,DETAIL_INPUT>></td>[[IF:FIRST]][[FORV,GROUP_BOX:N>N]][[LOOP,BUTTON]]
-<td><button id="<<BUTTON>>" type="button" onclick="<<BUTTON2>>"><<BUTTON1>></button></td>[[ENDLOOP,BUTTON]][[ENDFOR]][[ENDIF]]</tr>[[ENDLOOP,PAGE_FIELD]]
+<td><button id="<<BUTTON>>" type="button"[[IF:3=Y]] disabled[[ENDIF]] onclick="<<BUTTON2>>"><<BUTTON1>></button></td>[[ENDLOOP,BUTTON]][[ENDFOR]][[ENDIF]]</tr>[[ENDLOOP,PAGE_FIELD]]
 </table></fieldset></td></tr>[[ENDLOOP,GROUP_BOX]]
 <tr><td><br></td><td style="width:100%"></td></tr>
 <tr><td/><td>[[LOOP,BUTTON:!CHILD(*GROUP_BOX)]]
-<button id="<<BUTTON>>" type="button" disabled[[IF:!2=#]] onclick="<<BUTTON2>>"[[ENDIF]]><<BUTTON1>></button>[[IF:!LAST]]&nbsp;&nbsp;&nbsp;[[ENDIF]][[ENDLOOP,BUTTON]]</td></tr>
+<button id="<<BUTTON>>" type="button"[[IF:3=Y]] disabled[[ENDIF]][[IF:!2=#]] onclick="<<BUTTON2>>"[[ENDIF]]><<BUTTON1>></button>[[IF:!LAST]]&nbsp;&nbsp;&nbsp;[[ENDIF]][[ENDLOOP,BUTTON]]</td></tr>
 </table>[[LOOP,PAGE_FIELD:3=hidden]]
 <input id="<<PAGE_FIELD>>" type="hidden"></input>[[ENDLOOP,PAGE_FIELD]]
 </body>

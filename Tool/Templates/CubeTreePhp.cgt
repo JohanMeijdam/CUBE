@@ -284,7 +284,7 @@ function OpenMenu(p_obj) {
 		}[[ENDIF]][[LOOP,TYPE]]
 		AddMenuItem(g_objMenuList,'add <<TYPE:L>>','icons/<<TYPE7:L>>.bmp','[[IF:6=P]]CubeAdd[[ELSE]]Detail<<TYPE1:U>>[[ENDIF]]','N','TYP_<<TYPE1:U>>','<<TYPE:C>>',[[IF:!5=N]]<<TYPE5>>[[ELSE]]0[[ENDIF]],'N',[[EVAL:++$myI]]);[[ENDLOOP,TYPE]][[IF:3=Y]]
 		AddMenuItem(g_objMenuList,'add <<TYPE:L>>','icons/<<TYPE7:L>>.bmp','[[IF:6=P]]CubeAdd[[ELSE]]Detail<<TYPE1:U>>[[ENDIF]]','R','TYP_<<TYPE1:U>>','<<TYPE:C>>',[[IF:!4=N]]<<TYPE4>>[[ELSE]]0[[ENDIF]],'N',[[EVAL:++$myI]]);[[ENDIF]][[LOOP,SERVICE]]
-		AddMenuItem(g_objMenuList,'execute <<SERVICE:L>>','icons/service.bmp','CubeExecute','E','','<<SERVICE:C>>',0,'',0);[[ENDLOOP,SERVICE]]
+		AddMenuItem(g_objMenuList,'execute <<SERVICE:L>>','icons/dot.bmp','CubeExecute','E','','<<TYPE:C>><<SERVICE:C>>',0,'',0);[[ENDLOOP,SERVICE]]
 		AddMenuItem(g_objMenuList,'delete','icons/cube_delete.bmp','CubeDelete','X','','<<TYPE:C>>',0,'N',0);[[IF:(3=Y[AND]!4=N)[OR]CHILD(TYPE:!5=N)]]
 		var l_json_id = l_json_node_id[l_type_id];
 		PerformTrans('<<BUSINESS_OBJECT_TYPE:C>>', {Service:"Count<<TYPE1:C>>RestrictedItems",Parameters:{Type:l_json_id}} );[[ENDIF]]

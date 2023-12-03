@@ -535,8 +535,8 @@ function OpenMenu(p_obj) {
 		break;
  	case 'TYP_SYS':
 		AddMenuItem(g_objMenuList,'add system_bo_type','icons/sysbot.bmp','CubeAdd','N','TYP_SBT','SystemBoType',0,'N',2);
-		AddMenuItem(g_objMenuList,'execute extract_model','icons/service.bmp','CubeExecute','E','','ExtractModel',0,'',0);
-		AddMenuItem(g_objMenuList,'execute generate','icons/service.bmp','CubeExecute','E','','Generate',0,'',0);
+		AddMenuItem(g_objMenuList,'execute extract_model','icons/dot.bmp','CubeExecute','E','','SystemExtractModel',0,'',0);
+		AddMenuItem(g_objMenuList,'execute generate','icons/dot.bmp','CubeExecute','E','','SystemGenerate',0,'',0);
 		AddMenuItem(g_objMenuList,'delete','icons/cube_delete.bmp','CubeDelete','X','','System',0,'N',0);
 		break;
  	case 'TYP_SBT':

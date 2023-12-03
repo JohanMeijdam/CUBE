@@ -207,6 +207,7 @@
 			=PROPERTY:0|Id|;
 			=PROPERTY:1|Prompt|;
 			=PROPERTY:2|ClickEvent|;
+			=PROPERTY:3|Disabled|Values: Y, N;
 		-META_TYPE:;
 		+META_TYPE:DESCRIPTION;
 			=PROPERTY:0|Name1|;
@@ -406,8 +407,8 @@
 	+PAGE_ROW:RowAtbValue|area;
 		>PAGE_FIELD:CUBE-PAG-00137_CUBE-ATB-0100065001;
 	-PAGE_ROW:;
-	=BUTTON:ButtonOK|OK|#;
-	=BUTTON:ButtonCancel|Cancel|CancelChangePending();
+	=BUTTON:ButtonOK|OK|#|Y;
+	=BUTTON:ButtonCancel|Cancel|CancelChangePending()|Y;
 -PAGE:;
 +SYSTEM[CUBE-SYS-0100002]:CubeSys|SUPPORT||||CUBE;
 	+SYSTEM_BO_TYPE[CUBE-SBT-0100007]:;

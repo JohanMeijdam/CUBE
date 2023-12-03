@@ -324,11 +324,10 @@ function InitBody() {
 		alert ('Error InitBody: nodeType='+l_json_argument.nodeType);
 	}
 }
-
 -->
 </script>
 </head><body oncontextmenu="return false;" onload="InitBody()" onbeforeunload="return parent.CheckChangePending()" ondrop="Drop(event)" ondragover="AllowDrop(event)">
-<div><img src="icons/tspgroup_large.bmp" /><span style="cursor:help" oncontextmenu="parent.OpenDescBox('tspgroup','TypeSpecialisationGroup','TYPE_SPECIALISATION_GROUP','_',-1)"> TYPE_SPECIALISATION_GROUP</span></div>
+<div><img src="icons/tspgroup_large.bmp" /><span> TYPE_SPECIALISATION_GROUP</span></div>
 <hr/>
 <table>
 <tr id="RowAtbFkBotName"><td><div>BusinessObjectType.Name</div></td><td><div style="max-width:30em;"><input id="InputFkBotName" type="text" maxlength="30" style="width:100%" onchange="SetChangePending();ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
