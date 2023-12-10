@@ -21,12 +21,21 @@ function InitBody() {
 	document.body._DraggingId = ' ';
 	var l_json_objectKey = l_json_argument.objectId;
 	switch (l_json_argument.nodeType) {
-	case "E": // Execute Script 
+	case "E": // Execute Script
 		g_node_id = JSON.stringify(l_json_argument.objectId);
 		document.getElementById("InputName").value = l_json_objectKey.TYP_SYS.Name;
+		break;
 	default:
 		alert ('Error InitBody: nodeType='+l_json_argument.nodeType);
 	}
+}
+
+function ExecuteService() {
+	var l_message = 'test';
+	g_xmlhttp.open('POST','CubeToolScript<<Service:C>>.php',true);
+	g_xmlhttp.responseType = "text";
+	g_xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+	g_xmlhttp.send(l_message);
 }
 -->
 </script>
@@ -37,7 +46,7 @@ function InitBody() {
 <tr id="RowAtbName"><td><u><div>Name</div></u></td><td><div style="max-width:30em;"><input id="InputName" type="text" maxlength="30" style="width:100%" onchange="SetChangePending();ReplaceSpaces(this);"></input></div></td></tr>
 <tr><td><br></td><td style="width:100%"></td></tr>
 <tr><td/><td>
-<button id="ButtonExec" type="button">Execute</button>&nbsp;&nbsp;&nbsp;
+<button id="ButtonExec" type="button" onclick="ExecuteService()">Execute</button>&nbsp;&nbsp;&nbsp;
 <button id="ButtonCancel" type="button" onclick="CancelExecution()">Cancel</button></td></tr>
 </table>
 </body>

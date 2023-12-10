@@ -163,6 +163,7 @@
 		=PROPERTY:3|Icon|;
 		=PROPERTY:4|ServerName|;
 		=ASSOCIATION:TYPE|Concerns|TYPE;
+		=ASSOCIATION:SERVICE|Concerns|SERVICE;
 		+META_TYPE:PAGE_HEADER;
 			+META_TYPE:PAGE_SELECTOR_SWITCH;
 				=ASSOCIATION:PAGE_FIELD|Uses|PAGE_FIELD;
@@ -6158,6 +6159,7 @@
 -PAGE:;
 +PAGE[CUBE-PAG-S01679]:ExecuteSystemExtractModel|S|SYSTEM|dot_large|System;
 	>TYPE:CUBE-TYP-0100021;
+	>SERVICE:CUBE-SRV-0100000;
 	+PAGE_FIELD[CUBE-PAG-01630_CUBE-ATB-0100058001]:InputName|Name|Y|text-line|30|N|N|Y;
 		>PAGE_FIELD_ATTRIBUTE:CUBE-ATB-0100058001;
 	-PAGE_FIELD:;
@@ -6167,11 +6169,12 @@
 	+PAGE_ROW:RowAtbName|line;
 		>PAGE_FIELD:CUBE-PAG-01630_CUBE-ATB-0100058001;
 	-PAGE_ROW:;
-	=BUTTON:ButtonExec|Execute|#|N;
+	=BUTTON:ButtonExec|Execute|ExecuteService()|N;
 	=BUTTON:ButtonCancel|Cancel|CancelExecution()|N;
 -PAGE:;
 +PAGE[CUBE-PAG-S01683]:ExecuteSystemGenerate|S|SYSTEM|dot_large|System;
 	>TYPE:CUBE-TYP-0100021;
+	>SERVICE:CUBE-SRV-0100001;
 	+PAGE_FIELD[CUBE-PAG-01630_CUBE-ATB-0100058001]:InputName|Name|Y|text-line|30|N|N|Y;
 		>PAGE_FIELD_ATTRIBUTE:CUBE-ATB-0100058001;
 	-PAGE_FIELD:;
@@ -6181,7 +6184,7 @@
 	+PAGE_ROW:RowAtbName|line;
 		>PAGE_FIELD:CUBE-PAG-01630_CUBE-ATB-0100058001;
 	-PAGE_ROW:;
-	=BUTTON:ButtonExec|Execute|#|N;
+	=BUTTON:ButtonExec|Execute|ExecuteService()|N;
 	=BUTTON:ButtonCancel|Cancel|CancelExecution()|N;
 -PAGE:;
 +PAGE[CUBE-PAG-01687]:MaintainSystemBoType|D|SYSTEM_BO_TYPE|sysbot_large|System;
