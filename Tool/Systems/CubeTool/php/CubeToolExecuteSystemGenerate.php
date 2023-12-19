@@ -32,7 +32,7 @@ function InitBody() {
 
 function ExecuteService() {
 	var l_message = 'test';
-	g_xmlhttp.open('POST','CubeToolScript<<Service:C>>.php',true);
+	g_xmlhttp.open('POST','CubeToolScriptGenerate.php',true);
 	g_xmlhttp.responseType = "text";
 	g_xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 	g_xmlhttp.send(l_message);
@@ -46,8 +46,7 @@ function ExecuteService() {
 <tr id="RowAtbName"><td><u><div>Name</div></u></td><td><div style="max-width:30em;"><input id="InputName" type="text" maxlength="30" style="width:100%" onchange="SetChangePending();ReplaceSpaces(this);"></input></div></td></tr>
 <tr><td><br></td><td style="width:100%"></td></tr>
 <tr><td/><td>
-<button id="ButtonExec" type="button" onclick="ExecuteService()">Execute</button>&nbsp;&nbsp;&nbsp;
-<button id="ButtonCancel" type="button" onclick="CancelExecution()">Cancel</button></td></tr>
+<button id="ButtonExec" type="button" onclick="ExecuteService()">Execute</button></td></tr>
 </table>
 </body>
 </html>

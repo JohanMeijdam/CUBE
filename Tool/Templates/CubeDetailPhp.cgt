@@ -407,7 +407,7 @@ function InitBody() {
 
 function ExecuteService() {
 	var l_message = 'test';
-	g_xmlhttp.open('POST','CubeToolScript<<Service:C>>.php',true);
+	g_xmlhttp.open('POST','CubeToolScript<<SERVICE:C>>.php',true);
 	g_xmlhttp.responseType = "text";
 	g_xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 	g_xmlhttp.send(l_message);

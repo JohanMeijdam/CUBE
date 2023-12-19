@@ -23,7 +23,7 @@ $RequestText = file_get_contents('php://input');
 $RequestObj = json_decode($RequestText, false);
 $ResponseText = '[';
 
-switch ($RequestObj->Service) {[[LOOP,BUSINESS_OBJECT_TYPE]][[LOOP,SERVICE:3=E]]
+switch ($RequestObj->Service) {[[LOOP,BUSINESS_OBJECT_TYPE]][[LOOP,TYPE]][[LOOP,SERVICE:3=E]]
 case '<<SERVICE:C>>':
 	$conn->query("BEGIN;");[[LOOP,OPERATION]]
 	$ResponseObj = new \stdClass();
@@ -41,7 +41,7 @@ case '<<SERVICE:C>>':
 	$curs = $conn->query('CLOSE cube_cursor;');[[ENDIF]]
 	$ResponseText = $ResponseText.json_encode($ResponseObj).[[IF:!LAST]]','[[ELSE]]']'[[ENDIF]];[[ENDLOOP,OPERATION]]
 	$conn->query("END;");
-	break;[[ENDLOOP,SERVICE]][[ENDLOOP,BUSINESS_OBJECT_TYPE]]
+	break;[[ENDLOOP,SERVICE]][[REPEAT,TYPE]][[ENDLOOP,TYPE]][[ENDLOOP,BUSINESS_OBJECT_TYPE]]
 
 default:
 	$ResponseObj = new \stdClass();
