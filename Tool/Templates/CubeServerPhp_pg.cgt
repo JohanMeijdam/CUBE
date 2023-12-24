@@ -13,7 +13,7 @@
 10-09-2023 - SERVICE properties
 24-09-2023 - ARGUMENT > EXPORT_ARGUMENT
 [[INCLUDE,Includes/general.cgt]]
-[[BODY]]<?php
+[[BODY]][[LOOP,BUSINESS_OBJECT_TYPE]][[FILE,<<2>>\<<1>>Server<<BUSINESS_OBJECT_TYPE:C>>.php]]<?php
 session_start();
 include 'CubeDbLogon.php';
 
@@ -23,7 +23,7 @@ $RequestText = file_get_contents('php://input');
 $RequestObj = json_decode($RequestText, false);
 $ResponseText = '[';
 
-switch ($RequestObj->Service) {[[LOOP,BUSINESS_OBJECT_TYPE]][[LOOP,TYPE]][[LOOP,SERVICE:3=E]]
+switch ($RequestObj->Service) {[[LOOP,TYPE]][[LOOP,SERVICE:1=D[AND]3=E]]
 case '<<SERVICE:C>>':
 	$conn->query("BEGIN;");[[LOOP,OPERATION]]
 	$ResponseObj = new \stdClass();

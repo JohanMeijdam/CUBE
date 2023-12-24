@@ -22,7 +22,7 @@ set_error_handler("CubeError");
 $RequestText = file_get_contents('php://input');
 $RequestObj = json_decode($RequestText, false);
 
-switch ($RequestObj->Service) {[[LOOP,TYPE]][[LOOP,SERVICE:3=E]]
+switch ($RequestObj->Service) {[[LOOP,TYPE]][[LOOP,SERVICE:1=D[AND]3=E]]
 
 case '<<SERVICE:C>>':[[LOOP,OPERATION]][[IF:FIRST]]
 	echo '[';[[ENDIF]][[IF,SERVICE:CHILD(SERVICE_ARGUMENT)]][[FORH,SERVICE:N>N]]
@@ -110,4 +110,16 @@ function CubeError($errno, $errstr) {
 		exit;
 	}
 }
-?>[[ENDLOOP,BUSINESS_OBJECT_TYPE]][[ENDBODY]]
+?>[[ENDLOOP,BUSINESS_OBJECT_TYPE]][[LOOP,BUSINESS_OBJECT_TYPE]][[LOOP,SERVICE:1=S]][[FILE,<<2>>\<<1>>Script<<SERVICE:C>>.php]]<?php
+	echo "TEST1";
+	ob_flush();
+	flush();
+	sleep(3);
+	echo shell_exec (". /Systems/CubeTool/scripts/CubeToolGenerate.sh 2>&1");
+	ob_flush();
+	flush();
+	sleep(3);
+	echo "TEST2";
+	ob_flush();
+	flush();
+?>[[ENDLOOP,SERVICE]][[ENDLOOP,BUSINESS_OBJECT_TYPE]][[ENDBODY]]
