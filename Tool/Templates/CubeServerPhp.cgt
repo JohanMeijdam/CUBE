@@ -110,16 +110,9 @@ function CubeError($errno, $errstr) {
 		exit;
 	}
 }
-?>[[ENDLOOP,BUSINESS_OBJECT_TYPE]][[LOOP,BUSINESS_OBJECT_TYPE]][[LOOP,SERVICE:1=S]][[FILE,<<2>>\<<1>>Script<<SERVICE:C>>.php]]<?php
-	echo "TEST1";
+?>[[ENDLOOP,BUSINESS_OBJECT_TYPE]][[LOOP,BUSINESS_OBJECT_TYPE]][[LOOP,TYPE]][[LOOP,SERVICE:1=S]][[FILE,<<2>>\<<1>>Script<<SERVICE:C>>.php]]<?php[[LOOP,SERVICE_STEP]]
+	echo "Excuting <<SERVICE_STEP:C>>\n";
+	echo shell_exec (". <<2>>/scripts/<<SERVICE_STEP1:C>> 2>&1");
 	ob_flush();
-	flush();
-	sleep(3);
-	echo shell_exec (". /Systems/CubeTool/scripts/CubeToolGenerate.sh 2>&1");
-	ob_flush();
-	flush();
-	sleep(3);
-	echo "TEST2";
-	ob_flush();
-	flush();
-?>[[ENDLOOP,SERVICE]][[ENDLOOP,BUSINESS_OBJECT_TYPE]][[ENDBODY]]
+	flush();[[ENDLOOP,SERVICE_STEP]]
+?>[[ENDLOOP,SERVICE]][[REPEAT,TYPE]][[ENDLOOP,TYPE]][[ENDLOOP,BUSINESS_OBJECT_TYPE]][[ENDBODY]]

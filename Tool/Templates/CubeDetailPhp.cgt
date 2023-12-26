@@ -382,7 +382,7 @@ function InitBody() {
 	default:
 		alert ('Error InitBody: nodeType='+l_json_argument.nodeType);
 	}
-}[[ENDLOOP,TYPE]][[ELSE]][[LOOP,SERVICE:1=S]][[LOOP,PAGE_LOG_FIELD]]
+}[[ENDLOOP,TYPE]][[ELSE]][[LOOP,SERVICE:1=S]][[FORV,PAGE:N>N]][[LOOP,PAGE_LOG_FIELD]]
 
 g_xmlhttp.onreadystatechange = function() {
 	switch (g_xmlhttp.readyState) {
@@ -395,7 +395,7 @@ g_xmlhttp.onreadystatechange = function() {
 			document.getElementById("<<PAGE_LOG_FIELD:C>>").innerText += "#4# " + g_code;
 			break;
 	}
-}[[ENDLOOP,PAGE_LOG_FIELD]]
+}[[ENDLOOP,PAGE_LOG_FIELD]][[ENDFOR]]
 
 function InitBody() {
 	var l_json_argument = JSON.parse(decodeURIComponent(location.href.split("?")[1]));
@@ -466,6 +466,7 @@ function ProcessChange<<PAGE_FIELD>>(p_obj) {[[LOOP,CONTROLLED_PAGE_FIELD]]
 <button id="<<BUTTON>>" type="button"[[IF:3=Y]] disabled[[ENDIF]][[IF:!2=#]] onclick="<<BUTTON2>>"[[ENDIF]]><<BUTTON1>></button>[[IF:!LAST]]&nbsp;&nbsp;&nbsp;[[ENDIF]][[ENDLOOP,BUTTON]]</td></tr>
 </table>[[LOOP,PAGE_FIELD:3=hidden]]
 <input id="<<PAGE_FIELD>>" type="hidden"></input>[[ENDLOOP,PAGE_FIELD]][[LOOP,PAGE_LOG_FIELD]]
+<hr/>
 <span id="<<PAGE_LOG_FIELD:C>>" style="display:block;">script output:<br></span>[[ENDLOOP,PAGE_LOG_FIELD]]
 </body>
 </html>

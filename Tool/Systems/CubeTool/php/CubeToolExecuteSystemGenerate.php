@@ -19,11 +19,11 @@ g_xmlhttp.onreadystatechange = function() {
 	switch (g_xmlhttp.readyState) {
 		case 3:
 			var g_code = g_xmlhttp.responseText;
-			document.getElementById("ScriptOutput").innerText += "#3# " + g_code;
+			document.getElementById("ServiceOutput").innerText += "#3# " + g_code;
 			break;
 		case 4:
 			var g_code = g_xmlhttp.responseText;
-			document.getElementById("ScriptOutput").innerText += "#4# " + g_code;
+			document.getElementById("ServiceOutput").innerText += "#4# " + g_code;
 			break;
 	}
 }
@@ -61,5 +61,7 @@ function ExecuteService() {
 <tr><td/><td>
 <button id="ButtonExec" type="button" onclick="ExecuteService()">Execute</button></td></tr>
 </table>
+<hr/>
+<span id="ServiceOutput" style="display:block;">script output:<br></span>
 </body>
 </html>

@@ -1,0 +1,34 @@
+<?php
+	echo "Excuting GenerateModels\n";
+	echo shell_exec (". Systems\CubeTool\php/scripts/GenerateModels 2>&1");
+	ob_flush();
+	flush();
+	echo "Excuting GenerateScripts\n";
+	echo shell_exec (". Systems\CubeTool\php/scripts/GenerateScripts 2>&1");
+	ob_flush();
+	flush();
+	echo "Excuting GenerateDatabaseTables\n";
+	echo shell_exec (". Systems\CubeTool\php/scripts/GenerateDatabaseTables 2>&1");
+	ob_flush();
+	flush();
+	echo "Excuting GenerateDatabaseViews\n";
+	echo shell_exec (". Systems\CubeTool\php/scripts/GenerateDatabaseViews 2>&1");
+	ob_flush();
+	flush();
+	echo "Excuting GeneratePackages\n";
+	echo shell_exec (". Systems\CubeTool\php/scripts/GeneratePackages 2>&1");
+	ob_flush();
+	flush();
+	echo "Excuting GenerateApplication\n";
+	echo shell_exec (". Systems\CubeTool\php/scripts/GenerateApplication 2>&1");
+	ob_flush();
+	flush();
+	echo "Excuting InstallSystem\n";
+	echo shell_exec (". Systems\CubeTool\php/scripts/InstallSystem 2>&1");
+	ob_flush();
+	flush();
+	echo "Excuting InstallCubeSystem\n";
+	echo shell_exec (". Systems\CubeTool\php/scripts/InstallCubeSystem 2>&1");
+	ob_flush();
+	flush();
+?>

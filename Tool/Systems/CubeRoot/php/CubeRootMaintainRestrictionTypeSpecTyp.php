@@ -294,7 +294,6 @@ function InitBody() {
 		alert ('Error InitBody: nodeType='+l_json_argument.nodeType);
 	}
 }
-
 -->
 </script>
 </head><body oncontextmenu="return false;" onload="InitBody()" onbeforeunload="return parent.CheckChangePending()" ondrop="Drop(event)" ondragover="AllowDrop(event)">

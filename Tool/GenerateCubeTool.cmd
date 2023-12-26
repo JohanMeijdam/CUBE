@@ -55,7 +55,7 @@ echo Import Model.
 ::goto End
 :ModelExport
 echo Extract Tool Model
-sqlplus.exe %db_schema%/%db_password%@%db_name% @%sysdir%\ModelExport.sql %sysdir%\CubeToolModel.cgm %sysname% REPLACE >> %logfile% 2>&1
+::sqlplus.exe %db_schema%/%db_password%@%db_name% @%sysdir%\ModelExport.sql %sysdir%\CubeToolModel.cgm %sysname% REPLACE >> %logfile% 2>&1
 ::goto End
 :Packages
 echo Generate Packages.
@@ -67,7 +67,7 @@ sqlplus.exe %db_schema%/%db_password%@%db_name% @%sysdir%\PackageDdl.sql >> %log
 echo Generate Application.
 del /S/Q %sysdir%\php\*.php >> %logfile% 2>&1
 :: LET OP ServerSpecmodel dubbel
-CubeGen.exe %sysdir%\CubeBoModel.cgm Templates\ServerSpecModel.cgt %sysdir%\CubeServerSpecModel.cgm %sysname% >> %logfile% 2>&1
+::CubeGen.exe %sysdir%\CubeBoModel.cgm Templates\ServerSpecModel.cgt %sysdir%\CubeServerSpecModel.cgm %sysname% >> %logfile% 2>&1
 ::CubeGen.exe %sysdir%\CubeServerSpecModel.cgm Templates\ServerImplModel.cgt %sysdir%\CubeServerImplModel.cgm %sysname% >> %logfile% 2>&1
 ::goto End
 CubeGen.exe %sysdir%\CubeBoModel.cgm Templates\CubeDbLogonPhp.cgt %sysdir%\php\CubeDbLogon.php %sysname% >> %logfile% 2>&1
