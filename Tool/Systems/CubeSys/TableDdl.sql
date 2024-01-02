@@ -32,6 +32,8 @@ END;
 /
 CREATE SEQUENCE sq_cube_dsc START WITH 100000
 /
+CREATE SEQUENCE sq_cube_usr START WITH 100000
+/
 CREATE TABLE t_cube_description (
 	cube_id VARCHAR2(16),
 	type_name VARCHAR2(30),
@@ -40,5 +42,13 @@ CREATE TABLE t_cube_description (
 	value VARCHAR2(3999),
 	CONSTRAINT cube_dsc_pk
 		PRIMARY KEY (type_name, attribute_type_name, sequence) )
+/
+CREATE TABLE t_cube_user (
+	cube_id VARCHAR2(16),
+	userid VARCHAR2(16),
+	password VARCHAR2(20),
+	name VARCHAR2(80),
+	CONSTRAINT cube_usr_pk
+		PRIMARY KEY (userid) )
 /
 EXIT;
