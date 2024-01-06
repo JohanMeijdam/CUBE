@@ -30,7 +30,6 @@ g_xmlhttp.onreadystatechange = function() {
 				switch (l_json_array[i].ResultName) {
 					case '': break;
 					case 'LST_CUBE_DSC': AddTreeviewChildren(l_json_array[i].Rows,'TYP_CUBE_DSC','icons/desc.bmp','CubeDescription'); break;
-					case 'LST_CUBE_USR': AddTreeviewChildren(l_json_array[i].Rows,'TYP_CUBE_USR','icons/user.bmp','CubeUser'); break;
 					case "SEL_CUBE_DSC":	document.getElementById("CubeDesc").value = l_json_array[i].Rows[0].Data.Value;	break;
 					case "ERROR": alert ('Server error:\n'+l_json_array[i].ErrorText); break;
 					default: alert ('Unknown reply:\n'+g_responseText);
@@ -50,7 +49,6 @@ function InitBody() {
 	l_objBody._type = 'ROOT';
 	l_objBody.childNodes[0]._index = 0;
 	AddTreeviewNode(l_objBody, 'DIR_CUBE_DSC', null, 'icons/folder.bmp', null, 'descriptions', 'Y', ' ', null);
-	AddTreeviewNode(l_objBody, 'DIR_CUBE_USR', null, 'icons/folder.bmp', null, 'Users', 'Y', ' ', null);
 }
 
 function DefineTypePosition (p_parentType, p_type, p_switch) {
@@ -85,9 +83,6 @@ function OpenCloseOnClick(p_obj) {
 		switch (p_obj.parentNode._type) {
  		case 'DIR_CUBE_DSC':
 			PerformTrans('CubeDescription', {Service:"GetDirCubeDscItems"} );
-			break;
- 		case 'DIR_CUBE_USR':
-			PerformTrans('CubeUser', {Service:"GetDirCubeUsrItems"} );
 			break;
 		} 
 	}
@@ -235,9 +230,6 @@ function OpenMenu(p_obj) {
 	switch (l_type_id) {
  	case 'DIR_CUBE_DSC':
 		AddMenuItem(g_objMenuList,'add cube_description','icons/desc.bmp','DetailCUBE_DSC','N','TYP_CUBE_DSC','CubeDescription',0,'N',2);
-		break;
- 	case 'DIR_CUBE_USR':
-		AddMenuItem(g_objMenuList,'add cube_user','icons/user.bmp','DetailCUBE_USR','N','TYP_CUBE_USR','CubeUser',0,'N',2);
 		break;
 	}
 }

@@ -940,6 +940,7 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_unchangeable IN VARCHAR2,
 			p_within_scope_extension IN VARCHAR2,
 			p_cube_tsg_int_ext IN VARCHAR2,
+			p_type_prefix IN VARCHAR2,
 			p_xk_bot_name IN VARCHAR2,
 			p_xk_typ_name IN VARCHAR2,
 			p_xk_typ_name_1 IN VARCHAR2,
@@ -958,6 +959,7 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_unchangeable IN VARCHAR2,
 			p_within_scope_extension IN VARCHAR2,
 			p_cube_tsg_int_ext IN VARCHAR2,
+			p_type_prefix IN VARCHAR2,
 			p_xk_bot_name IN VARCHAR2,
 			p_xk_typ_name IN VARCHAR2,
 			p_xk_typ_name_1 IN VARCHAR2);
@@ -3143,6 +3145,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			  unchangeable,
 			  within_scope_extension,
 			  cube_tsg_int_ext,
+			  type_prefix,
 			  xk_typ_name_1
 			FROM v_reference
 			WHERE fk_typ_name = p_fk_typ_name
@@ -3376,6 +3379,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_unchangeable IN VARCHAR2,
 			p_within_scope_extension IN VARCHAR2,
 			p_cube_tsg_int_ext IN VARCHAR2,
+			p_type_prefix IN VARCHAR2,
 			p_xk_bot_name IN VARCHAR2,
 			p_xk_typ_name IN VARCHAR2,
 			p_xk_typ_name_1 IN VARCHAR2,
@@ -3403,6 +3407,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			unchangeable,
 			within_scope_extension,
 			cube_tsg_int_ext,
+			type_prefix,
 			xk_bot_name,
 			xk_typ_name,
 			xk_typ_name_1)
@@ -3419,6 +3424,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_unchangeable,
 			p_within_scope_extension,
 			p_cube_tsg_int_ext,
+			p_type_prefix,
 			p_xk_bot_name,
 			p_xk_typ_name,
 			p_xk_typ_name_1);
@@ -3438,6 +3444,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_unchangeable IN VARCHAR2,
 			p_within_scope_extension IN VARCHAR2,
 			p_cube_tsg_int_ext IN VARCHAR2,
+			p_type_prefix IN VARCHAR2,
 			p_xk_bot_name IN VARCHAR2,
 			p_xk_typ_name IN VARCHAR2,
 			p_xk_typ_name_1 IN VARCHAR2) IS
@@ -3451,6 +3458,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			unchangeable = p_unchangeable,
 			within_scope_extension = p_within_scope_extension,
 			cube_tsg_int_ext = p_cube_tsg_int_ext,
+			type_prefix = p_type_prefix,
 			xk_typ_name_1 = p_xk_typ_name_1
 		WHERE fk_typ_name = p_fk_typ_name
 		  AND sequence = p_sequence

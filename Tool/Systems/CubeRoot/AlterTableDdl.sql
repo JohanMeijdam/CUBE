@@ -1200,6 +1200,7 @@ BEGIN
 			unchangeable CHAR(1) DEFAULT ''N'',
 			within_scope_extension VARCHAR2(3),
 			cube_tsg_int_ext VARCHAR2(8) DEFAULT ''INT'',
+			type_prefix CHAR(1) DEFAULT ''N'',
 			xk_bot_name VARCHAR2(30),
 			xk_typ_name VARCHAR2(30),
 			xk_typ_name_1 VARCHAR2(30))';
@@ -1276,6 +1277,12 @@ BEGIN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_reference ADD cube_tsg_int_ext VARCHAR2(8) DEFAULT ''INT''';
 			DBMS_OUTPUT.PUT_LINE('Column T_REFERENCE.CUBE_TSG_INT_EXT created');
+		END IF;
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_REFERENCE' AND column_name = 'TYPE_PREFIX';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_reference ADD type_prefix CHAR(1) DEFAULT ''N''';
+			DBMS_OUTPUT.PUT_LINE('Column T_REFERENCE.TYPE_PREFIX created');
 		END IF;
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_REFERENCE' AND column_name = 'XK_BOT_NAME';
 		IF l_count = 0 THEN
@@ -3064,6 +3071,7 @@ BEGIN
 			'UNCHANGEABLE','CHAR(1)',
 			'WITHIN_SCOPE_EXTENSION','VARCHAR2(3)',
 			'CUBE_TSG_INT_EXT','VARCHAR2(8)',
+			'TYPE_PREFIX','CHAR(1)',
 			'XK_BOT_NAME','VARCHAR2(30)',
 			'XK_TYP_NAME','VARCHAR2(30)',
 			'XK_TYP_NAME_1','VARCHAR2(30)',NULL) new_domain,
@@ -3080,6 +3088,7 @@ BEGIN
 			'UNCHANGEABLE','''N''',
 			'WITHIN_SCOPE_EXTENSION',NULL,
 			'CUBE_TSG_INT_EXT','''INT''',
+			'TYPE_PREFIX','''N''',
 			'XK_BOT_NAME',NULL,
 			'XK_TYP_NAME',NULL,
 			'XK_TYP_NAME_1',NULL,NULL) new_default_value
@@ -3133,6 +3142,7 @@ BEGIN
 							'UNCHANGEABLE',
 							'WITHIN_SCOPE_EXTENSION',
 							'CUBE_TSG_INT_EXT',
+							'TYPE_PREFIX',
 							'XK_BOT_NAME',
 							'XK_TYP_NAME',
 							'XK_TYP_NAME_1'))

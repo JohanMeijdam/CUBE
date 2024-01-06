@@ -328,7 +328,7 @@ function InitBody() {
 	<option id="OptionFkSrvCubeTsgDbScr-D" style="display:inline" value="D">DATABASE_INTERACTION</option>
 	<option id="OptionFkSrvCubeTsgDbScr-S" style="display:inline" value="S">SERVER_SCRIPT</option>
 </select></div></td></tr>
-<tr><td height=6></td></tr><tr id="RowRefAttribute0"><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/attrib.bmp"/> Attribute (Imports)</legend>
+<tr><td height=6></td></tr><tr id="RowRefAttribute0"><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/attrib.bmp"/> Attribute (Concerns)</legend>
 <table style="width:100%">
 <tr><td><u>Type.Name</u></td><td style="width:100%"><div style="max-width:30em;"><input id="InputXfAtbTypName" type="text" maxlength="30" style="width:100%" disabled></input></div></td>
 <td><button id="RefSelect001" type="button" onclick="StartSelect001(event)">Select</button></td></tr>

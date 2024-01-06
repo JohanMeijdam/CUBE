@@ -43,6 +43,8 @@ INSERT INTO v_cube_description (CUBE_ID, TYPE_NAME, ATTRIBUTE_TYPE_NAME, SEQUENC
 INSERT INTO v_cube_description (CUBE_ID, TYPE_NAME, ATTRIBUTE_TYPE_NAME, SEQUENCE, VALUE)
 	VALUES ( 'CUBE-DCA-0100011','REFERENCE','UNCHANGEABLE',-1,UTL_URL.UNESCAPE('Indication%20that%20after%20the%20creation%20of%20the%20type%20the%20reference%20can%20not%20be%20changed.%20So%20in%20case%20of%20a%20recursive%20reference%20the%20indication%20too%20that%20the%20relation%20is%20used%20to%20select%20the%20parents%20or%20children%20in%20the%20hierarchy.'));
 INSERT INTO v_cube_description (CUBE_ID, TYPE_NAME, ATTRIBUTE_TYPE_NAME, SEQUENCE, VALUE)
+	VALUES ( 'CUBE-DCA-0100030','REFERENCE','TYPE_PREFIX',-1,UTL_URL.UNESCAPE('Indication%20that%20the%20technical%20(model)%20name%20is%20prefixed%20with%20the%20name%20of%20the%20parent%20type.'));
+INSERT INTO v_cube_description (CUBE_ID, TYPE_NAME, ATTRIBUTE_TYPE_NAME, SEQUENCE, VALUE)
 	VALUES ( 'CUBE-DCA-0100012','RESTRICTION_TYPE_SPEC_REF','INCLUDE_OR_EXCLUDE',-1,UTL_URL.UNESCAPE('Indication%20that%20the%20reference%20is%20valid%20(included)%20or%20invalid%20(excluded)%20for%20the%20concerning%20type%20specialisation.'));
 INSERT INTO v_cube_description (CUBE_ID, TYPE_NAME, ATTRIBUTE_TYPE_NAME, SEQUENCE, VALUE)
 	VALUES ( 'CUBE-DCA-0100013','RESTRICTION_TYPE_SPEC_TYP','INCLUDE_OR_EXCLUDE',-1,UTL_URL.UNESCAPE('Indication%20that%20the%20child%20type%20is%20valid%20(included)%20or%20invalid%20(excluded)%20for%20the%20concerning%20type%20specialisation.'));

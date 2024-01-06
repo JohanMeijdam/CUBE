@@ -33,7 +33,8 @@ CubeGen.exe %sysdir%\CubeServerSpecModel.cgm Templates\ServerImplModel.cgt %sysd
 echo Generate Database.
 CubeGen.exe %sysdir%\CubeDbModel.cgm Templates\Table.cgt %sysdir%\TableDdl.sql >> %logfile% 2>&1
 CubeGen.exe %sysdir%\CubeDbModel.cgm Templates\AlterTable.cgt %sysdir%\AlterTableDdl.sql >> %logfile% 2>&1
-sqlplus.exe %db_schema%/%db_password%@%db_name% @%sysdir%\TableDdl.sql >> %logfile% 2>&1
+::sqlplus.exe %db_schema%/%db_password%@%db_name% @%sysdir%\TableDdl.sql >> %logfile% 2>&1
+sqlplus.exe %db_schema%/%db_password%@%db_name% @%sysdir%\AlterTableDdl.sql >> %logfile% 2>&1
 :Views
 echo Generate Database Views.
 CubeGen.exe %sysdir%\CubeBoModel.cgm Templates\View.cgt %sysdir%\ViewDdl.sql %sysname% >> %logfile% 2>&1
@@ -41,9 +42,9 @@ sqlplus.exe %db_schema%/%db_password%@%db_name% @%sysdir%\ViewDdl.sql >> %logfil
 ::goto :end
 :ModelImport
 echo Import Model.
-CubeGen.exe %sysdir%\CubeBoModel.cgm Templates\ModelImport.cgt %sysdir%\ModelImport.pl %sysname% >> %logfile% 2>&1
-perl %sysdir%\ModelImport.pl %sysdir%\CubeModel.cgm %sysdir%\ModelImport.sql >> %logfile% 2>&1
-sqlplus.exe %db_schema%/%db_password%@%db_name% @%sysdir%\ModelImport.sql >> %logfile% 2>&1
+::CubeGen.exe %sysdir%\CubeBoModel.cgm Templates\ModelImport.cgt %sysdir%\ModelImport.pl %sysname% >> %logfile% 2>&1
+::perl %sysdir%\ModelImport.pl %sysdir%\CubeModel.cgm %sysdir%\ModelImport.sql >> %logfile% 2>&1
+::sqlplus.exe %db_schema%/%db_password%@%db_name% @%sysdir%\ModelImport.sql >> %logfile% 2>&1
 ::goto :ModelExport
 ::goto :end
 :Packages

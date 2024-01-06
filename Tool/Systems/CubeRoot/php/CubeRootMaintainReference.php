@@ -37,6 +37,7 @@ g_xmlhttp.onreadystatechange = function() {
 						document.getElementById("InputUnchangeable").value=l_json_values.Unchangeable;
 						document.getElementById("InputWithinScopeExtension").value=l_json_values.WithinScopeExtension;
 						document.getElementById("InputCubeTsgIntExt").value=l_json_values.CubeTsgIntExt;
+						document.getElementById("InputTypePrefix").value=l_json_values.TypePrefix;
 						document.getElementById("InputXkTypName1").value=l_json_values.XkTypName1;
 						ProcessTypeSpecialisation();
 						break;
@@ -150,6 +151,7 @@ function CreateRef() {
 		Unchangeable: document.getElementById("InputUnchangeable").value,
 		WithinScopeExtension: document.getElementById("InputWithinScopeExtension").value,
 		CubeTsgIntExt: document.getElementById("InputCubeTsgIntExt").value,
+		TypePrefix: document.getElementById("InputTypePrefix").value,
 		XkBotName: document.getElementById("InputXkBotName").value,
 		XkTypName: document.getElementById("InputXkTypName").value,
 		XkTypName1: document.getElementById("InputXkTypName1").value
@@ -191,6 +193,7 @@ function UpdateRef() {
 		Unchangeable: document.getElementById("InputUnchangeable").value,
 		WithinScopeExtension: document.getElementById("InputWithinScopeExtension").value,
 		CubeTsgIntExt: document.getElementById("InputCubeTsgIntExt").value,
+		TypePrefix: document.getElementById("InputTypePrefix").value,
 		XkBotName: document.getElementById("InputXkBotName").value,
 		XkTypName: document.getElementById("InputXkTypName").value,
 		XkTypName1: document.getElementById("InputXkTypName1").value
@@ -342,6 +345,7 @@ function InitBody() {
 		document.getElementById("InputSequence").value='0';
 		document.getElementById("InputScope").value='ALL';
 		document.getElementById("InputUnchangeable").value='N';
+		document.getElementById("InputTypePrefix").value='N';
 		break;
 	case "X": // Delete object
 		g_node_id = JSON.stringify(l_json_argument.objectId);
@@ -370,6 +374,7 @@ function InitBody() {
 		document.getElementById("InputUnchangeable").disabled = true;
 		document.getElementById("InputWithinScopeExtension").disabled = true;
 		document.getElementById("InputCubeTsgIntExt").disabled = true;
+		document.getElementById("InputTypePrefix").disabled = true;
 		document.getElementById("InputXkBotName").disabled = true;
 		document.getElementById("InputXkTypName").disabled = true;
 		document.getElementById("InputXkTypName1").disabled = true;
@@ -441,6 +446,11 @@ function ProcessTypeSpecialisation() {
 	<option value=" " selected> </option>
 	<option id="OptionWithinScopeExtension-PAR" style="display:inline" value="PAR">Recursive parent</option>
 	<option id="OptionWithinScopeExtension-REF" style="display:inline" value="REF">Referenced type</option>
+</select></div></td></tr>
+<tr id="RowAtbTypePrefix"><td style="cursor:help" oncontextmenu="parent.OpenDescBox('ref','Reference.TypePrefix','REFERENCE','TYPE_PREFIX',-1)"><div>TypePrefix</div></td><td><div><select id="InputTypePrefix" type="text" onchange="SetChangePending();">
+	<option value=" " selected> </option>
+	<option id="OptionTypePrefix-Y" style="display:inline" value="Y">Yes</option>
+	<option id="OptionTypePrefix-N" style="display:inline" value="N">No</option>
 </select></div></td></tr>
 <tr><td height=6></td></tr><tr id="RowRefBusinessObjectType0"><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/botype.bmp"/> BusinessObjectType (Refer)</legend>
 <table style="width:100%">

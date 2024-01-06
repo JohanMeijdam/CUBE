@@ -1,13 +1,22 @@
 <?php
-	echo "TEST1";
+	echo "Excuting GenerateModels\n";
+	echo shell_exec (". Systems\CubeRoot\php/scripts/GenerateModels 2>&1");
 	ob_flush();
 	flush();
-	sleep(3);
-	echo shell_exec (". /Systems/CubeTool/scripts/CubeToolGenerate.sh 2>&1");
+	echo "Excuting GenerateScripts\n";
+	echo shell_exec (". Systems\CubeRoot\php/scripts/GenerateScripts 2>&1");
 	ob_flush();
 	flush();
-	sleep(3);
-	echo "TEST2";
+	echo "Excuting GenerateDatabaseTables\n";
+	echo shell_exec (". Systems\CubeRoot\php/scripts/GenerateDatabaseTables 2>&1");
+	ob_flush();
+	flush();
+	echo "Excuting GenerateDatabaseViews\n";
+	echo shell_exec (". Systems\CubeRoot\php/scripts/GenerateDatabaseViews 2>&1");
+	ob_flush();
+	flush();
+	echo "Excuting ImportModel\n";
+	echo shell_exec (". Systems\CubeRoot\php/scripts/ImportModel 2>&1");
 	ob_flush();
 	flush();
 ?>

@@ -5197,6 +5197,9 @@
 				=EXPRESSION:REF_NAME|cube_tsg_int_ext;
 			-GET:;
 			+GET:;
+				=EXPRESSION:REF_NAME|type_prefix;
+			-GET:;
+			+GET:;
 				=EXPRESSION:REF_NAME|xk_typ_name_1;
 			-GET:;
 			+SELECTION:;
@@ -5800,6 +5803,7 @@
 		=ARGUMENT:p_unchangeable|I|TEXT;
 		=ARGUMENT:p_within_scope_extension|I|TEXT;
 		=ARGUMENT:p_cube_tsg_int_ext|I|TEXT;
+		=ARGUMENT:p_type_prefix|I|TEXT;
 		=ARGUMENT:p_xk_bot_name|I|TEXT;
 		=ARGUMENT:p_xk_typ_name|I|TEXT;
 		=ARGUMENT:p_xk_typ_name_1|I|TEXT;
@@ -5877,6 +5881,9 @@
 			+SET:cube_tsg_int_ext;
 				=EXPRESSION:REF_NAME|p_cube_tsg_int_ext;
 			-SET:;
+			+SET:type_prefix;
+				=EXPRESSION:REF_NAME|p_type_prefix;
+			-SET:;
 			+SET:xk_bot_name;
 				=EXPRESSION:REF_NAME|p_xk_bot_name;
 			-SET:;
@@ -5904,6 +5911,7 @@
 		=ARGUMENT:p_unchangeable|I|TEXT;
 		=ARGUMENT:p_within_scope_extension|I|TEXT;
 		=ARGUMENT:p_cube_tsg_int_ext|I|TEXT;
+		=ARGUMENT:p_type_prefix|I|TEXT;
 		=ARGUMENT:p_xk_bot_name|I|TEXT;
 		=ARGUMENT:p_xk_typ_name|I|TEXT;
 		=ARGUMENT:p_xk_typ_name_1|I|TEXT;
@@ -5931,6 +5939,9 @@
 			-SET:;
 			+SET:cube_tsg_int_ext;
 				=EXPRESSION:REF_NAME|p_cube_tsg_int_ext;
+			-SET:;
+			+SET:type_prefix;
+				=EXPRESSION:REF_NAME|p_type_prefix;
 			-SET:;
 			+SET:xk_typ_name_1;
 				=EXPRESSION:REF_NAME|p_xk_typ_name_1;

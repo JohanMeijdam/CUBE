@@ -369,7 +369,7 @@ DECLARE
 			  AND fk_typ_name = p_typ.name
 			ORDER BY cube_sequence )
 		LOOP
-			DBMS_OUTPUT.PUT_LINE (ftabs || '+REFERENCE[' || r_ref.cube_id || ']:' || fenperc(r_ref.name) || '|' || fenperc(r_ref.primary_key) || '|' || fenperc(r_ref.code_display_key) || '|' || fenperc(r_ref.sequence) || '|' || fenperc(r_ref.scope) || '|' || fenperc(r_ref.unchangeable) || '|' || fenperc(r_ref.within_scope_extension) || '|' || fenperc(r_ref.cube_tsg_int_ext) || ';');
+			DBMS_OUTPUT.PUT_LINE (ftabs || '+REFERENCE[' || r_ref.cube_id || ']:' || fenperc(r_ref.name) || '|' || fenperc(r_ref.primary_key) || '|' || fenperc(r_ref.code_display_key) || '|' || fenperc(r_ref.sequence) || '|' || fenperc(r_ref.scope) || '|' || fenperc(r_ref.unchangeable) || '|' || fenperc(r_ref.within_scope_extension) || '|' || fenperc(r_ref.cube_tsg_int_ext) || '|' || fenperc(r_ref.type_prefix) || ';');
 				l_level := l_level + 1;
 				report_dcr (r_ref);
 				report_rtr (r_ref);
@@ -788,6 +788,7 @@ BEGIN
 	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:5|Unchangeable|'||REPLACE('Indication%20that%20after%20the%20creation%20of%20the%20type%20the%20reference%20can%20not%20be%20changed.%20So%20in%20case%20of%20a%20recursive%20reference%20the%20indication%20too%20that%20the%20relation%20is%20used%20to%20select%20the%20parents%20or%20children%20in%20the%20hierarchy.','%20',' ')||' Values: Y(Yes), N(No);');
 	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:6|WithinScopeExtension| Values: PAR(Recursive parent), REF(Referenced type);');
 	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:7|CubeTsgIntExt| Values: INT(INTERNAL), EXT(EXTERNAL);');
+	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:8|TypePrefix|'||REPLACE('Indication%20that%20the%20technical%20(model)%20name%20is%20prefixed%20with%20the%20name%20of%20the%20parent%20type.','%20',' ')||' Values: Y(Yes), N(No);');
 	DBMS_OUTPUT.PUT_LINE ('				=ASSOCIATION:BUSINESS_OBJECT_TYPE|Refer|BUSINESS_OBJECT_TYPE|;');
 	DBMS_OUTPUT.PUT_LINE ('				=ASSOCIATION:REFERENCE_TYPE|Refer|TYPE|;');
 	DBMS_OUTPUT.PUT_LINE ('				=ASSOCIATION:REFERENCE_TYPE_WITHIN_SCOPE_OF|WithinScopeOf|TYPE|;');
@@ -813,7 +814,7 @@ BEGIN
 	DBMS_OUTPUT.PUT_LINE ('					=PROPERTY:1|ScriptName|;');
 	DBMS_OUTPUT.PUT_LINE ('				-META_TYPE:SERVICE_STEP;');
 	DBMS_OUTPUT.PUT_LINE ('				+META_TYPE:SERVICE_ARGUMENT|;');
-	DBMS_OUTPUT.PUT_LINE ('					=ASSOCIATION:ATTRIBUTE|Imports|ATTRIBUTE|;');
+	DBMS_OUTPUT.PUT_LINE ('					=ASSOCIATION:ATTRIBUTE|Concerns|ATTRIBUTE|;');
 	DBMS_OUTPUT.PUT_LINE ('				-META_TYPE:SERVICE_ARGUMENT;');
 	DBMS_OUTPUT.PUT_LINE ('			-META_TYPE:SERVICE;');
 	DBMS_OUTPUT.PUT_LINE ('			+META_TYPE:RESTRICTION_TYPE_SPEC_TYP|;');

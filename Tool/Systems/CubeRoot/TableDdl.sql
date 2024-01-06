@@ -270,6 +270,7 @@ CREATE TABLE t_reference (
 	unchangeable CHAR(1) DEFAULT 'N',
 	within_scope_extension VARCHAR2(3),
 	cube_tsg_int_ext VARCHAR2(8) DEFAULT 'INT',
+	type_prefix CHAR(1) DEFAULT 'N',
 	xk_bot_name VARCHAR2(30),
 	xk_typ_name VARCHAR2(30),
 	xk_typ_name_1 VARCHAR2(30),

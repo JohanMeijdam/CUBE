@@ -196,7 +196,7 @@ function InitBody() {
 -->
 </script>
 </head><body oncontextmenu="return false;" onload="InitBody()" onbeforeunload="return parent.CheckChangePending()" ondrop="Drop(event)" ondragover="AllowDrop(event)">
-<div><img src="icons/desc_large.bmp" /><span> DESCRIPTION_TYPE</span></div>
+<div><img src="icons/desc_large.bmp" /><span style="cursor:help" oncontextmenu="parent.OpenDescBox('desc','DescriptionType','DESCRIPTION_TYPE','_',-1)"> DESCRIPTION_TYPE</span></div>
 <hr/>
 <table>
 <tr id="RowAtbFkBotName"><td><div>BusinessObjectType.Name</div></td><td><div style="max-width:30em;"><input id="InputFkBotName" type="text" maxlength="30" style="width:100%" onchange="SetChangePending();ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>

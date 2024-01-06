@@ -455,6 +455,7 @@ CREATE OR REPLACE VIEW v_reference AS
 		unchangeable,
 		within_scope_extension,
 		cube_tsg_int_ext,
+		type_prefix,
 		xk_bot_name,
 		xk_typ_name,
 		xk_typ_name_1
@@ -1221,6 +1222,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			unchangeable,
 			within_scope_extension,
 			cube_tsg_int_ext,
+			type_prefix,
 			xk_bot_name,
 			xk_typ_name,
 			xk_typ_name_1)
@@ -1237,6 +1239,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			p_ref.unchangeable,
 			p_ref.within_scope_extension,
 			p_ref.cube_tsg_int_ext,
+			p_ref.type_prefix,
 			p_ref.xk_bot_name,
 			p_ref.xk_typ_name,
 			p_ref.xk_typ_name_1);
@@ -1252,6 +1255,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			scope = p_ref_new.scope,
 			unchangeable = p_ref_new.unchangeable,
 			within_scope_extension = p_ref_new.within_scope_extension,
+			type_prefix = p_ref_new.type_prefix,
 			xk_typ_name_1 = p_ref_new.xk_typ_name_1
 		WHERE rowid = p_cube_rowid;
 	END;
@@ -2411,6 +2415,7 @@ BEGIN
 		ELSE
 			r_ref_new.cube_tsg_int_ext := REPLACE(:NEW.cube_tsg_int_ext,' ','_');
 		END IF;
+		r_ref_new.type_prefix := :NEW.type_prefix;
 		IF :NEW.xk_bot_name = ' ' THEN
 			r_ref_new.xk_bot_name := ' ';
 		ELSE
@@ -2447,6 +2452,7 @@ BEGIN
 		r_ref_old.unchangeable := :OLD.unchangeable;
 		r_ref_old.within_scope_extension := :OLD.within_scope_extension;
 		r_ref_old.cube_tsg_int_ext := :OLD.cube_tsg_int_ext;
+		r_ref_old.type_prefix := :OLD.type_prefix;
 		r_ref_old.xk_bot_name := :OLD.xk_bot_name;
 		r_ref_old.xk_typ_name := :OLD.xk_typ_name;
 		r_ref_old.xk_typ_name_1 := :OLD.xk_typ_name_1;

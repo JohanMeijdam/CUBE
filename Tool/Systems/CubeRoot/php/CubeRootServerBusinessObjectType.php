@@ -2170,6 +2170,7 @@ case 'GetRef':
 		$RowObj->Data->Unchangeable = $row["UNCHANGEABLE"];
 		$RowObj->Data->WithinScopeExtension = $row["WITHIN_SCOPE_EXTENSION"];
 		$RowObj->Data->CubeTsgIntExt = $row["CUBE_TSG_INT_EXT"];
+		$RowObj->Data->TypePrefix = $row["TYPE_PREFIX"];
 		$RowObj->Data->XkTypName1 = $row["XK_TYP_NAME_1"];
 		$ResponseObj->Rows[] = $RowObj;
 	}
@@ -2445,6 +2446,7 @@ case 'CreateRef':
 		:p_unchangeable,
 		:p_within_scope_extension,
 		:p_cube_tsg_int_ext,
+		:p_type_prefix,
 		:p_xk_bot_name,
 		:p_xk_typ_name,
 		:p_xk_typ_name_1,
@@ -2464,6 +2466,7 @@ case 'CreateRef':
 	oci_bind_by_name($stid,":p_unchangeable",$RequestObj->Parameters->Type->Unchangeable);
 	oci_bind_by_name($stid,":p_within_scope_extension",$RequestObj->Parameters->Type->WithinScopeExtension);
 	oci_bind_by_name($stid,":p_cube_tsg_int_ext",$RequestObj->Parameters->Type->CubeTsgIntExt);
+	oci_bind_by_name($stid,":p_type_prefix",$RequestObj->Parameters->Type->TypePrefix);
 	oci_bind_by_name($stid,":p_xk_bot_name",$RequestObj->Parameters->Type->XkBotName);
 	oci_bind_by_name($stid,":p_xk_typ_name",$RequestObj->Parameters->Type->XkTypName);
 	oci_bind_by_name($stid,":p_xk_typ_name_1",$RequestObj->Parameters->Type->XkTypName1);
@@ -2500,6 +2503,7 @@ case 'UpdateRef':
 		:p_unchangeable,
 		:p_within_scope_extension,
 		:p_cube_tsg_int_ext,
+		:p_type_prefix,
 		:p_xk_bot_name,
 		:p_xk_typ_name,
 		:p_xk_typ_name_1);
@@ -2514,6 +2518,7 @@ case 'UpdateRef':
 	oci_bind_by_name($stid,":p_unchangeable",$RequestObj->Parameters->Type->Unchangeable);
 	oci_bind_by_name($stid,":p_within_scope_extension",$RequestObj->Parameters->Type->WithinScopeExtension);
 	oci_bind_by_name($stid,":p_cube_tsg_int_ext",$RequestObj->Parameters->Type->CubeTsgIntExt);
+	oci_bind_by_name($stid,":p_type_prefix",$RequestObj->Parameters->Type->TypePrefix);
 	oci_bind_by_name($stid,":p_xk_bot_name",$RequestObj->Parameters->Type->XkBotName);
 	oci_bind_by_name($stid,":p_xk_typ_name",$RequestObj->Parameters->Type->XkTypName);
 	oci_bind_by_name($stid,":p_xk_typ_name_1",$RequestObj->Parameters->Type->XkTypName1);
