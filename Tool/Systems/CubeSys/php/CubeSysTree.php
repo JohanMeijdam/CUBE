@@ -231,6 +231,9 @@ function OpenMenu(p_obj) {
  	case 'DIR_CUBE_DSC':
 		AddMenuItem(g_objMenuList,'add cube_description','icons/desc.bmp','DetailCUBE_DSC','N','TYP_CUBE_DSC','CubeDescription',0,'N',2);
 		break;
+ 	case 'TYP_CUBE_DSC':
+		AddMenuItem(g_objMenuList,'delete','icons/cube_delete.bmp','CubeDelete','X','','CubeDescription',0,'N',0);
+		break;
 	}
 }
 

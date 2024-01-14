@@ -371,10 +371,17 @@ CREATE TABLE t_service_argument (
 	fk_typ_name VARCHAR2(30),
 	fk_srv_name VARCHAR2(30),
 	fk_srv_cube_tsg_db_scr VARCHAR2(8) DEFAULT 'D',
+	cube_tsg_sva_type VARCHAR2(8) DEFAULT 'OPT',
+	option_name VARCHAR2(30),
+	xk_itp_name VARCHAR2(30),
 	xf_atb_typ_name VARCHAR2(30),
 	xk_atb_name VARCHAR2(30),
+	xk_ref_bot_name VARCHAR2(30),
+	xk_ref_typ_name VARCHAR2(30),
+	xf_ref_typ_name VARCHAR2(30),
+	xk_ref_sequence NUMBER(1) DEFAULT '0',
 	CONSTRAINT sva_pk
-		PRIMARY KEY (fk_typ_name, fk_srv_name, fk_srv_cube_tsg_db_scr, xf_atb_typ_name, xk_atb_name),
+		PRIMARY KEY (fk_typ_name, fk_srv_name, fk_srv_cube_tsg_db_scr, option_name, xf_atb_typ_name, xk_atb_name),
 	CONSTRAINT sva_srv_fk
 		FOREIGN KEY (fk_typ_name, fk_srv_name, fk_srv_cube_tsg_db_scr)
 		REFERENCES t_service (fk_typ_name, name, cube_tsg_db_scr)

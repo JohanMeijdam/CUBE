@@ -436,8 +436,17 @@ DECLARE
 			  AND fk_srv_cube_tsg_db_scr = p_srv.cube_tsg_db_scr
 			ORDER BY cube_sequence )
 		LOOP
-			DBMS_OUTPUT.PUT_LINE (ftabs || '+SERVICE_ARGUMENT[' || r_sva.cube_id || ']:' || ';');
+			DBMS_OUTPUT.PUT_LINE (ftabs || '+SERVICE_ARGUMENT[' || r_sva.cube_id || ']:' || fenperc(r_sva.cube_tsg_sva_type) || '|' || fenperc(r_sva.option_name) || ';');
 				l_level := l_level + 1;
+				BEGIN
+					SELECT cube_id INTO l_cube_id FROM t_information_type
+					WHERE name = r_sva.xk_itp_name;
+
+					DBMS_OUTPUT.PUT_LINE (ftabs || '>SERVICE_ARGUMENT_INFORMATION_TYPE:' || l_cube_id || ';');
+				EXCEPTION
+					WHEN NO_DATA_FOUND THEN
+						NULL; 
+				END;
 				BEGIN
 					SELECT cube_id INTO l_cube_id FROM t_attribute
 					WHERE fk_typ_name = r_sva.xf_atb_typ_name
@@ -448,8 +457,20 @@ DECLARE
 					WHEN NO_DATA_FOUND THEN
 						NULL; 
 				END;
+				BEGIN
+					SELECT cube_id INTO l_cube_id FROM t_reference
+					WHERE fk_typ_name = r_sva.xf_ref_typ_name
+					  AND sequence = r_sva.xk_ref_sequence
+					  AND xk_bot_name = r_sva.xk_ref_bot_name
+					  AND xk_typ_name = r_sva.xk_ref_typ_name;
+
+					DBMS_OUTPUT.PUT_LINE (ftabs || '>SERVICE_ARGUMENT_REFERENCE:' || l_cube_id || ';');
+				EXCEPTION
+					WHEN NO_DATA_FOUND THEN
+						NULL; 
+				END;
 				l_level := l_level - 1;
-			DBMS_OUTPUT.PUT_LINE (ftabs || '-SERVICE_ARGUMENT:' || ';');
+			DBMS_OUTPUT.PUT_LINE (ftabs || '-SERVICE_ARGUMENT:' || r_sva.cube_tsg_sva_type || ';');
 		END LOOP;
 	END;
 
@@ -814,7 +835,11 @@ BEGIN
 	DBMS_OUTPUT.PUT_LINE ('					=PROPERTY:1|ScriptName|;');
 	DBMS_OUTPUT.PUT_LINE ('				-META_TYPE:SERVICE_STEP;');
 	DBMS_OUTPUT.PUT_LINE ('				+META_TYPE:SERVICE_ARGUMENT|;');
+	DBMS_OUTPUT.PUT_LINE ('					=PROPERTY:0|CubeTsgSvaType| Values: OPT(OPTION), REF(REFERENCE), ATB(ATTRIBUTE);');
+	DBMS_OUTPUT.PUT_LINE ('					=PROPERTY:1|OptionName|;');
+	DBMS_OUTPUT.PUT_LINE ('					=ASSOCIATION:SERVICE_ARGUMENT_INFORMATION_TYPE|HasDomain|INFORMATION_TYPE|;');
 	DBMS_OUTPUT.PUT_LINE ('					=ASSOCIATION:SERVICE_ARGUMENT_ATTRIBUTE|Concerns|ATTRIBUTE|;');
+	DBMS_OUTPUT.PUT_LINE ('					=ASSOCIATION:SERVICE_ARGUMENT_REFERENCE|Concerns|REFERENCE|;');
 	DBMS_OUTPUT.PUT_LINE ('				-META_TYPE:SERVICE_ARGUMENT;');
 	DBMS_OUTPUT.PUT_LINE ('			-META_TYPE:SERVICE;');
 	DBMS_OUTPUT.PUT_LINE ('			+META_TYPE:RESTRICTION_TYPE_SPEC_TYP|;');

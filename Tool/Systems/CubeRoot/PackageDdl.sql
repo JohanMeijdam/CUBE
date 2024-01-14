@@ -876,6 +876,10 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_xf_tsp_typ_name IN VARCHAR2,
 			p_xf_tsp_tsg_code IN VARCHAR2,
 			p_xk_tsp_code IN VARCHAR2);
+	PROCEDURE get_ref_for_typ_list (
+			p_cube_row IN OUT c_cube_row,
+			p_cube_scope_level IN NUMBER,
+			x_fk_typ_name IN VARCHAR2);
 	PROCEDURE get_ref (
 			p_cube_row IN OUT c_cube_row,
 			p_fk_typ_name IN VARCHAR2,
@@ -1163,6 +1167,7 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_srv_name IN VARCHAR2,
 			p_fk_srv_cube_tsg_db_scr IN VARCHAR2,
+			p_option_name IN VARCHAR2,
 			p_xf_atb_typ_name IN VARCHAR2,
 			p_xk_atb_name IN VARCHAR2);
 	PROCEDURE move_sva (
@@ -1170,11 +1175,13 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_srv_name IN VARCHAR2,
 			p_fk_srv_cube_tsg_db_scr IN VARCHAR2,
+			p_option_name IN VARCHAR2,
 			p_xf_atb_typ_name IN VARCHAR2,
 			p_xk_atb_name IN VARCHAR2,
 			x_fk_typ_name IN VARCHAR2,
 			x_fk_srv_name IN VARCHAR2,
 			x_fk_srv_cube_tsg_db_scr IN VARCHAR2,
+			x_option_name IN VARCHAR2,
 			x_xf_atb_typ_name IN VARCHAR2,
 			x_xk_atb_name IN VARCHAR2);
 	PROCEDURE insert_sva (
@@ -1183,11 +1190,19 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_srv_name IN VARCHAR2,
 			p_fk_srv_cube_tsg_db_scr IN VARCHAR2,
+			p_cube_tsg_sva_type IN VARCHAR2,
+			p_option_name IN VARCHAR2,
+			p_xk_itp_name IN VARCHAR2,
 			p_xf_atb_typ_name IN VARCHAR2,
 			p_xk_atb_name IN VARCHAR2,
+			p_xk_ref_bot_name IN VARCHAR2,
+			p_xk_ref_typ_name IN VARCHAR2,
+			p_xf_ref_typ_name IN VARCHAR2,
+			p_xk_ref_sequence IN NUMBER,
 			x_fk_typ_name IN VARCHAR2,
 			x_fk_srv_name IN VARCHAR2,
 			x_fk_srv_cube_tsg_db_scr IN VARCHAR2,
+			x_option_name IN VARCHAR2,
 			x_xf_atb_typ_name IN VARCHAR2,
 			x_xk_atb_name IN VARCHAR2);
 	PROCEDURE update_sva (
@@ -1195,12 +1210,20 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_srv_name IN VARCHAR2,
 			p_fk_srv_cube_tsg_db_scr IN VARCHAR2,
+			p_cube_tsg_sva_type IN VARCHAR2,
+			p_option_name IN VARCHAR2,
+			p_xk_itp_name IN VARCHAR2,
 			p_xf_atb_typ_name IN VARCHAR2,
-			p_xk_atb_name IN VARCHAR2);
+			p_xk_atb_name IN VARCHAR2,
+			p_xk_ref_bot_name IN VARCHAR2,
+			p_xk_ref_typ_name IN VARCHAR2,
+			p_xf_ref_typ_name IN VARCHAR2,
+			p_xk_ref_sequence IN NUMBER);
 	PROCEDURE delete_sva (
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_srv_name IN VARCHAR2,
 			p_fk_srv_cube_tsg_db_scr IN VARCHAR2,
+			p_option_name IN VARCHAR2,
 			p_xf_atb_typ_name IN VARCHAR2,
 			p_xk_atb_name IN VARCHAR2);
 	PROCEDURE get_rtt (
@@ -3128,6 +3151,51 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 		  AND xk_tsp_code = p_xk_tsp_code;
 	END;
 
+	PROCEDURE get_ref_for_typ_list (
+			p_cube_row IN OUT c_cube_row,
+			p_cube_scope_level IN NUMBER,
+			x_fk_typ_name IN VARCHAR2) IS
+		l_cube_scope_level NUMBER(1) := 0;
+		l_name v_type.name%TYPE;
+	BEGIN
+		l_name := x_fk_typ_name;
+		IF p_cube_scope_level > 0 THEN
+			LOOP
+				IF p_cube_scope_level = l_cube_scope_level THEN
+					EXIT;
+				END IF;
+				l_cube_scope_level := l_cube_scope_level + 1;
+				SELECT fk_typ_name
+				INTO l_name
+				FROM v_type
+				WHERE name = l_name;
+			END LOOP;
+		ELSIF p_cube_scope_level < 0 THEN
+			LOOP
+				IF p_cube_scope_level = l_cube_scope_level THEN
+					EXIT;
+				END IF;
+				l_cube_scope_level := l_cube_scope_level - 1;
+				SELECT name
+				INTO l_name
+				FROM v_type
+				WHERE fk_typ_name = l_name;
+			END LOOP;
+		END IF;
+		OPEN p_cube_row FOR
+			SELECT
+			  cube_sequence,
+			  fk_typ_name,
+			  name,
+			  sequence,
+			  cube_tsg_int_ext,
+			  xk_bot_name,
+			  xk_typ_name
+			FROM v_reference
+			WHERE fk_typ_name = l_name
+			ORDER BY fk_typ_name, cube_sequence;
+	END;
+
 	PROCEDURE get_ref (
 			p_cube_row IN OUT c_cube_row,
 			p_fk_typ_name IN VARCHAR2,
@@ -3882,6 +3950,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			  fk_typ_name,
 			  fk_srv_name,
 			  fk_srv_cube_tsg_db_scr,
+			  cube_tsg_sva_type,
+			  option_name,
 			  xf_atb_typ_name,
 			  xk_atb_name
 			FROM v_service_argument
@@ -4238,16 +4308,24 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_srv_name IN VARCHAR2,
 			p_fk_srv_cube_tsg_db_scr IN VARCHAR2,
+			p_option_name IN VARCHAR2,
 			p_xf_atb_typ_name IN VARCHAR2,
 			p_xk_atb_name IN VARCHAR2) IS
 	BEGIN
 		OPEN p_cube_row FOR
 			SELECT
-			  fk_bot_name
+			  fk_bot_name,
+			  cube_tsg_sva_type,
+			  xk_itp_name,
+			  xk_ref_bot_name,
+			  xk_ref_typ_name,
+			  xf_ref_typ_name,
+			  xk_ref_sequence
 			FROM v_service_argument
 			WHERE fk_typ_name = p_fk_typ_name
 			  AND fk_srv_name = p_fk_srv_name
 			  AND fk_srv_cube_tsg_db_scr = p_fk_srv_cube_tsg_db_scr
+			  AND option_name = p_option_name
 			  AND xf_atb_typ_name = p_xf_atb_typ_name
 			  AND xk_atb_name = p_xk_atb_name;
 	END;
@@ -4258,6 +4336,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_srv_name IN VARCHAR2,
 			p_fk_srv_cube_tsg_db_scr IN VARCHAR2,
+			p_option_name IN VARCHAR2,
 			p_xf_atb_typ_name IN VARCHAR2,
 			p_xk_atb_name IN VARCHAR2) IS
 		l_cube_pos_action CHAR(1);
@@ -4285,6 +4364,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 				WHERE fk_typ_name = p_fk_typ_name
 				  AND fk_srv_name = p_fk_srv_name
 				  AND fk_srv_cube_tsg_db_scr = p_fk_srv_cube_tsg_db_scr
+				  AND option_name = p_option_name
 				  AND xf_atb_typ_name = p_xf_atb_typ_name
 				  AND xk_atb_name = p_xk_atb_name;
 			END IF;
@@ -4327,11 +4407,13 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_srv_name IN VARCHAR2,
 			p_fk_srv_cube_tsg_db_scr IN VARCHAR2,
+			p_option_name IN VARCHAR2,
 			p_xf_atb_typ_name IN VARCHAR2,
 			p_xk_atb_name IN VARCHAR2,
 			x_fk_typ_name IN VARCHAR2,
 			x_fk_srv_name IN VARCHAR2,
 			x_fk_srv_cube_tsg_db_scr IN VARCHAR2,
+			x_option_name IN VARCHAR2,
 			x_xf_atb_typ_name IN VARCHAR2,
 			x_xk_atb_name IN VARCHAR2) IS
 		l_cube_sequence NUMBER(8);
@@ -4340,12 +4422,13 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 		IF COALESCE(p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
 			RAISE_APPLICATION_ERROR (-20000, pkg_cube.replace_placeholders('Invalid position action: %', p_cube_pos_action));
 		END IF;
-		determine_position_sva (l_cube_sequence, p_cube_pos_action, x_fk_typ_name, x_fk_srv_name, x_fk_srv_cube_tsg_db_scr, x_xf_atb_typ_name, x_xk_atb_name);
+		determine_position_sva (l_cube_sequence, p_cube_pos_action, x_fk_typ_name, x_fk_srv_name, x_fk_srv_cube_tsg_db_scr, x_option_name, x_xf_atb_typ_name, x_xk_atb_name);
 		UPDATE v_service_argument SET
 			cube_sequence = l_cube_sequence
 		WHERE fk_typ_name = p_fk_typ_name
 		  AND fk_srv_name = p_fk_srv_name
 		  AND fk_srv_cube_tsg_db_scr = p_fk_srv_cube_tsg_db_scr
+		  AND option_name = p_option_name
 		  AND xf_atb_typ_name = p_xf_atb_typ_name
 		  AND xk_atb_name = p_xk_atb_name;
 		IF SQL%NOTFOUND THEN
@@ -4359,11 +4442,19 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_srv_name IN VARCHAR2,
 			p_fk_srv_cube_tsg_db_scr IN VARCHAR2,
+			p_cube_tsg_sva_type IN VARCHAR2,
+			p_option_name IN VARCHAR2,
+			p_xk_itp_name IN VARCHAR2,
 			p_xf_atb_typ_name IN VARCHAR2,
 			p_xk_atb_name IN VARCHAR2,
+			p_xk_ref_bot_name IN VARCHAR2,
+			p_xk_ref_typ_name IN VARCHAR2,
+			p_xf_ref_typ_name IN VARCHAR2,
+			p_xk_ref_sequence IN NUMBER,
 			x_fk_typ_name IN VARCHAR2,
 			x_fk_srv_name IN VARCHAR2,
 			x_fk_srv_cube_tsg_db_scr IN VARCHAR2,
+			x_option_name IN VARCHAR2,
 			x_xf_atb_typ_name IN VARCHAR2,
 			x_xk_atb_name IN VARCHAR2) IS
 		l_cube_sequence NUMBER(8);
@@ -4372,7 +4463,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 		IF COALESCE(p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
 			RAISE_APPLICATION_ERROR (-20000, pkg_cube.replace_placeholders('Invalid position action: %', p_cube_pos_action));
 		END IF;
-		determine_position_sva (l_cube_sequence, p_cube_pos_action, x_fk_typ_name, x_fk_srv_name, x_fk_srv_cube_tsg_db_scr, x_xf_atb_typ_name, x_xk_atb_name);
+		determine_position_sva (l_cube_sequence, p_cube_pos_action, x_fk_typ_name, x_fk_srv_name, x_fk_srv_cube_tsg_db_scr, x_option_name, x_xf_atb_typ_name, x_xk_atb_name);
 		INSERT INTO v_service_argument (
 			cube_id,
 			cube_sequence,
@@ -4380,8 +4471,15 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			fk_typ_name,
 			fk_srv_name,
 			fk_srv_cube_tsg_db_scr,
+			cube_tsg_sva_type,
+			option_name,
+			xk_itp_name,
 			xf_atb_typ_name,
-			xk_atb_name)
+			xk_atb_name,
+			xk_ref_bot_name,
+			xk_ref_typ_name,
+			xf_ref_typ_name,
+			xk_ref_sequence)
 		VALUES (
 			NULL,
 			l_cube_sequence,
@@ -4389,8 +4487,15 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_fk_typ_name,
 			p_fk_srv_name,
 			p_fk_srv_cube_tsg_db_scr,
+			p_cube_tsg_sva_type,
+			p_option_name,
+			p_xk_itp_name,
 			p_xf_atb_typ_name,
-			p_xk_atb_name);
+			p_xk_atb_name,
+			p_xk_ref_bot_name,
+			p_xk_ref_typ_name,
+			p_xf_ref_typ_name,
+			p_xk_ref_sequence);
 	EXCEPTION
 	WHEN DUP_VAL_ON_INDEX THEN
 			RAISE_APPLICATION_ERROR (-20000, pkg_cube.replace_placeholders('Type service_argument already exists'));
@@ -4401,14 +4506,28 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_srv_name IN VARCHAR2,
 			p_fk_srv_cube_tsg_db_scr IN VARCHAR2,
+			p_cube_tsg_sva_type IN VARCHAR2,
+			p_option_name IN VARCHAR2,
+			p_xk_itp_name IN VARCHAR2,
 			p_xf_atb_typ_name IN VARCHAR2,
-			p_xk_atb_name IN VARCHAR2) IS
+			p_xk_atb_name IN VARCHAR2,
+			p_xk_ref_bot_name IN VARCHAR2,
+			p_xk_ref_typ_name IN VARCHAR2,
+			p_xf_ref_typ_name IN VARCHAR2,
+			p_xk_ref_sequence IN NUMBER) IS
 	BEGIN
 		UPDATE v_service_argument SET
-			fk_bot_name = p_fk_bot_name
+			fk_bot_name = p_fk_bot_name,
+			cube_tsg_sva_type = p_cube_tsg_sva_type,
+			xk_itp_name = p_xk_itp_name,
+			xk_ref_bot_name = p_xk_ref_bot_name,
+			xk_ref_typ_name = p_xk_ref_typ_name,
+			xf_ref_typ_name = p_xf_ref_typ_name,
+			xk_ref_sequence = p_xk_ref_sequence
 		WHERE fk_typ_name = p_fk_typ_name
 		  AND fk_srv_name = p_fk_srv_name
 		  AND fk_srv_cube_tsg_db_scr = p_fk_srv_cube_tsg_db_scr
+		  AND option_name = p_option_name
 		  AND xf_atb_typ_name = p_xf_atb_typ_name
 		  AND xk_atb_name = p_xk_atb_name;
 	END;
@@ -4417,6 +4536,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_srv_name IN VARCHAR2,
 			p_fk_srv_cube_tsg_db_scr IN VARCHAR2,
+			p_option_name IN VARCHAR2,
 			p_xf_atb_typ_name IN VARCHAR2,
 			p_xk_atb_name IN VARCHAR2) IS
 	BEGIN
@@ -4424,6 +4544,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 		WHERE fk_typ_name = p_fk_typ_name
 		  AND fk_srv_name = p_fk_srv_name
 		  AND fk_srv_cube_tsg_db_scr = p_fk_srv_cube_tsg_db_scr
+		  AND option_name = p_option_name
 		  AND xf_atb_typ_name = p_xf_atb_typ_name
 		  AND xk_atb_name = p_xk_atb_name;
 	END;

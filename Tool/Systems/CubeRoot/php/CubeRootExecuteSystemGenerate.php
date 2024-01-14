@@ -36,7 +36,6 @@ function InitBody() {
 	switch (l_json_argument.nodeType) {
 	case "E": // Execute Script
 		g_node_id = JSON.stringify(l_json_argument.objectId);
-		document.getElementById("InputName").value = l_json_objectKey.TYP_SYS.Name;
 		break;
 	default:
 		alert ('Error InitBody: nodeType='+l_json_argument.nodeType);

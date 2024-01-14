@@ -1757,8 +1757,15 @@ BEGIN
 			fk_typ_name VARCHAR2(30),
 			fk_srv_name VARCHAR2(30),
 			fk_srv_cube_tsg_db_scr VARCHAR2(8) DEFAULT ''D'',
+			cube_tsg_sva_type VARCHAR2(8) DEFAULT ''OPT'',
+			option_name VARCHAR2(30),
+			xk_itp_name VARCHAR2(30),
 			xf_atb_typ_name VARCHAR2(30),
-			xk_atb_name VARCHAR2(30))';
+			xk_atb_name VARCHAR2(30),
+			xk_ref_bot_name VARCHAR2(30),
+			xk_ref_typ_name VARCHAR2(30),
+			xf_ref_typ_name VARCHAR2(30),
+			xk_ref_sequence NUMBER(1) DEFAULT ''0'')';
 		DBMS_OUTPUT.PUT_LINE('Table T_SERVICE_ARGUMENT created');
 	ELSE
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_SERVICE_ARGUMENT' AND column_name = 'CUBE_ID';
@@ -1797,6 +1804,24 @@ BEGIN
 			'ALTER TABLE t_service_argument ADD fk_srv_cube_tsg_db_scr VARCHAR2(8) DEFAULT ''D''';
 			DBMS_OUTPUT.PUT_LINE('Column T_SERVICE_ARGUMENT.FK_SRV_CUBE_TSG_DB_SCR created');
 		END IF;
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_SERVICE_ARGUMENT' AND column_name = 'CUBE_TSG_SVA_TYPE';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_service_argument ADD cube_tsg_sva_type VARCHAR2(8) DEFAULT ''OPT''';
+			DBMS_OUTPUT.PUT_LINE('Column T_SERVICE_ARGUMENT.CUBE_TSG_SVA_TYPE created');
+		END IF;
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_SERVICE_ARGUMENT' AND column_name = 'OPTION_NAME';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_service_argument ADD option_name VARCHAR2(30)';
+			DBMS_OUTPUT.PUT_LINE('Column T_SERVICE_ARGUMENT.OPTION_NAME created');
+		END IF;
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_SERVICE_ARGUMENT' AND column_name = 'XK_ITP_NAME';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_service_argument ADD xk_itp_name VARCHAR2(30)';
+			DBMS_OUTPUT.PUT_LINE('Column T_SERVICE_ARGUMENT.XK_ITP_NAME created');
+		END IF;
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_SERVICE_ARGUMENT' AND column_name = 'XF_ATB_TYP_NAME';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
@@ -1808,6 +1833,30 @@ BEGIN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_service_argument ADD xk_atb_name VARCHAR2(30)';
 			DBMS_OUTPUT.PUT_LINE('Column T_SERVICE_ARGUMENT.XK_ATB_NAME created');
+		END IF;
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_SERVICE_ARGUMENT' AND column_name = 'XK_REF_BOT_NAME';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_service_argument ADD xk_ref_bot_name VARCHAR2(30)';
+			DBMS_OUTPUT.PUT_LINE('Column T_SERVICE_ARGUMENT.XK_REF_BOT_NAME created');
+		END IF;
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_SERVICE_ARGUMENT' AND column_name = 'XK_REF_TYP_NAME';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_service_argument ADD xk_ref_typ_name VARCHAR2(30)';
+			DBMS_OUTPUT.PUT_LINE('Column T_SERVICE_ARGUMENT.XK_REF_TYP_NAME created');
+		END IF;
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_SERVICE_ARGUMENT' AND column_name = 'XF_REF_TYP_NAME';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_service_argument ADD xf_ref_typ_name VARCHAR2(30)';
+			DBMS_OUTPUT.PUT_LINE('Column T_SERVICE_ARGUMENT.XF_REF_TYP_NAME created');
+		END IF;
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_SERVICE_ARGUMENT' AND column_name = 'XK_REF_SEQUENCE';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_service_argument ADD xk_ref_sequence NUMBER(1) DEFAULT ''0''';
+			DBMS_OUTPUT.PUT_LINE('Column T_SERVICE_ARGUMENT.XK_REF_SEQUENCE created');
 		END IF;
 		FOR r_key IN (SELECT constraint_name FROM all_constraints WHERE owner = 'CUBEROOT' AND table_name = 'T_SERVICE_ARGUMENT' AND constraint_type IN ('P','U','R') ORDER BY constraint_type DESC)
 		LOOP
@@ -3559,8 +3608,15 @@ BEGIN
 			'FK_TYP_NAME','VARCHAR2(30)',
 			'FK_SRV_NAME','VARCHAR2(30)',
 			'FK_SRV_CUBE_TSG_DB_SCR','VARCHAR2(8)',
+			'CUBE_TSG_SVA_TYPE','VARCHAR2(8)',
+			'OPTION_NAME','VARCHAR2(30)',
+			'XK_ITP_NAME','VARCHAR2(30)',
 			'XF_ATB_TYP_NAME','VARCHAR2(30)',
-			'XK_ATB_NAME','VARCHAR2(30)',NULL) new_domain,
+			'XK_ATB_NAME','VARCHAR2(30)',
+			'XK_REF_BOT_NAME','VARCHAR2(30)',
+			'XK_REF_TYP_NAME','VARCHAR2(30)',
+			'XF_REF_TYP_NAME','VARCHAR2(30)',
+			'XK_REF_SEQUENCE','NUMBER(1)',NULL) new_domain,
 		DECODE(column_name,
 			'CUBE_ID',NULL,
 			'CUBE_SEQUENCE',NULL,
@@ -3568,8 +3624,15 @@ BEGIN
 			'FK_TYP_NAME',NULL,
 			'FK_SRV_NAME',NULL,
 			'FK_SRV_CUBE_TSG_DB_SCR','''D''',
+			'CUBE_TSG_SVA_TYPE','''OPT''',
+			'OPTION_NAME',NULL,
+			'XK_ITP_NAME',NULL,
 			'XF_ATB_TYP_NAME',NULL,
-			'XK_ATB_NAME',NULL,NULL) new_default_value
+			'XK_ATB_NAME',NULL,
+			'XK_REF_BOT_NAME',NULL,
+			'XK_REF_TYP_NAME',NULL,
+			'XF_REF_TYP_NAME',NULL,
+			'XK_REF_SEQUENCE','''0''',NULL) new_default_value
   		FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_SERVICE_ARGUMENT')
 	LOOP
 		IF r_field.old_domain <> r_field.new_domain THEN
@@ -3600,6 +3663,7 @@ BEGIN
 			fk_typ_name,
 			fk_srv_name,
 			fk_srv_cube_tsg_db_scr,
+			option_name,
 			xf_atb_typ_name,
 			xk_atb_name )';
 	DBMS_OUTPUT.PUT_LINE('Primary Key T_SERVICE_ARGUMENT.SVA_PK created');
@@ -3615,8 +3679,15 @@ BEGIN
 							'FK_TYP_NAME',
 							'FK_SRV_NAME',
 							'FK_SRV_CUBE_TSG_DB_SCR',
+							'CUBE_TSG_SVA_TYPE',
+							'OPTION_NAME',
+							'XK_ITP_NAME',
 							'XF_ATB_TYP_NAME',
-							'XK_ATB_NAME'))
+							'XK_ATB_NAME',
+							'XK_REF_BOT_NAME',
+							'XK_REF_TYP_NAME',
+							'XF_REF_TYP_NAME',
+							'XK_REF_SEQUENCE'))
 	LOOP
 		EXECUTE IMMEDIATE
 		'ALTER TABLE t_service_argument DROP COLUMN ' || r_field.column_name;
