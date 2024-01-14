@@ -1111,7 +1111,6 @@ BEGIN
 			fk_bot_name VARCHAR2(30),
 			fk_typ_name VARCHAR2(30),
 			fk_atb_name VARCHAR2(30),
-			include_or_exclude CHAR(2) DEFAULT ''IN'',
 			xf_tsp_typ_name VARCHAR2(30),
 			xf_tsp_tsg_code VARCHAR2(16),
 			xk_tsp_code VARCHAR2(16))';
@@ -1140,12 +1139,6 @@ BEGIN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_restriction_type_spec_atb ADD fk_atb_name VARCHAR2(30)';
 			DBMS_OUTPUT.PUT_LINE('Column T_RESTRICTION_TYPE_SPEC_ATB.FK_ATB_NAME created');
-		END IF;
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_RESTRICTION_TYPE_SPEC_ATB' AND column_name = 'INCLUDE_OR_EXCLUDE';
-		IF l_count = 0 THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_restriction_type_spec_atb ADD include_or_exclude CHAR(2) DEFAULT ''IN''';
-			DBMS_OUTPUT.PUT_LINE('Column T_RESTRICTION_TYPE_SPEC_ATB.INCLUDE_OR_EXCLUDE created');
 		END IF;
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_RESTRICTION_TYPE_SPEC_ATB' AND column_name = 'XF_TSP_TYP_NAME';
 		IF l_count = 0 THEN
@@ -1405,7 +1398,6 @@ BEGIN
 			fk_ref_sequence NUMBER(1) DEFAULT ''0'',
 			fk_ref_bot_name VARCHAR2(30),
 			fk_ref_typ_name VARCHAR2(30),
-			include_or_exclude CHAR(2) DEFAULT ''IN'',
 			xf_tsp_typ_name VARCHAR2(30),
 			xf_tsp_tsg_code VARCHAR2(16),
 			xk_tsp_code VARCHAR2(16))';
@@ -1446,12 +1438,6 @@ BEGIN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_restriction_type_spec_ref ADD fk_ref_typ_name VARCHAR2(30)';
 			DBMS_OUTPUT.PUT_LINE('Column T_RESTRICTION_TYPE_SPEC_REF.FK_REF_TYP_NAME created');
-		END IF;
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_RESTRICTION_TYPE_SPEC_REF' AND column_name = 'INCLUDE_OR_EXCLUDE';
-		IF l_count = 0 THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_restriction_type_spec_ref ADD include_or_exclude CHAR(2) DEFAULT ''IN''';
-			DBMS_OUTPUT.PUT_LINE('Column T_RESTRICTION_TYPE_SPEC_REF.INCLUDE_OR_EXCLUDE created');
 		END IF;
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_RESTRICTION_TYPE_SPEC_REF' AND column_name = 'XF_TSP_TYP_NAME';
 		IF l_count = 0 THEN
@@ -1500,7 +1486,6 @@ BEGIN
 			fk_ref_sequence NUMBER(1) DEFAULT ''0'',
 			fk_ref_bot_name VARCHAR2(30),
 			fk_ref_typ_name VARCHAR2(30),
-			include_or_exclude CHAR(2) DEFAULT ''IN'',
 			xf_tsp_typ_name VARCHAR2(30),
 			xf_tsp_tsg_code VARCHAR2(16),
 			xk_tsp_code VARCHAR2(16))';
@@ -1541,12 +1526,6 @@ BEGIN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_restriction_target_type_spec ADD fk_ref_typ_name VARCHAR2(30)';
 			DBMS_OUTPUT.PUT_LINE('Column T_RESTRICTION_TARGET_TYPE_SPEC.FK_REF_TYP_NAME created');
-		END IF;
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_RESTRICTION_TARGET_TYPE_SPEC' AND column_name = 'INCLUDE_OR_EXCLUDE';
-		IF l_count = 0 THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_restriction_target_type_spec ADD include_or_exclude CHAR(2) DEFAULT ''IN''';
-			DBMS_OUTPUT.PUT_LINE('Column T_RESTRICTION_TARGET_TYPE_SPEC.INCLUDE_OR_EXCLUDE created');
 		END IF;
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_RESTRICTION_TARGET_TYPE_SPEC' AND column_name = 'XF_TSP_TYP_NAME';
 		IF l_count = 0 THEN
@@ -1759,6 +1738,7 @@ BEGIN
 			fk_srv_cube_tsg_db_scr VARCHAR2(8) DEFAULT ''D'',
 			cube_tsg_sva_type VARCHAR2(8) DEFAULT ''OPT'',
 			option_name VARCHAR2(30),
+			input_or_output CHAR(1) DEFAULT ''I'',
 			xk_itp_name VARCHAR2(30),
 			xf_atb_typ_name VARCHAR2(30),
 			xk_atb_name VARCHAR2(30),
@@ -1815,6 +1795,12 @@ BEGIN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_service_argument ADD option_name VARCHAR2(30)';
 			DBMS_OUTPUT.PUT_LINE('Column T_SERVICE_ARGUMENT.OPTION_NAME created');
+		END IF;
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_SERVICE_ARGUMENT' AND column_name = 'INPUT_OR_OUTPUT';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_service_argument ADD input_or_output CHAR(1) DEFAULT ''I''';
+			DBMS_OUTPUT.PUT_LINE('Column T_SERVICE_ARGUMENT.INPUT_OR_OUTPUT created');
 		END IF;
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_SERVICE_ARGUMENT' AND column_name = 'XK_ITP_NAME';
 		IF l_count = 0 THEN
@@ -1884,7 +1870,6 @@ BEGIN
 			cube_id VARCHAR2(16),
 			fk_bot_name VARCHAR2(30),
 			fk_typ_name VARCHAR2(30),
-			include_or_exclude CHAR(2) DEFAULT ''IN'',
 			xf_tsp_typ_name VARCHAR2(30),
 			xf_tsp_tsg_code VARCHAR2(16),
 			xk_tsp_code VARCHAR2(16))';
@@ -1907,12 +1892,6 @@ BEGIN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_restriction_type_spec_typ ADD fk_typ_name VARCHAR2(30)';
 			DBMS_OUTPUT.PUT_LINE('Column T_RESTRICTION_TYPE_SPEC_TYP.FK_TYP_NAME created');
-		END IF;
-		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_RESTRICTION_TYPE_SPEC_TYP' AND column_name = 'INCLUDE_OR_EXCLUDE';
-		IF l_count = 0 THEN
-			EXECUTE IMMEDIATE
-			'ALTER TABLE t_restriction_type_spec_typ ADD include_or_exclude CHAR(2) DEFAULT ''IN''';
-			DBMS_OUTPUT.PUT_LINE('Column T_RESTRICTION_TYPE_SPEC_TYP.INCLUDE_OR_EXCLUDE created');
 		END IF;
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_RESTRICTION_TYPE_SPEC_TYP' AND column_name = 'XF_TSP_TYP_NAME';
 		IF l_count = 0 THEN
@@ -3035,7 +3014,6 @@ BEGIN
 			'FK_BOT_NAME','VARCHAR2(30)',
 			'FK_TYP_NAME','VARCHAR2(30)',
 			'FK_ATB_NAME','VARCHAR2(30)',
-			'INCLUDE_OR_EXCLUDE','CHAR(2)',
 			'XF_TSP_TYP_NAME','VARCHAR2(30)',
 			'XF_TSP_TSG_CODE','VARCHAR2(16)',
 			'XK_TSP_CODE','VARCHAR2(16)',NULL) new_domain,
@@ -3044,7 +3022,6 @@ BEGIN
 			'FK_BOT_NAME',NULL,
 			'FK_TYP_NAME',NULL,
 			'FK_ATB_NAME',NULL,
-			'INCLUDE_OR_EXCLUDE','''IN''',
 			'XF_TSP_TYP_NAME',NULL,
 			'XF_TSP_TSG_CODE',NULL,
 			'XK_TSP_CODE',NULL,NULL) new_default_value
@@ -3091,7 +3068,6 @@ BEGIN
 							'FK_BOT_NAME',
 							'FK_TYP_NAME',
 							'FK_ATB_NAME',
-							'INCLUDE_OR_EXCLUDE',
 							'XF_TSP_TYP_NAME',
 							'XF_TSP_TSG_CODE',
 							'XK_TSP_CODE'))
@@ -3287,7 +3263,6 @@ BEGIN
 			'FK_REF_SEQUENCE','NUMBER(1)',
 			'FK_REF_BOT_NAME','VARCHAR2(30)',
 			'FK_REF_TYP_NAME','VARCHAR2(30)',
-			'INCLUDE_OR_EXCLUDE','CHAR(2)',
 			'XF_TSP_TYP_NAME','VARCHAR2(30)',
 			'XF_TSP_TSG_CODE','VARCHAR2(16)',
 			'XK_TSP_CODE','VARCHAR2(16)',NULL) new_domain,
@@ -3298,7 +3273,6 @@ BEGIN
 			'FK_REF_SEQUENCE','''0''',
 			'FK_REF_BOT_NAME',NULL,
 			'FK_REF_TYP_NAME',NULL,
-			'INCLUDE_OR_EXCLUDE','''IN''',
 			'XF_TSP_TYP_NAME',NULL,
 			'XF_TSP_TSG_CODE',NULL,
 			'XK_TSP_CODE',NULL,NULL) new_default_value
@@ -3349,7 +3323,6 @@ BEGIN
 							'FK_REF_SEQUENCE',
 							'FK_REF_BOT_NAME',
 							'FK_REF_TYP_NAME',
-							'INCLUDE_OR_EXCLUDE',
 							'XF_TSP_TYP_NAME',
 							'XF_TSP_TSG_CODE',
 							'XK_TSP_CODE'))
@@ -3372,7 +3345,6 @@ BEGIN
 			'FK_REF_SEQUENCE','NUMBER(1)',
 			'FK_REF_BOT_NAME','VARCHAR2(30)',
 			'FK_REF_TYP_NAME','VARCHAR2(30)',
-			'INCLUDE_OR_EXCLUDE','CHAR(2)',
 			'XF_TSP_TYP_NAME','VARCHAR2(30)',
 			'XF_TSP_TSG_CODE','VARCHAR2(16)',
 			'XK_TSP_CODE','VARCHAR2(16)',NULL) new_domain,
@@ -3383,7 +3355,6 @@ BEGIN
 			'FK_REF_SEQUENCE','''0''',
 			'FK_REF_BOT_NAME',NULL,
 			'FK_REF_TYP_NAME',NULL,
-			'INCLUDE_OR_EXCLUDE','''IN''',
 			'XF_TSP_TYP_NAME',NULL,
 			'XF_TSP_TSG_CODE',NULL,
 			'XK_TSP_CODE',NULL,NULL) new_default_value
@@ -3434,7 +3405,6 @@ BEGIN
 							'FK_REF_SEQUENCE',
 							'FK_REF_BOT_NAME',
 							'FK_REF_TYP_NAME',
-							'INCLUDE_OR_EXCLUDE',
 							'XF_TSP_TYP_NAME',
 							'XF_TSP_TSG_CODE',
 							'XK_TSP_CODE'))
@@ -3610,6 +3580,7 @@ BEGIN
 			'FK_SRV_CUBE_TSG_DB_SCR','VARCHAR2(8)',
 			'CUBE_TSG_SVA_TYPE','VARCHAR2(8)',
 			'OPTION_NAME','VARCHAR2(30)',
+			'INPUT_OR_OUTPUT','CHAR(1)',
 			'XK_ITP_NAME','VARCHAR2(30)',
 			'XF_ATB_TYP_NAME','VARCHAR2(30)',
 			'XK_ATB_NAME','VARCHAR2(30)',
@@ -3626,6 +3597,7 @@ BEGIN
 			'FK_SRV_CUBE_TSG_DB_SCR','''D''',
 			'CUBE_TSG_SVA_TYPE','''OPT''',
 			'OPTION_NAME',NULL,
+			'INPUT_OR_OUTPUT','''I''',
 			'XK_ITP_NAME',NULL,
 			'XF_ATB_TYP_NAME',NULL,
 			'XK_ATB_NAME',NULL,
@@ -3681,6 +3653,7 @@ BEGIN
 							'FK_SRV_CUBE_TSG_DB_SCR',
 							'CUBE_TSG_SVA_TYPE',
 							'OPTION_NAME',
+							'INPUT_OR_OUTPUT',
 							'XK_ITP_NAME',
 							'XF_ATB_TYP_NAME',
 							'XK_ATB_NAME',
@@ -3704,7 +3677,6 @@ BEGIN
 			'CUBE_ID','VARCHAR2(16)',
 			'FK_BOT_NAME','VARCHAR2(30)',
 			'FK_TYP_NAME','VARCHAR2(30)',
-			'INCLUDE_OR_EXCLUDE','CHAR(2)',
 			'XF_TSP_TYP_NAME','VARCHAR2(30)',
 			'XF_TSP_TSG_CODE','VARCHAR2(16)',
 			'XK_TSP_CODE','VARCHAR2(16)',NULL) new_domain,
@@ -3712,7 +3684,6 @@ BEGIN
 			'CUBE_ID',NULL,
 			'FK_BOT_NAME',NULL,
 			'FK_TYP_NAME',NULL,
-			'INCLUDE_OR_EXCLUDE','''IN''',
 			'XF_TSP_TYP_NAME',NULL,
 			'XF_TSP_TSG_CODE',NULL,
 			'XK_TSP_CODE',NULL,NULL) new_default_value
@@ -3757,7 +3728,6 @@ BEGIN
 							'CUBE_ID',
 							'FK_BOT_NAME',
 							'FK_TYP_NAME',
-							'INCLUDE_OR_EXCLUDE',
 							'XF_TSP_TYP_NAME',
 							'XF_TSP_TSG_CODE',
 							'XK_TSP_CODE'))

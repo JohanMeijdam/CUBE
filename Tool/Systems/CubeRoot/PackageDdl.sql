@@ -858,7 +858,6 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_fk_bot_name IN VARCHAR2,
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_atb_name IN VARCHAR2,
-			p_include_or_exclude IN VARCHAR2,
 			p_xf_tsp_typ_name IN VARCHAR2,
 			p_xf_tsp_tsg_code IN VARCHAR2,
 			p_xk_tsp_code IN VARCHAR2);
@@ -866,7 +865,6 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_fk_bot_name IN VARCHAR2,
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_atb_name IN VARCHAR2,
-			p_include_or_exclude IN VARCHAR2,
 			p_xf_tsp_typ_name IN VARCHAR2,
 			p_xf_tsp_tsg_code IN VARCHAR2,
 			p_xk_tsp_code IN VARCHAR2);
@@ -1013,7 +1011,6 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_fk_ref_sequence IN NUMBER,
 			p_fk_ref_bot_name IN VARCHAR2,
 			p_fk_ref_typ_name IN VARCHAR2,
-			p_include_or_exclude IN VARCHAR2,
 			p_xf_tsp_typ_name IN VARCHAR2,
 			p_xf_tsp_tsg_code IN VARCHAR2,
 			p_xk_tsp_code IN VARCHAR2);
@@ -1023,7 +1020,6 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_fk_ref_sequence IN NUMBER,
 			p_fk_ref_bot_name IN VARCHAR2,
 			p_fk_ref_typ_name IN VARCHAR2,
-			p_include_or_exclude IN VARCHAR2,
 			p_xf_tsp_typ_name IN VARCHAR2,
 			p_xf_tsp_tsg_code IN VARCHAR2,
 			p_xk_tsp_code IN VARCHAR2);
@@ -1050,7 +1046,6 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_fk_ref_sequence IN NUMBER,
 			p_fk_ref_bot_name IN VARCHAR2,
 			p_fk_ref_typ_name IN VARCHAR2,
-			p_include_or_exclude IN VARCHAR2,
 			p_xf_tsp_typ_name IN VARCHAR2,
 			p_xf_tsp_tsg_code IN VARCHAR2,
 			p_xk_tsp_code IN VARCHAR2);
@@ -1060,7 +1055,6 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_fk_ref_sequence IN NUMBER,
 			p_fk_ref_bot_name IN VARCHAR2,
 			p_fk_ref_typ_name IN VARCHAR2,
-			p_include_or_exclude IN VARCHAR2,
 			p_xf_tsp_typ_name IN VARCHAR2,
 			p_xf_tsp_tsg_code IN VARCHAR2,
 			p_xk_tsp_code IN VARCHAR2);
@@ -1192,6 +1186,7 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_fk_srv_cube_tsg_db_scr IN VARCHAR2,
 			p_cube_tsg_sva_type IN VARCHAR2,
 			p_option_name IN VARCHAR2,
+			p_input_or_output IN VARCHAR2,
 			p_xk_itp_name IN VARCHAR2,
 			p_xf_atb_typ_name IN VARCHAR2,
 			p_xk_atb_name IN VARCHAR2,
@@ -1212,6 +1207,7 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_fk_srv_cube_tsg_db_scr IN VARCHAR2,
 			p_cube_tsg_sva_type IN VARCHAR2,
 			p_option_name IN VARCHAR2,
+			p_input_or_output IN VARCHAR2,
 			p_xk_itp_name IN VARCHAR2,
 			p_xf_atb_typ_name IN VARCHAR2,
 			p_xk_atb_name IN VARCHAR2,
@@ -1236,14 +1232,12 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_cube_row IN OUT c_cube_row,
 			p_fk_bot_name IN VARCHAR2,
 			p_fk_typ_name IN VARCHAR2,
-			p_include_or_exclude IN VARCHAR2,
 			p_xf_tsp_typ_name IN VARCHAR2,
 			p_xf_tsp_tsg_code IN VARCHAR2,
 			p_xk_tsp_code IN VARCHAR2);
 	PROCEDURE update_rtt (
 			p_fk_bot_name IN VARCHAR2,
 			p_fk_typ_name IN VARCHAR2,
-			p_include_or_exclude IN VARCHAR2,
 			p_xf_tsp_typ_name IN VARCHAR2,
 			p_xf_tsp_tsg_code IN VARCHAR2,
 			p_xk_tsp_code IN VARCHAR2);
@@ -3038,8 +3032,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 	BEGIN
 		OPEN p_cube_row FOR
 			SELECT
-			  fk_bot_name,
-			  include_or_exclude
+			  fk_bot_name
 			FROM v_restriction_type_spec_atb
 			WHERE fk_typ_name = p_fk_typ_name
 			  AND fk_atb_name = p_fk_atb_name
@@ -3087,7 +3080,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_fk_bot_name IN VARCHAR2,
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_atb_name IN VARCHAR2,
-			p_include_or_exclude IN VARCHAR2,
 			p_xf_tsp_typ_name IN VARCHAR2,
 			p_xf_tsp_tsg_code IN VARCHAR2,
 			p_xk_tsp_code IN VARCHAR2) IS
@@ -3097,7 +3089,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			fk_bot_name,
 			fk_typ_name,
 			fk_atb_name,
-			include_or_exclude,
 			xf_tsp_typ_name,
 			xf_tsp_tsg_code,
 			xk_tsp_code)
@@ -3106,7 +3097,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_fk_bot_name,
 			p_fk_typ_name,
 			p_fk_atb_name,
-			p_include_or_exclude,
 			p_xf_tsp_typ_name,
 			p_xf_tsp_tsg_code,
 			p_xk_tsp_code);
@@ -3121,14 +3111,12 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_fk_bot_name IN VARCHAR2,
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_atb_name IN VARCHAR2,
-			p_include_or_exclude IN VARCHAR2,
 			p_xf_tsp_typ_name IN VARCHAR2,
 			p_xf_tsp_tsg_code IN VARCHAR2,
 			p_xk_tsp_code IN VARCHAR2) IS
 	BEGIN
 		UPDATE v_restriction_type_spec_atb SET
-			fk_bot_name = p_fk_bot_name,
-			include_or_exclude = p_include_or_exclude
+			fk_bot_name = p_fk_bot_name
 		WHERE fk_typ_name = p_fk_typ_name
 		  AND fk_atb_name = p_fk_atb_name
 		  AND xf_tsp_typ_name = p_xf_tsp_typ_name
@@ -3297,7 +3285,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			  fk_ref_sequence,
 			  fk_ref_bot_name,
 			  fk_ref_typ_name,
-			  include_or_exclude,
 			  xf_tsp_typ_name,
 			  xf_tsp_tsg_code,
 			  xk_tsp_code
@@ -3306,7 +3293,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			  AND fk_ref_sequence = p_sequence
 			  AND fk_ref_bot_name = p_xk_bot_name
 			  AND fk_ref_typ_name = p_xk_typ_name
-			ORDER BY fk_typ_name, fk_ref_sequence, fk_ref_bot_name, fk_ref_typ_name, include_or_exclude, xf_tsp_typ_name, xf_tsp_tsg_code, xk_tsp_code;
+			ORDER BY fk_typ_name, fk_ref_sequence, fk_ref_bot_name, fk_ref_typ_name, xf_tsp_typ_name, xf_tsp_tsg_code, xk_tsp_code;
 	END;
 
 	PROCEDURE count_ref_dcr (
@@ -3636,8 +3623,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 	BEGIN
 		OPEN p_cube_row FOR
 			SELECT
-			  fk_bot_name,
-			  include_or_exclude
+			  fk_bot_name
 			FROM v_restriction_type_spec_ref
 			WHERE fk_typ_name = p_fk_typ_name
 			  AND fk_ref_sequence = p_fk_ref_sequence
@@ -3706,7 +3692,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_fk_ref_sequence IN NUMBER,
 			p_fk_ref_bot_name IN VARCHAR2,
 			p_fk_ref_typ_name IN VARCHAR2,
-			p_include_or_exclude IN VARCHAR2,
 			p_xf_tsp_typ_name IN VARCHAR2,
 			p_xf_tsp_tsg_code IN VARCHAR2,
 			p_xk_tsp_code IN VARCHAR2) IS
@@ -3718,7 +3703,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			fk_ref_sequence,
 			fk_ref_bot_name,
 			fk_ref_typ_name,
-			include_or_exclude,
 			xf_tsp_typ_name,
 			xf_tsp_tsg_code,
 			xk_tsp_code)
@@ -3729,7 +3713,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_fk_ref_sequence,
 			p_fk_ref_bot_name,
 			p_fk_ref_typ_name,
-			p_include_or_exclude,
 			p_xf_tsp_typ_name,
 			p_xf_tsp_tsg_code,
 			p_xk_tsp_code);
@@ -3746,14 +3729,12 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_fk_ref_sequence IN NUMBER,
 			p_fk_ref_bot_name IN VARCHAR2,
 			p_fk_ref_typ_name IN VARCHAR2,
-			p_include_or_exclude IN VARCHAR2,
 			p_xf_tsp_typ_name IN VARCHAR2,
 			p_xf_tsp_tsg_code IN VARCHAR2,
 			p_xk_tsp_code IN VARCHAR2) IS
 	BEGIN
 		UPDATE v_restriction_type_spec_ref SET
-			fk_bot_name = p_fk_bot_name,
-			include_or_exclude = p_include_or_exclude
+			fk_bot_name = p_fk_bot_name
 		WHERE fk_typ_name = p_fk_typ_name
 		  AND fk_ref_sequence = p_fk_ref_sequence
 		  AND fk_ref_bot_name = p_fk_ref_bot_name
@@ -3794,8 +3775,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 	BEGIN
 		OPEN p_cube_row FOR
 			SELECT
-			  fk_bot_name,
-			  include_or_exclude
+			  fk_bot_name
 			FROM v_restriction_target_type_spec
 			WHERE fk_typ_name = p_fk_typ_name
 			  AND fk_ref_sequence = p_fk_ref_sequence
@@ -3812,7 +3792,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_fk_ref_sequence IN NUMBER,
 			p_fk_ref_bot_name IN VARCHAR2,
 			p_fk_ref_typ_name IN VARCHAR2,
-			p_include_or_exclude IN VARCHAR2,
 			p_xf_tsp_typ_name IN VARCHAR2,
 			p_xf_tsp_tsg_code IN VARCHAR2,
 			p_xk_tsp_code IN VARCHAR2) IS
@@ -3824,7 +3803,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			fk_ref_sequence,
 			fk_ref_bot_name,
 			fk_ref_typ_name,
-			include_or_exclude,
 			xf_tsp_typ_name,
 			xf_tsp_tsg_code,
 			xk_tsp_code)
@@ -3835,7 +3813,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_fk_ref_sequence,
 			p_fk_ref_bot_name,
 			p_fk_ref_typ_name,
-			p_include_or_exclude,
 			p_xf_tsp_typ_name,
 			p_xf_tsp_tsg_code,
 			p_xk_tsp_code);
@@ -3850,14 +3827,12 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_fk_ref_sequence IN NUMBER,
 			p_fk_ref_bot_name IN VARCHAR2,
 			p_fk_ref_typ_name IN VARCHAR2,
-			p_include_or_exclude IN VARCHAR2,
 			p_xf_tsp_typ_name IN VARCHAR2,
 			p_xf_tsp_tsg_code IN VARCHAR2,
 			p_xk_tsp_code IN VARCHAR2) IS
 	BEGIN
 		UPDATE v_restriction_target_type_spec SET
-			fk_bot_name = p_fk_bot_name,
-			include_or_exclude = p_include_or_exclude
+			fk_bot_name = p_fk_bot_name
 		WHERE fk_typ_name = p_fk_typ_name
 		  AND fk_ref_sequence = p_fk_ref_sequence
 		  AND fk_ref_bot_name = p_fk_ref_bot_name
@@ -4316,6 +4291,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			SELECT
 			  fk_bot_name,
 			  cube_tsg_sva_type,
+			  input_or_output,
 			  xk_itp_name,
 			  xk_ref_bot_name,
 			  xk_ref_typ_name,
@@ -4444,6 +4420,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_fk_srv_cube_tsg_db_scr IN VARCHAR2,
 			p_cube_tsg_sva_type IN VARCHAR2,
 			p_option_name IN VARCHAR2,
+			p_input_or_output IN VARCHAR2,
 			p_xk_itp_name IN VARCHAR2,
 			p_xf_atb_typ_name IN VARCHAR2,
 			p_xk_atb_name IN VARCHAR2,
@@ -4473,6 +4450,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			fk_srv_cube_tsg_db_scr,
 			cube_tsg_sva_type,
 			option_name,
+			input_or_output,
 			xk_itp_name,
 			xf_atb_typ_name,
 			xk_atb_name,
@@ -4489,6 +4467,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_fk_srv_cube_tsg_db_scr,
 			p_cube_tsg_sva_type,
 			p_option_name,
+			p_input_or_output,
 			p_xk_itp_name,
 			p_xf_atb_typ_name,
 			p_xk_atb_name,
@@ -4508,6 +4487,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_fk_srv_cube_tsg_db_scr IN VARCHAR2,
 			p_cube_tsg_sva_type IN VARCHAR2,
 			p_option_name IN VARCHAR2,
+			p_input_or_output IN VARCHAR2,
 			p_xk_itp_name IN VARCHAR2,
 			p_xf_atb_typ_name IN VARCHAR2,
 			p_xk_atb_name IN VARCHAR2,
@@ -4519,6 +4499,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 		UPDATE v_service_argument SET
 			fk_bot_name = p_fk_bot_name,
 			cube_tsg_sva_type = p_cube_tsg_sva_type,
+			input_or_output = p_input_or_output,
 			xk_itp_name = p_xk_itp_name,
 			xk_ref_bot_name = p_xk_ref_bot_name,
 			xk_ref_typ_name = p_xk_ref_typ_name,
@@ -4558,8 +4539,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 	BEGIN
 		OPEN p_cube_row FOR
 			SELECT
-			  fk_bot_name,
-			  include_or_exclude
+			  fk_bot_name
 			FROM v_restriction_type_spec_typ
 			WHERE fk_typ_name = p_fk_typ_name
 			  AND xf_tsp_typ_name = p_xf_tsp_typ_name
@@ -4598,7 +4578,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_cube_row IN OUT c_cube_row,
 			p_fk_bot_name IN VARCHAR2,
 			p_fk_typ_name IN VARCHAR2,
-			p_include_or_exclude IN VARCHAR2,
 			p_xf_tsp_typ_name IN VARCHAR2,
 			p_xf_tsp_tsg_code IN VARCHAR2,
 			p_xk_tsp_code IN VARCHAR2) IS
@@ -4607,7 +4586,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			cube_id,
 			fk_bot_name,
 			fk_typ_name,
-			include_or_exclude,
 			xf_tsp_typ_name,
 			xf_tsp_tsg_code,
 			xk_tsp_code)
@@ -4615,7 +4593,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			NULL,
 			p_fk_bot_name,
 			p_fk_typ_name,
-			p_include_or_exclude,
 			p_xf_tsp_typ_name,
 			p_xf_tsp_tsg_code,
 			p_xk_tsp_code);
@@ -4629,14 +4606,12 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 	PROCEDURE update_rtt (
 			p_fk_bot_name IN VARCHAR2,
 			p_fk_typ_name IN VARCHAR2,
-			p_include_or_exclude IN VARCHAR2,
 			p_xf_tsp_typ_name IN VARCHAR2,
 			p_xf_tsp_tsg_code IN VARCHAR2,
 			p_xk_tsp_code IN VARCHAR2) IS
 	BEGIN
 		UPDATE v_restriction_type_spec_typ SET
-			fk_bot_name = p_fk_bot_name,
-			include_or_exclude = p_include_or_exclude
+			fk_bot_name = p_fk_bot_name
 		WHERE fk_typ_name = p_fk_typ_name
 		  AND xf_tsp_typ_name = p_xf_tsp_typ_name
 		  AND xf_tsp_tsg_code = p_xf_tsp_tsg_code

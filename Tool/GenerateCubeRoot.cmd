@@ -62,8 +62,8 @@ CubeGen.exe %sysdir%\CubeBoModel.cgm Templates\CubeTreePhp.cgt %sysdir%\php\%sys
 CubeGen.exe %sysdir%\CubeServerSpecModel.cgm Templates\CubeDetailPhp.cgt %sysdir%\php\%sysname%Detail.php %sysname% %sysdir%\php >> %logfile% 2>&1
 CubeGen.exe %sysdir%\CubeServerSpecModel.cgm Templates\CubeServerPhp.cgt %sysdir%\php\%sysname%Server.php %sysname% %sysdir%\php >> %logfile% 2>&1
 del /S/Q %sysroot% >> %logfile% 2>&1
-xcopy /Y/E %sysdir%\files %sysroot% >> %logfile% 2>&1
-xcopy /Y/E %sysdir%\php %sysroot% >> %logfile% 2>&1
+xcopy /Y/S/E %sysdir%\files %sysroot% >> %logfile% 2>&1
+xcopy /Y/S/E %sysdir%\php %sysroot% >> %logfile% 2>&1
 ::goto :end
 :ModelExport
 echo Generate Model Export.

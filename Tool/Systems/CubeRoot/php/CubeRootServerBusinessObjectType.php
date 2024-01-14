@@ -1359,6 +1359,10 @@ case 'DeleteTsp':
 
 	break;
 
+case 'Test':
+
+	break;
+
 case 'GetAtbForTypList':
 	echo '[';
 
@@ -2018,7 +2022,6 @@ case 'GetRta':
 		$RowObj = new \stdClass();
 		$RowObj->Data = new \stdClass();
 		$RowObj->Data->FkBotName = $row["FK_BOT_NAME"];
-		$RowObj->Data->IncludeOrExclude = $row["INCLUDE_OR_EXCLUDE"];
 		$ResponseObj->Rows[] = $RowObj;
 	}
 	$ResponseText = json_encode($ResponseObj);
@@ -2035,7 +2038,6 @@ case 'CreateRta':
 		:p_fk_bot_name,
 		:p_fk_typ_name,
 		:p_fk_atb_name,
-		:p_include_or_exclude,
 		:p_xf_tsp_typ_name,
 		:p_xf_tsp_tsg_code,
 		:p_xk_tsp_code);
@@ -2043,7 +2045,6 @@ case 'CreateRta':
 	oci_bind_by_name($stid,":p_fk_bot_name",$RequestObj->Parameters->Type->FkBotName);
 	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
 	oci_bind_by_name($stid,":p_fk_atb_name",$RequestObj->Parameters->Type->FkAtbName);
-	oci_bind_by_name($stid,":p_include_or_exclude",$RequestObj->Parameters->Type->IncludeOrExclude);
 	oci_bind_by_name($stid,":p_xf_tsp_typ_name",$RequestObj->Parameters->Type->XfTspTypName);
 	oci_bind_by_name($stid,":p_xf_tsp_tsg_code",$RequestObj->Parameters->Type->XfTspTsgCode);
 	oci_bind_by_name($stid,":p_xk_tsp_code",$RequestObj->Parameters->Type->XkTspCode);
@@ -2079,7 +2080,6 @@ case 'UpdateRta':
 		:p_fk_bot_name,
 		:p_fk_typ_name,
 		:p_fk_atb_name,
-		:p_include_or_exclude,
 		:p_xf_tsp_typ_name,
 		:p_xf_tsp_tsg_code,
 		:p_xk_tsp_code);
@@ -2087,7 +2087,6 @@ case 'UpdateRta':
 	oci_bind_by_name($stid,":p_fk_bot_name",$RequestObj->Parameters->Type->FkBotName);
 	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
 	oci_bind_by_name($stid,":p_fk_atb_name",$RequestObj->Parameters->Type->FkAtbName);
-	oci_bind_by_name($stid,":p_include_or_exclude",$RequestObj->Parameters->Type->IncludeOrExclude);
 	oci_bind_by_name($stid,":p_xf_tsp_typ_name",$RequestObj->Parameters->Type->XfTspTypName);
 	oci_bind_by_name($stid,":p_xf_tsp_tsg_code",$RequestObj->Parameters->Type->XfTspTsgCode);
 	oci_bind_by_name($stid,":p_xk_tsp_code",$RequestObj->Parameters->Type->XkTspCode);
@@ -2354,7 +2353,7 @@ case 'GetRefItems':
 		$RowObj->Key->XfTspTypName = $row["XF_TSP_TYP_NAME"];
 		$RowObj->Key->XfTspTsgCode = $row["XF_TSP_TSG_CODE"];
 		$RowObj->Key->XkTspCode = $row["XK_TSP_CODE"];
-		$RowObj->Display = $row["INCLUDE_OR_EXCLUDE"].' '.$row["XF_TSP_TYP_NAME"].' '.$row["XF_TSP_TSG_CODE"].' '.$row["XK_TSP_CODE"];
+		$RowObj->Display = $row["XF_TSP_TYP_NAME"].' '.$row["XF_TSP_TSG_CODE"].' '.$row["XK_TSP_CODE"];
 		$ResponseObj->Rows[] = $RowObj;
 	}
 	$ResponseText = json_encode($ResponseObj);
@@ -2761,7 +2760,6 @@ case 'GetRtr':
 		$RowObj = new \stdClass();
 		$RowObj->Data = new \stdClass();
 		$RowObj->Data->FkBotName = $row["FK_BOT_NAME"];
-		$RowObj->Data->IncludeOrExclude = $row["INCLUDE_OR_EXCLUDE"];
 		$ResponseObj->Rows[] = $RowObj;
 	}
 	$ResponseText = json_encode($ResponseObj);
@@ -2780,7 +2778,6 @@ case 'CreateRtr':
 		:p_fk_ref_sequence,
 		:p_fk_ref_bot_name,
 		:p_fk_ref_typ_name,
-		:p_include_or_exclude,
 		:p_xf_tsp_typ_name,
 		:p_xf_tsp_tsg_code,
 		:p_xk_tsp_code);
@@ -2790,7 +2787,6 @@ case 'CreateRtr':
 	oci_bind_by_name($stid,":p_fk_ref_sequence",$RequestObj->Parameters->Type->FkRefSequence);
 	oci_bind_by_name($stid,":p_fk_ref_bot_name",$RequestObj->Parameters->Type->FkRefBotName);
 	oci_bind_by_name($stid,":p_fk_ref_typ_name",$RequestObj->Parameters->Type->FkRefTypName);
-	oci_bind_by_name($stid,":p_include_or_exclude",$RequestObj->Parameters->Type->IncludeOrExclude);
 	oci_bind_by_name($stid,":p_xf_tsp_typ_name",$RequestObj->Parameters->Type->XfTspTypName);
 	oci_bind_by_name($stid,":p_xf_tsp_tsg_code",$RequestObj->Parameters->Type->XfTspTsgCode);
 	oci_bind_by_name($stid,":p_xk_tsp_code",$RequestObj->Parameters->Type->XkTspCode);
@@ -2830,7 +2826,6 @@ case 'UpdateRtr':
 		:p_fk_ref_sequence,
 		:p_fk_ref_bot_name,
 		:p_fk_ref_typ_name,
-		:p_include_or_exclude,
 		:p_xf_tsp_typ_name,
 		:p_xf_tsp_tsg_code,
 		:p_xk_tsp_code);
@@ -2840,7 +2835,6 @@ case 'UpdateRtr':
 	oci_bind_by_name($stid,":p_fk_ref_sequence",$RequestObj->Parameters->Type->FkRefSequence);
 	oci_bind_by_name($stid,":p_fk_ref_bot_name",$RequestObj->Parameters->Type->FkRefBotName);
 	oci_bind_by_name($stid,":p_fk_ref_typ_name",$RequestObj->Parameters->Type->FkRefTypName);
-	oci_bind_by_name($stid,":p_include_or_exclude",$RequestObj->Parameters->Type->IncludeOrExclude);
 	oci_bind_by_name($stid,":p_xf_tsp_typ_name",$RequestObj->Parameters->Type->XfTspTypName);
 	oci_bind_by_name($stid,":p_xf_tsp_tsg_code",$RequestObj->Parameters->Type->XfTspTsgCode);
 	oci_bind_by_name($stid,":p_xk_tsp_code",$RequestObj->Parameters->Type->XkTspCode);
@@ -2926,7 +2920,6 @@ case 'GetRts':
 		$RowObj = new \stdClass();
 		$RowObj->Data = new \stdClass();
 		$RowObj->Data->FkBotName = $row["FK_BOT_NAME"];
-		$RowObj->Data->IncludeOrExclude = $row["INCLUDE_OR_EXCLUDE"];
 		$ResponseObj->Rows[] = $RowObj;
 	}
 	$ResponseText = json_encode($ResponseObj);
@@ -2944,7 +2937,6 @@ case 'CreateRts':
 		:p_fk_ref_sequence,
 		:p_fk_ref_bot_name,
 		:p_fk_ref_typ_name,
-		:p_include_or_exclude,
 		:p_xf_tsp_typ_name,
 		:p_xf_tsp_tsg_code,
 		:p_xk_tsp_code);
@@ -2954,7 +2946,6 @@ case 'CreateRts':
 	oci_bind_by_name($stid,":p_fk_ref_sequence",$RequestObj->Parameters->Type->FkRefSequence);
 	oci_bind_by_name($stid,":p_fk_ref_bot_name",$RequestObj->Parameters->Type->FkRefBotName);
 	oci_bind_by_name($stid,":p_fk_ref_typ_name",$RequestObj->Parameters->Type->FkRefTypName);
-	oci_bind_by_name($stid,":p_include_or_exclude",$RequestObj->Parameters->Type->IncludeOrExclude);
 	oci_bind_by_name($stid,":p_xf_tsp_typ_name",$RequestObj->Parameters->Type->XfTspTypName);
 	oci_bind_by_name($stid,":p_xf_tsp_tsg_code",$RequestObj->Parameters->Type->XfTspTsgCode);
 	oci_bind_by_name($stid,":p_xk_tsp_code",$RequestObj->Parameters->Type->XkTspCode);
@@ -2982,7 +2973,6 @@ case 'UpdateRts':
 		:p_fk_ref_sequence,
 		:p_fk_ref_bot_name,
 		:p_fk_ref_typ_name,
-		:p_include_or_exclude,
 		:p_xf_tsp_typ_name,
 		:p_xf_tsp_tsg_code,
 		:p_xk_tsp_code);
@@ -2992,7 +2982,6 @@ case 'UpdateRts':
 	oci_bind_by_name($stid,":p_fk_ref_sequence",$RequestObj->Parameters->Type->FkRefSequence);
 	oci_bind_by_name($stid,":p_fk_ref_bot_name",$RequestObj->Parameters->Type->FkRefBotName);
 	oci_bind_by_name($stid,":p_fk_ref_typ_name",$RequestObj->Parameters->Type->FkRefTypName);
-	oci_bind_by_name($stid,":p_include_or_exclude",$RequestObj->Parameters->Type->IncludeOrExclude);
 	oci_bind_by_name($stid,":p_xf_tsp_typ_name",$RequestObj->Parameters->Type->XfTspTypName);
 	oci_bind_by_name($stid,":p_xf_tsp_tsg_code",$RequestObj->Parameters->Type->XfTspTsgCode);
 	oci_bind_by_name($stid,":p_xk_tsp_code",$RequestObj->Parameters->Type->XkTspCode);
@@ -3524,6 +3513,7 @@ case 'GetSva':
 		$RowObj->Data = new \stdClass();
 		$RowObj->Data->FkBotName = $row["FK_BOT_NAME"];
 		$RowObj->Data->CubeTsgSvaType = $row["CUBE_TSG_SVA_TYPE"];
+		$RowObj->Data->InputOrOutput = $row["INPUT_OR_OUTPUT"];
 		$RowObj->Data->XkItpName = $row["XK_ITP_NAME"];
 		$RowObj->Data->XkRefBotName = $row["XK_REF_BOT_NAME"];
 		$RowObj->Data->XkRefTypName = $row["XK_REF_TYP_NAME"];
@@ -3594,6 +3584,7 @@ case 'CreateSva':
 		:p_fk_srv_cube_tsg_db_scr,
 		:p_cube_tsg_sva_type,
 		:p_option_name,
+		:p_input_or_output,
 		:p_xk_itp_name,
 		:p_xf_atb_typ_name,
 		:p_xk_atb_name,
@@ -3615,6 +3606,7 @@ case 'CreateSva':
 	oci_bind_by_name($stid,":p_fk_srv_cube_tsg_db_scr",$RequestObj->Parameters->Type->FkSrvCubeTsgDbScr);
 	oci_bind_by_name($stid,":p_cube_tsg_sva_type",$RequestObj->Parameters->Type->CubeTsgSvaType);
 	oci_bind_by_name($stid,":p_option_name",$RequestObj->Parameters->Type->OptionName);
+	oci_bind_by_name($stid,":p_input_or_output",$RequestObj->Parameters->Type->InputOrOutput);
 	oci_bind_by_name($stid,":p_xk_itp_name",$RequestObj->Parameters->Type->XkItpName);
 	oci_bind_by_name($stid,":p_xf_atb_typ_name",$RequestObj->Parameters->Type->XfAtbTypName);
 	oci_bind_by_name($stid,":p_xk_atb_name",$RequestObj->Parameters->Type->XkAtbName);
@@ -3653,6 +3645,7 @@ case 'UpdateSva':
 		:p_fk_srv_cube_tsg_db_scr,
 		:p_cube_tsg_sva_type,
 		:p_option_name,
+		:p_input_or_output,
 		:p_xk_itp_name,
 		:p_xf_atb_typ_name,
 		:p_xk_atb_name,
@@ -3667,6 +3660,7 @@ case 'UpdateSva':
 	oci_bind_by_name($stid,":p_fk_srv_cube_tsg_db_scr",$RequestObj->Parameters->Type->FkSrvCubeTsgDbScr);
 	oci_bind_by_name($stid,":p_cube_tsg_sva_type",$RequestObj->Parameters->Type->CubeTsgSvaType);
 	oci_bind_by_name($stid,":p_option_name",$RequestObj->Parameters->Type->OptionName);
+	oci_bind_by_name($stid,":p_input_or_output",$RequestObj->Parameters->Type->InputOrOutput);
 	oci_bind_by_name($stid,":p_xk_itp_name",$RequestObj->Parameters->Type->XkItpName);
 	oci_bind_by_name($stid,":p_xf_atb_typ_name",$RequestObj->Parameters->Type->XfAtbTypName);
 	oci_bind_by_name($stid,":p_xk_atb_name",$RequestObj->Parameters->Type->XkAtbName);
@@ -3748,7 +3742,6 @@ case 'GetRtt':
 		$RowObj = new \stdClass();
 		$RowObj->Data = new \stdClass();
 		$RowObj->Data->FkBotName = $row["FK_BOT_NAME"];
-		$RowObj->Data->IncludeOrExclude = $row["INCLUDE_OR_EXCLUDE"];
 		$ResponseObj->Rows[] = $RowObj;
 	}
 	$ResponseText = json_encode($ResponseObj);
@@ -3764,14 +3757,12 @@ case 'CreateRtt':
 		:p_cube_row,
 		:p_fk_bot_name,
 		:p_fk_typ_name,
-		:p_include_or_exclude,
 		:p_xf_tsp_typ_name,
 		:p_xf_tsp_tsg_code,
 		:p_xk_tsp_code);
 	END;");
 	oci_bind_by_name($stid,":p_fk_bot_name",$RequestObj->Parameters->Type->FkBotName);
 	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
-	oci_bind_by_name($stid,":p_include_or_exclude",$RequestObj->Parameters->Type->IncludeOrExclude);
 	oci_bind_by_name($stid,":p_xf_tsp_typ_name",$RequestObj->Parameters->Type->XfTspTypName);
 	oci_bind_by_name($stid,":p_xf_tsp_tsg_code",$RequestObj->Parameters->Type->XfTspTsgCode);
 	oci_bind_by_name($stid,":p_xk_tsp_code",$RequestObj->Parameters->Type->XkTspCode);
@@ -3805,14 +3796,12 @@ case 'UpdateRtt':
 	$stid = oci_parse($conn, "BEGIN pkg_bot.update_rtt (
 		:p_fk_bot_name,
 		:p_fk_typ_name,
-		:p_include_or_exclude,
 		:p_xf_tsp_typ_name,
 		:p_xf_tsp_tsg_code,
 		:p_xk_tsp_code);
 	END;");
 	oci_bind_by_name($stid,":p_fk_bot_name",$RequestObj->Parameters->Type->FkBotName);
 	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
-	oci_bind_by_name($stid,":p_include_or_exclude",$RequestObj->Parameters->Type->IncludeOrExclude);
 	oci_bind_by_name($stid,":p_xf_tsp_typ_name",$RequestObj->Parameters->Type->XfTspTypName);
 	oci_bind_by_name($stid,":p_xf_tsp_tsg_code",$RequestObj->Parameters->Type->XfTspTsgCode);
 	oci_bind_by_name($stid,":p_xk_tsp_code",$RequestObj->Parameters->Type->XkTspCode);

@@ -30,7 +30,17 @@ BEGIN
 	END LOOP;
 END;
 /
+CREATE SEQUENCE sq_cube_usr START WITH 100000
+/
 CREATE SEQUENCE sq_cube_dsc START WITH 100000
+/
+CREATE TABLE t_cube_user (
+	cube_id VARCHAR2(16),
+	userid VARCHAR2(8),
+	name VARCHAR2(120),
+	password VARCHAR2(20),
+	CONSTRAINT cube_usr_pk
+		PRIMARY KEY (userid) )
 /
 CREATE TABLE t_cube_description (
 	cube_id VARCHAR2(16),

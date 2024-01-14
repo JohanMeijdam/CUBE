@@ -31,6 +31,7 @@ g_xmlhttp.onreadystatechange = function() {
 						var l_json_values = l_json_array[i].Rows[0].Data;
 						document.getElementById("InputFkBotName").value=l_json_values.FkBotName;
 						document.getElementById("InputCubeTsgSvaType").value=l_json_values.CubeTsgSvaType;
+						document.getElementById("InputInputOrOutput").value=l_json_values.InputOrOutput;
 						document.getElementById("InputXkItpName").value=l_json_values.XkItpName;
 						document.getElementById("InputXkRefBotName").value=l_json_values.XkRefBotName;
 						document.getElementById("InputXkRefTypName").value=l_json_values.XkRefTypName;
@@ -153,6 +154,7 @@ function CreateSva() {
 		FkSrvCubeTsgDbScr: document.getElementById("InputFkSrvCubeTsgDbScr").value,
 		CubeTsgSvaType: document.getElementById("InputCubeTsgSvaType").value,
 		OptionName: document.getElementById("InputOptionName").value,
+		InputOrOutput: document.getElementById("InputInputOrOutput").value,
 		XkItpName: document.getElementById("InputXkItpName").value,
 		XfAtbTypName: document.getElementById("InputXfAtbTypName").value,
 		XkAtbName: document.getElementById("InputXkAtbName").value,
@@ -194,6 +196,7 @@ function UpdateSva() {
 		FkSrvCubeTsgDbScr: document.getElementById("InputFkSrvCubeTsgDbScr").value,
 		CubeTsgSvaType: document.getElementById("InputCubeTsgSvaType").value,
 		OptionName: document.getElementById("InputOptionName").value,
+		InputOrOutput: document.getElementById("InputInputOrOutput").value,
 		XkItpName: document.getElementById("InputXkItpName").value,
 		XfAtbTypName: document.getElementById("InputXfAtbTypName").value,
 		XkAtbName: document.getElementById("InputXkAtbName").value,
@@ -382,6 +385,7 @@ function InitBody() {
 		document.getElementById("InputFkTypName").disabled = true;
 		document.getElementById("InputFkSrvName").disabled = true;
 		document.getElementById("InputFkSrvCubeTsgDbScr").disabled = true;
+		document.getElementById("InputInputOrOutput").value='I';
 		document.getElementById("InputXkRefSequence").value='0';
 		break;
 	case "X": // Delete object
@@ -409,6 +413,7 @@ function InitBody() {
 		document.getElementById("InputFkSrvCubeTsgDbScr").disabled = true;
 		document.getElementById("InputCubeTsgSvaType").disabled = true;
 		document.getElementById("InputOptionName").disabled = true;
+		document.getElementById("InputInputOrOutput").disabled = true;
 		document.getElementById("InputXkItpName").disabled = true;
 		document.getElementById("InputXfAtbTypName").disabled = true;
 		document.getElementById("InputXkAtbName").disabled = true;
@@ -429,6 +434,24 @@ function ProcessTypeSpecialisation() {
 		case "OPT":
 			document.getElementById("InputXfAtbTypName").value = " ";
 			document.getElementById("InputXkAtbName").value = " ";
+			document.getElementById("RowRefAttribute0").style.display = "none";
+			document.getElementById("RowRefReference0").style.display = "none";
+			break;
+		case "PAR":
+			document.getElementById("RowAtbOptionName").style.display = "none";
+			document.getElementById("InputOptionName").value = " ";
+			document.getElementById("InputXfAtbTypName").value = " ";
+			document.getElementById("InputXkAtbName").value = " ";
+			document.getElementById("RowRefInformationType0").style.display = "none";
+			document.getElementById("RowRefAttribute0").style.display = "none";
+			document.getElementById("RowRefReference0").style.display = "none";
+			break;
+		case "RPA":
+			document.getElementById("RowAtbOptionName").style.display = "none";
+			document.getElementById("InputOptionName").value = " ";
+			document.getElementById("InputXfAtbTypName").value = " ";
+			document.getElementById("InputXkAtbName").value = " ";
+			document.getElementById("RowRefInformationType0").style.display = "none";
 			document.getElementById("RowRefAttribute0").style.display = "none";
 			document.getElementById("RowRefReference0").style.display = "none";
 			break;
@@ -457,6 +480,8 @@ function ProcessTypeSpecialisation() {
 <select id="InputCubeTsgSvaType" type="text" onchange="ProcessTypeSpecialisation();">
 	<option value=" " selected>&lt;sva_type&gt;</option>
 	<option id="OptionCubeTsgSvaType-OPT" style="display:inline" value="OPT">OPTION</option>
+	<option id="OptionCubeTsgSvaType-PAR" style="display:inline" value="PAR">PARENT_TYPE</option>
+	<option id="OptionCubeTsgSvaType-RPA" style="display:inline" value="RPA">RECURSIVE_PARENT_TYPE</option>
 	<option id="OptionCubeTsgSvaType-REF" style="display:inline" value="REF">REFERENCE</option>
 	<option id="OptionCubeTsgSvaType-ATB" style="display:inline" value="ATB">ATTRIBUTE</option>
 </select></span></div>
@@ -471,6 +496,11 @@ function ProcessTypeSpecialisation() {
 	<option id="OptionFkSrvCubeTsgDbScr-S" style="display:inline" value="S">SERVER_SCRIPT</option>
 </select></div></td></tr>
 <tr id="RowAtbOptionName"><td><u><div>OptionName</div></u></td><td><div style="max-width:30em;"><input id="InputOptionName" type="text" maxlength="30" style="width:100%" onchange="SetChangePending();ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr id="RowAtbInputOrOutput"><td><div>InputOrOutput</div></td><td><div><select id="InputInputOrOutput" type="text" onchange="SetChangePending();">
+	<option value=" " selected> </option>
+	<option id="OptionInputOrOutput-I" style="display:inline" value="I">Input</option>
+	<option id="OptionInputOrOutput-O" style="display:inline" value="O">Output</option>
+</select></div></td></tr>
 <tr><td height=6></td></tr><tr id="RowRefInformationType0"><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/inftype.bmp"/> InformationType (HasDomain)</legend>
 <table style="width:100%">
 <tr><td>InformationType.Name</td><td style="width:100%"><div style="max-width:30em;"><input id="InputXkItpName" type="text" maxlength="30" style="width:100%" disabled></input></div></td>

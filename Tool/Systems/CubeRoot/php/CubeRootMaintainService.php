@@ -276,6 +276,7 @@ function ProcessTypeSpecialisation() {
 	<option id="OptionClass-CRE" style="display:inline" value="CRE">Create</option>
 	<option id="OptionClass-UPD" style="display:inline" value="UPD">Update</option>
 	<option id="OptionClass-DEL" style="display:inline" value="DEL">Delete</option>
+	<option id="OptionClass-CHC" style="display:inline" value="CHC">Check Content</option>
 </select></div></td></tr>
 <tr id="RowAtbAccessibility"><td><div>Accessibility</div></td><td><div><select id="InputAccessibility" type="text" onchange="SetChangePending();">
 	<option value=" " selected> </option>

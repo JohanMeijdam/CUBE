@@ -465,6 +465,7 @@ function OpenMenu(p_obj) {
 		AddMenuItem(g_objMenuList,'add derivation','icons/deriv.bmp','DetailDER','N','TYP_DER','Derivation',1,'N',2);
 		AddMenuItem(g_objMenuList,'add description_attribute','icons/desc.bmp','DetailDCA','N','TYP_DCA','DescriptionAttribute',1,'N',3);
 		AddMenuItem(g_objMenuList,'add restriction_type_spec_atb','icons/restrict.bmp','DetailRTA','N','TYP_RTA','RestrictionTypeSpecAtb',0,'N',4);
+		AddMenuItem(g_objMenuList,'execute test','icons/dot.bmp','CubeExecute','E','','AttributeTest',0,'',0);
 		var l_json_id = l_json_node_id[l_type_id];
 		PerformTrans('BusinessObjectType', {Service:"CountAtbRestrictedItems",Parameters:{Type:l_json_id}} );
 		AddMenuItem(g_objMenuList,'delete','icons/cube_delete.bmp','CubeDelete','X','','Attribute',0,'N',0);
