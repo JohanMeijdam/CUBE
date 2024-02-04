@@ -172,7 +172,10 @@ CREATE TABLE t_type_specialisation_group (
 	CONSTRAINT tsg_tsg_fk
 		FOREIGN KEY (fk_typ_name, fk_tsg_code)
 		REFERENCES t_type_specialisation_group (fk_typ_name, code)
-		ON DELETE CASCADE )
+		ON DELETE CASCADE,
+	CONSTRAINT tsg_atb_0_xf
+		FOREIGN KEY (xf_atb_typ_name, xk_atb_name)
+		REFERENCES t_attribute (fk_typ_name, name) )
 /
 CREATE TABLE t_type_specialisation (
 	cube_id VARCHAR2(16),
@@ -190,7 +193,10 @@ CREATE TABLE t_type_specialisation (
 	CONSTRAINT tsp_tsg_fk
 		FOREIGN KEY (fk_typ_name, fk_tsg_code)
 		REFERENCES t_type_specialisation_group (fk_typ_name, code)
-		ON DELETE CASCADE )
+		ON DELETE CASCADE,
+	CONSTRAINT tsp_tsp_0_xf
+		FOREIGN KEY (xf_tsp_typ_name, xf_tsp_tsg_code, xk_tsp_code)
+		REFERENCES t_type_specialisation (fk_typ_name, fk_tsg_code, code) )
 /
 CREATE TABLE t_attribute (
 	cube_id VARCHAR2(16),
@@ -210,7 +216,10 @@ CREATE TABLE t_attribute (
 	CONSTRAINT atb_typ_fk
 		FOREIGN KEY (fk_typ_name)
 		REFERENCES t_type (name)
-		ON DELETE CASCADE )
+		ON DELETE CASCADE,
+	CONSTRAINT atb_itp_0_xf
+		FOREIGN KEY (xk_itp_name)
+		REFERENCES t_information_type (name) )
 /
 CREATE TABLE t_derivation (
 	cube_id VARCHAR2(16),
@@ -226,7 +235,13 @@ CREATE TABLE t_derivation (
 	CONSTRAINT der_atb_fk
 		FOREIGN KEY (fk_typ_name, fk_atb_name)
 		REFERENCES t_attribute (fk_typ_name, name)
-		ON DELETE CASCADE )
+		ON DELETE CASCADE,
+	CONSTRAINT der_typ_0_xf
+		FOREIGN KEY (xk_typ_name)
+		REFERENCES t_type (name),
+	CONSTRAINT der_typ_1_xf
+		FOREIGN KEY (xk_typ_name_1)
+		REFERENCES t_type (name) )
 /
 CREATE TABLE t_description_attribute (
 	cube_id VARCHAR2(16),
@@ -255,7 +270,10 @@ CREATE TABLE t_restriction_type_spec_atb (
 	CONSTRAINT rta_atb_fk
 		FOREIGN KEY (fk_typ_name, fk_atb_name)
 		REFERENCES t_attribute (fk_typ_name, name)
-		ON DELETE CASCADE )
+		ON DELETE CASCADE,
+	CONSTRAINT rta_tsp_0_xf
+		FOREIGN KEY (xf_tsp_typ_name, xf_tsp_tsg_code, xk_tsp_code)
+		REFERENCES t_type_specialisation (fk_typ_name, fk_tsg_code, code) )
 /
 CREATE TABLE t_reference (
 	cube_id VARCHAR2(16),
@@ -279,7 +297,16 @@ CREATE TABLE t_reference (
 	CONSTRAINT ref_typ_fk
 		FOREIGN KEY (fk_typ_name)
 		REFERENCES t_type (name)
-		ON DELETE CASCADE )
+		ON DELETE CASCADE,
+	CONSTRAINT ref_bot_0_xf
+		FOREIGN KEY (xk_bot_name)
+		REFERENCES t_business_object_type (name),
+	CONSTRAINT ref_typ_0_xf
+		FOREIGN KEY (xk_typ_name)
+		REFERENCES t_type (name),
+	CONSTRAINT ref_typ_1_xf
+		FOREIGN KEY (xk_typ_name_1)
+		REFERENCES t_type (name) )
 /
 CREATE TABLE t_description_reference (
 	cube_id VARCHAR2(16),
@@ -312,7 +339,10 @@ CREATE TABLE t_restriction_type_spec_ref (
 	CONSTRAINT rtr_ref_fk
 		FOREIGN KEY (fk_typ_name, fk_ref_sequence, fk_ref_bot_name, fk_ref_typ_name)
 		REFERENCES t_reference (fk_typ_name, sequence, xk_bot_name, xk_typ_name)
-		ON DELETE CASCADE )
+		ON DELETE CASCADE,
+	CONSTRAINT rtr_tsp_0_xf
+		FOREIGN KEY (xf_tsp_typ_name, xf_tsp_tsg_code, xk_tsp_code)
+		REFERENCES t_type_specialisation (fk_typ_name, fk_tsg_code, code) )
 /
 CREATE TABLE t_restriction_target_type_spec (
 	cube_id VARCHAR2(16),
@@ -330,7 +360,10 @@ CREATE TABLE t_restriction_target_type_spec (
 	CONSTRAINT rts_ref_fk
 		FOREIGN KEY (fk_typ_name, fk_ref_sequence, fk_ref_bot_name, fk_ref_typ_name)
 		REFERENCES t_reference (fk_typ_name, sequence, xk_bot_name, xk_typ_name)
-		ON DELETE CASCADE )
+		ON DELETE CASCADE,
+	CONSTRAINT rts_tsp_0_xf
+		FOREIGN KEY (xf_tsp_typ_name, xf_tsp_tsg_code, xk_tsp_code)
+		REFERENCES t_type_specialisation (fk_typ_name, fk_tsg_code, code) )
 /
 CREATE TABLE t_service (
 	cube_id VARCHAR2(16),
@@ -386,7 +419,16 @@ CREATE TABLE t_service_argument (
 	CONSTRAINT sva_srv_fk
 		FOREIGN KEY (fk_typ_name, fk_srv_name, fk_srv_cube_tsg_db_scr)
 		REFERENCES t_service (fk_typ_name, name, cube_tsg_db_scr)
-		ON DELETE CASCADE )
+		ON DELETE CASCADE,
+	CONSTRAINT sva_itp_0_xf
+		FOREIGN KEY (xk_itp_name)
+		REFERENCES t_information_type (name),
+	CONSTRAINT sva_atb_0_xf
+		FOREIGN KEY (xf_atb_typ_name, xk_atb_name)
+		REFERENCES t_attribute (fk_typ_name, name),
+	CONSTRAINT sva_ref_0_xf
+		FOREIGN KEY (xf_ref_typ_name, xk_ref_sequence, xk_ref_bot_name, xk_ref_typ_name)
+		REFERENCES t_reference (fk_typ_name, sequence, xk_bot_name, xk_typ_name) )
 /
 CREATE TABLE t_restriction_type_spec_typ (
 	cube_id VARCHAR2(16),
@@ -401,7 +443,10 @@ CREATE TABLE t_restriction_type_spec_typ (
 	CONSTRAINT rtt_typ_fk
 		FOREIGN KEY (fk_typ_name)
 		REFERENCES t_type (name)
-		ON DELETE CASCADE )
+		ON DELETE CASCADE,
+	CONSTRAINT rtt_tsp_0_xf
+		FOREIGN KEY (xf_tsp_typ_name, xf_tsp_tsg_code, xk_tsp_code)
+		REFERENCES t_type_specialisation (fk_typ_name, fk_tsg_code, code) )
 /
 CREATE TABLE t_json_path (
 	cube_id VARCHAR2(16),
@@ -430,7 +475,13 @@ CREATE TABLE t_json_path (
 	CONSTRAINT jsn_jsn_fk
 		FOREIGN KEY (fk_typ_name, fk_jsn_name, fk_jsn_location, fk_jsn_atb_typ_name, fk_jsn_atb_name, fk_jsn_typ_name)
 		REFERENCES t_json_path (fk_typ_name, name, location, xf_atb_typ_name, xk_atb_name, xk_typ_name)
-		ON DELETE CASCADE )
+		ON DELETE CASCADE,
+	CONSTRAINT jsn_atb_0_xf
+		FOREIGN KEY (xf_atb_typ_name, xk_atb_name)
+		REFERENCES t_attribute (fk_typ_name, name),
+	CONSTRAINT jsn_typ_0_xf
+		FOREIGN KEY (xk_typ_name)
+		REFERENCES t_type (name) )
 /
 CREATE TABLE t_description_type (
 	cube_id VARCHAR2(16),
@@ -465,6 +516,9 @@ CREATE TABLE t_system_bo_type (
 	CONSTRAINT sbt_sys_fk
 		FOREIGN KEY (fk_sys_name)
 		REFERENCES t_system (name)
-		ON DELETE CASCADE )
+		ON DELETE CASCADE,
+	CONSTRAINT sbt_bot_0_xf
+		FOREIGN KEY (xk_bot_name)
+		REFERENCES t_business_object_type (name) )
 /
 EXIT;

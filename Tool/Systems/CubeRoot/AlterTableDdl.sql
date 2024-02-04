@@ -2707,6 +2707,10 @@ BEGIN
 		FOREIGN KEY (fk_typ_name, fk_tsg_code)
 		REFERENCES t_type_specialisation_group (fk_typ_name, code)
 		ON DELETE CASCADE';
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_type_specialisation_group ADD CONSTRAINT tsg_atb_0_xf
+		FOREIGN KEY (xf_atb_typ_name, xk_atb_name)
+		REFERENCES t_attribute (fk_typ_name, name)';
 	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_TYPE_SPECIALISATION_GROUP' AND column_name NOT IN (
 							'CUBE_ID',
 							'CUBE_SEQUENCE',
@@ -2789,6 +2793,10 @@ BEGIN
 		FOREIGN KEY (fk_typ_name, fk_tsg_code)
 		REFERENCES t_type_specialisation_group (fk_typ_name, code)
 		ON DELETE CASCADE';
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_type_specialisation ADD CONSTRAINT tsp_tsp_0_xf
+		FOREIGN KEY (xf_tsp_typ_name, xf_tsp_tsg_code, xk_tsp_code)
+		REFERENCES t_type_specialisation (fk_typ_name, fk_tsg_code, code)';
 	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_TYPE_SPECIALISATION' AND column_name NOT IN (
 							'CUBE_ID',
 							'CUBE_SEQUENCE',
@@ -2873,6 +2881,10 @@ BEGIN
 		FOREIGN KEY (fk_typ_name)
 		REFERENCES t_type (name)
 		ON DELETE CASCADE';
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_attribute ADD CONSTRAINT atb_itp_0_xf
+		FOREIGN KEY (xk_itp_name)
+		REFERENCES t_information_type (name)';
 	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_ATTRIBUTE' AND column_name NOT IN (
 							'CUBE_ID',
 							'CUBE_SEQUENCE',
@@ -2951,6 +2963,14 @@ BEGIN
 		FOREIGN KEY (fk_typ_name, fk_atb_name)
 		REFERENCES t_attribute (fk_typ_name, name)
 		ON DELETE CASCADE';
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_derivation ADD CONSTRAINT der_typ_0_xf
+		FOREIGN KEY (xk_typ_name)
+		REFERENCES t_type (name)';
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_derivation ADD CONSTRAINT der_typ_1_xf
+		FOREIGN KEY (xk_typ_name_1)
+		REFERENCES t_type (name)';
 	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_DERIVATION' AND column_name NOT IN (
 							'CUBE_ID',
 							'FK_BOT_NAME',
@@ -3093,6 +3113,10 @@ BEGIN
 		FOREIGN KEY (fk_typ_name, fk_atb_name)
 		REFERENCES t_attribute (fk_typ_name, name)
 		ON DELETE CASCADE';
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_restriction_type_spec_atb ADD CONSTRAINT rta_tsp_0_xf
+		FOREIGN KEY (xf_tsp_typ_name, xf_tsp_tsg_code, xk_tsp_code)
+		REFERENCES t_type_specialisation (fk_typ_name, fk_tsg_code, code)';
 	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_RESTRICTION_TYPE_SPEC_ATB' AND column_name NOT IN (
 							'CUBE_ID',
 							'FK_BOT_NAME',
@@ -3185,6 +3209,18 @@ BEGIN
 		FOREIGN KEY (fk_typ_name)
 		REFERENCES t_type (name)
 		ON DELETE CASCADE';
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_reference ADD CONSTRAINT ref_bot_0_xf
+		FOREIGN KEY (xk_bot_name)
+		REFERENCES t_business_object_type (name)';
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_reference ADD CONSTRAINT ref_typ_0_xf
+		FOREIGN KEY (xk_typ_name)
+		REFERENCES t_type (name)';
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_reference ADD CONSTRAINT ref_typ_1_xf
+		FOREIGN KEY (xk_typ_name_1)
+		REFERENCES t_type (name)';
 	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_REFERENCE' AND column_name NOT IN (
 							'CUBE_ID',
 							'CUBE_SEQUENCE',
@@ -3349,6 +3385,10 @@ BEGIN
 		FOREIGN KEY (fk_typ_name, fk_ref_sequence, fk_ref_bot_name, fk_ref_typ_name)
 		REFERENCES t_reference (fk_typ_name, sequence, xk_bot_name, xk_typ_name)
 		ON DELETE CASCADE';
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_restriction_type_spec_ref ADD CONSTRAINT rtr_tsp_0_xf
+		FOREIGN KEY (xf_tsp_typ_name, xf_tsp_tsg_code, xk_tsp_code)
+		REFERENCES t_type_specialisation (fk_typ_name, fk_tsg_code, code)';
 	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_RESTRICTION_TYPE_SPEC_REF' AND column_name NOT IN (
 							'CUBE_ID',
 							'FK_BOT_NAME',
@@ -3434,6 +3474,10 @@ BEGIN
 		FOREIGN KEY (fk_typ_name, fk_ref_sequence, fk_ref_bot_name, fk_ref_typ_name)
 		REFERENCES t_reference (fk_typ_name, sequence, xk_bot_name, xk_typ_name)
 		ON DELETE CASCADE';
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_restriction_target_type_spec ADD CONSTRAINT rts_tsp_0_xf
+		FOREIGN KEY (xf_tsp_typ_name, xf_tsp_tsg_code, xk_tsp_code)
+		REFERENCES t_type_specialisation (fk_typ_name, fk_tsg_code, code)';
 	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_RESTRICTION_TARGET_TYPE_SPEC' AND column_name NOT IN (
 							'CUBE_ID',
 							'FK_BOT_NAME',
@@ -3681,6 +3725,18 @@ BEGIN
 		FOREIGN KEY (fk_typ_name, fk_srv_name, fk_srv_cube_tsg_db_scr)
 		REFERENCES t_service (fk_typ_name, name, cube_tsg_db_scr)
 		ON DELETE CASCADE';
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_service_argument ADD CONSTRAINT sva_itp_0_xf
+		FOREIGN KEY (xk_itp_name)
+		REFERENCES t_information_type (name)';
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_service_argument ADD CONSTRAINT sva_atb_0_xf
+		FOREIGN KEY (xf_atb_typ_name, xk_atb_name)
+		REFERENCES t_attribute (fk_typ_name, name)';
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_service_argument ADD CONSTRAINT sva_ref_0_xf
+		FOREIGN KEY (xf_ref_typ_name, xk_ref_sequence, xk_ref_bot_name, xk_ref_typ_name)
+		REFERENCES t_reference (fk_typ_name, sequence, xk_bot_name, xk_typ_name)';
 	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_SERVICE_ARGUMENT' AND column_name NOT IN (
 							'CUBE_ID',
 							'CUBE_SEQUENCE',
@@ -3763,6 +3819,10 @@ BEGIN
 		FOREIGN KEY (fk_typ_name)
 		REFERENCES t_type (name)
 		ON DELETE CASCADE';
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_restriction_type_spec_typ ADD CONSTRAINT rtt_tsp_0_xf
+		FOREIGN KEY (xf_tsp_typ_name, xf_tsp_tsg_code, xk_tsp_code)
+		REFERENCES t_type_specialisation (fk_typ_name, fk_tsg_code, code)';
 	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_RESTRICTION_TYPE_SPEC_TYP' AND column_name NOT IN (
 							'CUBE_ID',
 							'FK_BOT_NAME',
@@ -3863,6 +3923,14 @@ BEGIN
 		FOREIGN KEY (fk_typ_name, fk_jsn_name, fk_jsn_location, fk_jsn_atb_typ_name, fk_jsn_atb_name, fk_jsn_typ_name)
 		REFERENCES t_json_path (fk_typ_name, name, location, xf_atb_typ_name, xk_atb_name, xk_typ_name)
 		ON DELETE CASCADE';
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_json_path ADD CONSTRAINT jsn_atb_0_xf
+		FOREIGN KEY (xf_atb_typ_name, xk_atb_name)
+		REFERENCES t_attribute (fk_typ_name, name)';
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_json_path ADD CONSTRAINT jsn_typ_0_xf
+		FOREIGN KEY (xk_typ_name)
+		REFERENCES t_type (name)';
 	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_JSON_PATH' AND column_name NOT IN (
 							'CUBE_ID',
 							'CUBE_SEQUENCE',
@@ -4064,6 +4132,10 @@ BEGIN
 		FOREIGN KEY (fk_sys_name)
 		REFERENCES t_system (name)
 		ON DELETE CASCADE';
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_system_bo_type ADD CONSTRAINT sbt_bot_0_xf
+		FOREIGN KEY (xk_bot_name)
+		REFERENCES t_business_object_type (name)';
 	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_SYSTEM_BO_TYPE' AND column_name NOT IN (
 							'CUBE_ID',
 							'CUBE_SEQUENCE',
