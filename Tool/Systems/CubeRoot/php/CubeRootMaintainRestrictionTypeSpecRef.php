@@ -30,6 +30,7 @@ g_xmlhttp.onreadystatechange = function() {
 					case "SEL_RTR":
 						var l_json_values = l_json_array[i].Rows[0].Data;
 						document.getElementById("InputFkBotName").value=l_json_values.FkBotName;
+						document.getElementById("InputIncludeOrExclude").value=l_json_values.IncludeOrExclude;
 						break;
 					case "CRE_RTR":
 						document.getElementById("InputFkBotName").disabled=true;
@@ -42,6 +43,7 @@ g_xmlhttp.onreadystatechange = function() {
 						document.getElementById("InputXkTspCode").disabled=true;
 						document.getElementById("RefSelect001").disabled=true;
 						document.getElementById("ButtonOK").innerText="Update";
+						document.getElementById("ButtonOK").disabled=false;
 						var l_objNode = parent.document.getElementById(g_parent_node_id);
 						var l_json_node_id = {FkTypName:document.getElementById("InputFkTypName").value,FkRefSequence:document.getElementById("InputFkRefSequence").value,FkRefBotName:document.getElementById("InputFkRefBotName").value,FkRefTypName:document.getElementById("InputFkRefTypName").value,XfTspTypName:document.getElementById("InputXfTspTypName").value,XfTspTsgCode:document.getElementById("InputXfTspTsgCode").value,XkTspCode:document.getElementById("InputXkTspCode").value};
 						g_node_id = '{"TYP_RTR":'+JSON.stringify(l_json_node_id)+'}';
@@ -144,6 +146,7 @@ function CreateRtr() {
 		FkRefSequence: document.getElementById("InputFkRefSequence").value,
 		FkRefBotName: document.getElementById("InputFkRefBotName").value,
 		FkRefTypName: document.getElementById("InputFkRefTypName").value,
+		IncludeOrExclude: document.getElementById("InputIncludeOrExclude").value,
 		XfTspTypName: document.getElementById("InputXfTspTypName").value,
 		XfTspTsgCode: document.getElementById("InputXfTspTsgCode").value,
 		XkTspCode: document.getElementById("InputXkTspCode").value
@@ -163,6 +166,7 @@ function UpdateRtr() {
 		FkRefSequence: document.getElementById("InputFkRefSequence").value,
 		FkRefBotName: document.getElementById("InputFkRefBotName").value,
 		FkRefTypName: document.getElementById("InputFkRefTypName").value,
+		IncludeOrExclude: document.getElementById("InputIncludeOrExclude").value,
 		XfTspTypName: document.getElementById("InputXfTspTypName").value,
 		XfTspTsgCode: document.getElementById("InputXfTspTsgCode").value,
 		XkTspCode: document.getElementById("InputXkTspCode").value
@@ -269,7 +273,6 @@ function InitBody() {
 				Type: l_json_objectKey.TYP_RTR
 			}
 		} );
-		document.getElementById("ButtonOK").disabled = true;
 		document.getElementById("InputFkBotName").disabled = true;
 		document.getElementById("InputFkTypName").disabled = true;
 		document.getElementById("InputFkRefSequence").disabled = true;
@@ -299,6 +302,7 @@ function InitBody() {
 		document.getElementById("InputFkRefSequence").disabled = true;
 		document.getElementById("InputFkRefBotName").disabled = true;
 		document.getElementById("InputFkRefTypName").disabled = true;
+		document.getElementById("InputIncludeOrExclude").value='IN';
 		break;
 	case "X": // Delete object
 		g_node_id = JSON.stringify(l_json_argument.objectId);
@@ -324,6 +328,7 @@ function InitBody() {
 		document.getElementById("InputFkRefSequence").disabled = true;
 		document.getElementById("InputFkRefBotName").disabled = true;
 		document.getElementById("InputFkRefTypName").disabled = true;
+		document.getElementById("InputIncludeOrExclude").disabled = true;
 		document.getElementById("InputXfTspTypName").disabled = true;
 		document.getElementById("InputXfTspTsgCode").disabled = true;
 		document.getElementById("InputXkTspCode").disabled = true;
@@ -343,6 +348,11 @@ function InitBody() {
 <tr id="RowAtbFkRefSequence"><td><u><div>Reference.Sequence</div></u></td><td><div style="max-width:2em;"><input id="InputFkRefSequence" type="text" maxlength="2" style="width:100%" onchange="SetChangePending();"></input></div></td></tr>
 <tr id="RowAtbFkRefBotName"><td><u><div>BusinessObjectType.Name</div></u></td><td><div style="max-width:30em;"><input id="InputFkRefBotName" type="text" maxlength="30" style="width:100%" onchange="SetChangePending();ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
 <tr id="RowAtbFkRefTypName"><td><u><div>Type.Name</div></u></td><td><div style="max-width:30em;"><input id="InputFkRefTypName" type="text" maxlength="30" style="width:100%" onchange="SetChangePending();ToUpperCase(this);ReplaceSpaces(this);"></input></div></td></tr>
+<tr id="RowAtbIncludeOrExclude"><td style="cursor:help" oncontextmenu="parent.OpenDescBox('restrict','RestrictionTypeSpecRef.IncludeOrExclude','RESTRICTION_TYPE_SPEC_REF','INCLUDE_OR_EXCLUDE',-1)"><div>IncludeOrExclude</div></td><td><div><select id="InputIncludeOrExclude" type="text" onchange="SetChangePending();">
+	<option value=" " selected> </option>
+	<option id="OptionIncludeOrExclude-IN" style="display:inline" value="IN">Include</option>
+	<option id="OptionIncludeOrExclude-EX" style="display:inline" value="EX">Exclude</option>
+</select></div></td></tr>
 <tr><td height=6></td></tr><tr id="RowRefTypeSpecialisation0"><td colspan=2><fieldset><legend><img style="border:1 solid transparent;" src="icons/typespec.bmp"/> TypeSpecialisation (IsValidFor)</legend>
 <table style="width:100%">
 <tr><td><u>Type.Name</u></td><td style="width:100%"><div style="max-width:30em;"><input id="InputXfTspTypName" type="text" maxlength="30" style="width:100%" disabled></input></div></td>

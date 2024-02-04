@@ -77,6 +77,7 @@
 					=PROPERTY:0|Text|;
 				-META_TYPE:;
 				+META_TYPE:RESTRICTION_TYPE_SPEC_ATB|;
+					=PROPERTY:0|IncludeOrExclude|Indication that the attribute is valid (included) or invalid (excluded) for the concerning type specialisation. Values: IN(Include), EX(Exclude);
 					=ASSOCIATION:TYPE_SPECIALISATION|IsValidFor|TYPE_SPECIALISATION|;
 				-META_TYPE:;
 			-META_TYPE:;
@@ -97,9 +98,11 @@
 					=PROPERTY:0|Text|;
 				-META_TYPE:;
 				+META_TYPE:RESTRICTION_TYPE_SPEC_REF|;
+					=PROPERTY:0|IncludeOrExclude|Indication that the reference is valid (included) or invalid (excluded) for the concerning type specialisation. Values: IN(Include), EX(Exclude);
 					=ASSOCIATION:TYPE_SPECIALISATION|IsValidFor|TYPE_SPECIALISATION|;
 				-META_TYPE:;
 				+META_TYPE:RESTRICTION_TARGET_TYPE_SPEC|;
+					=PROPERTY:0|IncludeOrExclude| Values: IN(Include), EX(Exclude);
 					=ASSOCIATION:TYPE_SPECIALISATION|IsValidFor|TYPE_SPECIALISATION|;
 				-META_TYPE:;
 			-META_TYPE:;
@@ -122,6 +125,7 @@
 				-META_TYPE:;
 			-META_TYPE:;
 			+META_TYPE:RESTRICTION_TYPE_SPEC_TYP|;
+				=PROPERTY:0|IncludeOrExclude|Indication that the child type is valid (included) or invalid (excluded) for the concerning type specialisation. Values: IN(Include), EX(Exclude);
 				=ASSOCIATION:TYPE_SPECIALISATION|IsValidFor|TYPE_SPECIALISATION|;
 			-META_TYPE:;
 			+META_TYPE:JSON_PATH|;

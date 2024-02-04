@@ -207,12 +207,12 @@ function ProcessTypeSpecialisation() {
 		document.getElementById("InputCubeTsgType").disabled = true;
 		switch (document.getElementById("InputCubeTsgType").value) {
 		case "PRIMARY":
-			document.getElementById("RowAtbTablePrefix").style.display = "none";
-			break;
-		case "SUPPORT":
 			document.getElementById("RowAtbDatabase").style.display = "none";
 			document.getElementById("RowAtbSchema").style.display = "none";
 			document.getElementById("RowAtbPassword").style.display = "none";
+			break;
+		case "SUPPORT":
+			document.getElementById("RowAtbTablePrefix").style.display = "none";
 			break;
 		}
 		document.getElementById("TableMain").style.display = "inline";

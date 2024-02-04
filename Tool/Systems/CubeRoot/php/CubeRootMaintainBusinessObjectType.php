@@ -212,12 +212,11 @@ function ProcessTypeSpecialisation() {
 	if (document.getElementById("InputCubeTsgType").value != ' ') {
 		document.getElementById("InputCubeTsgType").disabled = true;
 		switch (document.getElementById("InputCubeTsgType").value) {
-		case "INT":
+		case "EXT":
 			document.getElementById("RowAtbApiUrl").style.display = "none";
 			break;
 		case "RET":
 			document.getElementById("RowAtbDirectory").style.display = "none";
-			document.getElementById("RowAtbApiUrl").style.display = "none";
 			break;
 		}
 		document.getElementById("TableMain").style.display = "inline";

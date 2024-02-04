@@ -13,6 +13,7 @@ echo Start > %logfile%
 ::goto :Database
 ::goto :Packages
 ::goto :Application
+::goto :Install
 ::goto :ModelImport
 ::goto :ModelExport
 ::goto :System
@@ -61,9 +62,12 @@ CubeGen.exe %sysdir%\CubeBoModel.cgm Templates\CubeTreePhp.cgt %sysdir%\php\%sys
 ::::::CubeGen.exe %sysdir%\CubeBoModel.cgm Templates\CubeMainPhp.cgt %sysdir%\php\%sysname%Main.php %sysname% >> %logfile% 2>&1
 CubeGen.exe %sysdir%\CubeServerSpecModel.cgm Templates\CubeDetailPhp.cgt %sysdir%\php\%sysname%Detail.php %sysname% %sysdir%\php >> %logfile% 2>&1
 CubeGen.exe %sysdir%\CubeServerSpecModel.cgm Templates\CubeServerPhp.cgt %sysdir%\php\%sysname%Server.php %sysname% %sysdir%\php >> %logfile% 2>&1
+::goto :end
+:Install
 del /S/Q %sysroot% >> %logfile% 2>&1
 xcopy /Y/S/E %sysdir%\files %sysroot% >> %logfile% 2>&1
 xcopy /Y/S/E %sysdir%\php %sysroot% >> %logfile% 2>&1
+xcopy /Y %cubesysdir%\php %sysroot% >> %logfile% 2>&1
 ::goto :end
 :ModelExport
 echo Generate Model Export.
@@ -77,7 +81,7 @@ echo Install CubeSys.
 sqlplus.exe %db_schema%/%db_password%@%db_name% @%cubesysdir%\TableDdl.sql >> %logfile% 2>&1
 sqlplus.exe %db_schema%/%db_password%@%db_name% @%cubesysdir%\ViewDdl.sql >> %logfile% 2>&1
 sqlplus.exe %db_schema%/%db_password%@%db_name% @%cubesysdir%\PackageDdl.sql >> %logfile% 2>&1
-xcopy /Y %cubesysdir%\php %sysroot% >> %logfile% 2>&1
+::xcopy /Y %cubesysdir%\php %sysroot% >> %logfile% 2>&1
 CubeGen.exe %sysdir%\CubeBoModel.cgm Templates\SystemImport.cgt %sysdir%\SystemImport.sql %sysname% >> %logfile% 2>&1
 sqlplus.exe %db_schema%/%db_password%@%db_name% @%sysdir%\SystemImport.sql >> %logfile% 2>&1
 :end

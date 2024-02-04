@@ -435,6 +435,7 @@ CREATE OR REPLACE VIEW v_restriction_type_spec_atb AS
 		fk_bot_name,
 		fk_typ_name,
 		fk_atb_name,
+		include_or_exclude,
 		xf_tsp_typ_name,
 		xf_tsp_tsg_code,
 		xk_tsp_code
@@ -479,6 +480,7 @@ CREATE OR REPLACE VIEW v_restriction_type_spec_ref AS
 		fk_ref_sequence,
 		fk_ref_bot_name,
 		fk_ref_typ_name,
+		include_or_exclude,
 		xf_tsp_typ_name,
 		xf_tsp_tsg_code,
 		xk_tsp_code
@@ -492,6 +494,7 @@ CREATE OR REPLACE VIEW v_restriction_target_type_spec AS
 		fk_ref_sequence,
 		fk_ref_bot_name,
 		fk_ref_typ_name,
+		include_or_exclude,
 		xf_tsp_typ_name,
 		xf_tsp_tsg_code,
 		xk_tsp_code
@@ -546,6 +549,7 @@ CREATE OR REPLACE VIEW v_restriction_type_spec_typ AS
 		cube_id,
 		fk_bot_name,
 		fk_typ_name,
+		include_or_exclude,
 		xf_tsp_typ_name,
 		xf_tsp_tsg_code,
 		xk_tsp_code
@@ -1172,6 +1176,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			fk_bot_name,
 			fk_typ_name,
 			fk_atb_name,
+			include_or_exclude,
 			xf_tsp_typ_name,
 			xf_tsp_tsg_code,
 			xk_tsp_code)
@@ -1180,6 +1185,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			p_rta.fk_bot_name,
 			p_rta.fk_typ_name,
 			p_rta.fk_atb_name,
+			p_rta.include_or_exclude,
 			p_rta.xf_tsp_typ_name,
 			p_rta.xf_tsp_tsg_code,
 			p_rta.xk_tsp_code);
@@ -1187,7 +1193,9 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 
 	PROCEDURE update_rta (p_cube_rowid UROWID, p_rta_old IN OUT NOCOPY v_restriction_type_spec_atb%ROWTYPE, p_rta_new IN OUT NOCOPY v_restriction_type_spec_atb%ROWTYPE) IS
 	BEGIN
-		NULL;
+		UPDATE t_restriction_type_spec_atb SET 
+			include_or_exclude = p_rta_new.include_or_exclude
+		WHERE rowid = p_cube_rowid;
 	END;
 
 	PROCEDURE delete_rta (p_cube_rowid UROWID, p_rta IN OUT NOCOPY v_restriction_type_spec_atb%ROWTYPE) IS
@@ -1337,6 +1345,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			fk_ref_sequence,
 			fk_ref_bot_name,
 			fk_ref_typ_name,
+			include_or_exclude,
 			xf_tsp_typ_name,
 			xf_tsp_tsg_code,
 			xk_tsp_code)
@@ -1347,6 +1356,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			p_rtr.fk_ref_sequence,
 			p_rtr.fk_ref_bot_name,
 			p_rtr.fk_ref_typ_name,
+			p_rtr.include_or_exclude,
 			p_rtr.xf_tsp_typ_name,
 			p_rtr.xf_tsp_tsg_code,
 			p_rtr.xk_tsp_code);
@@ -1354,7 +1364,9 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 
 	PROCEDURE update_rtr (p_cube_rowid UROWID, p_rtr_old IN OUT NOCOPY v_restriction_type_spec_ref%ROWTYPE, p_rtr_new IN OUT NOCOPY v_restriction_type_spec_ref%ROWTYPE) IS
 	BEGIN
-		NULL;
+		UPDATE t_restriction_type_spec_ref SET 
+			include_or_exclude = p_rtr_new.include_or_exclude
+		WHERE rowid = p_cube_rowid;
 	END;
 
 	PROCEDURE delete_rtr (p_cube_rowid UROWID, p_rtr IN OUT NOCOPY v_restriction_type_spec_ref%ROWTYPE) IS
@@ -1388,6 +1400,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			fk_ref_sequence,
 			fk_ref_bot_name,
 			fk_ref_typ_name,
+			include_or_exclude,
 			xf_tsp_typ_name,
 			xf_tsp_tsg_code,
 			xk_tsp_code)
@@ -1398,6 +1411,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			p_rts.fk_ref_sequence,
 			p_rts.fk_ref_bot_name,
 			p_rts.fk_ref_typ_name,
+			p_rts.include_or_exclude,
 			p_rts.xf_tsp_typ_name,
 			p_rts.xf_tsp_tsg_code,
 			p_rts.xk_tsp_code);
@@ -1405,7 +1419,9 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 
 	PROCEDURE update_rts (p_cube_rowid UROWID, p_rts_old IN OUT NOCOPY v_restriction_target_type_spec%ROWTYPE, p_rts_new IN OUT NOCOPY v_restriction_target_type_spec%ROWTYPE) IS
 	BEGIN
-		NULL;
+		UPDATE t_restriction_target_type_spec SET 
+			include_or_exclude = p_rts_new.include_or_exclude
+		WHERE rowid = p_cube_rowid;
 	END;
 
 	PROCEDURE delete_rts (p_cube_rowid UROWID, p_rts IN OUT NOCOPY v_restriction_target_type_spec%ROWTYPE) IS
@@ -1600,6 +1616,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			cube_id,
 			fk_bot_name,
 			fk_typ_name,
+			include_or_exclude,
 			xf_tsp_typ_name,
 			xf_tsp_tsg_code,
 			xk_tsp_code)
@@ -1607,6 +1624,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			p_rtt.cube_id,
 			p_rtt.fk_bot_name,
 			p_rtt.fk_typ_name,
+			p_rtt.include_or_exclude,
 			p_rtt.xf_tsp_typ_name,
 			p_rtt.xf_tsp_tsg_code,
 			p_rtt.xk_tsp_code);
@@ -1614,7 +1632,9 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 
 	PROCEDURE update_rtt (p_cube_rowid UROWID, p_rtt_old IN OUT NOCOPY v_restriction_type_spec_typ%ROWTYPE, p_rtt_new IN OUT NOCOPY v_restriction_type_spec_typ%ROWTYPE) IS
 	BEGIN
-		NULL;
+		UPDATE t_restriction_type_spec_typ SET 
+			include_or_exclude = p_rtt_new.include_or_exclude
+		WHERE rowid = p_cube_rowid;
 	END;
 
 	PROCEDURE delete_rtt (p_cube_rowid UROWID, p_rtt IN OUT NOCOPY v_restriction_type_spec_typ%ROWTYPE) IS
@@ -2332,6 +2352,11 @@ BEGIN
 		ELSE
 			r_rta_new.fk_atb_name := REPLACE(:NEW.fk_atb_name,' ','_');
 		END IF;
+		IF :NEW.include_or_exclude = ' ' THEN
+			r_rta_new.include_or_exclude := ' ';
+		ELSE
+			r_rta_new.include_or_exclude := REPLACE(:NEW.include_or_exclude,' ','_');
+		END IF;
 		IF :NEW.xf_tsp_typ_name = ' ' THEN
 			r_rta_new.xf_tsp_typ_name := ' ';
 		ELSE
@@ -2361,6 +2386,7 @@ BEGIN
 		r_rta_old.fk_bot_name := :OLD.fk_bot_name;
 		r_rta_old.fk_typ_name := :OLD.fk_typ_name;
 		r_rta_old.fk_atb_name := :OLD.fk_atb_name;
+		r_rta_old.include_or_exclude := :OLD.include_or_exclude;
 		r_rta_old.xf_tsp_typ_name := :OLD.xf_tsp_typ_name;
 		r_rta_old.xf_tsp_tsg_code := :OLD.xf_tsp_tsg_code;
 		r_rta_old.xk_tsp_code := :OLD.xk_tsp_code;
@@ -2569,6 +2595,11 @@ BEGIN
 		ELSE
 			r_rtr_new.fk_ref_typ_name := REPLACE(:NEW.fk_ref_typ_name,' ','_');
 		END IF;
+		IF :NEW.include_or_exclude = ' ' THEN
+			r_rtr_new.include_or_exclude := ' ';
+		ELSE
+			r_rtr_new.include_or_exclude := REPLACE(:NEW.include_or_exclude,' ','_');
+		END IF;
 		IF :NEW.xf_tsp_typ_name = ' ' THEN
 			r_rtr_new.xf_tsp_typ_name := ' ';
 		ELSE
@@ -2602,6 +2633,7 @@ BEGIN
 		r_rtr_old.fk_ref_sequence := :OLD.fk_ref_sequence;
 		r_rtr_old.fk_ref_bot_name := :OLD.fk_ref_bot_name;
 		r_rtr_old.fk_ref_typ_name := :OLD.fk_ref_typ_name;
+		r_rtr_old.include_or_exclude := :OLD.include_or_exclude;
 		r_rtr_old.xf_tsp_typ_name := :OLD.xf_tsp_typ_name;
 		r_rtr_old.xf_tsp_tsg_code := :OLD.xf_tsp_tsg_code;
 		r_rtr_old.xk_tsp_code := :OLD.xk_tsp_code;
@@ -2648,6 +2680,11 @@ BEGIN
 		ELSE
 			r_rts_new.fk_ref_typ_name := REPLACE(:NEW.fk_ref_typ_name,' ','_');
 		END IF;
+		IF :NEW.include_or_exclude = ' ' THEN
+			r_rts_new.include_or_exclude := ' ';
+		ELSE
+			r_rts_new.include_or_exclude := REPLACE(:NEW.include_or_exclude,' ','_');
+		END IF;
 		IF :NEW.xf_tsp_typ_name = ' ' THEN
 			r_rts_new.xf_tsp_typ_name := ' ';
 		ELSE
@@ -2681,6 +2718,7 @@ BEGIN
 		r_rts_old.fk_ref_sequence := :OLD.fk_ref_sequence;
 		r_rts_old.fk_ref_bot_name := :OLD.fk_ref_bot_name;
 		r_rts_old.fk_ref_typ_name := :OLD.fk_ref_typ_name;
+		r_rts_old.include_or_exclude := :OLD.include_or_exclude;
 		r_rts_old.xf_tsp_typ_name := :OLD.xf_tsp_typ_name;
 		r_rts_old.xf_tsp_tsg_code := :OLD.xf_tsp_tsg_code;
 		r_rts_old.xk_tsp_code := :OLD.xk_tsp_code;
@@ -2971,6 +3009,11 @@ BEGIN
 		ELSE
 			r_rtt_new.fk_typ_name := REPLACE(:NEW.fk_typ_name,' ','_');
 		END IF;
+		IF :NEW.include_or_exclude = ' ' THEN
+			r_rtt_new.include_or_exclude := ' ';
+		ELSE
+			r_rtt_new.include_or_exclude := REPLACE(:NEW.include_or_exclude,' ','_');
+		END IF;
 		IF :NEW.xf_tsp_typ_name = ' ' THEN
 			r_rtt_new.xf_tsp_typ_name := ' ';
 		ELSE
@@ -2998,6 +3041,7 @@ BEGIN
 		  AND xk_tsp_code = :OLD.xk_tsp_code;
 		r_rtt_old.fk_bot_name := :OLD.fk_bot_name;
 		r_rtt_old.fk_typ_name := :OLD.fk_typ_name;
+		r_rtt_old.include_or_exclude := :OLD.include_or_exclude;
 		r_rtt_old.xf_tsp_typ_name := :OLD.xf_tsp_typ_name;
 		r_rtt_old.xf_tsp_tsg_code := :OLD.xf_tsp_tsg_code;
 		r_rtt_old.xk_tsp_code := :OLD.xk_tsp_code;
