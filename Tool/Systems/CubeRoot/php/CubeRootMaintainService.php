@@ -242,7 +242,7 @@ function ProcessTypeSpecialisation() {
 	if (document.getElementById("InputCubeTsgDbScr").value != ' ') {
 		document.getElementById("InputCubeTsgDbScr").disabled = true;
 		switch (document.getElementById("InputCubeTsgDbScr").value) {
-		case "D":
+		case "S":
 			document.getElementById("RowAtbClass").style.display = "none";
 			break;
 		}

@@ -389,15 +389,15 @@ function ProcessTypeSpecialisation() {
 		document.getElementById("InputCubeTsgIntExt").disabled = true;
 		switch (document.getElementById("InputCubeTsgIntExt").value) {
 		case "INT":
+			document.getElementById("InputXkBotName").value = " ";
+			document.getElementById("RowRefBusinessObjectType0").style.display = "none";
+			break;
+		case "EXT":
 			document.getElementById("RowAtbScope").style.display = "none";
 			document.getElementById("RowAtbWithinScopeExtension").style.display = "none";
 			document.getElementById("InputXkTypName").value = " ";
 			document.getElementById("RowRefType0").style.display = "none";
 			document.getElementById("RowRefType1").style.display = "none";
-			break;
-		case "EXT":
-			document.getElementById("InputXkBotName").value = " ";
-			document.getElementById("RowRefBusinessObjectType0").style.display = "none";
 			break;
 		}
 		document.getElementById("TableMain").style.display = "inline";

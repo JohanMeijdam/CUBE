@@ -10,7 +10,7 @@ set wwwroot=C:\inetpub\wwwroot
 set sysroot=%wwwroot%\%sysname%
 
 echo Start > %logfile%
-goto :Database
+::goto :Database
 ::goto :Packages
 ::goto :Application
 ::goto :Install
@@ -27,7 +27,6 @@ CubeGen.exe %sysdir%\CubeModel0.cgm Templates\ModelA.cgt %sysdir%\CubeModelA.cgm
 CubeGen.exe %sysdir%\CubeModelA.cgm Templates\ModelB.cgt %sysdir%\CubeModelB.cgm >> %logfile% 2>&1
 CubeGen.exe %sysdir%\CubeModelB.cgm Templates\BoModel.cgt %sysdir%\CubeBoModel.cgm >> %logfile% 2>&1
 CubeGen.exe %sysdir%\CubeBoModel.cgm Templates\ServerSpecModel.cgt %sysdir%\CubeServerSpecModel.cgm %sysname% >> %logfile% 2>&1
-CubeGen.exe %sysdir%\CubeServerSpecModel.cgm Templates\ServerImplModel.cgt %sysdir%\CubeServerImplModel.cgm %sysname% >> %logfile% 2>&1
 ::goto :end
 :Database
 echo Generate Database.
@@ -36,7 +35,7 @@ CubeGen.exe %sysdir%\CubeDbModel.cgm Templates\Table.cgt %sysdir%\TableDdl.sql >
 CubeGen.exe %sysdir%\CubeDbModel.cgm Templates\AlterTable.cgt %sysdir%\AlterTableDdl.sql >> %logfile% 2>&1
 ::sqlplus.exe %db_schema%/%db_password%@%db_name% @%sysdir%\TableDdl.sql >> %logfile% 2>&1
 sqlplus.exe %db_schema%/%db_password%@%db_name% @%sysdir%\AlterTableDdl.sql >> %logfile% 2>&1
-goto :end
+::goto :end
 Views
 echo Generate Database Views.
 CubeGen.exe %sysdir%\CubeBoModel.cgm Templates\View.cgt %sysdir%\ViewDdl.sql %sysname% >> %logfile% 2>&1
@@ -51,6 +50,7 @@ echo Import Model.
 ::goto :end
 :Packages
 echo Generate Packages.
+CubeGen.exe %sysdir%\CubeServerSpecModel.cgm Templates\ServerImplModel.cgt %sysdir%\CubeServerImplModel.cgm %sysname% >> %logfile% 2>&1
 CubeGen.exe %sysdir%\CubeServerImplModel.cgm Templates\Package.cgt %sysdir%\PackageDdl.sql %sysname% >> %logfile% 2>&1
 sqlplus.exe %db_schema%/%db_password%@%db_name% @%sysdir%\PackageDdl.sql >> %logfile% 2>&1
 ::goto :end

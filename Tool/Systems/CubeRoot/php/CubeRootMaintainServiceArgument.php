@@ -432,17 +432,42 @@ function ProcessTypeSpecialisation() {
 		document.getElementById("InputCubeTsgSvaType").disabled = true;
 		switch (document.getElementById("InputCubeTsgSvaType").value) {
 		case "OPT":
-			document.getElementById("RowAtbOptionName").style.display = "none";
-			document.getElementById("InputOptionName").value = " ";
-			document.getElementById("RowRefInformationType0").style.display = "none";
-			break;
-		case "REF":
-			document.getElementById("RowRefReference0").style.display = "none";
-			break;
-		case "ATB":
 			document.getElementById("InputXfAtbTypName").value = " ";
 			document.getElementById("InputXkAtbName").value = " ";
 			document.getElementById("RowRefAttribute0").style.display = "none";
+			document.getElementById("RowRefReference0").style.display = "none";
+			break;
+		case "PAR":
+			document.getElementById("RowAtbOptionName").style.display = "none";
+			document.getElementById("InputOptionName").value = " ";
+			document.getElementById("InputXfAtbTypName").value = " ";
+			document.getElementById("InputXkAtbName").value = " ";
+			document.getElementById("RowRefInformationType0").style.display = "none";
+			document.getElementById("RowRefAttribute0").style.display = "none";
+			document.getElementById("RowRefReference0").style.display = "none";
+			break;
+		case "RPA":
+			document.getElementById("RowAtbOptionName").style.display = "none";
+			document.getElementById("InputOptionName").value = " ";
+			document.getElementById("InputXfAtbTypName").value = " ";
+			document.getElementById("InputXkAtbName").value = " ";
+			document.getElementById("RowRefInformationType0").style.display = "none";
+			document.getElementById("RowRefAttribute0").style.display = "none";
+			document.getElementById("RowRefReference0").style.display = "none";
+			break;
+		case "REF":
+			document.getElementById("RowAtbOptionName").style.display = "none";
+			document.getElementById("InputOptionName").value = " ";
+			document.getElementById("InputXfAtbTypName").value = " ";
+			document.getElementById("InputXkAtbName").value = " ";
+			document.getElementById("RowRefInformationType0").style.display = "none";
+			document.getElementById("RowRefAttribute0").style.display = "none";
+			break;
+		case "ATB":
+			document.getElementById("RowAtbOptionName").style.display = "none";
+			document.getElementById("InputOptionName").value = " ";
+			document.getElementById("RowRefInformationType0").style.display = "none";
+			document.getElementById("RowRefReference0").style.display = "none";
 			break;
 		}
 		document.getElementById("TableMain").style.display = "inline";
