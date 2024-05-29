@@ -6,10 +6,11 @@ set cubesysdir=Systems\CubeSysPg
 set wwwroot=C:\inetpub\wwwroot
 set sysroot=%wwwroot%\%sysname%Pg
 call ..\..\pg_conn_vars.cmd
+set db_name=cuberoot
 set PGPASSWORD=%db_password%
 
 echo Start > %logfile%
-::goto :Database
+goto :Database
 ::goto :Packages
 ::goto :Application
 ::goto :Install
@@ -29,12 +30,12 @@ CubeGen.exe %sysdir%\CubeBoModel.cgm Templates\ServerSpecModel.cgt %sysdir%\Cube
 ::goto :end
 :Database
 echo Generate Database.
-CubeGen.exe %sysdir%\CubeBoModel.cgm Templates\DbModel.cgt %sysdir%\CubeDbModel.cgm %sysname% >> %logfile% 2>&1
-CubeGen.exe %sysdir%\CubeDbModel.cgm Templates\Table_pg.cgt %sysdir%\TableDdl_pg.sql >> %logfile% 2>&1
-CubeGen.exe %sysdir%\CubeDbModel.cgm Templates\AlterTable_pg.cgt %sysdir%\AlterTableDdl_pg.sql >> %logfile% 2>&1
+::CubeGen.exe %sysdir%\CubeBoModel.cgm Templates\DbModel.cgt %sysdir%\CubeDbModel.cgm %sysname% >> %logfile% 2>&1
+::CubeGen.exe %sysdir%\CubeDbModel.cgm Templates\Table_pg.cgt %sysdir%\TableDdl_pg.sql >> %logfile% 2>&1
+::CubeGen.exe %sysdir%\CubeDbModel.cgm Templates\AlterTable_pg.cgt %sysdir%\AlterTableDdl_pg.sql >> %logfile% 2>&1
 psql -h %db_host% -p %db_port% -d %db_name% -U %db_user% -f %sysdir%\TableDdl_pg.sql >> %logfile% 2>&1
 ::psql -h %db_host% -p %db_port% -d %db_name% -U %db_user% -f %sysdir%\AlterTableDdl_pg.sql >> %logfile% 2>&1
-::goto :end
+goto :end
 :Views
 echo Generate Database Views.
 CubeGen.exe %sysdir%\CubeBoModel.cgm Templates\View_pg.cgt %sysdir%\ViewDdl_pg.sql %sysname% >> %logfile% 2>&1

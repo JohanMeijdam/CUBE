@@ -3,9 +3,7 @@ set c_sysname=CubeSys
 set c_logfile=Generate%c_sysname%Pg.log
 set c_sysdir=Systems\%c_sysname%Pg
 set c_phpdir=%c_sysdir%\php
-call ..\..\pg_conn_vars.cmd
 echo Start > %c_logfile%
-set PGPASSWORD=%db_password%
 ::goto :Database
 :CubeModel
 echo CubeSys: Extract CubeModel.

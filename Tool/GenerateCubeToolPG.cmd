@@ -6,6 +6,7 @@ set cubesysdir=Systems\CubeSys
 set wwwroot=C:\inetpub\wwwroot
 set sysroot=%wwwroot%\%sysname%
 call ..\..\pg_conn_vars.cmd
+set db_name=cubetool
 echo Start > %logfile%
 set PGPASSWORD=%db_password%
 
