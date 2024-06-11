@@ -369,7 +369,7 @@ DECLARE
 			  AND fk_typ_name = p_typ.name
 			ORDER BY cube_sequence )
 		LOOP
-			DBMS_OUTPUT.PUT_LINE (ftabs || '+REFERENCE[' || r_ref.cube_id || ']:' || fenperc(r_ref.name) || '|' || fenperc(r_ref.primary_key) || '|' || fenperc(r_ref.code_display_key) || '|' || fenperc(r_ref.sequence) || '|' || fenperc(r_ref.scope) || '|' || fenperc(r_ref.unchangeable) || '|' || fenperc(r_ref.within_scope_extension) || '|' || fenperc(r_ref.cube_tsg_int_ext) || ';');
+			DBMS_OUTPUT.PUT_LINE (ftabs || '+REFERENCE[' || r_ref.cube_id || ']:' || fenperc(r_ref.name) || '|' || fenperc(r_ref.primary_key) || '|' || fenperc(r_ref.code_display_key) || '|' || fenperc(r_ref.sequence) || '|' || fenperc(r_ref.scope) || '|' || fenperc(r_ref.unchangeable) || '|' || fenperc(r_ref.within_scope_extension) || '|' || fenperc(r_ref.cube_tsg_int_ext) || '|' || fenperc(r_ref.type_prefix) || ';');
 				l_level := l_level + 1;
 				report_dcr (r_ref);
 				report_rtr (r_ref);
@@ -436,20 +436,41 @@ DECLARE
 			  AND fk_srv_cube_tsg_db_scr = p_srv.cube_tsg_db_scr
 			ORDER BY cube_sequence )
 		LOOP
-			DBMS_OUTPUT.PUT_LINE (ftabs || '+SERVICE_ARGUMENT[' || r_sva.cube_id || ']:' || ';');
+			DBMS_OUTPUT.PUT_LINE (ftabs || '+SERVICE_ARGUMENT[' || r_sva.cube_id || ']:' || fenperc(r_sva.cube_tsg_sva_type) || '|' || fenperc(r_sva.option_name) || '|' || fenperc(r_sva.input_or_output) || ';');
 				l_level := l_level + 1;
+				BEGIN
+					SELECT cube_id INTO l_cube_id FROM t_information_type
+					WHERE name = r_sva.xk_itp_name;
+
+					DBMS_OUTPUT.PUT_LINE (ftabs || '>SERVICE_ARGUMENT_INFORMATION_TYPE:' || l_cube_id || ';');
+				EXCEPTION
+					WHEN NO_DATA_FOUND THEN
+						NULL; 
+				END;
 				BEGIN
 					SELECT cube_id INTO l_cube_id FROM t_attribute
 					WHERE fk_typ_name = r_sva.xf_atb_typ_name
 					  AND name = r_sva.xk_atb_name;
 
-					DBMS_OUTPUT.PUT_LINE (ftabs || '>ATTRIBUTE:' || l_cube_id || ';');
+					DBMS_OUTPUT.PUT_LINE (ftabs || '>SERVICE_ARGUMENT_ATTRIBUTE:' || l_cube_id || ';');
+				EXCEPTION
+					WHEN NO_DATA_FOUND THEN
+						NULL; 
+				END;
+				BEGIN
+					SELECT cube_id INTO l_cube_id FROM t_reference
+					WHERE fk_typ_name = r_sva.xf_ref_typ_name
+					  AND sequence = r_sva.xk_ref_sequence
+					  AND xk_bot_name = r_sva.xk_ref_bot_name
+					  AND xk_typ_name = r_sva.xk_ref_typ_name;
+
+					DBMS_OUTPUT.PUT_LINE (ftabs || '>SERVICE_ARGUMENT_REFERENCE:' || l_cube_id || ';');
 				EXCEPTION
 					WHEN NO_DATA_FOUND THEN
 						NULL; 
 				END;
 				l_level := l_level - 1;
-			DBMS_OUTPUT.PUT_LINE (ftabs || '-SERVICE_ARGUMENT:' || ';');
+			DBMS_OUTPUT.PUT_LINE (ftabs || '-SERVICE_ARGUMENT:' || r_sva.cube_tsg_sva_type || ';');
 		END LOOP;
 	END;
 
@@ -819,6 +840,7 @@ BEGIN
 	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:5|Unchangeable|'||REPLACE('Indication%20that%20after%20the%20creation%20of%20the%20type%20the%20reference%20can%20not%20be%20changed.%20So%20in%20case%20of%20a%20recursive%20reference%20the%20indication%20too%20that%20the%20relation%20is%20used%20to%20select%20the%20parents%20or%20children%20in%20the%20hierarchy.','%20',' ')||' Values: Y(Yes), N(No);');
 	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:6|WithinScopeExtension| Values: PAR(Recursive parent), REF(Referenced type);');
 	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:7|CubeTsgIntExt| Values: INT(INTERNAL), EXT(EXTERNAL);');
+	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:8|TypePrefix|'||REPLACE('Indication%20that%20the%20technical%20(model)%20name%20is%20prefixed%20with%20the%20name%20of%20the%20parent%20type.','%20',' ')||' Values: Y(Yes), N(No);');
 	DBMS_OUTPUT.PUT_LINE ('				=ASSOCIATION:BUSINESS_OBJECT_TYPE|Refer|BUSINESS_OBJECT_TYPE|;');
 	DBMS_OUTPUT.PUT_LINE ('				=ASSOCIATION:REFERENCE_TYPE|Refer|TYPE|;');
 	DBMS_OUTPUT.PUT_LINE ('				=ASSOCIATION:REFERENCE_TYPE_WITHIN_SCOPE_OF|WithinScopeOf|TYPE|;');
@@ -837,14 +859,19 @@ BEGIN
 	DBMS_OUTPUT.PUT_LINE ('			+META_TYPE:SERVICE|;');
 	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:0|Name|;');
 	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:1|CubeTsgDbScr| Values: D(DATABASE_INTERACTION), S(SERVER_SCRIPT);');
-	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:2|Class| Values: LST(List), CNT(Count), SEL(Select), CNP(Check no part), DPO(Determine position), MOV(Move), GTN(Get next), CPA(Change parent), CRE(Create), UPD(Update), DEL(Delete);');
+	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:2|Class| Values: LST(List), CNT(Count), SEL(Select), CNP(Check no part), DPO(Determine position), MOV(Move), GTN(Get next), CPA(Change parent), CRE(Create), UPD(Update), DEL(Delete), CHC(Check Content);');
 	DBMS_OUTPUT.PUT_LINE ('				=PROPERTY:3|Accessibility| Values: I(Internal), E(External), U(User);');
 	DBMS_OUTPUT.PUT_LINE ('				+META_TYPE:SERVICE_STEP|;');
 	DBMS_OUTPUT.PUT_LINE ('					=PROPERTY:0|Name|;');
 	DBMS_OUTPUT.PUT_LINE ('					=PROPERTY:1|ScriptName|;');
 	DBMS_OUTPUT.PUT_LINE ('				-META_TYPE:SERVICE_STEP;');
 	DBMS_OUTPUT.PUT_LINE ('				+META_TYPE:SERVICE_ARGUMENT|;');
-	DBMS_OUTPUT.PUT_LINE ('					=ASSOCIATION:ATTRIBUTE|Imports|ATTRIBUTE|;');
+	DBMS_OUTPUT.PUT_LINE ('					=PROPERTY:0|CubeTsgSvaType| Values: OPT(OPTION), PAR(PARENT_TYPE), RPA(RECURSIVE_PARENT_TYPE), REF(REFERENCE), ATB(ATTRIBUTE);');
+	DBMS_OUTPUT.PUT_LINE ('					=PROPERTY:1|OptionName|;');
+	DBMS_OUTPUT.PUT_LINE ('					=PROPERTY:2|InputOrOutput| Values: I(Input), O(Output);');
+	DBMS_OUTPUT.PUT_LINE ('					=ASSOCIATION:SERVICE_ARGUMENT_INFORMATION_TYPE|HasDomain|INFORMATION_TYPE|;');
+	DBMS_OUTPUT.PUT_LINE ('					=ASSOCIATION:SERVICE_ARGUMENT_ATTRIBUTE|Concerns|ATTRIBUTE|;');
+	DBMS_OUTPUT.PUT_LINE ('					=ASSOCIATION:SERVICE_ARGUMENT_REFERENCE|Concerns|REFERENCE|;');
 	DBMS_OUTPUT.PUT_LINE ('				-META_TYPE:SERVICE_ARGUMENT;');
 	DBMS_OUTPUT.PUT_LINE ('			-META_TYPE:SERVICE;');
 	DBMS_OUTPUT.PUT_LINE ('			+META_TYPE:RESTRICTION_TYPE_SPEC_TYP|;');

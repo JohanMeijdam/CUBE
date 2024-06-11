@@ -15,20 +15,8 @@
 	echo shell_exec (". Systems\CubeTool\php/scripts/GenerateDatabaseViews 2>&1");
 	ob_flush();
 	flush();
-	echo "Excuting GeneratePackages\n";
-	echo shell_exec (". Systems\CubeTool\php/scripts/GeneratePackages 2>&1");
-	ob_flush();
-	flush();
-	echo "Excuting GenerateApplication\n";
-	echo shell_exec (". Systems\CubeTool\php/scripts/GenerateApplication 2>&1");
-	ob_flush();
-	flush();
-	echo "Excuting InstallSystem\n";
-	echo shell_exec (". Systems\CubeTool\php/scripts/InstallSystem 2>&1");
-	ob_flush();
-	flush();
-	echo "Excuting InstallCubeSystem\n";
-	echo shell_exec (". Systems\CubeTool\php/scripts/InstallCubeSystem 2>&1");
+	echo "Excuting ImportModel\n";
+	echo shell_exec (". Systems\CubeTool\php/scripts/ImportModel 2>&1");
 	ob_flush();
 	flush();
 ?>

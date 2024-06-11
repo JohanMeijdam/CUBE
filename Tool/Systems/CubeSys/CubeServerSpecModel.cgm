@@ -252,7 +252,7 @@
 !			>SERVICE_TYPE_LIST: TYPE_LIST
 !			SERVICE_ARGUMENT: 0=Prefix 1=InputOutput 2=JsonGroup
 !				>ARGUMENT_ATTRIBUTE: ATTRIBUTE
-!			OPERATION: 0=Name 1=SelectionType 2=ResultNameExtension 3=FlagMultipleExport 4=FlagMultipleList
+!			OPERATION: 0=Name 1=SelectionType(all, root, part, part_recursive, recursive ) 2=ResultNameExtension 3=FlagMultipleExport 4=FlagMultipleList
 !				>OPERATION_TYPE: TYPE
 !				EXPORT: 0=Type 1=FlagSeparated
 !					EXPORT_ARGUMENT: 0=Name 1=Type

@@ -226,7 +226,7 @@ function ProcessTypeSpecialisation() {
 -->
 </script>
 </head><body oncontextmenu="return false;" onload="InitBody()" onbeforeunload="return parent.CheckChangePending()" ondrop="Drop(event)" ondragover="AllowDrop(event)">
-<div><img src="icons/botype_large.bmp" /><span> BUSINESS_OBJECT_TYPE /
+<div><img src="icons/botype_large.bmp" /><span style="cursor:help" oncontextmenu="parent.OpenDescBox('botype','BusinessObjectType','BUSINESS_OBJECT_TYPE','_',-1)"> BUSINESS_OBJECT_TYPE /
 <select id="InputCubeTsgType" type="text" onchange="ProcessTypeSpecialisation();">
 	<option value=" " selected>&lt;type&gt;</option>
 	<option id="OptionCubeTsgType-INT" style="display:inline" value="INT">INTERNAL</option>

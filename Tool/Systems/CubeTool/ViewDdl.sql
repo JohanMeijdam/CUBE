@@ -454,6 +454,7 @@ CREATE OR REPLACE VIEW v_reference AS
 		unchangeable,
 		within_scope_extension,
 		cube_tsg_int_ext,
+		type_prefix,
 		xk_bot_name,
 		xk_typ_name,
 		xk_typ_name_1
@@ -530,8 +531,16 @@ CREATE OR REPLACE VIEW v_service_argument AS
 		fk_typ_name,
 		fk_srv_name,
 		fk_srv_cube_tsg_db_scr,
+		cube_tsg_sva_type,
+		option_name,
+		input_or_output,
+		xk_itp_name,
 		xf_atb_typ_name,
-		xk_atb_name
+		xk_atb_name,
+		xk_ref_bot_name,
+		xk_ref_typ_name,
+		xf_ref_typ_name,
+		xk_ref_sequence
 	FROM t_service_argument
 /
 CREATE OR REPLACE VIEW v_restriction_type_spec_typ AS 
@@ -1220,6 +1229,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			unchangeable,
 			within_scope_extension,
 			cube_tsg_int_ext,
+			type_prefix,
 			xk_bot_name,
 			xk_typ_name,
 			xk_typ_name_1)
@@ -1236,6 +1246,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			p_ref.unchangeable,
 			p_ref.within_scope_extension,
 			p_ref.cube_tsg_int_ext,
+			p_ref.type_prefix,
 			p_ref.xk_bot_name,
 			p_ref.xk_typ_name,
 			p_ref.xk_typ_name_1);
@@ -1251,6 +1262,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			scope = p_ref_new.scope,
 			unchangeable = p_ref_new.unchangeable,
 			within_scope_extension = p_ref_new.within_scope_extension,
+			type_prefix = p_ref_new.type_prefix,
 			xk_typ_name_1 = p_ref_new.xk_typ_name_1
 		WHERE rowid = p_cube_rowid;
 	END;
@@ -1518,8 +1530,14 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 		p_sva.fk_typ_name := NVL(p_sva.fk_typ_name,' ');
 		p_sva.fk_srv_name := NVL(p_sva.fk_srv_name,' ');
 		p_sva.fk_srv_cube_tsg_db_scr := NVL(p_sva.fk_srv_cube_tsg_db_scr,' ');
+		p_sva.option_name := NVL(p_sva.option_name,' ');
+		p_sva.xk_itp_name := NVL(p_sva.xk_itp_name,' ');
 		p_sva.xf_atb_typ_name := NVL(p_sva.xf_atb_typ_name,' ');
 		p_sva.xk_atb_name := NVL(p_sva.xk_atb_name,' ');
+		p_sva.xk_ref_bot_name := NVL(p_sva.xk_ref_bot_name,' ');
+		p_sva.xk_ref_typ_name := NVL(p_sva.xk_ref_typ_name,' ');
+		p_sva.xf_ref_typ_name := NVL(p_sva.xf_ref_typ_name,' ');
+		p_sva.xk_ref_sequence := NVL(p_sva.xk_ref_sequence,0);
 		SELECT fk_bot_name
 		  INTO p_sva.fk_bot_name
 		FROM t_service
@@ -1533,8 +1551,16 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			fk_typ_name,
 			fk_srv_name,
 			fk_srv_cube_tsg_db_scr,
+			cube_tsg_sva_type,
+			option_name,
+			input_or_output,
+			xk_itp_name,
 			xf_atb_typ_name,
-			xk_atb_name)
+			xk_atb_name,
+			xk_ref_bot_name,
+			xk_ref_typ_name,
+			xf_ref_typ_name,
+			xk_ref_sequence)
 		VALUES (
 			p_sva.cube_id,
 			p_sva.cube_sequence,
@@ -1542,14 +1568,28 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			p_sva.fk_typ_name,
 			p_sva.fk_srv_name,
 			p_sva.fk_srv_cube_tsg_db_scr,
+			p_sva.cube_tsg_sva_type,
+			p_sva.option_name,
+			p_sva.input_or_output,
+			p_sva.xk_itp_name,
 			p_sva.xf_atb_typ_name,
-			p_sva.xk_atb_name);
+			p_sva.xk_atb_name,
+			p_sva.xk_ref_bot_name,
+			p_sva.xk_ref_typ_name,
+			p_sva.xf_ref_typ_name,
+			p_sva.xk_ref_sequence);
 	END;
 
 	PROCEDURE update_sva (p_cube_rowid UROWID, p_sva_old IN OUT NOCOPY v_service_argument%ROWTYPE, p_sva_new IN OUT NOCOPY v_service_argument%ROWTYPE) IS
 	BEGIN
 		UPDATE t_service_argument SET 
-			cube_sequence = p_sva_new.cube_sequence
+			cube_sequence = p_sva_new.cube_sequence,
+			input_or_output = p_sva_new.input_or_output,
+			xk_itp_name = p_sva_new.xk_itp_name,
+			xk_ref_bot_name = p_sva_new.xk_ref_bot_name,
+			xk_ref_typ_name = p_sva_new.xk_ref_typ_name,
+			xf_ref_typ_name = p_sva_new.xf_ref_typ_name,
+			xk_ref_sequence = p_sva_new.xk_ref_sequence
 		WHERE rowid = p_cube_rowid;
 	END;
 
@@ -2410,6 +2450,7 @@ BEGIN
 		ELSE
 			r_ref_new.cube_tsg_int_ext := REPLACE(:NEW.cube_tsg_int_ext,' ','_');
 		END IF;
+		r_ref_new.type_prefix := :NEW.type_prefix;
 		IF :NEW.xk_bot_name = ' ' THEN
 			r_ref_new.xk_bot_name := ' ';
 		ELSE
@@ -2446,6 +2487,7 @@ BEGIN
 		r_ref_old.unchangeable := :OLD.unchangeable;
 		r_ref_old.within_scope_extension := :OLD.within_scope_extension;
 		r_ref_old.cube_tsg_int_ext := :OLD.cube_tsg_int_ext;
+		r_ref_old.type_prefix := :OLD.type_prefix;
 		r_ref_old.xk_bot_name := :OLD.xk_bot_name;
 		r_ref_old.xk_typ_name := :OLD.xk_typ_name;
 		r_ref_old.xk_typ_name_1 := :OLD.xk_typ_name_1;
@@ -2861,6 +2903,26 @@ BEGIN
 		ELSE
 			r_sva_new.fk_srv_cube_tsg_db_scr := REPLACE(:NEW.fk_srv_cube_tsg_db_scr,' ','_');
 		END IF;
+		IF :NEW.cube_tsg_sva_type = ' ' THEN
+			r_sva_new.cube_tsg_sva_type := ' ';
+		ELSE
+			r_sva_new.cube_tsg_sva_type := REPLACE(:NEW.cube_tsg_sva_type,' ','_');
+		END IF;
+		IF :NEW.option_name = ' ' THEN
+			r_sva_new.option_name := ' ';
+		ELSE
+			r_sva_new.option_name := REPLACE(:NEW.option_name,' ','_');
+		END IF;
+		IF :NEW.input_or_output = ' ' THEN
+			r_sva_new.input_or_output := ' ';
+		ELSE
+			r_sva_new.input_or_output := REPLACE(:NEW.input_or_output,' ','_');
+		END IF;
+		IF :NEW.xk_itp_name = ' ' THEN
+			r_sva_new.xk_itp_name := ' ';
+		ELSE
+			r_sva_new.xk_itp_name := REPLACE(:NEW.xk_itp_name,' ','_');
+		END IF;
 		IF :NEW.xf_atb_typ_name = ' ' THEN
 			r_sva_new.xf_atb_typ_name := ' ';
 		ELSE
@@ -2871,6 +2933,22 @@ BEGIN
 		ELSE
 			r_sva_new.xk_atb_name := REPLACE(:NEW.xk_atb_name,' ','_');
 		END IF;
+		IF :NEW.xk_ref_bot_name = ' ' THEN
+			r_sva_new.xk_ref_bot_name := ' ';
+		ELSE
+			r_sva_new.xk_ref_bot_name := REPLACE(:NEW.xk_ref_bot_name,' ','_');
+		END IF;
+		IF :NEW.xk_ref_typ_name = ' ' THEN
+			r_sva_new.xk_ref_typ_name := ' ';
+		ELSE
+			r_sva_new.xk_ref_typ_name := REPLACE(:NEW.xk_ref_typ_name,' ','_');
+		END IF;
+		IF :NEW.xf_ref_typ_name = ' ' THEN
+			r_sva_new.xf_ref_typ_name := ' ';
+		ELSE
+			r_sva_new.xf_ref_typ_name := REPLACE(:NEW.xf_ref_typ_name,' ','_');
+		END IF;
+		r_sva_new.xk_ref_sequence := :NEW.xk_ref_sequence;
 	END IF;
 	IF UPDATING THEN
 		r_sva_new.cube_id := :OLD.cube_id;
@@ -2880,6 +2958,7 @@ BEGIN
 		WHERE fk_typ_name = :OLD.fk_typ_name
 		  AND fk_srv_name = :OLD.fk_srv_name
 		  AND fk_srv_cube_tsg_db_scr = :OLD.fk_srv_cube_tsg_db_scr
+		  AND option_name = :OLD.option_name
 		  AND xf_atb_typ_name = :OLD.xf_atb_typ_name
 		  AND xk_atb_name = :OLD.xk_atb_name;
 		r_sva_old.cube_sequence := :OLD.cube_sequence;
@@ -2887,8 +2966,16 @@ BEGIN
 		r_sva_old.fk_typ_name := :OLD.fk_typ_name;
 		r_sva_old.fk_srv_name := :OLD.fk_srv_name;
 		r_sva_old.fk_srv_cube_tsg_db_scr := :OLD.fk_srv_cube_tsg_db_scr;
+		r_sva_old.cube_tsg_sva_type := :OLD.cube_tsg_sva_type;
+		r_sva_old.option_name := :OLD.option_name;
+		r_sva_old.input_or_output := :OLD.input_or_output;
+		r_sva_old.xk_itp_name := :OLD.xk_itp_name;
 		r_sva_old.xf_atb_typ_name := :OLD.xf_atb_typ_name;
 		r_sva_old.xk_atb_name := :OLD.xk_atb_name;
+		r_sva_old.xk_ref_bot_name := :OLD.xk_ref_bot_name;
+		r_sva_old.xk_ref_typ_name := :OLD.xk_ref_typ_name;
+		r_sva_old.xf_ref_typ_name := :OLD.xf_ref_typ_name;
+		r_sva_old.xk_ref_sequence := :OLD.xk_ref_sequence;
 	END IF;
 
 	IF INSERTING THEN 

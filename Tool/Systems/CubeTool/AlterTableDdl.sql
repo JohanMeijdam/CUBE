@@ -1222,6 +1222,7 @@ BEGIN
 			unchangeable CHAR(1) DEFAULT ''N'',
 			within_scope_extension VARCHAR2(3),
 			cube_tsg_int_ext VARCHAR2(8) DEFAULT ''INT'',
+			type_prefix CHAR(1) DEFAULT ''N'',
 			xk_bot_name VARCHAR2(30),
 			xk_typ_name VARCHAR2(30),
 			xk_typ_name_1 VARCHAR2(30))';
@@ -1298,6 +1299,12 @@ BEGIN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_reference ADD cube_tsg_int_ext VARCHAR2(8) DEFAULT ''INT''';
 			DBMS_OUTPUT.PUT_LINE('Column T_REFERENCE.CUBE_TSG_INT_EXT created');
+		END IF;
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_REFERENCE' AND column_name = 'TYPE_PREFIX';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_reference ADD type_prefix CHAR(1) DEFAULT ''N''';
+			DBMS_OUTPUT.PUT_LINE('Column T_REFERENCE.TYPE_PREFIX created');
 		END IF;
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_REFERENCE' AND column_name = 'XK_BOT_NAME';
 		IF l_count = 0 THEN
@@ -1772,8 +1779,16 @@ BEGIN
 			fk_typ_name VARCHAR2(30),
 			fk_srv_name VARCHAR2(30),
 			fk_srv_cube_tsg_db_scr VARCHAR2(8) DEFAULT ''D'',
+			cube_tsg_sva_type VARCHAR2(8) DEFAULT ''OPT'',
+			option_name VARCHAR2(30),
+			input_or_output CHAR(1) DEFAULT ''I'',
+			xk_itp_name VARCHAR2(30),
 			xf_atb_typ_name VARCHAR2(30),
-			xk_atb_name VARCHAR2(30))';
+			xk_atb_name VARCHAR2(30),
+			xk_ref_bot_name VARCHAR2(30),
+			xk_ref_typ_name VARCHAR2(30),
+			xf_ref_typ_name VARCHAR2(30),
+			xk_ref_sequence NUMBER(1) DEFAULT ''0'')';
 		DBMS_OUTPUT.PUT_LINE('Table T_SERVICE_ARGUMENT created');
 	ELSE
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_SERVICE_ARGUMENT' AND column_name = 'CUBE_ID';
@@ -1812,6 +1827,30 @@ BEGIN
 			'ALTER TABLE t_service_argument ADD fk_srv_cube_tsg_db_scr VARCHAR2(8) DEFAULT ''D''';
 			DBMS_OUTPUT.PUT_LINE('Column T_SERVICE_ARGUMENT.FK_SRV_CUBE_TSG_DB_SCR created');
 		END IF;
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_SERVICE_ARGUMENT' AND column_name = 'CUBE_TSG_SVA_TYPE';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_service_argument ADD cube_tsg_sva_type VARCHAR2(8) DEFAULT ''OPT''';
+			DBMS_OUTPUT.PUT_LINE('Column T_SERVICE_ARGUMENT.CUBE_TSG_SVA_TYPE created');
+		END IF;
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_SERVICE_ARGUMENT' AND column_name = 'OPTION_NAME';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_service_argument ADD option_name VARCHAR2(30)';
+			DBMS_OUTPUT.PUT_LINE('Column T_SERVICE_ARGUMENT.OPTION_NAME created');
+		END IF;
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_SERVICE_ARGUMENT' AND column_name = 'INPUT_OR_OUTPUT';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_service_argument ADD input_or_output CHAR(1) DEFAULT ''I''';
+			DBMS_OUTPUT.PUT_LINE('Column T_SERVICE_ARGUMENT.INPUT_OR_OUTPUT created');
+		END IF;
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_SERVICE_ARGUMENT' AND column_name = 'XK_ITP_NAME';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_service_argument ADD xk_itp_name VARCHAR2(30)';
+			DBMS_OUTPUT.PUT_LINE('Column T_SERVICE_ARGUMENT.XK_ITP_NAME created');
+		END IF;
 		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_SERVICE_ARGUMENT' AND column_name = 'XF_ATB_TYP_NAME';
 		IF l_count = 0 THEN
 			EXECUTE IMMEDIATE
@@ -1823,6 +1862,30 @@ BEGIN
 			EXECUTE IMMEDIATE
 			'ALTER TABLE t_service_argument ADD xk_atb_name VARCHAR2(30)';
 			DBMS_OUTPUT.PUT_LINE('Column T_SERVICE_ARGUMENT.XK_ATB_NAME created');
+		END IF;
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_SERVICE_ARGUMENT' AND column_name = 'XK_REF_BOT_NAME';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_service_argument ADD xk_ref_bot_name VARCHAR2(30)';
+			DBMS_OUTPUT.PUT_LINE('Column T_SERVICE_ARGUMENT.XK_REF_BOT_NAME created');
+		END IF;
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_SERVICE_ARGUMENT' AND column_name = 'XK_REF_TYP_NAME';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_service_argument ADD xk_ref_typ_name VARCHAR2(30)';
+			DBMS_OUTPUT.PUT_LINE('Column T_SERVICE_ARGUMENT.XK_REF_TYP_NAME created');
+		END IF;
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_SERVICE_ARGUMENT' AND column_name = 'XF_REF_TYP_NAME';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_service_argument ADD xf_ref_typ_name VARCHAR2(30)';
+			DBMS_OUTPUT.PUT_LINE('Column T_SERVICE_ARGUMENT.XF_REF_TYP_NAME created');
+		END IF;
+		SELECT COUNT(1) INTO l_count FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_SERVICE_ARGUMENT' AND column_name = 'XK_REF_SEQUENCE';
+		IF l_count = 0 THEN
+			EXECUTE IMMEDIATE
+			'ALTER TABLE t_service_argument ADD xk_ref_sequence NUMBER(1) DEFAULT ''0''';
+			DBMS_OUTPUT.PUT_LINE('Column T_SERVICE_ARGUMENT.XK_REF_SEQUENCE created');
 		END IF;
 		FOR r_key IN (SELECT constraint_name FROM all_constraints WHERE owner = 'CUBETOOL' AND table_name = 'T_SERVICE_ARGUMENT' AND constraint_type IN ('P','U','R') ORDER BY constraint_type DESC)
 		LOOP
@@ -2758,6 +2821,10 @@ BEGIN
 		FOREIGN KEY (fk_typ_name, fk_tsg_code)
 		REFERENCES t_type_specialisation_group (fk_typ_name, code)
 		ON DELETE CASCADE';
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_type_specialisation_group ADD CONSTRAINT tsg_atb_0_xf
+		FOREIGN KEY (xf_atb_typ_name, xk_atb_name)
+		REFERENCES t_attribute (fk_typ_name, name)';
 	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_TYPE_SPECIALISATION_GROUP' AND column_name NOT IN (
 							'CUBE_ID',
 							'CUBE_SEQUENCE',
@@ -2840,6 +2907,10 @@ BEGIN
 		FOREIGN KEY (fk_typ_name, fk_tsg_code)
 		REFERENCES t_type_specialisation_group (fk_typ_name, code)
 		ON DELETE CASCADE';
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_type_specialisation ADD CONSTRAINT tsp_tsp_0_xf
+		FOREIGN KEY (xf_tsp_typ_name, xf_tsp_tsg_code, xk_tsp_code)
+		REFERENCES t_type_specialisation (fk_typ_name, fk_tsg_code, code)';
 	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_TYPE_SPECIALISATION' AND column_name NOT IN (
 							'CUBE_ID',
 							'CUBE_SEQUENCE',
@@ -2924,6 +2995,10 @@ BEGIN
 		FOREIGN KEY (fk_typ_name)
 		REFERENCES t_type (name)
 		ON DELETE CASCADE';
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_attribute ADD CONSTRAINT atb_itp_0_xf
+		FOREIGN KEY (xk_itp_name)
+		REFERENCES t_information_type (name)';
 	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_ATTRIBUTE' AND column_name NOT IN (
 							'CUBE_ID',
 							'CUBE_SEQUENCE',
@@ -3002,6 +3077,14 @@ BEGIN
 		FOREIGN KEY (fk_typ_name, fk_atb_name)
 		REFERENCES t_attribute (fk_typ_name, name)
 		ON DELETE CASCADE';
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_derivation ADD CONSTRAINT der_typ_0_xf
+		FOREIGN KEY (xk_typ_name)
+		REFERENCES t_type (name)';
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_derivation ADD CONSTRAINT der_typ_1_xf
+		FOREIGN KEY (xk_typ_name_1)
+		REFERENCES t_type (name)';
 	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_DERIVATION' AND column_name NOT IN (
 							'CUBE_ID',
 							'FK_BOT_NAME',
@@ -3144,6 +3227,10 @@ BEGIN
 		FOREIGN KEY (fk_typ_name, fk_atb_name)
 		REFERENCES t_attribute (fk_typ_name, name)
 		ON DELETE CASCADE';
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_restriction_type_spec_atb ADD CONSTRAINT rta_tsp_0_xf
+		FOREIGN KEY (xf_tsp_typ_name, xf_tsp_tsg_code, xk_tsp_code)
+		REFERENCES t_type_specialisation (fk_typ_name, fk_tsg_code, code)';
 	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_RESTRICTION_TYPE_SPEC_ATB' AND column_name NOT IN (
 							'CUBE_ID',
 							'FK_BOT_NAME',
@@ -3178,6 +3265,7 @@ BEGIN
 			'UNCHANGEABLE','CHAR(1)',
 			'WITHIN_SCOPE_EXTENSION','VARCHAR2(3)',
 			'CUBE_TSG_INT_EXT','VARCHAR2(8)',
+			'TYPE_PREFIX','CHAR(1)',
 			'XK_BOT_NAME','VARCHAR2(30)',
 			'XK_TYP_NAME','VARCHAR2(30)',
 			'XK_TYP_NAME_1','VARCHAR2(30)',NULL) new_domain,
@@ -3194,6 +3282,7 @@ BEGIN
 			'UNCHANGEABLE','''N''',
 			'WITHIN_SCOPE_EXTENSION',NULL,
 			'CUBE_TSG_INT_EXT','''INT''',
+			'TYPE_PREFIX','''N''',
 			'XK_BOT_NAME',NULL,
 			'XK_TYP_NAME',NULL,
 			'XK_TYP_NAME_1',NULL,NULL) new_default_value
@@ -3234,6 +3323,18 @@ BEGIN
 		FOREIGN KEY (fk_typ_name)
 		REFERENCES t_type (name)
 		ON DELETE CASCADE';
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_reference ADD CONSTRAINT ref_bot_0_xf
+		FOREIGN KEY (xk_bot_name)
+		REFERENCES t_business_object_type (name)';
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_reference ADD CONSTRAINT ref_typ_0_xf
+		FOREIGN KEY (xk_typ_name)
+		REFERENCES t_type (name)';
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_reference ADD CONSTRAINT ref_typ_1_xf
+		FOREIGN KEY (xk_typ_name_1)
+		REFERENCES t_type (name)';
 	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_REFERENCE' AND column_name NOT IN (
 							'CUBE_ID',
 							'CUBE_SEQUENCE',
@@ -3247,6 +3348,7 @@ BEGIN
 							'UNCHANGEABLE',
 							'WITHIN_SCOPE_EXTENSION',
 							'CUBE_TSG_INT_EXT',
+							'TYPE_PREFIX',
 							'XK_BOT_NAME',
 							'XK_TYP_NAME',
 							'XK_TYP_NAME_1'))
@@ -3397,6 +3499,10 @@ BEGIN
 		FOREIGN KEY (fk_typ_name, fk_ref_sequence, fk_ref_bot_name, fk_ref_typ_name)
 		REFERENCES t_reference (fk_typ_name, sequence, xk_bot_name, xk_typ_name)
 		ON DELETE CASCADE';
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_restriction_type_spec_ref ADD CONSTRAINT rtr_tsp_0_xf
+		FOREIGN KEY (xf_tsp_typ_name, xf_tsp_tsg_code, xk_tsp_code)
+		REFERENCES t_type_specialisation (fk_typ_name, fk_tsg_code, code)';
 	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_RESTRICTION_TYPE_SPEC_REF' AND column_name NOT IN (
 							'CUBE_ID',
 							'FK_BOT_NAME',
@@ -3482,6 +3588,10 @@ BEGIN
 		FOREIGN KEY (fk_typ_name, fk_ref_sequence, fk_ref_bot_name, fk_ref_typ_name)
 		REFERENCES t_reference (fk_typ_name, sequence, xk_bot_name, xk_typ_name)
 		ON DELETE CASCADE';
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_restriction_target_type_spec ADD CONSTRAINT rts_tsp_0_xf
+		FOREIGN KEY (xf_tsp_typ_name, xf_tsp_tsg_code, xk_tsp_code)
+		REFERENCES t_type_specialisation (fk_typ_name, fk_tsg_code, code)';
 	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_RESTRICTION_TARGET_TYPE_SPEC' AND column_name NOT IN (
 							'CUBE_ID',
 							'FK_BOT_NAME',
@@ -3663,8 +3773,16 @@ BEGIN
 			'FK_TYP_NAME','VARCHAR2(30)',
 			'FK_SRV_NAME','VARCHAR2(30)',
 			'FK_SRV_CUBE_TSG_DB_SCR','VARCHAR2(8)',
+			'CUBE_TSG_SVA_TYPE','VARCHAR2(8)',
+			'OPTION_NAME','VARCHAR2(30)',
+			'INPUT_OR_OUTPUT','CHAR(1)',
+			'XK_ITP_NAME','VARCHAR2(30)',
 			'XF_ATB_TYP_NAME','VARCHAR2(30)',
-			'XK_ATB_NAME','VARCHAR2(30)',NULL) new_domain,
+			'XK_ATB_NAME','VARCHAR2(30)',
+			'XK_REF_BOT_NAME','VARCHAR2(30)',
+			'XK_REF_TYP_NAME','VARCHAR2(30)',
+			'XF_REF_TYP_NAME','VARCHAR2(30)',
+			'XK_REF_SEQUENCE','NUMBER(1)',NULL) new_domain,
 		DECODE(column_name,
 			'CUBE_ID',NULL,
 			'CUBE_SEQUENCE',NULL,
@@ -3672,8 +3790,16 @@ BEGIN
 			'FK_TYP_NAME',NULL,
 			'FK_SRV_NAME',NULL,
 			'FK_SRV_CUBE_TSG_DB_SCR','''D''',
+			'CUBE_TSG_SVA_TYPE','''OPT''',
+			'OPTION_NAME',NULL,
+			'INPUT_OR_OUTPUT','''I''',
+			'XK_ITP_NAME',NULL,
 			'XF_ATB_TYP_NAME',NULL,
-			'XK_ATB_NAME',NULL,NULL) new_default_value
+			'XK_ATB_NAME',NULL,
+			'XK_REF_BOT_NAME',NULL,
+			'XK_REF_TYP_NAME',NULL,
+			'XF_REF_TYP_NAME',NULL,
+			'XK_REF_SEQUENCE','''0''',NULL) new_default_value
   		FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_SERVICE_ARGUMENT')
 	LOOP
 		IF r_field.old_domain <> r_field.new_domain THEN
@@ -3704,6 +3830,7 @@ BEGIN
 			fk_typ_name,
 			fk_srv_name,
 			fk_srv_cube_tsg_db_scr,
+			option_name,
 			xf_atb_typ_name,
 			xk_atb_name )';
 	DBMS_OUTPUT.PUT_LINE('Primary Key T_SERVICE_ARGUMENT.SVA_PK created');
@@ -3712,6 +3839,18 @@ BEGIN
 		FOREIGN KEY (fk_typ_name, fk_srv_name, fk_srv_cube_tsg_db_scr)
 		REFERENCES t_service (fk_typ_name, name, cube_tsg_db_scr)
 		ON DELETE CASCADE';
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_service_argument ADD CONSTRAINT sva_itp_0_xf
+		FOREIGN KEY (xk_itp_name)
+		REFERENCES t_information_type (name)';
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_service_argument ADD CONSTRAINT sva_atb_0_xf
+		FOREIGN KEY (xf_atb_typ_name, xk_atb_name)
+		REFERENCES t_attribute (fk_typ_name, name)';
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_service_argument ADD CONSTRAINT sva_ref_0_xf
+		FOREIGN KEY (xf_ref_typ_name, xk_ref_sequence, xk_ref_bot_name, xk_ref_typ_name)
+		REFERENCES t_reference (fk_typ_name, sequence, xk_bot_name, xk_typ_name)';
 	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_SERVICE_ARGUMENT' AND column_name NOT IN (
 							'CUBE_ID',
 							'CUBE_SEQUENCE',
@@ -3719,8 +3858,16 @@ BEGIN
 							'FK_TYP_NAME',
 							'FK_SRV_NAME',
 							'FK_SRV_CUBE_TSG_DB_SCR',
+							'CUBE_TSG_SVA_TYPE',
+							'OPTION_NAME',
+							'INPUT_OR_OUTPUT',
+							'XK_ITP_NAME',
 							'XF_ATB_TYP_NAME',
-							'XK_ATB_NAME'))
+							'XK_ATB_NAME',
+							'XK_REF_BOT_NAME',
+							'XK_REF_TYP_NAME',
+							'XF_REF_TYP_NAME',
+							'XK_REF_SEQUENCE'))
 	LOOP
 		EXECUTE IMMEDIATE
 		'ALTER TABLE t_service_argument DROP COLUMN ' || r_field.column_name;
@@ -3786,6 +3933,10 @@ BEGIN
 		FOREIGN KEY (fk_typ_name)
 		REFERENCES t_type (name)
 		ON DELETE CASCADE';
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_restriction_type_spec_typ ADD CONSTRAINT rtt_tsp_0_xf
+		FOREIGN KEY (xf_tsp_typ_name, xf_tsp_tsg_code, xk_tsp_code)
+		REFERENCES t_type_specialisation (fk_typ_name, fk_tsg_code, code)';
 	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_RESTRICTION_TYPE_SPEC_TYP' AND column_name NOT IN (
 							'CUBE_ID',
 							'FK_BOT_NAME',
@@ -3886,6 +4037,14 @@ BEGIN
 		FOREIGN KEY (fk_typ_name, fk_jsn_name, fk_jsn_location, fk_jsn_atb_typ_name, fk_jsn_atb_name, fk_jsn_typ_name)
 		REFERENCES t_json_path (fk_typ_name, name, location, xf_atb_typ_name, xk_atb_name, xk_typ_name)
 		ON DELETE CASCADE';
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_json_path ADD CONSTRAINT jsn_atb_0_xf
+		FOREIGN KEY (xf_atb_typ_name, xk_atb_name)
+		REFERENCES t_attribute (fk_typ_name, name)';
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_json_path ADD CONSTRAINT jsn_typ_0_xf
+		FOREIGN KEY (xk_typ_name)
+		REFERENCES t_type (name)';
 	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_JSON_PATH' AND column_name NOT IN (
 							'CUBE_ID',
 							'CUBE_SEQUENCE',
@@ -4087,6 +4246,10 @@ BEGIN
 		FOREIGN KEY (fk_sys_name)
 		REFERENCES t_system (name)
 		ON DELETE CASCADE';
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_system_bo_type ADD CONSTRAINT sbt_bot_0_xf
+		FOREIGN KEY (xk_bot_name)
+		REFERENCES t_business_object_type (name)';
 	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBETOOL' AND table_name = 'T_SYSTEM_BO_TYPE' AND column_name NOT IN (
 							'CUBE_ID',
 							'CUBE_SEQUENCE',

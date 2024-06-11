@@ -2136,6 +2136,41 @@ case 'DeleteRta':
 
 	break;
 
+case 'GetRefForTypList':
+	echo '[';
+
+	$stid = oci_parse($conn, "BEGIN pkg_bot.get_ref_for_typ_list (
+		:p_cube_row,
+		:p_cube_scope_level,
+		:x_fk_typ_name);
+	END;");
+	oci_bind_by_name($stid,":p_cube_scope_level",$RequestObj->Parameters->Option->CubeScopeLevel);
+	oci_bind_by_name($stid,":x_fk_typ_name",$RequestObj->Parameters->Ref->FkTypName);
+
+	$responseObj = new \stdClass();
+	$ResponseObj->ResultName = 'LST_REF';
+	$r = perform_db_request();
+	if (!$r) { 
+		echo ']';
+		return;
+	}
+	$ResponseObj->Rows = array();
+	while ($row = oci_fetch_assoc($curs)) {
+		$RowObj = new \stdClass();
+		$RowObj->Key = new \stdClass();
+		$RowObj->Key->FkTypName = $row["FK_TYP_NAME"];
+		$RowObj->Key->Sequence = $row["SEQUENCE"];
+		$RowObj->Key->XkBotName = $row["XK_BOT_NAME"];
+		$RowObj->Key->XkTypName = $row["XK_TYP_NAME"];
+		$RowObj->Display = $row["FK_TYP_NAME"].' '.$row["NAME"].' ('.$row["CUBE_TSG_INT_EXT"].')'.' '.$row["XK_BOT_NAME"].' '.$row["XK_TYP_NAME"];
+		$ResponseObj->Rows[] = $RowObj;
+	}
+	$ResponseText = json_encode($ResponseObj);
+	echo $ResponseText;
+	echo ']';
+
+	break;
+
 case 'GetRef':
 	echo '[';
 
@@ -2170,6 +2205,7 @@ case 'GetRef':
 		$RowObj->Data->Unchangeable = $row["UNCHANGEABLE"];
 		$RowObj->Data->WithinScopeExtension = $row["WITHIN_SCOPE_EXTENSION"];
 		$RowObj->Data->CubeTsgIntExt = $row["CUBE_TSG_INT_EXT"];
+		$RowObj->Data->TypePrefix = $row["TYPE_PREFIX"];
 		$RowObj->Data->XkTypName1 = $row["XK_TYP_NAME_1"];
 		$ResponseObj->Rows[] = $RowObj;
 	}
@@ -2445,6 +2481,7 @@ case 'CreateRef':
 		:p_unchangeable,
 		:p_within_scope_extension,
 		:p_cube_tsg_int_ext,
+		:p_type_prefix,
 		:p_xk_bot_name,
 		:p_xk_typ_name,
 		:p_xk_typ_name_1,
@@ -2464,6 +2501,7 @@ case 'CreateRef':
 	oci_bind_by_name($stid,":p_unchangeable",$RequestObj->Parameters->Type->Unchangeable);
 	oci_bind_by_name($stid,":p_within_scope_extension",$RequestObj->Parameters->Type->WithinScopeExtension);
 	oci_bind_by_name($stid,":p_cube_tsg_int_ext",$RequestObj->Parameters->Type->CubeTsgIntExt);
+	oci_bind_by_name($stid,":p_type_prefix",$RequestObj->Parameters->Type->TypePrefix);
 	oci_bind_by_name($stid,":p_xk_bot_name",$RequestObj->Parameters->Type->XkBotName);
 	oci_bind_by_name($stid,":p_xk_typ_name",$RequestObj->Parameters->Type->XkTypName);
 	oci_bind_by_name($stid,":p_xk_typ_name_1",$RequestObj->Parameters->Type->XkTypName1);
@@ -2500,6 +2538,7 @@ case 'UpdateRef':
 		:p_unchangeable,
 		:p_within_scope_extension,
 		:p_cube_tsg_int_ext,
+		:p_type_prefix,
 		:p_xk_bot_name,
 		:p_xk_typ_name,
 		:p_xk_typ_name_1);
@@ -2514,6 +2553,7 @@ case 'UpdateRef':
 	oci_bind_by_name($stid,":p_unchangeable",$RequestObj->Parameters->Type->Unchangeable);
 	oci_bind_by_name($stid,":p_within_scope_extension",$RequestObj->Parameters->Type->WithinScopeExtension);
 	oci_bind_by_name($stid,":p_cube_tsg_int_ext",$RequestObj->Parameters->Type->CubeTsgIntExt);
+	oci_bind_by_name($stid,":p_type_prefix",$RequestObj->Parameters->Type->TypePrefix);
 	oci_bind_by_name($stid,":p_xk_bot_name",$RequestObj->Parameters->Type->XkBotName);
 	oci_bind_by_name($stid,":p_xk_typ_name",$RequestObj->Parameters->Type->XkTypName);
 	oci_bind_by_name($stid,":p_xk_typ_name_1",$RequestObj->Parameters->Type->XkTypName1);
@@ -3132,9 +3172,10 @@ case 'GetSrvItems':
 		$RowObj->Key->FkTypName = $row["FK_TYP_NAME"];
 		$RowObj->Key->FkSrvName = $row["FK_SRV_NAME"];
 		$RowObj->Key->FkSrvCubeTsgDbScr = $row["FK_SRV_CUBE_TSG_DB_SCR"];
+		$RowObj->Key->OptionName = $row["OPTION_NAME"];
 		$RowObj->Key->XfAtbTypName = $row["XF_ATB_TYP_NAME"];
 		$RowObj->Key->XkAtbName = $row["XK_ATB_NAME"];
-		$RowObj->Display = $row["XF_ATB_TYP_NAME"].' '.$row["XK_ATB_NAME"];
+		$RowObj->Display = '('.$row["CUBE_TSG_SVA_TYPE"].')'.' '.$row["XF_ATB_TYP_NAME"].' '.$row["XK_ATB_NAME"];
 		$ResponseObj->Rows[] = $RowObj;
 	}
 	$ResponseText = json_encode($ResponseObj);
@@ -3459,12 +3500,14 @@ case 'GetSva':
 		:p_fk_typ_name,
 		:p_fk_srv_name,
 		:p_fk_srv_cube_tsg_db_scr,
+		:p_option_name,
 		:p_xf_atb_typ_name,
 		:p_xk_atb_name);
 	END;");
 	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
 	oci_bind_by_name($stid,":p_fk_srv_name",$RequestObj->Parameters->Type->FkSrvName);
 	oci_bind_by_name($stid,":p_fk_srv_cube_tsg_db_scr",$RequestObj->Parameters->Type->FkSrvCubeTsgDbScr);
+	oci_bind_by_name($stid,":p_option_name",$RequestObj->Parameters->Type->OptionName);
 	oci_bind_by_name($stid,":p_xf_atb_typ_name",$RequestObj->Parameters->Type->XfAtbTypName);
 	oci_bind_by_name($stid,":p_xk_atb_name",$RequestObj->Parameters->Type->XkAtbName);
 
@@ -3480,6 +3523,13 @@ case 'GetSva':
 		$RowObj = new \stdClass();
 		$RowObj->Data = new \stdClass();
 		$RowObj->Data->FkBotName = $row["FK_BOT_NAME"];
+		$RowObj->Data->CubeTsgSvaType = $row["CUBE_TSG_SVA_TYPE"];
+		$RowObj->Data->InputOrOutput = $row["INPUT_OR_OUTPUT"];
+		$RowObj->Data->XkItpName = $row["XK_ITP_NAME"];
+		$RowObj->Data->XkRefBotName = $row["XK_REF_BOT_NAME"];
+		$RowObj->Data->XkRefTypName = $row["XK_REF_TYP_NAME"];
+		$RowObj->Data->XfRefTypName = $row["XF_REF_TYP_NAME"];
+		$RowObj->Data->XkRefSequence = $row["XK_REF_SEQUENCE"];
 		$ResponseObj->Rows[] = $RowObj;
 	}
 	$ResponseText = json_encode($ResponseObj);
@@ -3496,11 +3546,13 @@ case 'MoveSva':
 		:p_fk_typ_name,
 		:p_fk_srv_name,
 		:p_fk_srv_cube_tsg_db_scr,
+		:p_option_name,
 		:p_xf_atb_typ_name,
 		:p_xk_atb_name,
 		:x_fk_typ_name,
 		:x_fk_srv_name,
 		:x_fk_srv_cube_tsg_db_scr,
+		:x_option_name,
 		:x_xf_atb_typ_name,
 		:x_xk_atb_name);
 	END;");
@@ -3508,11 +3560,13 @@ case 'MoveSva':
 	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
 	oci_bind_by_name($stid,":p_fk_srv_name",$RequestObj->Parameters->Type->FkSrvName);
 	oci_bind_by_name($stid,":p_fk_srv_cube_tsg_db_scr",$RequestObj->Parameters->Type->FkSrvCubeTsgDbScr);
+	oci_bind_by_name($stid,":p_option_name",$RequestObj->Parameters->Type->OptionName);
 	oci_bind_by_name($stid,":p_xf_atb_typ_name",$RequestObj->Parameters->Type->XfAtbTypName);
 	oci_bind_by_name($stid,":p_xk_atb_name",$RequestObj->Parameters->Type->XkAtbName);
 	oci_bind_by_name($stid,":x_fk_typ_name",$RequestObj->Parameters->Ref->FkTypName);
 	oci_bind_by_name($stid,":x_fk_srv_name",$RequestObj->Parameters->Ref->FkSrvName);
 	oci_bind_by_name($stid,":x_fk_srv_cube_tsg_db_scr",$RequestObj->Parameters->Ref->FkSrvCubeTsgDbScr);
+	oci_bind_by_name($stid,":x_option_name",$RequestObj->Parameters->Ref->OptionName);
 	oci_bind_by_name($stid,":x_xf_atb_typ_name",$RequestObj->Parameters->Ref->XfAtbTypName);
 	oci_bind_by_name($stid,":x_xk_atb_name",$RequestObj->Parameters->Ref->XkAtbName);
 
@@ -3539,11 +3593,20 @@ case 'CreateSva':
 		:p_fk_typ_name,
 		:p_fk_srv_name,
 		:p_fk_srv_cube_tsg_db_scr,
+		:p_cube_tsg_sva_type,
+		:p_option_name,
+		:p_input_or_output,
+		:p_xk_itp_name,
 		:p_xf_atb_typ_name,
 		:p_xk_atb_name,
+		:p_xk_ref_bot_name,
+		:p_xk_ref_typ_name,
+		:p_xf_ref_typ_name,
+		:p_xk_ref_sequence,
 		:x_fk_typ_name,
 		:x_fk_srv_name,
 		:x_fk_srv_cube_tsg_db_scr,
+		:x_option_name,
 		:x_xf_atb_typ_name,
 		:x_xk_atb_name);
 	END;");
@@ -3552,11 +3615,20 @@ case 'CreateSva':
 	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
 	oci_bind_by_name($stid,":p_fk_srv_name",$RequestObj->Parameters->Type->FkSrvName);
 	oci_bind_by_name($stid,":p_fk_srv_cube_tsg_db_scr",$RequestObj->Parameters->Type->FkSrvCubeTsgDbScr);
+	oci_bind_by_name($stid,":p_cube_tsg_sva_type",$RequestObj->Parameters->Type->CubeTsgSvaType);
+	oci_bind_by_name($stid,":p_option_name",$RequestObj->Parameters->Type->OptionName);
+	oci_bind_by_name($stid,":p_input_or_output",$RequestObj->Parameters->Type->InputOrOutput);
+	oci_bind_by_name($stid,":p_xk_itp_name",$RequestObj->Parameters->Type->XkItpName);
 	oci_bind_by_name($stid,":p_xf_atb_typ_name",$RequestObj->Parameters->Type->XfAtbTypName);
 	oci_bind_by_name($stid,":p_xk_atb_name",$RequestObj->Parameters->Type->XkAtbName);
+	oci_bind_by_name($stid,":p_xk_ref_bot_name",$RequestObj->Parameters->Type->XkRefBotName);
+	oci_bind_by_name($stid,":p_xk_ref_typ_name",$RequestObj->Parameters->Type->XkRefTypName);
+	oci_bind_by_name($stid,":p_xf_ref_typ_name",$RequestObj->Parameters->Type->XfRefTypName);
+	oci_bind_by_name($stid,":p_xk_ref_sequence",$RequestObj->Parameters->Type->XkRefSequence);
 	oci_bind_by_name($stid,":x_fk_typ_name",$RequestObj->Parameters->Ref->FkTypName);
 	oci_bind_by_name($stid,":x_fk_srv_name",$RequestObj->Parameters->Ref->FkSrvName);
 	oci_bind_by_name($stid,":x_fk_srv_cube_tsg_db_scr",$RequestObj->Parameters->Ref->FkSrvCubeTsgDbScr);
+	oci_bind_by_name($stid,":x_option_name",$RequestObj->Parameters->Ref->OptionName);
 	oci_bind_by_name($stid,":x_xf_atb_typ_name",$RequestObj->Parameters->Ref->XfAtbTypName);
 	oci_bind_by_name($stid,":x_xk_atb_name",$RequestObj->Parameters->Ref->XkAtbName);
 
@@ -3582,15 +3654,31 @@ case 'UpdateSva':
 		:p_fk_typ_name,
 		:p_fk_srv_name,
 		:p_fk_srv_cube_tsg_db_scr,
+		:p_cube_tsg_sva_type,
+		:p_option_name,
+		:p_input_or_output,
+		:p_xk_itp_name,
 		:p_xf_atb_typ_name,
-		:p_xk_atb_name);
+		:p_xk_atb_name,
+		:p_xk_ref_bot_name,
+		:p_xk_ref_typ_name,
+		:p_xf_ref_typ_name,
+		:p_xk_ref_sequence);
 	END;");
 	oci_bind_by_name($stid,":p_fk_bot_name",$RequestObj->Parameters->Type->FkBotName);
 	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
 	oci_bind_by_name($stid,":p_fk_srv_name",$RequestObj->Parameters->Type->FkSrvName);
 	oci_bind_by_name($stid,":p_fk_srv_cube_tsg_db_scr",$RequestObj->Parameters->Type->FkSrvCubeTsgDbScr);
+	oci_bind_by_name($stid,":p_cube_tsg_sva_type",$RequestObj->Parameters->Type->CubeTsgSvaType);
+	oci_bind_by_name($stid,":p_option_name",$RequestObj->Parameters->Type->OptionName);
+	oci_bind_by_name($stid,":p_input_or_output",$RequestObj->Parameters->Type->InputOrOutput);
+	oci_bind_by_name($stid,":p_xk_itp_name",$RequestObj->Parameters->Type->XkItpName);
 	oci_bind_by_name($stid,":p_xf_atb_typ_name",$RequestObj->Parameters->Type->XfAtbTypName);
 	oci_bind_by_name($stid,":p_xk_atb_name",$RequestObj->Parameters->Type->XkAtbName);
+	oci_bind_by_name($stid,":p_xk_ref_bot_name",$RequestObj->Parameters->Type->XkRefBotName);
+	oci_bind_by_name($stid,":p_xk_ref_typ_name",$RequestObj->Parameters->Type->XkRefTypName);
+	oci_bind_by_name($stid,":p_xf_ref_typ_name",$RequestObj->Parameters->Type->XfRefTypName);
+	oci_bind_by_name($stid,":p_xk_ref_sequence",$RequestObj->Parameters->Type->XkRefSequence);
 
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'UPD_SVA';
@@ -3613,12 +3701,14 @@ case 'DeleteSva':
 		:p_fk_typ_name,
 		:p_fk_srv_name,
 		:p_fk_srv_cube_tsg_db_scr,
+		:p_option_name,
 		:p_xf_atb_typ_name,
 		:p_xk_atb_name);
 	END;");
 	oci_bind_by_name($stid,":p_fk_typ_name",$RequestObj->Parameters->Type->FkTypName);
 	oci_bind_by_name($stid,":p_fk_srv_name",$RequestObj->Parameters->Type->FkSrvName);
 	oci_bind_by_name($stid,":p_fk_srv_cube_tsg_db_scr",$RequestObj->Parameters->Type->FkSrvCubeTsgDbScr);
+	oci_bind_by_name($stid,":p_option_name",$RequestObj->Parameters->Type->OptionName);
 	oci_bind_by_name($stid,":p_xf_atb_typ_name",$RequestObj->Parameters->Type->XfAtbTypName);
 	oci_bind_by_name($stid,":p_xk_atb_name",$RequestObj->Parameters->Type->XkAtbName);
 
