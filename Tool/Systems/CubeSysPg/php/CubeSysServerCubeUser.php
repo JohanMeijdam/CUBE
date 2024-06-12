@@ -20,7 +20,7 @@ case 'GetDirCubeUsrItems':
 	$conn->query("CALL cube_usr.get_cube_usr_root_items ()");
 	$ResponseObj->Rows = array();
 	$curs = $conn->query('FETCH ALL FROM cube_cursor;');
-	if ($row = $curs->fetch(PDO::FETCH_ASSOC)) {
+	while ($row = $curs->fetch(PDO::FETCH_ASSOC)) {
 		$RowObj = new \stdClass();
 		$RowObj->Key = new \stdClass();
 		$RowObj->Key->Userid = $row["userid"];
@@ -38,7 +38,7 @@ case 'GetCubeUsr':
 	$conn->query("CALL cube_usr.get_cube_usr ('".$RequestObj->Parameters->Type->Userid."')");
 	$ResponseObj->Rows = array();
 	$curs = $conn->query('FETCH ALL FROM cube_cursor;');
-	if ($row = $curs->fetch(PDO::FETCH_ASSOC)) {
+	while ($row = $curs->fetch(PDO::FETCH_ASSOC)) {
 		$RowObj = new \stdClass();
 		$RowObj->Data = new \stdClass();
 		$RowObj->Data->Name = $row["name"];

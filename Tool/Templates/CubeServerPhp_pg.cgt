@@ -12,6 +12,7 @@
 08-08-2023 - ARGUMENT > SERVICE_ARGUMENT
 10-09-2023 - SERVICE properties
 24-09-2023 - ARGUMENT > EXPORT_ARGUMENT
+12-06-2023 - Fix SERVICE prop in IF
 [[INCLUDE,Includes/general.cgt]]
 [[BODY]][[LOOP,BUSINESS_OBJECT_TYPE]][[FILE,<<2>>\<<1>>Server<<BUSINESS_OBJECT_TYPE:C>>.php]]<?php
 session_start();
@@ -31,7 +32,7 @@ case '<<SERVICE:C>>':
 	$conn->query("CALL [[FOR,BUSINESS_OBJECT_TYPE:N>N]][[LOOP,TYPE]]<<TYPE1:L>>[[ENDLOOP,TYPE]][[ENDFOR]].<<OPERATION:L>> ([[FORH,SERVICE:N>N]][[LOOP,SERVICE_ARGUMENT]][[LOOP,ARGUMENT_ATTRIBUTE]][[IF:CHILD(INFORMATION_TYPE_ELEMENT:2=NUMBER)]]".($RequestObj->Parameters-><<SERVICE_ARGUMENT2>>-><<ARGUMENT_ATTRIBUTE:C>>??"null")."[[ELSE]]'".$RequestObj->Parameters-><<SERVICE_ARGUMENT2>>-><<ARGUMENT_ATTRIBUTE:C>>."'[[ENDIF]][[ENDLOOP,ARGUMENT_ATTRIBUTE]][[IF,SERVICE_ARGUMENT:!LAST]],[[ENDIF]][[ENDLOOP,SERVICE_ARGUMENT]][[ENDFOR]])");[[IF:CHILD(EXPORT)]]
 	$ResponseObj->Rows = array();
 	$curs = $conn->query('FETCH ALL FROM cube_cursor;');
-	[[IF:<<TEXT,GEN_HAS_CURSOR>>]]while[[ELSE]]if[[ENDIF]] ($row = $curs->fetch(PDO::FETCH_ASSOC)) {
+	[[IF,SERVICE:<<TEXT,GEN_HAS_CURSOR>>]]while[[ELSE]]if[[ENDIF]] ($row = $curs->fetch(PDO::FETCH_ASSOC)) {
 		$RowObj = new \stdClass();[[LOOP,EXPORT]][[IF:1=Y]]
 		$RowObj-><<EXPORT:C>> = new \stdClass();[[LOOP,EXPORT_ARGUMENT]]
 		$RowObj-><<EXPORT:C>>-><<EXPORT_ARGUMENT:C>> = $row["<<EXPORT_ARGUMENT:L>>"];[[ENDLOOP,EXPORT_ARGUMENT]][[ELSE]]

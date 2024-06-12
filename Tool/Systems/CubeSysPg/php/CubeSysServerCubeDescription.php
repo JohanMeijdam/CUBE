@@ -16,7 +16,7 @@ case 'GetDirCubeDscItems':
 	$conn->query("CALL cube_dsc.get_cube_dsc_root_items ()");
 	$ResponseObj->Rows = array();
 	$curs = $conn->query('FETCH ALL FROM cube_cursor;');
-	if ($row = $curs->fetch(PDO::FETCH_ASSOC)) {
+	while ($row = $curs->fetch(PDO::FETCH_ASSOC)) {
 		$RowObj = new \stdClass();
 		$RowObj->Key = new \stdClass();
 		$RowObj->Key->TypeName = $row["type_name"];
@@ -36,7 +36,7 @@ case 'GetCubeDsc':
 	$conn->query("CALL cube_dsc.get_cube_dsc ('".$RequestObj->Parameters->Type->TypeName."','".$RequestObj->Parameters->Type->AttributeTypeName."',".($RequestObj->Parameters->Type->Sequence??"null").")");
 	$ResponseObj->Rows = array();
 	$curs = $conn->query('FETCH ALL FROM cube_cursor;');
-	if ($row = $curs->fetch(PDO::FETCH_ASSOC)) {
+	while ($row = $curs->fetch(PDO::FETCH_ASSOC)) {
 		$RowObj = new \stdClass();
 		$RowObj->Data = new \stdClass();
 		$RowObj->Data->Value = $row["value"];
