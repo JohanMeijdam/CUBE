@@ -740,6 +740,8 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_tsg_code IN VARCHAR2,
 			p_code IN VARCHAR2);
+	PROCEDURE get_atb_list (
+			p_cube_row IN OUT c_cube_row);
 	PROCEDURE get_atb_for_typ_list (
 			p_cube_row IN OUT c_cube_row,
 			p_cube_scope_level IN NUMBER,
@@ -876,10 +878,8 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_xf_tsp_typ_name IN VARCHAR2,
 			p_xf_tsp_tsg_code IN VARCHAR2,
 			p_xk_tsp_code IN VARCHAR2);
-	PROCEDURE get_ref_for_typ_list (
-			p_cube_row IN OUT c_cube_row,
-			p_cube_scope_level IN NUMBER,
-			x_fk_typ_name IN VARCHAR2);
+	PROCEDURE get_ref_list (
+			p_cube_row IN OUT c_cube_row);
 	PROCEDURE get_ref (
 			p_cube_row IN OUT c_cube_row,
 			p_fk_typ_name IN VARCHAR2,
@@ -1087,7 +1087,7 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_fk_typ_name IN VARCHAR2,
 			p_name IN VARCHAR2,
 			p_cube_tsg_db_scr IN VARCHAR2);
-	PROCEDURE get_srv_sva_items (
+	PROCEDURE get_srv_svd_items (
 			p_cube_row IN OUT c_cube_row,
 			p_fk_typ_name IN VARCHAR2,
 			p_name IN VARCHAR2,
@@ -1162,72 +1162,51 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_fk_srv_name IN VARCHAR2,
 			p_fk_srv_cube_tsg_db_scr IN VARCHAR2,
 			p_name IN VARCHAR2);
-	PROCEDURE get_sva (
+	PROCEDURE get_svd (
 			p_cube_row IN OUT c_cube_row,
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_srv_name IN VARCHAR2,
 			p_fk_srv_cube_tsg_db_scr IN VARCHAR2,
-			p_option_name IN VARCHAR2,
-			p_xf_atb_typ_name IN VARCHAR2,
-			p_xk_atb_name IN VARCHAR2);
-	PROCEDURE move_sva (
-			p_cube_pos_action IN VARCHAR2,
-			p_fk_typ_name IN VARCHAR2,
-			p_fk_srv_name IN VARCHAR2,
-			p_fk_srv_cube_tsg_db_scr IN VARCHAR2,
-			p_option_name IN VARCHAR2,
-			p_xf_atb_typ_name IN VARCHAR2,
-			p_xk_atb_name IN VARCHAR2,
-			x_fk_typ_name IN VARCHAR2,
-			x_fk_srv_name IN VARCHAR2,
-			x_fk_srv_cube_tsg_db_scr IN VARCHAR2,
-			x_option_name IN VARCHAR2,
-			x_xf_atb_typ_name IN VARCHAR2,
-			x_xk_atb_name IN VARCHAR2);
-	PROCEDURE insert_sva (
-			p_cube_pos_action IN VARCHAR2,
-			p_fk_bot_name IN VARCHAR2,
-			p_fk_typ_name IN VARCHAR2,
-			p_fk_srv_name IN VARCHAR2,
-			p_fk_srv_cube_tsg_db_scr IN VARCHAR2,
-			p_cube_tsg_sva_type IN VARCHAR2,
-			p_option_name IN VARCHAR2,
-			p_input_or_output IN VARCHAR2,
-			p_xk_itp_name IN VARCHAR2,
-			p_xf_atb_typ_name IN VARCHAR2,
-			p_xk_atb_name IN VARCHAR2,
-			p_xk_ref_bot_name IN VARCHAR2,
-			p_xk_ref_typ_name IN VARCHAR2,
-			p_xf_ref_typ_name IN VARCHAR2,
-			p_xk_ref_sequence IN NUMBER,
-			x_fk_typ_name IN VARCHAR2,
-			x_fk_srv_name IN VARCHAR2,
-			x_fk_srv_cube_tsg_db_scr IN VARCHAR2,
-			x_option_name IN VARCHAR2,
-			x_xf_atb_typ_name IN VARCHAR2,
-			x_xk_atb_name IN VARCHAR2);
-	PROCEDURE update_sva (
-			p_fk_bot_name IN VARCHAR2,
-			p_fk_typ_name IN VARCHAR2,
-			p_fk_srv_name IN VARCHAR2,
-			p_fk_srv_cube_tsg_db_scr IN VARCHAR2,
-			p_cube_tsg_sva_type IN VARCHAR2,
-			p_option_name IN VARCHAR2,
-			p_input_or_output IN VARCHAR2,
-			p_xk_itp_name IN VARCHAR2,
 			p_xf_atb_typ_name IN VARCHAR2,
 			p_xk_atb_name IN VARCHAR2,
 			p_xk_ref_bot_name IN VARCHAR2,
 			p_xk_ref_typ_name IN VARCHAR2,
 			p_xf_ref_typ_name IN VARCHAR2,
 			p_xk_ref_sequence IN NUMBER);
-	PROCEDURE delete_sva (
+	PROCEDURE insert_svd (
+			p_fk_bot_name IN VARCHAR2,
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_srv_name IN VARCHAR2,
 			p_fk_srv_cube_tsg_db_scr IN VARCHAR2,
-			p_option_name IN VARCHAR2,
+			p_cube_tsg_atb_ref IN VARCHAR2,
 			p_xf_atb_typ_name IN VARCHAR2,
-			p_xk_atb_name IN VARCHAR2);
+			p_xk_atb_name IN VARCHAR2,
+			p_xk_ref_bot_name IN VARCHAR2,
+			p_xk_ref_typ_name IN VARCHAR2,
+			p_xf_ref_typ_name IN VARCHAR2,
+			p_xk_ref_sequence IN NUMBER);
+	PROCEDURE update_svd (
+			p_fk_bot_name IN VARCHAR2,
+			p_fk_typ_name IN VARCHAR2,
+			p_fk_srv_name IN VARCHAR2,
+			p_fk_srv_cube_tsg_db_scr IN VARCHAR2,
+			p_cube_tsg_atb_ref IN VARCHAR2,
+			p_xf_atb_typ_name IN VARCHAR2,
+			p_xk_atb_name IN VARCHAR2,
+			p_xk_ref_bot_name IN VARCHAR2,
+			p_xk_ref_typ_name IN VARCHAR2,
+			p_xf_ref_typ_name IN VARCHAR2,
+			p_xk_ref_sequence IN NUMBER);
+	PROCEDURE delete_svd (
+			p_fk_typ_name IN VARCHAR2,
+			p_fk_srv_name IN VARCHAR2,
+			p_fk_srv_cube_tsg_db_scr IN VARCHAR2,
+			p_xf_atb_typ_name IN VARCHAR2,
+			p_xk_atb_name IN VARCHAR2,
+			p_xk_ref_bot_name IN VARCHAR2,
+			p_xk_ref_typ_name IN VARCHAR2,
+			p_xf_ref_typ_name IN VARCHAR2,
+			p_xk_ref_sequence IN NUMBER);
 	PROCEDURE get_rtt (
 			p_cube_row IN OUT c_cube_row,
 			p_fk_typ_name IN VARCHAR2,
@@ -2577,6 +2556,18 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 		  AND code = p_code;
 	END;
 
+	PROCEDURE get_atb_list (
+			p_cube_row IN OUT c_cube_row) IS
+	BEGIN
+		OPEN p_cube_row FOR
+			SELECT
+			  cube_sequence,
+			  fk_typ_name,
+			  name
+			FROM v_attribute
+			ORDER BY fk_typ_name, cube_sequence;
+	END;
+
 	PROCEDURE get_atb_for_typ_list (
 			p_cube_row IN OUT c_cube_row,
 			p_cube_scope_level IN NUMBER,
@@ -3153,37 +3144,9 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 		  AND xk_tsp_code = p_xk_tsp_code;
 	END;
 
-	PROCEDURE get_ref_for_typ_list (
-			p_cube_row IN OUT c_cube_row,
-			p_cube_scope_level IN NUMBER,
-			x_fk_typ_name IN VARCHAR2) IS
-		l_cube_scope_level NUMBER(1) := 0;
-		l_name v_type.name%TYPE;
+	PROCEDURE get_ref_list (
+			p_cube_row IN OUT c_cube_row) IS
 	BEGIN
-		l_name := x_fk_typ_name;
-		IF p_cube_scope_level > 0 THEN
-			LOOP
-				IF p_cube_scope_level = l_cube_scope_level THEN
-					EXIT;
-				END IF;
-				l_cube_scope_level := l_cube_scope_level + 1;
-				SELECT fk_typ_name
-				INTO l_name
-				FROM v_type
-				WHERE name = l_name;
-			END LOOP;
-		ELSIF p_cube_scope_level < 0 THEN
-			LOOP
-				IF p_cube_scope_level = l_cube_scope_level THEN
-					EXIT;
-				END IF;
-				l_cube_scope_level := l_cube_scope_level - 1;
-				SELECT name
-				INTO l_name
-				FROM v_type
-				WHERE fk_typ_name = l_name;
-			END LOOP;
-		END IF;
 		OPEN p_cube_row FOR
 			SELECT
 			  cube_sequence,
@@ -3194,7 +3157,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			  xk_bot_name,
 			  xk_typ_name
 			FROM v_reference
-			WHERE fk_typ_name = l_name
 			ORDER BY fk_typ_name, cube_sequence;
 	END;
 
@@ -3940,7 +3902,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			ORDER BY fk_typ_name, fk_srv_name, fk_srv_cube_tsg_db_scr, cube_sequence;
 	END;
 
-	PROCEDURE get_srv_sva_items (
+	PROCEDURE get_srv_svd_items (
 			p_cube_row IN OUT c_cube_row,
 			p_fk_typ_name IN VARCHAR2,
 			p_name IN VARCHAR2,
@@ -3948,19 +3910,21 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 	BEGIN
 		OPEN p_cube_row FOR
 			SELECT
-			  cube_sequence,
 			  fk_typ_name,
 			  fk_srv_name,
 			  fk_srv_cube_tsg_db_scr,
-			  cube_tsg_sva_type,
-			  option_name,
+			  cube_tsg_atb_ref,
 			  xf_atb_typ_name,
-			  xk_atb_name
-			FROM v_service_argument
+			  xk_atb_name,
+			  xk_ref_bot_name,
+			  xk_ref_typ_name,
+			  xf_ref_typ_name,
+			  xk_ref_sequence
+			FROM v_service_detail
 			WHERE fk_typ_name = p_fk_typ_name
 			  AND fk_srv_name = p_name
 			  AND fk_srv_cube_tsg_db_scr = p_cube_tsg_db_scr
-			ORDER BY fk_typ_name, fk_srv_name, fk_srv_cube_tsg_db_scr, cube_sequence;
+			ORDER BY fk_typ_name, fk_srv_name, fk_srv_cube_tsg_db_scr, cube_tsg_atb_ref, xf_atb_typ_name, xk_atb_name, xk_ref_bot_name, xk_ref_typ_name, xf_ref_typ_name, xk_ref_sequence;
 	END;
 
 	PROCEDURE determine_position_srv (
@@ -4305,180 +4269,54 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 		  AND name = p_name;
 	END;
 
-	PROCEDURE get_sva (
+	PROCEDURE get_svd (
 			p_cube_row IN OUT c_cube_row,
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_srv_name IN VARCHAR2,
 			p_fk_srv_cube_tsg_db_scr IN VARCHAR2,
-			p_option_name IN VARCHAR2,
-			p_xf_atb_typ_name IN VARCHAR2,
-			p_xk_atb_name IN VARCHAR2) IS
-	BEGIN
-		OPEN p_cube_row FOR
-			SELECT
-			  fk_bot_name,
-			  cube_tsg_sva_type,
-			  input_or_output,
-			  xk_itp_name,
-			  xk_ref_bot_name,
-			  xk_ref_typ_name,
-			  xf_ref_typ_name,
-			  xk_ref_sequence
-			FROM v_service_argument
-			WHERE fk_typ_name = p_fk_typ_name
-			  AND fk_srv_name = p_fk_srv_name
-			  AND fk_srv_cube_tsg_db_scr = p_fk_srv_cube_tsg_db_scr
-			  AND option_name = p_option_name
-			  AND xf_atb_typ_name = p_xf_atb_typ_name
-			  AND xk_atb_name = p_xk_atb_name;
-	END;
-
-	PROCEDURE determine_position_sva (
-			p_cube_sequence OUT NUMBER,
-			p_cube_pos_action IN VARCHAR2,
-			p_fk_typ_name IN VARCHAR2,
-			p_fk_srv_name IN VARCHAR2,
-			p_fk_srv_cube_tsg_db_scr IN VARCHAR2,
-			p_option_name IN VARCHAR2,
-			p_xf_atb_typ_name IN VARCHAR2,
-			p_xk_atb_name IN VARCHAR2) IS
-		l_cube_pos_action CHAR(1);
-		l_cube_position_sequ NUMBER(8);
-		l_cube_near_sequ NUMBER(8);
-		l_cube_count NUMBER(8) := 1024;
-	BEGIN
-		-- A=After B=Before F=First L=Last
-		CASE p_cube_pos_action
-		WHEN 'F' THEN
-			l_cube_position_sequ := 0;
-			l_cube_pos_action := 'A';
-		WHEN 'L' THEN
-			l_cube_position_sequ := 99999999;
-			l_cube_pos_action := 'B';
-		ELSE
-			l_cube_pos_action := p_cube_pos_action;
-		END CASE;
-		LOOP
-			IF p_cube_pos_action IN  ('B', 'A') THEN
-				-- Read sequence number of the target.
-				SELECT COALESCE(MAX(cube_sequence), CASE p_cube_pos_action WHEN 'B' THEN 99999999 ELSE 0 END)
-				INTO l_cube_position_sequ
-				FROM v_service_argument
-				WHERE fk_typ_name = p_fk_typ_name
-				  AND fk_srv_name = p_fk_srv_name
-				  AND fk_srv_cube_tsg_db_scr = p_fk_srv_cube_tsg_db_scr
-				  AND option_name = p_option_name
-				  AND xf_atb_typ_name = p_xf_atb_typ_name
-				  AND xk_atb_name = p_xk_atb_name;
-			END IF;
-			-- read sequence number near the target.
-			SELECT CASE l_cube_pos_action WHEN 'B' THEN COALESCE(MAX(cube_sequence), 0) ELSE COALESCE(MIN(cube_sequence), 99999999) END
-			INTO l_cube_near_sequ
-			FROM v_service_argument
-			WHERE fk_typ_name = p_fk_typ_name
-			  AND fk_srv_name = p_fk_srv_name
-			  AND fk_srv_cube_tsg_db_scr = p_fk_srv_cube_tsg_db_scr
-			  AND 	    ( 	    ( l_cube_pos_action = 'B'
-					  AND cube_sequence < l_cube_position_sequ )
-				   OR 	    ( l_cube_pos_action = 'A'
-					  AND cube_sequence > l_cube_position_sequ ) );
-			IF ABS(l_cube_position_sequ - l_cube_near_sequ) > 1 THEN
-				p_cube_sequence := l_cube_position_sequ - (l_cube_position_sequ - l_cube_near_sequ) / 2; -- Formula both directions OK.
-				EXIT;
-			ELSE
-				-- renumber.
-				FOR r_sva IN (
-					SELECT
-					  rowid row_id
-					FROM v_service_argument
-					WHERE fk_typ_name = p_fk_typ_name
-					  AND fk_srv_name = p_fk_srv_name
-					  AND fk_srv_cube_tsg_db_scr = p_fk_srv_cube_tsg_db_scr
-					ORDER BY cube_sequence)
-				LOOP
-					UPDATE v_service_argument SET
-						cube_sequence = l_cube_count
-					WHERE rowid = r_sva.row_id;
-					l_cube_count := l_cube_count + 1024;
-				END LOOP;
-			END IF;
-		END LOOP;
-	END;
-
-	PROCEDURE move_sva (
-			p_cube_pos_action IN VARCHAR2,
-			p_fk_typ_name IN VARCHAR2,
-			p_fk_srv_name IN VARCHAR2,
-			p_fk_srv_cube_tsg_db_scr IN VARCHAR2,
-			p_option_name IN VARCHAR2,
-			p_xf_atb_typ_name IN VARCHAR2,
-			p_xk_atb_name IN VARCHAR2,
-			x_fk_typ_name IN VARCHAR2,
-			x_fk_srv_name IN VARCHAR2,
-			x_fk_srv_cube_tsg_db_scr IN VARCHAR2,
-			x_option_name IN VARCHAR2,
-			x_xf_atb_typ_name IN VARCHAR2,
-			x_xk_atb_name IN VARCHAR2) IS
-		l_cube_sequence NUMBER(8);
-	BEGIN
-		-- A=After B=Before F=First L=Last
-		IF COALESCE(p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
-			RAISE_APPLICATION_ERROR (-20000, pkg_cube.replace_placeholders('Invalid position action: %', p_cube_pos_action));
-		END IF;
-		determine_position_sva (l_cube_sequence, p_cube_pos_action, x_fk_typ_name, x_fk_srv_name, x_fk_srv_cube_tsg_db_scr, x_option_name, x_xf_atb_typ_name, x_xk_atb_name);
-		UPDATE v_service_argument SET
-			cube_sequence = l_cube_sequence
-		WHERE fk_typ_name = p_fk_typ_name
-		  AND fk_srv_name = p_fk_srv_name
-		  AND fk_srv_cube_tsg_db_scr = p_fk_srv_cube_tsg_db_scr
-		  AND option_name = p_option_name
-		  AND xf_atb_typ_name = p_xf_atb_typ_name
-		  AND xk_atb_name = p_xk_atb_name;
-		IF SQL%NOTFOUND THEN
-			RAISE_APPLICATION_ERROR (-20000, pkg_cube.replace_placeholders('Type service_argument not found'));
-		END IF;
-	END;
-
-	PROCEDURE insert_sva (
-			p_cube_pos_action IN VARCHAR2,
-			p_fk_bot_name IN VARCHAR2,
-			p_fk_typ_name IN VARCHAR2,
-			p_fk_srv_name IN VARCHAR2,
-			p_fk_srv_cube_tsg_db_scr IN VARCHAR2,
-			p_cube_tsg_sva_type IN VARCHAR2,
-			p_option_name IN VARCHAR2,
-			p_input_or_output IN VARCHAR2,
-			p_xk_itp_name IN VARCHAR2,
 			p_xf_atb_typ_name IN VARCHAR2,
 			p_xk_atb_name IN VARCHAR2,
 			p_xk_ref_bot_name IN VARCHAR2,
 			p_xk_ref_typ_name IN VARCHAR2,
 			p_xf_ref_typ_name IN VARCHAR2,
-			p_xk_ref_sequence IN NUMBER,
-			x_fk_typ_name IN VARCHAR2,
-			x_fk_srv_name IN VARCHAR2,
-			x_fk_srv_cube_tsg_db_scr IN VARCHAR2,
-			x_option_name IN VARCHAR2,
-			x_xf_atb_typ_name IN VARCHAR2,
-			x_xk_atb_name IN VARCHAR2) IS
-		l_cube_sequence NUMBER(8);
+			p_xk_ref_sequence IN NUMBER) IS
 	BEGIN
-		-- A=After B=Before F=First L=Last
-		IF COALESCE(p_cube_pos_action, ' ') NOT IN  ('A', 'B', 'F', 'L') THEN
-			RAISE_APPLICATION_ERROR (-20000, pkg_cube.replace_placeholders('Invalid position action: %', p_cube_pos_action));
-		END IF;
-		determine_position_sva (l_cube_sequence, p_cube_pos_action, x_fk_typ_name, x_fk_srv_name, x_fk_srv_cube_tsg_db_scr, x_option_name, x_xf_atb_typ_name, x_xk_atb_name);
-		INSERT INTO v_service_argument (
+		OPEN p_cube_row FOR
+			SELECT
+			  fk_bot_name,
+			  cube_tsg_atb_ref
+			FROM v_service_detail
+			WHERE fk_typ_name = p_fk_typ_name
+			  AND fk_srv_name = p_fk_srv_name
+			  AND fk_srv_cube_tsg_db_scr = p_fk_srv_cube_tsg_db_scr
+			  AND xf_atb_typ_name = p_xf_atb_typ_name
+			  AND xk_atb_name = p_xk_atb_name
+			  AND xk_ref_bot_name = p_xk_ref_bot_name
+			  AND xk_ref_typ_name = p_xk_ref_typ_name
+			  AND xf_ref_typ_name = p_xf_ref_typ_name
+			  AND xk_ref_sequence = p_xk_ref_sequence;
+	END;
+
+	PROCEDURE insert_svd (
+			p_fk_bot_name IN VARCHAR2,
+			p_fk_typ_name IN VARCHAR2,
+			p_fk_srv_name IN VARCHAR2,
+			p_fk_srv_cube_tsg_db_scr IN VARCHAR2,
+			p_cube_tsg_atb_ref IN VARCHAR2,
+			p_xf_atb_typ_name IN VARCHAR2,
+			p_xk_atb_name IN VARCHAR2,
+			p_xk_ref_bot_name IN VARCHAR2,
+			p_xk_ref_typ_name IN VARCHAR2,
+			p_xf_ref_typ_name IN VARCHAR2,
+			p_xk_ref_sequence IN NUMBER) IS
+	BEGIN
+		INSERT INTO v_service_detail (
 			cube_id,
-			cube_sequence,
 			fk_bot_name,
 			fk_typ_name,
 			fk_srv_name,
 			fk_srv_cube_tsg_db_scr,
-			cube_tsg_sva_type,
-			option_name,
-			input_or_output,
-			xk_itp_name,
+			cube_tsg_atb_ref,
 			xf_atb_typ_name,
 			xk_atb_name,
 			xk_ref_bot_name,
@@ -4487,15 +4325,11 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			xk_ref_sequence)
 		VALUES (
 			NULL,
-			l_cube_sequence,
 			p_fk_bot_name,
 			p_fk_typ_name,
 			p_fk_srv_name,
 			p_fk_srv_cube_tsg_db_scr,
-			p_cube_tsg_sva_type,
-			p_option_name,
-			p_input_or_output,
-			p_xk_itp_name,
+			p_cube_tsg_atb_ref,
 			p_xf_atb_typ_name,
 			p_xk_atb_name,
 			p_xk_ref_bot_name,
@@ -4504,18 +4338,15 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_xk_ref_sequence);
 	EXCEPTION
 	WHEN DUP_VAL_ON_INDEX THEN
-			RAISE_APPLICATION_ERROR (-20000, pkg_cube.replace_placeholders('Type service_argument already exists'));
+			RAISE_APPLICATION_ERROR (-20000, pkg_cube.replace_placeholders('Type service_detail already exists'));
 	END;
 
-	PROCEDURE update_sva (
+	PROCEDURE update_svd (
 			p_fk_bot_name IN VARCHAR2,
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_srv_name IN VARCHAR2,
 			p_fk_srv_cube_tsg_db_scr IN VARCHAR2,
-			p_cube_tsg_sva_type IN VARCHAR2,
-			p_option_name IN VARCHAR2,
-			p_input_or_output IN VARCHAR2,
-			p_xk_itp_name IN VARCHAR2,
+			p_cube_tsg_atb_ref IN VARCHAR2,
 			p_xf_atb_typ_name IN VARCHAR2,
 			p_xk_atb_name IN VARCHAR2,
 			p_xk_ref_bot_name IN VARCHAR2,
@@ -4523,38 +4354,41 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			p_xf_ref_typ_name IN VARCHAR2,
 			p_xk_ref_sequence IN NUMBER) IS
 	BEGIN
-		UPDATE v_service_argument SET
+		UPDATE v_service_detail SET
 			fk_bot_name = p_fk_bot_name,
-			cube_tsg_sva_type = p_cube_tsg_sva_type,
-			input_or_output = p_input_or_output,
-			xk_itp_name = p_xk_itp_name,
-			xk_ref_bot_name = p_xk_ref_bot_name,
-			xk_ref_typ_name = p_xk_ref_typ_name,
-			xf_ref_typ_name = p_xf_ref_typ_name,
-			xk_ref_sequence = p_xk_ref_sequence
+			cube_tsg_atb_ref = p_cube_tsg_atb_ref
 		WHERE fk_typ_name = p_fk_typ_name
 		  AND fk_srv_name = p_fk_srv_name
 		  AND fk_srv_cube_tsg_db_scr = p_fk_srv_cube_tsg_db_scr
-		  AND option_name = p_option_name
 		  AND xf_atb_typ_name = p_xf_atb_typ_name
-		  AND xk_atb_name = p_xk_atb_name;
+		  AND xk_atb_name = p_xk_atb_name
+		  AND xk_ref_bot_name = p_xk_ref_bot_name
+		  AND xk_ref_typ_name = p_xk_ref_typ_name
+		  AND xf_ref_typ_name = p_xf_ref_typ_name
+		  AND xk_ref_sequence = p_xk_ref_sequence;
 	END;
 
-	PROCEDURE delete_sva (
+	PROCEDURE delete_svd (
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_srv_name IN VARCHAR2,
 			p_fk_srv_cube_tsg_db_scr IN VARCHAR2,
-			p_option_name IN VARCHAR2,
 			p_xf_atb_typ_name IN VARCHAR2,
-			p_xk_atb_name IN VARCHAR2) IS
+			p_xk_atb_name IN VARCHAR2,
+			p_xk_ref_bot_name IN VARCHAR2,
+			p_xk_ref_typ_name IN VARCHAR2,
+			p_xf_ref_typ_name IN VARCHAR2,
+			p_xk_ref_sequence IN NUMBER) IS
 	BEGIN
-		DELETE v_service_argument
+		DELETE v_service_detail
 		WHERE fk_typ_name = p_fk_typ_name
 		  AND fk_srv_name = p_fk_srv_name
 		  AND fk_srv_cube_tsg_db_scr = p_fk_srv_cube_tsg_db_scr
-		  AND option_name = p_option_name
 		  AND xf_atb_typ_name = p_xf_atb_typ_name
-		  AND xk_atb_name = p_xk_atb_name;
+		  AND xk_atb_name = p_xk_atb_name
+		  AND xk_ref_bot_name = p_xk_ref_bot_name
+		  AND xk_ref_typ_name = p_xk_ref_typ_name
+		  AND xf_ref_typ_name = p_xf_ref_typ_name
+		  AND xk_ref_sequence = p_xk_ref_sequence;
 	END;
 
 	PROCEDURE get_rtt (

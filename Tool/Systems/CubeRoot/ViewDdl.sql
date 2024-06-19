@@ -524,25 +524,21 @@ CREATE OR REPLACE VIEW v_service_step AS
 		script_name
 	FROM t_service_step
 /
-CREATE OR REPLACE VIEW v_service_argument AS 
+CREATE OR REPLACE VIEW v_service_detail AS 
 	SELECT
 		cube_id,
-		cube_sequence,
 		fk_bot_name,
 		fk_typ_name,
 		fk_srv_name,
 		fk_srv_cube_tsg_db_scr,
-		cube_tsg_sva_type,
-		option_name,
-		input_or_output,
-		xk_itp_name,
+		cube_tsg_atb_ref,
 		xf_atb_typ_name,
 		xk_atb_name,
 		xk_ref_bot_name,
 		xk_ref_typ_name,
 		xf_ref_typ_name,
 		xk_ref_sequence
-	FROM t_service_argument
+	FROM t_service_detail
 /
 CREATE OR REPLACE VIEW v_restriction_type_spec_typ AS 
 	SELECT
@@ -633,9 +629,9 @@ CREATE OR REPLACE PACKAGE pkg_bot_trg IS
 	PROCEDURE insert_sst (p_sst IN OUT NOCOPY v_service_step%ROWTYPE);
 	PROCEDURE update_sst (p_cube_rowid IN UROWID, p_sst_old IN OUT NOCOPY v_service_step%ROWTYPE, p_sst_new IN OUT NOCOPY v_service_step%ROWTYPE);
 	PROCEDURE delete_sst (p_cube_rowid IN UROWID, p_sst IN OUT NOCOPY v_service_step%ROWTYPE);
-	PROCEDURE insert_sva (p_sva IN OUT NOCOPY v_service_argument%ROWTYPE);
-	PROCEDURE update_sva (p_cube_rowid IN UROWID, p_sva_old IN OUT NOCOPY v_service_argument%ROWTYPE, p_sva_new IN OUT NOCOPY v_service_argument%ROWTYPE);
-	PROCEDURE delete_sva (p_cube_rowid IN UROWID, p_sva IN OUT NOCOPY v_service_argument%ROWTYPE);
+	PROCEDURE insert_svd (p_svd IN OUT NOCOPY v_service_detail%ROWTYPE);
+	PROCEDURE update_svd (p_cube_rowid IN UROWID, p_svd_old IN OUT NOCOPY v_service_detail%ROWTYPE, p_svd_new IN OUT NOCOPY v_service_detail%ROWTYPE);
+	PROCEDURE delete_svd (p_cube_rowid IN UROWID, p_svd IN OUT NOCOPY v_service_detail%ROWTYPE);
 	PROCEDURE insert_rtt (p_rtt IN OUT NOCOPY v_restriction_type_spec_typ%ROWTYPE);
 	PROCEDURE update_rtt (p_cube_rowid IN UROWID, p_rtt_old IN OUT NOCOPY v_restriction_type_spec_typ%ROWTYPE, p_rtt_new IN OUT NOCOPY v_restriction_type_spec_typ%ROWTYPE);
 	PROCEDURE delete_rtt (p_cube_rowid IN UROWID, p_rtt IN OUT NOCOPY v_restriction_type_spec_typ%ROWTYPE);
@@ -1524,38 +1520,32 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 		WHERE rowid = p_cube_rowid;
 	END;
 
-	PROCEDURE insert_sva (p_sva IN OUT NOCOPY v_service_argument%ROWTYPE) IS
+	PROCEDURE insert_svd (p_svd IN OUT NOCOPY v_service_detail%ROWTYPE) IS
 	BEGIN
-		p_sva.cube_id := 'CUBE-SVA-' || TO_CHAR(sq_sva.NEXTVAL,'FM0000000');
-		p_sva.fk_bot_name := NVL(p_sva.fk_bot_name,' ');
-		p_sva.fk_typ_name := NVL(p_sva.fk_typ_name,' ');
-		p_sva.fk_srv_name := NVL(p_sva.fk_srv_name,' ');
-		p_sva.fk_srv_cube_tsg_db_scr := NVL(p_sva.fk_srv_cube_tsg_db_scr,' ');
-		p_sva.option_name := NVL(p_sva.option_name,' ');
-		p_sva.xk_itp_name := NVL(p_sva.xk_itp_name,' ');
-		p_sva.xf_atb_typ_name := NVL(p_sva.xf_atb_typ_name,' ');
-		p_sva.xk_atb_name := NVL(p_sva.xk_atb_name,' ');
-		p_sva.xk_ref_bot_name := NVL(p_sva.xk_ref_bot_name,' ');
-		p_sva.xk_ref_typ_name := NVL(p_sva.xk_ref_typ_name,' ');
-		p_sva.xf_ref_typ_name := NVL(p_sva.xf_ref_typ_name,' ');
-		p_sva.xk_ref_sequence := NVL(p_sva.xk_ref_sequence,0);
+		p_svd.cube_id := 'CUBE-SVD-' || TO_CHAR(sq_svd.NEXTVAL,'FM0000000');
+		p_svd.fk_bot_name := NVL(p_svd.fk_bot_name,' ');
+		p_svd.fk_typ_name := NVL(p_svd.fk_typ_name,' ');
+		p_svd.fk_srv_name := NVL(p_svd.fk_srv_name,' ');
+		p_svd.fk_srv_cube_tsg_db_scr := NVL(p_svd.fk_srv_cube_tsg_db_scr,' ');
+		p_svd.xf_atb_typ_name := NVL(p_svd.xf_atb_typ_name,' ');
+		p_svd.xk_atb_name := NVL(p_svd.xk_atb_name,' ');
+		p_svd.xk_ref_bot_name := NVL(p_svd.xk_ref_bot_name,' ');
+		p_svd.xk_ref_typ_name := NVL(p_svd.xk_ref_typ_name,' ');
+		p_svd.xf_ref_typ_name := NVL(p_svd.xf_ref_typ_name,' ');
+		p_svd.xk_ref_sequence := NVL(p_svd.xk_ref_sequence,0);
 		SELECT fk_bot_name
-		  INTO p_sva.fk_bot_name
+		  INTO p_svd.fk_bot_name
 		FROM t_service
-		WHERE fk_typ_name = p_sva.fk_typ_name
-		  AND name = p_sva.fk_srv_name
-		  AND cube_tsg_db_scr = p_sva.fk_srv_cube_tsg_db_scr;
-		INSERT INTO t_service_argument (
+		WHERE fk_typ_name = p_svd.fk_typ_name
+		  AND name = p_svd.fk_srv_name
+		  AND cube_tsg_db_scr = p_svd.fk_srv_cube_tsg_db_scr;
+		INSERT INTO t_service_detail (
 			cube_id,
-			cube_sequence,
 			fk_bot_name,
 			fk_typ_name,
 			fk_srv_name,
 			fk_srv_cube_tsg_db_scr,
-			cube_tsg_sva_type,
-			option_name,
-			input_or_output,
-			xk_itp_name,
+			cube_tsg_atb_ref,
 			xf_atb_typ_name,
 			xk_atb_name,
 			xk_ref_bot_name,
@@ -1563,40 +1553,28 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			xf_ref_typ_name,
 			xk_ref_sequence)
 		VALUES (
-			p_sva.cube_id,
-			p_sva.cube_sequence,
-			p_sva.fk_bot_name,
-			p_sva.fk_typ_name,
-			p_sva.fk_srv_name,
-			p_sva.fk_srv_cube_tsg_db_scr,
-			p_sva.cube_tsg_sva_type,
-			p_sva.option_name,
-			p_sva.input_or_output,
-			p_sva.xk_itp_name,
-			p_sva.xf_atb_typ_name,
-			p_sva.xk_atb_name,
-			p_sva.xk_ref_bot_name,
-			p_sva.xk_ref_typ_name,
-			p_sva.xf_ref_typ_name,
-			p_sva.xk_ref_sequence);
+			p_svd.cube_id,
+			p_svd.fk_bot_name,
+			p_svd.fk_typ_name,
+			p_svd.fk_srv_name,
+			p_svd.fk_srv_cube_tsg_db_scr,
+			p_svd.cube_tsg_atb_ref,
+			p_svd.xf_atb_typ_name,
+			p_svd.xk_atb_name,
+			p_svd.xk_ref_bot_name,
+			p_svd.xk_ref_typ_name,
+			p_svd.xf_ref_typ_name,
+			p_svd.xk_ref_sequence);
 	END;
 
-	PROCEDURE update_sva (p_cube_rowid UROWID, p_sva_old IN OUT NOCOPY v_service_argument%ROWTYPE, p_sva_new IN OUT NOCOPY v_service_argument%ROWTYPE) IS
+	PROCEDURE update_svd (p_cube_rowid UROWID, p_svd_old IN OUT NOCOPY v_service_detail%ROWTYPE, p_svd_new IN OUT NOCOPY v_service_detail%ROWTYPE) IS
 	BEGIN
-		UPDATE t_service_argument SET 
-			cube_sequence = p_sva_new.cube_sequence,
-			input_or_output = p_sva_new.input_or_output,
-			xk_itp_name = p_sva_new.xk_itp_name,
-			xk_ref_bot_name = p_sva_new.xk_ref_bot_name,
-			xk_ref_typ_name = p_sva_new.xk_ref_typ_name,
-			xf_ref_typ_name = p_sva_new.xf_ref_typ_name,
-			xk_ref_sequence = p_sva_new.xk_ref_sequence
-		WHERE rowid = p_cube_rowid;
+		NULL;
 	END;
 
-	PROCEDURE delete_sva (p_cube_rowid UROWID, p_sva IN OUT NOCOPY v_service_argument%ROWTYPE) IS
+	PROCEDURE delete_svd (p_cube_rowid UROWID, p_svd IN OUT NOCOPY v_service_detail%ROWTYPE) IS
 	BEGIN
-		DELETE t_service_argument 
+		DELETE t_service_detail 
 		WHERE rowid = p_cube_rowid;
 	END;
 
@@ -2874,117 +2852,100 @@ END;
 /
 SHOW ERRORS
 
-CREATE OR REPLACE TRIGGER trg_sva
-INSTEAD OF INSERT OR DELETE OR UPDATE ON v_service_argument
+CREATE OR REPLACE TRIGGER trg_svd
+INSTEAD OF INSERT OR DELETE OR UPDATE ON v_service_detail
 FOR EACH ROW
 DECLARE
 	l_cube_rowid UROWID;
-	r_sva_new v_service_argument%ROWTYPE;
-	r_sva_old v_service_argument%ROWTYPE;
+	r_svd_new v_service_detail%ROWTYPE;
+	r_svd_old v_service_detail%ROWTYPE;
 BEGIN
 	IF INSERTING OR UPDATING THEN
-		r_sva_new.cube_sequence := :NEW.cube_sequence;
 		IF :NEW.fk_bot_name = ' ' THEN
-			r_sva_new.fk_bot_name := ' ';
+			r_svd_new.fk_bot_name := ' ';
 		ELSE
-			r_sva_new.fk_bot_name := REPLACE(:NEW.fk_bot_name,' ','_');
+			r_svd_new.fk_bot_name := REPLACE(:NEW.fk_bot_name,' ','_');
 		END IF;
 		IF :NEW.fk_typ_name = ' ' THEN
-			r_sva_new.fk_typ_name := ' ';
+			r_svd_new.fk_typ_name := ' ';
 		ELSE
-			r_sva_new.fk_typ_name := REPLACE(:NEW.fk_typ_name,' ','_');
+			r_svd_new.fk_typ_name := REPLACE(:NEW.fk_typ_name,' ','_');
 		END IF;
 		IF :NEW.fk_srv_name = ' ' THEN
-			r_sva_new.fk_srv_name := ' ';
+			r_svd_new.fk_srv_name := ' ';
 		ELSE
-			r_sva_new.fk_srv_name := REPLACE(:NEW.fk_srv_name,' ','_');
+			r_svd_new.fk_srv_name := REPLACE(:NEW.fk_srv_name,' ','_');
 		END IF;
 		IF :NEW.fk_srv_cube_tsg_db_scr = ' ' THEN
-			r_sva_new.fk_srv_cube_tsg_db_scr := ' ';
+			r_svd_new.fk_srv_cube_tsg_db_scr := ' ';
 		ELSE
-			r_sva_new.fk_srv_cube_tsg_db_scr := REPLACE(:NEW.fk_srv_cube_tsg_db_scr,' ','_');
+			r_svd_new.fk_srv_cube_tsg_db_scr := REPLACE(:NEW.fk_srv_cube_tsg_db_scr,' ','_');
 		END IF;
-		IF :NEW.cube_tsg_sva_type = ' ' THEN
-			r_sva_new.cube_tsg_sva_type := ' ';
+		IF :NEW.cube_tsg_atb_ref = ' ' THEN
+			r_svd_new.cube_tsg_atb_ref := ' ';
 		ELSE
-			r_sva_new.cube_tsg_sva_type := REPLACE(:NEW.cube_tsg_sva_type,' ','_');
-		END IF;
-		IF :NEW.option_name = ' ' THEN
-			r_sva_new.option_name := ' ';
-		ELSE
-			r_sva_new.option_name := REPLACE(:NEW.option_name,' ','_');
-		END IF;
-		IF :NEW.input_or_output = ' ' THEN
-			r_sva_new.input_or_output := ' ';
-		ELSE
-			r_sva_new.input_or_output := REPLACE(:NEW.input_or_output,' ','_');
-		END IF;
-		IF :NEW.xk_itp_name = ' ' THEN
-			r_sva_new.xk_itp_name := ' ';
-		ELSE
-			r_sva_new.xk_itp_name := REPLACE(:NEW.xk_itp_name,' ','_');
+			r_svd_new.cube_tsg_atb_ref := REPLACE(:NEW.cube_tsg_atb_ref,' ','_');
 		END IF;
 		IF :NEW.xf_atb_typ_name = ' ' THEN
-			r_sva_new.xf_atb_typ_name := ' ';
+			r_svd_new.xf_atb_typ_name := ' ';
 		ELSE
-			r_sva_new.xf_atb_typ_name := REPLACE(:NEW.xf_atb_typ_name,' ','_');
+			r_svd_new.xf_atb_typ_name := REPLACE(:NEW.xf_atb_typ_name,' ','_');
 		END IF;
 		IF :NEW.xk_atb_name = ' ' THEN
-			r_sva_new.xk_atb_name := ' ';
+			r_svd_new.xk_atb_name := ' ';
 		ELSE
-			r_sva_new.xk_atb_name := REPLACE(:NEW.xk_atb_name,' ','_');
+			r_svd_new.xk_atb_name := REPLACE(:NEW.xk_atb_name,' ','_');
 		END IF;
 		IF :NEW.xk_ref_bot_name = ' ' THEN
-			r_sva_new.xk_ref_bot_name := ' ';
+			r_svd_new.xk_ref_bot_name := ' ';
 		ELSE
-			r_sva_new.xk_ref_bot_name := REPLACE(:NEW.xk_ref_bot_name,' ','_');
+			r_svd_new.xk_ref_bot_name := REPLACE(:NEW.xk_ref_bot_name,' ','_');
 		END IF;
 		IF :NEW.xk_ref_typ_name = ' ' THEN
-			r_sva_new.xk_ref_typ_name := ' ';
+			r_svd_new.xk_ref_typ_name := ' ';
 		ELSE
-			r_sva_new.xk_ref_typ_name := REPLACE(:NEW.xk_ref_typ_name,' ','_');
+			r_svd_new.xk_ref_typ_name := REPLACE(:NEW.xk_ref_typ_name,' ','_');
 		END IF;
 		IF :NEW.xf_ref_typ_name = ' ' THEN
-			r_sva_new.xf_ref_typ_name := ' ';
+			r_svd_new.xf_ref_typ_name := ' ';
 		ELSE
-			r_sva_new.xf_ref_typ_name := REPLACE(:NEW.xf_ref_typ_name,' ','_');
+			r_svd_new.xf_ref_typ_name := REPLACE(:NEW.xf_ref_typ_name,' ','_');
 		END IF;
-		r_sva_new.xk_ref_sequence := :NEW.xk_ref_sequence;
+		r_svd_new.xk_ref_sequence := :NEW.xk_ref_sequence;
 	END IF;
 	IF UPDATING THEN
-		r_sva_new.cube_id := :OLD.cube_id;
+		r_svd_new.cube_id := :OLD.cube_id;
 	END IF;
 	IF UPDATING OR DELETING THEN
-		SELECT rowid INTO l_cube_rowid FROM t_service_argument
+		SELECT rowid INTO l_cube_rowid FROM t_service_detail
 		WHERE fk_typ_name = :OLD.fk_typ_name
 		  AND fk_srv_name = :OLD.fk_srv_name
 		  AND fk_srv_cube_tsg_db_scr = :OLD.fk_srv_cube_tsg_db_scr
-		  AND option_name = :OLD.option_name
 		  AND xf_atb_typ_name = :OLD.xf_atb_typ_name
-		  AND xk_atb_name = :OLD.xk_atb_name;
-		r_sva_old.cube_sequence := :OLD.cube_sequence;
-		r_sva_old.fk_bot_name := :OLD.fk_bot_name;
-		r_sva_old.fk_typ_name := :OLD.fk_typ_name;
-		r_sva_old.fk_srv_name := :OLD.fk_srv_name;
-		r_sva_old.fk_srv_cube_tsg_db_scr := :OLD.fk_srv_cube_tsg_db_scr;
-		r_sva_old.cube_tsg_sva_type := :OLD.cube_tsg_sva_type;
-		r_sva_old.option_name := :OLD.option_name;
-		r_sva_old.input_or_output := :OLD.input_or_output;
-		r_sva_old.xk_itp_name := :OLD.xk_itp_name;
-		r_sva_old.xf_atb_typ_name := :OLD.xf_atb_typ_name;
-		r_sva_old.xk_atb_name := :OLD.xk_atb_name;
-		r_sva_old.xk_ref_bot_name := :OLD.xk_ref_bot_name;
-		r_sva_old.xk_ref_typ_name := :OLD.xk_ref_typ_name;
-		r_sva_old.xf_ref_typ_name := :OLD.xf_ref_typ_name;
-		r_sva_old.xk_ref_sequence := :OLD.xk_ref_sequence;
+		  AND xk_atb_name = :OLD.xk_atb_name
+		  AND xk_ref_bot_name = :OLD.xk_ref_bot_name
+		  AND xk_ref_typ_name = :OLD.xk_ref_typ_name
+		  AND xf_ref_typ_name = :OLD.xf_ref_typ_name
+		  AND xk_ref_sequence = :OLD.xk_ref_sequence;
+		r_svd_old.fk_bot_name := :OLD.fk_bot_name;
+		r_svd_old.fk_typ_name := :OLD.fk_typ_name;
+		r_svd_old.fk_srv_name := :OLD.fk_srv_name;
+		r_svd_old.fk_srv_cube_tsg_db_scr := :OLD.fk_srv_cube_tsg_db_scr;
+		r_svd_old.cube_tsg_atb_ref := :OLD.cube_tsg_atb_ref;
+		r_svd_old.xf_atb_typ_name := :OLD.xf_atb_typ_name;
+		r_svd_old.xk_atb_name := :OLD.xk_atb_name;
+		r_svd_old.xk_ref_bot_name := :OLD.xk_ref_bot_name;
+		r_svd_old.xk_ref_typ_name := :OLD.xk_ref_typ_name;
+		r_svd_old.xf_ref_typ_name := :OLD.xf_ref_typ_name;
+		r_svd_old.xk_ref_sequence := :OLD.xk_ref_sequence;
 	END IF;
 
 	IF INSERTING THEN 
-		pkg_bot_trg.insert_sva (r_sva_new);
+		pkg_bot_trg.insert_svd (r_svd_new);
 	ELSIF UPDATING THEN
-		pkg_bot_trg.update_sva (l_cube_rowid, r_sva_old, r_sva_new);
+		pkg_bot_trg.update_svd (l_cube_rowid, r_svd_old, r_svd_new);
 	ELSIF DELETING THEN
-		pkg_bot_trg.delete_sva (l_cube_rowid, r_sva_old);
+		pkg_bot_trg.delete_svd (l_cube_rowid, r_svd_old);
 	END IF;
 END;
 /

@@ -61,8 +61,7 @@ g_xmlhttp.onreadystatechange = function() {
 					case 'MOV_SRV': MoveNode (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.body._moveAction); break;
 					case 'LST_SST': AddTreeviewChildren(l_json_array[i].Rows,'TYP_SST','icons/servstep.bmp','ServiceStep'); break;
 					case 'MOV_SST': MoveNode (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.body._moveAction); break;
-					case 'LST_SVA': AddTreeviewChildren(l_json_array[i].Rows,'TYP_SVA','icons/servarg.bmp','ServiceArgument'); break;
-					case 'MOV_SVA': MoveNode (document.getElementById(g_currentObjId), document.getElementById(document.body._objNodePosId), document.body._moveAction); break;
+					case 'LST_SVD': AddTreeviewChildren(l_json_array[i].Rows,'TYP_SVD','icons/servdet.bmp','ServiceDetail'); break;
 					case 'LST_RTT': AddTreeviewChildren(l_json_array[i].Rows,'TYP_RTT','icons/restrict.bmp','RestrictionTypeSpecTyp'); break;
 					case 'LST_JSN': AddTreeviewChildren(l_json_array[i].Rows,'TYP_JSN','icons/braces.bmp','JsonPath'); break;
 					case 'CNT_JSN': CheckMenuItem('TYP_JSN',l_json_array[i].Rows[0].Data.TypeCount); break;
@@ -120,7 +119,7 @@ function DefineTypePosition (p_parentType, p_type, p_switch) {
 		switch (p_type) { case 'TYP_DCR': l_index = 2; break; case 'TYP_RTR': l_index = 3; break; case 'TYP_RTS': l_index = 4; break;}
 		var l_count = 3; break;
 	case 'TYP_SRV':
-		switch (p_type) { case 'TYP_SST': l_index = 2; break; case 'TYP_SVA': l_index = 3; break;}
+		switch (p_type) { case 'TYP_SST': l_index = 2; break; case 'TYP_SVD': l_index = 3; break;}
 		var l_count = 2; break;
 	case 'TYP_JSN':
 		switch (p_type) {case 'TYP_JSN': l_index = 2; break;}
@@ -265,9 +264,6 @@ function OpenDetail(p_obj) {
 				break;
 			case 'TYP_SST':
 				PerformTrans('BusinessObjectType', {Service:"MoveSst",Parameters:{Option:{CubePosAction:document.body._moveAction},Type:l_json_id,Ref:l_json_id_ref}} );
-				break;
-			case 'TYP_SVA':
-				PerformTrans('BusinessObjectType', {Service:"MoveSva",Parameters:{Option:{CubePosAction:document.body._moveAction},Type:l_json_id,Ref:l_json_id_ref}} );
 				break;
 			case 'TYP_JSN':
 				PerformTrans('BusinessObjectType', {Service:"MoveJsn",Parameters:{Option:{CubePosAction:document.body._moveAction},Type:l_json_id,Ref:l_json_id_ref}} );
@@ -503,7 +499,7 @@ function OpenMenu(p_obj) {
 			AddMenuItem(g_objMenuList,'move','icons/cube_move.bmp','CubeMove','','CUBE_M_SRV','',0,'N',0);
 		}
 		AddMenuItem(g_objMenuList,'add service_step','icons/servstep.bmp','CubeAdd','N','TYP_SST','ServiceStep',0,'N',2);
-		AddMenuItem(g_objMenuList,'add service_argument','icons/servarg.bmp','CubeAdd','N','TYP_SVA','ServiceArgument',0,'N',3);
+		AddMenuItem(g_objMenuList,'add service_detail','icons/servdet.bmp','DetailSVD','N','TYP_SVD','ServiceDetail',0,'N',3);
 		AddMenuItem(g_objMenuList,'delete','icons/cube_delete.bmp','CubeDelete','X','','Service',0,'N',0);
 		break;
  	case 'TYP_SST':
@@ -512,11 +508,8 @@ function OpenMenu(p_obj) {
 		}
 		AddMenuItem(g_objMenuList,'delete','icons/cube_delete.bmp','CubeDelete','X','','ServiceStep',0,'N',0);
 		break;
- 	case 'TYP_SVA':
-		if (l_childCount > 1) {
-			AddMenuItem(g_objMenuList,'move','icons/cube_move.bmp','CubeMove','','CUBE_M_SVA','',0,'N',0);
-		}
-		AddMenuItem(g_objMenuList,'delete','icons/cube_delete.bmp','CubeDelete','X','','ServiceArgument',0,'N',0);
+ 	case 'TYP_SVD':
+		AddMenuItem(g_objMenuList,'delete','icons/cube_delete.bmp','CubeDelete','X','','ServiceDetail',0,'N',0);
 		break;
  	case 'TYP_RTT':
 		AddMenuItem(g_objMenuList,'delete','icons/cube_delete.bmp','CubeDelete','X','','RestrictionTypeSpecTyp',0,'N',0);

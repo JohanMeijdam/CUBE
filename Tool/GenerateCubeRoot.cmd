@@ -17,7 +17,7 @@ echo Start > %logfile%
 ::goto :ModelImport
 ::goto :ModelExport
 ::goto :System
-::echo Extract Cube Model
+echo Extract Cube Model
 sqlplus.exe %db_schema%/%db_password%@%db_name% @%sysdir%\ModelExport.sql %sysdir%\CubeModel.cgm ALL REPLACE >> %logfile% 2>&1
 ::goto End
 :Models
@@ -36,7 +36,7 @@ CubeGen.exe %sysdir%\CubeDbModel.cgm Templates\AlterTable.cgt %sysdir%\AlterTabl
 ::sqlplus.exe %db_schema%/%db_password%@%db_name% @%sysdir%\TableDdl.sql >> %logfile% 2>&1
 sqlplus.exe %db_schema%/%db_password%@%db_name% @%sysdir%\AlterTableDdl.sql >> %logfile% 2>&1
 ::goto :end
-Views
+:Views
 echo Generate Database Views.
 CubeGen.exe %sysdir%\CubeBoModel.cgm Templates\View.cgt %sysdir%\ViewDdl.sql %sysname% >> %logfile% 2>&1
 sqlplus.exe %db_schema%/%db_password%@%db_name% @%sysdir%\ViewDdl.sql >> %logfile% 2>&1

@@ -29,7 +29,7 @@
 08-08-2023 - ARGUMENT > SERVICE_ARGUMENT
 10-09-2023 - SERVICE properties
 24-09-2023 - ARGUMENT > EXPORT_ARGUMENT
-09-06-2024 - SERVIVE CHC (Check content) added
+09-06-2024 - SERVICE CHC (Check content) added
 [[INCLUDE,Includes/general.cgt]]
 [[TEXT,IMPL_SQL_NOT_FOUND]][[*No arguments*]]
 		+STATEMENT:SELECTION|IF;
