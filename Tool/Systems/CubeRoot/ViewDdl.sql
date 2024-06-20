@@ -692,7 +692,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 	PROCEDURE insert_typ (p_typ IN OUT NOCOPY v_type%ROWTYPE) IS
 	BEGIN
 		p_typ.cube_id := 'CUBE-TYP-' || TO_CHAR(sq_typ.NEXTVAL,'FM0000000');
-		p_typ.fk_bot_name := NVL(p_typ.fk_bot_name,' ');
 		p_typ.name := NVL(p_typ.name,' ');
 		IF p_typ.fk_typ_name IS NOT NULL  THEN
 			-- Recursive
@@ -824,11 +823,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 	PROCEDURE insert_tsg (p_tsg IN OUT NOCOPY v_type_specialisation_group%ROWTYPE) IS
 	BEGIN
 		p_tsg.cube_id := 'CUBE-TSG-' || TO_CHAR(sq_tsg.NEXTVAL,'FM0000000');
-		p_tsg.fk_bot_name := NVL(p_tsg.fk_bot_name,' ');
 		p_tsg.fk_typ_name := NVL(p_tsg.fk_typ_name,' ');
 		p_tsg.code := NVL(p_tsg.code,' ');
-		p_tsg.xf_atb_typ_name := NVL(p_tsg.xf_atb_typ_name,' ');
-		p_tsg.xk_atb_name := NVL(p_tsg.xk_atb_name,' ');
 		IF p_tsg.fk_tsg_code IS NOT NULL  THEN
 			-- Recursive
 			SELECT fk_bot_name
@@ -841,7 +837,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			SELECT fk_bot_name
 			  INTO p_tsg.fk_bot_name
 			FROM t_type
-			WHERE name = p_tsg.fk_typ_name;
+			WHERE cube_id <> 'CUBE-NULL'
+			  AND name = p_tsg.fk_typ_name;
 			
 		END IF;
 		get_denorm_tsg_tsg (p_tsg);
@@ -955,17 +952,14 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 	PROCEDURE insert_tsp (p_tsp IN OUT NOCOPY v_type_specialisation%ROWTYPE) IS
 	BEGIN
 		p_tsp.cube_id := 'CUBE-TSP-' || TO_CHAR(sq_tsp.NEXTVAL,'FM0000000');
-		p_tsp.fk_bot_name := NVL(p_tsp.fk_bot_name,' ');
 		p_tsp.fk_typ_name := NVL(p_tsp.fk_typ_name,' ');
 		p_tsp.fk_tsg_code := NVL(p_tsp.fk_tsg_code,' ');
 		p_tsp.code := NVL(p_tsp.code,' ');
-		p_tsp.xf_tsp_typ_name := NVL(p_tsp.xf_tsp_typ_name,' ');
-		p_tsp.xf_tsp_tsg_code := NVL(p_tsp.xf_tsp_tsg_code,' ');
-		p_tsp.xk_tsp_code := NVL(p_tsp.xk_tsp_code,' ');
 		SELECT fk_bot_name
 		  INTO p_tsp.fk_bot_name
 		FROM t_type_specialisation_group
-		WHERE fk_typ_name = p_tsp.fk_typ_name
+		WHERE cube_id <> 'CUBE-NULL'
+		  AND fk_typ_name = p_tsp.fk_typ_name
 		  AND code = p_tsp.fk_tsg_code;
 		INSERT INTO t_type_specialisation (
 			cube_id,
@@ -1011,14 +1005,13 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 	PROCEDURE insert_atb (p_atb IN OUT NOCOPY v_attribute%ROWTYPE) IS
 	BEGIN
 		p_atb.cube_id := 'CUBE-ATB-' || TO_CHAR(sq_atb.NEXTVAL,'FM0000000');
-		p_atb.fk_bot_name := NVL(p_atb.fk_bot_name,' ');
 		p_atb.fk_typ_name := NVL(p_atb.fk_typ_name,' ');
 		p_atb.name := NVL(p_atb.name,' ');
-		p_atb.xk_itp_name := NVL(p_atb.xk_itp_name,' ');
 		SELECT fk_bot_name
 		  INTO p_atb.fk_bot_name
 		FROM t_type
-		WHERE name = p_atb.fk_typ_name;
+		WHERE cube_id <> 'CUBE-NULL'
+		  AND name = p_atb.fk_typ_name;
 		INSERT INTO t_attribute (
 			cube_id,
 			cube_sequence,
@@ -1070,15 +1063,13 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 	PROCEDURE insert_der (p_der IN OUT NOCOPY v_derivation%ROWTYPE) IS
 	BEGIN
 		p_der.cube_id := 'CUBE-DER-' || TO_CHAR(sq_der.NEXTVAL,'FM0000000');
-		p_der.fk_bot_name := NVL(p_der.fk_bot_name,' ');
 		p_der.fk_typ_name := NVL(p_der.fk_typ_name,' ');
 		p_der.fk_atb_name := NVL(p_der.fk_atb_name,' ');
-		p_der.xk_typ_name := NVL(p_der.xk_typ_name,' ');
-		p_der.xk_typ_name_1 := NVL(p_der.xk_typ_name_1,' ');
 		SELECT fk_bot_name
 		  INTO p_der.fk_bot_name
 		FROM t_attribute
-		WHERE fk_typ_name = p_der.fk_typ_name
+		WHERE cube_id <> 'CUBE-NULL'
+		  AND fk_typ_name = p_der.fk_typ_name
 		  AND name = p_der.fk_atb_name;
 		INSERT INTO t_derivation (
 			cube_id,
@@ -1118,13 +1109,13 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 	PROCEDURE insert_dca (p_dca IN OUT NOCOPY v_description_attribute%ROWTYPE) IS
 	BEGIN
 		p_dca.cube_id := 'CUBE-DCA-' || TO_CHAR(sq_dca.NEXTVAL,'FM0000000');
-		p_dca.fk_bot_name := NVL(p_dca.fk_bot_name,' ');
 		p_dca.fk_typ_name := NVL(p_dca.fk_typ_name,' ');
 		p_dca.fk_atb_name := NVL(p_dca.fk_atb_name,' ');
 		SELECT fk_bot_name
 		  INTO p_dca.fk_bot_name
 		FROM t_attribute
-		WHERE fk_typ_name = p_dca.fk_typ_name
+		WHERE cube_id <> 'CUBE-NULL'
+		  AND fk_typ_name = p_dca.fk_typ_name
 		  AND name = p_dca.fk_atb_name;
 		INSERT INTO t_description_attribute (
 			cube_id,
@@ -1156,7 +1147,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 	PROCEDURE insert_rta (p_rta IN OUT NOCOPY v_restriction_type_spec_atb%ROWTYPE) IS
 	BEGIN
 		p_rta.cube_id := 'CUBE-RTA-' || TO_CHAR(sq_rta.NEXTVAL,'FM0000000');
-		p_rta.fk_bot_name := NVL(p_rta.fk_bot_name,' ');
 		p_rta.fk_typ_name := NVL(p_rta.fk_typ_name,' ');
 		p_rta.fk_atb_name := NVL(p_rta.fk_atb_name,' ');
 		p_rta.xf_tsp_typ_name := NVL(p_rta.xf_tsp_typ_name,' ');
@@ -1165,7 +1155,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 		SELECT fk_bot_name
 		  INTO p_rta.fk_bot_name
 		FROM t_attribute
-		WHERE fk_typ_name = p_rta.fk_typ_name
+		WHERE cube_id <> 'CUBE-NULL'
+		  AND fk_typ_name = p_rta.fk_typ_name
 		  AND name = p_rta.fk_atb_name;
 		INSERT INTO t_restriction_type_spec_atb (
 			cube_id,
@@ -1203,16 +1194,15 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 	PROCEDURE insert_ref (p_ref IN OUT NOCOPY v_reference%ROWTYPE) IS
 	BEGIN
 		p_ref.cube_id := 'CUBE-REF-' || TO_CHAR(sq_ref.NEXTVAL,'FM0000000');
-		p_ref.fk_bot_name := NVL(p_ref.fk_bot_name,' ');
 		p_ref.fk_typ_name := NVL(p_ref.fk_typ_name,' ');
 		p_ref.sequence := NVL(p_ref.sequence,0);
 		p_ref.xk_bot_name := NVL(p_ref.xk_bot_name,' ');
 		p_ref.xk_typ_name := NVL(p_ref.xk_typ_name,' ');
-		p_ref.xk_typ_name_1 := NVL(p_ref.xk_typ_name_1,' ');
 		SELECT fk_bot_name
 		  INTO p_ref.fk_bot_name
 		FROM t_type
-		WHERE name = p_ref.fk_typ_name;
+		WHERE cube_id <> 'CUBE-NULL'
+		  AND name = p_ref.fk_typ_name;
 		INSERT INTO t_reference (
 			cube_id,
 			cube_sequence,
@@ -1273,7 +1263,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 	PROCEDURE insert_dcr (p_dcr IN OUT NOCOPY v_description_reference%ROWTYPE) IS
 	BEGIN
 		p_dcr.cube_id := 'CUBE-DCR-' || TO_CHAR(sq_dcr.NEXTVAL,'FM0000000');
-		p_dcr.fk_bot_name := NVL(p_dcr.fk_bot_name,' ');
 		p_dcr.fk_typ_name := NVL(p_dcr.fk_typ_name,' ');
 		p_dcr.fk_ref_sequence := NVL(p_dcr.fk_ref_sequence,0);
 		p_dcr.fk_ref_bot_name := NVL(p_dcr.fk_ref_bot_name,' ');
@@ -1281,7 +1270,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 		SELECT fk_bot_name
 		  INTO p_dcr.fk_bot_name
 		FROM t_reference
-		WHERE fk_typ_name = p_dcr.fk_typ_name
+		WHERE cube_id <> 'CUBE-NULL'
+		  AND fk_typ_name = p_dcr.fk_typ_name
 		  AND sequence = p_dcr.fk_ref_sequence
 		  AND xk_bot_name = p_dcr.fk_ref_bot_name
 		  AND xk_typ_name = p_dcr.fk_ref_typ_name;
@@ -1319,7 +1309,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 	PROCEDURE insert_rtr (p_rtr IN OUT NOCOPY v_restriction_type_spec_ref%ROWTYPE) IS
 	BEGIN
 		p_rtr.cube_id := 'CUBE-RTR-' || TO_CHAR(sq_rtr.NEXTVAL,'FM0000000');
-		p_rtr.fk_bot_name := NVL(p_rtr.fk_bot_name,' ');
 		p_rtr.fk_typ_name := NVL(p_rtr.fk_typ_name,' ');
 		p_rtr.fk_ref_sequence := NVL(p_rtr.fk_ref_sequence,0);
 		p_rtr.fk_ref_bot_name := NVL(p_rtr.fk_ref_bot_name,' ');
@@ -1330,7 +1319,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 		SELECT fk_bot_name
 		  INTO p_rtr.fk_bot_name
 		FROM t_reference
-		WHERE fk_typ_name = p_rtr.fk_typ_name
+		WHERE cube_id <> 'CUBE-NULL'
+		  AND fk_typ_name = p_rtr.fk_typ_name
 		  AND sequence = p_rtr.fk_ref_sequence
 		  AND xk_bot_name = p_rtr.fk_ref_bot_name
 		  AND xk_typ_name = p_rtr.fk_ref_typ_name;
@@ -1374,7 +1364,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 	PROCEDURE insert_rts (p_rts IN OUT NOCOPY v_restriction_target_type_spec%ROWTYPE) IS
 	BEGIN
 		p_rts.cube_id := 'CUBE-RTS-' || TO_CHAR(sq_rts.NEXTVAL,'FM0000000');
-		p_rts.fk_bot_name := NVL(p_rts.fk_bot_name,' ');
 		p_rts.fk_typ_name := NVL(p_rts.fk_typ_name,' ');
 		p_rts.fk_ref_sequence := NVL(p_rts.fk_ref_sequence,0);
 		p_rts.fk_ref_bot_name := NVL(p_rts.fk_ref_bot_name,' ');
@@ -1385,7 +1374,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 		SELECT fk_bot_name
 		  INTO p_rts.fk_bot_name
 		FROM t_reference
-		WHERE fk_typ_name = p_rts.fk_typ_name
+		WHERE cube_id <> 'CUBE-NULL'
+		  AND fk_typ_name = p_rts.fk_typ_name
 		  AND sequence = p_rts.fk_ref_sequence
 		  AND xk_bot_name = p_rts.fk_ref_bot_name
 		  AND xk_typ_name = p_rts.fk_ref_typ_name;
@@ -1429,14 +1419,14 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 	PROCEDURE insert_srv (p_srv IN OUT NOCOPY v_service%ROWTYPE) IS
 	BEGIN
 		p_srv.cube_id := 'CUBE-SRV-' || TO_CHAR(sq_srv.NEXTVAL,'FM0000000');
-		p_srv.fk_bot_name := NVL(p_srv.fk_bot_name,' ');
 		p_srv.fk_typ_name := NVL(p_srv.fk_typ_name,' ');
 		p_srv.name := NVL(p_srv.name,' ');
 		p_srv.cube_tsg_db_scr := NVL(p_srv.cube_tsg_db_scr,' ');
 		SELECT fk_bot_name
 		  INTO p_srv.fk_bot_name
 		FROM t_type
-		WHERE name = p_srv.fk_typ_name;
+		WHERE cube_id <> 'CUBE-NULL'
+		  AND name = p_srv.fk_typ_name;
 		INSERT INTO t_service (
 			cube_id,
 			cube_sequence,
@@ -1475,7 +1465,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 	PROCEDURE insert_sst (p_sst IN OUT NOCOPY v_service_step%ROWTYPE) IS
 	BEGIN
 		p_sst.cube_id := 'CUBE-SST-' || TO_CHAR(sq_sst.NEXTVAL,'FM0000000');
-		p_sst.fk_bot_name := NVL(p_sst.fk_bot_name,' ');
 		p_sst.fk_typ_name := NVL(p_sst.fk_typ_name,' ');
 		p_sst.fk_srv_name := NVL(p_sst.fk_srv_name,' ');
 		p_sst.fk_srv_cube_tsg_db_scr := NVL(p_sst.fk_srv_cube_tsg_db_scr,' ');
@@ -1483,7 +1472,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 		SELECT fk_bot_name
 		  INTO p_sst.fk_bot_name
 		FROM t_service
-		WHERE fk_typ_name = p_sst.fk_typ_name
+		WHERE cube_id <> 'CUBE-NULL'
+		  AND fk_typ_name = p_sst.fk_typ_name
 		  AND name = p_sst.fk_srv_name
 		  AND cube_tsg_db_scr = p_sst.fk_srv_cube_tsg_db_scr;
 		INSERT INTO t_service_step (
@@ -1523,7 +1513,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 	PROCEDURE insert_svd (p_svd IN OUT NOCOPY v_service_detail%ROWTYPE) IS
 	BEGIN
 		p_svd.cube_id := 'CUBE-SVD-' || TO_CHAR(sq_svd.NEXTVAL,'FM0000000');
-		p_svd.fk_bot_name := NVL(p_svd.fk_bot_name,' ');
 		p_svd.fk_typ_name := NVL(p_svd.fk_typ_name,' ');
 		p_svd.fk_srv_name := NVL(p_svd.fk_srv_name,' ');
 		p_svd.fk_srv_cube_tsg_db_scr := NVL(p_svd.fk_srv_cube_tsg_db_scr,' ');
@@ -1536,7 +1525,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 		SELECT fk_bot_name
 		  INTO p_svd.fk_bot_name
 		FROM t_service
-		WHERE fk_typ_name = p_svd.fk_typ_name
+		WHERE cube_id <> 'CUBE-NULL'
+		  AND fk_typ_name = p_svd.fk_typ_name
 		  AND name = p_svd.fk_srv_name
 		  AND cube_tsg_db_scr = p_svd.fk_srv_cube_tsg_db_scr;
 		INSERT INTO t_service_detail (
@@ -1581,7 +1571,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 	PROCEDURE insert_rtt (p_rtt IN OUT NOCOPY v_restriction_type_spec_typ%ROWTYPE) IS
 	BEGIN
 		p_rtt.cube_id := 'CUBE-RTT-' || TO_CHAR(sq_rtt.NEXTVAL,'FM0000000');
-		p_rtt.fk_bot_name := NVL(p_rtt.fk_bot_name,' ');
 		p_rtt.fk_typ_name := NVL(p_rtt.fk_typ_name,' ');
 		p_rtt.xf_tsp_typ_name := NVL(p_rtt.xf_tsp_typ_name,' ');
 		p_rtt.xf_tsp_tsg_code := NVL(p_rtt.xf_tsp_tsg_code,' ');
@@ -1589,7 +1578,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 		SELECT fk_bot_name
 		  INTO p_rtt.fk_bot_name
 		FROM t_type
-		WHERE name = p_rtt.fk_typ_name;
+		WHERE cube_id <> 'CUBE-NULL'
+		  AND name = p_rtt.fk_typ_name;
 		INSERT INTO t_restriction_type_spec_typ (
 			cube_id,
 			fk_bot_name,
@@ -1624,7 +1614,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 	PROCEDURE insert_jsn (p_jsn IN OUT NOCOPY v_json_path%ROWTYPE) IS
 	BEGIN
 		p_jsn.cube_id := 'CUBE-JSN-' || TO_CHAR(sq_jsn.NEXTVAL,'FM0000000');
-		p_jsn.fk_bot_name := NVL(p_jsn.fk_bot_name,' ');
 		p_jsn.fk_typ_name := NVL(p_jsn.fk_typ_name,' ');
 		p_jsn.name := NVL(p_jsn.name,' ');
 		p_jsn.location := NVL(p_jsn.location,0);
@@ -1647,7 +1636,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 			SELECT fk_bot_name
 			  INTO p_jsn.fk_bot_name
 			FROM t_type
-			WHERE name = p_jsn.fk_typ_name;
+			WHERE cube_id <> 'CUBE-NULL'
+			  AND name = p_jsn.fk_typ_name;
 			
 		END IF;
 		get_denorm_jsn_jsn (p_jsn);
@@ -1791,12 +1781,12 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot_trg IS
 	PROCEDURE insert_dct (p_dct IN OUT NOCOPY v_description_type%ROWTYPE) IS
 	BEGIN
 		p_dct.cube_id := 'CUBE-DCT-' || TO_CHAR(sq_dct.NEXTVAL,'FM0000000');
-		p_dct.fk_bot_name := NVL(p_dct.fk_bot_name,' ');
 		p_dct.fk_typ_name := NVL(p_dct.fk_typ_name,' ');
 		SELECT fk_bot_name
 		  INTO p_dct.fk_bot_name
 		FROM t_type
-		WHERE name = p_dct.fk_typ_name;
+		WHERE cube_id <> 'CUBE-NULL'
+		  AND name = p_dct.fk_typ_name;
 		INSERT INTO t_description_type (
 			cube_id,
 			fk_bot_name,

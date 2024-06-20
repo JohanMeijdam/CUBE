@@ -1359,32 +1359,6 @@ case 'DeleteTsp':
 
 	break;
 
-case 'GetAtbList':
-	echo '[';
-
-	$stid = oci_parse($conn, "BEGIN pkg_bot.get_atb_list (:p_cube_row); END;");
-	$responseObj = new \stdClass();
-	$ResponseObj->ResultName = 'LST_ATB';
-	$r = perform_db_request();
-	if (!$r) { 
-		echo ']';
-		return;
-	}
-	$ResponseObj->Rows = array();
-	while ($row = oci_fetch_assoc($curs)) {
-		$RowObj = new \stdClass();
-		$RowObj->Key = new \stdClass();
-		$RowObj->Key->FkTypName = $row["FK_TYP_NAME"];
-		$RowObj->Key->Name = $row["NAME"];
-		$RowObj->Display = $row["FK_TYP_NAME"].' '.$row["NAME"];
-		$ResponseObj->Rows[] = $RowObj;
-	}
-	$ResponseText = json_encode($ResponseObj);
-	echo $ResponseText;
-	echo ']';
-
-	break;
-
 case 'GetAtbForTypList':
 	echo '[';
 
@@ -2162,10 +2136,17 @@ case 'DeleteRta':
 
 	break;
 
-case 'GetRefList':
+case 'GetRefForTypList':
 	echo '[';
 
-	$stid = oci_parse($conn, "BEGIN pkg_bot.get_ref_list (:p_cube_row); END;");
+	$stid = oci_parse($conn, "BEGIN pkg_bot.get_ref_for_typ_list (
+		:p_cube_row,
+		:p_cube_scope_level,
+		:x_fk_typ_name);
+	END;");
+	oci_bind_by_name($stid,":p_cube_scope_level",$RequestObj->Parameters->Option->CubeScopeLevel);
+	oci_bind_by_name($stid,":x_fk_typ_name",$RequestObj->Parameters->Ref->FkTypName);
+
 	$responseObj = new \stdClass();
 	$ResponseObj->ResultName = 'LST_REF';
 	$r = perform_db_request();

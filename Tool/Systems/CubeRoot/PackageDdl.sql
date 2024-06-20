@@ -740,8 +740,6 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_fk_typ_name IN VARCHAR2,
 			p_fk_tsg_code IN VARCHAR2,
 			p_code IN VARCHAR2);
-	PROCEDURE get_atb_list (
-			p_cube_row IN OUT c_cube_row);
 	PROCEDURE get_atb_for_typ_list (
 			p_cube_row IN OUT c_cube_row,
 			p_cube_scope_level IN NUMBER,
@@ -878,8 +876,10 @@ CREATE OR REPLACE PACKAGE pkg_bot IS
 			p_xf_tsp_typ_name IN VARCHAR2,
 			p_xf_tsp_tsg_code IN VARCHAR2,
 			p_xk_tsp_code IN VARCHAR2);
-	PROCEDURE get_ref_list (
-			p_cube_row IN OUT c_cube_row);
+	PROCEDURE get_ref_for_typ_list (
+			p_cube_row IN OUT c_cube_row,
+			p_cube_scope_level IN NUMBER,
+			x_fk_typ_name IN VARCHAR2);
 	PROCEDURE get_ref (
 			p_cube_row IN OUT c_cube_row,
 			p_fk_typ_name IN VARCHAR2,
@@ -2556,18 +2556,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 		  AND code = p_code;
 	END;
 
-	PROCEDURE get_atb_list (
-			p_cube_row IN OUT c_cube_row) IS
-	BEGIN
-		OPEN p_cube_row FOR
-			SELECT
-			  cube_sequence,
-			  fk_typ_name,
-			  name
-			FROM v_attribute
-			ORDER BY fk_typ_name, cube_sequence;
-	END;
-
 	PROCEDURE get_atb_for_typ_list (
 			p_cube_row IN OUT c_cube_row,
 			p_cube_scope_level IN NUMBER,
@@ -3144,9 +3132,37 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 		  AND xk_tsp_code = p_xk_tsp_code;
 	END;
 
-	PROCEDURE get_ref_list (
-			p_cube_row IN OUT c_cube_row) IS
+	PROCEDURE get_ref_for_typ_list (
+			p_cube_row IN OUT c_cube_row,
+			p_cube_scope_level IN NUMBER,
+			x_fk_typ_name IN VARCHAR2) IS
+		l_cube_scope_level NUMBER(1) := 0;
+		l_name v_type.name%TYPE;
 	BEGIN
+		l_name := x_fk_typ_name;
+		IF p_cube_scope_level > 0 THEN
+			LOOP
+				IF p_cube_scope_level = l_cube_scope_level THEN
+					EXIT;
+				END IF;
+				l_cube_scope_level := l_cube_scope_level + 1;
+				SELECT fk_typ_name
+				INTO l_name
+				FROM v_type
+				WHERE name = l_name;
+			END LOOP;
+		ELSIF p_cube_scope_level < 0 THEN
+			LOOP
+				IF p_cube_scope_level = l_cube_scope_level THEN
+					EXIT;
+				END IF;
+				l_cube_scope_level := l_cube_scope_level - 1;
+				SELECT name
+				INTO l_name
+				FROM v_type
+				WHERE fk_typ_name = l_name;
+			END LOOP;
+		END IF;
 		OPEN p_cube_row FOR
 			SELECT
 			  cube_sequence,
@@ -3157,6 +3173,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bot IS
 			  xk_bot_name,
 			  xk_typ_name
 			FROM v_reference
+			WHERE fk_typ_name = l_name
 			ORDER BY fk_typ_name, cube_sequence;
 	END;
 
