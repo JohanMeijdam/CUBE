@@ -30,11 +30,11 @@ DECLARE
 	END;
 
 
-	PROCEDURE report_val (p_ite IN t_information_type_element%ROWTYPE) IS
+	PROCEDURE report_val (p_ite IN v_information_type_element%ROWTYPE) IS
 	BEGIN
 		FOR r_val IN (
 			SELECT *				
-			FROM t_permitted_value
+			FROM v_permitted_value
 			WHERE fk_itp_name = p_ite.fk_itp_name
 			  AND fk_ite_sequence = p_ite.sequence
 			ORDER BY cube_sequence )
@@ -46,11 +46,11 @@ DECLARE
 	END;
 
 
-	PROCEDURE report_ite (p_itp IN t_information_type%ROWTYPE) IS
+	PROCEDURE report_ite (p_itp IN v_information_type%ROWTYPE) IS
 	BEGIN
 		FOR r_ite IN (
 			SELECT *				
-			FROM t_information_type_element
+			FROM v_information_type_element
 			WHERE fk_itp_name = p_itp.name
 			ORDER BY fk_itp_name, sequence )
 		LOOP
@@ -67,7 +67,7 @@ DECLARE
 	BEGIN
 		FOR r_itp IN (
 			SELECT *				
-			FROM t_information_type
+			FROM v_information_type
 			ORDER BY name )
 		LOOP
 			DBMS_OUTPUT.PUT_LINE (ftabs || '+INFORMATION_TYPE[' || r_itp.cube_id || ']:' || fenperc(r_itp.name) || ';');
@@ -79,11 +79,11 @@ DECLARE
 	END;
 
 
-	PROCEDURE report_tsp (p_tsg IN t_type_specialisation_group%ROWTYPE) IS
+	PROCEDURE report_tsp (p_tsg IN v_type_specialisation_group%ROWTYPE) IS
 	BEGIN
 		FOR r_tsp IN (
 			SELECT *				
-			FROM t_type_specialisation
+			FROM v_type_specialisation
 			WHERE fk_bot_name = p_tsg.fk_bot_name
 			  AND fk_typ_name = p_tsg.fk_typ_name
 			  AND fk_tsg_code = p_tsg.code
@@ -92,7 +92,7 @@ DECLARE
 			DBMS_OUTPUT.PUT_LINE (ftabs || '+TYPE_SPECIALISATION[' || r_tsp.cube_id || ']:' || fenperc(r_tsp.code) || '|' || fenperc(r_tsp.name) || ';');
 				l_level := l_level + 1;
 				BEGIN
-					SELECT cube_id INTO l_cube_id FROM t_type_specialisation
+					SELECT cube_id INTO l_cube_id FROM v_type_specialisation
 					WHERE fk_typ_name = r_tsp.xf_tsp_typ_name
 					  AND fk_tsg_code = r_tsp.xf_tsp_tsg_code
 					  AND code = r_tsp.xk_tsp_code;
@@ -108,11 +108,11 @@ DECLARE
 	END;
 
 
-	PROCEDURE report_tsg_recursive (p_tsg IN t_type_specialisation_group%ROWTYPE) IS
+	PROCEDURE report_tsg_recursive (p_tsg IN v_type_specialisation_group%ROWTYPE) IS
 	BEGIN
 		FOR r_tsg IN (
 			SELECT *				
-			FROM t_type_specialisation_group
+			FROM v_type_specialisation_group
 			WHERE fk_bot_name = p_tsg.fk_bot_name
 			  AND fk_typ_name = p_tsg.fk_typ_name
 			  AND fk_tsg_code = p_tsg.code
@@ -123,7 +123,7 @@ DECLARE
 				report_tsp (r_tsg);
 				report_tsg_recursive (r_tsg);
 				BEGIN
-					SELECT cube_id INTO l_cube_id FROM t_attribute
+					SELECT cube_id INTO l_cube_id FROM v_attribute
 					WHERE fk_typ_name = r_tsg.xf_atb_typ_name
 					  AND name = r_tsg.xk_atb_name;
 
@@ -138,11 +138,11 @@ DECLARE
 	END;
 
 
-	PROCEDURE report_tsg (p_typ IN t_type%ROWTYPE) IS
+	PROCEDURE report_tsg (p_typ IN v_type%ROWTYPE) IS
 	BEGIN
 		FOR r_tsg IN (
 			SELECT *				
-			FROM t_type_specialisation_group
+			FROM v_type_specialisation_group
 			WHERE fk_bot_name = p_typ.fk_bot_name
 			  AND fk_typ_name = p_typ.name
 			  AND fk_tsg_code IS NULL
@@ -153,7 +153,7 @@ DECLARE
 				report_tsp (r_tsg);
 				report_tsg_recursive (r_tsg);
 				BEGIN
-					SELECT cube_id INTO l_cube_id FROM t_attribute
+					SELECT cube_id INTO l_cube_id FROM v_attribute
 					WHERE fk_typ_name = r_tsg.xf_atb_typ_name
 					  AND name = r_tsg.xk_atb_name;
 
@@ -168,11 +168,11 @@ DECLARE
 	END;
 
 
-	PROCEDURE report_der (p_atb IN t_attribute%ROWTYPE) IS
+	PROCEDURE report_der (p_atb IN v_attribute%ROWTYPE) IS
 	BEGIN
 		FOR r_der IN (
 			SELECT *				
-			FROM t_derivation
+			FROM v_derivation
 			WHERE fk_bot_name = p_atb.fk_bot_name
 			  AND fk_typ_name = p_atb.fk_typ_name
 			  AND fk_atb_name = p_atb.name
@@ -181,7 +181,7 @@ DECLARE
 			DBMS_OUTPUT.PUT_LINE (ftabs || '+DERIVATION[' || r_der.cube_id || ']:' || fenperc(r_der.cube_tsg_type) || '|' || fenperc(r_der.aggregate_function) || ';');
 				l_level := l_level + 1;
 				BEGIN
-					SELECT cube_id INTO l_cube_id FROM t_type
+					SELECT cube_id INTO l_cube_id FROM v_type
 					WHERE name = r_der.xk_typ_name;
 
 					DBMS_OUTPUT.PUT_LINE (ftabs || '>DERIVATION_TYPE:' || l_cube_id || ';');
@@ -190,7 +190,7 @@ DECLARE
 						NULL; 
 				END;
 				BEGIN
-					SELECT cube_id INTO l_cube_id FROM t_type
+					SELECT cube_id INTO l_cube_id FROM v_type
 					WHERE name = r_der.xk_typ_name_1;
 
 					DBMS_OUTPUT.PUT_LINE (ftabs || '>DERIVATION_TYPE_CONCERNS_CHILD:' || l_cube_id || ';');
@@ -204,11 +204,11 @@ DECLARE
 	END;
 
 
-	PROCEDURE report_dca (p_atb IN t_attribute%ROWTYPE) IS
+	PROCEDURE report_dca (p_atb IN v_attribute%ROWTYPE) IS
 	BEGIN
 		FOR r_dca IN (
 			SELECT *				
-			FROM t_description_attribute
+			FROM v_description_attribute
 			WHERE fk_bot_name = p_atb.fk_bot_name
 			  AND fk_typ_name = p_atb.fk_typ_name
 			  AND fk_atb_name = p_atb.name
@@ -221,11 +221,11 @@ DECLARE
 	END;
 
 
-	PROCEDURE report_rta (p_atb IN t_attribute%ROWTYPE) IS
+	PROCEDURE report_rta (p_atb IN v_attribute%ROWTYPE) IS
 	BEGIN
 		FOR r_rta IN (
 			SELECT *				
-			FROM t_restriction_type_spec_atb
+			FROM v_restriction_type_spec_atb
 			WHERE fk_bot_name = p_atb.fk_bot_name
 			  AND fk_typ_name = p_atb.fk_typ_name
 			  AND fk_atb_name = p_atb.name
@@ -234,7 +234,7 @@ DECLARE
 			DBMS_OUTPUT.PUT_LINE (ftabs || '+RESTRICTION_TYPE_SPEC_ATB[' || r_rta.cube_id || ']:' || fenperc(r_rta.include_or_exclude) || ';');
 				l_level := l_level + 1;
 				BEGIN
-					SELECT cube_id INTO l_cube_id FROM t_type_specialisation
+					SELECT cube_id INTO l_cube_id FROM v_type_specialisation
 					WHERE fk_typ_name = r_rta.xf_tsp_typ_name
 					  AND fk_tsg_code = r_rta.xf_tsp_tsg_code
 					  AND code = r_rta.xk_tsp_code;
@@ -250,11 +250,11 @@ DECLARE
 	END;
 
 
-	PROCEDURE report_atb (p_typ IN t_type%ROWTYPE) IS
+	PROCEDURE report_atb (p_typ IN v_type%ROWTYPE) IS
 	BEGIN
 		FOR r_atb IN (
 			SELECT *				
-			FROM t_attribute
+			FROM v_attribute
 			WHERE fk_bot_name = p_typ.fk_bot_name
 			  AND fk_typ_name = p_typ.name
 			ORDER BY cube_sequence )
@@ -265,7 +265,7 @@ DECLARE
 				report_dca (r_atb);
 				report_rta (r_atb);
 				BEGIN
-					SELECT cube_id INTO l_cube_id FROM t_information_type
+					SELECT cube_id INTO l_cube_id FROM v_information_type
 					WHERE name = r_atb.xk_itp_name;
 
 					DBMS_OUTPUT.PUT_LINE (ftabs || '>INFORMATION_TYPE:' || l_cube_id || ';');
@@ -279,11 +279,11 @@ DECLARE
 	END;
 
 
-	PROCEDURE report_dcr (p_ref IN t_reference%ROWTYPE) IS
+	PROCEDURE report_dcr (p_ref IN v_reference%ROWTYPE) IS
 	BEGIN
 		FOR r_dcr IN (
 			SELECT *				
-			FROM t_description_reference
+			FROM v_description_reference
 			WHERE fk_bot_name = p_ref.fk_bot_name
 			  AND fk_typ_name = p_ref.fk_typ_name
 			  AND fk_ref_sequence = p_ref.sequence
@@ -298,11 +298,11 @@ DECLARE
 	END;
 
 
-	PROCEDURE report_rtr (p_ref IN t_reference%ROWTYPE) IS
+	PROCEDURE report_rtr (p_ref IN v_reference%ROWTYPE) IS
 	BEGIN
 		FOR r_rtr IN (
 			SELECT *				
-			FROM t_restriction_type_spec_ref
+			FROM v_restriction_type_spec_ref
 			WHERE fk_bot_name = p_ref.fk_bot_name
 			  AND fk_typ_name = p_ref.fk_typ_name
 			  AND fk_ref_sequence = p_ref.sequence
@@ -313,7 +313,7 @@ DECLARE
 			DBMS_OUTPUT.PUT_LINE (ftabs || '+RESTRICTION_TYPE_SPEC_REF[' || r_rtr.cube_id || ']:' || fenperc(r_rtr.include_or_exclude) || ';');
 				l_level := l_level + 1;
 				BEGIN
-					SELECT cube_id INTO l_cube_id FROM t_type_specialisation
+					SELECT cube_id INTO l_cube_id FROM v_type_specialisation
 					WHERE fk_typ_name = r_rtr.xf_tsp_typ_name
 					  AND fk_tsg_code = r_rtr.xf_tsp_tsg_code
 					  AND code = r_rtr.xk_tsp_code;
@@ -329,11 +329,11 @@ DECLARE
 	END;
 
 
-	PROCEDURE report_rts (p_ref IN t_reference%ROWTYPE) IS
+	PROCEDURE report_rts (p_ref IN v_reference%ROWTYPE) IS
 	BEGIN
 		FOR r_rts IN (
 			SELECT *				
-			FROM t_restriction_target_type_spec
+			FROM v_restriction_target_type_spec
 			WHERE fk_bot_name = p_ref.fk_bot_name
 			  AND fk_typ_name = p_ref.fk_typ_name
 			  AND fk_ref_sequence = p_ref.sequence
@@ -344,7 +344,7 @@ DECLARE
 			DBMS_OUTPUT.PUT_LINE (ftabs || '+RESTRICTION_TARGET_TYPE_SPEC[' || r_rts.cube_id || ']:' || fenperc(r_rts.include_or_exclude) || ';');
 				l_level := l_level + 1;
 				BEGIN
-					SELECT cube_id INTO l_cube_id FROM t_type_specialisation
+					SELECT cube_id INTO l_cube_id FROM v_type_specialisation
 					WHERE fk_typ_name = r_rts.xf_tsp_typ_name
 					  AND fk_tsg_code = r_rts.xf_tsp_tsg_code
 					  AND code = r_rts.xk_tsp_code;
@@ -360,11 +360,11 @@ DECLARE
 	END;
 
 
-	PROCEDURE report_ref (p_typ IN t_type%ROWTYPE) IS
+	PROCEDURE report_ref (p_typ IN v_type%ROWTYPE) IS
 	BEGIN
 		FOR r_ref IN (
 			SELECT *				
-			FROM t_reference
+			FROM v_reference
 			WHERE fk_bot_name = p_typ.fk_bot_name
 			  AND fk_typ_name = p_typ.name
 			ORDER BY cube_sequence )
@@ -375,7 +375,7 @@ DECLARE
 				report_rtr (r_ref);
 				report_rts (r_ref);
 				BEGIN
-					SELECT cube_id INTO l_cube_id FROM t_business_object_type
+					SELECT cube_id INTO l_cube_id FROM v_business_object_type
 					WHERE name = r_ref.xk_bot_name;
 
 					DBMS_OUTPUT.PUT_LINE (ftabs || '>BUSINESS_OBJECT_TYPE:' || l_cube_id || ';');
@@ -384,7 +384,7 @@ DECLARE
 						NULL; 
 				END;
 				BEGIN
-					SELECT cube_id INTO l_cube_id FROM t_type
+					SELECT cube_id INTO l_cube_id FROM v_type
 					WHERE name = r_ref.xk_typ_name;
 
 					DBMS_OUTPUT.PUT_LINE (ftabs || '>REFERENCE_TYPE:' || l_cube_id || ';');
@@ -393,7 +393,7 @@ DECLARE
 						NULL; 
 				END;
 				BEGIN
-					SELECT cube_id INTO l_cube_id FROM t_type
+					SELECT cube_id INTO l_cube_id FROM v_type
 					WHERE name = r_ref.xk_typ_name_1;
 
 					DBMS_OUTPUT.PUT_LINE (ftabs || '>REFERENCE_TYPE_WITHIN_SCOPE_OF:' || l_cube_id || ';');
@@ -407,11 +407,11 @@ DECLARE
 	END;
 
 
-	PROCEDURE report_sst (p_srv IN t_service%ROWTYPE) IS
+	PROCEDURE report_sst (p_srv IN v_service%ROWTYPE) IS
 	BEGIN
 		FOR r_sst IN (
 			SELECT *				
-			FROM t_service_step
+			FROM v_service_step
 			WHERE fk_bot_name = p_srv.fk_bot_name
 			  AND fk_typ_name = p_srv.fk_typ_name
 			  AND fk_srv_name = p_srv.name
@@ -425,11 +425,11 @@ DECLARE
 	END;
 
 
-	PROCEDURE report_svd (p_srv IN t_service%ROWTYPE) IS
+	PROCEDURE report_svd (p_srv IN v_service%ROWTYPE) IS
 	BEGIN
 		FOR r_svd IN (
 			SELECT *				
-			FROM t_service_detail
+			FROM v_service_detail
 			WHERE fk_bot_name = p_srv.fk_bot_name
 			  AND fk_typ_name = p_srv.fk_typ_name
 			  AND fk_srv_name = p_srv.name
@@ -439,7 +439,7 @@ DECLARE
 			DBMS_OUTPUT.PUT_LINE (ftabs || '+SERVICE_DETAIL[' || r_svd.cube_id || ']:' || fenperc(r_svd.cube_tsg_atb_ref) || ';');
 				l_level := l_level + 1;
 				BEGIN
-					SELECT cube_id INTO l_cube_id FROM t_attribute
+					SELECT cube_id INTO l_cube_id FROM v_attribute
 					WHERE fk_typ_name = r_svd.xf_atb_typ_name
 					  AND name = r_svd.xk_atb_name;
 
@@ -449,7 +449,7 @@ DECLARE
 						NULL; 
 				END;
 				BEGIN
-					SELECT cube_id INTO l_cube_id FROM t_reference
+					SELECT cube_id INTO l_cube_id FROM v_reference
 					WHERE fk_typ_name = r_svd.xf_ref_typ_name
 					  AND sequence = r_svd.xk_ref_sequence
 					  AND xk_bot_name = r_svd.xk_ref_bot_name
@@ -466,11 +466,11 @@ DECLARE
 	END;
 
 
-	PROCEDURE report_srv (p_typ IN t_type%ROWTYPE) IS
+	PROCEDURE report_srv (p_typ IN v_type%ROWTYPE) IS
 	BEGIN
 		FOR r_srv IN (
 			SELECT *				
-			FROM t_service
+			FROM v_service
 			WHERE fk_bot_name = p_typ.fk_bot_name
 			  AND fk_typ_name = p_typ.name
 			ORDER BY cube_sequence )
@@ -485,11 +485,11 @@ DECLARE
 	END;
 
 
-	PROCEDURE report_rtt (p_typ IN t_type%ROWTYPE) IS
+	PROCEDURE report_rtt (p_typ IN v_type%ROWTYPE) IS
 	BEGIN
 		FOR r_rtt IN (
 			SELECT *				
-			FROM t_restriction_type_spec_typ
+			FROM v_restriction_type_spec_typ
 			WHERE fk_bot_name = p_typ.fk_bot_name
 			  AND fk_typ_name = p_typ.name
 			ORDER BY fk_typ_name, xf_tsp_typ_name, xf_tsp_tsg_code, xk_tsp_code )
@@ -497,7 +497,7 @@ DECLARE
 			DBMS_OUTPUT.PUT_LINE (ftabs || '+RESTRICTION_TYPE_SPEC_TYP[' || r_rtt.cube_id || ']:' || fenperc(r_rtt.include_or_exclude) || ';');
 				l_level := l_level + 1;
 				BEGIN
-					SELECT cube_id INTO l_cube_id FROM t_type_specialisation
+					SELECT cube_id INTO l_cube_id FROM v_type_specialisation
 					WHERE fk_typ_name = r_rtt.xf_tsp_typ_name
 					  AND fk_tsg_code = r_rtt.xf_tsp_tsg_code
 					  AND code = r_rtt.xk_tsp_code;
@@ -513,11 +513,11 @@ DECLARE
 	END;
 
 
-	PROCEDURE report_jsn_recursive (p_jsn IN t_json_path%ROWTYPE) IS
+	PROCEDURE report_jsn_recursive (p_jsn IN v_json_path%ROWTYPE) IS
 	BEGIN
 		FOR r_jsn IN (
 			SELECT *				
-			FROM t_json_path
+			FROM v_json_path
 			WHERE fk_bot_name = p_jsn.fk_bot_name
 			  AND fk_typ_name = p_jsn.fk_typ_name
 			  AND fk_jsn_name = p_jsn.name
@@ -531,7 +531,7 @@ DECLARE
 				l_level := l_level + 1;
 				report_jsn_recursive (r_jsn);
 				BEGIN
-					SELECT cube_id INTO l_cube_id FROM t_attribute
+					SELECT cube_id INTO l_cube_id FROM v_attribute
 					WHERE fk_typ_name = r_jsn.xf_atb_typ_name
 					  AND name = r_jsn.xk_atb_name;
 
@@ -541,7 +541,7 @@ DECLARE
 						NULL; 
 				END;
 				BEGIN
-					SELECT cube_id INTO l_cube_id FROM t_type
+					SELECT cube_id INTO l_cube_id FROM v_type
 					WHERE name = r_jsn.xk_typ_name;
 
 					DBMS_OUTPUT.PUT_LINE (ftabs || '>JSON_PATH_TYPE:' || l_cube_id || ';');
@@ -555,11 +555,11 @@ DECLARE
 	END;
 
 
-	PROCEDURE report_jsn (p_typ IN t_type%ROWTYPE) IS
+	PROCEDURE report_jsn (p_typ IN v_type%ROWTYPE) IS
 	BEGIN
 		FOR r_jsn IN (
 			SELECT *				
-			FROM t_json_path
+			FROM v_json_path
 			WHERE fk_bot_name = p_typ.fk_bot_name
 			  AND fk_typ_name = p_typ.name
 			  AND fk_jsn_name IS NULL
@@ -573,7 +573,7 @@ DECLARE
 				l_level := l_level + 1;
 				report_jsn_recursive (r_jsn);
 				BEGIN
-					SELECT cube_id INTO l_cube_id FROM t_attribute
+					SELECT cube_id INTO l_cube_id FROM v_attribute
 					WHERE fk_typ_name = r_jsn.xf_atb_typ_name
 					  AND name = r_jsn.xk_atb_name;
 
@@ -583,7 +583,7 @@ DECLARE
 						NULL; 
 				END;
 				BEGIN
-					SELECT cube_id INTO l_cube_id FROM t_type
+					SELECT cube_id INTO l_cube_id FROM v_type
 					WHERE name = r_jsn.xk_typ_name;
 
 					DBMS_OUTPUT.PUT_LINE (ftabs || '>JSON_PATH_TYPE:' || l_cube_id || ';');
@@ -597,11 +597,11 @@ DECLARE
 	END;
 
 
-	PROCEDURE report_dct (p_typ IN t_type%ROWTYPE) IS
+	PROCEDURE report_dct (p_typ IN v_type%ROWTYPE) IS
 	BEGIN
 		FOR r_dct IN (
 			SELECT *				
-			FROM t_description_type
+			FROM v_description_type
 			WHERE fk_bot_name = p_typ.fk_bot_name
 			  AND fk_typ_name = p_typ.name
 			ORDER BY cube_id )
@@ -613,11 +613,11 @@ DECLARE
 	END;
 
 
-	PROCEDURE report_typ_recursive (p_typ IN t_type%ROWTYPE) IS
+	PROCEDURE report_typ_recursive (p_typ IN v_type%ROWTYPE) IS
 	BEGIN
 		FOR r_typ IN (
 			SELECT *				
-			FROM t_type
+			FROM v_type
 			WHERE fk_bot_name = p_typ.fk_bot_name
 			  AND fk_typ_name = p_typ.name
 			ORDER BY cube_sequence )
@@ -638,11 +638,11 @@ DECLARE
 	END;
 
 
-	PROCEDURE report_typ (p_bot IN t_business_object_type%ROWTYPE) IS
+	PROCEDURE report_typ (p_bot IN v_business_object_type%ROWTYPE) IS
 	BEGIN
 		FOR r_typ IN (
 			SELECT *				
-			FROM t_type
+			FROM v_type
 			WHERE fk_bot_name = p_bot.name
 			  AND fk_typ_name IS NULL
 			ORDER BY cube_sequence )
@@ -667,8 +667,8 @@ DECLARE
 	BEGIN
 		FOR r_bot IN (
 			SELECT *				
-			FROM t_business_object_type
-			WHERE (g_system_name = 'ALL' OR name in (SELECT xk_bot_name FROM t_system_bo_type WHERE fk_sys_name = g_system_name ))
+			FROM v_business_object_type
+			WHERE (g_system_name = 'ALL' OR name in (SELECT xk_bot_name FROM v_system_bo_type WHERE fk_sys_name = g_system_name ))
 			ORDER BY cube_sequence )
 		LOOP
 			DBMS_OUTPUT.PUT_LINE (ftabs || '+BUSINESS_OBJECT_TYPE[' || r_bot.cube_id || ']:' || fenperc(r_bot.name) || '|' || fenperc(r_bot.cube_tsg_type) || '|' || fenperc(r_bot.directory) || '|' || fenperc(r_bot.api_url) || ';');
@@ -680,18 +680,18 @@ DECLARE
 	END;
 
 
-	PROCEDURE report_sbt (p_sys IN t_system%ROWTYPE) IS
+	PROCEDURE report_sbt (p_sys IN v_system%ROWTYPE) IS
 	BEGIN
 		FOR r_sbt IN (
 			SELECT *				
-			FROM t_system_bo_type
+			FROM v_system_bo_type
 			WHERE fk_sys_name = p_sys.name
 			ORDER BY cube_sequence )
 		LOOP
 			DBMS_OUTPUT.PUT_LINE (ftabs || '+SYSTEM_BO_TYPE[' || r_sbt.cube_id || ']:' || ';');
 				l_level := l_level + 1;
 				BEGIN
-					SELECT cube_id INTO l_cube_id FROM t_business_object_type
+					SELECT cube_id INTO l_cube_id FROM v_business_object_type
 					WHERE name = r_sbt.xk_bot_name;
 
 					DBMS_OUTPUT.PUT_LINE (ftabs || '>BUSINESS_OBJECT_TYPE:' || l_cube_id || ';');
@@ -709,7 +709,7 @@ DECLARE
 	BEGIN
 		FOR r_sys IN (
 			SELECT *				
-			FROM t_system
+			FROM v_system
 			WHERE g_system_name = 'ALL' OR name = g_system_name
 			ORDER BY name )
 		LOOP

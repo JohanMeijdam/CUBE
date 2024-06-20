@@ -7,17 +7,18 @@ Change log:
 14-05-2018 - Support of type specialisations
 22-05-2018 - Scope system (system and business_object_type
 07-01-2024 - Rereference type prefix
+20-06-2024 - Select from views in stead of tables
 [[TEXT,PROCEDURE]]
 	PROCEDURE report_<<TYPE1:L>><<TEXT,SIGNATURE>> IS
 	BEGIN
 		FOR r_<<TYPE1:L>> IN (
 			SELECT *				
-			FROM t_<<TYPE:L>>[[IF:!ROOT]]
+			FROM v_<<TYPE:L>>[[IF:!ROOT]]
 			WHERE [[LOOP,ATTRIBUTE:3=F[AND]!CHILD(DERIVATION)]]<<ATTRIBUTE:L>> = p_<<TEXT,F_FKEY>>[[IF:!LAST]]
 			  AND [[ENDIF]][[ENDLOOP,ATTRIBUTE]][[LOOP,ATTRIBUTE:3=R[AND]!CHILD(DERIVATION)]]
 			  AND <<ATTRIBUTE:L>><<TEXT,IS_R_FKEY>>[[ENDLOOP,ATTRIBUTE]][[ELSIF:0=SYSTEM]]
 			WHERE g_system_name = 'ALL' OR name = g_system_name[[ELSIF:0=BUSINESS_OBJECT_TYPE]]
-			WHERE (g_system_name = 'ALL' OR name in (SELECT xk_bot_name FROM t_system_bo_type WHERE fk_sys_name = g_system_name ))[[ENDIF]]
+			WHERE (g_system_name = 'ALL' OR name in (SELECT xk_bot_name FROM v_system_bo_type WHERE fk_sys_name = g_system_name ))[[ENDIF]]
 			ORDER BY [[IF:6=K]][[LOOP,ATTRIBUTE:1=Y]]<<ATTRIBUTE:L>>[[IF:!LAST]], [[ENDIF]][[ENDLOOP,ATTRIBUTE]][[ELSIF:6=P]]cube_sequence[[ELSE]]cube_id[[ENDIF]] )
 		LOOP
 			DBMS_OUTPUT.PUT_LINE (ftabs || '[[IF:CHILD(TYPE)[OR]CHILD(REFERENCE)]]+[[ELSE]]=[[ENDIF]]<<TYPE:U>>[' || r_<<TYPE1:L>>.cube_id || ']:' || [[LOOP,ATTRIBUTE:3=N[AND]!CHILD(DERIVATION)]]fenperc(r_<<TYPE1:L>>.<<ATTRIBUTE:L>>) || [[IF:!LAST]]'|' || [[ENDIF]][[ENDLOOP,ATTRIBUTE]]';');
@@ -25,7 +26,7 @@ Change log:
 				report_<<TYPE1:L>> (r_<<TYPE(N-1)1:L>>);[[ENDLOOP,TYPE]][[IF:3=Y]]
 				report_<<TYPE1:L>>_recursive (r_<<TYPE1:L>>);[[ENDIF]][[LOOP,REFERENCE]]
 				BEGIN
-					SELECT cube_id INTO l_cube_id FROM [[LOOP,REFERENCE_TYPE:FIRST]]t_<<REFERENCE_TYPE:L>>[[ENDLOOP,REFERENCE_TYPE]]
+					SELECT cube_id INTO l_cube_id FROM [[LOOP,REFERENCE_TYPE:FIRST]]v_<<REFERENCE_TYPE:L>>[[ENDLOOP,REFERENCE_TYPE]]
 					WHERE [[LOOP,FKEY]][[LOOP,ATTRIBUTE_SOURCE]]<<ATTRIBUTE_SOURCE:L>>[[ENDLOOP,ATTRIBUTE_SOURCE]] = r_<<TYPE1:L>>.<<FKEY:L>>[[IF:!LAST]]
 					  AND [[ENDIF]][[ENDLOOP,FKEY]];
 
@@ -39,8 +40,8 @@ Change log:
 		END LOOP;
 	END;
 [[ENDTEXT]]
-[[TEXT,SIGNATURE_RECURSIVE]]_recursive (p_<<TYPE1:L>> IN t_<<TYPE:L>>%ROWTYPE)[[ENDTEXT]]
-[[TEXT,SIGNATURE_NORMAL]][[IF:!ROOT]] (p_<<TYPE(N-1)1:L>> IN t_<<TYPE(N-1):L>>%ROWTYPE)[[ENDIF]][[ENDTEXT]]
+[[TEXT,SIGNATURE_RECURSIVE]]_recursive (p_<<TYPE1:L>> IN v_<<TYPE:L>>%ROWTYPE)[[ENDTEXT]]
+[[TEXT,SIGNATURE_NORMAL]][[IF:!ROOT]] (p_<<TYPE(N-1)1:L>> IN v_<<TYPE(N-1):L>>%ROWTYPE)[[ENDIF]][[ENDTEXT]]
 [[TEXT,F_FKEY_RECURSIVE]]<<TYPE1:L>>.<<ATTRIBUTE:L>>[[ENDTEXT]]
 [[TEXT,F_FKEY_NORMAL]]<<TYPE(N-1)1:L>>.[[LOOP,ATTRIBUTE_SOURCE]]<<ATTRIBUTE_SOURCE:L>>[[ENDLOOP,ATTRIBUTE_SOURCE]][[ENDTEXT]]
 [[TEXT,IS_R_FKEY_RECURSIVE]] = p_<<TYPE1:L>>.[[LOOP,ATTRIBUTE_SOURCE]]<<ATTRIBUTE_SOURCE:L>>[[ENDLOOP,ATTRIBUTE_SOURCE]][[ENDTEXT]]
