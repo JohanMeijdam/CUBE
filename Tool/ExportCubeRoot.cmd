@@ -7,6 +7,7 @@ set db_schema=cuberoot
 set db_password=composys
 
 echo Start > %logfile%
+CubeGen.exe %sysdir%\CubeDbModel.cgm Templates\AlterTable.cgt %sysdir%\AlterTableDdl.sql >> %logfile% 2>&1
 sqlplus.exe %db_schema%/%db_password%@%db_name% @%sysdir%\AlterTableDdl.sql >> %logfile% 2>&1
 
 echo extract model.

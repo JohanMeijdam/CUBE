@@ -2251,6 +2251,33 @@ BEGIN
 END;
 /
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Delete CUBE-NULL rows');
+	DELETE FROM t_information_type WHERE cube_id = 'CUBE-NULL';
+	DELETE FROM t_information_type_element WHERE cube_id = 'CUBE-NULL';
+	DELETE FROM t_permitted_value WHERE cube_id = 'CUBE-NULL';
+	DELETE FROM t_business_object_type WHERE cube_id = 'CUBE-NULL';
+	DELETE FROM t_type WHERE cube_id = 'CUBE-NULL';
+	DELETE FROM t_type_specialisation_group WHERE cube_id = 'CUBE-NULL';
+	DELETE FROM t_type_specialisation WHERE cube_id = 'CUBE-NULL';
+	DELETE FROM t_attribute WHERE cube_id = 'CUBE-NULL';
+	DELETE FROM t_derivation WHERE cube_id = 'CUBE-NULL';
+	DELETE FROM t_description_attribute WHERE cube_id = 'CUBE-NULL';
+	DELETE FROM t_restriction_type_spec_atb WHERE cube_id = 'CUBE-NULL';
+	DELETE FROM t_reference WHERE cube_id = 'CUBE-NULL';
+	DELETE FROM t_description_reference WHERE cube_id = 'CUBE-NULL';
+	DELETE FROM t_restriction_type_spec_ref WHERE cube_id = 'CUBE-NULL';
+	DELETE FROM t_restriction_target_type_spec WHERE cube_id = 'CUBE-NULL';
+	DELETE FROM t_service WHERE cube_id = 'CUBE-NULL';
+	DELETE FROM t_service_step WHERE cube_id = 'CUBE-NULL';
+	DELETE FROM t_service_detail WHERE cube_id = 'CUBE-NULL';
+	DELETE FROM t_restriction_type_spec_typ WHERE cube_id = 'CUBE-NULL';
+	DELETE FROM t_json_path WHERE cube_id = 'CUBE-NULL';
+	DELETE FROM t_description_type WHERE cube_id = 'CUBE-NULL';
+	DELETE FROM t_system WHERE cube_id = 'CUBE-NULL';
+	DELETE FROM t_system_bo_type WHERE cube_id = 'CUBE-NULL';
+END;
+/
+BEGIN
 	DBMS_OUTPUT.PUT_LINE('Maintain table T_INFORMATION_TYPE');
 	FOR r_field IN (SELECT column_name,
 		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
@@ -2285,11 +2312,6 @@ BEGIN
 			DBMS_OUTPUT.PUT_LINE('Field T_INFORMATION_TYPE.' || UPPER(r_field.column_name) || ' default value set to ' || NVL(r_field.new_default_value,'NULL'));
 		END IF;
 	END LOOP;
-	EXECUTE IMMEDIATE
-	'ALTER TABLE t_information_type ADD CONSTRAINT itp_pk
-		PRIMARY KEY (
-			name )';
-	DBMS_OUTPUT.PUT_LINE('Primary Key T_INFORMATION_TYPE.ITP_PK created');
 	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_INFORMATION_TYPE' AND column_name NOT IN (
 							'CUBE_ID',
 							'NAME'))
@@ -2298,6 +2320,12 @@ BEGIN
 		'ALTER TABLE t_information_type DROP COLUMN ' || r_field.column_name;
 		DBMS_OUTPUT.PUT_LINE('Field T_INFORMATION_TYPE.' || UPPER(r_field.column_name) || ' dropped');
 	END LOOP;
+
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_information_type ADD CONSTRAINT itp_pk
+		PRIMARY KEY (
+			name )';
+	DBMS_OUTPUT.PUT_LINE('Primary Key T_INFORMATION_TYPE.ITP_PK created');	
 END;
 /
 BEGIN
@@ -2353,17 +2381,6 @@ BEGIN
 			DBMS_OUTPUT.PUT_LINE('Field T_INFORMATION_TYPE_ELEMENT.' || UPPER(r_field.column_name) || ' default value set to ' || NVL(r_field.new_default_value,'NULL'));
 		END IF;
 	END LOOP;
-	EXECUTE IMMEDIATE
-	'ALTER TABLE t_information_type_element ADD CONSTRAINT ite_pk
-		PRIMARY KEY (
-			fk_itp_name,
-			sequence )';
-	DBMS_OUTPUT.PUT_LINE('Primary Key T_INFORMATION_TYPE_ELEMENT.ITE_PK created');
-	EXECUTE IMMEDIATE
-	'ALTER TABLE t_information_type_element ADD CONSTRAINT ite_itp_fk
-		FOREIGN KEY (fk_itp_name)
-		REFERENCES t_information_type (name)
-		ON DELETE CASCADE';
 	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_INFORMATION_TYPE_ELEMENT' AND column_name NOT IN (
 							'CUBE_ID',
 							'FK_ITP_NAME',
@@ -2381,6 +2398,13 @@ BEGIN
 		'ALTER TABLE t_information_type_element DROP COLUMN ' || r_field.column_name;
 		DBMS_OUTPUT.PUT_LINE('Field T_INFORMATION_TYPE_ELEMENT.' || UPPER(r_field.column_name) || ' dropped');
 	END LOOP;
+
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_information_type_element ADD CONSTRAINT ite_pk
+		PRIMARY KEY (
+			fk_itp_name,
+			sequence )';
+	DBMS_OUTPUT.PUT_LINE('Primary Key T_INFORMATION_TYPE_ELEMENT.ITE_PK created');	
 END;
 /
 BEGIN
@@ -2426,18 +2450,6 @@ BEGIN
 			DBMS_OUTPUT.PUT_LINE('Field T_PERMITTED_VALUE.' || UPPER(r_field.column_name) || ' default value set to ' || NVL(r_field.new_default_value,'NULL'));
 		END IF;
 	END LOOP;
-	EXECUTE IMMEDIATE
-	'ALTER TABLE t_permitted_value ADD CONSTRAINT val_pk
-		PRIMARY KEY (
-			fk_itp_name,
-			fk_ite_sequence,
-			code )';
-	DBMS_OUTPUT.PUT_LINE('Primary Key T_PERMITTED_VALUE.VAL_PK created');
-	EXECUTE IMMEDIATE
-	'ALTER TABLE t_permitted_value ADD CONSTRAINT val_ite_fk
-		FOREIGN KEY (fk_itp_name, fk_ite_sequence)
-		REFERENCES t_information_type_element (fk_itp_name, sequence)
-		ON DELETE CASCADE';
 	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_PERMITTED_VALUE' AND column_name NOT IN (
 							'CUBE_ID',
 							'CUBE_SEQUENCE',
@@ -2450,6 +2462,14 @@ BEGIN
 		'ALTER TABLE t_permitted_value DROP COLUMN ' || r_field.column_name;
 		DBMS_OUTPUT.PUT_LINE('Field T_PERMITTED_VALUE.' || UPPER(r_field.column_name) || ' dropped');
 	END LOOP;
+
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_permitted_value ADD CONSTRAINT val_pk
+		PRIMARY KEY (
+			fk_itp_name,
+			fk_ite_sequence,
+			code )';
+	DBMS_OUTPUT.PUT_LINE('Primary Key T_PERMITTED_VALUE.VAL_PK created');	
 END;
 /
 BEGIN
@@ -2495,11 +2515,6 @@ BEGIN
 			DBMS_OUTPUT.PUT_LINE('Field T_BUSINESS_OBJECT_TYPE.' || UPPER(r_field.column_name) || ' default value set to ' || NVL(r_field.new_default_value,'NULL'));
 		END IF;
 	END LOOP;
-	EXECUTE IMMEDIATE
-	'ALTER TABLE t_business_object_type ADD CONSTRAINT bot_pk
-		PRIMARY KEY (
-			name )';
-	DBMS_OUTPUT.PUT_LINE('Primary Key T_BUSINESS_OBJECT_TYPE.BOT_PK created');
 	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_BUSINESS_OBJECT_TYPE' AND column_name NOT IN (
 							'CUBE_ID',
 							'CUBE_SEQUENCE',
@@ -2512,6 +2527,12 @@ BEGIN
 		'ALTER TABLE t_business_object_type DROP COLUMN ' || r_field.column_name;
 		DBMS_OUTPUT.PUT_LINE('Field T_BUSINESS_OBJECT_TYPE.' || UPPER(r_field.column_name) || ' dropped');
 	END LOOP;
+
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_business_object_type ADD CONSTRAINT bot_pk
+		PRIMARY KEY (
+			name )';
+	DBMS_OUTPUT.PUT_LINE('Primary Key T_BUSINESS_OBJECT_TYPE.BOT_PK created');	
 END;
 /
 BEGIN
@@ -2573,21 +2594,6 @@ BEGIN
 			DBMS_OUTPUT.PUT_LINE('Field T_TYPE.' || UPPER(r_field.column_name) || ' default value set to ' || NVL(r_field.new_default_value,'NULL'));
 		END IF;
 	END LOOP;
-	EXECUTE IMMEDIATE
-	'ALTER TABLE t_type ADD CONSTRAINT typ_pk
-		PRIMARY KEY (
-			name )';
-	DBMS_OUTPUT.PUT_LINE('Primary Key T_TYPE.TYP_PK created');
-	EXECUTE IMMEDIATE
-	'ALTER TABLE t_type ADD CONSTRAINT typ_bot_fk
-		FOREIGN KEY (fk_bot_name)
-		REFERENCES t_business_object_type (name)
-		ON DELETE CASCADE';
-	EXECUTE IMMEDIATE
-	'ALTER TABLE t_type ADD CONSTRAINT typ_typ_fk
-		FOREIGN KEY (fk_typ_name)
-		REFERENCES t_type (name)
-		ON DELETE CASCADE';
 	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_TYPE' AND column_name NOT IN (
 							'CUBE_ID',
 							'CUBE_SEQUENCE',
@@ -2608,6 +2614,12 @@ BEGIN
 		'ALTER TABLE t_type DROP COLUMN ' || r_field.column_name;
 		DBMS_OUTPUT.PUT_LINE('Field T_TYPE.' || UPPER(r_field.column_name) || ' dropped');
 	END LOOP;
+
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_type ADD CONSTRAINT typ_pk
+		PRIMARY KEY (
+			name )';
+	DBMS_OUTPUT.PUT_LINE('Primary Key T_TYPE.TYP_PK created');	
 END;
 /
 BEGIN
@@ -2663,26 +2675,6 @@ BEGIN
 			DBMS_OUTPUT.PUT_LINE('Field T_TYPE_SPECIALISATION_GROUP.' || UPPER(r_field.column_name) || ' default value set to ' || NVL(r_field.new_default_value,'NULL'));
 		END IF;
 	END LOOP;
-	EXECUTE IMMEDIATE
-	'ALTER TABLE t_type_specialisation_group ADD CONSTRAINT tsg_pk
-		PRIMARY KEY (
-			fk_typ_name,
-			code )';
-	DBMS_OUTPUT.PUT_LINE('Primary Key T_TYPE_SPECIALISATION_GROUP.TSG_PK created');
-	EXECUTE IMMEDIATE
-	'ALTER TABLE t_type_specialisation_group ADD CONSTRAINT tsg_typ_fk
-		FOREIGN KEY (fk_typ_name)
-		REFERENCES t_type (name)
-		ON DELETE CASCADE';
-	EXECUTE IMMEDIATE
-	'ALTER TABLE t_type_specialisation_group ADD CONSTRAINT tsg_tsg_fk
-		FOREIGN KEY (fk_typ_name, fk_tsg_code)
-		REFERENCES t_type_specialisation_group (fk_typ_name, code)
-		ON DELETE CASCADE';
-	EXECUTE IMMEDIATE
-	'ALTER TABLE t_type_specialisation_group ADD CONSTRAINT tsg_atb_0_xf
-		FOREIGN KEY (xf_atb_typ_name, xk_atb_name)
-		REFERENCES t_attribute (fk_typ_name, name)';
 	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_TYPE_SPECIALISATION_GROUP' AND column_name NOT IN (
 							'CUBE_ID',
 							'CUBE_SEQUENCE',
@@ -2700,6 +2692,13 @@ BEGIN
 		'ALTER TABLE t_type_specialisation_group DROP COLUMN ' || r_field.column_name;
 		DBMS_OUTPUT.PUT_LINE('Field T_TYPE_SPECIALISATION_GROUP.' || UPPER(r_field.column_name) || ' dropped');
 	END LOOP;
+
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_type_specialisation_group ADD CONSTRAINT tsg_pk
+		PRIMARY KEY (
+			fk_typ_name,
+			code )';
+	DBMS_OUTPUT.PUT_LINE('Primary Key T_TYPE_SPECIALISATION_GROUP.TSG_PK created');	
 END;
 /
 BEGIN
@@ -2753,22 +2752,6 @@ BEGIN
 			DBMS_OUTPUT.PUT_LINE('Field T_TYPE_SPECIALISATION.' || UPPER(r_field.column_name) || ' default value set to ' || NVL(r_field.new_default_value,'NULL'));
 		END IF;
 	END LOOP;
-	EXECUTE IMMEDIATE
-	'ALTER TABLE t_type_specialisation ADD CONSTRAINT tsp_pk
-		PRIMARY KEY (
-			fk_typ_name,
-			fk_tsg_code,
-			code )';
-	DBMS_OUTPUT.PUT_LINE('Primary Key T_TYPE_SPECIALISATION.TSP_PK created');
-	EXECUTE IMMEDIATE
-	'ALTER TABLE t_type_specialisation ADD CONSTRAINT tsp_tsg_fk
-		FOREIGN KEY (fk_typ_name, fk_tsg_code)
-		REFERENCES t_type_specialisation_group (fk_typ_name, code)
-		ON DELETE CASCADE';
-	EXECUTE IMMEDIATE
-	'ALTER TABLE t_type_specialisation ADD CONSTRAINT tsp_tsp_0_xf
-		FOREIGN KEY (xf_tsp_typ_name, xf_tsp_tsg_code, xk_tsp_code)
-		REFERENCES t_type_specialisation (fk_typ_name, fk_tsg_code, code)';
 	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_TYPE_SPECIALISATION' AND column_name NOT IN (
 							'CUBE_ID',
 							'CUBE_SEQUENCE',
@@ -2785,6 +2768,14 @@ BEGIN
 		'ALTER TABLE t_type_specialisation DROP COLUMN ' || r_field.column_name;
 		DBMS_OUTPUT.PUT_LINE('Field T_TYPE_SPECIALISATION.' || UPPER(r_field.column_name) || ' dropped');
 	END LOOP;
+
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_type_specialisation ADD CONSTRAINT tsp_pk
+		PRIMARY KEY (
+			fk_typ_name,
+			fk_tsg_code,
+			code )';
+	DBMS_OUTPUT.PUT_LINE('Primary Key T_TYPE_SPECIALISATION.TSP_PK created');	
 END;
 /
 BEGIN
@@ -2842,21 +2833,6 @@ BEGIN
 			DBMS_OUTPUT.PUT_LINE('Field T_ATTRIBUTE.' || UPPER(r_field.column_name) || ' default value set to ' || NVL(r_field.new_default_value,'NULL'));
 		END IF;
 	END LOOP;
-	EXECUTE IMMEDIATE
-	'ALTER TABLE t_attribute ADD CONSTRAINT atb_pk
-		PRIMARY KEY (
-			fk_typ_name,
-			name )';
-	DBMS_OUTPUT.PUT_LINE('Primary Key T_ATTRIBUTE.ATB_PK created');
-	EXECUTE IMMEDIATE
-	'ALTER TABLE t_attribute ADD CONSTRAINT atb_typ_fk
-		FOREIGN KEY (fk_typ_name)
-		REFERENCES t_type (name)
-		ON DELETE CASCADE';
-	EXECUTE IMMEDIATE
-	'ALTER TABLE t_attribute ADD CONSTRAINT atb_itp_0_xf
-		FOREIGN KEY (xk_itp_name)
-		REFERENCES t_information_type (name)';
 	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_ATTRIBUTE' AND column_name NOT IN (
 							'CUBE_ID',
 							'CUBE_SEQUENCE',
@@ -2875,6 +2851,13 @@ BEGIN
 		'ALTER TABLE t_attribute DROP COLUMN ' || r_field.column_name;
 		DBMS_OUTPUT.PUT_LINE('Field T_ATTRIBUTE.' || UPPER(r_field.column_name) || ' dropped');
 	END LOOP;
+
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_attribute ADD CONSTRAINT atb_pk
+		PRIMARY KEY (
+			fk_typ_name,
+			name )';
+	DBMS_OUTPUT.PUT_LINE('Primary Key T_ATTRIBUTE.ATB_PK created');	
 END;
 /
 BEGIN
@@ -2924,25 +2907,6 @@ BEGIN
 			DBMS_OUTPUT.PUT_LINE('Field T_DERIVATION.' || UPPER(r_field.column_name) || ' default value set to ' || NVL(r_field.new_default_value,'NULL'));
 		END IF;
 	END LOOP;
-	EXECUTE IMMEDIATE
-	'ALTER TABLE t_derivation ADD CONSTRAINT der_pk
-		PRIMARY KEY (
-			fk_typ_name,
-			fk_atb_name )';
-	DBMS_OUTPUT.PUT_LINE('Primary Key T_DERIVATION.DER_PK created');
-	EXECUTE IMMEDIATE
-	'ALTER TABLE t_derivation ADD CONSTRAINT der_atb_fk
-		FOREIGN KEY (fk_typ_name, fk_atb_name)
-		REFERENCES t_attribute (fk_typ_name, name)
-		ON DELETE CASCADE';
-	EXECUTE IMMEDIATE
-	'ALTER TABLE t_derivation ADD CONSTRAINT der_typ_0_xf
-		FOREIGN KEY (xk_typ_name)
-		REFERENCES t_type (name)';
-	EXECUTE IMMEDIATE
-	'ALTER TABLE t_derivation ADD CONSTRAINT der_typ_1_xf
-		FOREIGN KEY (xk_typ_name_1)
-		REFERENCES t_type (name)';
 	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_DERIVATION' AND column_name NOT IN (
 							'CUBE_ID',
 							'FK_BOT_NAME',
@@ -2957,6 +2921,13 @@ BEGIN
 		'ALTER TABLE t_derivation DROP COLUMN ' || r_field.column_name;
 		DBMS_OUTPUT.PUT_LINE('Field T_DERIVATION.' || UPPER(r_field.column_name) || ' dropped');
 	END LOOP;
+
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_derivation ADD CONSTRAINT der_pk
+		PRIMARY KEY (
+			fk_typ_name,
+			fk_atb_name )';
+	DBMS_OUTPUT.PUT_LINE('Primary Key T_DERIVATION.DER_PK created');	
 END;
 /
 BEGIN
@@ -3000,17 +2971,6 @@ BEGIN
 			DBMS_OUTPUT.PUT_LINE('Field T_DESCRIPTION_ATTRIBUTE.' || UPPER(r_field.column_name) || ' default value set to ' || NVL(r_field.new_default_value,'NULL'));
 		END IF;
 	END LOOP;
-	EXECUTE IMMEDIATE
-	'ALTER TABLE t_description_attribute ADD CONSTRAINT dca_pk
-		PRIMARY KEY (
-			fk_typ_name,
-			fk_atb_name )';
-	DBMS_OUTPUT.PUT_LINE('Primary Key T_DESCRIPTION_ATTRIBUTE.DCA_PK created');
-	EXECUTE IMMEDIATE
-	'ALTER TABLE t_description_attribute ADD CONSTRAINT dca_atb_fk
-		FOREIGN KEY (fk_typ_name, fk_atb_name)
-		REFERENCES t_attribute (fk_typ_name, name)
-		ON DELETE CASCADE';
 	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_DESCRIPTION_ATTRIBUTE' AND column_name NOT IN (
 							'CUBE_ID',
 							'FK_BOT_NAME',
@@ -3022,6 +2982,13 @@ BEGIN
 		'ALTER TABLE t_description_attribute DROP COLUMN ' || r_field.column_name;
 		DBMS_OUTPUT.PUT_LINE('Field T_DESCRIPTION_ATTRIBUTE.' || UPPER(r_field.column_name) || ' dropped');
 	END LOOP;
+
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_description_attribute ADD CONSTRAINT dca_pk
+		PRIMARY KEY (
+			fk_typ_name,
+			fk_atb_name )';
+	DBMS_OUTPUT.PUT_LINE('Primary Key T_DESCRIPTION_ATTRIBUTE.DCA_PK created');	
 END;
 /
 BEGIN
@@ -3071,24 +3038,6 @@ BEGIN
 			DBMS_OUTPUT.PUT_LINE('Field T_RESTRICTION_TYPE_SPEC_ATB.' || UPPER(r_field.column_name) || ' default value set to ' || NVL(r_field.new_default_value,'NULL'));
 		END IF;
 	END LOOP;
-	EXECUTE IMMEDIATE
-	'ALTER TABLE t_restriction_type_spec_atb ADD CONSTRAINT rta_pk
-		PRIMARY KEY (
-			fk_typ_name,
-			fk_atb_name,
-			xf_tsp_typ_name,
-			xf_tsp_tsg_code,
-			xk_tsp_code )';
-	DBMS_OUTPUT.PUT_LINE('Primary Key T_RESTRICTION_TYPE_SPEC_ATB.RTA_PK created');
-	EXECUTE IMMEDIATE
-	'ALTER TABLE t_restriction_type_spec_atb ADD CONSTRAINT rta_atb_fk
-		FOREIGN KEY (fk_typ_name, fk_atb_name)
-		REFERENCES t_attribute (fk_typ_name, name)
-		ON DELETE CASCADE';
-	EXECUTE IMMEDIATE
-	'ALTER TABLE t_restriction_type_spec_atb ADD CONSTRAINT rta_tsp_0_xf
-		FOREIGN KEY (xf_tsp_typ_name, xf_tsp_tsg_code, xk_tsp_code)
-		REFERENCES t_type_specialisation (fk_typ_name, fk_tsg_code, code)';
 	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_RESTRICTION_TYPE_SPEC_ATB' AND column_name NOT IN (
 							'CUBE_ID',
 							'FK_BOT_NAME',
@@ -3103,6 +3052,16 @@ BEGIN
 		'ALTER TABLE t_restriction_type_spec_atb DROP COLUMN ' || r_field.column_name;
 		DBMS_OUTPUT.PUT_LINE('Field T_RESTRICTION_TYPE_SPEC_ATB.' || UPPER(r_field.column_name) || ' dropped');
 	END LOOP;
+
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_restriction_type_spec_atb ADD CONSTRAINT rta_pk
+		PRIMARY KEY (
+			fk_typ_name,
+			fk_atb_name,
+			xf_tsp_typ_name,
+			xf_tsp_tsg_code,
+			xk_tsp_code )';
+	DBMS_OUTPUT.PUT_LINE('Primary Key T_RESTRICTION_TYPE_SPEC_ATB.RTA_PK created');	
 END;
 /
 BEGIN
@@ -3168,31 +3127,6 @@ BEGIN
 			DBMS_OUTPUT.PUT_LINE('Field T_REFERENCE.' || UPPER(r_field.column_name) || ' default value set to ' || NVL(r_field.new_default_value,'NULL'));
 		END IF;
 	END LOOP;
-	EXECUTE IMMEDIATE
-	'ALTER TABLE t_reference ADD CONSTRAINT ref_pk
-		PRIMARY KEY (
-			fk_typ_name,
-			sequence,
-			xk_bot_name,
-			xk_typ_name )';
-	DBMS_OUTPUT.PUT_LINE('Primary Key T_REFERENCE.REF_PK created');
-	EXECUTE IMMEDIATE
-	'ALTER TABLE t_reference ADD CONSTRAINT ref_typ_fk
-		FOREIGN KEY (fk_typ_name)
-		REFERENCES t_type (name)
-		ON DELETE CASCADE';
-	EXECUTE IMMEDIATE
-	'ALTER TABLE t_reference ADD CONSTRAINT ref_bot_0_xf
-		FOREIGN KEY (xk_bot_name)
-		REFERENCES t_business_object_type (name)';
-	EXECUTE IMMEDIATE
-	'ALTER TABLE t_reference ADD CONSTRAINT ref_typ_0_xf
-		FOREIGN KEY (xk_typ_name)
-		REFERENCES t_type (name)';
-	EXECUTE IMMEDIATE
-	'ALTER TABLE t_reference ADD CONSTRAINT ref_typ_1_xf
-		FOREIGN KEY (xk_typ_name_1)
-		REFERENCES t_type (name)';
 	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_REFERENCE' AND column_name NOT IN (
 							'CUBE_ID',
 							'CUBE_SEQUENCE',
@@ -3215,6 +3149,15 @@ BEGIN
 		'ALTER TABLE t_reference DROP COLUMN ' || r_field.column_name;
 		DBMS_OUTPUT.PUT_LINE('Field T_REFERENCE.' || UPPER(r_field.column_name) || ' dropped');
 	END LOOP;
+
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_reference ADD CONSTRAINT ref_pk
+		PRIMARY KEY (
+			fk_typ_name,
+			sequence,
+			xk_bot_name,
+			xk_typ_name )';
+	DBMS_OUTPUT.PUT_LINE('Primary Key T_REFERENCE.REF_PK created');	
 END;
 /
 BEGIN
@@ -3262,19 +3205,6 @@ BEGIN
 			DBMS_OUTPUT.PUT_LINE('Field T_DESCRIPTION_REFERENCE.' || UPPER(r_field.column_name) || ' default value set to ' || NVL(r_field.new_default_value,'NULL'));
 		END IF;
 	END LOOP;
-	EXECUTE IMMEDIATE
-	'ALTER TABLE t_description_reference ADD CONSTRAINT dcr_pk
-		PRIMARY KEY (
-			fk_typ_name,
-			fk_ref_sequence,
-			fk_ref_bot_name,
-			fk_ref_typ_name )';
-	DBMS_OUTPUT.PUT_LINE('Primary Key T_DESCRIPTION_REFERENCE.DCR_PK created');
-	EXECUTE IMMEDIATE
-	'ALTER TABLE t_description_reference ADD CONSTRAINT dcr_ref_fk
-		FOREIGN KEY (fk_typ_name, fk_ref_sequence, fk_ref_bot_name, fk_ref_typ_name)
-		REFERENCES t_reference (fk_typ_name, sequence, xk_bot_name, xk_typ_name)
-		ON DELETE CASCADE';
 	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_DESCRIPTION_REFERENCE' AND column_name NOT IN (
 							'CUBE_ID',
 							'FK_BOT_NAME',
@@ -3288,6 +3218,15 @@ BEGIN
 		'ALTER TABLE t_description_reference DROP COLUMN ' || r_field.column_name;
 		DBMS_OUTPUT.PUT_LINE('Field T_DESCRIPTION_REFERENCE.' || UPPER(r_field.column_name) || ' dropped');
 	END LOOP;
+
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_description_reference ADD CONSTRAINT dcr_pk
+		PRIMARY KEY (
+			fk_typ_name,
+			fk_ref_sequence,
+			fk_ref_bot_name,
+			fk_ref_typ_name )';
+	DBMS_OUTPUT.PUT_LINE('Primary Key T_DESCRIPTION_REFERENCE.DCR_PK created');	
 END;
 /
 BEGIN
@@ -3341,26 +3280,6 @@ BEGIN
 			DBMS_OUTPUT.PUT_LINE('Field T_RESTRICTION_TYPE_SPEC_REF.' || UPPER(r_field.column_name) || ' default value set to ' || NVL(r_field.new_default_value,'NULL'));
 		END IF;
 	END LOOP;
-	EXECUTE IMMEDIATE
-	'ALTER TABLE t_restriction_type_spec_ref ADD CONSTRAINT rtr_pk
-		PRIMARY KEY (
-			fk_typ_name,
-			fk_ref_sequence,
-			fk_ref_bot_name,
-			fk_ref_typ_name,
-			xf_tsp_typ_name,
-			xf_tsp_tsg_code,
-			xk_tsp_code )';
-	DBMS_OUTPUT.PUT_LINE('Primary Key T_RESTRICTION_TYPE_SPEC_REF.RTR_PK created');
-	EXECUTE IMMEDIATE
-	'ALTER TABLE t_restriction_type_spec_ref ADD CONSTRAINT rtr_ref_fk
-		FOREIGN KEY (fk_typ_name, fk_ref_sequence, fk_ref_bot_name, fk_ref_typ_name)
-		REFERENCES t_reference (fk_typ_name, sequence, xk_bot_name, xk_typ_name)
-		ON DELETE CASCADE';
-	EXECUTE IMMEDIATE
-	'ALTER TABLE t_restriction_type_spec_ref ADD CONSTRAINT rtr_tsp_0_xf
-		FOREIGN KEY (xf_tsp_typ_name, xf_tsp_tsg_code, xk_tsp_code)
-		REFERENCES t_type_specialisation (fk_typ_name, fk_tsg_code, code)';
 	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_RESTRICTION_TYPE_SPEC_REF' AND column_name NOT IN (
 							'CUBE_ID',
 							'FK_BOT_NAME',
@@ -3377,6 +3296,18 @@ BEGIN
 		'ALTER TABLE t_restriction_type_spec_ref DROP COLUMN ' || r_field.column_name;
 		DBMS_OUTPUT.PUT_LINE('Field T_RESTRICTION_TYPE_SPEC_REF.' || UPPER(r_field.column_name) || ' dropped');
 	END LOOP;
+
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_restriction_type_spec_ref ADD CONSTRAINT rtr_pk
+		PRIMARY KEY (
+			fk_typ_name,
+			fk_ref_sequence,
+			fk_ref_bot_name,
+			fk_ref_typ_name,
+			xf_tsp_typ_name,
+			xf_tsp_tsg_code,
+			xk_tsp_code )';
+	DBMS_OUTPUT.PUT_LINE('Primary Key T_RESTRICTION_TYPE_SPEC_REF.RTR_PK created');	
 END;
 /
 BEGIN
@@ -3430,26 +3361,6 @@ BEGIN
 			DBMS_OUTPUT.PUT_LINE('Field T_RESTRICTION_TARGET_TYPE_SPEC.' || UPPER(r_field.column_name) || ' default value set to ' || NVL(r_field.new_default_value,'NULL'));
 		END IF;
 	END LOOP;
-	EXECUTE IMMEDIATE
-	'ALTER TABLE t_restriction_target_type_spec ADD CONSTRAINT rts_pk
-		PRIMARY KEY (
-			fk_typ_name,
-			fk_ref_sequence,
-			fk_ref_bot_name,
-			fk_ref_typ_name,
-			xf_tsp_typ_name,
-			xf_tsp_tsg_code,
-			xk_tsp_code )';
-	DBMS_OUTPUT.PUT_LINE('Primary Key T_RESTRICTION_TARGET_TYPE_SPEC.RTS_PK created');
-	EXECUTE IMMEDIATE
-	'ALTER TABLE t_restriction_target_type_spec ADD CONSTRAINT rts_ref_fk
-		FOREIGN KEY (fk_typ_name, fk_ref_sequence, fk_ref_bot_name, fk_ref_typ_name)
-		REFERENCES t_reference (fk_typ_name, sequence, xk_bot_name, xk_typ_name)
-		ON DELETE CASCADE';
-	EXECUTE IMMEDIATE
-	'ALTER TABLE t_restriction_target_type_spec ADD CONSTRAINT rts_tsp_0_xf
-		FOREIGN KEY (xf_tsp_typ_name, xf_tsp_tsg_code, xk_tsp_code)
-		REFERENCES t_type_specialisation (fk_typ_name, fk_tsg_code, code)';
 	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_RESTRICTION_TARGET_TYPE_SPEC' AND column_name NOT IN (
 							'CUBE_ID',
 							'FK_BOT_NAME',
@@ -3466,6 +3377,18 @@ BEGIN
 		'ALTER TABLE t_restriction_target_type_spec DROP COLUMN ' || r_field.column_name;
 		DBMS_OUTPUT.PUT_LINE('Field T_RESTRICTION_TARGET_TYPE_SPEC.' || UPPER(r_field.column_name) || ' dropped');
 	END LOOP;
+
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_restriction_target_type_spec ADD CONSTRAINT rts_pk
+		PRIMARY KEY (
+			fk_typ_name,
+			fk_ref_sequence,
+			fk_ref_bot_name,
+			fk_ref_typ_name,
+			xf_tsp_typ_name,
+			xf_tsp_tsg_code,
+			xk_tsp_code )';
+	DBMS_OUTPUT.PUT_LINE('Primary Key T_RESTRICTION_TARGET_TYPE_SPEC.RTS_PK created');	
 END;
 /
 BEGIN
@@ -3515,18 +3438,6 @@ BEGIN
 			DBMS_OUTPUT.PUT_LINE('Field T_SERVICE.' || UPPER(r_field.column_name) || ' default value set to ' || NVL(r_field.new_default_value,'NULL'));
 		END IF;
 	END LOOP;
-	EXECUTE IMMEDIATE
-	'ALTER TABLE t_service ADD CONSTRAINT srv_pk
-		PRIMARY KEY (
-			fk_typ_name,
-			name,
-			cube_tsg_db_scr )';
-	DBMS_OUTPUT.PUT_LINE('Primary Key T_SERVICE.SRV_PK created');
-	EXECUTE IMMEDIATE
-	'ALTER TABLE t_service ADD CONSTRAINT srv_typ_fk
-		FOREIGN KEY (fk_typ_name)
-		REFERENCES t_type (name)
-		ON DELETE CASCADE';
 	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_SERVICE' AND column_name NOT IN (
 							'CUBE_ID',
 							'CUBE_SEQUENCE',
@@ -3541,6 +3452,14 @@ BEGIN
 		'ALTER TABLE t_service DROP COLUMN ' || r_field.column_name;
 		DBMS_OUTPUT.PUT_LINE('Field T_SERVICE.' || UPPER(r_field.column_name) || ' dropped');
 	END LOOP;
+
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_service ADD CONSTRAINT srv_pk
+		PRIMARY KEY (
+			fk_typ_name,
+			name,
+			cube_tsg_db_scr )';
+	DBMS_OUTPUT.PUT_LINE('Primary Key T_SERVICE.SRV_PK created');	
 END;
 /
 BEGIN
@@ -3590,19 +3509,6 @@ BEGIN
 			DBMS_OUTPUT.PUT_LINE('Field T_SERVICE_STEP.' || UPPER(r_field.column_name) || ' default value set to ' || NVL(r_field.new_default_value,'NULL'));
 		END IF;
 	END LOOP;
-	EXECUTE IMMEDIATE
-	'ALTER TABLE t_service_step ADD CONSTRAINT sst_pk
-		PRIMARY KEY (
-			fk_typ_name,
-			fk_srv_name,
-			fk_srv_cube_tsg_db_scr,
-			name )';
-	DBMS_OUTPUT.PUT_LINE('Primary Key T_SERVICE_STEP.SST_PK created');
-	EXECUTE IMMEDIATE
-	'ALTER TABLE t_service_step ADD CONSTRAINT sst_srv_fk
-		FOREIGN KEY (fk_typ_name, fk_srv_name, fk_srv_cube_tsg_db_scr)
-		REFERENCES t_service (fk_typ_name, name, cube_tsg_db_scr)
-		ON DELETE CASCADE';
 	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_SERVICE_STEP' AND column_name NOT IN (
 							'CUBE_ID',
 							'CUBE_SEQUENCE',
@@ -3617,6 +3523,15 @@ BEGIN
 		'ALTER TABLE t_service_step DROP COLUMN ' || r_field.column_name;
 		DBMS_OUTPUT.PUT_LINE('Field T_SERVICE_STEP.' || UPPER(r_field.column_name) || ' dropped');
 	END LOOP;
+
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_service_step ADD CONSTRAINT sst_pk
+		PRIMARY KEY (
+			fk_typ_name,
+			fk_srv_name,
+			fk_srv_cube_tsg_db_scr,
+			name )';
+	DBMS_OUTPUT.PUT_LINE('Primary Key T_SERVICE_STEP.SST_PK created');	
 END;
 /
 BEGIN
@@ -3674,32 +3589,6 @@ BEGIN
 			DBMS_OUTPUT.PUT_LINE('Field T_SERVICE_DETAIL.' || UPPER(r_field.column_name) || ' default value set to ' || NVL(r_field.new_default_value,'NULL'));
 		END IF;
 	END LOOP;
-	EXECUTE IMMEDIATE
-	'ALTER TABLE t_service_detail ADD CONSTRAINT svd_pk
-		PRIMARY KEY (
-			fk_typ_name,
-			fk_srv_name,
-			fk_srv_cube_tsg_db_scr,
-			xf_atb_typ_name,
-			xk_atb_name,
-			xk_ref_bot_name,
-			xk_ref_typ_name,
-			xf_ref_typ_name,
-			xk_ref_sequence )';
-	DBMS_OUTPUT.PUT_LINE('Primary Key T_SERVICE_DETAIL.SVD_PK created');
-	EXECUTE IMMEDIATE
-	'ALTER TABLE t_service_detail ADD CONSTRAINT svd_srv_fk
-		FOREIGN KEY (fk_typ_name, fk_srv_name, fk_srv_cube_tsg_db_scr)
-		REFERENCES t_service (fk_typ_name, name, cube_tsg_db_scr)
-		ON DELETE CASCADE';
-	EXECUTE IMMEDIATE
-	'ALTER TABLE t_service_detail ADD CONSTRAINT svd_atb_0_xf
-		FOREIGN KEY (xf_atb_typ_name, xk_atb_name)
-		REFERENCES t_attribute (fk_typ_name, name)';
-	EXECUTE IMMEDIATE
-	'ALTER TABLE t_service_detail ADD CONSTRAINT svd_ref_0_xf
-		FOREIGN KEY (xf_ref_typ_name, xk_ref_sequence, xk_ref_bot_name, xk_ref_typ_name)
-		REFERENCES t_reference (fk_typ_name, sequence, xk_bot_name, xk_typ_name)';
 	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_SERVICE_DETAIL' AND column_name NOT IN (
 							'CUBE_ID',
 							'FK_BOT_NAME',
@@ -3718,6 +3607,20 @@ BEGIN
 		'ALTER TABLE t_service_detail DROP COLUMN ' || r_field.column_name;
 		DBMS_OUTPUT.PUT_LINE('Field T_SERVICE_DETAIL.' || UPPER(r_field.column_name) || ' dropped');
 	END LOOP;
+
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_service_detail ADD CONSTRAINT svd_pk
+		PRIMARY KEY (
+			fk_typ_name,
+			fk_srv_name,
+			fk_srv_cube_tsg_db_scr,
+			xf_atb_typ_name,
+			xk_atb_name,
+			xk_ref_bot_name,
+			xk_ref_typ_name,
+			xf_ref_typ_name,
+			xk_ref_sequence )';
+	DBMS_OUTPUT.PUT_LINE('Primary Key T_SERVICE_DETAIL.SVD_PK created');	
 END;
 /
 BEGIN
@@ -3765,23 +3668,6 @@ BEGIN
 			DBMS_OUTPUT.PUT_LINE('Field T_RESTRICTION_TYPE_SPEC_TYP.' || UPPER(r_field.column_name) || ' default value set to ' || NVL(r_field.new_default_value,'NULL'));
 		END IF;
 	END LOOP;
-	EXECUTE IMMEDIATE
-	'ALTER TABLE t_restriction_type_spec_typ ADD CONSTRAINT rtt_pk
-		PRIMARY KEY (
-			fk_typ_name,
-			xf_tsp_typ_name,
-			xf_tsp_tsg_code,
-			xk_tsp_code )';
-	DBMS_OUTPUT.PUT_LINE('Primary Key T_RESTRICTION_TYPE_SPEC_TYP.RTT_PK created');
-	EXECUTE IMMEDIATE
-	'ALTER TABLE t_restriction_type_spec_typ ADD CONSTRAINT rtt_typ_fk
-		FOREIGN KEY (fk_typ_name)
-		REFERENCES t_type (name)
-		ON DELETE CASCADE';
-	EXECUTE IMMEDIATE
-	'ALTER TABLE t_restriction_type_spec_typ ADD CONSTRAINT rtt_tsp_0_xf
-		FOREIGN KEY (xf_tsp_typ_name, xf_tsp_tsg_code, xk_tsp_code)
-		REFERENCES t_type_specialisation (fk_typ_name, fk_tsg_code, code)';
 	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_RESTRICTION_TYPE_SPEC_TYP' AND column_name NOT IN (
 							'CUBE_ID',
 							'FK_BOT_NAME',
@@ -3795,6 +3681,15 @@ BEGIN
 		'ALTER TABLE t_restriction_type_spec_typ DROP COLUMN ' || r_field.column_name;
 		DBMS_OUTPUT.PUT_LINE('Field T_RESTRICTION_TYPE_SPEC_TYP.' || UPPER(r_field.column_name) || ' dropped');
 	END LOOP;
+
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_restriction_type_spec_typ ADD CONSTRAINT rtt_pk
+		PRIMARY KEY (
+			fk_typ_name,
+			xf_tsp_typ_name,
+			xf_tsp_tsg_code,
+			xk_tsp_code )';
+	DBMS_OUTPUT.PUT_LINE('Primary Key T_RESTRICTION_TYPE_SPEC_TYP.RTT_PK created');	
 END;
 /
 BEGIN
@@ -3862,34 +3757,6 @@ BEGIN
 			DBMS_OUTPUT.PUT_LINE('Field T_JSON_PATH.' || UPPER(r_field.column_name) || ' default value set to ' || NVL(r_field.new_default_value,'NULL'));
 		END IF;
 	END LOOP;
-	EXECUTE IMMEDIATE
-	'ALTER TABLE t_json_path ADD CONSTRAINT jsn_pk
-		PRIMARY KEY (
-			fk_typ_name,
-			name,
-			location,
-			xf_atb_typ_name,
-			xk_atb_name,
-			xk_typ_name )';
-	DBMS_OUTPUT.PUT_LINE('Primary Key T_JSON_PATH.JSN_PK created');
-	EXECUTE IMMEDIATE
-	'ALTER TABLE t_json_path ADD CONSTRAINT jsn_typ_fk
-		FOREIGN KEY (fk_typ_name)
-		REFERENCES t_type (name)
-		ON DELETE CASCADE';
-	EXECUTE IMMEDIATE
-	'ALTER TABLE t_json_path ADD CONSTRAINT jsn_jsn_fk
-		FOREIGN KEY (fk_typ_name, fk_jsn_name, fk_jsn_location, fk_jsn_atb_typ_name, fk_jsn_atb_name, fk_jsn_typ_name)
-		REFERENCES t_json_path (fk_typ_name, name, location, xf_atb_typ_name, xk_atb_name, xk_typ_name)
-		ON DELETE CASCADE';
-	EXECUTE IMMEDIATE
-	'ALTER TABLE t_json_path ADD CONSTRAINT jsn_atb_0_xf
-		FOREIGN KEY (xf_atb_typ_name, xk_atb_name)
-		REFERENCES t_attribute (fk_typ_name, name)';
-	EXECUTE IMMEDIATE
-	'ALTER TABLE t_json_path ADD CONSTRAINT jsn_typ_0_xf
-		FOREIGN KEY (xk_typ_name)
-		REFERENCES t_type (name)';
 	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_JSON_PATH' AND column_name NOT IN (
 							'CUBE_ID',
 							'CUBE_SEQUENCE',
@@ -3913,6 +3780,17 @@ BEGIN
 		'ALTER TABLE t_json_path DROP COLUMN ' || r_field.column_name;
 		DBMS_OUTPUT.PUT_LINE('Field T_JSON_PATH.' || UPPER(r_field.column_name) || ' dropped');
 	END LOOP;
+
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_json_path ADD CONSTRAINT jsn_pk
+		PRIMARY KEY (
+			fk_typ_name,
+			name,
+			location,
+			xf_atb_typ_name,
+			xk_atb_name,
+			xk_typ_name )';
+	DBMS_OUTPUT.PUT_LINE('Primary Key T_JSON_PATH.JSN_PK created');	
 END;
 /
 BEGIN
@@ -3954,16 +3832,6 @@ BEGIN
 			DBMS_OUTPUT.PUT_LINE('Field T_DESCRIPTION_TYPE.' || UPPER(r_field.column_name) || ' default value set to ' || NVL(r_field.new_default_value,'NULL'));
 		END IF;
 	END LOOP;
-	EXECUTE IMMEDIATE
-	'ALTER TABLE t_description_type ADD CONSTRAINT dct_pk
-		PRIMARY KEY (
-			fk_typ_name )';
-	DBMS_OUTPUT.PUT_LINE('Primary Key T_DESCRIPTION_TYPE.DCT_PK created');
-	EXECUTE IMMEDIATE
-	'ALTER TABLE t_description_type ADD CONSTRAINT dct_typ_fk
-		FOREIGN KEY (fk_typ_name)
-		REFERENCES t_type (name)
-		ON DELETE CASCADE';
 	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_DESCRIPTION_TYPE' AND column_name NOT IN (
 							'CUBE_ID',
 							'FK_BOT_NAME',
@@ -3974,6 +3842,12 @@ BEGIN
 		'ALTER TABLE t_description_type DROP COLUMN ' || r_field.column_name;
 		DBMS_OUTPUT.PUT_LINE('Field T_DESCRIPTION_TYPE.' || UPPER(r_field.column_name) || ' dropped');
 	END LOOP;
+
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_description_type ADD CONSTRAINT dct_pk
+		PRIMARY KEY (
+			fk_typ_name )';
+	DBMS_OUTPUT.PUT_LINE('Primary Key T_DESCRIPTION_TYPE.DCT_PK created');	
 END;
 /
 BEGIN
@@ -4021,11 +3895,6 @@ BEGIN
 			DBMS_OUTPUT.PUT_LINE('Field T_SYSTEM.' || UPPER(r_field.column_name) || ' default value set to ' || NVL(r_field.new_default_value,'NULL'));
 		END IF;
 	END LOOP;
-	EXECUTE IMMEDIATE
-	'ALTER TABLE t_system ADD CONSTRAINT sys_pk
-		PRIMARY KEY (
-			name )';
-	DBMS_OUTPUT.PUT_LINE('Primary Key T_SYSTEM.SYS_PK created');
 	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_SYSTEM' AND column_name NOT IN (
 							'CUBE_ID',
 							'NAME',
@@ -4039,6 +3908,12 @@ BEGIN
 		'ALTER TABLE t_system DROP COLUMN ' || r_field.column_name;
 		DBMS_OUTPUT.PUT_LINE('Field T_SYSTEM.' || UPPER(r_field.column_name) || ' dropped');
 	END LOOP;
+
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_system ADD CONSTRAINT sys_pk
+		PRIMARY KEY (
+			name )';
+	DBMS_OUTPUT.PUT_LINE('Primary Key T_SYSTEM.SYS_PK created');	
 END;
 /
 BEGIN
@@ -4080,21 +3955,6 @@ BEGIN
 			DBMS_OUTPUT.PUT_LINE('Field T_SYSTEM_BO_TYPE.' || UPPER(r_field.column_name) || ' default value set to ' || NVL(r_field.new_default_value,'NULL'));
 		END IF;
 	END LOOP;
-	EXECUTE IMMEDIATE
-	'ALTER TABLE t_system_bo_type ADD CONSTRAINT sbt_pk
-		PRIMARY KEY (
-			fk_sys_name,
-			xk_bot_name )';
-	DBMS_OUTPUT.PUT_LINE('Primary Key T_SYSTEM_BO_TYPE.SBT_PK created');
-	EXECUTE IMMEDIATE
-	'ALTER TABLE t_system_bo_type ADD CONSTRAINT sbt_sys_fk
-		FOREIGN KEY (fk_sys_name)
-		REFERENCES t_system (name)
-		ON DELETE CASCADE';
-	EXECUTE IMMEDIATE
-	'ALTER TABLE t_system_bo_type ADD CONSTRAINT sbt_bot_0_xf
-		FOREIGN KEY (xk_bot_name)
-		REFERENCES t_business_object_type (name)';
 	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = 'CUBEROOT' AND table_name = 'T_SYSTEM_BO_TYPE' AND column_name NOT IN (
 							'CUBE_ID',
 							'CUBE_SEQUENCE',
@@ -4105,6 +3965,315 @@ BEGIN
 		'ALTER TABLE t_system_bo_type DROP COLUMN ' || r_field.column_name;
 		DBMS_OUTPUT.PUT_LINE('Field T_SYSTEM_BO_TYPE.' || UPPER(r_field.column_name) || ' dropped');
 	END LOOP;
+
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_system_bo_type ADD CONSTRAINT sbt_pk
+		PRIMARY KEY (
+			fk_sys_name,
+			xk_bot_name )';
+	DBMS_OUTPUT.PUT_LINE('Primary Key T_SYSTEM_BO_TYPE.SBT_PK created');	
+END;
+/
+BEGIN
+	DBMS_OUTPUT.PUT_LINE('Insert CUBE-NULL rows');
+	INSERT INTO t_information_type (cube_id,name) VALUES ('CUBE-NULL',' ');
+	INSERT INTO t_information_type_element (cube_id,fk_itp_name,sequence) VALUES ('CUBE-NULL',' ',0);
+	INSERT INTO t_permitted_value (cube_id,fk_itp_name,fk_ite_sequence,code) VALUES ('CUBE-NULL',' ',0,' ');
+	INSERT INTO t_business_object_type (cube_id,name) VALUES ('CUBE-NULL',' ');
+	INSERT INTO t_type (cube_id,name) VALUES ('CUBE-NULL',' ');
+	INSERT INTO t_type_specialisation_group (cube_id,fk_typ_name,code) VALUES ('CUBE-NULL',' ',' ');
+	INSERT INTO t_type_specialisation (cube_id,fk_typ_name,fk_tsg_code,code) VALUES ('CUBE-NULL',' ',' ',' ');
+	INSERT INTO t_attribute (cube_id,fk_typ_name,name) VALUES ('CUBE-NULL',' ',' ');
+	INSERT INTO t_derivation (cube_id,fk_typ_name,fk_atb_name) VALUES ('CUBE-NULL',' ',' ');
+	INSERT INTO t_description_attribute (cube_id,fk_typ_name,fk_atb_name) VALUES ('CUBE-NULL',' ',' ');
+	INSERT INTO t_restriction_type_spec_atb (cube_id,fk_typ_name,fk_atb_name,xf_tsp_typ_name,xf_tsp_tsg_code,xk_tsp_code) VALUES ('CUBE-NULL',' ',' ',' ',' ',' ');
+	INSERT INTO t_reference (cube_id,fk_typ_name,sequence,xk_bot_name,xk_typ_name) VALUES ('CUBE-NULL',' ',0,' ',' ');
+	INSERT INTO t_description_reference (cube_id,fk_typ_name,fk_ref_sequence,fk_ref_bot_name,fk_ref_typ_name) VALUES ('CUBE-NULL',' ',0,' ',' ');
+	INSERT INTO t_restriction_type_spec_ref (cube_id,fk_typ_name,fk_ref_sequence,fk_ref_bot_name,fk_ref_typ_name,xf_tsp_typ_name,xf_tsp_tsg_code,xk_tsp_code) VALUES ('CUBE-NULL',' ',0,' ',' ',' ',' ',' ');
+	INSERT INTO t_restriction_target_type_spec (cube_id,fk_typ_name,fk_ref_sequence,fk_ref_bot_name,fk_ref_typ_name,xf_tsp_typ_name,xf_tsp_tsg_code,xk_tsp_code) VALUES ('CUBE-NULL',' ',0,' ',' ',' ',' ',' ');
+	INSERT INTO t_service (cube_id,fk_typ_name,name,cube_tsg_db_scr) VALUES ('CUBE-NULL',' ',' ',' ');
+	INSERT INTO t_service_step (cube_id,fk_typ_name,fk_srv_name,fk_srv_cube_tsg_db_scr,name) VALUES ('CUBE-NULL',' ',' ',' ',' ');
+	INSERT INTO t_service_detail (cube_id,fk_typ_name,fk_srv_name,fk_srv_cube_tsg_db_scr,xf_atb_typ_name,xk_atb_name,xk_ref_bot_name,xk_ref_typ_name,xf_ref_typ_name,xk_ref_sequence) VALUES ('CUBE-NULL',' ',' ',' ',' ',' ',' ',' ',' ',0);
+	INSERT INTO t_restriction_type_spec_typ (cube_id,fk_typ_name,xf_tsp_typ_name,xf_tsp_tsg_code,xk_tsp_code) VALUES ('CUBE-NULL',' ',' ',' ',' ');
+	INSERT INTO t_json_path (cube_id,fk_typ_name,name,location,xf_atb_typ_name,xk_atb_name,xk_typ_name) VALUES ('CUBE-NULL',' ',' ',0,' ',' ',' ');
+	INSERT INTO t_description_type (cube_id,fk_typ_name) VALUES ('CUBE-NULL',' ');
+	INSERT INTO t_system (cube_id,name) VALUES ('CUBE-NULL',' ');
+	INSERT INTO t_system_bo_type (cube_id,fk_sys_name,xk_bot_name) VALUES ('CUBE-NULL',' ',' ');
+END;
+/
+BEGIN
+	DBMS_OUTPUT.PUT_LINE('Add foreign key constraints T_INFORMATION_TYPE');
+END;
+/
+BEGIN
+	DBMS_OUTPUT.PUT_LINE('Add foreign key constraints T_INFORMATION_TYPE_ELEMENT');
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_information_type_element ADD CONSTRAINT ite_itp_fk
+		FOREIGN KEY (fk_itp_name)
+		REFERENCES t_information_type (name)
+		ON DELETE CASCADE';
+END;
+/
+BEGIN
+	DBMS_OUTPUT.PUT_LINE('Add foreign key constraints T_PERMITTED_VALUE');
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_permitted_value ADD CONSTRAINT val_ite_fk
+		FOREIGN KEY (fk_itp_name, fk_ite_sequence)
+		REFERENCES t_information_type_element (fk_itp_name, sequence)
+		ON DELETE CASCADE';
+END;
+/
+BEGIN
+	DBMS_OUTPUT.PUT_LINE('Add foreign key constraints T_BUSINESS_OBJECT_TYPE');
+END;
+/
+BEGIN
+	DBMS_OUTPUT.PUT_LINE('Add foreign key constraints T_TYPE');
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_type ADD CONSTRAINT typ_bot_fk
+		FOREIGN KEY (fk_bot_name)
+		REFERENCES t_business_object_type (name)
+		ON DELETE CASCADE';
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_type ADD CONSTRAINT typ_typ_fk
+		FOREIGN KEY (fk_typ_name)
+		REFERENCES t_type (name)
+		ON DELETE CASCADE';
+END;
+/
+BEGIN
+	DBMS_OUTPUT.PUT_LINE('Add foreign key constraints T_TYPE_SPECIALISATION_GROUP');
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_type_specialisation_group ADD CONSTRAINT tsg_typ_fk
+		FOREIGN KEY (fk_typ_name)
+		REFERENCES t_type (name)
+		ON DELETE CASCADE';
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_type_specialisation_group ADD CONSTRAINT tsg_tsg_fk
+		FOREIGN KEY (fk_typ_name, fk_tsg_code)
+		REFERENCES t_type_specialisation_group (fk_typ_name, code)
+		ON DELETE CASCADE';
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_type_specialisation_group ADD CONSTRAINT tsg_atb_0_xf
+		FOREIGN KEY (xf_atb_typ_name, xk_atb_name)
+		REFERENCES t_attribute (fk_typ_name, name)';
+END;
+/
+BEGIN
+	DBMS_OUTPUT.PUT_LINE('Add foreign key constraints T_TYPE_SPECIALISATION');
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_type_specialisation ADD CONSTRAINT tsp_tsg_fk
+		FOREIGN KEY (fk_typ_name, fk_tsg_code)
+		REFERENCES t_type_specialisation_group (fk_typ_name, code)
+		ON DELETE CASCADE';
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_type_specialisation ADD CONSTRAINT tsp_tsp_0_xf
+		FOREIGN KEY (xf_tsp_typ_name, xf_tsp_tsg_code, xk_tsp_code)
+		REFERENCES t_type_specialisation (fk_typ_name, fk_tsg_code, code)';
+END;
+/
+BEGIN
+	DBMS_OUTPUT.PUT_LINE('Add foreign key constraints T_ATTRIBUTE');
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_attribute ADD CONSTRAINT atb_typ_fk
+		FOREIGN KEY (fk_typ_name)
+		REFERENCES t_type (name)
+		ON DELETE CASCADE';
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_attribute ADD CONSTRAINT atb_itp_0_xf
+		FOREIGN KEY (xk_itp_name)
+		REFERENCES t_information_type (name)';
+END;
+/
+BEGIN
+	DBMS_OUTPUT.PUT_LINE('Add foreign key constraints T_DERIVATION');
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_derivation ADD CONSTRAINT der_atb_fk
+		FOREIGN KEY (fk_typ_name, fk_atb_name)
+		REFERENCES t_attribute (fk_typ_name, name)
+		ON DELETE CASCADE';
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_derivation ADD CONSTRAINT der_typ_0_xf
+		FOREIGN KEY (xk_typ_name)
+		REFERENCES t_type (name)';
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_derivation ADD CONSTRAINT der_typ_1_xf
+		FOREIGN KEY (xk_typ_name_1)
+		REFERENCES t_type (name)';
+END;
+/
+BEGIN
+	DBMS_OUTPUT.PUT_LINE('Add foreign key constraints T_DESCRIPTION_ATTRIBUTE');
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_description_attribute ADD CONSTRAINT dca_atb_fk
+		FOREIGN KEY (fk_typ_name, fk_atb_name)
+		REFERENCES t_attribute (fk_typ_name, name)
+		ON DELETE CASCADE';
+END;
+/
+BEGIN
+	DBMS_OUTPUT.PUT_LINE('Add foreign key constraints T_RESTRICTION_TYPE_SPEC_ATB');
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_restriction_type_spec_atb ADD CONSTRAINT rta_atb_fk
+		FOREIGN KEY (fk_typ_name, fk_atb_name)
+		REFERENCES t_attribute (fk_typ_name, name)
+		ON DELETE CASCADE';
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_restriction_type_spec_atb ADD CONSTRAINT rta_tsp_0_xf
+		FOREIGN KEY (xf_tsp_typ_name, xf_tsp_tsg_code, xk_tsp_code)
+		REFERENCES t_type_specialisation (fk_typ_name, fk_tsg_code, code)';
+END;
+/
+BEGIN
+	DBMS_OUTPUT.PUT_LINE('Add foreign key constraints T_REFERENCE');
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_reference ADD CONSTRAINT ref_typ_fk
+		FOREIGN KEY (fk_typ_name)
+		REFERENCES t_type (name)
+		ON DELETE CASCADE';
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_reference ADD CONSTRAINT ref_bot_0_xf
+		FOREIGN KEY (xk_bot_name)
+		REFERENCES t_business_object_type (name)';
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_reference ADD CONSTRAINT ref_typ_0_xf
+		FOREIGN KEY (xk_typ_name)
+		REFERENCES t_type (name)';
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_reference ADD CONSTRAINT ref_typ_1_xf
+		FOREIGN KEY (xk_typ_name_1)
+		REFERENCES t_type (name)';
+END;
+/
+BEGIN
+	DBMS_OUTPUT.PUT_LINE('Add foreign key constraints T_DESCRIPTION_REFERENCE');
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_description_reference ADD CONSTRAINT dcr_ref_fk
+		FOREIGN KEY (fk_typ_name, fk_ref_sequence, fk_ref_bot_name, fk_ref_typ_name)
+		REFERENCES t_reference (fk_typ_name, sequence, xk_bot_name, xk_typ_name)
+		ON DELETE CASCADE';
+END;
+/
+BEGIN
+	DBMS_OUTPUT.PUT_LINE('Add foreign key constraints T_RESTRICTION_TYPE_SPEC_REF');
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_restriction_type_spec_ref ADD CONSTRAINT rtr_ref_fk
+		FOREIGN KEY (fk_typ_name, fk_ref_sequence, fk_ref_bot_name, fk_ref_typ_name)
+		REFERENCES t_reference (fk_typ_name, sequence, xk_bot_name, xk_typ_name)
+		ON DELETE CASCADE';
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_restriction_type_spec_ref ADD CONSTRAINT rtr_tsp_0_xf
+		FOREIGN KEY (xf_tsp_typ_name, xf_tsp_tsg_code, xk_tsp_code)
+		REFERENCES t_type_specialisation (fk_typ_name, fk_tsg_code, code)';
+END;
+/
+BEGIN
+	DBMS_OUTPUT.PUT_LINE('Add foreign key constraints T_RESTRICTION_TARGET_TYPE_SPEC');
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_restriction_target_type_spec ADD CONSTRAINT rts_ref_fk
+		FOREIGN KEY (fk_typ_name, fk_ref_sequence, fk_ref_bot_name, fk_ref_typ_name)
+		REFERENCES t_reference (fk_typ_name, sequence, xk_bot_name, xk_typ_name)
+		ON DELETE CASCADE';
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_restriction_target_type_spec ADD CONSTRAINT rts_tsp_0_xf
+		FOREIGN KEY (xf_tsp_typ_name, xf_tsp_tsg_code, xk_tsp_code)
+		REFERENCES t_type_specialisation (fk_typ_name, fk_tsg_code, code)';
+END;
+/
+BEGIN
+	DBMS_OUTPUT.PUT_LINE('Add foreign key constraints T_SERVICE');
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_service ADD CONSTRAINT srv_typ_fk
+		FOREIGN KEY (fk_typ_name)
+		REFERENCES t_type (name)
+		ON DELETE CASCADE';
+END;
+/
+BEGIN
+	DBMS_OUTPUT.PUT_LINE('Add foreign key constraints T_SERVICE_STEP');
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_service_step ADD CONSTRAINT sst_srv_fk
+		FOREIGN KEY (fk_typ_name, fk_srv_name, fk_srv_cube_tsg_db_scr)
+		REFERENCES t_service (fk_typ_name, name, cube_tsg_db_scr)
+		ON DELETE CASCADE';
+END;
+/
+BEGIN
+	DBMS_OUTPUT.PUT_LINE('Add foreign key constraints T_SERVICE_DETAIL');
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_service_detail ADD CONSTRAINT svd_srv_fk
+		FOREIGN KEY (fk_typ_name, fk_srv_name, fk_srv_cube_tsg_db_scr)
+		REFERENCES t_service (fk_typ_name, name, cube_tsg_db_scr)
+		ON DELETE CASCADE';
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_service_detail ADD CONSTRAINT svd_atb_0_xf
+		FOREIGN KEY (xf_atb_typ_name, xk_atb_name)
+		REFERENCES t_attribute (fk_typ_name, name)';
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_service_detail ADD CONSTRAINT svd_ref_0_xf
+		FOREIGN KEY (xf_ref_typ_name, xk_ref_sequence, xk_ref_bot_name, xk_ref_typ_name)
+		REFERENCES t_reference (fk_typ_name, sequence, xk_bot_name, xk_typ_name)';
+END;
+/
+BEGIN
+	DBMS_OUTPUT.PUT_LINE('Add foreign key constraints T_RESTRICTION_TYPE_SPEC_TYP');
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_restriction_type_spec_typ ADD CONSTRAINT rtt_typ_fk
+		FOREIGN KEY (fk_typ_name)
+		REFERENCES t_type (name)
+		ON DELETE CASCADE';
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_restriction_type_spec_typ ADD CONSTRAINT rtt_tsp_0_xf
+		FOREIGN KEY (xf_tsp_typ_name, xf_tsp_tsg_code, xk_tsp_code)
+		REFERENCES t_type_specialisation (fk_typ_name, fk_tsg_code, code)';
+END;
+/
+BEGIN
+	DBMS_OUTPUT.PUT_LINE('Add foreign key constraints T_JSON_PATH');
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_json_path ADD CONSTRAINT jsn_typ_fk
+		FOREIGN KEY (fk_typ_name)
+		REFERENCES t_type (name)
+		ON DELETE CASCADE';
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_json_path ADD CONSTRAINT jsn_jsn_fk
+		FOREIGN KEY (fk_typ_name, fk_jsn_name, fk_jsn_location, fk_jsn_atb_typ_name, fk_jsn_atb_name, fk_jsn_typ_name)
+		REFERENCES t_json_path (fk_typ_name, name, location, xf_atb_typ_name, xk_atb_name, xk_typ_name)
+		ON DELETE CASCADE';
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_json_path ADD CONSTRAINT jsn_atb_0_xf
+		FOREIGN KEY (xf_atb_typ_name, xk_atb_name)
+		REFERENCES t_attribute (fk_typ_name, name)';
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_json_path ADD CONSTRAINT jsn_typ_0_xf
+		FOREIGN KEY (xk_typ_name)
+		REFERENCES t_type (name)';
+END;
+/
+BEGIN
+	DBMS_OUTPUT.PUT_LINE('Add foreign key constraints T_DESCRIPTION_TYPE');
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_description_type ADD CONSTRAINT dct_typ_fk
+		FOREIGN KEY (fk_typ_name)
+		REFERENCES t_type (name)
+		ON DELETE CASCADE';
+END;
+/
+BEGIN
+	DBMS_OUTPUT.PUT_LINE('Add foreign key constraints T_SYSTEM');
+END;
+/
+BEGIN
+	DBMS_OUTPUT.PUT_LINE('Add foreign key constraints T_SYSTEM_BO_TYPE');
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_system_bo_type ADD CONSTRAINT sbt_sys_fk
+		FOREIGN KEY (fk_sys_name)
+		REFERENCES t_system (name)
+		ON DELETE CASCADE';
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_system_bo_type ADD CONSTRAINT sbt_bot_0_xf
+		FOREIGN KEY (xk_bot_name)
+		REFERENCES t_business_object_type (name)';
 END;
 /
 EXIT;
