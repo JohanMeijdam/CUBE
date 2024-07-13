@@ -24,7 +24,7 @@ CREATE OR REPLACE VIEW v_cube_user AS
 		userid,
 		name,
 		password
-	FROM t_cube_user
+	FROM t_cube_user WHERE cube_id <> 'CUBE-NULL'
 /
 
 CREATE OR REPLACE PACKAGE pkg_cube_usr_trg IS
@@ -126,7 +126,7 @@ CREATE OR REPLACE VIEW v_cube_description AS
 		attribute_type_name,
 		sequence,
 		value
-	FROM t_cube_description
+	FROM t_cube_description WHERE cube_id <> 'CUBE-NULL'
 /
 
 CREATE OR REPLACE PACKAGE pkg_cube_dsc_trg IS

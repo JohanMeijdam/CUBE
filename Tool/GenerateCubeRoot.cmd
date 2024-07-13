@@ -11,12 +11,13 @@ set sysroot=%wwwroot%\%sysname%
 
 echo Start > %logfile%
 ::goto :Database
+::goto :Views
 ::goto :Packages
 ::goto :Application
 ::goto :Install
 ::goto :ModelImport
 ::goto :ModelExport
-::goto :System
+goto :System
 echo Extract Cube Model
 sqlplus.exe %db_schema%/%db_password%@%db_name% @%sysdir%\ModelExport.sql %sysdir%\CubeModel.cgm ALL REPLACE >> %logfile% 2>&1
 ::goto End

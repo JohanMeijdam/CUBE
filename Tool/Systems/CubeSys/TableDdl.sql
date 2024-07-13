@@ -51,4 +51,18 @@ CREATE TABLE t_cube_description (
 	CONSTRAINT cube_dsc_pk
 		PRIMARY KEY (type_name, attribute_type_name, sequence) )
 /
+BEGIN
+	DBMS_OUTPUT.PUT_LINE('Insert CUBE-NULL rows');
+	INSERT INTO t_cube_user (cube_id,userid) VALUES ('CUBE-NULL',' ');
+	INSERT INTO t_cube_description (cube_id,type_name,attribute_type_name,sequence) VALUES ('CUBE-NULL',' ',' ',0);
+END;
+/
+BEGIN
+	DBMS_OUTPUT.PUT_LINE('Add foreign key constraints T_CUBE_USER');
+END;
+/
+BEGIN
+	DBMS_OUTPUT.PUT_LINE('Add foreign key constraints T_CUBE_DESCRIPTION');
+END;
+/
 EXIT;

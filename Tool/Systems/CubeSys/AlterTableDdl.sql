@@ -137,6 +137,12 @@ BEGIN
 END;
 /
 BEGIN
+	DBMS_OUTPUT.PUT_LINE('Delete CUBE-NULL rows');
+	DELETE FROM t_cube_user WHERE cube_id = 'CUBE-NULL';
+	DELETE FROM t_cube_description WHERE cube_id = 'CUBE-NULL';
+END;
+/
+BEGIN
 	DBMS_OUTPUT.PUT_LINE('Maintain table T_CUBE_USER');
 	FOR r_field IN (SELECT column_name,
 		data_type || DECODE (data_type,'VARCHAR2','('||char_length||')','NUMBER','('||data_precision||DECODE(data_scale,0,'',','||data_scale)||')','CHAR','('||char_length||')','') old_domain,
@@ -175,11 +181,6 @@ BEGIN
 			DBMS_OUTPUT.PUT_LINE('Field T_CUBE_USER.' || UPPER(r_field.column_name) || ' default value set to ' || NVL(r_field.new_default_value,'NULL'));
 		END IF;
 	END LOOP;
-	EXECUTE IMMEDIATE
-	'ALTER TABLE t_cube_user ADD CONSTRAINT cube_usr_pk
-		PRIMARY KEY (
-			userid )';
-	DBMS_OUTPUT.PUT_LINE('Primary Key T_CUBE_USER.CUBE_USR_PK created');
 	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = '' AND table_name = 'T_CUBE_USER' AND column_name NOT IN (
 							'CUBE_ID',
 							'USERID',
@@ -190,6 +191,12 @@ BEGIN
 		'ALTER TABLE t_cube_user DROP COLUMN ' || r_field.column_name;
 		DBMS_OUTPUT.PUT_LINE('Field T_CUBE_USER.' || UPPER(r_field.column_name) || ' dropped');
 	END LOOP;
+
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_cube_user ADD CONSTRAINT cube_usr_pk
+		PRIMARY KEY (
+			userid )';
+	DBMS_OUTPUT.PUT_LINE('Primary Key T_CUBE_USER.CUBE_USR_PK created');	
 END;
 /
 BEGIN
@@ -233,13 +240,6 @@ BEGIN
 			DBMS_OUTPUT.PUT_LINE('Field T_CUBE_DESCRIPTION.' || UPPER(r_field.column_name) || ' default value set to ' || NVL(r_field.new_default_value,'NULL'));
 		END IF;
 	END LOOP;
-	EXECUTE IMMEDIATE
-	'ALTER TABLE t_cube_description ADD CONSTRAINT cube_dsc_pk
-		PRIMARY KEY (
-			type_name,
-			attribute_type_name,
-			sequence )';
-	DBMS_OUTPUT.PUT_LINE('Primary Key T_CUBE_DESCRIPTION.CUBE_DSC_PK created');
 	FOR r_field IN (SELECT column_name FROM all_tab_columns WHERE owner = '' AND table_name = 'T_CUBE_DESCRIPTION' AND column_name NOT IN (
 							'CUBE_ID',
 							'TYPE_NAME',
@@ -251,6 +251,28 @@ BEGIN
 		'ALTER TABLE t_cube_description DROP COLUMN ' || r_field.column_name;
 		DBMS_OUTPUT.PUT_LINE('Field T_CUBE_DESCRIPTION.' || UPPER(r_field.column_name) || ' dropped');
 	END LOOP;
+
+	EXECUTE IMMEDIATE
+	'ALTER TABLE t_cube_description ADD CONSTRAINT cube_dsc_pk
+		PRIMARY KEY (
+			type_name,
+			attribute_type_name,
+			sequence )';
+	DBMS_OUTPUT.PUT_LINE('Primary Key T_CUBE_DESCRIPTION.CUBE_DSC_PK created');	
+END;
+/
+BEGIN
+	DBMS_OUTPUT.PUT_LINE('Insert CUBE-NULL rows');
+	INSERT INTO t_cube_user (cube_id,userid) VALUES ('CUBE-NULL',' ');
+	INSERT INTO t_cube_description (cube_id,type_name,attribute_type_name,sequence) VALUES ('CUBE-NULL',' ',' ',0);
+END;
+/
+BEGIN
+	DBMS_OUTPUT.PUT_LINE('Add foreign key constraints T_CUBE_USER');
+END;
+/
+BEGIN
+	DBMS_OUTPUT.PUT_LINE('Add foreign key constraints T_CUBE_DESCRIPTION');
 END;
 /
 EXIT;

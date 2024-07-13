@@ -22,7 +22,7 @@ CREATE OR REPLACE VIEW v_information_type AS
 	SELECT
 		cube_id,
 		name
-	FROM t_information_type
+	FROM t_information_type WHERE cube_id <> 'CUBE-NULL'
 /
 CREATE OR REPLACE VIEW v_information_type_element AS 
 	SELECT
@@ -37,7 +37,7 @@ CREATE OR REPLACE VIEW v_information_type_element AS
 		default_value,
 		spaces_allowed,
 		presentation
-	FROM t_information_type_element
+	FROM t_information_type_element WHERE cube_id <> 'CUBE-NULL'
 /
 CREATE OR REPLACE VIEW v_permitted_value AS 
 	SELECT
@@ -47,7 +47,7 @@ CREATE OR REPLACE VIEW v_permitted_value AS
 		fk_ite_sequence,
 		code,
 		prompt
-	FROM t_permitted_value
+	FROM t_permitted_value WHERE cube_id <> 'CUBE-NULL'
 /
 
 CREATE OR REPLACE PACKAGE pkg_itp_trg IS
@@ -343,7 +343,7 @@ CREATE OR REPLACE VIEW v_business_object_type AS
 		cube_tsg_type,
 		directory,
 		api_url
-	FROM t_business_object_type
+	FROM t_business_object_type WHERE cube_id <> 'CUBE-NULL'
 /
 CREATE OR REPLACE VIEW v_type AS 
 	SELECT
@@ -361,7 +361,7 @@ CREATE OR REPLACE VIEW v_type AS
 		sort_order,
 		icon,
 		transferable
-	FROM t_type
+	FROM t_type WHERE cube_id <> 'CUBE-NULL'
 /
 CREATE OR REPLACE VIEW v_type_specialisation_group AS 
 	SELECT
@@ -376,7 +376,7 @@ CREATE OR REPLACE VIEW v_type_specialisation_group AS
 		primary_key,
 		xf_atb_typ_name,
 		xk_atb_name
-	FROM t_type_specialisation_group
+	FROM t_type_specialisation_group WHERE cube_id <> 'CUBE-NULL'
 /
 CREATE OR REPLACE VIEW v_type_specialisation AS 
 	SELECT
@@ -390,7 +390,7 @@ CREATE OR REPLACE VIEW v_type_specialisation AS
 		xf_tsp_typ_name,
 		xf_tsp_tsg_code,
 		xk_tsp_code
-	FROM t_type_specialisation
+	FROM t_type_specialisation WHERE cube_id <> 'CUBE-NULL'
 /
 CREATE OR REPLACE VIEW v_attribute AS 
 	SELECT
@@ -406,7 +406,7 @@ CREATE OR REPLACE VIEW v_attribute AS
 		default_value,
 		unchangeable,
 		xk_itp_name
-	FROM t_attribute
+	FROM t_attribute WHERE cube_id <> 'CUBE-NULL'
 /
 CREATE OR REPLACE VIEW v_derivation AS 
 	SELECT
@@ -418,7 +418,7 @@ CREATE OR REPLACE VIEW v_derivation AS
 		aggregate_function,
 		xk_typ_name,
 		xk_typ_name_1
-	FROM t_derivation
+	FROM t_derivation WHERE cube_id <> 'CUBE-NULL'
 /
 CREATE OR REPLACE VIEW v_description_attribute AS 
 	SELECT
@@ -427,7 +427,7 @@ CREATE OR REPLACE VIEW v_description_attribute AS
 		fk_typ_name,
 		fk_atb_name,
 		text
-	FROM t_description_attribute
+	FROM t_description_attribute WHERE cube_id <> 'CUBE-NULL'
 /
 CREATE OR REPLACE VIEW v_restriction_type_spec_atb AS 
 	SELECT
@@ -439,7 +439,7 @@ CREATE OR REPLACE VIEW v_restriction_type_spec_atb AS
 		xf_tsp_typ_name,
 		xf_tsp_tsg_code,
 		xk_tsp_code
-	FROM t_restriction_type_spec_atb
+	FROM t_restriction_type_spec_atb WHERE cube_id <> 'CUBE-NULL'
 /
 CREATE OR REPLACE VIEW v_reference AS 
 	SELECT
@@ -459,7 +459,7 @@ CREATE OR REPLACE VIEW v_reference AS
 		xk_bot_name,
 		xk_typ_name,
 		xk_typ_name_1
-	FROM t_reference
+	FROM t_reference WHERE cube_id <> 'CUBE-NULL'
 /
 CREATE OR REPLACE VIEW v_description_reference AS 
 	SELECT
@@ -470,7 +470,7 @@ CREATE OR REPLACE VIEW v_description_reference AS
 		fk_ref_bot_name,
 		fk_ref_typ_name,
 		text
-	FROM t_description_reference
+	FROM t_description_reference WHERE cube_id <> 'CUBE-NULL'
 /
 CREATE OR REPLACE VIEW v_restriction_type_spec_ref AS 
 	SELECT
@@ -484,7 +484,7 @@ CREATE OR REPLACE VIEW v_restriction_type_spec_ref AS
 		xf_tsp_typ_name,
 		xf_tsp_tsg_code,
 		xk_tsp_code
-	FROM t_restriction_type_spec_ref
+	FROM t_restriction_type_spec_ref WHERE cube_id <> 'CUBE-NULL'
 /
 CREATE OR REPLACE VIEW v_restriction_target_type_spec AS 
 	SELECT
@@ -498,7 +498,7 @@ CREATE OR REPLACE VIEW v_restriction_target_type_spec AS
 		xf_tsp_typ_name,
 		xf_tsp_tsg_code,
 		xk_tsp_code
-	FROM t_restriction_target_type_spec
+	FROM t_restriction_target_type_spec WHERE cube_id <> 'CUBE-NULL'
 /
 CREATE OR REPLACE VIEW v_service AS 
 	SELECT
@@ -510,7 +510,7 @@ CREATE OR REPLACE VIEW v_service AS
 		cube_tsg_db_scr,
 		class,
 		accessibility
-	FROM t_service
+	FROM t_service WHERE cube_id <> 'CUBE-NULL'
 /
 CREATE OR REPLACE VIEW v_service_step AS 
 	SELECT
@@ -522,7 +522,7 @@ CREATE OR REPLACE VIEW v_service_step AS
 		fk_srv_cube_tsg_db_scr,
 		name,
 		script_name
-	FROM t_service_step
+	FROM t_service_step WHERE cube_id <> 'CUBE-NULL'
 /
 CREATE OR REPLACE VIEW v_service_detail AS 
 	SELECT
@@ -538,7 +538,7 @@ CREATE OR REPLACE VIEW v_service_detail AS
 		xk_ref_typ_name,
 		xf_ref_typ_name,
 		xk_ref_sequence
-	FROM t_service_detail
+	FROM t_service_detail WHERE cube_id <> 'CUBE-NULL'
 /
 CREATE OR REPLACE VIEW v_restriction_type_spec_typ AS 
 	SELECT
@@ -549,7 +549,7 @@ CREATE OR REPLACE VIEW v_restriction_type_spec_typ AS
 		xf_tsp_typ_name,
 		xf_tsp_tsg_code,
 		xk_tsp_code
-	FROM t_restriction_type_spec_typ
+	FROM t_restriction_type_spec_typ WHERE cube_id <> 'CUBE-NULL'
 /
 CREATE OR REPLACE VIEW v_json_path AS 
 	SELECT
@@ -570,7 +570,7 @@ CREATE OR REPLACE VIEW v_json_path AS
 		xf_atb_typ_name,
 		xk_atb_name,
 		xk_typ_name
-	FROM t_json_path
+	FROM t_json_path WHERE cube_id <> 'CUBE-NULL'
 /
 CREATE OR REPLACE VIEW v_description_type AS 
 	SELECT
@@ -578,7 +578,7 @@ CREATE OR REPLACE VIEW v_description_type AS
 		fk_bot_name,
 		fk_typ_name,
 		text
-	FROM t_description_type
+	FROM t_description_type WHERE cube_id <> 'CUBE-NULL'
 /
 
 CREATE OR REPLACE PACKAGE pkg_bot_trg IS
@@ -3166,7 +3166,7 @@ CREATE OR REPLACE VIEW v_system AS
 		schema,
 		password,
 		table_prefix
-	FROM t_system
+	FROM t_system WHERE cube_id <> 'CUBE-NULL'
 /
 CREATE OR REPLACE VIEW v_system_bo_type AS 
 	SELECT
@@ -3174,7 +3174,7 @@ CREATE OR REPLACE VIEW v_system_bo_type AS
 		cube_sequence,
 		fk_sys_name,
 		xk_bot_name
-	FROM t_system_bo_type
+	FROM t_system_bo_type WHERE cube_id <> 'CUBE-NULL'
 /
 
 CREATE OR REPLACE PACKAGE pkg_sys_trg IS
