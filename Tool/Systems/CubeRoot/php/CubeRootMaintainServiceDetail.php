@@ -61,7 +61,7 @@ g_xmlhttp.onreadystatechange = function() {
 									l_json_node_id,
 									'icons/servdet.bmp',
 									'ServiceDetail',
-									'('+document.getElementById("InputCubeTsgAtbRef").value.toLowerCase()+')',
+									'('+document.getElementById("InputCubeTsgAtbRef").value.toLowerCase()+')'+' '+document.getElementById("InputXfAtbTypName").value.toLowerCase()+' '+document.getElementById("InputXkAtbName").value.toLowerCase()+' '+document.getElementById("InputXkRefBotName").value.toLowerCase()+' '+document.getElementById("InputXkRefTypName").value.toLowerCase()+' '+document.getElementById("InputXfRefTypName").value.toLowerCase()+' '+document.getElementById("InputXkRefSequence").value.toLowerCase(),
 									'N',
 									l_position,
 									l_objNodePos);
@@ -74,7 +74,7 @@ g_xmlhttp.onreadystatechange = function() {
 					case "UPD_SVD":
 						var l_objNode = parent.document.getElementById(g_node_id);
 						if (l_objNode != null) {
-							l_objNode.children[1].lastChild.nodeValue = ' '+'('+document.getElementById("InputCubeTsgAtbRef").value.toLowerCase()+')';
+							l_objNode.children[1].lastChild.nodeValue = ' '+'('+document.getElementById("InputCubeTsgAtbRef").value.toLowerCase()+')'+' '+document.getElementById("InputXfAtbTypName").value.toLowerCase()+' '+document.getElementById("InputXkAtbName").value.toLowerCase()+' '+document.getElementById("InputXkRefBotName").value.toLowerCase()+' '+document.getElementById("InputXkRefTypName").value.toLowerCase()+' '+document.getElementById("InputXfRefTypName").value.toLowerCase()+' '+document.getElementById("InputXkRefSequence").value.toLowerCase();
 						}
 						ResetChangePending();
 						break;

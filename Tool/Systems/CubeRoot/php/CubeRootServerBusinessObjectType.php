@@ -3178,7 +3178,7 @@ case 'GetSrvItems':
 		$RowObj->Key->XkRefTypName = $row["XK_REF_TYP_NAME"];
 		$RowObj->Key->XfRefTypName = $row["XF_REF_TYP_NAME"];
 		$RowObj->Key->XkRefSequence = $row["XK_REF_SEQUENCE"];
-		$RowObj->Display = '('.$row["CUBE_TSG_ATB_REF"].')';
+		$RowObj->Display = '('.$row["CUBE_TSG_ATB_REF"].')'.' '.$row["XF_ATB_TYP_NAME"].' '.$row["XK_ATB_NAME"].' '.$row["XK_REF_BOT_NAME"].' '.$row["XK_REF_TYP_NAME"].' '.$row["XF_REF_TYP_NAME"].' '.$row["XK_REF_SEQUENCE"];
 		$ResponseObj->Rows[] = $RowObj;
 	}
 	$ResponseText = json_encode($ResponseObj);

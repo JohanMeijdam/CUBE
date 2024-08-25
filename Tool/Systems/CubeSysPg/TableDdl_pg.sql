@@ -40,4 +40,24 @@ CREATE TABLE cube_dsc.t_cube_description (
 	CONSTRAINT cube_dsc_pk
 		PRIMARY KEY (type_name, attribute_type_name, sequence) );
 
+
+-- Insert CUBE-NULL records.
+DO $BODY$
+	DECLARE
+	BEGIN
+		RAISE INFO 'Inserting CUBE-NULL rows';
+		INSERT INTO t_cube_user (cube_id, userid) VALUES ('CUBE-NULL', ' ');
+		INSERT INTO t_cube_description (cube_id, type_name, attribute_type_name, sequence) VALUES ('CUBE-NULL', ' ', ' ', 0);
+	END;
+$BODY$;
+
+-- Restore the constraints.
+DO $BODY$
+	DECLARE
+	BEGIN
+		SET client_min_messages TO WARNING;
+		RAISE INFO 'Restore foreign key constraints';
+	END;
+$BODY$;
+
 \q

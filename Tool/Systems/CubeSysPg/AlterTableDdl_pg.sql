@@ -20,6 +20,16 @@ DO $BODY$
 	END;
 $BODY$;
 
+-- Delete CUBE-NULL records.
+DO $BODY$
+	DECLARE
+	BEGIN
+		RAISE INFO 'Deleting CUBE-NULL rows';
+		DELETE FROM t_cube_user WHERE cube_id = 'CUBE-NULL';
+		DELETE FROM t_cube_description WHERE cube_id = 'CUBE-NULL';
+	END;
+$BODY$;
+
 -- Drop all the sequences, tables and columns that are no longer applicable.
 DO $BODY$
 	DECLARE
@@ -258,9 +268,26 @@ DO $BODY$
 		EXECUTE 'ALTER TABLE cube_dsc.t_cube_description ADD COLUMN IF NOT EXISTS sequence NUMERIC(1) DEFAULT ''-1''';
 		EXECUTE 'ALTER TABLE cube_dsc.t_cube_description ADD COLUMN IF NOT EXISTS value VARCHAR(3999)';
 		EXECUTE 'ALTER TABLE cube_dsc.t_cube_description ADD CONSTRAINT cube_dsc_pk PRIMARY KEY (type_name, attribute_type_name, sequence)';
-
 	END;
 $BODY$;
+
+
+-- Insert CUBE-NULL records.
+DO $BODY$
+	DECLARE
+	BEGIN
+		RAISE INFO 'Inserting CUBE-NULL rows';
+	END;
+$BODY$;
+
+-- Restore the constraints.
+DO $BODY$
+	DECLARE
+	BEGIN
+		SET client_min_messages TO WARNING;
+		RAISE INFO 'Restore foreign key constraints';
+	END;
+$BODY$;[[ENDLOOP,DATABASE]]
 
 -- update changed column values
 DO $BODY$

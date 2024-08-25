@@ -64,7 +64,7 @@ CREATE VIEW cube_usr.v_cube_user AS
 		userid,
 		name,
 		password
-	FROM cube_usr.t_cube_user;
+	FROM cube_usr.t_cube_user WHERE cube_id <> 'CUBE-NULL';
 
 
 CREATE PROCEDURE cube_usr.trg_insert_cube_usr (p_cube_usr cube_usr.v_cube_user)
@@ -165,7 +165,7 @@ CREATE VIEW cube_dsc.v_cube_description AS
 		attribute_type_name,
 		sequence,
 		value
-	FROM cube_dsc.t_cube_description;
+	FROM cube_dsc.t_cube_description WHERE cube_id <> 'CUBE-NULL';
 
 
 CREATE PROCEDURE cube_dsc.trg_insert_cube_dsc (p_cube_dsc cube_dsc.v_cube_description)
