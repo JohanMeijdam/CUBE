@@ -9,9 +9,9 @@ call ..\..\pg_conn_vars.cmd
 set db_name=cuberoot
 set PGPASSWORD=%db_password%
 
-- NOG TE DOEN:
-Naamgeving van php scripts ???
-Cube system  
+::- NOG TE DOEN:
+::Naamgeving van php scripts ???
+::Cube system  
 
 
 echo Start > %logfile%
@@ -24,6 +24,7 @@ echo Start > %logfile%
 ::goto Packages
 ::goto Application 
 ::goto System
+goto Hier
 echo Extract Cube Model
 sqlplus.exe cuberoot/composys@composys @Systems\CubeRoot\ModelExport.sql %sysdir%\CubeModel.cgm %sysname% REPLACE >> %logfile% 2>&1
 ::goto End
@@ -40,8 +41,9 @@ CubeGen.exe %sysdir%\CubeServerSpecModel.cgm Templates\ServerImplModel.cgt %sysd
 :Scripts
 echo Generate Scripts.
 CubeGen.exe %sysdir%\CubeBoModel.cgm Templates\ModelImport.cgt %sysdir%\ModelImport.pl %sysname% >> %logfile% 2>&1
+:Hier
 CubeGen.exe %sysdir%\CubeBoModel.cgm Templates\ModelExport_pg.cgt %sysdir%\ModelExport_pg.sql %sysname% >> %logfile% 2>&1
-::goto End
+goto End
 :Database
 echo Generate Database Tables.
 CubeGen.exe %sysdir%\CubeBoModel.cgm Templates\DbModel.cgt %sysdir%\CubeDbModel.cgm %sysname% >> %logfile% 2>&1
