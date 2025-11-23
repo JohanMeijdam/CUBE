@@ -35,8 +35,8 @@ DO $BODY$
 			FROM pg_catalog.pg_views
 			WHERE schemaname = '<<TYPE1:L>>'
 			  AND viewowner = '<<2>>'[[IF,SYSTEM:1=SUPPORT]]
-			  AND SUBSTR(viewname,1,INSTR(viewname,'_',3)) = 'V_<<SYSTEM5:U>>_'[[ELSE]][[FOR,ROOT]][[IF:CHILD(SYSTEM:1=SUPPORT)]]
-			  AND COALESCE(SUBSTR(viewname,1,INSTR(viewname,'_',3)),' ') NOT IN ([[LOOP,SYSTEM:1=SUPPORT]]'V_<<SYSTEM5:U>>_'[[IF:!LAST]], [[ENDIF]][[ENDLOOP,SYSTEM]])[[ENDIF]][[ENDFOR]][[ENDIF]]
+			  AND SUBSTR(viewname,1,[[EVAL:length("<<SYSTEM5:U>>")+3]]) = 'V_<<SYSTEM5:U>>_'[[ELSE]][[FOR,ROOT]][[IF:CHILD(SYSTEM:1=SUPPORT)]]
+			  AND COALESCE(SUBSTR(viewname,1,[[EVAL:length("<<SYSTEM5:U>>")+3]]),' ') NOT IN ([[LOOP,SYSTEM:1=SUPPORT]]'V_<<SYSTEM5:U>>_'[[IF:!LAST]], [[ENDIF]][[ENDLOOP,SYSTEM]])[[ENDIF]][[ENDFOR]][[ENDIF]]
 		LOOP
 			EXECUTE 'DROP VIEW <<TYPE1:L>>.' || rec_view.viewname || ' CASCADE';
 		END LOOP;[[ENDLOOP,TYPE]][[ENDLOOP,BUSINESS_OBJECT_TYPE]][[ENDLOOP,SYSTEM_BO_TYPE]][[LOOP,SYSTEM_BO_TYPE]][[LOOP,BUSINESS_OBJECT_TYPE]][[LOOP,TYPE]]

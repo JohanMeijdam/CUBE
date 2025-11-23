@@ -11,7 +11,7 @@ DO $BODY$
 			FROM pg_catalog.pg_views
 			WHERE schemaname = 'cube_usr'
 			  AND viewowner = '<<2>>'
-			  AND SUBSTR(viewname,1,INSTR(viewname,'_',3)) = 'V_CUBE_'
+			  AND SUBSTR(viewname,1,7) = 'V_CUBE_'
 		LOOP
 			EXECUTE 'DROP VIEW cube_usr.' || rec_view.viewname || ' CASCADE';
 		END LOOP;
@@ -21,7 +21,7 @@ DO $BODY$
 			FROM pg_catalog.pg_views
 			WHERE schemaname = 'cube_dsc'
 			  AND viewowner = '<<2>>'
-			  AND SUBSTR(viewname,1,INSTR(viewname,'_',3)) = 'V_CUBE_'
+			  AND SUBSTR(viewname,1,7) = 'V_CUBE_'
 		LOOP
 			EXECUTE 'DROP VIEW cube_dsc.' || rec_view.viewname || ' CASCADE';
 		END LOOP;
