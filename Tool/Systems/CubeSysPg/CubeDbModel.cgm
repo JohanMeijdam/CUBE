@@ -28,8 +28,9 @@
 				-META_TYPE:;
 				+META_TYPE:FOREIGN_KEY|;
 					=PROPERTY:0|Name|;
-					=PROPERTY:1|RefTable|;
-					=PROPERTY:2|FlagCascadeDelete|;
+					=PROPERTY:1|RefSchema|;
+					=PROPERTY:2|RefTable|;
+					=PROPERTY:3|FlagCascadeDelete|;
 					+META_TYPE:COLUMN|;
 						=PROPERTY:0|Name|;
 						=PROPERTY:1|RefField|;

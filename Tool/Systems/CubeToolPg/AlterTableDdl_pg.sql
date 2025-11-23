@@ -2191,12 +2191,12 @@ DO $BODY$
 	END;
 $BODY$;
 
--- Restore the constraints.
+-- Add constraints.
 DO $BODY$
 	DECLARE
 	BEGIN
 		SET client_min_messages TO WARNING;
-		RAISE INFO 'Restore foreign key constraints';
+		RAISE INFO 'Add foreign key constraints';
 	END;
 $BODY$;[[ENDLOOP,DATABASE]]
 

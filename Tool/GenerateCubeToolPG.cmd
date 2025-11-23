@@ -41,12 +41,12 @@ CubeGen.exe %sysdir%\CubeServerSpecModel.cgm Templates\ServerImplModel.cgt %sysd
 :Scripts
 echo Generate Scripts.
 CubeGen.exe %sysdir%\CubeBoModel.cgm Templates\ModelImport.cgt %sysdir%\ModelImport.pl %sysname% >> %logfile% 2>&1
-:Hier
 CubeGen.exe %sysdir%\CubeBoModel.cgm Templates\ModelExport_pg.cgt %sysdir%\ModelExport_pg.sql %sysname% >> %logfile% 2>&1
-goto End
+::goto End
 :Database
 echo Generate Database Tables.
 CubeGen.exe %sysdir%\CubeBoModel.cgm Templates\DbModel.cgt %sysdir%\CubeDbModel.cgm %sysname% >> %logfile% 2>&1
+CubeGen.exe %sysdir%\CubeDbModel.cgm Templates\Table_pg.cgt %sysdir%\TableDdl_pg.sql >> %logfile% 2>&1
 CubeGen.exe %sysdir%\CubeDbModel.cgm Templates\Table_pg.cgt %sysdir%\TableDdl_pg.sql >> %logfile% 2>&1
 CubeGen.exe %sysdir%\CubeDbModel.cgm Templates\AlterTable_pg.cgt %sysdir%\AlterTableDdl_pg.sql >> %logfile% 2>&1
 psql -h %db_host% -p %db_port% -d %db_name% -U %db_user% -f %sysdir%\TableDdl_pg.sql >> %logfile% 2>&1
@@ -82,18 +82,20 @@ CubeGen.exe %sysdir%\CubeBoModel.cgm Templates\CubeTreePhp.cgt %sysdir%\php\%sys
 CubeGen.exe %sysdir%\CubeServerSpecModel.cgm Templates\CubeDetailPhp.cgt %sysdir%\php\%sysname%Detail.php %sysname% %sysdir%\php >> %logfile% 2>&1
 CubeGen.exe %sysdir%\CubeServerSpecModel.cgm Templates\CubeServerPhp_pg.cgt %sysdir%\php\%sysname%Server.php %sysname% %sysdir%\php >> %logfile% 2>&1
 del /S/Q %sysroot% >> %logfile% 2>&1
-xcopy /Y/E %sysdir%\files %sysroot% >> %logfile% 2>&1
-xcopy /Y/E %sysdir%\php %sysroot% >> %logfile% 2>&1
+xcopy /Y/S/E %sysdir%\files %sysroot% >> %logfile% 2>&1
+xcopy /Y/S/E %sysdir%\php %sysroot% >> %logfile% 2>&1
+xcopy /Y %cubesysdir%\php %sysroot% >> %logfile% 2>&1
 ::goto End
 :System
+:Hier
 call GenerateCubeSysPg.cmd
-::goto End
+::goto :end
 echo Install CubeSys.
-sqlplus.exe %db_schema%/%db_password%@%db_name% @%cubesysdir%\TableDdl.sql >> %logfile% 2>&1
-sqlplus.exe %db_schema%/%db_password%@%db_name% @%cubesysdir%\ViewDdl.sql >> %logfile% 2>&1
-sqlplus.exe %db_schema%/%db_password%@%db_name% @%cubesysdir%\PackageDdl.sql >> %logfile% 2>&1
+psql -h %db_host% -p %db_port% -d %db_name% -U %db_user% -f %cubesysdir%\TableDdl_pg.sql >> %logfile% 2>&1
+psql -h %db_host% -p %db_port% -d %db_name% -U %db_user% -f %cubesysdir%\ViewDdl_pg.sql >> %logfile% 2>&1
+psql -h %db_host% -p %db_port% -d %db_name% -U %db_user% -f %cubesysdir%\PackageDdl_pg.sql >> %logfile% 2>&1
 xcopy /Y %cubesysdir%\php %sysroot% >> %logfile% 2>&1
 CubeGen.exe %sysdir%\CubeBoModel.cgm Templates\SystemImport.cgt %sysdir%\SystemImport.sql %sysname% >> %logfile% 2>&1
-sqlplus.exe %db_schema%/%db_password%@%db_name% @%sysdir%\SystemImport.sql >> %logfile% 2>&1
+psql -h %db_host% -p %db_port% -d %db_name% -U %db_user% -f %sysdir%\SystemImport.sql >> %logfile% 2>&1
 :end
 pause

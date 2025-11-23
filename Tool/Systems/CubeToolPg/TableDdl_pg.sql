@@ -15,6 +15,7 @@ DO $$
 	END;
 $$;
 
+DROP SCHEMA IF EXISTS itp CASCADE;
 CREATE SCHEMA itp;
 
 CREATE SEQUENCE itp.sq_itp START WITH 100000;
@@ -54,6 +55,7 @@ CREATE TABLE itp.t_permitted_value (
 	CONSTRAINT val_pk
 		PRIMARY KEY (fk_itp_name, fk_ite_sequence, code) );
 
+DROP SCHEMA IF EXISTS bot CASCADE;
 CREATE SCHEMA bot;
 
 CREATE SEQUENCE bot.sq_bot START WITH 100000;
@@ -337,6 +339,7 @@ CREATE TABLE bot.t_description_type (
 	CONSTRAINT dct_pk
 		PRIMARY KEY (fk_typ_name) );
 
+DROP SCHEMA IF EXISTS sys CASCADE;
 CREATE SCHEMA sys;
 
 CREATE SEQUENCE sys.sq_sys START WITH 100000;
@@ -362,6 +365,7 @@ CREATE TABLE sys.t_system_bo_type (
 	CONSTRAINT sbt_pk
 		PRIMARY KEY (fk_sys_name, xk_bot_name) );
 
+DROP SCHEMA IF EXISTS fun CASCADE;
 CREATE SCHEMA fun;
 
 CREATE SEQUENCE fun.sq_fun START WITH 100000;
@@ -388,40 +392,40 @@ DO $BODY$
 	DECLARE
 	BEGIN
 		RAISE INFO 'Inserting CUBE-NULL rows';
-		INSERT INTO t_information_type (cube_id, name) VALUES ('CUBE-NULL', ' ');
-		INSERT INTO t_information_type_element (cube_id, fk_itp_name, sequence) VALUES ('CUBE-NULL', ' ', 0);
-		INSERT INTO t_permitted_value (cube_id, fk_itp_name, fk_ite_sequence, code) VALUES ('CUBE-NULL', ' ', 0, ' ');
-		INSERT INTO t_business_object_type (cube_id, name) VALUES ('CUBE-NULL', ' ');
-		INSERT INTO t_type (cube_id, name) VALUES ('CUBE-NULL', ' ');
-		INSERT INTO t_type_specialisation_group (cube_id, fk_typ_name, code) VALUES ('CUBE-NULL', ' ', ' ');
-		INSERT INTO t_type_specialisation (cube_id, fk_typ_name, fk_tsg_code, code) VALUES ('CUBE-NULL', ' ', ' ', ' ');
-		INSERT INTO t_attribute (cube_id, fk_typ_name, name) VALUES ('CUBE-NULL', ' ', ' ');
-		INSERT INTO t_derivation (cube_id, fk_typ_name, fk_atb_name) VALUES ('CUBE-NULL', ' ', ' ');
-		INSERT INTO t_description_attribute (cube_id, fk_typ_name, fk_atb_name) VALUES ('CUBE-NULL', ' ', ' ');
-		INSERT INTO t_restriction_type_spec_atb (cube_id, fk_typ_name, fk_atb_name, xf_tsp_typ_name, xf_tsp_tsg_code, xk_tsp_code) VALUES ('CUBE-NULL', ' ', ' ', ' ', ' ', ' ');
-		INSERT INTO t_reference (cube_id, fk_typ_name, sequence, xk_bot_name, xk_typ_name) VALUES ('CUBE-NULL', ' ', 0, ' ', ' ');
-		INSERT INTO t_description_reference (cube_id, fk_typ_name, fk_ref_sequence, fk_ref_bot_name, fk_ref_typ_name) VALUES ('CUBE-NULL', ' ', 0, ' ', ' ');
-		INSERT INTO t_restriction_type_spec_ref (cube_id, fk_typ_name, fk_ref_sequence, fk_ref_bot_name, fk_ref_typ_name, xf_tsp_typ_name, xf_tsp_tsg_code, xk_tsp_code) VALUES ('CUBE-NULL', ' ', 0, ' ', ' ', ' ', ' ', ' ');
-		INSERT INTO t_restriction_target_type_spec (cube_id, fk_typ_name, fk_ref_sequence, fk_ref_bot_name, fk_ref_typ_name, xf_tsp_typ_name, xf_tsp_tsg_code, xk_tsp_code) VALUES ('CUBE-NULL', ' ', 0, ' ', ' ', ' ', ' ', ' ');
-		INSERT INTO t_service (cube_id, fk_typ_name, name, cube_tsg_db_scr) VALUES ('CUBE-NULL', ' ', ' ', ' ');
-		INSERT INTO t_service_step (cube_id, fk_typ_name, fk_srv_name, fk_srv_cube_tsg_db_scr, name) VALUES ('CUBE-NULL', ' ', ' ', ' ', ' ');
-		INSERT INTO t_service_detail (cube_id, fk_typ_name, fk_srv_name, fk_srv_cube_tsg_db_scr, xf_atb_typ_name, xk_atb_name, xk_ref_bot_name, xk_ref_typ_name, xf_ref_typ_name, xk_ref_sequence) VALUES ('CUBE-NULL', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 0);
-		INSERT INTO t_restriction_type_spec_typ (cube_id, fk_typ_name, xf_tsp_typ_name, xf_tsp_tsg_code, xk_tsp_code) VALUES ('CUBE-NULL', ' ', ' ', ' ', ' ');
-		INSERT INTO t_json_path (cube_id, fk_typ_name, name, location, xf_atb_typ_name, xk_atb_name, xk_typ_name) VALUES ('CUBE-NULL', ' ', ' ', 0, ' ', ' ', ' ');
-		INSERT INTO t_description_type (cube_id, fk_typ_name) VALUES ('CUBE-NULL', ' ');
-		INSERT INTO t_system (cube_id, name) VALUES ('CUBE-NULL', ' ');
-		INSERT INTO t_system_bo_type (cube_id, fk_sys_name, xk_bot_name) VALUES ('CUBE-NULL', ' ', ' ');
-		INSERT INTO t_function (cube_id, name) VALUES ('CUBE-NULL', ' ');
-		INSERT INTO t_argument (cube_id, fk_fun_name, name) VALUES ('CUBE-NULL', ' ', ' ');
+		INSERT INTO itp.t_information_type (cube_id, name) VALUES ('CUBE-NULL', ' ');
+		INSERT INTO itp.t_information_type_element (cube_id, fk_itp_name, sequence) VALUES ('CUBE-NULL', ' ', 0);
+		INSERT INTO itp.t_permitted_value (cube_id, fk_itp_name, fk_ite_sequence, code) VALUES ('CUBE-NULL', ' ', 0, ' ');
+		INSERT INTO bot.t_business_object_type (cube_id, name) VALUES ('CUBE-NULL', ' ');
+		INSERT INTO bot.t_type (cube_id, name) VALUES ('CUBE-NULL', ' ');
+		INSERT INTO bot.t_type_specialisation_group (cube_id, fk_typ_name, code) VALUES ('CUBE-NULL', ' ', ' ');
+		INSERT INTO bot.t_type_specialisation (cube_id, fk_typ_name, fk_tsg_code, code) VALUES ('CUBE-NULL', ' ', ' ', ' ');
+		INSERT INTO bot.t_attribute (cube_id, fk_typ_name, name) VALUES ('CUBE-NULL', ' ', ' ');
+		INSERT INTO bot.t_derivation (cube_id, fk_typ_name, fk_atb_name) VALUES ('CUBE-NULL', ' ', ' ');
+		INSERT INTO bot.t_description_attribute (cube_id, fk_typ_name, fk_atb_name) VALUES ('CUBE-NULL', ' ', ' ');
+		INSERT INTO bot.t_restriction_type_spec_atb (cube_id, fk_typ_name, fk_atb_name, xf_tsp_typ_name, xf_tsp_tsg_code, xk_tsp_code) VALUES ('CUBE-NULL', ' ', ' ', ' ', ' ', ' ');
+		INSERT INTO bot.t_reference (cube_id, fk_typ_name, sequence, xk_bot_name, xk_typ_name) VALUES ('CUBE-NULL', ' ', 0, ' ', ' ');
+		INSERT INTO bot.t_description_reference (cube_id, fk_typ_name, fk_ref_sequence, fk_ref_bot_name, fk_ref_typ_name) VALUES ('CUBE-NULL', ' ', 0, ' ', ' ');
+		INSERT INTO bot.t_restriction_type_spec_ref (cube_id, fk_typ_name, fk_ref_sequence, fk_ref_bot_name, fk_ref_typ_name, xf_tsp_typ_name, xf_tsp_tsg_code, xk_tsp_code) VALUES ('CUBE-NULL', ' ', 0, ' ', ' ', ' ', ' ', ' ');
+		INSERT INTO bot.t_restriction_target_type_spec (cube_id, fk_typ_name, fk_ref_sequence, fk_ref_bot_name, fk_ref_typ_name, xf_tsp_typ_name, xf_tsp_tsg_code, xk_tsp_code) VALUES ('CUBE-NULL', ' ', 0, ' ', ' ', ' ', ' ', ' ');
+		INSERT INTO bot.t_service (cube_id, fk_typ_name, name, cube_tsg_db_scr) VALUES ('CUBE-NULL', ' ', ' ', ' ');
+		INSERT INTO bot.t_service_step (cube_id, fk_typ_name, fk_srv_name, fk_srv_cube_tsg_db_scr, name) VALUES ('CUBE-NULL', ' ', ' ', ' ', ' ');
+		INSERT INTO bot.t_service_detail (cube_id, fk_typ_name, fk_srv_name, fk_srv_cube_tsg_db_scr, xf_atb_typ_name, xk_atb_name, xk_ref_bot_name, xk_ref_typ_name, xf_ref_typ_name, xk_ref_sequence) VALUES ('CUBE-NULL', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 0);
+		INSERT INTO bot.t_restriction_type_spec_typ (cube_id, fk_typ_name, xf_tsp_typ_name, xf_tsp_tsg_code, xk_tsp_code) VALUES ('CUBE-NULL', ' ', ' ', ' ', ' ');
+		INSERT INTO bot.t_json_path (cube_id, fk_typ_name, name, location, xf_atb_typ_name, xk_atb_name, xk_typ_name) VALUES ('CUBE-NULL', ' ', ' ', 0, ' ', ' ', ' ');
+		INSERT INTO bot.t_description_type (cube_id, fk_typ_name) VALUES ('CUBE-NULL', ' ');
+		INSERT INTO sys.t_system (cube_id, name) VALUES ('CUBE-NULL', ' ');
+		INSERT INTO sys.t_system_bo_type (cube_id, fk_sys_name, xk_bot_name) VALUES ('CUBE-NULL', ' ', ' ');
+		INSERT INTO fun.t_function (cube_id, name) VALUES ('CUBE-NULL', ' ');
+		INSERT INTO fun.t_argument (cube_id, fk_fun_name, name) VALUES ('CUBE-NULL', ' ', ' ');
 	END;
 $BODY$;
 
--- Restore the constraints.
+-- Add constraints.
 DO $BODY$
 	DECLARE
 	BEGIN
 		SET client_min_messages TO WARNING;
-		RAISE INFO 'Restore foreign key constraints';
+		RAISE INFO 'Add foreign key constraints';
 		EXECUTE 'ALTER TABLE itp.t_information_type_element ADD CONSTRAINT ite_itp_fk FOREIGN KEY (fk_itp_name) REFERENCES itp.t_information_type (name) ON DELETE CASCADE';
 		EXECUTE 'ALTER TABLE itp.t_permitted_value ADD CONSTRAINT val_ite_fk FOREIGN KEY (fk_itp_name, fk_ite_sequence) REFERENCES itp.t_information_type_element (fk_itp_name, sequence) ON DELETE CASCADE';
 		EXECUTE 'ALTER TABLE bot.t_type ADD CONSTRAINT typ_bot_fk FOREIGN KEY (fk_bot_name) REFERENCES bot.t_business_object_type (name) ON DELETE CASCADE';
@@ -432,7 +436,7 @@ DO $BODY$
 		EXECUTE 'ALTER TABLE bot.t_type_specialisation ADD CONSTRAINT tsp_tsg_fk FOREIGN KEY (fk_typ_name, fk_tsg_code) REFERENCES bot.t_type_specialisation_group (fk_typ_name, code) ON DELETE CASCADE';
 		EXECUTE 'ALTER TABLE bot.t_type_specialisation ADD CONSTRAINT tsp_tsp_0_xf FOREIGN KEY (xf_tsp_typ_name, xf_tsp_tsg_code, xk_tsp_code) REFERENCES bot.t_type_specialisation (fk_typ_name, fk_tsg_code, code)';
 		EXECUTE 'ALTER TABLE bot.t_attribute ADD CONSTRAINT atb_typ_fk FOREIGN KEY (fk_typ_name) REFERENCES bot.t_type (name) ON DELETE CASCADE';
-		EXECUTE 'ALTER TABLE bot.t_attribute ADD CONSTRAINT atb_itp_0_xf FOREIGN KEY (xk_itp_name) REFERENCES bot.t_information_type (name)';
+		EXECUTE 'ALTER TABLE bot.t_attribute ADD CONSTRAINT atb_itp_0_xf FOREIGN KEY (xk_itp_name) REFERENCES itp.t_information_type (name)';
 		EXECUTE 'ALTER TABLE bot.t_derivation ADD CONSTRAINT der_atb_fk FOREIGN KEY (fk_typ_name, fk_atb_name) REFERENCES bot.t_attribute (fk_typ_name, name) ON DELETE CASCADE';
 		EXECUTE 'ALTER TABLE bot.t_derivation ADD CONSTRAINT der_typ_0_xf FOREIGN KEY (xk_typ_name) REFERENCES bot.t_type (name)';
 		EXECUTE 'ALTER TABLE bot.t_derivation ADD CONSTRAINT der_typ_1_xf FOREIGN KEY (xk_typ_name_1) REFERENCES bot.t_type (name)';
@@ -461,7 +465,7 @@ DO $BODY$
 		EXECUTE 'ALTER TABLE bot.t_json_path ADD CONSTRAINT jsn_typ_0_xf FOREIGN KEY (xk_typ_name) REFERENCES bot.t_type (name)';
 		EXECUTE 'ALTER TABLE bot.t_description_type ADD CONSTRAINT dct_typ_fk FOREIGN KEY (fk_typ_name) REFERENCES bot.t_type (name) ON DELETE CASCADE';
 		EXECUTE 'ALTER TABLE sys.t_system_bo_type ADD CONSTRAINT sbt_sys_fk FOREIGN KEY (fk_sys_name) REFERENCES sys.t_system (name) ON DELETE CASCADE';
-		EXECUTE 'ALTER TABLE sys.t_system_bo_type ADD CONSTRAINT sbt_bot_0_xf FOREIGN KEY (xk_bot_name) REFERENCES sys.t_business_object_type (name)';
+		EXECUTE 'ALTER TABLE sys.t_system_bo_type ADD CONSTRAINT sbt_bot_0_xf FOREIGN KEY (xk_bot_name) REFERENCES bot.t_business_object_type (name)';
 		EXECUTE 'ALTER TABLE fun.t_argument ADD CONSTRAINT arg_fun_fk FOREIGN KEY (fk_fun_name) REFERENCES fun.t_function (name) ON DELETE CASCADE';
 	END;
 $BODY$;

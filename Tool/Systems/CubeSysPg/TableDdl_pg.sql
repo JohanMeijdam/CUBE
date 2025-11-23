@@ -15,6 +15,7 @@ DO $$
 	END;
 $$;
 
+DROP SCHEMA IF EXISTS cube_usr CASCADE;
 CREATE SCHEMA cube_usr;
 
 CREATE SEQUENCE cube_usr.sq_cube_usr START WITH 100000;
@@ -27,6 +28,7 @@ CREATE TABLE cube_usr.t_cube_user (
 	CONSTRAINT cube_usr_pk
 		PRIMARY KEY (userid) );
 
+DROP SCHEMA IF EXISTS cube_dsc CASCADE;
 CREATE SCHEMA cube_dsc;
 
 CREATE SEQUENCE cube_dsc.sq_cube_dsc START WITH 100000;
@@ -46,17 +48,17 @@ DO $BODY$
 	DECLARE
 	BEGIN
 		RAISE INFO 'Inserting CUBE-NULL rows';
-		INSERT INTO t_cube_user (cube_id, userid) VALUES ('CUBE-NULL', ' ');
-		INSERT INTO t_cube_description (cube_id, type_name, attribute_type_name, sequence) VALUES ('CUBE-NULL', ' ', ' ', 0);
+		INSERT INTO cube_usr.t_cube_user (cube_id, userid) VALUES ('CUBE-NULL', ' ');
+		INSERT INTO cube_dsc.t_cube_description (cube_id, type_name, attribute_type_name, sequence) VALUES ('CUBE-NULL', ' ', ' ', 0);
 	END;
 $BODY$;
 
--- Restore the constraints.
+-- Add constraints.
 DO $BODY$
 	DECLARE
 	BEGIN
 		SET client_min_messages TO WARNING;
-		RAISE INFO 'Restore foreign key constraints';
+		RAISE INFO 'Add foreign key constraints';
 	END;
 $BODY$;
 
