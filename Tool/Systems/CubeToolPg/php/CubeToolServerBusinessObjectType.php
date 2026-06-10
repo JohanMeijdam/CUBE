@@ -171,7 +171,7 @@ case 'GetTypForTypListAll':
 	$conn->query("BEGIN;");
 	$ResponseObj = new \stdClass();
 	$ResponseObj->ResultName = 'LST_TYP';
-	$conn->query("CALL bot.get_typ_for_typ_list_all (".($RequestObj->Parameters->Option->CubeScopeLevel??"null").",'".$RequestObj->Parameters->Ref->FkTypName."')");
+	$conn->query("CALL bot.get_typ_for_typ_list_all (".$RequestObj->Parameters->Option->CubeScopeLevel.",'".$RequestObj->Parameters->Ref->FkTypName."')");
 	$ResponseObj->Rows = array();
 	$curs = $conn->query('FETCH ALL FROM cube_cursor;');
 	while ($row = $curs->fetch(PDO::FETCH_ASSOC)) {
@@ -548,7 +548,7 @@ case 'GetTspForTypList':
 	$conn->query("BEGIN;");
 	$ResponseObj = new \stdClass();
 	$ResponseObj->ResultName = 'LST_TSP';
-	$conn->query("CALL bot.get_tsp_for_typ_list (".($RequestObj->Parameters->Option->CubeScopeLevel??"null").",'".$RequestObj->Parameters->Ref->FkTypName."')");
+	$conn->query("CALL bot.get_tsp_for_typ_list (".$RequestObj->Parameters->Option->CubeScopeLevel.",'".$RequestObj->Parameters->Ref->FkTypName."')");
 	$ResponseObj->Rows = array();
 	$curs = $conn->query('FETCH ALL FROM cube_cursor;');
 	while ($row = $curs->fetch(PDO::FETCH_ASSOC)) {
@@ -568,7 +568,7 @@ case 'GetTspForTsgList':
 	$conn->query("BEGIN;");
 	$ResponseObj = new \stdClass();
 	$ResponseObj->ResultName = 'LST_TSP';
-	$conn->query("CALL bot.get_tsp_for_tsg_list (".($RequestObj->Parameters->Option->CubeScopeLevel??"null").",'".$RequestObj->Parameters->Ref->FkTypName."','".$RequestObj->Parameters->Ref->FkTsgCode."')");
+	$conn->query("CALL bot.get_tsp_for_tsg_list (".$RequestObj->Parameters->Option->CubeScopeLevel.",'".$RequestObj->Parameters->Ref->FkTypName."','".$RequestObj->Parameters->Ref->FkTsgCode."')");
 	$ResponseObj->Rows = array();
 	$curs = $conn->query('FETCH ALL FROM cube_cursor;');
 	while ($row = $curs->fetch(PDO::FETCH_ASSOC)) {
@@ -641,7 +641,7 @@ case 'GetAtbForTypList':
 	$conn->query("BEGIN;");
 	$ResponseObj = new \stdClass();
 	$ResponseObj->ResultName = 'LST_ATB';
-	$conn->query("CALL bot.get_atb_for_typ_list (".($RequestObj->Parameters->Option->CubeScopeLevel??"null").",'".$RequestObj->Parameters->Ref->FkTypName."')");
+	$conn->query("CALL bot.get_atb_for_typ_list (".$RequestObj->Parameters->Option->CubeScopeLevel.",'".$RequestObj->Parameters->Ref->FkTypName."')");
 	$ResponseObj->Rows = array();
 	$curs = $conn->query('FETCH ALL FROM cube_cursor;');
 	while ($row = $curs->fetch(PDO::FETCH_ASSOC)) {
@@ -957,7 +957,7 @@ case 'GetRefForTypList':
 	$conn->query("BEGIN;");
 	$ResponseObj = new \stdClass();
 	$ResponseObj->ResultName = 'LST_REF';
-	$conn->query("CALL bot.get_ref_for_typ_list (".($RequestObj->Parameters->Option->CubeScopeLevel??"null").",'".$RequestObj->Parameters->Ref->FkTypName."')");
+	$conn->query("CALL bot.get_ref_for_typ_list (".$RequestObj->Parameters->Option->CubeScopeLevel.",'".$RequestObj->Parameters->Ref->FkTypName."')");
 	$ResponseObj->Rows = array();
 	$curs = $conn->query('FETCH ALL FROM cube_cursor;');
 	while ($row = $curs->fetch(PDO::FETCH_ASSOC)) {
@@ -978,7 +978,7 @@ case 'GetRef':
 	$conn->query("BEGIN;");
 	$ResponseObj = new \stdClass();
 	$ResponseObj->ResultName = 'SEL_REF';
-	$conn->query("CALL bot.get_ref ('".$RequestObj->Parameters->Type->FkTypName."',".($RequestObj->Parameters->Type->Sequence??"null").",'".$RequestObj->Parameters->Type->XkBotName."','".$RequestObj->Parameters->Type->XkTypName."')");
+	$conn->query("CALL bot.get_ref ('".$RequestObj->Parameters->Type->FkTypName."',".$RequestObj->Parameters->Type->Sequence.",'".$RequestObj->Parameters->Type->XkBotName."','".$RequestObj->Parameters->Type->XkTypName."')");
 	$ResponseObj->Rows = array();
 	$curs = $conn->query('FETCH ALL FROM cube_cursor;');
 	while ($row = $curs->fetch(PDO::FETCH_ASSOC)) {
@@ -1004,7 +1004,7 @@ case 'GetRefFkey':
 	$conn->query("BEGIN;");
 	$ResponseObj = new \stdClass();
 	$ResponseObj->ResultName = 'SEL_FKEY_REF';
-	$conn->query("CALL bot.get_ref_fkey ('".$RequestObj->Parameters->Type->FkTypName."',".($RequestObj->Parameters->Type->Sequence??"null").",'".$RequestObj->Parameters->Type->XkBotName."','".$RequestObj->Parameters->Type->XkTypName."')");
+	$conn->query("CALL bot.get_ref_fkey ('".$RequestObj->Parameters->Type->FkTypName."',".$RequestObj->Parameters->Type->Sequence.",'".$RequestObj->Parameters->Type->XkBotName."','".$RequestObj->Parameters->Type->XkTypName."')");
 	$ResponseObj->Rows = array();
 	$curs = $conn->query('FETCH ALL FROM cube_cursor;');
 	while ($row = $curs->fetch(PDO::FETCH_ASSOC)) {
@@ -1021,7 +1021,7 @@ case 'GetRefItems':
 	$conn->query("BEGIN;");
 	$ResponseObj = new \stdClass();
 	$ResponseObj->ResultName = 'LST_DCR';
-	$conn->query("CALL bot.get_ref_dcr_items ('".$RequestObj->Parameters->Type->FkTypName."',".($RequestObj->Parameters->Type->Sequence??"null").",'".$RequestObj->Parameters->Type->XkBotName."','".$RequestObj->Parameters->Type->XkTypName."')");
+	$conn->query("CALL bot.get_ref_dcr_items ('".$RequestObj->Parameters->Type->FkTypName."',".$RequestObj->Parameters->Type->Sequence.",'".$RequestObj->Parameters->Type->XkBotName."','".$RequestObj->Parameters->Type->XkTypName."')");
 	$ResponseObj->Rows = array();
 	$curs = $conn->query('FETCH ALL FROM cube_cursor;');
 	while ($row = $curs->fetch(PDO::FETCH_ASSOC)) {
@@ -1038,7 +1038,7 @@ case 'GetRefItems':
 	$ResponseText = $ResponseText.json_encode($ResponseObj).',';
 	$ResponseObj = new \stdClass();
 	$ResponseObj->ResultName = 'LST_RTR';
-	$conn->query("CALL bot.get_ref_rtr_items ('".$RequestObj->Parameters->Type->FkTypName."',".($RequestObj->Parameters->Type->Sequence??"null").",'".$RequestObj->Parameters->Type->XkBotName."','".$RequestObj->Parameters->Type->XkTypName."')");
+	$conn->query("CALL bot.get_ref_rtr_items ('".$RequestObj->Parameters->Type->FkTypName."',".$RequestObj->Parameters->Type->Sequence.",'".$RequestObj->Parameters->Type->XkBotName."','".$RequestObj->Parameters->Type->XkTypName."')");
 	$ResponseObj->Rows = array();
 	$curs = $conn->query('FETCH ALL FROM cube_cursor;');
 	while ($row = $curs->fetch(PDO::FETCH_ASSOC)) {
@@ -1058,7 +1058,7 @@ case 'GetRefItems':
 	$ResponseText = $ResponseText.json_encode($ResponseObj).',';
 	$ResponseObj = new \stdClass();
 	$ResponseObj->ResultName = 'LST_RTS';
-	$conn->query("CALL bot.get_ref_rts_items ('".$RequestObj->Parameters->Type->FkTypName."',".($RequestObj->Parameters->Type->Sequence??"null").",'".$RequestObj->Parameters->Type->XkBotName."','".$RequestObj->Parameters->Type->XkTypName."')");
+	$conn->query("CALL bot.get_ref_rts_items ('".$RequestObj->Parameters->Type->FkTypName."',".$RequestObj->Parameters->Type->Sequence.",'".$RequestObj->Parameters->Type->XkBotName."','".$RequestObj->Parameters->Type->XkTypName."')");
 	$ResponseObj->Rows = array();
 	$curs = $conn->query('FETCH ALL FROM cube_cursor;');
 	while ($row = $curs->fetch(PDO::FETCH_ASSOC)) {
@@ -1082,7 +1082,7 @@ case 'CountRefRestrictedItems':
 	$conn->query("BEGIN;");
 	$ResponseObj = new \stdClass();
 	$ResponseObj->ResultName = 'CNT_DCR';
-	$conn->query("CALL bot.count_ref_dcr ('".$RequestObj->Parameters->Type->FkTypName."',".($RequestObj->Parameters->Type->Sequence??"null").",'".$RequestObj->Parameters->Type->XkBotName."','".$RequestObj->Parameters->Type->XkTypName."')");
+	$conn->query("CALL bot.count_ref_dcr ('".$RequestObj->Parameters->Type->FkTypName."',".$RequestObj->Parameters->Type->Sequence.",'".$RequestObj->Parameters->Type->XkBotName."','".$RequestObj->Parameters->Type->XkTypName."')");
 	$ResponseObj->Rows = array();
 	$curs = $conn->query('FETCH ALL FROM cube_cursor;');
 	while ($row = $curs->fetch(PDO::FETCH_ASSOC)) {
@@ -1095,7 +1095,7 @@ case 'CountRefRestrictedItems':
 	$ResponseText = $ResponseText.json_encode($ResponseObj).',';
 	$ResponseObj = new \stdClass();
 	$ResponseObj->ResultName = 'CNT_RTS';
-	$conn->query("CALL bot.count_ref_rts ('".$RequestObj->Parameters->Type->FkTypName."',".($RequestObj->Parameters->Type->Sequence??"null").",'".$RequestObj->Parameters->Type->XkBotName."','".$RequestObj->Parameters->Type->XkTypName."')");
+	$conn->query("CALL bot.count_ref_rts ('".$RequestObj->Parameters->Type->FkTypName."',".$RequestObj->Parameters->Type->Sequence.",'".$RequestObj->Parameters->Type->XkBotName."','".$RequestObj->Parameters->Type->XkTypName."')");
 	$ResponseObj->Rows = array();
 	$curs = $conn->query('FETCH ALL FROM cube_cursor;');
 	while ($row = $curs->fetch(PDO::FETCH_ASSOC)) {
@@ -1112,7 +1112,7 @@ case 'MoveRef':
 	$conn->query("BEGIN;");
 	$ResponseObj = new \stdClass();
 	$ResponseObj->ResultName = 'MOV_REF';
-	$conn->query("CALL bot.move_ref ('".$RequestObj->Parameters->Option->CubePosAction."','".$RequestObj->Parameters->Type->FkTypName."',".($RequestObj->Parameters->Type->Sequence??"null").",'".$RequestObj->Parameters->Type->XkBotName."','".$RequestObj->Parameters->Type->XkTypName."','".$RequestObj->Parameters->Ref->FkTypName."',".($RequestObj->Parameters->Ref->Sequence??"null").",'".$RequestObj->Parameters->Ref->XkBotName."','".$RequestObj->Parameters->Ref->XkTypName."')");
+	$conn->query("CALL bot.move_ref ('".$RequestObj->Parameters->Option->CubePosAction."','".$RequestObj->Parameters->Type->FkTypName."',".$RequestObj->Parameters->Type->Sequence.",'".$RequestObj->Parameters->Type->XkBotName."','".$RequestObj->Parameters->Type->XkTypName."','".$RequestObj->Parameters->Ref->FkTypName."',".$RequestObj->Parameters->Ref->Sequence.",'".$RequestObj->Parameters->Ref->XkBotName."','".$RequestObj->Parameters->Ref->XkTypName."')");
 	$ResponseText = $ResponseText.json_encode($ResponseObj).']';
 	$conn->query("END;");
 	break;
@@ -1120,7 +1120,7 @@ case 'CreateRef':
 	$conn->query("BEGIN;");
 	$ResponseObj = new \stdClass();
 	$ResponseObj->ResultName = 'CRE_REF';
-	$conn->query("CALL bot.insert_ref ('".$RequestObj->Parameters->Option->CubePosAction."','".$RequestObj->Parameters->Type->FkBotName."','".$RequestObj->Parameters->Type->FkTypName."','".$RequestObj->Parameters->Type->Name."','".$RequestObj->Parameters->Type->PrimaryKey."','".$RequestObj->Parameters->Type->CodeDisplayKey."',".($RequestObj->Parameters->Type->Sequence??"null").",'".$RequestObj->Parameters->Type->Scope."','".$RequestObj->Parameters->Type->Unchangeable."','".$RequestObj->Parameters->Type->WithinScopeExtension."','".$RequestObj->Parameters->Type->CubeTsgIntExt."','".$RequestObj->Parameters->Type->TypePrefix."','".$RequestObj->Parameters->Type->XkBotName."','".$RequestObj->Parameters->Type->XkTypName."','".$RequestObj->Parameters->Type->XkTypName1."','".$RequestObj->Parameters->Ref->FkTypName."',".($RequestObj->Parameters->Ref->Sequence??"null").",'".$RequestObj->Parameters->Ref->XkBotName."','".$RequestObj->Parameters->Ref->XkTypName."')");
+	$conn->query("CALL bot.insert_ref ('".$RequestObj->Parameters->Option->CubePosAction."','".$RequestObj->Parameters->Type->FkBotName."','".$RequestObj->Parameters->Type->FkTypName."','".$RequestObj->Parameters->Type->Name."','".$RequestObj->Parameters->Type->PrimaryKey."','".$RequestObj->Parameters->Type->CodeDisplayKey."',".$RequestObj->Parameters->Type->Sequence.",'".$RequestObj->Parameters->Type->Scope."','".$RequestObj->Parameters->Type->Unchangeable."','".$RequestObj->Parameters->Type->WithinScopeExtension."','".$RequestObj->Parameters->Type->CubeTsgIntExt."','".$RequestObj->Parameters->Type->TypePrefix."','".$RequestObj->Parameters->Type->XkBotName."','".$RequestObj->Parameters->Type->XkTypName."','".$RequestObj->Parameters->Type->XkTypName1."','".$RequestObj->Parameters->Ref->FkTypName."',".$RequestObj->Parameters->Ref->Sequence.",'".$RequestObj->Parameters->Ref->XkBotName."','".$RequestObj->Parameters->Ref->XkTypName."')");
 	$ResponseText = $ResponseText.json_encode($ResponseObj).']';
 	$conn->query("END;");
 	break;
@@ -1128,7 +1128,7 @@ case 'UpdateRef':
 	$conn->query("BEGIN;");
 	$ResponseObj = new \stdClass();
 	$ResponseObj->ResultName = 'UPD_REF';
-	$conn->query("CALL bot.update_ref ('".$RequestObj->Parameters->Type->FkBotName."','".$RequestObj->Parameters->Type->FkTypName."','".$RequestObj->Parameters->Type->Name."','".$RequestObj->Parameters->Type->PrimaryKey."','".$RequestObj->Parameters->Type->CodeDisplayKey."',".($RequestObj->Parameters->Type->Sequence??"null").",'".$RequestObj->Parameters->Type->Scope."','".$RequestObj->Parameters->Type->Unchangeable."','".$RequestObj->Parameters->Type->WithinScopeExtension."','".$RequestObj->Parameters->Type->CubeTsgIntExt."','".$RequestObj->Parameters->Type->TypePrefix."','".$RequestObj->Parameters->Type->XkBotName."','".$RequestObj->Parameters->Type->XkTypName."','".$RequestObj->Parameters->Type->XkTypName1."')");
+	$conn->query("CALL bot.update_ref ('".$RequestObj->Parameters->Type->FkBotName."','".$RequestObj->Parameters->Type->FkTypName."','".$RequestObj->Parameters->Type->Name."','".$RequestObj->Parameters->Type->PrimaryKey."','".$RequestObj->Parameters->Type->CodeDisplayKey."',".$RequestObj->Parameters->Type->Sequence.",'".$RequestObj->Parameters->Type->Scope."','".$RequestObj->Parameters->Type->Unchangeable."','".$RequestObj->Parameters->Type->WithinScopeExtension."','".$RequestObj->Parameters->Type->CubeTsgIntExt."','".$RequestObj->Parameters->Type->TypePrefix."','".$RequestObj->Parameters->Type->XkBotName."','".$RequestObj->Parameters->Type->XkTypName."','".$RequestObj->Parameters->Type->XkTypName1."')");
 	$ResponseText = $ResponseText.json_encode($ResponseObj).']';
 	$conn->query("END;");
 	break;
@@ -1136,7 +1136,7 @@ case 'DeleteRef':
 	$conn->query("BEGIN;");
 	$ResponseObj = new \stdClass();
 	$ResponseObj->ResultName = 'DEL_REF';
-	$conn->query("CALL bot.delete_ref ('".$RequestObj->Parameters->Type->FkTypName."',".($RequestObj->Parameters->Type->Sequence??"null").",'".$RequestObj->Parameters->Type->XkBotName."','".$RequestObj->Parameters->Type->XkTypName."')");
+	$conn->query("CALL bot.delete_ref ('".$RequestObj->Parameters->Type->FkTypName."',".$RequestObj->Parameters->Type->Sequence.",'".$RequestObj->Parameters->Type->XkBotName."','".$RequestObj->Parameters->Type->XkTypName."')");
 	$ResponseText = $ResponseText.json_encode($ResponseObj).']';
 	$conn->query("END;");
 	break;
@@ -1144,7 +1144,7 @@ case 'GetDcr':
 	$conn->query("BEGIN;");
 	$ResponseObj = new \stdClass();
 	$ResponseObj->ResultName = 'SEL_DCR';
-	$conn->query("CALL bot.get_dcr ('".$RequestObj->Parameters->Type->FkTypName."',".($RequestObj->Parameters->Type->FkRefSequence??"null").",'".$RequestObj->Parameters->Type->FkRefBotName."','".$RequestObj->Parameters->Type->FkRefTypName."')");
+	$conn->query("CALL bot.get_dcr ('".$RequestObj->Parameters->Type->FkTypName."',".$RequestObj->Parameters->Type->FkRefSequence.",'".$RequestObj->Parameters->Type->FkRefBotName."','".$RequestObj->Parameters->Type->FkRefTypName."')");
 	$ResponseObj->Rows = array();
 	$curs = $conn->query('FETCH ALL FROM cube_cursor;');
 	while ($row = $curs->fetch(PDO::FETCH_ASSOC)) {
@@ -1162,7 +1162,7 @@ case 'CreateDcr':
 	$conn->query("BEGIN;");
 	$ResponseObj = new \stdClass();
 	$ResponseObj->ResultName = 'CRE_DCR';
-	$conn->query("CALL bot.insert_dcr ('".$RequestObj->Parameters->Type->FkBotName."','".$RequestObj->Parameters->Type->FkTypName."',".($RequestObj->Parameters->Type->FkRefSequence??"null").",'".$RequestObj->Parameters->Type->FkRefBotName."','".$RequestObj->Parameters->Type->FkRefTypName."','".$RequestObj->Parameters->Type->Text."')");
+	$conn->query("CALL bot.insert_dcr ('".$RequestObj->Parameters->Type->FkBotName."','".$RequestObj->Parameters->Type->FkTypName."',".$RequestObj->Parameters->Type->FkRefSequence.",'".$RequestObj->Parameters->Type->FkRefBotName."','".$RequestObj->Parameters->Type->FkRefTypName."','".$RequestObj->Parameters->Type->Text."')");
 	$ResponseText = $ResponseText.json_encode($ResponseObj).']';
 	$conn->query("END;");
 	break;
@@ -1170,7 +1170,7 @@ case 'UpdateDcr':
 	$conn->query("BEGIN;");
 	$ResponseObj = new \stdClass();
 	$ResponseObj->ResultName = 'UPD_DCR';
-	$conn->query("CALL bot.update_dcr ('".$RequestObj->Parameters->Type->FkBotName."','".$RequestObj->Parameters->Type->FkTypName."',".($RequestObj->Parameters->Type->FkRefSequence??"null").",'".$RequestObj->Parameters->Type->FkRefBotName."','".$RequestObj->Parameters->Type->FkRefTypName."','".$RequestObj->Parameters->Type->Text."')");
+	$conn->query("CALL bot.update_dcr ('".$RequestObj->Parameters->Type->FkBotName."','".$RequestObj->Parameters->Type->FkTypName."',".$RequestObj->Parameters->Type->FkRefSequence.",'".$RequestObj->Parameters->Type->FkRefBotName."','".$RequestObj->Parameters->Type->FkRefTypName."','".$RequestObj->Parameters->Type->Text."')");
 	$ResponseText = $ResponseText.json_encode($ResponseObj).']';
 	$conn->query("END;");
 	break;
@@ -1178,7 +1178,7 @@ case 'DeleteDcr':
 	$conn->query("BEGIN;");
 	$ResponseObj = new \stdClass();
 	$ResponseObj->ResultName = 'DEL_DCR';
-	$conn->query("CALL bot.delete_dcr ('".$RequestObj->Parameters->Type->FkTypName."',".($RequestObj->Parameters->Type->FkRefSequence??"null").",'".$RequestObj->Parameters->Type->FkRefBotName."','".$RequestObj->Parameters->Type->FkRefTypName."')");
+	$conn->query("CALL bot.delete_dcr ('".$RequestObj->Parameters->Type->FkTypName."',".$RequestObj->Parameters->Type->FkRefSequence.",'".$RequestObj->Parameters->Type->FkRefBotName."','".$RequestObj->Parameters->Type->FkRefTypName."')");
 	$ResponseText = $ResponseText.json_encode($ResponseObj).']';
 	$conn->query("END;");
 	break;
@@ -1186,7 +1186,7 @@ case 'GetRtr':
 	$conn->query("BEGIN;");
 	$ResponseObj = new \stdClass();
 	$ResponseObj->ResultName = 'SEL_RTR';
-	$conn->query("CALL bot.get_rtr ('".$RequestObj->Parameters->Type->FkTypName."',".($RequestObj->Parameters->Type->FkRefSequence??"null").",'".$RequestObj->Parameters->Type->FkRefBotName."','".$RequestObj->Parameters->Type->FkRefTypName."','".$RequestObj->Parameters->Type->XfTspTypName."','".$RequestObj->Parameters->Type->XfTspTsgCode."','".$RequestObj->Parameters->Type->XkTspCode."')");
+	$conn->query("CALL bot.get_rtr ('".$RequestObj->Parameters->Type->FkTypName."',".$RequestObj->Parameters->Type->FkRefSequence.",'".$RequestObj->Parameters->Type->FkRefBotName."','".$RequestObj->Parameters->Type->FkRefTypName."','".$RequestObj->Parameters->Type->XfTspTypName."','".$RequestObj->Parameters->Type->XfTspTsgCode."','".$RequestObj->Parameters->Type->XkTspCode."')");
 	$ResponseObj->Rows = array();
 	$curs = $conn->query('FETCH ALL FROM cube_cursor;');
 	while ($row = $curs->fetch(PDO::FETCH_ASSOC)) {
@@ -1204,7 +1204,7 @@ case 'CreateRtr':
 	$conn->query("BEGIN;");
 	$ResponseObj = new \stdClass();
 	$ResponseObj->ResultName = 'CRE_RTR';
-	$conn->query("CALL bot.insert_rtr ('".$RequestObj->Parameters->Type->FkBotName."','".$RequestObj->Parameters->Type->FkTypName."',".($RequestObj->Parameters->Type->FkRefSequence??"null").",'".$RequestObj->Parameters->Type->FkRefBotName."','".$RequestObj->Parameters->Type->FkRefTypName."','".$RequestObj->Parameters->Type->IncludeOrExclude."','".$RequestObj->Parameters->Type->XfTspTypName."','".$RequestObj->Parameters->Type->XfTspTsgCode."','".$RequestObj->Parameters->Type->XkTspCode."')");
+	$conn->query("CALL bot.insert_rtr ('".$RequestObj->Parameters->Type->FkBotName."','".$RequestObj->Parameters->Type->FkTypName."',".$RequestObj->Parameters->Type->FkRefSequence.",'".$RequestObj->Parameters->Type->FkRefBotName."','".$RequestObj->Parameters->Type->FkRefTypName."','".$RequestObj->Parameters->Type->IncludeOrExclude."','".$RequestObj->Parameters->Type->XfTspTypName."','".$RequestObj->Parameters->Type->XfTspTsgCode."','".$RequestObj->Parameters->Type->XkTspCode."')");
 	$ResponseObj->Rows = array();
 	$curs = $conn->query('FETCH ALL FROM cube_cursor;');
 	if ($row = $curs->fetch(PDO::FETCH_ASSOC)) {
@@ -1227,7 +1227,7 @@ case 'UpdateRtr':
 	$conn->query("BEGIN;");
 	$ResponseObj = new \stdClass();
 	$ResponseObj->ResultName = 'UPD_RTR';
-	$conn->query("CALL bot.update_rtr ('".$RequestObj->Parameters->Type->FkBotName."','".$RequestObj->Parameters->Type->FkTypName."',".($RequestObj->Parameters->Type->FkRefSequence??"null").",'".$RequestObj->Parameters->Type->FkRefBotName."','".$RequestObj->Parameters->Type->FkRefTypName."','".$RequestObj->Parameters->Type->IncludeOrExclude."','".$RequestObj->Parameters->Type->XfTspTypName."','".$RequestObj->Parameters->Type->XfTspTsgCode."','".$RequestObj->Parameters->Type->XkTspCode."')");
+	$conn->query("CALL bot.update_rtr ('".$RequestObj->Parameters->Type->FkBotName."','".$RequestObj->Parameters->Type->FkTypName."',".$RequestObj->Parameters->Type->FkRefSequence.",'".$RequestObj->Parameters->Type->FkRefBotName."','".$RequestObj->Parameters->Type->FkRefTypName."','".$RequestObj->Parameters->Type->IncludeOrExclude."','".$RequestObj->Parameters->Type->XfTspTypName."','".$RequestObj->Parameters->Type->XfTspTsgCode."','".$RequestObj->Parameters->Type->XkTspCode."')");
 	$ResponseText = $ResponseText.json_encode($ResponseObj).']';
 	$conn->query("END;");
 	break;
@@ -1235,7 +1235,7 @@ case 'DeleteRtr':
 	$conn->query("BEGIN;");
 	$ResponseObj = new \stdClass();
 	$ResponseObj->ResultName = 'DEL_RTR';
-	$conn->query("CALL bot.delete_rtr ('".$RequestObj->Parameters->Type->FkTypName."',".($RequestObj->Parameters->Type->FkRefSequence??"null").",'".$RequestObj->Parameters->Type->FkRefBotName."','".$RequestObj->Parameters->Type->FkRefTypName."','".$RequestObj->Parameters->Type->XfTspTypName."','".$RequestObj->Parameters->Type->XfTspTsgCode."','".$RequestObj->Parameters->Type->XkTspCode."')");
+	$conn->query("CALL bot.delete_rtr ('".$RequestObj->Parameters->Type->FkTypName."',".$RequestObj->Parameters->Type->FkRefSequence.",'".$RequestObj->Parameters->Type->FkRefBotName."','".$RequestObj->Parameters->Type->FkRefTypName."','".$RequestObj->Parameters->Type->XfTspTypName."','".$RequestObj->Parameters->Type->XfTspTsgCode."','".$RequestObj->Parameters->Type->XkTspCode."')");
 	$ResponseText = $ResponseText.json_encode($ResponseObj).']';
 	$conn->query("END;");
 	break;
@@ -1243,7 +1243,7 @@ case 'GetRts':
 	$conn->query("BEGIN;");
 	$ResponseObj = new \stdClass();
 	$ResponseObj->ResultName = 'SEL_RTS';
-	$conn->query("CALL bot.get_rts ('".$RequestObj->Parameters->Type->FkTypName."',".($RequestObj->Parameters->Type->FkRefSequence??"null").",'".$RequestObj->Parameters->Type->FkRefBotName."','".$RequestObj->Parameters->Type->FkRefTypName."','".$RequestObj->Parameters->Type->XfTspTypName."','".$RequestObj->Parameters->Type->XfTspTsgCode."','".$RequestObj->Parameters->Type->XkTspCode."')");
+	$conn->query("CALL bot.get_rts ('".$RequestObj->Parameters->Type->FkTypName."',".$RequestObj->Parameters->Type->FkRefSequence.",'".$RequestObj->Parameters->Type->FkRefBotName."','".$RequestObj->Parameters->Type->FkRefTypName."','".$RequestObj->Parameters->Type->XfTspTypName."','".$RequestObj->Parameters->Type->XfTspTsgCode."','".$RequestObj->Parameters->Type->XkTspCode."')");
 	$ResponseObj->Rows = array();
 	$curs = $conn->query('FETCH ALL FROM cube_cursor;');
 	while ($row = $curs->fetch(PDO::FETCH_ASSOC)) {
@@ -1261,7 +1261,7 @@ case 'CreateRts':
 	$conn->query("BEGIN;");
 	$ResponseObj = new \stdClass();
 	$ResponseObj->ResultName = 'CRE_RTS';
-	$conn->query("CALL bot.insert_rts ('".$RequestObj->Parameters->Type->FkBotName."','".$RequestObj->Parameters->Type->FkTypName."',".($RequestObj->Parameters->Type->FkRefSequence??"null").",'".$RequestObj->Parameters->Type->FkRefBotName."','".$RequestObj->Parameters->Type->FkRefTypName."','".$RequestObj->Parameters->Type->IncludeOrExclude."','".$RequestObj->Parameters->Type->XfTspTypName."','".$RequestObj->Parameters->Type->XfTspTsgCode."','".$RequestObj->Parameters->Type->XkTspCode."')");
+	$conn->query("CALL bot.insert_rts ('".$RequestObj->Parameters->Type->FkBotName."','".$RequestObj->Parameters->Type->FkTypName."',".$RequestObj->Parameters->Type->FkRefSequence.",'".$RequestObj->Parameters->Type->FkRefBotName."','".$RequestObj->Parameters->Type->FkRefTypName."','".$RequestObj->Parameters->Type->IncludeOrExclude."','".$RequestObj->Parameters->Type->XfTspTypName."','".$RequestObj->Parameters->Type->XfTspTsgCode."','".$RequestObj->Parameters->Type->XkTspCode."')");
 	$ResponseText = $ResponseText.json_encode($ResponseObj).']';
 	$conn->query("END;");
 	break;
@@ -1269,7 +1269,7 @@ case 'UpdateRts':
 	$conn->query("BEGIN;");
 	$ResponseObj = new \stdClass();
 	$ResponseObj->ResultName = 'UPD_RTS';
-	$conn->query("CALL bot.update_rts ('".$RequestObj->Parameters->Type->FkBotName."','".$RequestObj->Parameters->Type->FkTypName."',".($RequestObj->Parameters->Type->FkRefSequence??"null").",'".$RequestObj->Parameters->Type->FkRefBotName."','".$RequestObj->Parameters->Type->FkRefTypName."','".$RequestObj->Parameters->Type->IncludeOrExclude."','".$RequestObj->Parameters->Type->XfTspTypName."','".$RequestObj->Parameters->Type->XfTspTsgCode."','".$RequestObj->Parameters->Type->XkTspCode."')");
+	$conn->query("CALL bot.update_rts ('".$RequestObj->Parameters->Type->FkBotName."','".$RequestObj->Parameters->Type->FkTypName."',".$RequestObj->Parameters->Type->FkRefSequence.",'".$RequestObj->Parameters->Type->FkRefBotName."','".$RequestObj->Parameters->Type->FkRefTypName."','".$RequestObj->Parameters->Type->IncludeOrExclude."','".$RequestObj->Parameters->Type->XfTspTypName."','".$RequestObj->Parameters->Type->XfTspTsgCode."','".$RequestObj->Parameters->Type->XkTspCode."')");
 	$ResponseText = $ResponseText.json_encode($ResponseObj).']';
 	$conn->query("END;");
 	break;
@@ -1277,7 +1277,7 @@ case 'DeleteRts':
 	$conn->query("BEGIN;");
 	$ResponseObj = new \stdClass();
 	$ResponseObj->ResultName = 'DEL_RTS';
-	$conn->query("CALL bot.delete_rts ('".$RequestObj->Parameters->Type->FkTypName."',".($RequestObj->Parameters->Type->FkRefSequence??"null").",'".$RequestObj->Parameters->Type->FkRefBotName."','".$RequestObj->Parameters->Type->FkRefTypName."','".$RequestObj->Parameters->Type->XfTspTypName."','".$RequestObj->Parameters->Type->XfTspTsgCode."','".$RequestObj->Parameters->Type->XkTspCode."')");
+	$conn->query("CALL bot.delete_rts ('".$RequestObj->Parameters->Type->FkTypName."',".$RequestObj->Parameters->Type->FkRefSequence.",'".$RequestObj->Parameters->Type->FkRefBotName."','".$RequestObj->Parameters->Type->FkRefTypName."','".$RequestObj->Parameters->Type->XfTspTypName."','".$RequestObj->Parameters->Type->XfTspTsgCode."','".$RequestObj->Parameters->Type->XkTspCode."')");
 	$ResponseText = $ResponseText.json_encode($ResponseObj).']';
 	$conn->query("END;");
 	break;
@@ -1446,7 +1446,7 @@ case 'GetSvd':
 	$conn->query("BEGIN;");
 	$ResponseObj = new \stdClass();
 	$ResponseObj->ResultName = 'SEL_SVD';
-	$conn->query("CALL bot.get_svd ('".$RequestObj->Parameters->Type->FkTypName."','".$RequestObj->Parameters->Type->FkSrvName."','".$RequestObj->Parameters->Type->FkSrvCubeTsgDbScr."','".$RequestObj->Parameters->Type->XfAtbTypName."','".$RequestObj->Parameters->Type->XkAtbName."','".$RequestObj->Parameters->Type->XkRefBotName."','".$RequestObj->Parameters->Type->XkRefTypName."','".$RequestObj->Parameters->Type->XfRefTypName."',".($RequestObj->Parameters->Type->XkRefSequence??"null").")");
+	$conn->query("CALL bot.get_svd ('".$RequestObj->Parameters->Type->FkTypName."','".$RequestObj->Parameters->Type->FkSrvName."','".$RequestObj->Parameters->Type->FkSrvCubeTsgDbScr."','".$RequestObj->Parameters->Type->XfAtbTypName."','".$RequestObj->Parameters->Type->XkAtbName."','".$RequestObj->Parameters->Type->XkRefBotName."','".$RequestObj->Parameters->Type->XkRefTypName."','".$RequestObj->Parameters->Type->XfRefTypName."',".$RequestObj->Parameters->Type->XkRefSequence.")");
 	$ResponseObj->Rows = array();
 	$curs = $conn->query('FETCH ALL FROM cube_cursor;');
 	while ($row = $curs->fetch(PDO::FETCH_ASSOC)) {
@@ -1464,7 +1464,7 @@ case 'CreateSvd':
 	$conn->query("BEGIN;");
 	$ResponseObj = new \stdClass();
 	$ResponseObj->ResultName = 'CRE_SVD';
-	$conn->query("CALL bot.insert_svd ('".$RequestObj->Parameters->Type->FkBotName."','".$RequestObj->Parameters->Type->FkTypName."','".$RequestObj->Parameters->Type->FkSrvName."','".$RequestObj->Parameters->Type->FkSrvCubeTsgDbScr."','".$RequestObj->Parameters->Type->CubeTsgAtbRef."','".$RequestObj->Parameters->Type->XfAtbTypName."','".$RequestObj->Parameters->Type->XkAtbName."','".$RequestObj->Parameters->Type->XkRefBotName."','".$RequestObj->Parameters->Type->XkRefTypName."','".$RequestObj->Parameters->Type->XfRefTypName."',".($RequestObj->Parameters->Type->XkRefSequence??"null").")");
+	$conn->query("CALL bot.insert_svd ('".$RequestObj->Parameters->Type->FkBotName."','".$RequestObj->Parameters->Type->FkTypName."','".$RequestObj->Parameters->Type->FkSrvName."','".$RequestObj->Parameters->Type->FkSrvCubeTsgDbScr."','".$RequestObj->Parameters->Type->CubeTsgAtbRef."','".$RequestObj->Parameters->Type->XfAtbTypName."','".$RequestObj->Parameters->Type->XkAtbName."','".$RequestObj->Parameters->Type->XkRefBotName."','".$RequestObj->Parameters->Type->XkRefTypName."','".$RequestObj->Parameters->Type->XfRefTypName."',".$RequestObj->Parameters->Type->XkRefSequence.")");
 	$ResponseText = $ResponseText.json_encode($ResponseObj).']';
 	$conn->query("END;");
 	break;
@@ -1472,7 +1472,7 @@ case 'UpdateSvd':
 	$conn->query("BEGIN;");
 	$ResponseObj = new \stdClass();
 	$ResponseObj->ResultName = 'UPD_SVD';
-	$conn->query("CALL bot.update_svd ('".$RequestObj->Parameters->Type->FkBotName."','".$RequestObj->Parameters->Type->FkTypName."','".$RequestObj->Parameters->Type->FkSrvName."','".$RequestObj->Parameters->Type->FkSrvCubeTsgDbScr."','".$RequestObj->Parameters->Type->CubeTsgAtbRef."','".$RequestObj->Parameters->Type->XfAtbTypName."','".$RequestObj->Parameters->Type->XkAtbName."','".$RequestObj->Parameters->Type->XkRefBotName."','".$RequestObj->Parameters->Type->XkRefTypName."','".$RequestObj->Parameters->Type->XfRefTypName."',".($RequestObj->Parameters->Type->XkRefSequence??"null").")");
+	$conn->query("CALL bot.update_svd ('".$RequestObj->Parameters->Type->FkBotName."','".$RequestObj->Parameters->Type->FkTypName."','".$RequestObj->Parameters->Type->FkSrvName."','".$RequestObj->Parameters->Type->FkSrvCubeTsgDbScr."','".$RequestObj->Parameters->Type->CubeTsgAtbRef."','".$RequestObj->Parameters->Type->XfAtbTypName."','".$RequestObj->Parameters->Type->XkAtbName."','".$RequestObj->Parameters->Type->XkRefBotName."','".$RequestObj->Parameters->Type->XkRefTypName."','".$RequestObj->Parameters->Type->XfRefTypName."',".$RequestObj->Parameters->Type->XkRefSequence.")");
 	$ResponseText = $ResponseText.json_encode($ResponseObj).']';
 	$conn->query("END;");
 	break;
@@ -1480,7 +1480,7 @@ case 'DeleteSvd':
 	$conn->query("BEGIN;");
 	$ResponseObj = new \stdClass();
 	$ResponseObj->ResultName = 'DEL_SVD';
-	$conn->query("CALL bot.delete_svd ('".$RequestObj->Parameters->Type->FkTypName."','".$RequestObj->Parameters->Type->FkSrvName."','".$RequestObj->Parameters->Type->FkSrvCubeTsgDbScr."','".$RequestObj->Parameters->Type->XfAtbTypName."','".$RequestObj->Parameters->Type->XkAtbName."','".$RequestObj->Parameters->Type->XkRefBotName."','".$RequestObj->Parameters->Type->XkRefTypName."','".$RequestObj->Parameters->Type->XfRefTypName."',".($RequestObj->Parameters->Type->XkRefSequence??"null").")");
+	$conn->query("CALL bot.delete_svd ('".$RequestObj->Parameters->Type->FkTypName."','".$RequestObj->Parameters->Type->FkSrvName."','".$RequestObj->Parameters->Type->FkSrvCubeTsgDbScr."','".$RequestObj->Parameters->Type->XfAtbTypName."','".$RequestObj->Parameters->Type->XkAtbName."','".$RequestObj->Parameters->Type->XkRefBotName."','".$RequestObj->Parameters->Type->XkRefTypName."','".$RequestObj->Parameters->Type->XfRefTypName."',".$RequestObj->Parameters->Type->XkRefSequence.")");
 	$ResponseText = $ResponseText.json_encode($ResponseObj).']';
 	$conn->query("END;");
 	break;
@@ -1542,7 +1542,7 @@ case 'GetJsn':
 	$conn->query("BEGIN;");
 	$ResponseObj = new \stdClass();
 	$ResponseObj->ResultName = 'SEL_JSN';
-	$conn->query("CALL bot.get_jsn ('".$RequestObj->Parameters->Type->FkTypName."','".$RequestObj->Parameters->Type->Name."',".($RequestObj->Parameters->Type->Location??"null").",'".$RequestObj->Parameters->Type->XfAtbTypName."','".$RequestObj->Parameters->Type->XkAtbName."','".$RequestObj->Parameters->Type->XkTypName."')");
+	$conn->query("CALL bot.get_jsn ('".$RequestObj->Parameters->Type->FkTypName."','".$RequestObj->Parameters->Type->Name."',".$RequestObj->Parameters->Type->Location.",'".$RequestObj->Parameters->Type->XfAtbTypName."','".$RequestObj->Parameters->Type->XkAtbName."','".$RequestObj->Parameters->Type->XkTypName."')");
 	$ResponseObj->Rows = array();
 	$curs = $conn->query('FETCH ALL FROM cube_cursor;');
 	while ($row = $curs->fetch(PDO::FETCH_ASSOC)) {
@@ -1566,7 +1566,7 @@ case 'GetJsnFkey':
 	$conn->query("BEGIN;");
 	$ResponseObj = new \stdClass();
 	$ResponseObj->ResultName = 'SEL_FKEY_JSN';
-	$conn->query("CALL bot.get_jsn_fkey ('".$RequestObj->Parameters->Type->FkTypName."','".$RequestObj->Parameters->Type->Name."',".($RequestObj->Parameters->Type->Location??"null").",'".$RequestObj->Parameters->Type->XfAtbTypName."','".$RequestObj->Parameters->Type->XkAtbName."','".$RequestObj->Parameters->Type->XkTypName."')");
+	$conn->query("CALL bot.get_jsn_fkey ('".$RequestObj->Parameters->Type->FkTypName."','".$RequestObj->Parameters->Type->Name."',".$RequestObj->Parameters->Type->Location.",'".$RequestObj->Parameters->Type->XfAtbTypName."','".$RequestObj->Parameters->Type->XkAtbName."','".$RequestObj->Parameters->Type->XkTypName."')");
 	$ResponseObj->Rows = array();
 	$curs = $conn->query('FETCH ALL FROM cube_cursor;');
 	while ($row = $curs->fetch(PDO::FETCH_ASSOC)) {
@@ -1583,7 +1583,7 @@ case 'GetJsnItems':
 	$conn->query("BEGIN;");
 	$ResponseObj = new \stdClass();
 	$ResponseObj->ResultName = 'LST_JSN';
-	$conn->query("CALL bot.get_jsn_jsn_items ('".$RequestObj->Parameters->Type->FkTypName."','".$RequestObj->Parameters->Type->Name."',".($RequestObj->Parameters->Type->Location??"null").",'".$RequestObj->Parameters->Type->XfAtbTypName."','".$RequestObj->Parameters->Type->XkAtbName."','".$RequestObj->Parameters->Type->XkTypName."')");
+	$conn->query("CALL bot.get_jsn_jsn_items ('".$RequestObj->Parameters->Type->FkTypName."','".$RequestObj->Parameters->Type->Name."',".$RequestObj->Parameters->Type->Location.",'".$RequestObj->Parameters->Type->XfAtbTypName."','".$RequestObj->Parameters->Type->XkAtbName."','".$RequestObj->Parameters->Type->XkTypName."')");
 	$ResponseObj->Rows = array();
 	$curs = $conn->query('FETCH ALL FROM cube_cursor;');
 	while ($row = $curs->fetch(PDO::FETCH_ASSOC)) {
@@ -1606,7 +1606,7 @@ case 'MoveJsn':
 	$conn->query("BEGIN;");
 	$ResponseObj = new \stdClass();
 	$ResponseObj->ResultName = 'MOV_JSN';
-	$conn->query("CALL bot.move_jsn ('".$RequestObj->Parameters->Option->CubePosAction."','".$RequestObj->Parameters->Type->FkTypName."','".$RequestObj->Parameters->Type->Name."',".($RequestObj->Parameters->Type->Location??"null").",'".$RequestObj->Parameters->Type->XfAtbTypName."','".$RequestObj->Parameters->Type->XkAtbName."','".$RequestObj->Parameters->Type->XkTypName."','".$RequestObj->Parameters->Ref->FkTypName."','".$RequestObj->Parameters->Ref->Name."',".($RequestObj->Parameters->Ref->Location??"null").",'".$RequestObj->Parameters->Ref->XfAtbTypName."','".$RequestObj->Parameters->Ref->XkAtbName."','".$RequestObj->Parameters->Ref->XkTypName."')");
+	$conn->query("CALL bot.move_jsn ('".$RequestObj->Parameters->Option->CubePosAction."','".$RequestObj->Parameters->Type->FkTypName."','".$RequestObj->Parameters->Type->Name."',".$RequestObj->Parameters->Type->Location.",'".$RequestObj->Parameters->Type->XfAtbTypName."','".$RequestObj->Parameters->Type->XkAtbName."','".$RequestObj->Parameters->Type->XkTypName."','".$RequestObj->Parameters->Ref->FkTypName."','".$RequestObj->Parameters->Ref->Name."',".$RequestObj->Parameters->Ref->Location.",'".$RequestObj->Parameters->Ref->XfAtbTypName."','".$RequestObj->Parameters->Ref->XkAtbName."','".$RequestObj->Parameters->Ref->XkTypName."')");
 	$ResponseText = $ResponseText.json_encode($ResponseObj).']';
 	$conn->query("END;");
 	break;
@@ -1614,7 +1614,7 @@ case 'CreateJsn':
 	$conn->query("BEGIN;");
 	$ResponseObj = new \stdClass();
 	$ResponseObj->ResultName = 'CRE_JSN';
-	$conn->query("CALL bot.insert_jsn ('".$RequestObj->Parameters->Option->CubePosAction."','".$RequestObj->Parameters->Type->FkBotName."','".$RequestObj->Parameters->Type->FkTypName."','".$RequestObj->Parameters->Type->FkJsnName."',".($RequestObj->Parameters->Type->FkJsnLocation??"null").",'".$RequestObj->Parameters->Type->FkJsnAtbTypName."','".$RequestObj->Parameters->Type->FkJsnAtbName."','".$RequestObj->Parameters->Type->FkJsnTypName."','".$RequestObj->Parameters->Type->CubeTsgObjArr."','".$RequestObj->Parameters->Type->CubeTsgType."','".$RequestObj->Parameters->Type->Name."',".($RequestObj->Parameters->Type->Location??"null").",'".$RequestObj->Parameters->Type->XfAtbTypName."','".$RequestObj->Parameters->Type->XkAtbName."','".$RequestObj->Parameters->Type->XkTypName."','".$RequestObj->Parameters->Ref->FkTypName."','".$RequestObj->Parameters->Ref->Name."',".($RequestObj->Parameters->Ref->Location??"null").",'".$RequestObj->Parameters->Ref->XfAtbTypName."','".$RequestObj->Parameters->Ref->XkAtbName."','".$RequestObj->Parameters->Ref->XkTypName."')");
+	$conn->query("CALL bot.insert_jsn ('".$RequestObj->Parameters->Option->CubePosAction."','".$RequestObj->Parameters->Type->FkBotName."','".$RequestObj->Parameters->Type->FkTypName."','".$RequestObj->Parameters->Type->FkJsnName."',".$RequestObj->Parameters->Type->FkJsnLocation.",'".$RequestObj->Parameters->Type->FkJsnAtbTypName."','".$RequestObj->Parameters->Type->FkJsnAtbName."','".$RequestObj->Parameters->Type->FkJsnTypName."','".$RequestObj->Parameters->Type->CubeTsgObjArr."','".$RequestObj->Parameters->Type->CubeTsgType."','".$RequestObj->Parameters->Type->Name."',".$RequestObj->Parameters->Type->Location.",'".$RequestObj->Parameters->Type->XfAtbTypName."','".$RequestObj->Parameters->Type->XkAtbName."','".$RequestObj->Parameters->Type->XkTypName."','".$RequestObj->Parameters->Ref->FkTypName."','".$RequestObj->Parameters->Ref->Name."',".$RequestObj->Parameters->Ref->Location.",'".$RequestObj->Parameters->Ref->XfAtbTypName."','".$RequestObj->Parameters->Ref->XkAtbName."','".$RequestObj->Parameters->Ref->XkTypName."')");
 	$ResponseText = $ResponseText.json_encode($ResponseObj).']';
 	$conn->query("END;");
 	break;
@@ -1622,7 +1622,7 @@ case 'UpdateJsn':
 	$conn->query("BEGIN;");
 	$ResponseObj = new \stdClass();
 	$ResponseObj->ResultName = 'UPD_JSN';
-	$conn->query("CALL bot.update_jsn ('".$RequestObj->Parameters->Type->FkBotName."','".$RequestObj->Parameters->Type->FkTypName."','".$RequestObj->Parameters->Type->FkJsnName."',".($RequestObj->Parameters->Type->FkJsnLocation??"null").",'".$RequestObj->Parameters->Type->FkJsnAtbTypName."','".$RequestObj->Parameters->Type->FkJsnAtbName."','".$RequestObj->Parameters->Type->FkJsnTypName."','".$RequestObj->Parameters->Type->CubeTsgObjArr."','".$RequestObj->Parameters->Type->CubeTsgType."','".$RequestObj->Parameters->Type->Name."',".($RequestObj->Parameters->Type->Location??"null").",'".$RequestObj->Parameters->Type->XfAtbTypName."','".$RequestObj->Parameters->Type->XkAtbName."','".$RequestObj->Parameters->Type->XkTypName."')");
+	$conn->query("CALL bot.update_jsn ('".$RequestObj->Parameters->Type->FkBotName."','".$RequestObj->Parameters->Type->FkTypName."','".$RequestObj->Parameters->Type->FkJsnName."',".$RequestObj->Parameters->Type->FkJsnLocation.",'".$RequestObj->Parameters->Type->FkJsnAtbTypName."','".$RequestObj->Parameters->Type->FkJsnAtbName."','".$RequestObj->Parameters->Type->FkJsnTypName."','".$RequestObj->Parameters->Type->CubeTsgObjArr."','".$RequestObj->Parameters->Type->CubeTsgType."','".$RequestObj->Parameters->Type->Name."',".$RequestObj->Parameters->Type->Location.",'".$RequestObj->Parameters->Type->XfAtbTypName."','".$RequestObj->Parameters->Type->XkAtbName."','".$RequestObj->Parameters->Type->XkTypName."')");
 	$ResponseText = $ResponseText.json_encode($ResponseObj).']';
 	$conn->query("END;");
 	break;
@@ -1630,7 +1630,7 @@ case 'DeleteJsn':
 	$conn->query("BEGIN;");
 	$ResponseObj = new \stdClass();
 	$ResponseObj->ResultName = 'DEL_JSN';
-	$conn->query("CALL bot.delete_jsn ('".$RequestObj->Parameters->Type->FkTypName."','".$RequestObj->Parameters->Type->Name."',".($RequestObj->Parameters->Type->Location??"null").",'".$RequestObj->Parameters->Type->XfAtbTypName."','".$RequestObj->Parameters->Type->XkAtbName."','".$RequestObj->Parameters->Type->XkTypName."')");
+	$conn->query("CALL bot.delete_jsn ('".$RequestObj->Parameters->Type->FkTypName."','".$RequestObj->Parameters->Type->Name."',".$RequestObj->Parameters->Type->Location.",'".$RequestObj->Parameters->Type->XfAtbTypName."','".$RequestObj->Parameters->Type->XkAtbName."','".$RequestObj->Parameters->Type->XkTypName."')");
 	$ResponseText = $ResponseText.json_encode($ResponseObj).']';
 	$conn->query("END;");
 	break;
@@ -1676,3 +1676,62 @@ case 'DeleteDct':
 	$ResponseText = $ResponseText.json_encode($ResponseObj).']';
 	$conn->query("END;");
 	break;
+
+default:
+	$ResponseObj = new \stdClass();
+	$ResponseObj->ResultName = 'ERROR';
+	$ResponseObj->ErrorText = $RequestText;
+	$ResponseText = '['.json_encode($ResponseObj).']';
+}
+echo $ResponseText;
+
+function perform_db_request() {
+
+	global $conn, $stid, $curs;
+
+	$curs = oci_new_cursor($conn);
+	oci_bind_by_name($stid,":p_cube_row",$curs,-1,OCI_B_CURSOR);
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		return false;
+	}
+	//echo $r;
+	$r = oci_execute($curs);
+	if (!$r) {
+		ProcessDbError($curs);
+		return false;
+	}
+	return true;
+}
+
+function ProcessDbError($stid) {
+
+	$e = oci_error($stid);
+	$ResponseObj = new \stdClass();
+	$ResponseObj->ResultName = 'ERROR';
+	$ResponseObj->ErrorText = 'ORA-error: '.$e['code'].': '.$e['message'];
+	$ResponseText = '['.json_encode($ResponseObj).']';
+	echo $ResponseText;
+}
+
+function CubeError($errno, $errstr) {
+	if ($errno > 2) {
+		$ResponseObj = new \stdClass();
+		$ResponseObj->ResultName = 'ERROR';
+		$ResponseObj->ErrorText = "[$errno] $errstr";
+		$ResponseText = '['.json_encode($ResponseObj).']';
+		echo $ResponseText;
+		exit;
+	}
+}
+
+function CubeException($exception) {
+	$ResponseObj = new \stdClass();
+	$ResponseObj->ResultName = 'ERROR';
+	$ResponseObj->ErrorText = "$exception";
+	$ResponseText = json_encode($ResponseObj);
+	echo '['.$ResponseText.']';
+	exit;
+}
+?>

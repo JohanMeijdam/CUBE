@@ -33,7 +33,7 @@ case 'GetCubeDsc':
 	$conn->query("BEGIN;");
 	$ResponseObj = new \stdClass();
 	$ResponseObj->ResultName = 'SEL_CUBE_DSC';
-	$conn->query("CALL cube_dsc.get_cube_dsc ('".$RequestObj->Parameters->Type->TypeName."','".$RequestObj->Parameters->Type->AttributeTypeName."',".($RequestObj->Parameters->Type->Sequence??"null").")");
+	$conn->query("CALL cube_dsc.get_cube_dsc ('".$RequestObj->Parameters->Type->TypeName."','".$RequestObj->Parameters->Type->AttributeTypeName."',".$RequestObj->Parameters->Type->Sequence.")");
 	$ResponseObj->Rows = array();
 	$curs = $conn->query('FETCH ALL FROM cube_cursor;');
 	while ($row = $curs->fetch(PDO::FETCH_ASSOC)) {
@@ -50,7 +50,7 @@ case 'CreateCubeDsc':
 	$conn->query("BEGIN;");
 	$ResponseObj = new \stdClass();
 	$ResponseObj->ResultName = 'CRE_CUBE_DSC';
-	$conn->query("CALL cube_dsc.insert_cube_dsc ('".$RequestObj->Parameters->Type->TypeName."','".$RequestObj->Parameters->Type->AttributeTypeName."',".($RequestObj->Parameters->Type->Sequence??"null").",'".$RequestObj->Parameters->Type->Value."')");
+	$conn->query("CALL cube_dsc.insert_cube_dsc ('".$RequestObj->Parameters->Type->TypeName."','".$RequestObj->Parameters->Type->AttributeTypeName."',".$RequestObj->Parameters->Type->Sequence.",'".$RequestObj->Parameters->Type->Value."')");
 	$ResponseText = $ResponseText.json_encode($ResponseObj).']';
 	$conn->query("END;");
 	break;
@@ -58,7 +58,7 @@ case 'UpdateCubeDsc':
 	$conn->query("BEGIN;");
 	$ResponseObj = new \stdClass();
 	$ResponseObj->ResultName = 'UPD_CUBE_DSC';
-	$conn->query("CALL cube_dsc.update_cube_dsc ('".$RequestObj->Parameters->Type->TypeName."','".$RequestObj->Parameters->Type->AttributeTypeName."',".($RequestObj->Parameters->Type->Sequence??"null").",'".$RequestObj->Parameters->Type->Value."')");
+	$conn->query("CALL cube_dsc.update_cube_dsc ('".$RequestObj->Parameters->Type->TypeName."','".$RequestObj->Parameters->Type->AttributeTypeName."',".$RequestObj->Parameters->Type->Sequence.",'".$RequestObj->Parameters->Type->Value."')");
 	$ResponseText = $ResponseText.json_encode($ResponseObj).']';
 	$conn->query("END;");
 	break;
@@ -66,7 +66,7 @@ case 'DeleteCubeDsc':
 	$conn->query("BEGIN;");
 	$ResponseObj = new \stdClass();
 	$ResponseObj->ResultName = 'DEL_CUBE_DSC';
-	$conn->query("CALL cube_dsc.delete_cube_dsc ('".$RequestObj->Parameters->Type->TypeName."','".$RequestObj->Parameters->Type->AttributeTypeName."',".($RequestObj->Parameters->Type->Sequence??"null").")");
+	$conn->query("CALL cube_dsc.delete_cube_dsc ('".$RequestObj->Parameters->Type->TypeName."','".$RequestObj->Parameters->Type->AttributeTypeName."',".$RequestObj->Parameters->Type->Sequence.")");
 	$ResponseText = $ResponseText.json_encode($ResponseObj).']';
 	$conn->query("END;");
 	break;

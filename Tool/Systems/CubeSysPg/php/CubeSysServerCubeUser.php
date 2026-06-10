@@ -73,3 +73,62 @@ case 'DeleteCubeUsr':
 	$ResponseText = $ResponseText.json_encode($ResponseObj).']';
 	$conn->query("END;");
 	break;
+
+default:
+	$ResponseObj = new \stdClass();
+	$ResponseObj->ResultName = 'ERROR';
+	$ResponseObj->ErrorText = $RequestText;
+	$ResponseText = '['.json_encode($ResponseObj).']';
+}
+echo $ResponseText;
+
+function perform_db_request() {
+
+	global $conn, $stid, $curs;
+
+	$curs = oci_new_cursor($conn);
+	oci_bind_by_name($stid,":p_cube_row",$curs,-1,OCI_B_CURSOR);
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		return false;
+	}
+	//echo $r;
+	$r = oci_execute($curs);
+	if (!$r) {
+		ProcessDbError($curs);
+		return false;
+	}
+	return true;
+}
+
+function ProcessDbError($stid) {
+
+	$e = oci_error($stid);
+	$ResponseObj = new \stdClass();
+	$ResponseObj->ResultName = 'ERROR';
+	$ResponseObj->ErrorText = 'ORA-error: '.$e['code'].': '.$e['message'];
+	$ResponseText = '['.json_encode($ResponseObj).']';
+	echo $ResponseText;
+}
+
+function CubeError($errno, $errstr) {
+	if ($errno > 2) {
+		$ResponseObj = new \stdClass();
+		$ResponseObj->ResultName = 'ERROR';
+		$ResponseObj->ErrorText = "[$errno] $errstr";
+		$ResponseText = '['.json_encode($ResponseObj).']';
+		echo $ResponseText;
+		exit;
+	}
+}
+
+function CubeException($exception) {
+	$ResponseObj = new \stdClass();
+	$ResponseObj->ResultName = 'ERROR';
+	$ResponseObj->ErrorText = "$exception";
+	$ResponseText = json_encode($ResponseObj);
+	echo '['.$ResponseText.']';
+	exit;
+}
+?>

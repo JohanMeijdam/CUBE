@@ -93,7 +93,7 @@ case 'GetIte':
 	$conn->query("BEGIN;");
 	$ResponseObj = new \stdClass();
 	$ResponseObj->ResultName = 'SEL_ITE';
-	$conn->query("CALL itp.get_ite ('".$RequestObj->Parameters->Type->FkItpName."',".($RequestObj->Parameters->Type->Sequence??"null").")");
+	$conn->query("CALL itp.get_ite ('".$RequestObj->Parameters->Type->FkItpName."',".$RequestObj->Parameters->Type->Sequence.")");
 	$ResponseObj->Rows = array();
 	$curs = $conn->query('FETCH ALL FROM cube_cursor;');
 	while ($row = $curs->fetch(PDO::FETCH_ASSOC)) {
@@ -117,7 +117,7 @@ case 'GetIteItems':
 	$conn->query("BEGIN;");
 	$ResponseObj = new \stdClass();
 	$ResponseObj->ResultName = 'LST_VAL';
-	$conn->query("CALL itp.get_ite_val_items ('".$RequestObj->Parameters->Type->FkItpName."',".($RequestObj->Parameters->Type->Sequence??"null").")");
+	$conn->query("CALL itp.get_ite_val_items ('".$RequestObj->Parameters->Type->FkItpName."',".$RequestObj->Parameters->Type->Sequence.")");
 	$ResponseObj->Rows = array();
 	$curs = $conn->query('FETCH ALL FROM cube_cursor;');
 	while ($row = $curs->fetch(PDO::FETCH_ASSOC)) {
@@ -137,7 +137,7 @@ case 'CreateIte':
 	$conn->query("BEGIN;");
 	$ResponseObj = new \stdClass();
 	$ResponseObj->ResultName = 'CRE_ITE';
-	$conn->query("CALL itp.insert_ite ('".$RequestObj->Parameters->Type->FkItpName."',".($RequestObj->Parameters->Type->Sequence??"null").",'".$RequestObj->Parameters->Type->Suffix."','".$RequestObj->Parameters->Type->Domain."',".($RequestObj->Parameters->Type->Length??"null").",".($RequestObj->Parameters->Type->Decimals??"null").",'".$RequestObj->Parameters->Type->CaseSensitive."','".$RequestObj->Parameters->Type->DefaultValue."','".$RequestObj->Parameters->Type->SpacesAllowed."','".$RequestObj->Parameters->Type->Presentation."')");
+	$conn->query("CALL itp.insert_ite ('".$RequestObj->Parameters->Type->FkItpName."',".$RequestObj->Parameters->Type->Sequence.",'".$RequestObj->Parameters->Type->Suffix."','".$RequestObj->Parameters->Type->Domain."',".$RequestObj->Parameters->Type->Length.",".$RequestObj->Parameters->Type->Decimals.",'".$RequestObj->Parameters->Type->CaseSensitive."','".$RequestObj->Parameters->Type->DefaultValue."','".$RequestObj->Parameters->Type->SpacesAllowed."','".$RequestObj->Parameters->Type->Presentation."')");
 	$ResponseObj->Rows = array();
 	$curs = $conn->query('FETCH ALL FROM cube_cursor;');
 	if ($row = $curs->fetch(PDO::FETCH_ASSOC)) {
@@ -155,7 +155,7 @@ case 'UpdateIte':
 	$conn->query("BEGIN;");
 	$ResponseObj = new \stdClass();
 	$ResponseObj->ResultName = 'UPD_ITE';
-	$conn->query("CALL itp.update_ite ('".$RequestObj->Parameters->Type->FkItpName."',".($RequestObj->Parameters->Type->Sequence??"null").",'".$RequestObj->Parameters->Type->Suffix."','".$RequestObj->Parameters->Type->Domain."',".($RequestObj->Parameters->Type->Length??"null").",".($RequestObj->Parameters->Type->Decimals??"null").",'".$RequestObj->Parameters->Type->CaseSensitive."','".$RequestObj->Parameters->Type->DefaultValue."','".$RequestObj->Parameters->Type->SpacesAllowed."','".$RequestObj->Parameters->Type->Presentation."')");
+	$conn->query("CALL itp.update_ite ('".$RequestObj->Parameters->Type->FkItpName."',".$RequestObj->Parameters->Type->Sequence.",'".$RequestObj->Parameters->Type->Suffix."','".$RequestObj->Parameters->Type->Domain."',".$RequestObj->Parameters->Type->Length.",".$RequestObj->Parameters->Type->Decimals.",'".$RequestObj->Parameters->Type->CaseSensitive."','".$RequestObj->Parameters->Type->DefaultValue."','".$RequestObj->Parameters->Type->SpacesAllowed."','".$RequestObj->Parameters->Type->Presentation."')");
 	$ResponseText = $ResponseText.json_encode($ResponseObj).']';
 	$conn->query("END;");
 	break;
@@ -163,7 +163,7 @@ case 'DeleteIte':
 	$conn->query("BEGIN;");
 	$ResponseObj = new \stdClass();
 	$ResponseObj->ResultName = 'DEL_ITE';
-	$conn->query("CALL itp.delete_ite ('".$RequestObj->Parameters->Type->FkItpName."',".($RequestObj->Parameters->Type->Sequence??"null").")");
+	$conn->query("CALL itp.delete_ite ('".$RequestObj->Parameters->Type->FkItpName."',".$RequestObj->Parameters->Type->Sequence.")");
 	$ResponseText = $ResponseText.json_encode($ResponseObj).']';
 	$conn->query("END;");
 	break;
@@ -171,7 +171,7 @@ case 'GetVal':
 	$conn->query("BEGIN;");
 	$ResponseObj = new \stdClass();
 	$ResponseObj->ResultName = 'SEL_VAL';
-	$conn->query("CALL itp.get_val ('".$RequestObj->Parameters->Type->FkItpName."',".($RequestObj->Parameters->Type->FkIteSequence??"null").",'".$RequestObj->Parameters->Type->Code."')");
+	$conn->query("CALL itp.get_val ('".$RequestObj->Parameters->Type->FkItpName."',".$RequestObj->Parameters->Type->FkIteSequence.",'".$RequestObj->Parameters->Type->Code."')");
 	$ResponseObj->Rows = array();
 	$curs = $conn->query('FETCH ALL FROM cube_cursor;');
 	while ($row = $curs->fetch(PDO::FETCH_ASSOC)) {
@@ -188,7 +188,7 @@ case 'MoveVal':
 	$conn->query("BEGIN;");
 	$ResponseObj = new \stdClass();
 	$ResponseObj->ResultName = 'MOV_VAL';
-	$conn->query("CALL itp.move_val ('".$RequestObj->Parameters->Option->CubePosAction."','".$RequestObj->Parameters->Type->FkItpName."',".($RequestObj->Parameters->Type->FkIteSequence??"null").",'".$RequestObj->Parameters->Type->Code."','".$RequestObj->Parameters->Ref->FkItpName."',".($RequestObj->Parameters->Ref->FkIteSequence??"null").",'".$RequestObj->Parameters->Ref->Code."')");
+	$conn->query("CALL itp.move_val ('".$RequestObj->Parameters->Option->CubePosAction."','".$RequestObj->Parameters->Type->FkItpName."',".$RequestObj->Parameters->Type->FkIteSequence.",'".$RequestObj->Parameters->Type->Code."','".$RequestObj->Parameters->Ref->FkItpName."',".$RequestObj->Parameters->Ref->FkIteSequence.",'".$RequestObj->Parameters->Ref->Code."')");
 	$ResponseText = $ResponseText.json_encode($ResponseObj).']';
 	$conn->query("END;");
 	break;
@@ -196,7 +196,7 @@ case 'CreateVal':
 	$conn->query("BEGIN;");
 	$ResponseObj = new \stdClass();
 	$ResponseObj->ResultName = 'CRE_VAL';
-	$conn->query("CALL itp.insert_val ('".$RequestObj->Parameters->Option->CubePosAction."','".$RequestObj->Parameters->Type->FkItpName."',".($RequestObj->Parameters->Type->FkIteSequence??"null").",'".$RequestObj->Parameters->Type->Code."','".$RequestObj->Parameters->Type->Prompt."','".$RequestObj->Parameters->Ref->FkItpName."',".($RequestObj->Parameters->Ref->FkIteSequence??"null").",'".$RequestObj->Parameters->Ref->Code."')");
+	$conn->query("CALL itp.insert_val ('".$RequestObj->Parameters->Option->CubePosAction."','".$RequestObj->Parameters->Type->FkItpName."',".$RequestObj->Parameters->Type->FkIteSequence.",'".$RequestObj->Parameters->Type->Code."','".$RequestObj->Parameters->Type->Prompt."','".$RequestObj->Parameters->Ref->FkItpName."',".$RequestObj->Parameters->Ref->FkIteSequence.",'".$RequestObj->Parameters->Ref->Code."')");
 	$ResponseText = $ResponseText.json_encode($ResponseObj).']';
 	$conn->query("END;");
 	break;
@@ -204,7 +204,7 @@ case 'UpdateVal':
 	$conn->query("BEGIN;");
 	$ResponseObj = new \stdClass();
 	$ResponseObj->ResultName = 'UPD_VAL';
-	$conn->query("CALL itp.update_val ('".$RequestObj->Parameters->Type->FkItpName."',".($RequestObj->Parameters->Type->FkIteSequence??"null").",'".$RequestObj->Parameters->Type->Code."','".$RequestObj->Parameters->Type->Prompt."')");
+	$conn->query("CALL itp.update_val ('".$RequestObj->Parameters->Type->FkItpName."',".$RequestObj->Parameters->Type->FkIteSequence.",'".$RequestObj->Parameters->Type->Code."','".$RequestObj->Parameters->Type->Prompt."')");
 	$ResponseText = $ResponseText.json_encode($ResponseObj).']';
 	$conn->query("END;");
 	break;
@@ -212,7 +212,66 @@ case 'DeleteVal':
 	$conn->query("BEGIN;");
 	$ResponseObj = new \stdClass();
 	$ResponseObj->ResultName = 'DEL_VAL';
-	$conn->query("CALL itp.delete_val ('".$RequestObj->Parameters->Type->FkItpName."',".($RequestObj->Parameters->Type->FkIteSequence??"null").",'".$RequestObj->Parameters->Type->Code."')");
+	$conn->query("CALL itp.delete_val ('".$RequestObj->Parameters->Type->FkItpName."',".$RequestObj->Parameters->Type->FkIteSequence.",'".$RequestObj->Parameters->Type->Code."')");
 	$ResponseText = $ResponseText.json_encode($ResponseObj).']';
 	$conn->query("END;");
 	break;
+
+default:
+	$ResponseObj = new \stdClass();
+	$ResponseObj->ResultName = 'ERROR';
+	$ResponseObj->ErrorText = $RequestText;
+	$ResponseText = '['.json_encode($ResponseObj).']';
+}
+echo $ResponseText;
+
+function perform_db_request() {
+
+	global $conn, $stid, $curs;
+
+	$curs = oci_new_cursor($conn);
+	oci_bind_by_name($stid,":p_cube_row",$curs,-1,OCI_B_CURSOR);
+	$r = oci_execute($stid);
+	if (!$r) {
+		ProcessDbError($stid);
+		return false;
+	}
+	//echo $r;
+	$r = oci_execute($curs);
+	if (!$r) {
+		ProcessDbError($curs);
+		return false;
+	}
+	return true;
+}
+
+function ProcessDbError($stid) {
+
+	$e = oci_error($stid);
+	$ResponseObj = new \stdClass();
+	$ResponseObj->ResultName = 'ERROR';
+	$ResponseObj->ErrorText = 'ORA-error: '.$e['code'].': '.$e['message'];
+	$ResponseText = '['.json_encode($ResponseObj).']';
+	echo $ResponseText;
+}
+
+function CubeError($errno, $errstr) {
+	if ($errno > 2) {
+		$ResponseObj = new \stdClass();
+		$ResponseObj->ResultName = 'ERROR';
+		$ResponseObj->ErrorText = "[$errno] $errstr";
+		$ResponseText = '['.json_encode($ResponseObj).']';
+		echo $ResponseText;
+		exit;
+	}
+}
+
+function CubeException($exception) {
+	$ResponseObj = new \stdClass();
+	$ResponseObj->ResultName = 'ERROR';
+	$ResponseObj->ErrorText = "$exception";
+	$ResponseText = json_encode($ResponseObj);
+	echo '['.$ResponseText.']';
+	exit;
+}
+?>

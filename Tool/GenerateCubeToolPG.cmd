@@ -76,18 +76,15 @@ psql -h %db_host% -p %db_port% -d %db_name% -U %db_user% -f %sysdir%\PackageDdl_
 :Application 
 echo Generate Application.
 del /S/Q %sysdir%\php\*.php >> %logfile% 2>&1
+:Hier
 CubeGen.exe %sysdir%\CubeBoModel.cgm Templates\CubeDbLogonPhp.cgt %sysdir%\php\CubeDbLogon.php %sysname% >> %logfile% 2>&1
+goto End
 CubeGen.exe %sysdir%\CubeBoModel.cgm Templates\IndexHtml.cgt %sysdir%\php\index.html %sysname% >> %logfile% 2>&1
 CubeGen.exe %sysdir%\CubeBoModel.cgm Templates\CubeTreePhp.cgt %sysdir%\php\%sysname%Tree.php %sysname% %sysdir%\php >> %logfile% 2>&1
 CubeGen.exe %sysdir%\CubeServerSpecModel.cgm Templates\CubeDetailPhp.cgt %sysdir%\php\%sysname%Detail.php %sysname% %sysdir%\php >> %logfile% 2>&1
 CubeGen.exe %sysdir%\CubeServerSpecModel.cgm Templates\CubeServerPhp_pg.cgt %sysdir%\php\%sysname%Server.php %sysname% %sysdir%\php >> %logfile% 2>&1
-del /S/Q %sysroot% >> %logfile% 2>&1
-xcopy /Y/S/E %sysdir%\files %sysroot% >> %logfile% 2>&1
-xcopy /Y/S/E %sysdir%\php %sysroot% >> %logfile% 2>&1
-xcopy /Y %cubesysdir%\php %sysroot% >> %logfile% 2>&1
 ::goto End
 :System
-:Hier
 call GenerateCubeSysPg.cmd
 ::goto :end
 echo Install CubeSys.
@@ -97,5 +94,11 @@ psql -h %db_host% -p %db_port% -d %db_name% -U %db_user% -f %cubesysdir%\Package
 xcopy /Y %cubesysdir%\php %sysroot% >> %logfile% 2>&1
 CubeGen.exe %sysdir%\CubeBoModel.cgm Templates\SystemImport.cgt %sysdir%\SystemImport.sql %sysname% >> %logfile% 2>&1
 psql -h %db_host% -p %db_port% -d %db_name% -U %db_user% -f %sysdir%\SystemImport.sql >> %logfile% 2>&1
+::goto :end
+echo Deploy Application.
+del /S/Q %sysroot% >> %logfile% 2>&1
+xcopy /Y/S/E Systems\CubeRoot\files %sysroot% >> %logfile% 2>&1
+xcopy /Y/S/E %sysdir%\php %sysroot% >> %logfile% 2>&1
+xcopy /Y %cubesysdir%\php %sysroot% >> %logfile% 2>&1
 :end
 pause

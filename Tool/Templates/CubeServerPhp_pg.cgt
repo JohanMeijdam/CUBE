@@ -29,7 +29,7 @@ case '<<SERVICE:C>>':
 	$conn->query("BEGIN;");[[LOOP,OPERATION]]
 	$ResponseObj = new \stdClass();
 	$ResponseObj->ResultName = '<<SERVICE2>>[[IF:!2=#]]_<<OPERATION2:U>>[[ENDIF]][[LOOP,OPERATION_TYPE]]_<<OPERATION_TYPE1:U>>[[ENDLOOP,OPERATION_TYPE]]';
-	$conn->query("CALL [[FOR,BUSINESS_OBJECT_TYPE:N>N]][[LOOP,TYPE]]<<TYPE1:L>>[[ENDLOOP,TYPE]][[ENDFOR]].<<OPERATION:L>> ([[FORH,SERVICE:N>N]][[LOOP,SERVICE_ARGUMENT]][[LOOP,ARGUMENT_ATTRIBUTE]][[IF:CHILD(INFORMATION_TYPE_ELEMENT:2=NUMBER)]]".($RequestObj->Parameters-><<SERVICE_ARGUMENT2>>-><<ARGUMENT_ATTRIBUTE:C>>??"null")."[[ELSE]]'".$RequestObj->Parameters-><<SERVICE_ARGUMENT2>>-><<ARGUMENT_ATTRIBUTE:C>>."'[[ENDIF]][[ENDLOOP,ARGUMENT_ATTRIBUTE]][[IF,SERVICE_ARGUMENT:!LAST]],[[ENDIF]][[ENDLOOP,SERVICE_ARGUMENT]][[ENDFOR]])");[[IF:CHILD(EXPORT)]]
+	$conn->query("CALL [[FOR,BUSINESS_OBJECT_TYPE:N>N]][[LOOP,TYPE]]<<TYPE1:L>>[[ENDLOOP,TYPE]][[ENDFOR]].<<OPERATION:L>> ([[FORH,SERVICE:N>N]][[LOOP,SERVICE_ARGUMENT]][[LOOP,ARGUMENT_ATTRIBUTE]][[IF:CHILD(INFORMATION_TYPE_ELEMENT:2=NUMBER)]]".$RequestObj->Parameters-><<SERVICE_ARGUMENT2>>-><<ARGUMENT_ATTRIBUTE:C>>."[[ELSE]]'".$RequestObj->Parameters-><<SERVICE_ARGUMENT2>>-><<ARGUMENT_ATTRIBUTE:C>>."'[[ENDIF]][[ENDLOOP,ARGUMENT_ATTRIBUTE]][[IF,SERVICE_ARGUMENT:!LAST]],[[ENDIF]][[ENDLOOP,SERVICE_ARGUMENT]][[ENDFOR]])");[[IF:CHILD(EXPORT)]]
 	$ResponseObj->Rows = array();
 	$curs = $conn->query('FETCH ALL FROM cube_cursor;');
 	[[IF,SERVICE:<<TEXT,GEN_HAS_CURSOR>>]]while[[ELSE]]if[[ENDIF]] ($row = $curs->fetch(PDO::FETCH_ASSOC)) {
@@ -42,7 +42,7 @@ case '<<SERVICE:C>>':
 	$curs = $conn->query('CLOSE cube_cursor;');[[ENDIF]]
 	$ResponseText = $ResponseText.json_encode($ResponseObj).[[IF:!LAST]]','[[ELSE]]']'[[ENDIF]];[[ENDLOOP,OPERATION]]
 	$conn->query("END;");
-	break;[[ENDLOOP,SERVICE]][[REPEAT,TYPE]][[ENDLOOP,TYPE]][[ENDLOOP,BUSINESS_OBJECT_TYPE]]
+	break;[[ENDLOOP,SERVICE]][[REPEAT,TYPE]][[ENDLOOP,TYPE]]
 
 default:
 	$ResponseObj = new \stdClass();
@@ -101,4 +101,4 @@ function CubeException($exception) {
 	echo '['.$ResponseText.']';
 	exit;
 }
-?>[[ENDBODY]]
+?>[[ENDLOOP,BUSINESS_OBJECT_TYPE]][[ENDBODY]]
